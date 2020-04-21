@@ -1,0 +1,60 @@
+{
+  "name": "repomountie",
+  "version": "0.3.1",
+  "description": "A bot to help ensure cultural niceties are respected.",
+  "author": "Jason C. Leach <jason.leach@fullboar.ca>",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/bcgov/repomountie.git",
+  "homepage": "https://github.com/bcgov/repomountie",
+  "bugs": "https://github.com/bcgov/repomountie/issues",
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app"
+  ],
+  "scripts": {
+    "build": "NODE_ENV=production gulp",
+    "dev": "nodemon --watch src --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
+    "start": "probot run ./build/index.js",
+    "test:lint": "NODE_ENV=test tslint src/**/*.ts",
+    "test": "NODE_ENV=test jest __tests__",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:watch": "NODE_ENV=test jest --watch --notify --notifyMode=change --coverage"
+  },
+  "dependencies": {
+    "@bcgov/common-nodejs-utils": "^0.1.18",
+    "express": "^4.17.1",
+    "lodash": "^4.17.14",
+    "nconf": "^0.10.0",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "transform-runtime": "0.0.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/jest": "^25.2.1",
+    "@types/nconf": "0.10.0",
+    "@types/node": "^13.11.1",
+    "dotenv": "^8.0.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "jest": "^25.3.0",
+    "nodemon": "^2.0.3",
+    "smee-client": "^1.1.0",
+    "standard": "^14.3.3",
+    "supertest": "^4.0.2",
+    "ts-jest": "^25.3.1",
+    "ts-node": "^8.8.2",
+    "tslint": "^6.1.1",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.8.3",
+    "typescript-eslint-parser": "^22.0.0"
+  },
+  "engines": {
+    "node": ">= 10.0.0"
+  }
+}
