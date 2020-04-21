@@ -1,0 +1,9 @@
+{
+  "pullRequest": {
+    "maxLinesChanged": 250
+  },
+  "staleIssue": {
+    "maxDaysOld": 90,
+    "applyLabel": "wontfix"
+  }
+}
