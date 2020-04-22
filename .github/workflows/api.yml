@@ -3,8 +3,8 @@ name: Node Build & CI
 on:
   push:
     paths:
-      - "api/**/*.ts"
-
+      - "api/src/**/*.ts"
+      - "api/src/package*.json"
 jobs:
   test:
     runs-on: ubuntu-latest
