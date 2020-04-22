@@ -34,6 +34,7 @@ export const isAuthorized = jwtPayload => {
 export const verify = (req, jwtPayload, done) => {
   if (jwtPayload) {
     if (!isAuthorized(jwtPayload)) {
+      // tslint:disable-next-line:no-shadowed-variable
       const err = new Error('You do not have the proper role for signing');
       // err.code = 401;
 
@@ -52,6 +53,7 @@ export const verify = (req, jwtPayload, done) => {
     return done(null, user); // OK
   }
 
+  // tslint:disable-next-line:no-shadowed-variable
   const err = new Error('Unable to authenticate');
   // err.code = 401;
 

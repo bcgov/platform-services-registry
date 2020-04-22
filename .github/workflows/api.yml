@@ -12,7 +12,7 @@ defaults:
 # env:
 #   WORKDIR: ./api
 jobs:
-  testing:
+  test:
     runs-on: ubuntu-latest
     # defaults:
     #   run:
