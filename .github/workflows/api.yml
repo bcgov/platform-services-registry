@@ -1,6 +1,9 @@
 name: Node Build & CI
 
-on: [push]
+on:
+  push:
+    paths:
+      - "api/**/*.ts"
 
 jobs:
   test:
