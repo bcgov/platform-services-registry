@@ -69,5 +69,5 @@ jobs:
           parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             'version'
-            'start-build repo-mountie-master-build --follow -n devhub-tools'
+            'start-build platsrv-registry-master-build --follow -n devhub-tools'
             'status'
