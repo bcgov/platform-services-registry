@@ -11,7 +11,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: api
+        working-directory: api/
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
