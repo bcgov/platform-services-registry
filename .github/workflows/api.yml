@@ -1,16 +1,12 @@
 name: Test & Build
-
-on: [push]
-# on:
-#   push:
-#     paths:
-#       - "api/src/**/*.ts"
-#       - "api/src/package*.json"
+on:
+  push:
+    paths:
+      - "api/src/**/*.ts"
+      - "api/src/package*.json"
 defaults:
   run:
     working-directory: ./api
-# env:
-#   WORKDIR: ./api
 jobs:
   test:
     runs-on: ubuntu-latest
