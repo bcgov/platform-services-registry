@@ -176,12 +176,12 @@ objects:
         containers:
           - name: ${API_NAME}
             image: " "
-            # livenessProbe:
-            #   httpGet:
-            #     path: /api/v1/ehlo
-            #     port: 8080
-            #   initialDelaySeconds: 300
-            #   timeoutSeconds: 3
+            livenessProbe:
+              httpGet:
+                path: /api/v1/ehlo
+                port: 8080
+              initialDelaySeconds: 180
+              timeoutSeconds: 3
             ports:
               - containerPort: 8080
             env:
@@ -270,7 +270,6 @@ parameters:
   from: "[0-9]{3}Gi"
   required: true
   value: 1Gi
-
 - description: The openshift project where builds and target images are stored.
   displayName: Build Project
   name: SOURCE_IMAGE_NAMESPACE
