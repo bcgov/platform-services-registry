@@ -86,5 +86,4 @@ app.use((err, req, res, next) => {
   res.status(code).json({ error: message, success: false });
 });
 
-
 export default app;
