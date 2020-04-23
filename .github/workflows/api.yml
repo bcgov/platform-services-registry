@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - "api/src/**/*.ts"
-      - "api/src/package*.json"
+      - "api/package*.json"
 defaults:
   run:
     working-directory: ./api
