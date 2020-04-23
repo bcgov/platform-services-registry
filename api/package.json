@@ -1,16 +1,16 @@
 {
-  "name": "repomountie",
-  "version": "0.3.1",
-  "description": "A bot to help ensure cultural niceties are respected.",
+  "name": "platform-services-registry",
+  "version": "0.0.1",
+  "description": "",
   "author": "Jason C. Leach <jason.leach@fullboar.ca>",
   "license": "Apache-2.0",
-  "repository": "https://github.com/bcgov/repomountie.git",
-  "homepage": "https://github.com/bcgov/repomountie",
-  "bugs": "https://github.com/bcgov/repomountie/issues",
+  "repository": "https://github.com/bcgov/platform-services-registry.git",
+  "homepage": "https://github.com/bcgov/platform-services-registry",
+  "bugs": "https://github.com/bcgov/platform-services-registry/issues",
   "keywords": [
-    "probot",
     "github",
-    "probot-app"
+    "platform-services",
+    "registry"
   ],
   "scripts": {
     "build": "NODE_ENV=production gulp",
