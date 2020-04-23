@@ -22,10 +22,12 @@
     "test:watch": "NODE_ENV=test jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
+    "@types/dotenv": "^8.2.0",
     "@bcgov/common-nodejs-utils": "^0.1.18",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "lodash": "^4.17.14",
     "nconf": "^0.10.0",
@@ -34,11 +36,9 @@
     "transform-runtime": "0.0.0"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0",
     "@types/jest": "^25.2.1",
     "@types/nconf": "0.10.0",
     "@types/node": "^13.11.1",
-    "dotenv": "^8.0.0",
     "eslint-plugin-typescript": "^0.14.0",
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
