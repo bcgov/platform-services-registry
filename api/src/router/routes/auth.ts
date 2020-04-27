@@ -21,10 +21,10 @@
 'use strict';
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import { Router } from 'express';
+import express from 'express';
 import passport from 'passport';
 
-const router = new Router();
+const router = express.Router();
 
 /* eslint-disable */
 /**

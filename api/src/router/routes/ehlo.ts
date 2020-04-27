@@ -19,9 +19,9 @@
 'use strict';
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import { Router } from 'express';
+import express from 'express';
 
-const router = new Router();
+const router = express.Router();
 
 router.get('/', asyncMiddleware(async (req, res) => res.status(200).end()));
 

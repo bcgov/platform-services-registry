@@ -19,14 +19,14 @@
 'use strict';
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import { Router } from 'express';
+import express from 'express';
 import { bla } from '../../libs/profile';
 
 // import url from 'url';
 // import config from '../../config';
 // import DataManager from '../../libs/db';
 
-const router = new Router();
+const router = express.Router();
 // const dm = new DataManager();
 // const { db, Job } = dm;
 
