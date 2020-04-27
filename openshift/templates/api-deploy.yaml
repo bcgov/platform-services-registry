@@ -70,7 +70,7 @@ objects:
     name: ${POSTGRES_DEPLOYMENT_NAME}
   spec:
     selector:
-      role: db
+      deploymentconfig: ${POSTGRES_DEPLOYMENT_NAME}
     ports:
       - name: 5432-tcp
         port: 5432
