@@ -21,8 +21,8 @@
 import cors from 'cors';
 import passport from 'passport';
 import config from '../config';
-import blarb from './routes/blarb';
 import ehlo from './routes/ehlo';
+import blarb from './routes/profile';
 
 const corsOptions = {
   origin: config.get('environment') === 'development' ? '*' : config.get('apiUrl'),

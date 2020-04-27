@@ -1,5 +1,5 @@
 //
-// Copyright © 2018, 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,17 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2018-10-04.
+// Created by Jason Leach on 2020-04-21.
 //
 
-describe('XXX', () => {
+'use strict';
 
-  afterEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
+import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
+import { Router } from 'express';
+import { bla } from '../../libs/profile';
 
-  it('A template can be loaded', async () => {
-    expect(true).toBeTruthy();
-  });
-});
+// import url from 'url';
+// import config from '../../config';
+// import DataManager from '../../libs/db';
+
+const router = new Router();
+// const dm = new DataManager();
+// const { db, Job } = dm;
+
+router.get('/:blarb/status', asyncMiddleware(bla));
+
+export default router;
