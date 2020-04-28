@@ -1,0 +1,76 @@
+version: "3.6"
+x-env: &defaults
+  NODE_ENV:
+  NODE_PATH:
+  POSTGRES_HOST: registry-pg
+  POSTGRES_PASSWORD:
+  APP_DB_NAME:
+  APP_DB_USER:
+  APP_DB_PASSWORD:
+# volumes:
+#   pg_data:
+# networks:
+#   web:
+#     external: true
+#   internal:
+#     external: false
+services:
+  api:
+    container_name: registry-api
+    image: registry/api
+    build:
+      context: api/
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./api
+        target: /opt/app
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 256m
+    ports:
+      - 8100:8100
+      - 9100:9229
+    depends_on:
+      - postgres
+    environment:
+      <<: *defaults
+      PORT: 8100
+    command: >
+      bash -c "sleep 30 && npm run dev"
+  postgres:
+    container_name: registry-pg
+    image: registry/db
+    build:
+      context: db/
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./pg_data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: ./db
+        target: /opt/db
+    ports:
+      - 5432:5432
+    environment: *defaults
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "psql",
+          "-U",
+          "${APP_DB_USER}",
+          "-h",
+          "localhost",
+          "-d",
+          "${APP_DB_NAME}",
+          "-p",
+          "5432",
+          "-c",
+          "SELECT 1 AS result FROM pg_database WHERE datname='${APP_DB_NAME}'",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
