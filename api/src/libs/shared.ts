@@ -21,38 +21,25 @@
 'use strict';
 
 import { JWTServiceManager } from '@bcgov/common-nodejs-utils';
-import * as minio from 'minio';
 import config from '../config';
 
-const mkey = Symbol.for('ca.bc.gov.pathfinder.signing-api.minio');
-const skey = Symbol.for('ca.bc.gov.pathfinder.signing-api.sso');
+const skey = Symbol.for('ca.bc.gov.pathfinder.registry.sso');
 const gs = Object.getOwnPropertySymbols(global);
 
-if (!(gs.indexOf(mkey) > -1)) {
-  global[mkey] = new minio.Client({
-    endPoint: config.get('minio:host'),
-    port: config.get('minio:port'),
-    useSSL: config.get('minio:useSSL'),
-    accessKey: config.get('minio:accessKey'),
-    secretKey: config.get('minio:secretKey'),
-    region: config.get('minio:region'),
-  });
+const main = async () => {
+  if (!(gs.indexOf(skey) > -1)) {
+    global[skey] = new JWTServiceManager({
+      uri: config.get('sso:tokenUrl'),
+      grantType: config.get('sso:grantType'),
+      clientId: config.get('sso:clientId'),
+      clientSecret: config.get('sso:clientSecret'),
+    });
+  }
 }
 
-if (!(gs.indexOf(skey) > -1)) {
-  global[skey] = new JWTServiceManager({
-    uri: config.get('sso:tokenUrl'),
-    grantType: config.get('sso:grantType'),
-    clientId: config.get('sso:clientId'),
-    clientSecret: config.get('sso:clientSecret'),
-  });
-}
+main();
 
 const singleton = {};
-
-Object.defineProperty(singleton, 'minio', {
-  get: () => global[mkey],
-});
 
 Object.defineProperty(singleton, 'sso', {
   get: () => global[skey],

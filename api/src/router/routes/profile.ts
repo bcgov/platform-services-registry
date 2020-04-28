@@ -20,16 +20,11 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { bla } from '../../libs/profile';
-
-// import url from 'url';
-// import config from '../../config';
-// import DataManager from '../../libs/db';
+import { fetchAllProjectProfiles, fetchProjectProfile } from '../../libs/profile';
 
 const router = express.Router();
-// const dm = new DataManager();
-// const { db, Job } = dm;
 
-router.get('/:blarb/status', asyncMiddleware(bla));
+router.get('/', asyncMiddleware(fetchAllProjectProfiles));
+router.get('/:profileId', asyncMiddleware(fetchProjectProfile));
 
 export default router;
