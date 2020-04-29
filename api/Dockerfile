@@ -1,15 +1,24 @@
-FROM node:10.10
+FROM node:10.14-alpine
 
-RUN apt-get update && \
-  yes | apt-get upgrade
+ARG NODE_MAJOR_VERSION=10
+ARG NODE_VERSION=10.14.x
 
-RUN mkdir /usr/src/app
-WORKDIR /usr/src/app
+ENV WORK_PATH /opt/app
 
-COPY package*.json /usr/src/app/
-RUN npm ci --silent
+RUN apk update && \
+  apk upgrade && \
+  apk add bash git
 
-COPY . .
+RUN find / -perm +6000 -type f -not -path '/proc/*' -exec chmod a-s {} \; || true
+
+WORKDIR $WORK_PATH
+
+# COPY package.json $WORK_PATH
+# COPY package-lock.json $WORK_PATH
+# COPY tsconfig.json $WORK_PATH
+# COPY tslint.json $WORK_PATH
+
+# RUN npm ci --silent
 
 EXPOSE 8089 9229
 CMD [ "npm", "run", "dev" ]
