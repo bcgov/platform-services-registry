@@ -43,7 +43,7 @@ const token = {
   session_state: '5fa5d913-98bb-45fe-ae5f-b44c919c83e1',
 };
 
-/* eslint-disable-next-line no-unused-vars */
+// @ts-ignore
 ncu.getJwtCertificate = ssoCertificateUrl =>
   Promise.resolve({
     certificate: pem,
@@ -56,6 +56,7 @@ class JWTServiceManager {
   }
 }
 
+// @ts-ignore
 ncu.JWTServiceManager = JWTServiceManager;
 
 module.exports = ncu;

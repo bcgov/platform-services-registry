@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Health Gateway",
+    "description": null,
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "updatedAt": "2020-04-28T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Blarb",
+    "description": "Hello WOrld",
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "updatedAt": "2020-04-28T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "Blarb",
+    "description": "Blarb2",
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "updatedAt": "2020-04-28T00:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "Blarb",
+    "description": "Blarb2",
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "updatedAt": "2020-04-28T00:00:00.000Z"
+  }
+]

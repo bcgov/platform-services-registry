@@ -15,14 +15,24 @@
 //
 
 import { Response } from 'express';
-import { bla } from '../src/libs/profile';
+import fs from 'fs';
+import path from 'path';
+import { fetchAllProjectProfiles } from '../src/libs/profile';
+
+const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
+const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
+
+const pmock = {
+  connect: jest.fn(),
+  query: jest.fn().mockReturnValue({ rows: selectProfiles }),
+  end: jest.fn(),
+};
+
+jest.mock('pg', () => {
+  return { Pool: jest.fn(() => pmock) };
+});
 
 class FauxExpress {
-
-  constructor() {
-    // this.req = req;
-  }
-
   res: Partial<Response> = {
     clearCookie: jest.fn(),
     cookie: jest.fn(),
@@ -41,7 +51,7 @@ class FauxExpress {
 }
 
 
-describe('XXX', () => {
+describe('Profile event handlers', () => {
   const ex = new FauxExpress();
 
   afterEach(() => {
@@ -49,16 +59,16 @@ describe('XXX', () => {
     jest.resetAllMocks();
   });
 
-  it('A template can be loaded', async () => {
-    const body = { name: 'my-project' };
+  it('All profiles are returned', async () => {
+    // const req = {
+    //   params: { profileId: 3 },
+    // };
+    const req = {};
 
-    const req = {
-      params: { profileId: 3 },
-      body,
-    };
+    // @ts-ignore
+    await fetchAllProjectProfiles(req, ex.res);
 
-    await bla(req, ex.res);
-
+    expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();

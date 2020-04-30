@@ -1,7 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`XXX A template can be loaded 1`] = `
-Object {
-  "bla": true,
-}
+exports[`Profile event handlers All profiles are returned 1`] = `200`;
+
+exports[`Profile event handlers All profiles are returned 2`] = `
+Array [
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": null,
+    "id": 1,
+    "name": "Health Gateway",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "Hello WOrld",
+    "id": 2,
+    "name": "Blarb",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "Blarb2",
+    "id": 3,
+    "name": "Blarb",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "Blarb2",
+    "id": 4,
+    "name": "Blarb",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+]
 `;
