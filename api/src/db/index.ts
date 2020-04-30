@@ -5,7 +5,6 @@ export default class DataManager {
   Profile: Profile;
 
   constructor(config: any) {
-    console.log('host = ', config.get('db:host'))
     const params = {
       host: config.get('db:host'),
       port: config.get('db:port'),
@@ -18,6 +17,7 @@ export default class DataManager {
     }
 
     this.pool = new Pool(params)
+    // console.log(Pool);
     this.Profile = new Profile(this.pool);
   }
 }

@@ -21,7 +21,7 @@
 import cors from 'cors';
 import config from '../config';
 import ehlo from './routes/ehlo';
-import blarb from './routes/profile';
+import profile from './routes/profile';
 
 const corsOptions = {
   origin: config.get('environment') === 'development' ? '*' : config.get('apiUrl'),
@@ -36,5 +36,5 @@ export const router = app => {
   // Any routes following the authentication middleware line below
   // will require authentication.
   // app.use(passport.authenticate('jwt', { session: false }));
-  app.use('/api/v1/profile', blarb);
+  app.use('/api/v1/profile', profile);
 };
