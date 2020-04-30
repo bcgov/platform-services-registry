@@ -8,22 +8,22 @@
   },
   {
     "id": 2,
-    "name": "Blarb",
-    "description": "Hello WOrld",
+    "name": "EPIC",
+    "description": "Hello World",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z"
   },
   {
     "id": 3,
-    "name": "Blarb",
-    "description": "Blarb2",
+    "name": "Mines Digital Services",
+    "description": "This is some description",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z"
   },
   {
     "id": 4,
-    "name": "Blarb",
-    "description": "Blarb2",
+    "name": "Secure Image",
+    "description": "This app is super cool",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z"
   }

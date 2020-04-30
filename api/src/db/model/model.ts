@@ -8,35 +8,35 @@ export default abstract class Model {
   abstract pool: Pool;
 
   async findAll(): Promise<any[]> {
-    let results: any;
     const query = {
       text: `SELECT * FROM ${this.table}`,
     };
 
     try {
-      results = await this.pool.query(query);
+      const results = await this.pool.query(query);
+      return results.rows.map(r => transformKeysToCamelCase(r));
     } catch (err) {
       const message = `Unable to fetch all Profiles`;
       logger.error(`${message}, err = ${err.message}`);
-    }
 
-    return results.rows.map(r => transformKeysToCamelCase(r));
+      throw err;
+    }
   }
 
   async findById(id: number): Promise<any[]> {
-    let results: any;
     const query = {
       text: `SELECT * FROM ${this.table} WHERE id = $1`,
       values: [id],
     };
 
     try {
-      results = await this.pool.query(query);
+      const results = await this.pool.query(query);
+      return results.rows.map(r => transformKeysToCamelCase(r));
     } catch (err) {
       const message = `Unable to fetch Profile with ID ${id}`;
       logger.error(`${message}, err = ${err.message}`);
-    }
 
-    return results.rows.map(r => transformKeysToCamelCase(r));
+      throw err;
+    }
   }
 }
