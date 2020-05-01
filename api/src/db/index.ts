@@ -1,8 +1,8 @@
 import { Pool } from 'pg';
-import Profile from './model/profile';
+import ProfileModel from './model/profile';
 export default class DataManager {
   pool: Pool;
-  Profile: Profile;
+  ProfileModel: ProfileModel;
 
   constructor(config: any) {
     const params = {
@@ -17,7 +17,6 @@ export default class DataManager {
     }
 
     this.pool = new Pool(params)
-    // console.log(Pool);
-    this.Profile = new Profile(this.pool);
+    this.ProfileModel = new ProfileModel(this.pool);
   }
 }

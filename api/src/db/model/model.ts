@@ -5,7 +5,10 @@ import { transformKeysToCamelCase } from '../utils';
 
 export default abstract class Model {
   abstract table: string;
+  abstract requiredFields: string[];
   abstract pool: Pool;
+
+  abstract async create(data: any): Promise<any>;
 
   async findAll(): Promise<any[]> {
     const query = {

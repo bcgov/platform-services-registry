@@ -20,15 +20,17 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
+import { difference } from 'lodash';
 import config from '../config';
 import DataManager from '../db';
 
+
 export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
   const dm = new DataManager(config);
-  const { Profile } = dm;
+  const { ProfileModel } = dm;
 
   try {
-    const results = await Profile.findAll();
+    const results = await ProfileModel.findAll();
 
     res.status(200).json(results);
   } catch (err) {
@@ -41,15 +43,37 @@ export const fetchAllProjectProfiles = async (req: Request, res: Response): Prom
 
 export const fetchProjectProfile = async (req: Request, res: Response): Promise<void> => {
   const dm = new DataManager(config);
-  const { Profile } = dm;
+  const { ProfileModel } = dm;
   const { profileId } = req.params;
 
   try {
-    const results = await Profile.findById(Number(profileId));
+    const results = await ProfileModel.findById(Number(profileId));
 
     res.status(200).json(results);
   } catch (err) {
     const message = `Unable fetch project profile with ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const createProjectProfile = async (req: Request, res: Response): Promise<void> => {
+  const dm = new DataManager(config);
+  const { ProfileModel } = dm;
+  const { body } = req;
+
+  const diff = difference(ProfileModel.requiredFields, Object.keys(body));
+  if (diff.length !== 0) {
+    throw errorWithCode(`Missing required properties: ${diff}`, 400);
+  }
+
+  try {
+    const results = await ProfileModel.create(body);
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = 'Unable create new project profile';
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
