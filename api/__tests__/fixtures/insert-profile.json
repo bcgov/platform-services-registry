@@ -1,0 +1,7 @@
+{
+  "name": "Health Gateway",
+  "description": "Patient prescription history website",
+  "active": true,
+  "category": "operational",
+  "bus_org_id": "HLTH"
+}
