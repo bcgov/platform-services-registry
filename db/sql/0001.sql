@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS ref_category (
     updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
 
+GRANT SELECT ON TABLE ref_category TO :ROLLNAME;
+
 DROP TRIGGER IF EXISTS update_ref_category_changetimestamp on ref_category;
 CREATE TRIGGER update_ref_category_changetimestamp BEFORE UPDATE
 ON ref_category FOR EACH ROW EXECUTE PROCEDURE 
@@ -27,6 +29,8 @@ CREATE TABLE IF NOT EXISTS ref_bus_org (
     created_at  timestamp DEFAULT CURRENT_TIMESTAMP(3),
     updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
+
+GRANT SELECT ON TABLE ref_bus_org TO :ROLLNAME;
 
 DROP TRIGGER IF EXISTS update_ref_bus_org_changetimestamp on ref_bus_org;
 CREATE TRIGGER update_ref_bus_org_changetimestamp BEFORE UPDATE
@@ -44,6 +48,11 @@ CREATE TABLE IF NOT EXISTS profile (
     created_at      timestamp DEFAULT CURRENT_TIMESTAMP(3),
     updated_at      timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE profile
+TO :ROLLNAME;
+GRANT USAGE ON SEQUENCE profile_id_seq
+TO :ROLLNAME;
 
 DROP TRIGGER IF EXISTS update_profile_changetimestamp on profile;
 CREATE TRIGGER update_profile_changetimestamp BEFORE UPDATE
