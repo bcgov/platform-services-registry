@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS profile (
     critical_system boolean NOT NULL DEFAULT false,
     category        INTEGER REFERENCES ref_category(id) NOT NULL,
     bus_org_id      VARCHAR(4) REFERENCES ref_bus_org(code) NOT NULL,
+    archived        boolean NOT NULL DEFAULT false,
     created_at      timestamp DEFAULT CURRENT_TIMESTAMP(3),
     updated_at      timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );

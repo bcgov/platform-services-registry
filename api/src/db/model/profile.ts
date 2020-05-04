@@ -1,19 +1,17 @@
 import { logger } from '@bcgov/common-nodejs-utils';
+import { Pool } from 'pg';
 import { transformKeysToCamelCase } from '../utils';
-import Model from './model';
+import { CommonFields, Model } from './model';
 
-type Category = 'pathfinder' | 'default';
+type Category = 'pathfinder' | 'operational';
 
-interface ProjectProfile {
-  id?: number,
+interface ProjectProfile extends CommonFields {
   name: string,
   description: string,
   category: Category,
   busOrgId: string,
   active?: boolean,
   criticalSystem?: boolean,
-  createdAt?: object,
-  updatedAt?: object,
 }
 
 export default class ProfileModel extends Model {
@@ -24,7 +22,7 @@ export default class ProfileModel extends Model {
     'category',
     'busOrgId',
   ];
-  pool: any;
+  pool: Pool;
 
   constructor(pool: any) {
     super();
@@ -84,6 +82,28 @@ export default class ProfileModel extends Model {
       return results.rows.map(r => transformKeysToCamelCase(r)).pop();
     } catch (err) {
       const message = `Unable to create project profile`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  };
+
+  async delete(profileId): Promise<ProjectProfile> {
+    const query = {
+      text: `
+        UPDATE ${this.table}
+          SET
+            archived = true
+          WHERE id = ${profileId}
+          RETURNING *;
+      `,
+    };
+
+    try {
+      const results = await this.pool.query(query);
+      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+    } catch (err) {
+      const message = `Unable to archive project profile`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

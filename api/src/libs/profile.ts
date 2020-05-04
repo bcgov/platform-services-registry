@@ -90,6 +90,7 @@ export const updateProjectProfile = async (req: Request, res: Response): Promise
   delete body.id;
   delete body.createdAt;
   delete body.updatedAt;
+  delete body.archived;
 
   const diff = difference(ProfileModel.requiredFields, Object.keys(body));
   if (diff.length !== 0) {
@@ -100,6 +101,23 @@ export const updateProjectProfile = async (req: Request, res: Response): Promise
     const results = await ProfileModel.update(profileId, body);
 
     res.status(200).json(results);
+  } catch (err) {
+    const message = 'Unable create new project profile';
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const archiveProjectProfile = async (req: Request, res: Response): Promise<void> => {
+  const dm = new DataManager(config);
+  const { ProfileModel } = dm;
+  const { profileId } = req.params;
+
+  try {
+    await ProfileModel.delete(profileId);
+
+    res.status(204).end();
   } catch (err) {
     const message = 'Unable create new project profile';
     logger.error(`${message}, err = ${err.message}`);
