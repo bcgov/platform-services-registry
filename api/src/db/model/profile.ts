@@ -2,11 +2,13 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { transformKeysToCamelCase } from '../utils';
 import Model from './model';
 
+type Category = 'pathfinder' | 'default';
+
 interface ProjectProfile {
   id?: number,
   name: string,
   description: string,
-  category: string,
+  category: Category,
   busOrgId: string,
   active?: boolean,
   criticalSystem?: boolean,
@@ -66,11 +68,6 @@ export default class ProfileModel extends Model {
           RETURNING *;`,
       values,
     };
-
-    // Make sure these are not updated!
-    delete data.id;
-    delete data.createdAt;
-    delete data.updatedAt;
 
     try {
       const record = await this.findById(profileId);

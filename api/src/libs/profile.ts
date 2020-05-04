@@ -86,6 +86,11 @@ export const updateProjectProfile = async (req: Request, res: Response): Promise
   const { profileId } = req.params;
   const { body } = req;
 
+  // Make sure these are not updated!
+  delete body.id;
+  delete body.createdAt;
+  delete body.updatedAt;
+
   const diff = difference(ProfileModel.requiredFields, Object.keys(body));
   if (diff.length !== 0) {
     throw errorWithCode(`Missing required properties: ${diff}`, 400);
