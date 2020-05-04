@@ -27,7 +27,7 @@ import nconf from 'nconf';
 import path from 'path';
 
 const env = process.env.NODE_ENV || 'development';
-const defaultPort = 8000;
+const fileName = 'config.json';
 
 if (env === 'development') {
   dotenv.config();
@@ -42,26 +42,16 @@ if (env === 'development') {
 // overrides are always as defined
 nconf.overrides({
   environment: env,
-  host: process.env.HOST || '127.0.0.1',
-  port: process.env.PORT || defaultPort,
-  minio: {
-    host: process.env.MINIO_HOST,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY,
-  },
+  port: process.env.PORT,
   db: {
-    user: process.env.POSTGRESQL_USER,
-    password: process.env.POSTGRESQL_PASSWORD,
-    host: process.env.POSTGRESQL_HOST,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    database: process.env.APP_DB_NAME,
+    user: process.env.APP_DB_USER,
+    password: process.env.APP_DB_PASSWORD,
   },
   sso: {
     clientSecret: process.env.SSO_CLIENT_SECRET,
-  },
-  agent: {
-    hostUrl: process.env.AGENT_URL,
-  },
-  session: {
-    key: process.env.SESSION_SECRET,
   },
 });
 
@@ -69,12 +59,12 @@ nconf.overrides({
 nconf
   .argv()
   .env()
-  .file({ file: path.join(__dirname, `${env}.json`) });
+  .file({ file: path.join(__dirname, `${fileName}`) });
 
 // if nothing else is set, use defaults. This will be set if
 // they do not exist in overrides or the config file.
-nconf.defaults({
-  apiUrl: process.env.API_URL || `http://localhost:${process.env.PORT || defaultPort}`,
-});
+// nconf.defaults({
+//   apiUrl: process.env.API_URL || `http://localhost:${process.env.PORT || defaultPort}`,
+// });
 
 export default nconf;

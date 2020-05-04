@@ -1,7 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`XXX A template can be loaded 1`] = `
-Object {
-  "bla": true,
-}
+exports[`Profile event handlers A single profile is returned 1`] = `200`;
+
+exports[`Profile event handlers A single profile is returned 2`] = `
+Array [
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": null,
+    "id": 1,
+    "name": "Health Gateway",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+]
 `;
+
+exports[`Profile event handlers All profiles are returned 1`] = `200`;
+
+exports[`Profile event handlers All profiles are returned 2`] = `
+Array [
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": null,
+    "id": 1,
+    "name": "Health Gateway",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "Hello World",
+    "id": 2,
+    "name": "EPIC",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "This is some description",
+    "id": 3,
+    "name": "Mines Digital Services",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "This app is super cool",
+    "id": 4,
+    "name": "Secure Image",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+]
+`;
+
+exports[`Profile event handlers Fetch all profiles should throw 1`] = `"Unable fetch all project profiles"`;
+
+exports[`Profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 1"`;

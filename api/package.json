@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "NODE_ENV=production gulp",
-    "dev": "nodemon --watch src --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
+    "dev": "nodemon -L --watch src --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
     "start": "node build/server.js",
     "test:lint": "NODE_ENV=test tslint src/**/*.ts",
     "test": "NODE_ENV=test jest __tests__",
@@ -22,8 +22,8 @@
     "test:watch": "NODE_ENV=test jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
-    "@types/dotenv": "^8.2.0",
     "@bcgov/common-nodejs-utils": "^0.1.18",
+    "@types/dotenv": "^8.2.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -33,6 +33,7 @@
     "nconf": "^0.10.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "pg": "^8.0.3",
     "transform-runtime": "0.0.0"
   },
   "devDependencies": {

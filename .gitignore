@@ -9,6 +9,7 @@ dist/
 .env
 data/
 pg_data
+node_modules
 
 *~
 *.seed

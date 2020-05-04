@@ -18,6 +18,40 @@
 
 'use strict';
 
-export const bla = async (req, res) => {
-  res.status(100).json({ bla: true });
+import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
+import { Request, Response } from 'express';
+import config from '../config';
+import DataManager from '../db';
+
+export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
+  const dm = new DataManager(config);
+  const { Profile } = dm;
+
+  try {
+    const results = await Profile.findAll();
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = 'Unable fetch all project profiles';
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchProjectProfile = async (req: Request, res: Response): Promise<void> => {
+  const dm = new DataManager(config);
+  const { Profile } = dm;
+  const { profileId } = req.params;
+
+  try {
+    const results = await Profile.findById(Number(profileId));
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = `Unable fetch project profile with ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
 };

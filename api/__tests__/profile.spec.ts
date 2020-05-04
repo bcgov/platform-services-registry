@@ -15,14 +15,24 @@
 //
 
 import { Response } from 'express';
-import { bla } from '../src/libs/profile';
+import fs from 'fs';
+import path from 'path';
+import { fetchAllProjectProfiles, fetchProjectProfile } from '../src/libs/profile';
+
+const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
+const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
+
+const pmock = {
+  connect: jest.fn(),
+  query: jest.fn(),
+  end: jest.fn(),
+};
+
+jest.mock('pg', () => {
+  return { Pool: jest.fn(() => pmock) };
+});
 
 class FauxExpress {
-
-  constructor() {
-    // this.req = req;
-  }
-
   res: Partial<Response> = {
     clearCookie: jest.fn(),
     cookie: jest.fn(),
@@ -40,27 +50,61 @@ class FauxExpress {
   responseData: any;
 }
 
+describe('Profile event handlers', () => {
+  let ex;
 
-describe('XXX', () => {
-  const ex = new FauxExpress();
-
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
-    jest.resetAllMocks();
+
+    ex = new FauxExpress();
   });
 
-  it('A template can be loaded', async () => {
-    const body = { name: 'my-project' };
+  it('All profiles are returned', async () => {
+    const req = {};
+    pmock.query.mockReturnValueOnce({ rows: selectProfiles });
 
-    const req = {
-      params: { profileId: 3 },
-      body,
-    };
+    // @ts-ignore
+    await fetchAllProjectProfiles(req, ex.res);
 
-    await bla(req, ex.res);
-
+    expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();
+  });
+
+  it('Fetch all profiles should throw', async () => {
+    const req = {};
+    pmock.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(fetchAllProjectProfiles(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    expect(ex.responseData).toBeUndefined();
+  });
+
+  it('A single profile is returned', async () => {
+    const req = {
+      params: { profileId: 1 },
+    };
+    pmock.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
+
+
+    // @ts-ignore
+    await fetchProjectProfile(req, ex.res);
+
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('Fetch single profile should throw', async () => {
+    const req = {
+      params: { profileId: 1 },
+    };
+    pmock.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(fetchProjectProfile(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    expect(ex.responseData).toBeUndefined();
   });
 });
