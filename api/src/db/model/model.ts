@@ -9,6 +9,7 @@ export default abstract class Model {
   abstract pool: Pool;
 
   abstract async create(data: any): Promise<any>;
+  abstract async update(profileId: number, data: any): Promise<any>;
 
   async findAll(): Promise<any[]> {
     const query = {
@@ -34,7 +35,7 @@ export default abstract class Model {
 
     try {
       const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r));
+      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
     } catch (err) {
       const message = `Unable to fetch Profile with ID ${id}`;
       logger.error(`${message}, err = ${err.message}`);

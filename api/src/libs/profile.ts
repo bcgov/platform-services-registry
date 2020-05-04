@@ -79,3 +79,26 @@ export const createProjectProfile = async (req: Request, res: Response): Promise
     throw errorWithCode(message, 500);
   }
 };
+
+export const updateProjectProfile = async (req: Request, res: Response): Promise<void> => {
+  const dm = new DataManager(config);
+  const { ProfileModel } = dm;
+  const { profileId } = req.params;
+  const { body } = req;
+
+  const diff = difference(ProfileModel.requiredFields, Object.keys(body));
+  if (diff.length !== 0) {
+    throw errorWithCode(`Missing required properties: ${diff}`, 400);
+  }
+
+  try {
+    const results = await ProfileModel.update(profileId, body);
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = 'Unable create new project profile';
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
