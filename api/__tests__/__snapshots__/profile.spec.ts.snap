@@ -3,15 +3,13 @@
 exports[`Profile event handlers A single profile is returned 1`] = `200`;
 
 exports[`Profile event handlers A single profile is returned 2`] = `
-Array [
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "description": null,
-    "id": 1,
-    "name": "Health Gateway",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-]
+Object {
+  "createdAt": "2020-04-28T00:00:00.000Z",
+  "description": null,
+  "id": 1,
+  "name": "Health Gateway",
+  "updatedAt": "2020-04-28T00:00:00.000Z",
+}
 `;
 
 exports[`Profile event handlers All profiles are returned 1`] = `200`;
