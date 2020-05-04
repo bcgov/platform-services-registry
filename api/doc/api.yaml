@@ -1,0 +1,194 @@
+openapi: "3.0.0"
+info:
+  title: Registry API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8100
+    description: Local development server
+# security:
+#   - bearerAuth: []
+paths:
+  /ehlo:
+    get:
+      operationId: getServerStatus
+      summary: Health and wellness probe
+      description: |-
+        This endpoint can be used to check that the server is
+        alive and well.
+      tags:
+        - Health
+      responses:
+        200:
+          description: The server is OK.
+  /api/v1/profile:
+    post:
+      operationId: createProjectProfile
+      summary: Create a new project profile.
+      description: |-
+        Use this endpoint to create a new project profile.
+      tags:
+        - Profile
+      requestBody:
+        description: |
+          The request body contains a JSON formatted object with
+          the project details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectProfile"
+      responses:
+        201:
+          description: The profile was created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectProfile"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+    get:
+      operationId: getAllProjectProfiles
+      summary: Fetch all project profiles.
+      description: |-
+        Use this endpoint to fetch all of the project profiles
+        that are not archived.
+      tags:
+        - Profile
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProjectProfile"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+  /api/v1/profile/{profileId}:
+    get:
+      operationId: getProjectProfile
+      summary: Fetch a given project profile
+      description: |-
+        Use this endpoint to fetch a given project profile. The
+        project profile will be returned providing it is not
+        archived.
+      tags:
+        - Profile
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being requested.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProjectProfile"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+    put:
+      operationId: updateProjectProfile
+      summary: Update a given project profile
+      description: |-
+        Use this endpoint to update a given project profile. The
+        updated project profile will be returned. This endpoint
+        cannot be used to update an archived project.
+      tags:
+        - Profile
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being updated.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/ProjectProfile"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+    delete:
+      operationId: deleteProjectProfile
+      summary: Delete a given project profile
+      description: |-
+        Use this endpoint to delete a given project profile. The
+        profile is not actually delete but marked as `archived`
+        and will not be returned by any other queries.
+      tags:
+        - Profile
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being deleted.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: The request was successful
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+components:
+  schemas:
+    ProjectProfile:
+      title: Project Profile
+      description: Payload for a project profile
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
+        criticalSystem:
+          type: boolean
+        category:
+          type: string
+          enum:
+            - pathfinder
+            - operational
+        busOrgId:
+          type: string
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - name
+        - description
+        - category
+        - busOrgId
+      example:
+        name: "Health Gateway"
+        description: "Helping citizen's track prescription history"
+        category: "pathfinder"
+        busOrgId: "HLTH"
