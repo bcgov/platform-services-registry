@@ -1,22 +1,168 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Profile event handlers A single profile is returned 1`] = `200`;
-
-exports[`Profile event handlers A single profile is returned 2`] = `
+exports[`Profile event handlers A project fails to archive 1`] = `
 Array [
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "description": null,
-    "id": 1,
-    "name": "Health Gateway",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
+  Array [
+    Object {
+      "text": "
+        UPDATE profile
+          SET
+            archived = true
+          WHERE id = 9
+          RETURNING *;
+      ",
+    },
+  ],
 ]
 `;
 
-exports[`Profile event handlers All profiles are returned 1`] = `200`;
+exports[`Profile event handlers A project fails to archive 2`] = `200`;
 
-exports[`Profile event handlers All profiles are returned 2`] = `
+exports[`Profile event handlers A project is archived 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        UPDATE profile
+          SET
+            archived = true
+          WHERE id = 9
+          RETURNING *;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A project is archived 2`] = `204`;
+
+exports[`Profile event handlers A project is archived 3`] = `undefined`;
+
+exports[`Profile event handlers A project is created 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        INSERT INTO profile
+          (name, description, category, bus_org_id)
+          VALUES ($1, $2, $3, $4) RETURNING *;",
+      "values": Array [
+        "Health Gateway",
+        "Patient prescription history website",
+        1,
+        "HLTH",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A project is created 2`] = `200`;
+
+exports[`Profile event handlers A project is created 3`] = `
+Object {
+  "active": true,
+  "busOrgId": "HLTH",
+  "category": 1,
+  "createdAt": 1576090712480,
+  "criticalSystem": false,
+  "description": "Patient prescription history website",
+  "id": 9,
+  "name": "Health Gateway",
+  "updatedAt": 1576090712480,
+}
+`;
+
+exports[`Profile event handlers A project is updated 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        UPDATE profile
+          SET
+            name = $1, description = $2, category = $3, bus_org_id = $4,
+            active = $5, critical_system = $6
+          WHERE id = 1
+          RETURNING *;",
+      "values": Array [
+        "Health Gateway",
+        "Patient prescription history website",
+        1,
+        "HLTH",
+        true,
+        false,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A project is updated 2`] = `200`;
+
+exports[`Profile event handlers A project is updated 3`] = `
+Object {
+  "active": true,
+  "busOrgId": "HLTH",
+  "category": 1,
+  "criticalSystem": false,
+  "description": "Patient prescription history website",
+  "name": "Health Gateway",
+}
+`;
+
+exports[`Profile event handlers A single profile is returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A single profile is returned 2`] = `200`;
+
+exports[`Profile event handlers A single profile is returned 3`] = `
+Object {
+  "createdAt": "2020-04-28T00:00:00.000Z",
+  "description": null,
+  "id": 1,
+  "name": "Health Gateway",
+  "updatedAt": "2020-04-28T00:00:00.000Z",
+}
+`;
+
+exports[`Profile event handlers All profiles are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM profile
+        WHERE archived = false;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers All profiles are returned 2`] = `200`;
+
+exports[`Profile event handlers All profiles are returned 3`] = `
 Array [
   Object {
     "createdAt": "2020-04-28T00:00:00.000Z",
@@ -51,4 +197,32 @@ Array [
 
 exports[`Profile event handlers Fetch all profiles should throw 1`] = `"Unable fetch all project profiles"`;
 
+exports[`Profile event handlers Fetch all profiles should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM profile
+        WHERE archived = false;
+      ",
+    },
+  ],
+]
+`;
+
 exports[`Profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 1"`;
+
+exports[`Profile event handlers Fetch single profile should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;

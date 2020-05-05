@@ -17,6 +17,7 @@
     "dev": "nodemon -L --watch src --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
     "start": "node build/server.js",
     "test:lint": "NODE_ENV=test tslint src/**/*.ts",
+    "test:schema": "swagger-cli validate doc/api.yaml",
     "test": "NODE_ENV=test jest __tests__",
     "test:coverage": "NODE_ENV=test jest --coverage",
     "test:watch": "NODE_ENV=test jest --watch --notify --notifyMode=change --coverage"
@@ -50,6 +51,7 @@
     "smee-client": "^1.1.0",
     "standard": "^14.3.3",
     "supertest": "^4.0.2",
+    "swagger-cli": "^4.0.2",
     "ts-jest": "^25.4.0",
     "ts-loader": "^7.0.1",
     "ts-node": "^8.8.2",

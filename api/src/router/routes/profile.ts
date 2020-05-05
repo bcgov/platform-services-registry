@@ -20,11 +20,14 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { fetchAllProjectProfiles, fetchProjectProfile } from '../../libs/profile';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../libs/profile';
 
 const router = express.Router();
 
+router.post('/', asyncMiddleware(createProjectProfile));
 router.get('/', asyncMiddleware(fetchAllProjectProfiles));
 router.get('/:profileId', asyncMiddleware(fetchProjectProfile));
+router.put('/:profileId', asyncMiddleware(updateProjectProfile));
+router.delete('/:profileId', asyncMiddleware(archiveProjectProfile));
 
 export default router;

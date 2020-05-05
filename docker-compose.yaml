@@ -4,6 +4,7 @@ x-env: &defaults
   NODE_PATH:
   POSTGRES_HOST: registry-pg
   POSTGRES_PORT: 5432
+  POSTGRES_PASSWORD:
   APP_DB_NAME:
   APP_DB_USER:
   APP_DB_PASSWORD:
