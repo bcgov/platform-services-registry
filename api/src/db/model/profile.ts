@@ -78,6 +78,7 @@ export default class ProfileModel extends Model {
         aData.active,
         aData.criticalSystem,
       ];
+
       const results = await this.pool.query(query);
       return results.rows.map(r => transformKeysToCamelCase(r)).pop();
     } catch (err) {

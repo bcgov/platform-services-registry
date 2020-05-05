@@ -3,5 +3,6 @@
   "description": "Patient prescription history website",
   "active": true,
   "category": 1,
-  "busOrgId": "HLTH"
+  "busOrgId": "HLTH",
+  "criticalSystem": false
 }

@@ -102,7 +102,7 @@ export const updateProjectProfile = async (req: Request, res: Response): Promise
 
     res.status(200).json(results);
   } catch (err) {
-    const message = 'Unable create new project profile';
+    const message = `Unable update project profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
