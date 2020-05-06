@@ -8,6 +8,42 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+CREATE TABLE IF NOT EXISTS ref_cluster (
+    id                SERIAL PRIMARY KEY,
+    name              VARCHAR(32) NOT NULL,
+    description       VARCHAR(256),
+    disaster_recovery BOOLEAN NOT NULL,
+    on_prem           BOOLEAN NOT NULL,
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+);
+
+GRANT SELECT ON TABLE ref_cluster TO :ROLLNAME;
+
+DROP TRIGGER IF EXISTS update_ref_cluster_changetimestamp on ref_cluster;
+CREATE TRIGGER update_ref_cluster_changetimestamp BEFORE UPDATE
+ON ref_cluster FOR EACH ROW EXECUTE PROCEDURE 
+update_changetimestamp_column();
+
+CREATE TABLE IF NOT EXISTS namespace (
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(32) NOT NULL,
+    profile     INTEGER REFERENCES profile(id) NOT NULL,
+    cluster     INTEGER REFERENCES ref_cluster(id) NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE namespace
+TO :ROLLNAME;
+GRANT USAGE ON SEQUENCE namespace_id_seq
+TO :ROLLNAME;
+
+DROP TRIGGER IF EXISTS update_namespace_changetimestamp on namespace;
+CREATE TRIGGER update_namespace_changetimestamp BEFORE UPDATE
+ON namespace FOR EACH ROW EXECUTE PROCEDURE 
+update_changetimestamp_column();
+
 CREATE TABLE IF NOT EXISTS ref_category (
     id          serial PRIMARY KEY,
     name        VARCHAR(32) NOT NULL,
