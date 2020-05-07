@@ -58,7 +58,7 @@ gulp.task('copy-node-config', () =>
   gulp.src(['package.json', 'package-lock.json']).pipe(gulp.dest('build'))
 );
 
-gulp.task('link-env', () => child.spawn('ln', ['-sf', '../.env', './build'], { stdio: 'inherit' }));
+gulp.task('link-env', () => child.spawn('ln', ['-sfh', '../.env', './build'], { stdio: 'inherit' }));
 
 gulp.task(
   'default',
