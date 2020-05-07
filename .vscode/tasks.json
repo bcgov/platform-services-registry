@@ -1,0 +1,23 @@
+{
+  "version": "2.0.2",
+  "tasks": [
+    {
+      "label": "gulp-watch",
+      "command": "npx",
+      "args": [
+        "gulp",
+        "watch-server"
+      ],
+      "type": "shell",
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/api"
+      },
+    }
+  ]
+}

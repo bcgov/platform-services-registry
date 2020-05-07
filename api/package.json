@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "build": "NODE_ENV=production gulp",
-    "dev": "nodemon -L --watch src --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
+    "dev": "nodemon --watch src --inspect=0.0.0.0:5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
+    "dev:docker": "nodemon -L --watch build --inspect=0.0.0.0:5858 -e js,json --nolazy ./build/server.js",
     "start": "node build/server.js",
     "test:lint": "NODE_ENV=test tslint src/**/*.ts",
     "test:schema": "swagger-cli validate doc/api.yaml",

@@ -24,6 +24,7 @@ const gulp = require('gulp');
 const clean = require('gulp-clean');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
+// const watch = require("gulp-watch");
 
 let tsp = ts.createProject('tsconfig.json');
 
@@ -61,6 +62,12 @@ gulp.task(
   'default',
   gulp.series(
     'clean',
+    gulp.parallel('transpile-src', 'copy-config', 'copy-node-config')
+  )
+);
+
+gulp.task('watch-server', () =>
+  gulp.watch(["src/**/*.{ts,tsx}"],
     gulp.parallel('transpile-src', 'copy-config', 'copy-node-config')
   )
 );
