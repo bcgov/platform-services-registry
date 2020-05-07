@@ -24,7 +24,7 @@ const gulp = require('gulp');
 const clean = require('gulp-clean');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
-// const watch = require("gulp-watch");
+const child = require('child_process');
 
 let tsp = ts.createProject('tsconfig.json');
 
@@ -58,6 +58,8 @@ gulp.task('copy-node-config', () =>
   gulp.src(['package.json', 'package-lock.json']).pipe(gulp.dest('build'))
 );
 
+gulp.task('link-env', () => child.spawn('ln', ['-sf', '../.env', './build'], { stdio: 'inherit' }));
+
 gulp.task(
   'default',
   gulp.series(
@@ -68,6 +70,7 @@ gulp.task(
 
 gulp.task('watch-src-changes', () =>
   gulp.watch(["src/**/*.{ts,tsx}"],
-    gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config')
+    gulp.parallel('transpile-src', 'copy-app-config',
+      'copy-node-config', 'link-env')
   )
 );
