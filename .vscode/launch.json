@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Attach to Docker",
-      "preLaunchTask": "gulp-watch",
+      "preLaunchTask": "gulp-watch-src-changes",
       "type": "node",
       "request": "attach",
       "port": 5858,

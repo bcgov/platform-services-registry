@@ -2,11 +2,11 @@
   "version": "2.0.2",
   "tasks": [
     {
-      "label": "gulp-watch",
+      "label": "gulp-watch-src-changes",
       "command": "npx",
       "args": [
         "gulp",
-        "watch-server"
+        "watch-src-changes"
       ],
       "type": "shell",
       "isBackground": true,

@@ -66,7 +66,7 @@ gulp.task(
   )
 );
 
-gulp.task('watch-server', () =>
+gulp.task('watch-src-changes', () =>
   gulp.watch(["src/**/*.{ts,tsx}"],
     gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config')
   )
