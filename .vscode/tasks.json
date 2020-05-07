@@ -11,7 +11,19 @@
       "type": "shell",
       "isBackground": true,
       "group": "build",
-      "problemMatcher": [],
+      "problemMatcher": [
+        "$tsc",
+        {
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^.*\\[gulp-tslint\\]\\serror\\s\\(.*\\)\\s(.*)\\[(\\d+),\\s(\\d+)\\]:\\s(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "message": 4
+          }
+        }
+      ],
       "presentation": {
         "reveal": "always",
       },
