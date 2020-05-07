@@ -1,8 +1,11 @@
 import { Pool } from 'pg';
+import NamespaceModel from './model/namespace';
 import ProfileModel from './model/profile';
+
 export default class DataManager {
   pool: Pool;
   ProfileModel: ProfileModel;
+  NamespaceModel: NamespaceModel;
 
   constructor(config: any) {
     const params = {
@@ -18,5 +21,6 @@ export default class DataManager {
 
     this.pool = new Pool(params)
     this.ProfileModel = new ProfileModel(this.pool);
+    this.NamespaceModel = new NamespaceModel(this.pool);
   }
 }

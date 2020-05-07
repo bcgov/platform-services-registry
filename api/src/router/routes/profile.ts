@@ -20,14 +20,22 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
+import { archiveProfileNamespace, createNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../libs/namespace';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../libs/profile';
 
 const router = express.Router();
 
+// Profiles
 router.post('/', asyncMiddleware(createProjectProfile));
 router.get('/', asyncMiddleware(fetchAllProjectProfiles));
 router.get('/:profileId', asyncMiddleware(fetchProjectProfile));
 router.put('/:profileId', asyncMiddleware(updateProjectProfile));
 router.delete('/:profileId', asyncMiddleware(archiveProjectProfile));
+
+// Namespace
+router.post('/:profileId/namespace', asyncMiddleware(createNamespace));
+router.get('/:profileId/namespace', asyncMiddleware(fetchProfileNamespaces));
+router.put('/:profileId/namespace/:namespaceId', asyncMiddleware(updateProfileNamespace));
+router.delete('/:profileId/namespace/:namespaceId', asyncMiddleware(archiveProfileNamespace));
 
 export default router;

@@ -2,7 +2,7 @@
   "name": "Health Gateway",
   "description": "Patient prescription history website",
   "active": true,
-  "category": 1,
+  "categoryId": 1,
   "busOrgId": "HLTH",
   "criticalSystem": false
 }

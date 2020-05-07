@@ -28,10 +28,12 @@ update_changetimestamp_column();
 CREATE TABLE IF NOT EXISTS namespace (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(32) NOT NULL,
-    profile     INTEGER REFERENCES profile(id) NOT NULL,
-    cluster     INTEGER REFERENCES ref_cluster(id) NOT NULL,
+    profile_id  INTEGER REFERENCES profile(id) NOT NULL,
+    cluster_id  INTEGER REFERENCES ref_cluster(id) NOT NULL,
+    archived    BOOLEAN NOT NULL DEFAULT false,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    UNIQUE      (name, cluster_id, archived)
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE namespace
@@ -45,11 +47,11 @@ ON namespace FOR EACH ROW EXECUTE PROCEDURE
 update_changetimestamp_column();
 
 CREATE TABLE IF NOT EXISTS ref_category (
-    id          serial PRIMARY KEY,
+    id          SERIAL PRIMARY KEY,
     name        VARCHAR(32) NOT NULL,
     description VARCHAR(256) NOT NULL,
-    created_at  timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 GRANT SELECT ON TABLE ref_category TO :ROLLNAME;
