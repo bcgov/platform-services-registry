@@ -52,7 +52,7 @@ gulp.task('transpile-src', () =>
     .pipe(gulp.dest('build'))
 );
 
-gulp.task('copy-config', () => gulp.src('src/config/*.json').pipe(gulp.dest('build/config')));
+gulp.task('copy-app-config', () => gulp.src('src/config/*.json').pipe(gulp.dest('build/config')));
 
 gulp.task('copy-node-config', () =>
   gulp.src(['package.json', 'package-lock.json']).pipe(gulp.dest('build'))
@@ -62,12 +62,12 @@ gulp.task(
   'default',
   gulp.series(
     'clean',
-    gulp.parallel('transpile-src', 'copy-config', 'copy-node-config')
+    gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config')
   )
 );
 
 gulp.task('watch-server', () =>
   gulp.watch(["src/**/*.{ts,tsx}"],
-    gulp.parallel('transpile-src', 'copy-config', 'copy-node-config')
+    gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config')
   )
 );
