@@ -20,8 +20,8 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { archiveProfileNamespace, createNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../libs/namespace';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../libs/profile';
+import { archiveProfileNamespace, createNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/profile';
 
 const router = express.Router();
 

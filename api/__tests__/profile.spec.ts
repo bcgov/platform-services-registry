@@ -17,7 +17,7 @@
 import { Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../src/libs/profile';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../src/controllers/profile';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
 const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
