@@ -53,6 +53,7 @@ export const fetchProfileNamespaces = async (req: Request, res: Response): Promi
   const { NamespaceModel } = dm;
   const { profileId } = req.params;
 
+
   try {
     const results = await NamespaceModel.findForProfile(Number(profileId));
 
