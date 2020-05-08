@@ -65,6 +65,23 @@ export const fetchProfileNamespaces = async (req: Request, res: Response): Promi
   }
 };
 
+export const fetchProfileNamespace = async (req: Request, res: Response): Promise<void> => {
+  const dm = new DataManager(config);
+  const { NamespaceModel } = dm;
+  const { namespaceId } = req.params;
+
+  try {
+    const results = await NamespaceModel.findById(Number(namespaceId));
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = `Unable fetch namespace with ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
 export const updateProfileNamespace = async (req: Request, res: Response): Promise<void> => {
   const dm = new DataManager(config);
   const { NamespaceModel } = dm;

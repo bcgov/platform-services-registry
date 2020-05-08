@@ -3,13 +3,11 @@ import { Pool } from 'pg';
 import { transformKeysToCamelCase } from '../utils';
 import { CommonFields, Model } from './model';
 
-type Category = 'pathfinder' | 'operational';
-
 interface ProjectProfile extends CommonFields {
   name: string,
   description: string,
-  category: Category,
-  busOrgId: string,
+  categoryId: number,
+  busOrgId: number,
   active?: boolean,
   criticalSystem?: boolean,
 }
@@ -19,7 +17,7 @@ export default class ProfileModel extends Model {
   requiredFields: string[] = [
     'name',
     'description',
-    'category',
+    'categoryId',
     'busOrgId',
   ];
   pool: Pool;
@@ -33,12 +31,12 @@ export default class ProfileModel extends Model {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, description, category, bus_org_id)
+          (name, description, category_id, bus_org_id)
           VALUES ($1, $2, $3, $4) RETURNING *;`,
       values: [
         data.name,
         data.description,
-        data.category,
+        data.categoryId,
         data.busOrgId,
       ],
     };
@@ -60,7 +58,7 @@ export default class ProfileModel extends Model {
       text: `
         UPDATE ${this.table}
           SET
-            name = $1, description = $2, category = $3, bus_org_id = $4,
+            name = $1, description = $2, category_id = $3, bus_org_id = $4,
             active = $5, critical_system = $6
           WHERE id = ${profileId}
           RETURNING *;`,
@@ -73,7 +71,7 @@ export default class ProfileModel extends Model {
       query.values = [
         aData.name,
         aData.description,
-        aData.category,
+        aData.categoryId,
         aData.busOrgId,
         aData.active,
         aData.criticalSystem,

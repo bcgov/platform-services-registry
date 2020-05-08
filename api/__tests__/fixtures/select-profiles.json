@@ -3,6 +3,7 @@
     "id": 1,
     "name": "Health Gateway",
     "description": null,
+    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z"
   },
@@ -10,6 +11,7 @@
     "id": 2,
     "name": "EPIC",
     "description": "Hello World",
+    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z"
   },
@@ -17,6 +19,7 @@
     "id": 3,
     "name": "Mines Digital Services",
     "description": "This is some description",
+    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z"
   },
