@@ -58,7 +58,7 @@ export const fetchProfileNamespaces = async (req: Request, res: Response): Promi
 
     res.status(200).json(results);
   } catch (err) {
-    const message = `Unable fetch namespace with ID ${profileId}`;
+    const message = `Unable fetch namespace for profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -75,7 +75,7 @@ export const fetchProfileNamespace = async (req: Request, res: Response): Promis
 
     res.status(200).json(results);
   } catch (err) {
-    const message = `Unable fetch namespace with ID ${profileId}`;
+    const message = `Unable fetch namespace with ID ${namespaceId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
