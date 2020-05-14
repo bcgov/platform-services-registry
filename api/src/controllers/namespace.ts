@@ -39,7 +39,7 @@ export const createNamespace = async (req: Request, res: Response): Promise<void
   try {
     const results = await NamespaceModel.create(aBody);
 
-    res.status(200).json(results);
+    res.status(201).json(results);
   } catch (err) {
     const message = 'Unable create new namespace';
     logger.error(`${message}, err = ${err.message}`);
@@ -102,9 +102,9 @@ export const updateProfileNamespace = async (req: Request, res: Response): Promi
   }
 
   try {
-    const results = await NamespaceModel.update(namespaceId, aBody);
+    await NamespaceModel.update(namespaceId, aBody);
 
-    res.status(200).json(results);
+    res.status(204).end();
   } catch (err) {
     const message = `Unable update project profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);

@@ -10,7 +10,7 @@ servers:
 paths:
   /ehlo:
     get:
-      operationId: getServerStatus
+      operationId: GetServerStatus
       summary: Health and wellness probe
       description: |-
         This endpoint can be used to check that the server is
@@ -22,7 +22,7 @@ paths:
           description: The server is OK.
   /api/v1/profile:
     post:
-      operationId: createProjectProfile
+      operationId: CreateProjectProfile
       summary: Create a new project profile.
       description: |-
         Use this endpoint to create a new project profile.
@@ -49,7 +49,7 @@ paths:
         500:
           description: Internal Error
     get:
-      operationId: getAllProjectProfiles
+      operationId: GetAllProjectProfiles
       summary: Fetch all project profiles.
       description: |-
         Use this endpoint to fetch all of the project profiles
@@ -71,7 +71,7 @@ paths:
           description: Internal Error
   /api/v1/profile/{profileId}:
     get:
-      operationId: getProjectProfile
+      operationId: GetProjectProfile
       summary: Fetch a given project profile
       description: |-
         Use this endpoint to fetch a given project profile. The
@@ -100,7 +100,7 @@ paths:
         500:
           description: Internal Error
     put:
-      operationId: updateProjectProfile
+      operationId: UpdateProjectProfile
       summary: Update a given project profile
       description: |-
         Use this endpoint to update a given project profile. The
@@ -117,19 +117,14 @@ paths:
           schema:
             type: integer
       responses:
-        200:
-          description: The request was successful
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/ProjectProfile"
+        204:
+          description: The request was successful; No content returned.
         400:
           description: The request was received but incorrect
         500:
           description: Internal Error
     delete:
-      operationId: deleteProjectProfile
+      operationId: DeleteProjectProfile
       summary: Delete a given project profile
       description: |-
         Use this endpoint to delete a given project profile. The
@@ -147,13 +142,232 @@ paths:
             type: integer
       responses:
         204:
+          description: The request was successful; No content returned.
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+  /api/v1/profile/{profileId}/namespace:
+    post:
+      operationId: CreateProjectNamespace
+      summary: Create a new namespace for the given project
+      description: |-
+        Use this endpoint to create a new namespace. The
+        new namespace will be returned. This endpoint
+        cannot be used to create an archived namespace.
+      tags:
+        - Namespace
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the project profile that will own the namespace.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        201:
+          description: The resource was created
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Namespace"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+    get:
+      operationId: GetProjectNamespace
+      summary: Fetch the namespaces for a given profile
+      description: |-
+        Use this endpoint to fetch a the namespaces associated with
+        the given project. The namespaces will be returned providing
+        they are not archived.
+      tags:
+        - Namespace
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being queried
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
           description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Namespace"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+  /api/v1/profile/{profileId}/namespace/{namespaceId}:
+    put:
+      operationId: UpdateProjectNamespace
+      summary: Update a namespaces for a given profile
+      description: |-
+        Use this endpoint to update an existing namespaces
+        associated with the given project. The namespaces will
+        be returned providing it is not not archived. This endpoint
+        cannot be used to archive a namespace.
+      tags:
+        - Namespace
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that owns the namespace
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: namespaceId
+          description: |-
+            The ID of the namespace that is being updated
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: The request was successful; No content returned.
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+    get:
+      operationId: GetAProjectNamespace
+      summary: Fetch a specific namespaces for a given project profile
+      description: |-
+        Use this endpoint to fetch an existing namespaces
+        associated with the given project. The namespaces will
+        be returned providing it is not not archived.
+      tags:
+        - Namespace
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that owns the namespace
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: namespaceId
+          description: |-
+            The ID of the namespace that is being retrieved
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Namespace"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
+    delete:
+      operationId: DeleteAProjectNamespace
+      summary: Delete a specific namespaces for a given project profile
+      description: |-
+        Use this endpoint to remove an existing namespaces
+        associated with the given project. The namespaces will
+        be marked as archived and will not be returned by any other
+        endpoint or be accessible.
+      tags:
+        - Namespace
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that owns the namespace
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: namespaceId
+          description: |-
+            The ID of the namespace that is being retrieved
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: The resource was removed; No content returned.
         400:
           description: The request was received but incorrect
         500:
           description: Internal Error
 components:
   schemas:
+    Cluster:
+      title: OCP Cluster
+      description: A representation of an OCP4 (or greater) clusterId
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        disasterRecovery:
+          type: boolean
+        onPrem:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - name
+        - description
+        - disasterRecovery
+        - onPrem
+      example:
+        id: 1
+        name: Calgary1
+        description: BC Gov calgary data center
+        disasterRecovery: true
+        onPrem: true
+    Namespace:
+      title: Project Namespace
+      description: Payload for a single project namespace
+      type: object
+      properties:
+        id:
+          type: number
+        profileId:
+          type: number
+        clusterId:
+          type: number
+        archived:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - profileId
+        - clusterId
+      example:
+        profileId: 11
+        clusterId: 4
+        archived: false
     ProjectProfile:
       title: Project Profile
       description: Payload for a project profile
