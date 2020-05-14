@@ -2,68 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Attach to Docker",
+      "preLaunchTask": "gulp-watch-src-changes",
       "type": "node",
       "request": "attach",
-      "name": "Attach Remote",
-      "protocol": "inspector",
-      "port": 9229,
-      "restart": true,
-      "preLaunchTask": null,
-      "runtimeExecutable": null,
-      "localRoot": "${workspaceFolder}/src/",
-      "remoteRoot": "/opt/app-root/src/build",
-      "outFiles": [
-        "${workspaceFolder}/build/**/*.js"
-      ],
-      "skipFiles": [
-        "<node_internals>/**/*.js"
-      ],
-      "sourceMaps": true
-    },
-    {
-      "name": "Launch Debug",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "args": [
-        "src/main.ts"
-      ],
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register"
-      ],
-      "protocol": "inspector",
-      "internalConsoleOptions": "openOnSessionStart"
-    },
-    {
-      "name": "Attach to Process",
-      "type": "node",
-      "request": "attach",
-      "restart": true,
       "port": 5858,
-      "outFiles": [],
-      "sourceMaps": true
+      "address": "localhost",
+      "restart": true,
+      "remoteRoot": "/opt/app/build",
+      "localRoot": "${workspaceFolder}/api/build",
+      "protocol": "auto",
+      "trace": "verbose"
     },
-    {
-      "name": "Test",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceRoot}/node_modules/.bin/jest",
-      "stopOnEntry": false,
-      "args": [
-        "--runInBand"
-      ],
-      "cwd": "${workspaceRoot}",
-      "preLaunchTask": null,
-      "runtimeExecutable": null,
-      "runtimeArgs": [
-        "--nolazy"
-      ],
-      "env": {
-        "NODE_ENV": "test"
-      },
-      "console": "integratedTerminal",
-      "sourceMaps": true
-    }
   ]
 }

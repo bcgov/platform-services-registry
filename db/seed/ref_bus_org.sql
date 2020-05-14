@@ -1,7 +1,7 @@
 
 BEGIN TRANSACTION;
 
-INSERT INTO ref_bus_org (code, name) VALUES
+INSERT INTO ref_bus_org (id, name) VALUES
   ('AEST', 'Advanced Education, Skills & Training'),
   ('AGRI', 'Agriculture'),
   ('ALC', 'Agriculture Land Commission'),

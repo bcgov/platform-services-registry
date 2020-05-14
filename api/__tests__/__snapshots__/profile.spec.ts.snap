@@ -44,7 +44,7 @@ Array [
     Object {
       "text": "
         INSERT INTO profile
-          (name, description, category, bus_org_id)
+          (name, description, category_id, bus_org_id)
           VALUES ($1, $2, $3, $4) RETURNING *;",
       "values": Array [
         "Health Gateway",
@@ -63,7 +63,7 @@ exports[`Profile event handlers A project is created 3`] = `
 Object {
   "active": true,
   "busOrgId": "HLTH",
-  "category": 1,
+  "categoryId": 1,
   "createdAt": 1576090712480,
   "criticalSystem": false,
   "description": "Patient prescription history website",
@@ -90,7 +90,7 @@ Array [
       "text": "
         UPDATE profile
           SET
-            name = $1, description = $2, category = $3, bus_org_id = $4,
+            name = $1, description = $2, category_id = $3, bus_org_id = $4,
             active = $5, critical_system = $6
           WHERE id = 1
           RETURNING *;",
@@ -113,7 +113,7 @@ exports[`Profile event handlers A project is updated 3`] = `
 Object {
   "active": true,
   "busOrgId": "HLTH",
-  "category": 1,
+  "categoryId": 1,
   "criticalSystem": false,
   "description": "Patient prescription history website",
   "name": "Health Gateway",
@@ -139,6 +139,7 @@ exports[`Profile event handlers A single profile is returned 2`] = `200`;
 
 exports[`Profile event handlers A single profile is returned 3`] = `
 Object {
+  "categoryId": 1,
   "createdAt": "2020-04-28T00:00:00.000Z",
   "description": null,
   "id": 1,
@@ -165,6 +166,7 @@ exports[`Profile event handlers All profiles are returned 2`] = `200`;
 exports[`Profile event handlers All profiles are returned 3`] = `
 Array [
   Object {
+    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "description": null,
     "id": 1,
@@ -172,6 +174,7 @@ Array [
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
   Object {
+    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "description": "Hello World",
     "id": 2,
@@ -179,6 +182,7 @@ Array [
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
   Object {
+    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "description": "This is some description",
     "id": 3,

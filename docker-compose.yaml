@@ -32,14 +32,14 @@ services:
           size: 256m
     ports:
       - 8100:8100
-      - 9100:9229
+      - 5858:5858
     depends_on:
       - postgres
     environment:
       <<: *defaults
       PORT: 8100
     command: >
-      bash -c "sleep 30 && npm run dev"
+      bash -c "sleep 10 && npm run dev:docker"
   postgres:
     container_name: registry-pg
     image: registry/db

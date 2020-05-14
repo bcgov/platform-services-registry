@@ -24,6 +24,7 @@ const gulp = require('gulp');
 const clean = require('gulp-clean');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
+const child = require('child_process');
 
 let tsp = ts.createProject('tsconfig.json');
 
@@ -51,16 +52,25 @@ gulp.task('transpile-src', () =>
     .pipe(gulp.dest('build'))
 );
 
-gulp.task('copy-config', () => gulp.src('src/config/*.json').pipe(gulp.dest('build/config')));
+gulp.task('copy-app-config', () => gulp.src('src/config/*.json').pipe(gulp.dest('build/config')));
 
 gulp.task('copy-node-config', () =>
   gulp.src(['package.json', 'package-lock.json']).pipe(gulp.dest('build'))
 );
 
+gulp.task('link-env', () => child.spawn('ln', ['-sfh', '../.env', './build'], { stdio: 'inherit' }));
+
 gulp.task(
   'default',
   gulp.series(
     'clean',
-    gulp.parallel('transpile-src', 'copy-config', 'copy-node-config')
+    gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config')
+  )
+);
+
+gulp.task('watch-src-changes', () =>
+  gulp.watch(["src/**/*.{ts,tsx}"],
+    gulp.parallel('transpile-src', 'copy-app-config',
+      'copy-node-config', 'link-env')
   )
 );

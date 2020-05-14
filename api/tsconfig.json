@@ -13,11 +13,12 @@
     "pretty": true,
     "strict": true,
     "sourceMap": true,
-    "outDir": "./build",
     "skipLibCheck": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "declaration": true
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "include": [
     "src/**/*",

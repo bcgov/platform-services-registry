@@ -3,22 +3,18 @@ import { Pool } from 'pg';
 import { transformKeysToCamelCase } from '../utils';
 import { CommonFields, Model } from './model';
 
-interface ProjectProfile extends CommonFields {
+interface ProjectNamespace extends CommonFields {
   name: string,
-  description: string,
-  categoryId: number,
-  busOrgId: number,
-  active?: boolean,
-  criticalSystem?: boolean,
+  profileId: number,
+  clusterId: number,
 }
 
-export default class ProfileModel extends Model {
-  table: string = 'profile';
+export default class NamespaceModel extends Model {
+  table: string = 'namespace';
   requiredFields: string[] = [
     'name',
-    'description',
-    'categoryId',
-    'busOrgId',
+    'profileId',
+    'clusterId',
   ];
   pool: Pool;
 
@@ -27,17 +23,16 @@ export default class ProfileModel extends Model {
     this.pool = pool;
   }
 
-  async create(data: ProjectProfile): Promise<ProjectProfile> {
+  async create(data: ProjectNamespace): Promise<ProjectNamespace> {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, description, category_id, bus_org_id)
-          VALUES ($1, $2, $3, $4) RETURNING *;`,
+          (name, profile_id, cluster_id)
+          VALUES ($1, $2, $3) RETURNING *;`,
       values: [
         data.name,
-        data.description,
-        data.categoryId,
-        data.busOrgId,
+        data.profileId,
+        data.clusterId,
       ],
     };
 
@@ -45,55 +40,70 @@ export default class ProfileModel extends Model {
       const results = await this.pool.query(query);
       return results.rows.map(r => transformKeysToCamelCase(r)).pop();
     } catch (err) {
-      const message = `Unable to create project profile`;
+      const message = `Unable to create namespace`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
   }
 
-  async update(profileId, data: ProjectProfile): Promise<ProjectProfile> {
+  async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
+    const query = {
+      text: `
+      SELECT * FROM ${this.table}
+        WHERE profile_id = ${profileId};
+      `,
+    };
+
+    try {
+      const results = await this.pool.query(query);
+      return results.rows.map(r => transformKeysToCamelCase(r));
+    } catch (err) {
+      const message = `Unable to fetch namespaces for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async update(namespaceId, data: ProjectNamespace): Promise<ProjectNamespace> {
     const values: any[] = [];
     const query = {
       text: `
         UPDATE ${this.table}
           SET
-            name = $1, description = $2, category_id = $3, bus_org_id = $4,
-            active = $5, critical_system = $6
-          WHERE id = ${profileId}
+            name = $1, profile_id = $2, cluster_id = $3
+          WHERE id = ${namespaceId}
           RETURNING *;`,
       values,
     };
 
     try {
-      const record = await this.findById(profileId);
+      const record = await this.findById(namespaceId);
       const aData = { ...record, ...data };
       query.values = [
         aData.name,
-        aData.description,
-        aData.categoryId,
-        aData.busOrgId,
-        aData.active,
-        aData.criticalSystem,
+        aData.profileId,
+        aData.clusterId,
       ];
 
       const results = await this.pool.query(query);
       return results.rows.map(r => transformKeysToCamelCase(r)).pop();
     } catch (err) {
-      const message = `Unable to create project profile`;
+      const message = `Unable to create namespace`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
   };
 
-  async delete(profileId): Promise<ProjectProfile> {
+  async delete(namespaceId): Promise<ProjectNamespace> {
     const query = {
       text: `
         UPDATE ${this.table}
           SET
             archived = true
-          WHERE id = ${profileId}
+          WHERE id = ${namespaceId}
           RETURNING *;
       `,
     };
@@ -102,7 +112,7 @@ export default class ProfileModel extends Model {
       const results = await this.pool.query(query);
       return results.rows.map(r => transformKeysToCamelCase(r)).pop();
     } catch (err) {
-      const message = `Unable to archive project profile`;
+      const message = `Unable to archive namespace`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
