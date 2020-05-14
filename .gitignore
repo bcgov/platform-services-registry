@@ -10,6 +10,7 @@ dist/
 data/
 pg_data
 node_modules
+public/
 
 *~
 *.seed
