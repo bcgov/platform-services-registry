@@ -19,21 +19,22 @@
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
-import { difference } from 'lodash';
+import { Response } from 'express';
 import config from '../config';
 import DataManager from '../db';
+import { validateObjProps } from '../libs/utils';
 
-export const createNamespace = async (req: Request, res: Response): Promise<void> => {
+export const createNamespace = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { NamespaceModel } = dm;
-  const { profileId } = req.params;
-  const { body } = req;
+  const { profileId } = params;
   const aBody = { ...body, profileId };
 
-  const diff = difference(NamespaceModel.requiredFields, Object.keys(aBody));
-  if (diff.length !== 0) {
-    throw errorWithCode(`Missing required properties: ${diff}`, 400);
+  const rv = validateObjProps(NamespaceModel.requiredFields, aBody);
+  if (rv) {
+    throw rv;
   }
 
   try {
@@ -48,11 +49,12 @@ export const createNamespace = async (req: Request, res: Response): Promise<void
   }
 };
 
-export const fetchProfileNamespaces = async (req: Request, res: Response): Promise<void> => {
+export const fetchProfileNamespaces = async (
+  { params }: { params: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { NamespaceModel } = dm;
-  const { profileId } = req.params;
-
+  const { profileId } = params;
 
   try {
     const results = await NamespaceModel.findForProfile(Number(profileId));
@@ -66,10 +68,12 @@ export const fetchProfileNamespaces = async (req: Request, res: Response): Promi
   }
 };
 
-export const fetchProfileNamespace = async (req: Request, res: Response): Promise<void> => {
+export const fetchProfileNamespace = async (
+  { params }: { params: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { NamespaceModel } = dm;
-  const { namespaceId } = req.params;
+  const { namespaceId } = params;
 
   try {
     const results = await NamespaceModel.findById(Number(namespaceId));
@@ -83,22 +87,18 @@ export const fetchProfileNamespace = async (req: Request, res: Response): Promis
   }
 };
 
-export const updateProfileNamespace = async (req: Request, res: Response): Promise<void> => {
+export const updateProfileNamespace = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { NamespaceModel } = dm;
-  const { profileId, namespaceId } = req.params;
-  const { body } = req;
+  const { profileId, namespaceId } = params;
+  const { name, clusterId } = body;
+  const aBody = { name, profileId, clusterId };
 
-  // Make sure these are not updated!
-  delete body.id;
-  delete body.archived;
-  delete body.createdAt;
-  delete body.updatedAt;
-
-  const aBody = { ...body, profileId };
-  const diff = difference(NamespaceModel.requiredFields, Object.keys(aBody));
-  if (diff.length !== 0) {
-    throw errorWithCode(`Missing required properties: ${diff}`, 400);
+  const rv = validateObjProps(NamespaceModel.requiredFields, aBody);
+  if (rv) {
+    throw rv;
   }
 
   try {
@@ -113,10 +113,12 @@ export const updateProfileNamespace = async (req: Request, res: Response): Promi
   }
 };
 
-export const archiveProfileNamespace = async (req: Request, res: Response): Promise<void> => {
+export const archiveProfileNamespace = async (
+  { params }: { params: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { NamespaceModel } = dm;
-  const { profileId, namespaceId } = req.params;
+  const { profileId, namespaceId } = params;
 
   try {
     await NamespaceModel.delete(namespaceId);

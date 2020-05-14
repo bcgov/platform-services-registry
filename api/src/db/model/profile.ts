@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 import { transformKeysToCamelCase } from '../utils';
 import { CommonFields, Model } from './model';
 
-interface ProjectProfile extends CommonFields {
+export interface ProjectProfile extends CommonFields {
   name: string,
   description: string,
   categoryId: number,
