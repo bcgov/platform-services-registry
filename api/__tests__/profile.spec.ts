@@ -25,14 +25,23 @@ const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
 const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-const pmock = {
-  connect: jest.fn(),
+const client = {
   query: jest.fn(),
-  end: jest.fn(),
-};
+  release: jest.fn(),
+}
 
 jest.mock('pg', () => {
-  return { Pool: jest.fn(() => pmock) };
+  return {
+    Pool: jest.fn(() => {
+      return {
+        connect: jest.fn().mockImplementation(() => {
+          return client;
+        }),
+        query: jest.fn(),
+        end: jest.fn(),
+      }
+    }),
+  };
 });
 
 class FauxExpress {
@@ -54,8 +63,6 @@ class FauxExpress {
   responseData: any;
 }
 
-Date.now = jest.fn().mockReturnValue('2020-05-14T23:23:14.300Z');
-
 describe('Profile event handlers', () => {
   let ex;
 
@@ -71,16 +78,16 @@ describe('Profile event handlers', () => {
     };
     const addon = {
       id: 9,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      // createdAt: Date.now(),
+      // updatedAt: Date.now(),
     };
 
-    pmock.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
+    client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
 
     // @ts-ignore
     await createProjectProfile(req, ex.res);
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -92,12 +99,12 @@ describe('Profile event handlers', () => {
       body: insertProfile,
     };
 
-    pmock.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
     await expect(createProjectProfile(req, ex.res)).rejects.toThrow();
 
-    // expect(pmock.query.mock.calls).toMatchSnapshot();
+    // expect(client.query.mock.calls).toMatchSnapshot();
     // expect(ex.res.statusCode).toMatchSnapshot();
     // expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).not.toBeCalled();
@@ -107,12 +114,12 @@ describe('Profile event handlers', () => {
 
   it('All profiles are returned', async () => {
     const req = {};
-    pmock.query.mockReturnValueOnce({ rows: selectProfiles });
+    client.query.mockReturnValueOnce({ rows: selectProfiles });
 
     // @ts-ignore
     await fetchAllProjectProfiles(req, ex.res);
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -121,12 +128,12 @@ describe('Profile event handlers', () => {
 
   it('Fetch all profiles should throw', async () => {
     const req = {};
-    pmock.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
     await expect(fetchAllProjectProfiles(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
@@ -134,13 +141,13 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 1 },
     };
-    pmock.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
+    client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
 
 
     // @ts-ignore
     await fetchProjectProfile(req, ex.res);
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -151,12 +158,12 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 1 },
     };
-    pmock.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
     await expect(fetchProjectProfile(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
@@ -173,12 +180,12 @@ describe('Profile event handlers', () => {
       body: aBody,
     }
 
-    pmock.query.mockReturnValue({ rows: [aBody] });
+    client.query.mockReturnValue({ rows: [aBody] });
 
     // @ts-ignore
     await updateProjectProfile(req, ex.res);
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -198,7 +205,7 @@ describe('Profile event handlers', () => {
       body: aBody,
     }
 
-    pmock.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
     await expect(updateProjectProfile(req, ex.res)).rejects.toThrow();
@@ -218,12 +225,12 @@ describe('Profile event handlers', () => {
       params: { profileId: 9 },
     }
 
-    pmock.query.mockReturnValueOnce({ rows: [aBody] });
+    client.query.mockReturnValueOnce({ rows: [aBody] });
 
     // @ts-ignore
     await archiveProjectProfile(req, ex.res);
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.json).not.toBeCalled();
@@ -235,16 +242,15 @@ describe('Profile event handlers', () => {
       params: { profileId: 9 },
     }
 
-    pmock.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
     await expect(archiveProjectProfile(req, ex.res)).rejects.toThrow();
 
-    expect(pmock.query.mock.calls).toMatchSnapshot();
+    expect(client.query.mock.calls).toMatchSnapshot();
     console.log(ex.res.statusCode);
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.res.json).not.toBeCalled();
     expect(ex.res.end).not.toBeCalled();
   });
-
 });

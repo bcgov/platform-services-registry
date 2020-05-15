@@ -1,6 +1,5 @@
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
-import { transformKeysToCamelCase } from '../utils';
 import { CommonFields, Model } from './model';
 
 export interface ProjectNamespace extends CommonFields {
@@ -37,8 +36,8 @@ export default class NamespaceModel extends Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to create namespace`;
       logger.error(`${message}, err = ${err.message}`);
@@ -56,8 +55,7 @@ export default class NamespaceModel extends Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r));
+      return await this.runQuery(query);
     } catch (err) {
       const message = `Unable to fetch namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
@@ -87,8 +85,8 @@ export default class NamespaceModel extends Model {
         aData.clusterId,
       ];
 
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to create namespace`;
       logger.error(`${message}, err = ${err.message}`);
@@ -109,8 +107,8 @@ export default class NamespaceModel extends Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to archive namespace`;
       logger.error(`${message}, err = ${err.message}`);

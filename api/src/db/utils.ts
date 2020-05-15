@@ -16,28 +16,7 @@
 
 'use strict';
 
-/**
- * Convert a string in snake notation to camel case
- *
- * @param {string} str The string to be converted
- * @return The converted string
- */
-export const toCamelCase = str =>
-  str
-    .replace(/_/g, ' ')
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (letter, index) =>
-      index === 0 ? letter.toLowerCase() : letter.toUpperCase()
-    )
-    .replace(/\s+/g, '');
-
-/**
- * Convert a string in camel case to snake notation
- *
- * @param {string} str The string to be converted
- * @return The converted string
- */
-export const toSnakeCase = str =>
-  str.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`);
+import { camelCase } from 'lodash';
 
 /**
  * Convert the keys of an object from snake notation to camel case
@@ -48,7 +27,7 @@ export const toSnakeCase = str =>
 export const transformKeysToCamelCase = data => {
   const obj = {};
   Object.keys(data).forEach(key => {
-    obj[toCamelCase(key)] = data[key];
+    obj[camelCase(key)] = data[key];
   });
 
   return obj;

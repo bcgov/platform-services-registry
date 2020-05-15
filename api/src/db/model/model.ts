@@ -3,6 +3,10 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { transformKeysToCamelCase } from '../utils';
 
+export interface Query {
+  text: string;
+  values?: any[];
+}
 export interface CommonFields {
   id?: number,
   archived?: boolean,
@@ -28,8 +32,7 @@ export abstract class Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r));
+      return await this.runQuery(query);
     } catch (err) {
       const message = `Unable to fetch all Profiles`;
       logger.error(`${message}, err = ${err.message}`);
@@ -47,13 +50,28 @@ export abstract class Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to fetch Profile with ID ${id}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
+    }
+  }
+
+  async runQuery(query: Query): Promise<any[]> {
+    let client;
+
+    try {
+      client = await this.pool.connect();
+      const results = await client.query(query);
+
+      return results.rows.map(r => transformKeysToCamelCase(r));
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
     }
   }
 }

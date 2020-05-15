@@ -1,6 +1,5 @@
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
-import { transformKeysToCamelCase } from '../utils';
 import { CommonFields, Model } from './model';
 
 export interface ProjectProfile extends CommonFields {
@@ -42,8 +41,8 @@ export default class ProfileModel extends Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to create project profile`;
       logger.error(`${message}, err = ${err.message}`);
@@ -77,8 +76,8 @@ export default class ProfileModel extends Model {
         aData.criticalSystem,
       ];
 
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to create project profile`;
       logger.error(`${message}, err = ${err.message}`);
@@ -99,8 +98,8 @@ export default class ProfileModel extends Model {
     };
 
     try {
-      const results = await this.pool.query(query);
-      return results.rows.map(r => transformKeysToCamelCase(r)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
       const message = `Unable to archive project profile`;
       logger.error(`${message}, err = ${err.message}`);
