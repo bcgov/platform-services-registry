@@ -72,4 +72,3 @@ jobs:
           cmd: |
             'version'
             'start-build platsrv-registry-master-build --follow -n devhub-tools'
-            'status'
