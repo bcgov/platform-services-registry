@@ -20,10 +20,9 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
-import { difference } from 'lodash';
 import config from '../config';
 import DataManager from '../db';
-
+import { validateObjProps } from '../libs/utils';
 
 export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
   const dm = new DataManager(config);
@@ -41,10 +40,12 @@ export const fetchAllProjectProfiles = async (req: Request, res: Response): Prom
   }
 };
 
-export const fetchProjectProfile = async (req: Request, res: Response): Promise<void> => {
+export const fetchProjectProfile = async (
+  { params }: { params: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { ProfileModel } = dm;
-  const { profileId } = req.params;
+  const { profileId } = params;
 
   try {
     const results = await ProfileModel.findById(Number(profileId));
@@ -58,14 +59,15 @@ export const fetchProjectProfile = async (req: Request, res: Response): Promise<
   }
 };
 
-export const createProjectProfile = async (req: Request, res: Response): Promise<void> => {
+export const createProjectProfile = async (
+  { body }: { body: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { ProfileModel } = dm;
-  const { body } = req;
 
-  const diff = difference(ProfileModel.requiredFields, Object.keys(body));
-  if (diff.length !== 0) {
-    throw errorWithCode(`Missing required properties: ${diff}`, 400);
+  const rv = validateObjProps(ProfileModel.requiredFields, body);
+  if (rv) {
+    throw rv;
   }
 
   try {
@@ -80,25 +82,36 @@ export const createProjectProfile = async (req: Request, res: Response): Promise
   }
 };
 
-export const updateProjectProfile = async (req: Request, res: Response): Promise<void> => {
+export const updateProjectProfile = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { ProfileModel } = dm;
-  const { profileId } = req.params;
-  const { body } = req;
+  const { profileId } = params;
+  const {
+    name,
+    description,
+    categoryId,
+    busOrgId,
+    active,
+    criticalSystem,
+  } = body;
+  const aBody = {
+    name,
+    description,
+    categoryId,
+    busOrgId,
+    active,
+    criticalSystem,
+  };
 
-  // Make sure these are not updated!
-  delete body.id;
-  delete body.createdAt;
-  delete body.updatedAt;
-  delete body.archived;
-
-  const diff = difference(ProfileModel.requiredFields, Object.keys(body));
-  if (diff.length !== 0) {
-    throw errorWithCode(`Missing required properties: ${diff}`, 400);
+  const rv = validateObjProps(ProfileModel.requiredFields, aBody);
+  if (rv) {
+    throw rv;
   }
 
   try {
-    const results = await ProfileModel.update(profileId, body);
+    const results = await ProfileModel.update(profileId, aBody);
 
     res.status(200).json(results);
   } catch (err) {
@@ -109,10 +122,12 @@ export const updateProjectProfile = async (req: Request, res: Response): Promise
   }
 };
 
-export const archiveProjectProfile = async (req: Request, res: Response): Promise<void> => {
+export const archiveProjectProfile = async (
+  { params }: { params: any }, res: Response
+): Promise<void> => {
   const dm = new DataManager(config);
   const { ProfileModel } = dm;
-  const { profileId } = req.params;
+  const { profileId } = params;
 
   try {
     await ProfileModel.delete(profileId);

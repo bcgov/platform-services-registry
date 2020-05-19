@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 import { transformKeysToCamelCase } from '../utils';
 import { CommonFields, Model } from './model';
 
-interface ProjectNamespace extends CommonFields {
+export interface ProjectNamespace extends CommonFields {
   name: string,
   profileId: number,
   clusterId: number,
@@ -66,7 +66,7 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async update(namespaceId, data: ProjectNamespace): Promise<ProjectNamespace> {
+  async update(namespaceId: number, data: ProjectNamespace): Promise<ProjectNamespace> {
     const values: any[] = [];
     const query = {
       text: `
@@ -97,7 +97,7 @@ export default class NamespaceModel extends Model {
     }
   };
 
-  async delete(namespaceId): Promise<ProjectNamespace> {
+  async delete(namespaceId: number): Promise<ProjectNamespace> {
     const query = {
       text: `
         UPDATE ${this.table}

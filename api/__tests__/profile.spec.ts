@@ -54,7 +54,7 @@ class FauxExpress {
   responseData: any;
 }
 
-Date.now = jest.fn().mockReturnValue(1576090712480);
+Date.now = jest.fn().mockReturnValue('2020-05-14T23:23:14.300Z');
 
 describe('Profile event handlers', () => {
   let ex;
