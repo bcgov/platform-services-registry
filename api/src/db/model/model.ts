@@ -67,7 +67,7 @@ export abstract class Model {
       client = await this.pool.connect();
       const results = await client.query(query);
 
-      return results.rows.map(r => transformKeysToCamelCase(r));
+      return results.rows.map(transformKeysToCamelCase);
     } catch (err) {
       throw err;
     } finally {
