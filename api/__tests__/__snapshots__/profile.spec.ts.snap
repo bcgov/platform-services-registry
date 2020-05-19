@@ -64,12 +64,12 @@ Object {
   "active": true,
   "busOrgId": "HLTH",
   "categoryId": 1,
-  "createdAt": "2020-05-14T23:23:14.300Z",
+  "createdAt": Any<Date>,
   "criticalSystem": false,
   "description": "Patient prescription history website",
   "id": 9,
   "name": "Health Gateway",
-  "updatedAt": "2020-05-14T23:23:14.300Z",
+  "updatedAt": Any<Date>,
 }
 `;
 
@@ -114,12 +114,12 @@ Object {
   "active": true,
   "busOrgId": "HLTH",
   "categoryId": 1,
-  "createdAt": "2020-05-14T23:23:14.300Z",
+  "createdAt": "2020-05-19T20:02:54.561Z",
   "criticalSystem": false,
   "description": "Patient prescription history website",
   "id": 9,
   "name": "Health Gateway",
-  "updatedAt": "2020-05-14T23:23:14.300Z",
+  "updateAt": "2020-05-19T20:02:54.561Z",
 }
 `;
 

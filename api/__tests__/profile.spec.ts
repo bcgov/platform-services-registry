@@ -78,8 +78,8 @@ describe('Profile event handlers', () => {
     };
     const addon = {
       id: 9,
-      // createdAt: Date.now(),
-      // updatedAt: Date.now(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
@@ -89,7 +89,11 @@ describe('Profile event handlers', () => {
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot({
+      // id: expect.any(Number),
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();
   });
@@ -170,14 +174,14 @@ describe('Profile event handlers', () => {
   it('A project is updated', async () => {
     const body = JSON.parse(JSON.stringify(insertProfile));
     const aBody = {
-      id: 9,
       ...body,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      id: 9,
+      createdAt: '2020-05-19T20:02:54.561Z',
+      updateAt: '2020-05-19T20:02:54.561Z',
     };
     const req = {
       params: { profileId: 1 },
-      body: aBody,
+      body,
     }
 
     client.query.mockReturnValue({ rows: [aBody] });
@@ -248,7 +252,6 @@ describe('Profile event handlers', () => {
     await expect(archiveProjectProfile(req, ex.res)).rejects.toThrow();
 
     expect(client.query.mock.calls).toMatchSnapshot();
-    console.log(ex.res.statusCode);
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.res.json).not.toBeCalled();
     expect(ex.res.end).not.toBeCalled();
