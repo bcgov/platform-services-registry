@@ -1,6 +1,4 @@
 //
-// Code Sign
-//
 // Copyright © 2018 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +18,7 @@
 
 'use strict';
 
-import * as ncu from '@bcgov/common-nodejs-utils';
+import { errorWithCode, getJwtCertificate, JWTServiceManager, logger } from '@bcgov/common-nodejs-utils';
 
 // public certificate
 const pem = `
@@ -43,8 +41,7 @@ const token = {
   session_state: '5fa5d913-98bb-45fe-ae5f-b44c919c83e1',
 };
 
-// @ts-ignore
-ncu.getJwtCertificate = ssoCertificateUrl =>
+const getJwtCertificate = ssoCertificateUrl =>
   Promise.resolve({
     certificate: pem,
     algorithm: 'RS256',
@@ -56,7 +53,5 @@ class JWTServiceManager {
   }
 }
 
-// @ts-ignore
-ncu.JWTServiceManager = JWTServiceManager;
+export { logger, errorWithCode, getJwtCertificate, JWTServiceManager };
 
-module.exports = ncu;
