@@ -108,9 +108,6 @@ describe('Profile event handlers', () => {
     // @ts-ignore
     await expect(createProjectProfile(req, ex.res)).rejects.toThrow();
 
-    // expect(client.query.mock.calls).toMatchSnapshot();
-    // expect(ex.res.statusCode).toMatchSnapshot();
-    // expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).not.toBeCalled();
     expect(ex.res.json).not.toBeCalled();
   });
