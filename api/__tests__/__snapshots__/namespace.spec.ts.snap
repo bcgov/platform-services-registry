@@ -1,0 +1,220 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Namespace event handlers A Namespace is archived 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        UPDATE namespace
+          SET
+            archived = true
+          WHERE id = 9
+          RETURNING *;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers A Namespace is archived 2`] = `204`;
+
+exports[`Namespace event handlers A Namespace is archived 3`] = `undefined`;
+
+exports[`Namespace event handlers A Namespace is created 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        INSERT INTO namespace
+          (name, profile_id, cluster_id)
+          VALUES ($1, $2, $3) RETURNING *;",
+      "values": Array [
+        "abc123-test",
+        1,
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers A Namespace is created 2`] = `201`;
+
+exports[`Namespace event handlers A Namespace is created 3`] = `
+Object {
+  "clusterId": 1,
+  "createdAt": Any<Date>,
+  "id": Any<Number>,
+  "name": "abc123-test",
+  "updatedAt": Any<Date>,
+}
+`;
+
+exports[`Namespace event handlers A Namespace is updated 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        UPDATE namespace
+          SET
+            name = $1, profile_id = $2, cluster_id = $3
+          WHERE id = 1
+          RETURNING *;",
+      "values": Array [
+        "abc123-test",
+        1,
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers A Namespace is updated 2`] = `204`;
+
+exports[`Namespace event handlers A Namespace is updated 3`] = `undefined`;
+
+exports[`Namespace event handlers A project fails to archive 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        UPDATE namespace
+          SET
+            archived = true
+          WHERE id = undefined
+          RETURNING *;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers A project fails to archive 2`] = `200`;
+
+exports[`Namespace event handlers A single Namespace is returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers A single Namespace is returned 2`] = `200`;
+
+exports[`Namespace event handlers A single Namespace is returned 3`] = `
+Object {
+  "archived": false,
+  "clusterId": 1,
+  "createdAt": "2020-05-06T21:16:42.799Z",
+  "id": 1,
+  "name": "abc123-tools",
+  "profileId": 4,
+  "updatedAt": "2020-05-06T21:16:42.799Z",
+}
+`;
+
+exports[`Namespace event handlers All Namespaces are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM namespace
+        WHERE profile_id = 1;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers All Namespaces are returned 2`] = `200`;
+
+exports[`Namespace event handlers All Namespaces are returned 3`] = `
+Array [
+  Object {
+    "archived": false,
+    "clusterId": 1,
+    "createdAt": "2020-05-06T21:16:42.799Z",
+    "id": 1,
+    "name": "abc123-tools",
+    "profileId": 4,
+    "updatedAt": "2020-05-06T21:16:42.799Z",
+  },
+  Object {
+    "archived": false,
+    "clusterId": 1,
+    "createdAt": "2020-05-06T21:26:55.514Z",
+    "id": 2,
+    "name": "abc123-dev",
+    "profileId": 4,
+    "updatedAt": "2020-05-06T21:26:55.514Z",
+  },
+  Object {
+    "archived": false,
+    "clusterId": 1,
+    "createdAt": "2020-05-06T21:27:00.744Z",
+    "id": 3,
+    "name": "abc123-test",
+    "profileId": 4,
+    "updatedAt": "2020-05-06T21:27:00.744Z",
+  },
+  Object {
+    "archived": false,
+    "clusterId": 1,
+    "createdAt": "2020-05-06T21:27:07.148Z",
+    "id": 4,
+    "name": "abc123-prod",
+    "profileId": 4,
+    "updatedAt": "2020-05-06T21:27:07.148Z",
+  },
+]
+`;
+
+exports[`Namespace event handlers Fetch all Namespaces should throw 1`] = `"Unable fetch namespace for profile ID undefined"`;
+
+exports[`Namespace event handlers Fetch all Namespaces should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM namespace
+        WHERE profile_id = NaN;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers Fetch single profile should throw 1`] = `"Unable fetch namespace with ID undefined"`;
+
+exports[`Namespace event handlers Fetch single profile should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        NaN,
+      ],
+    },
+  ],
+]
+`;
