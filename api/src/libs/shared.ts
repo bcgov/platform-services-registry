@@ -21,30 +21,55 @@
 'use strict';
 
 import { JWTServiceManager } from '@bcgov/common-nodejs-utils';
+import { Pool } from 'pg';
 import config from '../config';
 
-const skey = Symbol.for('ca.bc.gov.pathfinder.registry.sso');
+interface Shared {
+  pgPool: Pool;
+}
+
+const ssoKey = Symbol.for('ca.bc.gov.platsrv.sso');
+const pgPoolKey = Symbol.for('ca.bc.gov.platsrv.pgpool');
 const gs = Object.getOwnPropertySymbols(global);
 
 const main = async () => {
-  if (!(gs.indexOf(skey) > -1)) {
-    global[skey] = new JWTServiceManager({
+  if (!(gs.indexOf(ssoKey) > -1)) {
+    global[ssoKey] = new JWTServiceManager({
       uri: config.get('sso:tokenUrl'),
       grantType: config.get('sso:grantType'),
       clientId: config.get('sso:clientId'),
       clientSecret: config.get('sso:clientSecret'),
     });
   }
+
+  if (!(gs.indexOf(pgPoolKey) > -1)) {
+    const params = {
+      host: config.get('db:host'),
+      port: config.get('db:port'),
+      database: config.get('db:database'),
+      user: config.get('db:user'),
+      password: config.get('db:password'),
+      max: 5,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+    }
+
+    global[pgPoolKey] = new Pool(params);
+  }
 }
 
 main();
 
-const singleton = {};
+const shared = {};
 
-Object.defineProperty(singleton, 'sso', {
-  get: () => global[skey],
+Object.defineProperty(shared, 'sso', {
+  get: () => global[ssoKey],
 });
 
-Object.freeze(singleton);
+Object.defineProperty(shared, 'pgPool', {
+  get: () => global[pgPoolKey],
+});
 
-export default singleton;
+Object.freeze(shared);
+
+export default shared as Shared;
