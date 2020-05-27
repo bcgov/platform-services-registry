@@ -11,7 +11,13 @@ data/
 pg_data
 node_modules
 public/
-
+/.pnp
+.pnp.js
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *~
 *.seed
 *.log
@@ -22,7 +28,6 @@ public/
 *.gz
 *.orig
 *.min.js
-npm-debug.log
 !generated-docs/example-doc.pdf
 !logs/.gitkeep
 task-definition.json
@@ -36,6 +41,8 @@ task-definition.json
 logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Runtime data
 pids
@@ -78,4 +85,3 @@ jspm_packages
 *-secret.yaml
 *-secret.json
 old_tests
-
