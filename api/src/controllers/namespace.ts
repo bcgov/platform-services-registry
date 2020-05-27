@@ -24,10 +24,11 @@ import DataManager from '../db';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
+const dm = new DataManager(shared.pgPool);
+
 export const createNamespace = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { NamespaceModel } = dm;
   const { profileId } = params;
   const aBody = { ...body, profileId };
@@ -52,7 +53,6 @@ export const createNamespace = async (
 export const fetchProfileNamespaces = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { NamespaceModel } = dm;
   const { profileId } = params;
 
@@ -71,7 +71,6 @@ export const fetchProfileNamespaces = async (
 export const fetchProfileNamespace = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { NamespaceModel } = dm;
   const { namespaceId } = params;
 
@@ -90,7 +89,6 @@ export const fetchProfileNamespace = async (
 export const updateProfileNamespace = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { NamespaceModel } = dm;
   const { profileId, namespaceId } = params;
   const { name, clusterId } = body;
@@ -116,7 +114,6 @@ export const updateProfileNamespace = async (
 export const archiveProfileNamespace = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { NamespaceModel } = dm;
   const { profileId, namespaceId } = params;
 

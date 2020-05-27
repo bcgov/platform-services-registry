@@ -24,8 +24,9 @@ import DataManager from '../db';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
+const dm = new DataManager(shared.pgPool);
+
 export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { ProfileModel } = dm;
 
   try {
@@ -43,7 +44,6 @@ export const fetchAllProjectProfiles = async (req: Request, res: Response): Prom
 export const fetchProjectProfile = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { ProfileModel } = dm;
   const { profileId } = params;
 
@@ -62,7 +62,6 @@ export const fetchProjectProfile = async (
 export const createProjectProfile = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { ProfileModel } = dm;
 
   const rv = validateObjProps(ProfileModel.requiredFields, body);
@@ -85,7 +84,6 @@ export const createProjectProfile = async (
 export const updateProjectProfile = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { ProfileModel } = dm;
   const { profileId } = params;
   const {
@@ -125,7 +123,6 @@ export const updateProjectProfile = async (
 export const archiveProjectProfile = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
-  const dm = new DataManager(shared.pgPool);
   const { ProfileModel } = dm;
   const { profileId } = params;
 
