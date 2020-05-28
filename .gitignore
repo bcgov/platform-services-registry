@@ -10,7 +10,6 @@ dist/
 data/
 pg_data
 node_modules
-public/
 /.pnp
 .pnp.js
 .DS_Store
