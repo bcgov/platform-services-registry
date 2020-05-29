@@ -63,6 +63,10 @@ export abstract class Model {
   async runQuery(query: Query): Promise<any[]> {
     let client;
 
+    if (this.pool.waitingCount > 0) {
+      logger.warn(`Database pool has ${this.pool.waitingCount} waiting queries`);
+    }
+
     try {
       client = await this.pool.connect();
       const results = await client.query(query);
