@@ -1,4 +1,4 @@
-FROM node:10.14-alpine
+FROM node:12.0-alpine
 
 ARG NODE_MAJOR_VERSION=10
 ARG NODE_VERSION=10.14.x
