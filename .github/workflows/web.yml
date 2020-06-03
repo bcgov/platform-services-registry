@@ -59,7 +59,7 @@ jobs:
         env:
           CI: "true"
   s2i-build:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     needs: [test, build]
     steps:
