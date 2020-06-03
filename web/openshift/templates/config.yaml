@@ -29,7 +29,7 @@ objects:
       labels:
         app: platsrv-registry
     data:
-      config.json: |
+      Caddyfile: |
         # Where caddy should listen
         :2015
 
