@@ -1,0 +1,47 @@
+header {
+  background-color: #036;
+  border-bottom: 2px solid #fcba19;
+  color: #fff;
+  padding: 0 65px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* flex-flow: row wrap; */
+}
+
+header .banner{
+  display: flex;
+  align-items: center;
+
+}
+
+header h1 {
+  font-family: 'Noto Sans','Calibri', 'Arial', 'Sans Serif';
+  font-size: 24px;
+  font-weight: normal;
+  margin: 13px 18px;
+  padding: 0.5em 0;
+}
+
+.header-logo {
+  animation: logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+/* header .left {
+  display: flex;
+} */
+
+.header-intro {
+  font-size: large;
+}
+
+/* @keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */

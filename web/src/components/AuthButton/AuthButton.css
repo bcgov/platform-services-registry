@@ -1,0 +1,17 @@
+.auth-button {
+  position: relative;
+  margin-left: auto;
+  padding: 8px 16px;
+  border: none;
+  background-color: #fcba19;
+  color: #003366;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-radius: 2px;
+  outline-width: 0;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
