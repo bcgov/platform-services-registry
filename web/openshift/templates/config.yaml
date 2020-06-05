@@ -1,0 +1,62 @@
+# Copyright 2020 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: |
+      This configmap is used internally by Caddy
+      to store config.
+  name: registry-web-config
+objects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: registry-web-config
+      labels:
+        app: platsrv-registry
+    data:
+      Caddyfile: |
+        # Where caddy should listen
+        :2015
+
+        # Turn on the Web/file server
+        file_server
+
+        # The site root
+        root * /opt/app-root/src
+
+        # Because we should
+        encode zstd gzip
+
+        # This rewrite rule may be required to get React apps
+        # to deal with trailing slashes properly.
+        #@filter {
+        #	not path_regexp ^\/0.0.0.0
+        #	file {
+        #		try_files {path} {path}/ /?url={uri}
+        #	}
+        #}
+        #rewrite @try_files {http.matchers.file.relative}
+
+        # On OCP we should log to stdout so Prometheus can
+        # slurp up the logs for human consumption.
+        log {
+          #errors stdout
+          output stdout 
+          format single_field common_log
+          level info
+        }
