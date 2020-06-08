@@ -58,7 +58,7 @@ export default () => {
     <StyledHeader>
       <StyledDiv>
         <StyledImage src={logo} alt="logo" />
-        <StyledTitle>Secure Sign</StyledTitle>
+        <StyledTitle>Platform Services Project Registry</StyledTitle>
       </StyledDiv>
       <AuthButton />
     </StyledHeader>
