@@ -23,9 +23,8 @@ import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 
 const StyledButton = styled.button`
-  position: relative;
-  margin-left: auto;
   padding: 8px 16px;
+  margin: 120px;
   border: none;
   background-color: #fcba19;
   color: #003366;
@@ -38,7 +37,15 @@ const StyledButton = styled.button`
   cursor: pointer;
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
-`
+`;
+
+const Panel = styled.div`
+  flex-grow: 1;
+  align-items: center;
+  justify-content: flex-end;
+  display: flex;
+`;
+
 const titleForAuthenticationState = (keycloak: any): string => {
   if (keycloak.authenticated) {
     return 'Logout';
@@ -60,13 +67,12 @@ export default () => {
   const { keycloak } = useKeycloak()
 
   return (
-    <span>
+    <Panel>
       <StyledButton
-        className="auth-button"
         onClick={actionForCurrentState(keycloak)}
       >
         {titleForAuthenticationState(keycloak)}
       </StyledButton>
-    </span>
+    </Panel>
   );
 };
