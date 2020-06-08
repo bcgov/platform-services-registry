@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@bcgov/bc-sans": "^1.0.1",
     "@bcgov/common-web-utils": "^1.0.6-4",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
@@ -16,6 +17,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
+    "@types/typography": "^0.16.3",
     "keycloak-js": "^10.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -25,7 +27,8 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "typography": "^0.16.19"
   },
   "scripts": {
     "start": "react-scripts start",
