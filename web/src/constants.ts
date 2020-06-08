@@ -19,7 +19,7 @@
 export const SSO_BASE_URL = process.env.NODE_ENV === 'production'
   ? '{{.Env.SSO_BASE_URL}}'
   : 'https://sso-dev.pathfinder.gov.bc.ca';
-export const SSO_CLIENT_ID = 'jason-test';
+export const SSO_CLIENT_ID = 'registry-web';
 export const SSO_REALM_NAME = 'devhub';
 
 export const API = {
