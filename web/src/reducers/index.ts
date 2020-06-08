@@ -19,21 +19,19 @@
 //
 
 import { combineReducers } from 'redux';
-import implicitAuthManager from '../auth';
-import { AUTHENTICATION } from '../constants';
 
-const authentication = (state = { isAuthenticated: false }, action: any) => {
-  switch (action.type) {
-    case AUTHENTICATION.SUCCESS:
-      return { isAuthenticated: true };
-    case AUTHENTICATION.FAILED:
-      implicitAuthManager.clearAuthLocalStorage();
-      return { isAuthenticated: false };
-    default:
-      return state;
-  }
-};
+// const authentication = (state = { isAuthenticated: false }, action: any) => {
+//   switch (action.type) {
+//     case AUTHENTICATION.SUCCESS:
+//       return { isAuthenticated: true };
+//     case AUTHENTICATION.FAILED:
+//       implicitAuthManager.clearAuthLocalStorage();
+//       return { isAuthenticated: false };
+//     default:
+//       return state;
+//   }
+// };
 
-const rootReducer = combineReducers({ authentication });
+const rootReducer = combineReducers({});
 
 export default rootReducer;

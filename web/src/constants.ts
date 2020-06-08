@@ -16,12 +16,11 @@
 // Created by Jason Leach on 2020-06-05.
 //
 
-export const AC_ROLE = 'devhub_xxx';
-
-export const AUTHENTICATION = {
-  SUCCESS: 'AUTHENTICATE_SUCCESS',
-  FAILED: 'AUTHENTICATE_FAILED',
-};
+export const SSO_BASE_URL = process.env.NODE_ENV === 'production'
+  ? '{{.Env.SSO_BASE_URL}}'
+  : 'https://sso-dev.pathfinder.gov.bc.ca';
+export const SSO_CLIENT_ID = 'jason-test';
+export const SSO_REALM_NAME = 'devhub';
 
 export const API = {
   BASE_URL: () =>
