@@ -1,19 +1,37 @@
+import { css, Global } from '@emotion/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './components/App';
 import configureStore from './configureStore';
-import './index.css';
 import * as serviceWorker from './serviceWorker';
+import typography from './typography';
 
 const store = configureStore();
+// console.log(typography.toString());
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
+      <Global
+        // html, body, #root {
+        styles={css`
+          body {
+              ${typography.toString()}
+              margin: 0;
+              padding: 0;
+              min-height: '100vh';
+              max-width: '100vw';
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+            }
+          code {
+              font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+            }
+          `}
+      />
       <App />
     </Provider>,
-
   </React.StrictMode>,
   document.getElementById('root')
 );
