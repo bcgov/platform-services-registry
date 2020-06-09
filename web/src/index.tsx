@@ -15,7 +15,7 @@ ReactDOM.render(
       <Global
         // html, body, #root {
         styles={css`
-        html, body {
+          html, body {
               ${typography.toString()}
               margin: 0;
               padding: 0;
