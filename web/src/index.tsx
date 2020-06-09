@@ -8,7 +8,6 @@ import * as serviceWorker from './serviceWorker';
 import typography from './typography';
 
 const store = configureStore();
-// console.log(typography.toString());
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +15,7 @@ ReactDOM.render(
       <Global
         // html, body, #root {
         styles={css`
-          body {
+        html, body {
               ${typography.toString()}
               margin: 0;
               padding: 0;
