@@ -1,7 +1,7 @@
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import React from 'react';
-import Aux from './auxillary';
+import Aux from '../../../hoc/auxillary';
 import logo from './bcid_h_rgb_rev.svg';
 import logoMobile from './logo.svg';
 
