@@ -34,7 +34,47 @@ const StyledForm = styled.form`
     border-radius: 5px;
     box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.07);
     background-color: #C0C0F0; // <- so I can see it better for now.
-`;
+    & > div {
+        display: flex;
+        flex-flow: row nowrap;
+        line-height: 2em;
+        margin: 5px;
+        & > label {
+        color: #333;
+        width: 110px;
+        font-size: 1em;
+        line-height: 32px;
+        }
+        & > input,
+        & > select,
+        & > textarea {
+        flex: 1;
+        padding: 3px 5px;
+        font-size: 1em;
+        margin-left: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        }
+        & > input[type='checkbox'] {
+        margin-top: 7px;
+        }
+        & > div {
+        margin-left: 16px;
+        & > label {
+            display: block;
+            & > input {
+            margin-right: 3px;
+            }
+        }
+        }
+    }
+    pre {
+        border: 1px solid #ccc;
+        background: rgba(0, 0, 0, 0.1);
+        box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+    }
+ `;
 
 const StyledTitle = styled.h1`
     ${typography.toString()}
@@ -47,20 +87,7 @@ const StyledTitle = styled.h1`
     line-height: normal;
     letter-spacing: normal;
     color: #036;
-`
-
-const StyledLabel = styled.p`
-    ${typography.toString()}
-    width: 43px;
-    height: 18px;
-    font-size: 15px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #036;
-`
+`;
 
 const onSubmit = () => { };
 const validate = (values: any): any => { return; };
@@ -75,14 +102,15 @@ const MyForm: React.SFC<IFormProps> = (props) => {
             {props => (
                 <StyledForm onSubmit={props.handleSubmit}>
                     <StyledTitle>Tell us about your project</StyledTitle>
-                    <StyledLabel>Name</StyledLabel>
                     <Field name="myField">
                         {props => (
                             <div>
-                                <input type="text"
-                                    name={props.input.name}
-                                    value={props.input.value}
-                                    onChange={props.input.onChange}
+                                <label>Name</label>
+                                <Field
+                                    name="projectName"
+                                    component="input"
+                                    type="text"
+                                    placeholder="Project Name"
                                 />
                             </div>
                         )}
