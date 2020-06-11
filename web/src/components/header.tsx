@@ -20,9 +20,9 @@
 
 import styled from '@emotion/styled';
 import React from 'react';
-import typography from '../../typography';
-import AuthButton from '../AuthButton';
-import GovLogo from '../UI/GovLogo';
+import typography from '../typography';
+import AuthButton from './authbutton';
+import GovLogo from './UI/govlogo';
 
 const StyledHeader = styled.header`
   background-color: #036;
