@@ -91,7 +91,6 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                 </StyledForm>
             )}
         </Form>
-
     )
 };
 
