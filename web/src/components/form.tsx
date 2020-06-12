@@ -18,68 +18,20 @@
 
 // import { useKeycloak } from '@react-keycloak/web';
 import styled from '@emotion/styled';
+import { Input, Label, Textarea } from '@rebass/forms';
 import React from 'react';
 import { Field, Form } from 'react-final-form';
+import { Flex, Text } from 'rebass';
 import typography from '../typography';
+import { ShadowBox } from './UI/shadowContainer';
 
 export interface IFormProps {
     children?: React.ReactNode,
     onSubmit?: (e: any) => void
 };
 
-const StyledForm = styled.form`
-    margin: 100px 0px 0px 100px;
-    width: 606px;
-    height: 578px;
-    border-radius: 5px;
-    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.07);
-    background-color: #C0C0F0; // <- so I can see it better for now.
-    & > div {
-        display: flex;
-        flex-flow: row nowrap;
-        line-height: 2em;
-        margin: 5px;
-        & > label {
-        color: #333;
-        width: 110px;
-        font-size: 1em;
-        line-height: 32px;
-        }
-        & > input,
-        & > select,
-        & > textarea {
-        flex: 1;
-        padding: 3px 5px;
-        font-size: 1em;
-        margin-left: 15px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        }
-        & > input[type='checkbox'] {
-        margin-top: 7px;
-        }
-        & > div {
-        margin-left: 16px;
-        & > label {
-            display: block;
-            & > input {
-            margin-right: 3px;
-            }
-        }
-        }
-    }
-    pre {
-        border: 1px solid #ccc;
-        background: rgba(0, 0, 0, 0.1);
-        box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
-        padding: 20px;
-    }
- `;
-
 const StyledTitle = styled.h1`
     ${typography.toString()}
-    width: 261px;
-    height: 28px;
     font-size: 24px;
     font-weight: bold;
     font-stretch: normal;
@@ -96,31 +48,70 @@ const MyForm: React.SFC<IFormProps> = (props) => {
     // const { keycloak } = useKeycloak();
 
     return (
-        <Form
-            onSubmit={onSubmit}
-            validate={validate}>
-            {props => (
-                <StyledForm onSubmit={props.handleSubmit}>
-                    <StyledTitle>Tell us about your project</StyledTitle>
-                    <Field name="myField">
-                        {props => (
-                            <div>
-                                <label>Name</label>
-                                <Field
-                                    name="projectName"
-                                    component="input"
-                                    type="text"
-                                    placeholder="Project Name"
-                                />
-                            </div>
-                        )}
-                    </Field>
-                    <button type="submit">Submit</button>
-                </StyledForm>
-            )}
-        </Form>
+        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+            <StyledTitle>Tell us about your project</StyledTitle>
+            <Form
+                onSubmit={onSubmit}
+                validate={validate}>
+                {props => (
+                    <form onSubmit={props.handleSubmit} >
+                        <Field name="name">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="project-name">Name</Label>
+                                    <Input {...input} id="project-name" placeholder="Project Name" />
+                                </Flex>
+                            )}
+                        </Field>
+                        <Field name="description">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label>Description</Label>
+                                    <Textarea {...input} id="project-description" rows={5} />
+                                </Flex>
+                            )}
+                        </Field>
+
+                        <Flex>
+                            <Text flex="0 0 66%">Critical Application</Text>
+                            <Flex flex="1 1 auto" justifyContent="space-between">
+                                <label>
+                                    <Field
+                                        name="isCritical"
+                                        component="input"
+                                        type="radio"
+                                        value="yes"
+                                    />
+                                    <span>yes</span>
+                                </label>
+                                <label>
+                                    <Field
+                                        name="isCritical"
+                                        component="input"
+                                        type="radio"
+                                        value="no"
+                                    />
+                                    <span>no</span>
+                                </label>
+                            </Flex>
+                        </Flex>
+
+                        <Flex>
+                            <Text flex="0 0 66%">Ministry Sponsor</Text>
+                            <Field flex="1 1 auto" name="ministry" component="select">
+                                <option value="CITZ:EX">Citizens' Services</option>
+                                <option value="FOO:BAR">Ham</option>
+                            </Field>
+                        </Flex>
+                        <button type="submit">Submit</button>
+                    </form>
+                )}
+            </Form>
+        </ShadowBox>
     )
 };
+
+
 
 MyForm.defaultProps = {
     children: null,
