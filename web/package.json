@@ -19,6 +19,7 @@
     "@types/rebass": "^4.0.6",
     "@types/rebass__forms": "^4.0.2",
     "@types/typography": "^0.16.3",
+    "axios": "^0.19.2",
     "final-form": "^4.20.0",
     "keycloak-js": "^10.0.2",
     "prop-types": "^15.7.2",
