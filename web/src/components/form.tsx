@@ -16,12 +16,13 @@
 // Created by Jason Leach on 2020-06-09.
 //
 
-// import { useKeycloak } from '@react-keycloak/web';
 import styled from '@emotion/styled';
 import { Input, Label, Textarea } from '@rebass/forms';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Flex, Text } from 'rebass';
+import { API } from '../constants';
 import typography from '../typography';
 import { ShadowBox } from './UI/shadowContainer';
 
@@ -29,6 +30,14 @@ export interface IFormProps {
     children?: React.ReactNode,
     onSubmit?: (e: any) => void
 };
+
+const axi = axios.create({
+    baseURL: API.BASE_URL(),
+    // headers: {
+    //     Authorization: `Bearer ${keycloak?.token}`
+    // },
+});
+console.log(`API Base URL = ${API.BASE_URL()}`);
 
 const StyledTitle = styled.h1`
     ${typography.toString()}
@@ -41,11 +50,52 @@ const StyledTitle = styled.h1`
     color: #036;
 `;
 
-const onSubmit = () => { };
-const validate = (values: any): any => { return; };
-
 const MyForm: React.SFC<IFormProps> = (props) => {
     // const { keycloak } = useKeycloak();
+    const [state, setState] = useState<any>([]);
+
+    const onSubmit = (data: any) => {
+        // const form = new FormData();
+        const aData = { ...data, name: 'Hello' };
+        axi.post('provisioning', aData, {
+            headers: {
+                // Accept: 'application/json',
+                // TODO: Add authentication header.
+            },
+        }).then(res => {
+            console.log('DONE!!!');
+            console.log(res);
+        });
+
+        console.log(data, state);
+    };
+
+    const validate = (values: any): any => {
+        console.log('validate = ', values);
+    };
+
+    // if (keycloak && keycloak.authenticated) {
+    //     console.log('XXXXXXXXXXXX')
+    //     axi.defaults.headers.common['Authorization'] = `Bearer ${keycloak?.token}`;
+    // }
+
+    useEffect(() => {
+        async function wrap() {
+            const result = await axi.get('ministry', {
+                headers: {
+                    Accept: 'application/json',
+                    // TODO: Add authentication header.
+                },
+            });
+
+            if (result.data) {
+                console.log('Fetched ministry sponsors!!!');
+                setState(result.data);
+            }
+        }
+
+        wrap();
+    }, []);
 
     return (
         <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
@@ -99,8 +149,11 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                         <Flex>
                             <Text flex="0 0 66%">Ministry Sponsor</Text>
                             <Field flex="1 1 auto" name="ministry" component="select">
-                                <option value="CITZ:EX">Citizens' Services</option>
-                                <option value="FOO:BAR">Ham</option>
+                                {state.map((s: any) => (
+                                    <option key={s.code} value={s.code}>
+                                        {s.name}
+                                    </option>
+                                ))}
                             </Field>
                         </Flex>
                         <button type="submit">Submit</button>

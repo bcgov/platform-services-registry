@@ -25,6 +25,6 @@ export const SSO_REALM_NAME = 'devhub';
 export const API = {
   BASE_URL: () =>
     process.env.NODE_ENV === 'development'
-      ? 'http://localhost:8089/api/v1/'
+      ? 'http://localhost:8100/api/v1/'
       : `${window.location.origin}/api/v1/`,
 };
