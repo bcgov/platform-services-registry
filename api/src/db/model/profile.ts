@@ -108,4 +108,31 @@ export default class ProfileModel extends Model {
       throw err;
     }
   };
+
+  async addContactToProfile(profileId: number, contactId: number): Promise<void> {
+    const values: any[] = [];
+    const table = 'profile_contact';
+    const query = {
+      text: `
+        INSERT INTO ${table}
+          (profile_id, contact_id)
+          VALUES ($1, $2) RETURNING *;`,
+      values,
+    };
+
+    try {
+      query.values = [
+        profileId,
+        contactId,
+      ];
+
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to link contact ${contactId} to profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
 }

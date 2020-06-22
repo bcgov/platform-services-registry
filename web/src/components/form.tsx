@@ -64,14 +64,14 @@ const MyForm: React.SFC<IFormProps> = (props) => {
             busOrgId: 'HLTH',
             prioritySystem: false
         };
-        const p1 = {
+        const pcontact = {
             firstName: 'Jason',
             lastName: 'Leach',
             email: 'jason.leach@fullboar.ca',
             githubId: 'jleach',
             roleId: 1,
         }
-        const p2 = {
+        const tcontact = {
             firstName: 'Phill',
             lastName: 'Billips',
             email: 'phill.billips@fullboar.ca',
@@ -81,24 +81,25 @@ const MyForm: React.SFC<IFormProps> = (props) => {
 
         try {
             // 1. Create the project profile.
-            console.log('Profile');
             const response: any = await axi.post('profile', profile, headers);
-            console.log(response);
+            const profileId = response.data.id;
 
             // 2. Create people and relate to project profile.
-            console.log('Contacts');
+            const x: any = await axi.post('contact', pcontact, headers);
+            const y: any = await axi.post('contact', tcontact, headers);
 
-            await axi.post('contact', p1, headers);
-            await axi.post('contact', p2, headers);
+            // 3. Link the contacts to the profile.
+            await axi.post(`profile/${profileId}/contact/${x.data.id}`, headers);
+            await axi.post(`profile/${profileId}/contact/${y.data.id}`, headers);
 
-            // 3. Create the provisioning request (submit clusters);
+            // 4. Create the provisioning request (submit clusters);
             // const provision = {
             //     profileId: response.id,
             //     clusters: [1, 3],
             // }
             // await axi.post('provision', provision, headers);
 
-            // 4. All good? Tell the user.
+            // 5. All good? Tell the user.
         } catch (err) {
             console.log(err);
         }
@@ -157,11 +158,11 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                         </Field>
 
                         <Flex>
-                            <Text flex="0 0 66%">Critical Application</Text>
+                            <Text flex="0 0 66%">Priority Application</Text>
                             <Flex flex="1 1 auto" justifyContent="space-between">
                                 <label>
                                     <Field
-                                        name="isCritical"
+                                        name="prioritySystem"
                                         component="input"
                                         type="radio"
                                         value="yes"
@@ -170,7 +171,7 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                                 </label>
                                 <label>
                                     <Field
-                                        name="isCritical"
+                                        name="prioritySystem"
                                         component="input"
                                         type="radio"
                                         value="no"
@@ -190,8 +191,6 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                                 ))}
                             </Field>
                         </Flex>
-                        <button type="submit">Submit</button>
-
                     </ShadowBox>
 
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
@@ -273,6 +272,9 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                                 </Flex>
                             )}
                         </Field>
+                    </ShadowBox>
+                    <ShadowBox>
+                        <button type="submit">Submit</button>
                     </ShadowBox>
                 </form>
             )}

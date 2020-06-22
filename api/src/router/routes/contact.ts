@@ -24,7 +24,7 @@ import { createContact } from '../../controllers/contact';
 
 const router = express.Router();
 
-// Person
+// Contact
 router.post('/', asyncMiddleware(createContact));
 
 export default router;

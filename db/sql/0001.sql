@@ -119,4 +119,22 @@ CREATE TRIGGER update_contact_changetimestamp BEFORE UPDATE
 ON contact FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
 
+CREATE TABLE IF NOT EXISTS profile_contact (
+    id          SERIAL PRIMARY KEY,
+    profile_id  INTEGER REFERENCES profile(id) NOT NULL,
+    contact_id  INTEGER REFERENCES contact(id) NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE profile_contact
+TO :ROLLNAME;
+GRANT USAGE ON SEQUENCE profile_contact_id_seq
+TO :ROLLNAME;
+
+DROP TRIGGER IF EXISTS update_profile_contact_changetimestamp on profile_contact;
+CREATE TRIGGER update_profile_contact_changetimestamp BEFORE UPDATE
+ON profile_contact FOR EACH ROW EXECUTE PROCEDURE 
+update_changetimestamp_column();
+
 END TRANSACTION;
