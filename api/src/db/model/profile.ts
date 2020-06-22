@@ -5,9 +5,9 @@ import { CommonFields, Model } from './model';
 export interface ProjectProfile extends CommonFields {
   name: string,
   description: string,
-  categoryId: number,
   busOrgId: number,
   active?: boolean,
+  prioritySystem?: boolean,
   criticalSystem?: boolean,
 }
 
@@ -16,8 +16,8 @@ export default class ProfileModel extends Model {
   requiredFields: string[] = [
     'name',
     'description',
-    'categoryId',
     'busOrgId',
+    'prioritySystem',
   ];
   pool: Pool;
 
@@ -30,13 +30,14 @@ export default class ProfileModel extends Model {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, description, category_id, bus_org_id)
-          VALUES ($1, $2, $3, $4) RETURNING *;`,
+          (name, description, bus_org_id, priority_system, critical_system)
+          VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
       values: [
         data.name,
         data.description,
-        data.categoryId,
         data.busOrgId,
+        data.prioritySystem ? data.prioritySystem : false,
+        data.criticalSystem ? data.criticalSystem : false,
       ],
     };
 
@@ -57,8 +58,8 @@ export default class ProfileModel extends Model {
       text: `
         UPDATE ${this.table}
           SET
-            name = $1, description = $2, category_id = $3, bus_org_id = $4,
-            active = $5, critical_system = $6
+            name = $1, description = $2, bus_org_id = $3,
+            active = $4, priority_system = $5, critical_system = $6
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -70,10 +71,10 @@ export default class ProfileModel extends Model {
       query.values = [
         aData.name,
         aData.description,
-        aData.categoryId,
         aData.busOrgId,
         aData.active,
         aData.criticalSystem,
+        aData.prioritySystem,
       ];
 
       const results = await this.runQuery(query);

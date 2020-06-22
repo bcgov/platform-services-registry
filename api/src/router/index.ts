@@ -20,10 +20,10 @@
 
 import cors from 'cors';
 import config from '../config';
+import contact from './routes/contact';
 import ehlo from './routes/ehlo';
 import ministry from './routes/ministry';
 import profile from './routes/profile';
-import provisioning from './routes/provisioning';
 
 const corsOptions = {
   origin: config.get('environment') === 'development' ? '*' : config.get('apiUrl'),
@@ -40,5 +40,5 @@ export const router = app => {
   // app.use(passport.authenticate('jwt', { session: false }));
   app.use('/api/v1/profile', profile);
   app.use('/api/v1/ministry', ministry);
-  app.use('/api/v1/provisioning', provisioning);
+  app.use('/api/v1/contact', contact);
 };

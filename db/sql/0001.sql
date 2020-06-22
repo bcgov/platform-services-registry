@@ -25,21 +25,6 @@ CREATE TRIGGER update_ref_cluster_changetimestamp BEFORE UPDATE
 ON ref_cluster FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
 
-CREATE TABLE IF NOT EXISTS ref_category (
-    id          SERIAL PRIMARY KEY,
-    name        VARCHAR(32) NOT NULL,
-    description VARCHAR(256) NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
-);
-
-GRANT SELECT ON TABLE ref_category TO :ROLLNAME;
-
-DROP TRIGGER IF EXISTS update_ref_category_changetimestamp on ref_category;
-CREATE TRIGGER update_ref_category_changetimestamp BEFORE UPDATE
-ON ref_category FOR EACH ROW EXECUTE PROCEDURE 
-update_changetimestamp_column();
-
 CREATE TABLE IF NOT EXISTS ref_bus_org (
     id          varchar(4) PRIMARY KEY,
     name        varchar(64) NOT NULL,
@@ -58,9 +43,8 @@ CREATE TABLE IF NOT EXISTS profile (
     id              serial PRIMARY KEY,
     name            varchar(40) NOT NULL,
     description     varchar(512),
-    active          boolean NOT NULL DEFAULT true,
     critical_system boolean NOT NULL DEFAULT false,
-    category_id     INTEGER REFERENCES ref_category(id) NOT NULL,
+    priority_system boolean NOT NULL DEFAULT false,
     bus_org_id      VARCHAR(4) REFERENCES ref_bus_org(id) NOT NULL,
     archived        boolean NOT NULL DEFAULT false,
     created_at      timestamp DEFAULT CURRENT_TIMESTAMP(3),
@@ -96,6 +80,43 @@ TO :ROLLNAME;
 DROP TRIGGER IF EXISTS update_namespace_changetimestamp on namespace;
 CREATE TRIGGER update_namespace_changetimestamp BEFORE UPDATE
 ON namespace FOR EACH ROW EXECUTE PROCEDURE 
+update_changetimestamp_column();
+
+CREATE TABLE IF NOT EXISTS ref_role (
+    id                SERIAL PRIMARY KEY,
+    name              VARCHAR(32) NOT NULL,
+    description       VARCHAR(256),
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+);
+
+GRANT SELECT ON TABLE ref_role TO :ROLLNAME;
+
+DROP TRIGGER IF EXISTS update_ref_role_changetimestamp on ref_role;
+CREATE TRIGGER update_ref_role_changetimestamp BEFORE UPDATE
+ON ref_role FOR EACH ROW EXECUTE PROCEDURE 
+update_changetimestamp_column();
+
+CREATE TABLE IF NOT EXISTS contact (
+    id          SERIAL PRIMARY KEY,
+    first_name  VARCHAR(32) NOT NULL,
+    last_name   VARCHAR(32) NOT NULL,
+    email       VARCHAR(32) NOT NULL,
+    github_id   VARCHAR(32),
+    role_id     INTEGER REFERENCES ref_role(id) NOT NULL,
+    archived    BOOLEAN NOT NULL DEFAULT false,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE contact
+TO :ROLLNAME;
+GRANT USAGE ON SEQUENCE contact_id_seq
+TO :ROLLNAME;
+
+DROP TRIGGER IF EXISTS update_contact_changetimestamp on contact;
+CREATE TRIGGER update_contact_changetimestamp BEFORE UPDATE
+ON contact FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
 
 END TRANSACTION;

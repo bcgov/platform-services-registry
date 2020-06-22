@@ -20,11 +20,11 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { createBlarb } from '../../controllers/provisioning';
+import { createContact } from '../../controllers/contact';
 
 const router = express.Router();
 
-// Ministry
-router.post('/', asyncMiddleware(createBlarb));
+// Person
+router.post('/', asyncMiddleware(createContact));
 
 export default router;

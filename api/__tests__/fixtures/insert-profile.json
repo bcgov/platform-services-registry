@@ -1,8 +1,8 @@
 {
   "name": "Health Gateway",
   "description": "Patient prescription history website",
-  "active": true,
   "categoryId": 1,
   "busOrgId": "HLTH",
-  "criticalSystem": false
+  "criticalSystem": false,
+  "prioritySystem": false
 }

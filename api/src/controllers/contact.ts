@@ -20,31 +20,28 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import DataManager from '../db';
+import shared from '../libs/shared';
+import { validateObjProps } from '../libs/utils';
 
-// const dm = new DataManager(shared.pgPool);
+const dm = new DataManager(shared.pgPool);
 
-export const createBlarb = async (
-  { headers, params, body }: { headers: any, params: any, body: any }, res: Response
+export const createContact = async (
+  { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
-  // const { NamespaceModel } = dm;
-  // const { profileId } = params;
-  console.log(body);
+  const { ContactModel } = dm;
+
+  const rv = validateObjProps(ContactModel.requiredFields, body);
+  if (rv) {
+    throw rv;
+  }
 
   try {
-    // const results = await NamespaceModel.findForProfile(Number(profileId));
-    const results = [
-      {
-        name: 'Citizens\s Services',
-        code: 'CITZ',
-      },
-      {
-        name: 'Transportation & Infrastructure',
-        code: 'TRAN',
-      },
-    ]
-    res.status(200).json(results);
+    const result = await ContactModel.create(body);
+
+    res.status(201).json(result);
   } catch (err) {
-    const message = `Unable fetch ministries`;
+    const message = `Unable to create contact`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

@@ -54,20 +54,54 @@ const MyForm: React.SFC<IFormProps> = (props) => {
     // const { keycloak } = useKeycloak();
     const [state, setState] = useState<any>([]);
 
-    const onSubmit = (data: any) => {
-        // const form = new FormData();
-        const aData = { ...data, name: 'Hello' };
-        axi.post('provisioning', aData, {
-            headers: {
-                // Accept: 'application/json',
-                // TODO: Add authentication header.
-            },
-        }).then(res => {
-            console.log('DONE!!!');
-            console.log(res);
-        });
+    const onSubmit = async (data: any) => {
+        const headers = {
+            // TODO: Add authentication header.
+        };
+        const profile = {
+            name: 'Health Gateway II',
+            description: 'This is a cool website',
+            busOrgId: 'HLTH',
+            prioritySystem: false
+        };
+        const p1 = {
+            firstName: 'Jason',
+            lastName: 'Leach',
+            email: 'jason.leach@fullboar.ca',
+            githubId: 'jleach',
+            roleId: 1,
+        }
+        const p2 = {
+            firstName: 'Phill',
+            lastName: 'Billips',
+            email: 'phill.billips@fullboar.ca',
+            githubId: 'githubPB',
+            roleId: 2,
+        }
 
-        console.log(data, state);
+        try {
+            // 1. Create the project profile.
+            console.log('Profile');
+            const response: any = await axi.post('profile', profile, headers);
+            console.log(response);
+
+            // 2. Create people and relate to project profile.
+            console.log('Contacts');
+
+            await axi.post('contact', p1, headers);
+            await axi.post('contact', p2, headers);
+
+            // 3. Create the provisioning request (submit clusters);
+            // const provision = {
+            //     profileId: response.id,
+            //     clusters: [1, 3],
+            // }
+            // await axi.post('provision', provision, headers);
+
+            // 4. All good? Tell the user.
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const validate = (values: any): any => {
@@ -98,13 +132,13 @@ const MyForm: React.SFC<IFormProps> = (props) => {
     }, []);
 
     return (
-        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-            <StyledTitle>Tell us about your project</StyledTitle>
-            <Form
-                onSubmit={onSubmit}
-                validate={validate}>
-                {props => (
-                    <form onSubmit={props.handleSubmit} >
+        <Form
+            onSubmit={onSubmit}
+            validate={validate}>
+            {props => (
+                <form onSubmit={props.handleSubmit} >
+                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                        <StyledTitle>Tell us about your project</StyledTitle>
                         <Field name="name">
                             {({ input }) => (
                                 <Flex flexDirection="column">
@@ -157,10 +191,92 @@ const MyForm: React.SFC<IFormProps> = (props) => {
                             </Field>
                         </Flex>
                         <button type="submit">Submit</button>
-                    </form>
-                )}
-            </Form>
-        </ShadowBox>
+
+                    </ShadowBox>
+
+                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                        <StyledTitle>What type of infrastructure do you need?</StyledTitle>
+
+                    </ShadowBox>
+
+                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                        <StyledTitle>Who is the product owner for this project?</StyledTitle>
+
+                        <Field name="po-first-name">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="po-first-name">First Name</Label>
+                                    <Input {...input} id="po-first-name" placeholder="Jane" />
+                                </Flex>
+                            )}
+                        </Field>
+                        <Field name="po-last-name">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="po-last-name">Last Name</Label>
+                                    <Input {...input} id="po-last-name" placeholder="Doe" />
+                                </Flex>
+                            )}
+                        </Field>
+                        <Field name="po-email">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="po-email">eMail Address</Label>
+                                    <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
+                                </Flex>
+                            )}
+                        </Field>
+
+                        <Field name="po-github-id">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="po-github-id">GitHub ID</Label>
+                                    <Input {...input} id="po-github-id" placeholder="jane1100" />
+                                </Flex>
+                            )}
+                        </Field>
+                    </ShadowBox>
+
+                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                        <StyledTitle>Who is the technical contact for this project?</StyledTitle>
+
+                        <Field name="tc-first-name">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="tc-first-name">First Name</Label>
+                                    <Input {...input} id="tc-first-name" placeholder="Jane" />
+                                </Flex>
+                            )}
+                        </Field>
+                        <Field name="tc-last-name">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="tc-last-name">Last Name</Label>
+                                    <Input {...input} id="tc-last-name" placeholder="Doe" />
+                                </Flex>
+                            )}
+                        </Field>
+                        <Field name="tc-email">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="tc-email">eMail Address</Label>
+                                    <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
+                                </Flex>
+                            )}
+                        </Field>
+
+                        <Field name="tc-github-id">
+                            {({ input }) => (
+                                <Flex flexDirection="column">
+                                    <Label htmlFor="tc-github-id">GitHub ID</Label>
+                                    <Input {...input} id="tc-github-id" placeholder="jane1100" />
+                                </Flex>
+                            )}
+                        </Field>
+                    </ShadowBox>
+                </form>
+            )}
+        </Form>
     )
 };
 
