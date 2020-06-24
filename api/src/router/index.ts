@@ -19,6 +19,7 @@
 'use strict';
 
 import cors from 'cors';
+import passport from 'passport';
 import config from '../config';
 import contact from './routes/contact';
 import ehlo from './routes/ehlo';
@@ -37,8 +38,8 @@ export const router = app => {
   app.use('/api/v1/ehlo', ehlo); // probes
   // Any routes following the authentication middleware line below
   // will require authentication.
-  // app.use(passport.authenticate('jwt', { session: false }));
-  app.use('/api/v1/profile', profile);
   app.use('/api/v1/ministry', ministry);
+  app.use(passport.authenticate('jwt', { session: false }));
+  app.use('/api/v1/profile', profile);
   app.use('/api/v1/contact', contact);
 };

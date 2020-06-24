@@ -8,6 +8,7 @@ x-env: &defaults
   APP_DB_NAME:
   APP_DB_USER:
   APP_DB_PASSWORD:
+  SSO_CLIENT_SECRET:
 # volumes:
 #   pg_data:
 # networks:

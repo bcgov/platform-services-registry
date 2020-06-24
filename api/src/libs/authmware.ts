@@ -32,6 +32,7 @@ export const isAuthorized = jwtPayload => {
 };
 
 export const verify = (req, jwtPayload, done) => {
+
   if (jwtPayload) {
     if (!isAuthorized(jwtPayload)) {
       // tslint:disable-next-line:no-shadowed-variable
