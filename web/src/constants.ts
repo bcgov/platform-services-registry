@@ -28,3 +28,8 @@ export const API = {
       ? 'http://localhost:8100/api/v1/'
       : `${window.location.origin}/api/v1/`,
 };
+
+export const ROLES = {
+  PRODUCTOWNER: 1,
+  TECHNICAL: 2,
+};
