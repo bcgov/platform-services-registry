@@ -26,10 +26,6 @@ import { Flex, Text } from 'rebass';
 import { API, ROLES } from '../constants';
 import typography from '../typography';
 import { ShadowBox } from './UI/shadowContainer';
-export interface IFormProps {
-    children?: React.ReactNode,
-    onSubmit?: (e: any) => void
-};
 
 const axi = axios.create({
     baseURL: API.BASE_URL(),
@@ -76,7 +72,7 @@ const transformFormData = (data: any) => {
     }
 }
 
-const MyForm: React.SFC<IFormProps> = (props) => {
+const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
     const [state, setState] = useState<any>([]);
 
@@ -93,14 +89,14 @@ const MyForm: React.SFC<IFormProps> = (props) => {
             // 1. Create the project profile.
             const response: any = await axi.post('profile', profile);
             const profileId = response.data.id;
-
+            console.log(response);
             // 2. Create contacts.
-            const x: any = await axi.post('contact', productOwner);
-            const y: any = await axi.post('contact', technicalContact);
+            const po: any = await axi.post('contact', productOwner);
+            const tc: any = await axi.post('contact', technicalContact);
 
             // 3. Link the contacts to the profile.
-            await axi.post(`profile/${profileId}/contact/${x.data.id}`);
-            await axi.post(`profile/${profileId}/contact/${y.data.id}`);
+            await axi.post(`profile/${profileId}/contact/${po.data.id}`);
+            await axi.post(`profile/${profileId}/contact/${tc.data.id}`);
 
             // 4. Create the provisioning request (submit clusters);
             // const provision = {
@@ -117,7 +113,13 @@ const MyForm: React.SFC<IFormProps> = (props) => {
     };
 
     const validate = (values: any): any => {
-        console.log('validate = ', values);
+        // const errors = {}
+        // if (!values.username) {
+        //     // @ts-ignore
+        //     errors['project-name'] = 'Required'
+        // }
+
+        return;
     };
 
     useEffect(() => {
@@ -285,11 +287,6 @@ const MyForm: React.SFC<IFormProps> = (props) => {
             )}
         </Form>
     )
-};
-
-MyForm.defaultProps = {
-    children: null,
-    onSubmit: () => { }
 };
 
 export default MyForm;
