@@ -50,7 +50,7 @@ const StyledTitle = styled.h1`
     color: #036;
 `;
 
-const vv = (value: string) => (value ? undefined : 'Required')
+const requiredField = (value: string) => (value ? undefined : 'Required')
 
 const transformFormData = (data: any) => {
     const profile: any = {};
@@ -158,20 +158,21 @@ const MyForm: React.SFC = () => {
                 <form onSubmit={props.handleSubmit} >
                     <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
                         <StyledTitle>Tell us about your project</StyledTitle>
-                        <Field name="project-name" validate={vv}>
+                        <Field name="project-name" validate={requiredField}>
                             {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="project-name">Name</Label>
                                     <Input {...input} id="project-name" placeholder="Project X" />
-                                    {meta.error && meta.touched && <span>X{meta.error}X</span>}
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
-                        <Field name="project-description">
-                            {({ input }) => (
+                        <Field name="project-description" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="project-description">Description</Label>
                                     <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
@@ -199,7 +200,6 @@ const MyForm: React.SFC = () => {
                                 </Label>
                             </Flex>
                         </Flex>
-
                         <Flex>
                             <Label variant="adjacentLabel">Ministry Sponsor</Label>
                             <Select flex="1 1 auto" name="project-busOrgId">
@@ -214,36 +214,40 @@ const MyForm: React.SFC = () => {
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
                         <StyledTitle>Who is the product owner for this project?</StyledTitle>
 
-                        <Field name="po-firstName">
-                            {({ input }) => (
+                        <Field name="po-firstName" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="po-first-name">First Name</Label>
                                     <Input {...input} id="po-first-name" placeholder="Jane" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
-                        <Field name="po-lastName">
-                            {({ input }) => (
+                        <Field name="po-lastName" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="po-last-name">Last Name</Label>
                                     <Input {...input} id="po-last-name" placeholder="Doe" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
-                        <Field name="po-email">
-                            {({ input }) => (
+                        <Field name="po-email" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="po-email">eMail Address</Label>
                                     <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
 
-                        <Field name="po-githubId">
-                            {({ input }) => (
+                        <Field name="po-githubId" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="po-github-id">GitHub ID</Label>
                                     <Input {...input} id="po-github-id" placeholder="jane1100" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
@@ -252,15 +256,16 @@ const MyForm: React.SFC = () => {
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
                         <StyledTitle>Who is the technical contact for this project?</StyledTitle>
 
-                        <Field name="tc-firstName">
-                            {({ input }) => (
+                        <Field name="tc-firstName" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="tc-first-name">First Name</Label>
                                     <Input {...input} id="tc-first-name" placeholder="Jane" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
-                        <Field name="tc-lastName">
+                        <Field name="tc-lastName" validate={requiredField}>
                             {({ input }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="tc-last-name">Last Name</Label>
@@ -268,20 +273,22 @@ const MyForm: React.SFC = () => {
                                 </Flex>
                             )}
                         </Field>
-                        <Field name="tc-email">
-                            {({ input }) => (
+                        <Field name="tc-email" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="tc-email">eMail Address</Label>
                                     <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
 
-                        <Field name="tc-githubId">
-                            {({ input }) => (
+                        <Field name="tc-githubId" validate={requiredField}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="tc-github-id">GitHub ID</Label>
                                     <Input {...input} id="tc-github-id" placeholder="jane1100" />
+                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>

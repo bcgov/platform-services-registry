@@ -39,6 +39,13 @@ export default {
       letterSpacing: 'normal',
       color: '#036',
     },
+    errorLabel: {
+      flex: '0 0 66%',
+      margin: '4px 0 4px 0',
+      fontSize: '14px',
+      fontWeight: 500,
+      color: 'red',
+    },
     input: {
       borderRadius: '5px',
       border: 'solid 1px #036',
