@@ -23,7 +23,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Flex } from 'rebass';
-import { API, ROLES } from '../constants';
+import { API, DEFAULT_MINISTRY, ROLES } from '../constants';
 import { ShadowBox } from './UI/shadowContainer';
 
 const axi = axios.create({
@@ -205,7 +205,11 @@ const MyForm: React.SFC = () => {
                             <Label variant="adjacentLabel">Ministry Sponsor</Label>
                             <Select flex="1 1 auto" name="project-busOrgId">
                                 {ministry.map((s: any) => (
-                                    <option key={s.code} value={s.code}>
+                                    <option
+                                        key={s.code}
+                                        value={s.code}
+                                        selected={s.code === DEFAULT_MINISTRY ? true : false}
+                                    >
                                         {s.name}
                                     </option>
                                 ))}

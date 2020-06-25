@@ -33,3 +33,5 @@ export const ROLES = {
   PRODUCTOWNER: 1,
   TECHNICAL: 2,
 };
+
+export const DEFAULT_MINISTRY = 'CITZ';
