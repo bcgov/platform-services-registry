@@ -22,17 +22,25 @@ import { Input, Label, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
-import { Flex, Text } from 'rebass';
+import { Flex } from 'rebass';
 import { API, ROLES } from '../constants';
-import typography from '../typography';
 import { ShadowBox } from './UI/shadowContainer';
 
 const axi = axios.create({
     baseURL: API.BASE_URL(),
 });
 
+const StyledButton = styled.button`
+    margin-top: 20px;
+    width: 50%;
+    height: 60px;
+    border-radius: 5px;
+    background-color: #036;
+    color: #FFFFFF;
+    font-size: 24px;
+`;
+
 const StyledTitle = styled.h1`
-    ${typography.toString()}
     font-size: 24px;
     font-weight: bold;
     font-stretch: normal;
@@ -41,6 +49,8 @@ const StyledTitle = styled.h1`
     letter-spacing: normal;
     color: #036;
 `;
+
+const vv = (value: string) => (value ? undefined : 'Required')
 
 const transformFormData = (data: any) => {
     const profile: any = {};
@@ -74,7 +84,7 @@ const transformFormData = (data: any) => {
 
 const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
-    const [state, setState] = useState<any>([]);
+    const [ministry, setMinistrySponsor] = useState<any>(['Loading...']);
 
     const onSubmit = async (form: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(form);
@@ -89,7 +99,7 @@ const MyForm: React.SFC = () => {
             // 1. Create the project profile.
             const response: any = await axi.post('profile', profile);
             const profileId = response.data.id;
-            console.log(response);
+
             // 2. Create contacts.
             const po: any = await axi.post('contact', productOwner);
             const tc: any = await axi.post('contact', technicalContact);
@@ -112,15 +122,16 @@ const MyForm: React.SFC = () => {
         }
     };
 
-    const validate = (values: any): any => {
-        // const errors = {}
-        // if (!values.username) {
-        //     // @ts-ignore
-        //     errors['project-name'] = 'Required'
-        // }
+    // const validate = (values: any): any => {
+    //     const errors = {}
+    //     if (!values.username) {
+    //         // @ts-ignore
+    //         errors['project-name'] = 'Required'
+    //     }
 
-        return;
-    };
+    //     console.log(errors);
+    //     return errors;
+    // };
 
     useEffect(() => {
         async function wrap() {
@@ -133,7 +144,7 @@ const MyForm: React.SFC = () => {
 
             if (result.data) {
                 console.log('Fetched ministry sponsors!!!');
-                setState(result.data);
+                setMinistrySponsor(result.data);
             }
         }
 
@@ -142,57 +153,57 @@ const MyForm: React.SFC = () => {
 
     return (
         <Form
-            onSubmit={onSubmit}
-            validate={validate}>
+            onSubmit={onSubmit}>
             {props => (
                 <form onSubmit={props.handleSubmit} >
-                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                    <ShadowBox maxWidth="750px" p="24px" mt="168px" px="70px">
                         <StyledTitle>Tell us about your project</StyledTitle>
-                        <Field name="project-name">
-                            {({ input }) => (
+                        <Field name="project-name" validate={vv}>
+                            {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="project-name">Name</Label>
                                     <Input {...input} id="project-name" placeholder="Project Name" />
+                                    {meta.error && meta.touched && <span>X{meta.error}X</span>}
                                 </Flex>
                             )}
                         </Field>
                         <Field name="project-description">
                             {({ input }) => (
                                 <Flex flexDirection="column">
-                                    <Label>Description</Label>
+                                    <Label htmlFor="project-description">Description</Label>
                                     <Textarea {...input} id="project-description" rows={5} />
                                 </Flex>
                             )}
                         </Field>
 
                         <Flex>
-                            <Text flex="0 0 66%">Priority Application</Text>
+                            <Label variant="adjacentLabel">Priority Application</Label>
                             <Flex flex="1 1 auto" justifyContent="space-between">
-                                <label>
+                                <Label>
                                     <Field
                                         name="project-prioritySystem"
                                         component="input"
                                         type="radio"
                                         value="yes"
                                     />
-                                    <span>yes</span>
-                                </label>
-                                <label>
+                                    <span>&nbsp;Yes</span>
+                                </Label>
+                                <Label>
                                     <Field
                                         name="project-prioritySystem"
                                         component="input"
                                         type="radio"
                                         value="no"
                                     />
-                                    <span>no</span>
-                                </label>
+                                    <span>&nbsp;No</span>
+                                </Label>
                             </Flex>
                         </Flex>
 
                         <Flex>
-                            <Text flex="0 0 66%">Ministry Sponsor</Text>
+                            <Label variant="adjacentLabel">Ministry Sponsor</Label>
                             <Field flex="1 1 auto" name="project-busOrgId" component="select">
-                                {state.map((s: any) => (
+                                {ministry.map((s: any) => (
                                     <option key={s.code} value={s.code}>
                                         {s.name}
                                     </option>
@@ -200,11 +211,6 @@ const MyForm: React.SFC = () => {
                             </Field>
                         </Flex>
                     </ShadowBox>
-
-                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-                        <StyledTitle>What type of infrastructure do you need?</StyledTitle>
-                    </ShadowBox>
-
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
                         <StyledTitle>Who is the product owner for this project?</StyledTitle>
 
@@ -279,9 +285,7 @@ const MyForm: React.SFC = () => {
                                 </Flex>
                             )}
                         </Field>
-                    </ShadowBox>
-                    <ShadowBox>
-                        <button type="submit">Submit</button>
+                        <StyledButton type="submit">Request</StyledButton>
                     </ShadowBox>
                 </form>
             )}

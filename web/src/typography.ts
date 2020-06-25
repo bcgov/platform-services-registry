@@ -27,4 +27,6 @@ const typography = new Typography({
   scaleRatio: 2.074,
 });
 
+typography.injectStyles();
+
 export default typography;
