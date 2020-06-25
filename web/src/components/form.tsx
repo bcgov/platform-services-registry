@@ -18,7 +18,7 @@
 
 import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
-import { Input, Label, Textarea } from '@rebass/forms';
+import { Input, Label, Select, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
@@ -156,7 +156,7 @@ const MyForm: React.SFC = () => {
             onSubmit={onSubmit}>
             {props => (
                 <form onSubmit={props.handleSubmit} >
-                    <ShadowBox maxWidth="750px" p="24px" mt="168px" px="70px">
+                    <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
                         <StyledTitle>Tell us about your project</StyledTitle>
                         <Field name="project-name" validate={vv}>
                             {({ input, meta }) => (
@@ -202,13 +202,13 @@ const MyForm: React.SFC = () => {
 
                         <Flex>
                             <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                            <Field flex="1 1 auto" name="project-busOrgId" component="select">
+                            <Select flex="1 1 auto" name="project-busOrgId">
                                 {ministry.map((s: any) => (
                                     <option key={s.code} value={s.code}>
                                         {s.name}
                                     </option>
                                 ))}
-                            </Field>
+                            </Select>
                         </Flex>
                     </ShadowBox>
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">

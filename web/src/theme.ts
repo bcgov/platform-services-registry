@@ -19,7 +19,7 @@
 export default {
   forms: {
     label: {
-      margin: `14px 0 5px 0`,
+      margin: '14px 0 5px 0',
       fontSize: '20px',
       fontWeight: 500,
       fontStretch: 'normal',
@@ -54,5 +54,12 @@ export default {
       border: 'solid 1px #036',
       backgroundColor: '#c4c4c4',
     },
+    select: {
+      fontSize: '20px',
+      fontWeight: 500,
+      borderRadius: '5px',
+      border: 'solid 1px #036',
+      color: '#036',
+    }
   }
 }
