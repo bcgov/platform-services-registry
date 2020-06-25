@@ -40,19 +40,16 @@ export default {
       color: '#036',
     },
     input: {
-      opacity: 0.1,
       borderRadius: '5px',
       border: 'solid 1px #036',
-      backgroundColor: '#c4c4c4',
-    },
-    placeholder: {
-      color: 'red',
+      backgroundColor: '#fafafa',
+      color: '#036'
     },
     textarea: {
-      opacity: 0.1,
       borderRadius: '5px',
       border: 'solid 1px #036',
-      backgroundColor: '#c4c4c4',
+      backgroundColor: '#fafafa',
+      color: '#036'
     },
     select: {
       fontSize: '20px',

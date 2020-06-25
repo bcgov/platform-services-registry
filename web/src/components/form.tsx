@@ -162,7 +162,7 @@ const MyForm: React.SFC = () => {
                             {({ input, meta }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="project-name">Name</Label>
-                                    <Input {...input} id="project-name" placeholder="Project Name" />
+                                    <Input {...input} id="project-name" placeholder="Project X" />
                                     {meta.error && meta.touched && <span>X{meta.error}X</span>}
                                 </Flex>
                             )}
@@ -171,7 +171,7 @@ const MyForm: React.SFC = () => {
                             {({ input }) => (
                                 <Flex flexDirection="column">
                                     <Label htmlFor="project-description">Description</Label>
-                                    <Textarea {...input} id="project-description" rows={5} />
+                                    <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
                                 </Flex>
                             )}
                         </Field>
