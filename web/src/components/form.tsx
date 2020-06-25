@@ -195,6 +195,7 @@ const MyForm: React.SFC = () => {
                                         component="input"
                                         type="radio"
                                         value="no"
+                                        checked="checked"
                                     />
                                     <span>&nbsp;No</span>
                                 </Label>

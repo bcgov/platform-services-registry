@@ -56,7 +56,8 @@ export default {
       borderRadius: '5px',
       border: 'solid 1px #036',
       backgroundColor: '#fafafa',
-      color: '#036'
+      color: '#036',
+      resize: 'none',
     },
     select: {
       fontSize: '20px',
