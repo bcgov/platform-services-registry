@@ -13,20 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-05.
+// Created by Jason Leach on 2020-06-16.
 //
 
-import '@bcgov/bc-sans/css/BCSans.css';
-import Typography from 'typography';
+'use strict';
 
-const typography = new Typography({
-  baseFontSize: '16px',
-  baseLineHeight: 1.25,
-  headerFontFamily: ['BCSans', 'Noto Sans', 'Verdana', 'Arial', 'sans-serif'],
-  bodyFontFamily: ['BCSans', 'Noto Sans', 'Verdana', 'Arial', 'sans-serif'],
-  scaleRatio: 2.074,
-});
+import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
+import express from 'express';
+import { createContact } from '../../controllers/contact';
 
-typography.injectStyles();
+const router = express.Router();
 
-export default typography;
+// Contact
+router.post('/', asyncMiddleware(createContact));
+
+export default router;

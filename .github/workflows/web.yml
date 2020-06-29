@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Unit tests w/ coverage
-        run: npm run test -- --coverage
+        run: npm run test -- --coverage --passWithNoTests
       # - name: LINTing
       #   run: npm run test:lint
       - name: Upload coverage report

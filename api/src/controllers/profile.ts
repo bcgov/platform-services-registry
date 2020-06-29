@@ -71,7 +71,6 @@ export const createProjectProfile = async (
 
   try {
     const results = await ProfileModel.create(body);
-
     res.status(200).json(results);
   } catch (err) {
     const message = 'Unable create new project profile';
@@ -132,6 +131,24 @@ export const archiveProjectProfile = async (
     res.status(204).end();
   } catch (err) {
     const message = 'Unable create new project profile';
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const addContactToProfile = async (
+  { params }: { params: any }, res: Response
+): Promise<void> => {
+  const { ProfileModel } = dm;
+  const { profileId, contactId } = params;
+
+  try {
+    await ProfileModel.addContactToProfile(Number(profileId), Number(contactId));
+
+    res.status(202).end();
+  } catch (err) {
+    const message = `Unable to create contact`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

@@ -15,8 +15,8 @@
   "scripts": {
     "build": "NODE_ENV=production gulp",
     "build:doc": "mkdir -p public/doc/api/ && api2html -o public/doc/api/index.html -l shell,javascript--nodejs ./doc/api.yaml",
-    "dev": "nodemon --watch src --inspect=0.0.0.0:5858 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
-    "dev:docker": "nodemon -L --delay 1600ms --watch build --inspect=0.0.0.0:5858 -e js,json --nolazy ./build/server.js",
+    "dev": "nodemon --watch src --inspect=0.0.0.0:9229 -e ts,tsx --exec node -r ts-node/register ./src/server.ts",
+    "dev:docker": "nodemon -L --delay 1600ms --watch build --inspect=0.0.0.0:9229 -e js,json --nolazy ./build/server.js",
     "start": "node build/server.js",
     "test:lint": "NODE_ENV=test tslint src/**/*.ts",
     "test:schema": "swagger-cli validate doc/api.yaml",

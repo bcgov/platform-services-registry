@@ -8,6 +8,7 @@ x-env: &defaults
   APP_DB_NAME:
   APP_DB_USER:
   APP_DB_PASSWORD:
+  SSO_CLIENT_SECRET:
 # volumes:
 #   pg_data:
 # networks:
@@ -16,6 +17,31 @@ x-env: &defaults
 #   internal:
 #     external: false
 services:
+  web:
+    stdin_open: true
+    # tty: true
+    container_name: registry-web
+    image: registry/web
+    build:
+      context: web/
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./web
+        target: /opt/app
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 256m
+    ports:
+      - 8101:8101
+    depends_on:
+      - api
+    environment:
+      PORT: 8101
+      NODE_ENV: development
+    command: >
+      bash -c "sleep 3 && npm start"
   api:
     container_name: registry-api
     image: registry/api
@@ -32,14 +58,14 @@ services:
           size: 256m
     ports:
       - 8100:8100
-      - 5858:5858
+      - 9229:9229
     depends_on:
       - postgres
     environment:
       <<: *defaults
       PORT: 8100
     command: >
-      bash -c "sleep 10 && npm run dev:docker"
+      bash -c "sleep 5 && npm run dev:docker"
   postgres:
     container_name: registry-pg
     image: registry/db

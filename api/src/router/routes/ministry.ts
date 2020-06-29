@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,21 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2018-06-05.
+// Created by Jason Leach on 2020-06-15.
 //
 
-import { applyMiddleware, createStore } from 'redux';
-// import logger from 'redux-logger';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
+'use strict';
 
-const configureStore = () => {
-  const middleware = [thunk];
-  if (process.env.NODE_ENV !== 'production') {
-    // middleware.push(logger);
-  }
+import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
+import express from 'express';
+import { fetchMinistrySponsors } from '../../controllers/ministry';
 
-  return createStore(rootReducer, applyMiddleware(...middleware));
-};
+const router = express.Router();
 
-export default configureStore;
+// Ministry
+router.get('/', asyncMiddleware(fetchMinistrySponsors));
+
+export default router;

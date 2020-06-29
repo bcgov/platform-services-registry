@@ -22,6 +22,11 @@ import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 
+export interface IButtonProps {
+  children?: React.ReactNode,
+  onClick?: (e: any) => void
+};
+
 const StyledButton = styled.button`
   padding: 8px 16px;
   margin: 120px;
@@ -62,9 +67,8 @@ const actionForCurrentState = (keycloak: any): any => {
   return () => keycloak.login();
 };
 
-export default () => {
-
-  const { keycloak } = useKeycloak()
+const Button: React.SFC<IButtonProps> = (props) => {
+  const { keycloak } = useKeycloak();
 
   return (
     <Panel>
@@ -72,7 +76,15 @@ export default () => {
         onClick={actionForCurrentState(keycloak)}
       >
         {titleForAuthenticationState(keycloak)}
+        {props.children}
       </StyledButton>
     </Panel>
   );
 };
+
+Button.defaultProps = {
+  children: null,
+  onClick: () => { }
+};
+
+export default Button;
