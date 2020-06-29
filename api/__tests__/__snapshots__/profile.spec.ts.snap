@@ -44,13 +44,14 @@ Array [
     Object {
       "text": "
         INSERT INTO profile
-          (name, description, category_id, bus_org_id)
-          VALUES ($1, $2, $3, $4) RETURNING *;",
+          (name, description, bus_org_id, priority_system, critical_system)
+          VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
         "Health Gateway",
         "Patient prescription history website",
-        1,
         "HLTH",
+        false,
+        false,
       ],
     },
   ],
@@ -61,7 +62,6 @@ exports[`Profile event handlers A project is created 2`] = `200`;
 
 exports[`Profile event handlers A project is created 3`] = `
 Object {
-  "active": true,
   "busOrgId": "HLTH",
   "categoryId": 1,
   "createdAt": Any<Date>,
@@ -69,6 +69,7 @@ Object {
   "description": "Patient prescription history website",
   "id": 9,
   "name": "Health Gateway",
+  "prioritySystem": false,
   "updatedAt": Any<Date>,
 }
 `;
@@ -90,16 +91,16 @@ Array [
       "text": "
         UPDATE profile
           SET
-            name = $1, description = $2, category_id = $3, bus_org_id = $4,
-            active = $5, critical_system = $6
+            name = $1, description = $2, bus_org_id = $3,
+            active = $4, priority_system = $5, critical_system = $6
           WHERE id = 1
           RETURNING *;",
       "values": Array [
         "Health Gateway",
         "Patient prescription history website",
-        1,
         "HLTH",
-        true,
+        undefined,
+        false,
         false,
       ],
     },
@@ -111,7 +112,6 @@ exports[`Profile event handlers A project is updated 2`] = `200`;
 
 exports[`Profile event handlers A project is updated 3`] = `
 Object {
-  "active": true,
   "busOrgId": "HLTH",
   "categoryId": 1,
   "createdAt": "2020-05-19T20:02:54.561Z",
@@ -119,6 +119,7 @@ Object {
   "description": "Patient prescription history website",
   "id": 9,
   "name": "Health Gateway",
+  "prioritySystem": false,
   "updateAt": "2020-05-19T20:02:54.561Z",
 }
 `;
@@ -142,11 +143,12 @@ exports[`Profile event handlers A single profile is returned 2`] = `200`;
 
 exports[`Profile event handlers A single profile is returned 3`] = `
 Object {
-  "categoryId": 1,
   "createdAt": "2020-04-28T00:00:00.000Z",
+  "criticalSystem": false,
   "description": null,
   "id": 1,
   "name": "Health Gateway",
+  "prioritySystem": false,
   "updatedAt": "2020-04-28T00:00:00.000Z",
 }
 `;
@@ -169,27 +171,30 @@ exports[`Profile event handlers All profiles are returned 2`] = `200`;
 exports[`Profile event handlers All profiles are returned 3`] = `
 Array [
   Object {
-    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
+    "criticalSystem": false,
     "description": null,
     "id": 1,
     "name": "Health Gateway",
+    "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
   Object {
-    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
+    "criticalSystem": true,
     "description": "Hello World",
     "id": 2,
     "name": "EPIC",
+    "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
   Object {
-    "categoryId": 1,
     "createdAt": "2020-04-28T00:00:00.000Z",
+    "criticalSystem": false,
     "description": "This is some description",
     "id": 3,
     "name": "Mines Digital Services",
+    "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
   Object {

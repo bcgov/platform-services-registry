@@ -92,6 +92,7 @@ export const updateProjectProfile = async (
     busOrgId,
     active,
     criticalSystem,
+    prioritySystem,
   } = body;
   const aBody = {
     name,
@@ -100,6 +101,7 @@ export const updateProjectProfile = async (
     busOrgId,
     active,
     criticalSystem,
+    prioritySystem,
   };
 
   const rv = validateObjProps(ProfileModel.requiredFields, aBody);
