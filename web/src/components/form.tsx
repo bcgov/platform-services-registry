@@ -40,6 +40,7 @@ const StyledButton = styled.button`
     font-size: 24px;
 `;
 
+// @ts-ignore
 const StyledTitle = styled.h1`
     font-size: 24px;
     font-weight: bold;
@@ -49,6 +50,8 @@ const StyledTitle = styled.h1`
     letter-spacing: normal;
     color: #036;
 `;
+
+// color: ${props => props.theme.color.bcblue };
 
 const requiredField = (value: string) => (value ? undefined : 'Required')
 
@@ -160,27 +163,27 @@ const MyForm: React.SFC = () => {
                         <StyledTitle>Tell us about your project</StyledTitle>
                         <Field name="project-name" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="project-name">Name</Label>
                                     <Input {...input} id="project-name" placeholder="Project X" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
                         <Field name="project-description" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="project-description">Description</Label>
                                     <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
 
                         <Flex>
                             <Label variant="adjacentLabel">Priority Application</Label>
-                            <Flex flex="1 1 auto" justifyContent="space-between">
-                                <Label>
+                            <Flex flex="1 1 auto" justifyContent="flex-end">
+                                <Label width="initial" px="8px">
                                     <Field
                                         name="project-prioritySystem"
                                         component="input"
@@ -189,7 +192,7 @@ const MyForm: React.SFC = () => {
                                     />
                                     <span>&nbsp;Yes</span>
                                 </Label>
-                                <Label>
+                                <Label width="initial" px="8px">
                                     <Field
                                         name="project-prioritySystem"
                                         component="input"
@@ -203,7 +206,7 @@ const MyForm: React.SFC = () => {
                         </Flex>
                         <Flex>
                             <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                            <Select flex="1 1 auto" name="project-busOrgId">
+                            <Select flex="1 0 200px" name="project-busOrgId">
                                 {ministry.map((s: any) => (
                                     <option
                                         key={s.code}
@@ -221,38 +224,38 @@ const MyForm: React.SFC = () => {
 
                         <Field name="po-firstName" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="po-first-name">First Name</Label>
                                     <Input {...input} id="po-first-name" placeholder="Jane" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
                         <Field name="po-lastName" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="po-last-name">Last Name</Label>
                                     <Input {...input} id="po-last-name" placeholder="Doe" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
                         <Field name="po-email" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="po-email">eMail Address</Label>
                                     <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
 
                         <Field name="po-githubId" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="po-github-id">GitHub ID</Label>
                                     <Input {...input} id="po-github-id" placeholder="jane1100" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {/* {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>} */}
                                 </Flex>
                             )}
                         </Field>
@@ -263,24 +266,25 @@ const MyForm: React.SFC = () => {
 
                         <Field name="tc-firstName" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="tc-first-name">First Name</Label>
                                     <Input {...input} id="tc-first-name" placeholder="Jane" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
                         <Field name="tc-lastName" validate={requiredField}>
-                            {({ input }) => (
-                                <Flex flexDirection="column">
+                            {({ input, meta }) => (
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="tc-last-name">Last Name</Label>
                                     <Input {...input} id="tc-last-name" placeholder="Doe" />
+                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
                         </Field>
                         <Field name="tc-email" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="tc-email">eMail Address</Label>
                                     <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
                                     {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
@@ -290,7 +294,7 @@ const MyForm: React.SFC = () => {
 
                         <Field name="tc-githubId" validate={requiredField}>
                             {({ input, meta }) => (
-                                <Flex flexDirection="column">
+                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="tc-github-id">GitHub ID</Label>
                                     <Input {...input} id="tc-github-id" placeholder="jane1100" />
                                     {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}

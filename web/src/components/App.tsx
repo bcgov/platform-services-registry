@@ -1,6 +1,7 @@
 import { KeycloakProvider } from '@react-keycloak/web';
 import { ThemeProvider } from 'emotion-theming';
 import React from 'react';
+import { Flex } from 'rebass';
 import keycloak from '../keycloak';
 import theme from '../theme';
 import Footer from './footer';
@@ -13,7 +14,9 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <div >
           <Header />
-          <Form />
+          <Flex px={['60px', '130px']}>
+            <Form />
+          </Flex>
           <Footer />
         </div>
       </ThemeProvider>

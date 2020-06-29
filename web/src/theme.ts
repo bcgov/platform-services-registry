@@ -17,6 +17,10 @@
 //
 
 export default {
+  breakpoints: ['40em', '52em', '64em'],
+  colors: {
+    bcblue: '#036',
+  },
   forms: {
     label: {
       margin: '14px 0 5px 0',
@@ -29,7 +33,7 @@ export default {
       color: '#036',
     },
     adjacentLabel: {
-      flex: '0 0 66%',
+      flex: '0 0 40%',
       margin: '14px 0 5px 0',
       fontSize: '20px',
       fontWeight: 500,

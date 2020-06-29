@@ -20,7 +20,6 @@ import styled from '@emotion/styled';
 import { Box, Flex } from 'rebass';
 
 const boxShadow = `
-  margin-left: 100px;
   box-shadow: 1px 3px 4px 4px #cbcbcb7d;
 `;
 
