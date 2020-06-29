@@ -65,7 +65,7 @@ export default () => {
       <StyledBanner>
         <GovLogo />
         <Container>
-          <H2>Platform Services Project Registry</H2>
+          <H2>Platform Services Registry</H2>
         </Container>
       </StyledBanner>
       <AuthButton />
