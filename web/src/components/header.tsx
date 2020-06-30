@@ -34,6 +34,7 @@ const StyledHeader = styled.header`
   top: 0px;
   position: fixed;
   width: 100%;
+  z-index: 100;
 `;
 
 const StyledBanner = styled.div`
