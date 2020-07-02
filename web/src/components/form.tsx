@@ -111,15 +111,7 @@ const MyForm: React.SFC = () => {
             await axi.post(`profile/${profileId}/contact/${po.data.id}`);
             await axi.post(`profile/${profileId}/contact/${tc.data.id}`);
 
-            // 4. Create the provisioning request (submit clusters);
-            // const provision = {
-            //     profileId: response.id,
-            //     clusters: [1, 3],
-            // }
-
-            // await axi.post('provision', provision, headers);
-
-            // 5. All good? Tell the user.
+            // 4. All good? Tell the user.
         } catch (err) {
             console.log(err);
         }
@@ -141,7 +133,6 @@ const MyForm: React.SFC = () => {
             const result = await axi.get('ministry', {
                 headers: {
                     Accept: 'application/json',
-                    // TODO: Add authentication header.
                 },
             });
 
