@@ -8,9 +8,8 @@ import typography from './typography';
 ReactDOM.render(
   <React.StrictMode>
     <Global
-      // html, body, #root {
       styles={css`
-          html, body {
+          html, body, #root {
               ${typography.toString()}
               margin: 0;
               padding: 0;

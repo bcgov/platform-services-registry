@@ -202,7 +202,7 @@ const MyForm: React.SFC = () => {
                                     <option
                                         key={s.code}
                                         value={s.code}
-                                        selected={s.code === DEFAULT_MINISTRY ? true : false}
+                                        defaultValue={s.code === DEFAULT_MINISTRY ? 'yes' : 'no'}
                                     >
                                         {s.name}
                                     </option>
