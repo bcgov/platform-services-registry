@@ -16,9 +16,11 @@
 // Created by Jason Leach on 2020-04-21.
 //
 
-'use strict';
-
 export const ENVIRONMENTS = {
   DEVELOPMENT: 'development',
   PRODUCTION: 'production',
+};
+
+export const SUBJECTS = {
+  NSPROVISION: 'blablasubject',
 };
