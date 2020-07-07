@@ -9,7 +9,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Global
       styles={css`
-          html, body, #root {
+          html, body {
               ${typography.toString()}
               margin: 0;
               padding: 0;
@@ -18,7 +18,7 @@ ReactDOM.render(
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
             }
-            #root {
+          #root {
               height: 100vw;
             }
           code {
