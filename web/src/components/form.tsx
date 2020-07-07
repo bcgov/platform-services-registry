@@ -27,14 +27,9 @@ import { Flex } from 'rebass';
 import { API, ROLES } from '../constants';
 import { ShadowBox } from './UI/shadowContainer';
 
-
 const axi = axios.create({
     baseURL: API.BASE_URL(),
 });
-
-
-const x = 1;
-console.log('xx', x);
 
 const StyledButton = styled.button`
     margin-top: 20px;
@@ -216,7 +211,7 @@ const MyForm: React.SFC = () => {
                             </Flex>
                         </Flex>
                         <Flex>
-                            <Label variant="adjacentLabel">Who is the ministry sponsor?</Label>
+                            <Label variant="adjacentLabel">Ministry Sponsor</Label>
                             <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
                                 <Field
                                     name="project-prioritySystem"
@@ -226,8 +221,7 @@ const MyForm: React.SFC = () => {
                                         <StyledSelect>
                                             <Select
                                                 aria-label="Ministry Sponsor"
-                                                {...input}
-                                                placeholder="Ministry Sponsor"
+                                                placeholder="My Ministry"
                                                 options={ministry.map((o: any) => ({
                                                     label: o.name,
                                                     value: o.code,
