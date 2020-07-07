@@ -18,17 +18,23 @@
 
 import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
-import { Input, Label, Select, Textarea } from '@rebass/forms';
+import { Input, Label, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
+import Select from 'react-select';
 import { Flex } from 'rebass';
-import { API, DEFAULT_MINISTRY, ROLES } from '../constants';
+import { API, ROLES } from '../constants';
 import { ShadowBox } from './UI/shadowContainer';
+
 
 const axi = axios.create({
     baseURL: API.BASE_URL(),
 });
+
+
+const x = 1;
+console.log('xx', x);
 
 const StyledButton = styled.button`
     margin-top: 20px;
@@ -51,11 +57,20 @@ const StyledTitle = styled.h1`
     color: #036;
 `;
 
+const StyledSelect = styled.div`
+    width: 100%;
+`;
+
 // color: ${props => props.theme.color.bcblue };
 
 const requiredField = (value: string) => (value ? undefined : 'Required')
 
+// const xxx = (value: string) => {
+//     console.log('vvvv', value);
+// }
+
 const transformFormData = (data: any) => {
+    console.log(data);
     const profile: any = {};
     const productOwner: any = {
         roleId: ROLES.PRODUCTOWNER,
@@ -117,16 +132,17 @@ const MyForm: React.SFC = () => {
         }
     };
 
-    // const validate = (values: any): any => {
-    //     const errors = {}
-    //     if (!values.username) {
-    //         // @ts-ignore
-    //         errors['project-name'] = 'Required'
-    //     }
+    const validate = (values: any): any => {
+        console.log('xxxv=', values);
+        // const errors = {}
+        // if (!values.username) {
+        //     // @ts-ignore
+        //     errors['project-name'] = 'Required'
+        // }
 
-    //     console.log(errors);
-    //     return errors;
-    // };
+        // console.log(errors);
+        // return errors;
+    };
 
     useEffect(() => {
         async function wrap() {
@@ -147,7 +163,8 @@ const MyForm: React.SFC = () => {
 
     return (
         <Form
-            onSubmit={onSubmit}>
+            onSubmit={onSubmit}
+            validate={validate}>
             {props => (
                 <form onSubmit={props.handleSubmit} >
                     <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
@@ -172,42 +189,54 @@ const MyForm: React.SFC = () => {
                         </Field>
 
                         <Flex>
-                            <Label variant="adjacentLabel">Priority Application</Label>
+                            <Label variant="adjacentLabel">Is this a Priority Application?</Label>
                             <Flex flex="1 1 auto" justifyContent="flex-end">
                                 <Label width="initial" px="8px">
                                     <Field
                                         name="project-prioritySystem"
                                         component="input"
-                                        type="radio"
+                                        type="checkbox"
                                         value="yes"
-                                    />
-                                    <span>&nbsp;Yes</span>
-                                </Label>
-                                <Label width="initial" px="8px">
-                                    <Field
-                                        name="project-prioritySystem"
-                                        component="input"
-                                        type="radio"
-                                        value="no"
-                                        checked="checked"
-                                    />
-                                    <span>&nbsp;No</span>
+                                    >
+                                        {({ input, meta }) => (
+                                            < div >
+                                                <input
+                                                    style={{ width: '35px', height: '35px' }}
+                                                    name={input.name}
+                                                    type="checkbox"
+                                                    value="yes"
+                                                    checked={input.checked}
+                                                    onChange={input.onChange}
+                                                />
+                                                {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                            </div>
+                                        )}
+                                    </Field>
                                 </Label>
                             </Flex>
                         </Flex>
                         <Flex>
-                            <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                            <Select flex="1 0 200px" name="project-busOrgId">
-                                {ministry.map((s: any) => (
-                                    <option
-                                        key={s.code}
-                                        value={s.code}
-                                        defaultValue={s.code === DEFAULT_MINISTRY ? 'yes' : 'no'}
-                                    >
-                                        {s.name}
-                                    </option>
-                                ))}
-                            </Select>
+                            <Label variant="adjacentLabel">Who is the ministry sponsor?</Label>
+                            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+                                <Field
+                                    name="project-prioritySystem"
+                                    component="select"
+                                >
+                                    {({ input }) => (
+                                        <StyledSelect>
+                                            <Select
+                                                aria-label="Ministry Sponsor"
+                                                {...input}
+                                                placeholder="Ministry Sponsor"
+                                                options={ministry.map((o: any) => ({
+                                                    label: o.name,
+                                                    value: o.code,
+                                                }))}
+                                            />
+                                        </StyledSelect>
+                                    )}
+                                </Field>
+                            </Flex>
                         </Flex>
                     </ShadowBox>
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
@@ -242,11 +271,10 @@ const MyForm: React.SFC = () => {
                         </Field>
 
                         <Field name="po-githubId" validate={requiredField}>
-                            {({ input, meta }) => (
+                            {({ input }) => (
                                 <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="po-github-id">GitHub ID</Label>
                                     <Input {...input} id="po-github-id" placeholder="jane1100" />
-                                    {/* {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>} */}
                                 </Flex>
                             )}
                         </Field>
@@ -295,8 +323,9 @@ const MyForm: React.SFC = () => {
                         <StyledButton type="submit">Request</StyledButton>
                     </ShadowBox>
                 </form>
-            )}
-        </Form>
+            )
+            }
+        </Form >
     )
 };
 

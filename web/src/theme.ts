@@ -33,7 +33,7 @@ export default {
       color: '#036',
     },
     adjacentLabel: {
-      flex: '0 0 40%',
+      flex: '0 0 50%',
       margin: '14px 0 5px 0',
       fontSize: '20px',
       fontWeight: 500,
