@@ -22,7 +22,6 @@ import { Input, Label, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
-import Select from 'react-select';
 import { Flex } from 'rebass';
 import { API, ROLES } from '../constants';
 import { ShadowBox } from './UI/shadowContainer';
@@ -52,9 +51,9 @@ const StyledTitle = styled.h1`
     color: #036;
 `;
 
-const StyledSelect = styled.div`
-    width: 100%;
-`;
+// const StyledSelect = styled.div`
+//     width: 100%;
+// `;
 
 // color: ${props => props.theme.color.bcblue };
 
@@ -88,6 +87,13 @@ const transformFormData = (data: any) => {
         }
     }
 
+    if (typeof profile.prioritySystem !== 'undefined') {
+        const value = profile.prioritySystem.pop();
+        profile.prioritySystem = value === 'yes' ? true : false;
+    } else {
+        profile.prioritySystem = false;
+    }
+
     return {
         profile,
         productOwner,
@@ -97,10 +103,17 @@ const transformFormData = (data: any) => {
 
 const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
-    const [ministry, setMinistrySponsor] = useState<any>(['Loading...']);
+    const [ministry, setMinistrySponsor] = useState<any>([]);
 
     const onSubmit = async (form: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(form);
+
+        // TODO:(jl) This is lame. Need to figure out a better way to 
+        // do form validation.
+        if (!profile.busOrgId) {
+            alert("You need to select a Ministry Sponsor.");
+            return;
+        }
 
         if (keycloak && keycloak.authenticated) {
             axi.defaults.headers = {
@@ -130,12 +143,12 @@ const MyForm: React.SFC = () => {
     const validate = (values: any): any => {
         console.log('xxxv=', values);
         // const errors = {}
-        // if (!values.username) {
+        // if (!values['project-busOrgId']) {
         //     // @ts-ignore
-        //     errors['project-name'] = 'Required'
+        //     errors['project-busOrgId'] = 'Required'
         // }
 
-        // console.log(errors);
+        // // console.log(errors);
         // return errors;
     };
 
@@ -194,7 +207,7 @@ const MyForm: React.SFC = () => {
                                         value="yes"
                                     >
                                         {({ input, meta }) => (
-                                            < div >
+                                            < >
                                                 <input
                                                     style={{ width: '35px', height: '35px' }}
                                                     name={input.name}
@@ -204,7 +217,7 @@ const MyForm: React.SFC = () => {
                                                     onChange={input.onChange}
                                                 />
                                                 {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                            </div>
+                                            </>
                                         )}
                                     </Field>
                                 </Label>
@@ -214,21 +227,21 @@ const MyForm: React.SFC = () => {
                             <Label variant="adjacentLabel">Ministry Sponsor</Label>
                             <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
                                 <Field
-                                    name="project-prioritySystem"
+                                    flex="1 0 200px"
+                                    name="project-busOrgId"
                                     component="select"
                                 >
-                                    {({ input }) => (
-                                        <StyledSelect>
-                                            <Select
-                                                aria-label="Ministry Sponsor"
-                                                placeholder="My Ministry"
-                                                options={ministry.map((o: any) => ({
-                                                    label: o.name,
-                                                    value: o.code,
-                                                }))}
-                                            />
-                                        </StyledSelect>
-                                    )}
+                                    {/* {({ input, meta }) => ( */}
+                                    <option>Select...</option>
+                                    {ministry.map((s: any) => (
+                                        <option
+                                            key={s.code}
+                                            value={s.code}
+                                        >
+                                            {s.name}
+                                        </option>
+                                    ))}
+                                    {/* )} */}
                                 </Field>
                             </Flex>
                         </Flex>
