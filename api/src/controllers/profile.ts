@@ -60,17 +60,18 @@ export const fetchProjectProfile = async (
 };
 
 export const createProjectProfile = async (
-  { body }: { body: any }, res: Response
+  { body, user }: { body: any, user: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
+  const data = { ...body, userId: user.id };
+  const rv = validateObjProps(ProfileModel.requiredFields, data);
 
-  const rv = validateObjProps(ProfileModel.requiredFields, body);
   if (rv) {
     throw rv;
   }
 
   try {
-    const results = await ProfileModel.create(body);
+    const results = await ProfileModel.create(data);
     res.status(200).json(results);
   } catch (err) {
     const message = 'Unable create new project profile';

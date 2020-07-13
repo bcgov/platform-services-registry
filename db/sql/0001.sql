@@ -41,7 +41,7 @@ update_changetimestamp_column();
 
 CREATE TABLE IF NOT EXISTS profile (
     id              serial PRIMARY KEY,
-    user_id         INTEGER REFERENCES user_profile(id),
+    user_id         INTEGER REFERENCES user_profile(id) NOT NULL,
     name            varchar(40) NOT NULL,
     description     varchar(512),
     critical_system boolean NOT NULL DEFAULT false,

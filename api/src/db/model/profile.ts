@@ -6,6 +6,7 @@ export interface ProjectProfile extends CommonFields {
   name: string,
   description: string,
   busOrgId: number,
+  userId: number,
   active?: boolean,
   prioritySystem?: boolean,
   criticalSystem?: boolean,
@@ -18,6 +19,7 @@ export default class ProfileModel extends Model {
     'description',
     'busOrgId',
     'prioritySystem',
+    'userId',
   ];
   pool: Pool;
 
@@ -30,14 +32,16 @@ export default class ProfileModel extends Model {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, description, bus_org_id, priority_system, critical_system)
-          VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+          (name, description, bus_org_id, priority_system,
+            critical_system, user_id)
+          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
       values: [
         data.name,
         data.description,
         data.busOrgId,
         data.prioritySystem ? data.prioritySystem : false,
         data.criticalSystem ? data.criticalSystem : false,
+        data.userId,
       ],
     };
 
