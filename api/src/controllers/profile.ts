@@ -82,7 +82,7 @@ export const createProjectProfile = async (
 };
 
 export const updateProjectProfile = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -103,6 +103,7 @@ export const updateProjectProfile = async (
     active,
     criticalSystem,
     prioritySystem,
+    userId: user.id,
   };
 
   const rv = validateObjProps(ProfileModel.requiredFields, aBody);
