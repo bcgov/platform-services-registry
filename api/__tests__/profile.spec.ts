@@ -75,6 +75,9 @@ describe('Profile event handlers', () => {
   it('A project is created', async () => {
     const req = {
       body: insertProfile,
+      user: {
+        id: 1,
+      },
     };
     const addon = {
       id: 9,
@@ -179,6 +182,9 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 1 },
       body,
+      user: {
+        id: 1,
+      },
     }
 
     client.query.mockReturnValue({ rows: [aBody] });
@@ -204,6 +210,9 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 1 },
       body: aBody,
+      user: {
+        id: 1,
+      }
     }
 
     client.query.mockImplementation(() => { throw new Error() });

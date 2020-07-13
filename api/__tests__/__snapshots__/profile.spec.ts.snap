@@ -44,14 +44,16 @@ Array [
     Object {
       "text": "
         INSERT INTO profile
-          (name, description, bus_org_id, priority_system, critical_system)
-          VALUES ($1, $2, $3, $4, $5) RETURNING *;",
+          (name, description, bus_org_id, priority_system,
+            critical_system, user_id)
+          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
       "values": Array [
         "Health Gateway",
         "Patient prescription history website",
         "HLTH",
         false,
         false,
+        1,
       ],
     },
   ],
