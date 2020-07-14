@@ -28,7 +28,18 @@ import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import config from '../config';
 import DataManager from '../db';
 import shared from './shared';
-import { genUserProfile } from './utils';
+
+export interface AuthenticatedUser {
+  id: number;
+  givenName: string;
+  familyName: string;
+  name: string;
+  preferredUsername: string;
+  email: string;
+  archived: boolean;
+  roles: string[];
+  lastSeenAt: object,
+}
 
 export const isAuthorized = jwtPayload => {
   return true;
@@ -65,7 +76,8 @@ export const verify = async (req, jwtPayload, done) => {
         familyName: jwtPayload.family_name,
         email: jwtPayload.email,
       };
-      const profile = genUserProfile(userProfile, user);
+
+      const profile: AuthenticatedUser = { ...userProfile, ...user };
 
       // The returned user will be made available via `req.user`
       return done(null, profile); // OK

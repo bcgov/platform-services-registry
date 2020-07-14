@@ -45,25 +45,3 @@ export const validateObjProps = (fields: string[], pojo: object): Error | undefi
 
   return;
 }
-
-export const genUserProfile = (profile, user) => {
-  const merged = {};
-
-  Object.assign(merged, {
-    id: profile.id,
-    lastSeenAt: profile.lastSeenAt,
-    archived: profile.boolean,
-  });
-
-  Object.assign(merged, {
-    username: user.username,
-    enabled: user.enabled,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    emailVerified: user.emailVerified,
-    roles: user.roles,
-  });
-
-  return merged;
-};
