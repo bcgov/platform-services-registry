@@ -21,6 +21,7 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
 import DataManager from '../db';
+import { AuthenticatedUser } from '../libs/authmware';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
@@ -82,7 +83,7 @@ export const createProjectProfile = async (
 };
 
 export const updateProjectProfile = async (
-  { params, body, user }: { params: any, body: any, user: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
