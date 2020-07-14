@@ -68,7 +68,7 @@ export default class UserProfileModel extends Model {
         UPDATE ${this.table}
           SET
             last_seen_at = $1
-          WHERE id = $5
+          WHERE id = $2
           RETURNING *;`,
       values,
     };
