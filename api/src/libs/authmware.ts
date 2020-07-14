@@ -26,12 +26,26 @@ import { getJwtCertificate, logger } from '@bcgov/common-nodejs-utils';
 import passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import config from '../config';
+import DataManager from '../db';
+import shared from './shared';
+
+export interface AuthenticatedUser {
+  id: number;
+  givenName: string;
+  familyName: string;
+  name: string;
+  preferredUsername: string;
+  email: string;
+  archived: boolean;
+  roles: string[];
+  lastSeenAt: object,
+}
 
 export const isAuthorized = jwtPayload => {
   return true;
 };
 
-export const verify = (req, jwtPayload, done) => {
+export const verify = async (req, jwtPayload, done) => {
 
   if (jwtPayload) {
     if (!isAuthorized(jwtPayload)) {
@@ -42,16 +56,34 @@ export const verify = (req, jwtPayload, done) => {
       return done(err, null);
     }
 
-    const user = {
-      roles: jwtPayload.roles,
-      name: jwtPayload.name,
-      preferredUsername: jwtPayload.preferred_username,
-      givenName: jwtPayload.given_name,
-      familyName: jwtPayload.family_name,
-      email: jwtPayload.email,
-    };
+    try {
+      let userProfile;
+      const dm = new DataManager(shared.pgPool);
+      const { UserProfileModel } = dm;
+      userProfile = await UserProfileModel.findByKeycloakId(jwtPayload.sub);
+      if (!userProfile) {
+        // create one
+        userProfile = await UserProfileModel.create({
+          keycloakId: jwtPayload.sub,
+        });
+      }
 
-    return done(null, user); // OK
+      const user = {
+        roles: jwtPayload.roles ? jwtPayload.roles : [],
+        name: jwtPayload.name,
+        preferredUsername: jwtPayload.preferred_username,
+        givenName: jwtPayload.given_name,
+        familyName: jwtPayload.family_name,
+        email: jwtPayload.email,
+      };
+
+      const profile: AuthenticatedUser = { ...userProfile, ...user };
+
+      // The returned user will be made available via `req.user`
+      return done(null, profile); // OK
+    } catch (err) {
+      return done(null, null); // FAIL
+    }
   }
 
   // tslint:disable-next-line:no-shadowed-variable
