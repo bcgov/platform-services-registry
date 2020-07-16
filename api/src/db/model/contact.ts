@@ -51,6 +51,29 @@ export default class ContactModel extends Model {
     }
   }
 
+  async findForProject(profileId: number): Promise<Contact[]> {
+    const query = {
+      text: `
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      `,
+      values: [
+        profileId,
+      ],
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to fetch contacts for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async update(contactId: number, data: Contact): Promise<Contact> {
     const values: any[] = [];
     const query = {

@@ -16,7 +16,11 @@
 // Created by Jason Leach on 2020-06-2.
 //
 
+import { logger } from '@bcgov/common-nodejs-utils';
 import { SUBJECTS } from '../constants';
+import DataManager from '../db';
+import { Contact } from '../db/model/contact';
+import { ProjectProfile } from '../db/model/profile';
 import shared from './shared';
 
 export interface Context {
@@ -24,28 +28,77 @@ export interface Context {
 }
 
 export const contextForProvisioning = async (profileId: number): Promise<any> => {
-  // const { ProjectProfile } = shared.dm;
-  // const profile = await ProjectProfile.findFullProfile(profileId);
 
-  return { hello: 'World' };
+  try {
+    const dm = new DataManager(shared.pgPool);
+    const { ProfileModel, ContactModel } = dm;
+    const profile: ProjectProfile = await ProfileModel.findById(profileId);
+
+    if (!profile) {
+      return;
+    }
+
+    const contacts: Contact[] = await ContactModel.findForProject(profileId);
+    const contact = contacts.filter(c => c.roleId === 2).pop();
+
+    if (!contact) {
+      return;
+    }
+
+    const context = {
+      profileId: profile.id,
+      displayName: profile.name,
+      namespaces: [
+        {
+          clusters: ['thetis'],
+          name: 'abc123-dev',
+        },
+        {
+          clusters: ['thetis'],
+          name: 'abc123-tools',
+        },
+      ],
+      technicalContact: {
+        githubId: contact.githubId,
+      },
+    };
+
+    console.log(JSON.stringify(context));
+
+    return context;
+  } catch (err) {
+    const message = `Unable to build contect for profile ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
 };
 
 export const fulfillNamespaceProvisioning = async (profileId: number) =>
   new Promise(async (resolve, reject) => {
-    const nc = shared.nats;
-    const subject = SUBJECTS.NSPROVISION;
-    const context = await contextForProvisioning(profileId);
 
-    nc.on('error', () => {
-      const message = `NATS error sending order ${profileId} to ${subject}`;
-      reject(new Error(message));
-    });
+    try {
+      const nc = shared.nats;
+      const subject = SUBJECTS.NSPROVISION;
+      const context = await contextForProvisioning(profileId);
+      console.log('NATS message =', context);
 
-    nc.publish(subject, context);
+      nc.on('error', () => {
+        const message = `NATS error sending order ${profileId} to ${subject}`;
+        reject(new Error(message));
+      });
 
-    nc.flush(() => {
-      nc.removeAllListeners(['error']);
-    });
+      nc.publish(subject, context);
 
-    resolve();
+      nc.flush(() => {
+        nc.removeAllListeners(['error']);
+      });
+
+      resolve();
+    } catch (err) {
+      const message = `Unable to provision namspaces for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
   });

@@ -73,6 +73,7 @@ export const createProjectProfile = async (
 
   try {
     const results = await ProfileModel.create(data);
+
     res.status(200).json(results);
   } catch (err) {
     const message = 'Unable create new project profile';

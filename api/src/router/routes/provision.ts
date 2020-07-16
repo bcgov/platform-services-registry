@@ -13,14 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-21.
+// Created by Jason Leach on 2020-06-15.
 //
 
-export const ENVIRONMENTS = {
-  DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
-};
+'use strict';
 
-export const SUBJECTS = {
-  NSPROVISION: 'registry_project_provisioning',
-};
+import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
+import express from 'express';
+import { provisionProfileNamespaces } from '../../controllers/provision';
+
+const router = express.Router();
+
+// Provisioning
+router.post('/:profileId/namespace', asyncMiddleware(provisionProfileNamespaces));
+
+export default router;

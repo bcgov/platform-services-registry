@@ -41,7 +41,7 @@ export abstract class Model {
     }
   }
 
-  async findById(id: number): Promise<any[]> {
+  async findById(id: number): Promise<any> {
     const query = {
       text: `
         SELECT * FROM ${this.table}

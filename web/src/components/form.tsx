@@ -134,7 +134,10 @@ const MyForm: React.SFC = () => {
             await axi.post(`profile/${profileId}/contact/${po.data.id}`);
             await axi.post(`profile/${profileId}/contact/${tc.data.id}`);
 
-            // 4. All good? Tell the user.
+            // 4. Trigger provisioning
+            await axi.post(`provision/${profileId}/namespace`);
+
+            // 5.All good? Tell the user.
         } catch (err) {
             console.log(err);
         }
