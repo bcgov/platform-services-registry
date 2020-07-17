@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS profile (
     UNIQUE (namespace_prefix)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS namespace_prefix_idx ON films (namespace_prefix);
+CREATE UNIQUE INDEX IF NOT EXISTS namespace_prefix_idx ON profile (namespace_prefix);
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE profile
 TO :ROLLNAME;
