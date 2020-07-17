@@ -7,6 +7,7 @@ export interface ProjectProfile extends CommonFields {
   description: string,
   busOrgId: number,
   userId: number,
+  namespacePrefix: string,
   active?: boolean,
   prioritySystem?: boolean,
   criticalSystem?: boolean,
@@ -20,6 +21,7 @@ export default class ProfileModel extends Model {
     'busOrgId',
     'prioritySystem',
     'userId',
+    'namespacePrefix',
   ];
   pool: Pool;
 
@@ -33,8 +35,8 @@ export default class ProfileModel extends Model {
       text: `
         INSERT INTO ${this.table}
           (name, description, bus_org_id, priority_system,
-            critical_system, user_id)
-          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
+            critical_system, user_id, namespace_prefix)
+          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
       values: [
         data.name,
         data.description,
@@ -42,6 +44,7 @@ export default class ProfileModel extends Model {
         data.prioritySystem ? data.prioritySystem : false,
         data.criticalSystem ? data.criticalSystem : false,
         data.userId,
+        data.namespacePrefix,
       ],
     };
 
@@ -131,9 +134,33 @@ export default class ProfileModel extends Model {
       ];
 
       const results = await this.runQuery(query);
+      console.log('result =', results);
+
       return results.pop();
     } catch (err) {
       const message = `Unable to link contact ${contactId} to profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async isNamespacePrefixUnique(prefix: string): Promise<boolean> {
+    const query = {
+      text: `
+        SELECT COUNT(*) FROM ${this.table}
+          WHERE namespace_prefix = $1;`,
+      values: [
+        prefix,
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+
+      return Number(results.pop().count) === 0 ? true : false;
+    } catch (err) {
+      const message = `Unable to lookup namespace prefix ${prefix}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

@@ -40,17 +40,21 @@ ON ref_bus_org FOR EACH ROW EXECUTE PROCEDURE
 update_changetimestamp_column();
 
 CREATE TABLE IF NOT EXISTS profile (
-    id              serial PRIMARY KEY,
-    user_id         INTEGER REFERENCES user_profile(id) NOT NULL,
-    name            varchar(40) NOT NULL,
-    description     varchar(512),
-    critical_system boolean NOT NULL DEFAULT false,
-    priority_system boolean NOT NULL DEFAULT false,
-    bus_org_id      VARCHAR(4) REFERENCES ref_bus_org(id) NOT NULL,
-    archived        boolean NOT NULL DEFAULT false,
-    created_at      timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at      timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    id               serial PRIMARY KEY,
+    namespace_prefix varchar(8) NOT NULL,
+    user_id          INTEGER REFERENCES user_profile(id) NOT NULL,
+    name             varchar(40) NOT NULL,
+    description      varchar(512),
+    critical_system  boolean NOT NULL DEFAULT false,
+    priority_system  boolean NOT NULL DEFAULT false,
+    bus_org_id       VARCHAR(4) REFERENCES ref_bus_org(id) NOT NULL,
+    archived         boolean NOT NULL DEFAULT false,
+    created_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    UNIQUE (namespace_prefix)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS namespace_prefix_idx ON films (namespace_prefix);
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE profile
 TO :ROLLNAME;

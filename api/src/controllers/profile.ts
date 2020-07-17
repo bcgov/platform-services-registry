@@ -21,11 +21,35 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
 import DataManager from '../db';
+import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
+
+export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
+  const { ProfileModel } = dm;
+  const attempts = 3;
+  const candidates = Array.from({ length: attempts }, () => generateNamespacePrefix())
+  const promises = candidates.map(c => ProfileModel.isNamespacePrefixUnique(c));
+
+  try {
+    const results = await Promise.all(promises);
+    const values = results.map((cur, idx) => {
+      if (cur) {
+        return candidates[idx];
+      }
+
+      return;
+    }).filter(v => typeof v !== 'undefined');
+
+    return values.pop();
+  } catch (err) {
+    logger.error(err.message);
+    return;
+  }
+}
 
 export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
   const { ProfileModel } = dm;
@@ -65,14 +89,27 @@ export const createProjectProfile = async (
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const data = { ...body, userId: user.id };
-  const rv = validateObjProps(ProfileModel.requiredFields, data);
+
+  // User cannot set the namespace prefix. If it exists, this
+  // overwrites it with a place holder value. It will be replaced
+  // with the actual value further on.
+
+  const rv = validateObjProps(ProfileModel.requiredFields, {
+    ...data,
+    namespacePrefix: 'placeholder',
+  });
 
   if (rv) {
     throw rv;
   }
 
   try {
-    const results = await ProfileModel.create(data);
+    const namespacePrefix = await uniqueNamespacePrefix();
+    if (!namespacePrefix) {
+      throw errorWithCode(500, 'Unable to generate unique namespace prefix');
+    }
+
+    const results = await ProfileModel.create({ ...data, namespacePrefix });
 
     res.status(200).json(results);
   } catch (err) {
@@ -114,7 +151,8 @@ export const updateProjectProfile = async (
   }
 
   try {
-    const results = await ProfileModel.update(profileId, aBody);
+    // TODO: This is wrong!
+    const results = await ProfileModel.update(profileId, { ...aBody, namespacePrefix: 'xxx' });
 
     res.status(200).json(results);
   } catch (err) {
