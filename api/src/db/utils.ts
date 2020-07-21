@@ -34,7 +34,7 @@ export const transformKeysToCamelCase = data => {
   return obj;
 };
 
-export const generateNamespacePrefix = (len: number = 7): string => {
+export const generateNamespacePrefix = (len: number = 6): string => {
   return crypto
     .randomBytes(Math.ceil(len / 2))
     .toString('hex')

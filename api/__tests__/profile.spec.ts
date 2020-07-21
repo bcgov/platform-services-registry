@@ -32,7 +32,7 @@ const client = {
 }
 
 jest.mock('../src/db/utils', () => ({
-  generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e61'),
+  generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e6'),
   transformKeysToCamelCase: jest.fn().mockImplementation(data => {
     const obj = {};
     Object.keys(data).forEach(key => {
