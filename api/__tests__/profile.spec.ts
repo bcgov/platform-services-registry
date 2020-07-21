@@ -43,12 +43,6 @@ jest.mock('../src/db/utils', () => ({
   }),
 }));
 
-jest.mock('nats', () => {
-  return {
-    connect: jest.fn(),
-  };
-});
-
 jest.mock('pg', () => {
   return {
     Pool: jest.fn(() => {
