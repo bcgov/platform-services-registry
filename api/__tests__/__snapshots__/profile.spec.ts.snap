@@ -43,10 +43,40 @@ Array [
   Array [
     Object {
       "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e61",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e61",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e61",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
         INSERT INTO profile
           (name, description, bus_org_id, priority_system,
-            critical_system, user_id)
-          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
+            critical_system, user_id, namespace_prefix)
+          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
       "values": Array [
         "Health Gateway",
         "Patient prescription history website",
@@ -54,6 +84,7 @@ Array [
         false,
         false,
         1,
+        "c8c7e61",
       ],
     },
   ],
@@ -78,6 +109,16 @@ Object {
 
 exports[`Profile event handlers A project is updated 1`] = `
 Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
   Array [
     Object {
       "text": "
@@ -240,3 +281,40 @@ Array [
   ],
 ]
 `;
+
+exports[`Profile event handlers Unique profile names are derived 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e61",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e61",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e61",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers Unique profile names are derived 2`] = `"c8c7e61"`;

@@ -1,6 +1,4 @@
 //
-// Repo Mountie
-//
 // Copyright © 2018 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +21,7 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/vendor/**'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleDirectories: ['node_modules'],
-  modulePathIgnorePatterns: ['<rootDir>/build/'],
+  modulePathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/dist/'],
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },

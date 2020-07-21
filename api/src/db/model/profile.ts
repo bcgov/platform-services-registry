@@ -134,7 +134,6 @@ export default class ProfileModel extends Model {
       ];
 
       const results = await this.runQuery(query);
-      console.log('result =', results);
 
       return results.pop();
     } catch (err) {

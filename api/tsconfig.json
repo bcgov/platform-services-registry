@@ -18,11 +18,11 @@
     "esModuleInterop": true,
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src"
+    // "rootDir": "src"
   },
   "include": [
     "src/**/*",
-    "__tests__/src/helper.ts"
+    "__tests__/**/*"
   ],
   "compileOnSave": false
 }

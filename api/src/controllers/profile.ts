@@ -93,7 +93,6 @@ export const createProjectProfile = async (
   // User cannot set the namespace prefix. If it exists, this
   // overwrites it with a place holder value. It will be replaced
   // with the actual value further on.
-
   const rv = validateObjProps(ProfileModel.requiredFields, {
     ...data,
     namespacePrefix: 'placeholder',
@@ -105,6 +104,7 @@ export const createProjectProfile = async (
 
   try {
     const namespacePrefix = await uniqueNamespacePrefix();
+
     if (!namespacePrefix) {
       throw errorWithCode(500, 'Unable to generate unique namespace prefix');
     }
@@ -134,25 +134,27 @@ export const updateProjectProfile = async (
     criticalSystem,
     prioritySystem,
   } = body;
-  const aBody = {
-    name,
-    description,
-    categoryId,
-    busOrgId,
-    active,
-    criticalSystem,
-    prioritySystem,
-    userId: user.id,
-  };
-
-  const rv = validateObjProps(ProfileModel.requiredFields, aBody);
-  if (rv) {
-    throw rv;
-  }
 
   try {
-    // TODO: This is wrong!
-    const results = await ProfileModel.update(profileId, { ...aBody, namespacePrefix: 'xxx' });
+    const record = await ProfileModel.findById(profileId);
+    const aBody = {
+      name,
+      description,
+      categoryId,
+      busOrgId,
+      active,
+      criticalSystem,
+      prioritySystem,
+      userId: record.userId,
+      namespacePrefix: record.namespacePrefix,
+    };
+    const rv = validateObjProps(ProfileModel.requiredFields, aBody);
+
+    if (rv) {
+      throw rv;
+    }
+
+    const results = await ProfileModel.update(profileId, aBody);
 
     res.status(200).json(results);
   } catch (err) {

@@ -16,8 +16,9 @@
 
 import { Response } from 'express';
 import fs from 'fs';
+import { camelCase } from 'lodash';
 import path from 'path';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../src/controllers/profile';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
 const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
@@ -29,6 +30,24 @@ const client = {
   query: jest.fn(),
   release: jest.fn(),
 }
+
+jest.mock('../src/db/utils', () => ({
+  generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e61'),
+  transformKeysToCamelCase: jest.fn().mockImplementation(data => {
+    const obj = {};
+    Object.keys(data).forEach(key => {
+      obj[camelCase(key)] = data[key];
+    });
+
+    return obj;
+  }),
+}));
+
+jest.mock('nats', () => {
+  return {
+    connect: jest.fn(),
+  };
+});
 
 jest.mock('pg', () => {
   return {
@@ -68,6 +87,7 @@ describe('Profile event handlers', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // jest.resetAllMocks();
 
     ex = new FauxExpress();
   });
@@ -84,6 +104,10 @@ describe('Profile event handlers', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
 
     client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
 
@@ -261,5 +285,17 @@ describe('Profile event handlers', () => {
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.res.json).not.toBeCalled();
     expect(ex.res.end).not.toBeCalled();
+  });
+
+
+  it('Unique profile names are derived', async () => {
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+
+    const result = await uniqueNamespacePrefix();
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(result).toMatchSnapshot();
   });
 });
