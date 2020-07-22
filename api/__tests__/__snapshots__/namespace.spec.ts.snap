@@ -26,11 +26,10 @@ Array [
     Object {
       "text": "
         INSERT INTO namespace
-          (name, profile_id, cluster_id)
-          VALUES ($1, $2, $3) RETURNING *;",
+          (name, profile_id)
+          VALUES ($1, $2) RETURNING *;",
       "values": Array [
         "abc123-test",
-        1,
         1,
       ],
     },
@@ -136,9 +135,23 @@ Array [
   Array [
     Object {
       "text": "
-      SELECT * FROM namespace
-        WHERE profile_id = 1;
+        SELECT namespace.id AS \\"namespaceId\\", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
       ",
+      "values": Array [
+        1,
+      ],
     },
   ],
 ]
@@ -194,9 +207,23 @@ Array [
   Array [
     Object {
       "text": "
-      SELECT * FROM namespace
-        WHERE profile_id = NaN;
+        SELECT namespace.id AS \\"namespaceId\\", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
       ",
+      "values": Array [
+        NaN,
+      ],
     },
   ],
 ]
