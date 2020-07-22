@@ -6,8 +6,6 @@ import { CommonFields, Model } from './model';
 export interface ProjectNamespace extends CommonFields {
   name: string,
   profileId: number,
-  clusterId: number,
-  provisioned?: boolean;
 }
 
 export default class NamespaceModel extends Model {
@@ -15,7 +13,6 @@ export default class NamespaceModel extends Model {
   requiredFields: string[] = [
     'name',
     'profileId',
-    'clusterId',
   ];
   pool: Pool;
 
@@ -28,12 +25,11 @@ export default class NamespaceModel extends Model {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, profile_id, cluster_id)
-          VALUES ($1, $2, $3) RETURNING *;`,
+          (name, profile_id)
+          VALUES ($1, $2) RETURNING *;`,
       values: [
         data.name,
         data.profileId,
-        data.clusterId,
       ],
     };
 
@@ -49,15 +45,27 @@ export default class NamespaceModel extends Model {
   }
 
   async createProjectSet(profileId: number, clusterId: number, prefix: string,): Promise<ProjectNamespace[]> {
+    const query = {
+      text: `
+        INSERT INTO cluster_namespace
+          (namespace_id, cluster_id)
+          VALUES ($1, $2) RETURNING *;`,
+      values: [],
+    };
     try {
       const names = projectSetNames.map(n => `${prefix}-${n}`);
-      const promises = names.map(name => this.create({
+      const nsPromises = names.map(name => this.create({
         name,
         profileId,
-        clusterId,
       }));
 
-      return await Promise.all(promises);
+      const nsResults = await Promise.all(nsPromises);
+      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
+      const clResults = await Promise.all(clPromises);
+
+      console.log(nsResults, clResults)
+
+      return nsResults;
     } catch (err) {
       const message = `Unable to create namespace set`;
       logger.error(`${message}, err = ${err.message}`);
@@ -69,9 +77,23 @@ export default class NamespaceModel extends Model {
   async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
       text: `
-      SELECT * FROM ${this.table}
-        WHERE profile_id = ${profileId};
+        SELECT namespace.id AS "namespaceId", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS "clusterId", ref_cluster.name, cluster_namespace.provisioned
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
       `,
+      values: [
+        profileId,
+      ],
     };
 
     try {

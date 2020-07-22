@@ -31,33 +31,21 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
 
   try {
     const dm = new DataManager(shared.pgPool);
-    const { ProfileModel, ContactModel } = dm;
+    const { ProfileModel, ContactModel, NamespaceModel } = dm;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-
-    if (!profile) {
-      return;
-    }
-
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const contact = contacts.filter(c => c.roleId === 2).pop();
+    const namespaces = await NamespaceModel.findForProfile(83);
 
-    if (!contact) {
-      return;
+    if (!profile || !contact || !namespaces) {
+      logger.error('Unable to create context for provisioning');
+      return; // This is a problem.
     }
 
     const context = {
       profileId: profile.id,
       displayName: profile.name,
-      namespaces: [
-        {
-          clusters: ['thetis'],
-          name: 'abc123-dev',
-        },
-        {
-          clusters: ['thetis'],
-          name: 'abc123-tools',
-        },
-      ],
+      namespaces,
       technicalContact: {
         githubId: contact.githubId,
       },
