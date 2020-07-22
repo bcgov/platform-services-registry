@@ -12,22 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-07-13.
+// Created by Jason Leach on 2020-07-21.
 //
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
-export interface UserProfile extends CommonFields {
-  keycloakId: number;
-  lastSeenAt?: object;
+export interface Cluster extends CommonFields {
+  name: string,
+  description: string,
+  disasterRecovery: boolean,
+  onPrem: boolean
 }
 
-export default class UserProfileModel extends Model {
-  public table: string = 'user_profile';
+export default class CusterModel extends Model {
+  table: string = 'ref_cluster';
   requiredFields: string[] = [
-    'keycloakId',
+    'name',
+    'description',
+    'disasterRecovery',
+    'onPrem',
   ];
   pool: Pool;
 
@@ -36,78 +41,61 @@ export default class UserProfileModel extends Model {
     this.pool = pool;
   }
 
-  async create(data: UserProfile): Promise<UserProfile> {
+  async create(data: Cluster): Promise<Cluster> {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (keycloak_id)
-          VALUES ($1) RETURNING *;`,
+          (name, description, disaster_recovery, on_prem)
+          VALUES ($1, $2, $3, $4) RETURNING *;`,
       values: [
-        data.keycloakId,
+        data.name,
+        data.description,
+        data.disasterRecovery,
+        data.onPrem,
       ],
     };
 
     try {
-      return (await this.runQuery(query)).pop();
+      const results = await this.runQuery(query);
+      return results.pop();
     } catch (err) {
-      const message = 'Unable to create UserProfile';
+      const message = `Unable to create cluster`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
   }
 
-  async findByKeycloakId(keycloakId): Promise<UserProfile> {
-    const query = {
-      text: `
-        SELECT * FROM ${this.table}
-          WHERE keycloak_id = $1;
-      `,
-      values: [
-        keycloakId,
-      ],
-    };
-
-    try {
-      return (await this.runQuery(query)).pop();
-    } catch (err) {
-      const message = `Unable to fetch UserProfile with ID ${keycloakId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
-  async update(userProfileId, data: UserProfile): Promise<UserProfile> {
-    const values: any[] = [];
+  async update(clusterId: number, data: Cluster): Promise<Cluster> {
     const query = {
       text: `
         UPDATE ${this.table}
           SET
-            last_seen_at = $1
-          WHERE id = $2
+            name = $1, description = $2, disaster_recovery = $3, on_prem = $4
+          WHERE id = $5
           RETURNING *;`,
-      values,
+      values: [
+        data.name,
+        data.description,
+        data.disasterRecovery,
+        data.onPrem,
+        clusterId,
+      ]
     };
 
     try {
-      const record = await this.findById(userProfileId);
-      const aData = { ...record, ...data };
-      query.values = [
-        aData.lastSeenAt,
-        userProfileId,
-      ];
+      const results = await this.runQuery(query);
 
-      return (await this.runQuery(query)).pop();
+      return results.pop();
     } catch (err) {
-      const message = `Unable to update UserProfile ${userProfileId}`;
+      const message = `Unable to update cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
-  }
+  };
 
-  async delete(userProfileId: number): Promise<UserProfile> {
+  async delete(clusterId: number): Promise<Cluster> {
     const query = {
       text: `
         UPDATE ${this.table}
@@ -117,15 +105,16 @@ export default class UserProfileModel extends Model {
           RETURNING *;
       `,
       values: [
-        userProfileId,
+        clusterId,
       ],
     };
 
     try {
       const results = await this.runQuery(query);
+
       return results.pop();
     } catch (err) {
-      const message = `Unable to archive UserProfile`;
+      const message = `Unable to archive cluster`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

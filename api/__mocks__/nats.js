@@ -13,21 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-21.
+// Created by Jason Leach on 2020-07-21.
 //
 
-export const ENVIRONMENTS = {
-  DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
-};
+/* eslint-disable no-unused-vars */
 
-export const SUBJECTS = {
-  NSPROVISION: 'registry_project_provisioning',
-};
+'use strict';
 
-export const projectSetNames = [
-  'tools',
-  'dev',
-  'test',
-  'prod',
-];
+const EventEmitter = require('events');
+
+class Emitter extends EventEmitter {
+  connect() {
+    return this;
+  }
+
+  publish(subject, context) {
+    return;
+  }
+
+  flush(fn) {
+    fn();
+  }
+}
+
+const nats = new Emitter();
+
+module.exports = nats;

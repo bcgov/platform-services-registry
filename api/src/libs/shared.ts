@@ -18,21 +18,45 @@
 // Created by Jason Leach on 2018-07-23.
 //
 
-'use strict';
-
-import { JWTServiceManager } from '@bcgov/common-nodejs-utils';
+import { JWTServiceManager, logger } from '@bcgov/common-nodejs-utils';
+import nats from 'nats';
 import { Pool } from 'pg';
 import config from '../config';
 
 interface Shared {
   pgPool: Pool;
+  nats: any;
 }
 
 const ssoKey = Symbol.for('ca.bc.gov.platsrv.sso');
 const pgPoolKey = Symbol.for('ca.bc.gov.platsrv.pgpool');
+const natsKey = Symbol.for('ca.probateapp.nats');
 const gs = Object.getOwnPropertySymbols(global);
 
 const main = async () => {
+
+  if (!(gs.indexOf(natsKey) > -1)) {
+    const host = `${config.get('nats:host')}:${config.get('nats:port')}`;
+    const nc = nats.connect({
+      json: true,
+      servers: [host],
+    });
+
+    nc.on('reconnecting', () => {
+      logger.info('nats reconnecting');
+    });
+
+    nc.on('reconnect', conn => {
+      logger.info(`nats reconnect to ${conn.currentServer.url.host}`);
+    });
+
+    nc.on('connect', conn => {
+      logger.info(`nats connect to ${conn.currentServer.url.host}`);
+    });
+
+    global[natsKey] = nc;
+  }
+
   if (!(gs.indexOf(ssoKey) > -1)) {
     global[ssoKey] = new JWTServiceManager({
       uri: config.get('sso:tokenUrl'),
@@ -68,6 +92,10 @@ Object.defineProperty(shared, 'sso', {
 
 Object.defineProperty(shared, 'pgPool', {
   get: () => global[pgPoolKey],
+});
+
+Object.defineProperty(shared, 'nats', {
+  get: () => global[natsKey],
 });
 
 Object.freeze(shared);

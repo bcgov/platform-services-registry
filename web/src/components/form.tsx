@@ -18,12 +18,12 @@
 
 import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
-import { Input, Label, Select, Textarea } from '@rebass/forms';
+import { Input, Label, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Flex } from 'rebass';
-import { API, DEFAULT_MINISTRY, ROLES } from '../constants';
+import { API, ROLES } from '../constants';
 import { ShadowBox } from './UI/shadowContainer';
 
 const axi = axios.create({
@@ -51,11 +51,20 @@ const StyledTitle = styled.h1`
     color: #036;
 `;
 
+// const StyledSelect = styled.div`
+//     width: 100%;
+// `;
+
 // color: ${props => props.theme.color.bcblue };
 
 const requiredField = (value: string) => (value ? undefined : 'Required')
 
+// const xxx = (value: string) => {
+//     console.log('vvvv', value);
+// }
+
 const transformFormData = (data: any) => {
+    console.log(data);
     const profile: any = {};
     const productOwner: any = {
         roleId: ROLES.PRODUCTOWNER,
@@ -78,6 +87,13 @@ const transformFormData = (data: any) => {
         }
     }
 
+    if (typeof profile.prioritySystem !== 'undefined') {
+        const value = profile.prioritySystem.pop();
+        profile.prioritySystem = value === 'yes' ? true : false;
+    } else {
+        profile.prioritySystem = false;
+    }
+
     return {
         profile,
         productOwner,
@@ -87,10 +103,17 @@ const transformFormData = (data: any) => {
 
 const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
-    const [ministry, setMinistrySponsor] = useState<any>(['Loading...']);
+    const [ministry, setMinistrySponsor] = useState<any>([]);
 
     const onSubmit = async (form: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(form);
+
+        // TODO:(jl) This is lame. Need to figure out a better way to 
+        // do form validation.
+        if (!profile.busOrgId) {
+            alert("You need to select a Ministry Sponsor.");
+            return;
+        }
 
         if (keycloak && keycloak.authenticated) {
             axi.defaults.headers = {
@@ -111,22 +134,26 @@ const MyForm: React.SFC = () => {
             await axi.post(`profile/${profileId}/contact/${po.data.id}`);
             await axi.post(`profile/${profileId}/contact/${tc.data.id}`);
 
-            // 4. All good? Tell the user.
+            // 4. Trigger provisioning
+            await axi.post(`provision/${profileId}/namespace`);
+
+            // 5.All good? Tell the user.
         } catch (err) {
             console.log(err);
         }
     };
 
-    // const validate = (values: any): any => {
-    //     const errors = {}
-    //     if (!values.username) {
-    //         // @ts-ignore
-    //         errors['project-name'] = 'Required'
-    //     }
+    const validate = (values: any): any => {
+        console.log('xxxv=', values);
+        // const errors = {}
+        // if (!values['project-busOrgId']) {
+        //     // @ts-ignore
+        //     errors['project-busOrgId'] = 'Required'
+        // }
 
-    //     console.log(errors);
-    //     return errors;
-    // };
+        // // console.log(errors);
+        // return errors;
+    };
 
     useEffect(() => {
         async function wrap() {
@@ -147,7 +174,8 @@ const MyForm: React.SFC = () => {
 
     return (
         <Form
-            onSubmit={onSubmit}>
+            onSubmit={onSubmit}
+            validate={validate}>
             {props => (
                 <form onSubmit={props.handleSubmit} >
                     <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
@@ -172,42 +200,53 @@ const MyForm: React.SFC = () => {
                         </Field>
 
                         <Flex>
-                            <Label variant="adjacentLabel">Priority Application</Label>
+                            <Label variant="adjacentLabel">Is this a Priority Application?</Label>
                             <Flex flex="1 1 auto" justifyContent="flex-end">
                                 <Label width="initial" px="8px">
                                     <Field
                                         name="project-prioritySystem"
                                         component="input"
-                                        type="radio"
+                                        type="checkbox"
                                         value="yes"
-                                    />
-                                    <span>&nbsp;Yes</span>
-                                </Label>
-                                <Label width="initial" px="8px">
-                                    <Field
-                                        name="project-prioritySystem"
-                                        component="input"
-                                        type="radio"
-                                        value="no"
-                                        checked="checked"
-                                    />
-                                    <span>&nbsp;No</span>
+                                    >
+                                        {({ input, meta }) => (
+                                            < >
+                                                <input
+                                                    style={{ width: '35px', height: '35px' }}
+                                                    name={input.name}
+                                                    type="checkbox"
+                                                    value="yes"
+                                                    checked={input.checked}
+                                                    onChange={input.onChange}
+                                                />
+                                                {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                            </>
+                                        )}
+                                    </Field>
                                 </Label>
                             </Flex>
                         </Flex>
                         <Flex>
                             <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                            <Select flex="1 0 200px" name="project-busOrgId">
-                                {ministry.map((s: any) => (
-                                    <option
-                                        key={s.code}
-                                        value={s.code}
-                                        selected={s.code === DEFAULT_MINISTRY ? true : false}
-                                    >
-                                        {s.name}
-                                    </option>
-                                ))}
-                            </Select>
+                            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+                                <Field
+                                    flex="1 0 200px"
+                                    name="project-busOrgId"
+                                    component="select"
+                                >
+                                    {/* {({ input, meta }) => ( */}
+                                    <option>Select...</option>
+                                    {ministry.map((s: any) => (
+                                        <option
+                                            key={s.code}
+                                            value={s.code}
+                                        >
+                                            {s.name}
+                                        </option>
+                                    ))}
+                                    {/* )} */}
+                                </Field>
+                            </Flex>
                         </Flex>
                     </ShadowBox>
                     <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
@@ -242,11 +281,10 @@ const MyForm: React.SFC = () => {
                         </Field>
 
                         <Field name="po-githubId" validate={requiredField}>
-                            {({ input, meta }) => (
+                            {({ input }) => (
                                 <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                                     <Label htmlFor="po-github-id">GitHub ID</Label>
                                     <Input {...input} id="po-github-id" placeholder="jane1100" />
-                                    {/* {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>} */}
                                 </Flex>
                             )}
                         </Field>
@@ -295,8 +333,9 @@ const MyForm: React.SFC = () => {
                         <StyledButton type="submit">Request</StyledButton>
                     </ShadowBox>
                 </form>
-            )}
-        </Form>
+            )
+            }
+        </Form >
     )
 };
 

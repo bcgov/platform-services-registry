@@ -101,3 +101,11 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+  nats:
+    container_name: registry-nats
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    environment:
+      <<: *defaults

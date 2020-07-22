@@ -18,11 +18,10 @@
     "esModuleInterop": true,
     "declaration": true,
     "outDir": "dist",
-    // "rootDir": "src"
+    "rootDir": "src"
   },
   "include": [
-    "src/**/*",
-    "__tests__/**/*"
+    "src/**/*"
   ],
   "compileOnSave": false
 }

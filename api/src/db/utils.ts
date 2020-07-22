@@ -16,6 +16,7 @@
 
 'use strict';
 
+import crypto from 'crypto';
 import { camelCase } from 'lodash';
 
 /**
@@ -31,4 +32,11 @@ export const transformKeysToCamelCase = data => {
   });
 
   return obj;
+};
+
+export const generateNamespacePrefix = (len: number = 6): string => {
+  return crypto
+    .randomBytes(Math.ceil(len / 2))
+    .toString('hex')
+    .slice(0, len);
 };

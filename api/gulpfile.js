@@ -26,7 +26,7 @@ const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
 const child = require('child_process');
 
-let tsp = ts.createProject('tsconfig.json');
+const tsp = ts.createProject('tsbuild.json');
 
 gulp.task('clean', () =>
   gulp.src('build', { read: false, allowEmpty: true }).pipe(

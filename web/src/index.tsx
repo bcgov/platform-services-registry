@@ -8,7 +8,6 @@ import typography from './typography';
 ReactDOM.render(
   <React.StrictMode>
     <Global
-      // html, body, #root {
       styles={css`
           html, body {
               ${typography.toString()}
@@ -19,7 +18,7 @@ ReactDOM.render(
               -webkit-font-smoothing: antialiased;
               -moz-osx-font-smoothing: grayscale;
             }
-            #root {
+          #root {
               height: 100vw;
             }
           code {
