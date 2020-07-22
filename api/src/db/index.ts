@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import ClusterModel from './model/cluster';
 import ContactModel from './model/contact';
 import NamespaceModel from './model/namespace';
 import ProfileModel from './model/profile';
@@ -10,6 +11,7 @@ export default class DataManager {
   NamespaceModel: NamespaceModel;
   ContactModel: ContactModel;
   UserProfileModel: UserProfileModel;
+  ClusterModel: ClusterModel;
 
   constructor(pool: Pool) {
     this.pool = pool;
@@ -17,5 +19,6 @@ export default class DataManager {
     this.NamespaceModel = new NamespaceModel(pool);
     this.ContactModel = new ContactModel(pool);
     this.UserProfileModel = new UserProfileModel(pool);
+    this.ClusterModel = new ClusterModel(pool);
   }
 }

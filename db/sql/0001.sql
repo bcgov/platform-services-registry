@@ -14,8 +14,11 @@ CREATE TABLE IF NOT EXISTS ref_cluster (
     description       VARCHAR(256),
     disaster_recovery BOOLEAN NOT NULL,
     on_prem           BOOLEAN NOT NULL,
+    default           BOOLEAN NOT NULL DEFAULT false,
+    archived          BOOLEAN NOT NULL DEFAULT false,
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    UNIQUE            (name)
 );
 
 GRANT SELECT ON TABLE ref_cluster TO :ROLLNAME;
@@ -51,7 +54,7 @@ CREATE TABLE IF NOT EXISTS profile (
     archived         boolean NOT NULL DEFAULT false,
     created_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
     updated_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    UNIQUE (namespace_prefix)
+    UNIQUE           (namespace_prefix)
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS namespace_prefix_idx ON profile (namespace_prefix);

@@ -24,3 +24,10 @@ export const ENVIRONMENTS = {
 export const SUBJECTS = {
   NSPROVISION: 'registry_project_provisioning',
 };
+
+export const projectSetNames = [
+  'tools',
+  'dev',
+  'test',
+  'prod',
+];

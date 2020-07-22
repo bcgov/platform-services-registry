@@ -1,11 +1,13 @@
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
+import { projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 
 export interface ProjectNamespace extends CommonFields {
   name: string,
   profileId: number,
   clusterId: number,
+  provisioned?: boolean;
 }
 
 export default class NamespaceModel extends Model {
@@ -40,6 +42,24 @@ export default class NamespaceModel extends Model {
       return results.pop();
     } catch (err) {
       const message = `Unable to create namespace`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async createProjectSet(profileId: number, clusterId: number, prefix: string,): Promise<ProjectNamespace[]> {
+    try {
+      const names = projectSetNames.map(n => `${prefix}-${n}`);
+      const promises = names.map(name => this.create({
+        name,
+        profileId,
+        clusterId,
+      }));
+
+      return await Promise.all(promises);
+    } catch (err) {
+      const message = `Unable to create namespace set`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

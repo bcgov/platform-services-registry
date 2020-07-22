@@ -63,8 +63,6 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
       },
     };
 
-    console.log(JSON.stringify(context));
-
     return context;
   } catch (err) {
     const message = `Unable to build contect for profile ${profileId}`;
@@ -81,7 +79,6 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
       const nc = shared.nats;
       const subject = SUBJECTS.NSPROVISION;
       const context = await contextForProvisioning(profileId);
-      console.log('NATS message =', context);
 
       nc.on('error', () => {
         const message = `NATS error sending order ${profileId} to ${subject}`;

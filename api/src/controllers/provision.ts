@@ -20,14 +20,29 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import DataManager from '../db';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
+import shared from '../libs/shared';
+
+const dm = new DataManager(shared.pgPool);
 
 export const provisionProfileNamespaces = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
+  const { ProfileModel, NamespaceModel, ClusterModel } = dm;
 
   try {
+    const existing = await NamespaceModel.findForProfile(profileId);
+    if (existing.length === 0) {
+      const clusters = await ClusterModel.findAll();
+      // TODO:(jl) Everything goes to the default cluster for now.
+      const clusterId = clusters.filter(c => c.default === true).pop().id;
+      const profile = await ProfileModel.findById(profileId);
+
+      await NamespaceModel.createProjectSet(profileId, clusterId, profile.namespacePrefix);
+    }
+
     await fulfillNamespaceProvisioning(profileId);
 
     res.status(202).end();
