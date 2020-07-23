@@ -5,3 +5,48 @@
 
 # platform-services-registry
 Platform services OCP project registry
+
+## Build
+
+# API
+oc process -f api/openshift/templates/build.yaml| oc apply -f -
+
+# Web
+
+setup the s2i-caddy image as per:
+https://github.com/bcgov/s2i-caddy-nodejs
+
+
+oc process -f web/openshift/templates/build.yaml -p SOURCE_IMAGE_NAMESPACE=$(oc project --short) | oc apply -f -
+
+## Deploy
+
+Edit as needed then do:
+oc process -f api/openshift/templates/config.yaml | oc apply -f -
+
+oc process -f api/openshift/templates/deploy.yaml -p NAMESPACE=$(oc project --short) -p SOURCE_IMAGE_NAMESPACE=your-namespace-tools -p SOURCE_IMAGE_TAG=dev | oc apply -f -
+
+# schema
+oc get secret/registry-postgres-creds -o yaml
+
+oc port-forward registry-postgres-1-rz6nz 5432
+
+➜  platform-services-registry git:(master) ✗ docker run -it --rm --name blarb -v $(pwd):/opt/src postgres /bin/bash
+root@d7fc5e936e34:/# psql -U postgres -h host.docker.internal
+psql (12.0 (Debian 12.0-1.pgdg100+1), server 12.1)
+Type "help" for help.
+
+postgres=# \du
+                                   List of roles
+ Role name |                         Attributes                         | Member of 
+-----------+------------------------------------------------------------+-----------
+ 6yve3bce  |                                                            | {}
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+
+postgres=# 
+
+psql -U postgres -d registry -h host.docker.internal -f /opt/src/db/sql/0001.sql -v ROLLNAME=app_api_oksb6iie
+
+Seeing an unresolved image or not deploying the API? Remember to tag:
+oc tag platsrv-registry-api:latest platsrv-registry-api:dev
+
