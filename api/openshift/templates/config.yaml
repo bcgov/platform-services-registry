@@ -37,7 +37,7 @@ objects:
             "certsUrl": "https://sso.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
           },
           "nats": {
-            "host": "nats://blabla",
-            "port": 4222,
+            "host": "nats://nats.pye-sandbox.svc",
+            "port": 4222
           }
         }

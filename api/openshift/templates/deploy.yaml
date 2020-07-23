@@ -24,16 +24,6 @@ metadata:
   name: platform-services-registry
 objects:
 - apiVersion: v1
-  kind: Secret
-  metadata:
-    labels:
-      app: platsrv-registry
-    name: ${POSTGRESQL_SECRET_NAME}
-  stringData:
-    password: ${POSTGRESQL_PASSWORD}
-    user: ${POSTGRESQL_USER}
-  type: Opaque
-- apiVersion: v1
   kind: Route
   metadata:
     labels:
@@ -176,11 +166,11 @@ objects:
         containers:
           - name: ${API_NAME}
             image: " "
-            livenessProbe:
+            readinessProbe:
               httpGet:
                 path: /api/v1/ehlo
                 port: 8080
-              initialDelaySeconds: 180
+              initialDelaySeconds: 10
               timeoutSeconds: 3
             ports:
               - containerPort: 8080
@@ -236,7 +226,7 @@ parameters:
   name: POSTGRES_DEPLOYMENT_NAME
   required: true
   value: registry-postgres
-- description: The secret name of database.
+- description: The secret name for the database.
   displayName: PostgreSQL secret name
   name: POSTGRESQL_SECRET_NAME
   value: registry-postgres-creds
@@ -245,16 +235,6 @@ parameters:
   name: POSTGRESQL_MEMORY_LIMIT
   required: true
   value: 512Mi
-- displayName: The PostgreSQL db user name
-  from: '[a-zA-Z0-9]{8}'
-  generate: expression
-  name: POSTGRESQL_USER
-  required: true
-- displayName: The PostgreSQL user password
-  from: '[a-zA-Z0-9]{16}'
-  generate: expression
-  name: POSTGRESQL_PASSWORD
-  required: true
 - displayName: The PostgreSQL database for the health check probe
   name: POSTGRESQL_DATABASE
   required: true
@@ -273,7 +253,6 @@ parameters:
 - description: The openshift project where builds and target images are stored.
   displayName: Build Project
   name: SOURCE_IMAGE_NAMESPACE
-  value: devhub-tools
   required: true
 - description: The name of the source image.
   displayName: Source Image Name
