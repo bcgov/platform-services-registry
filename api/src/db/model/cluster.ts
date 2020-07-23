@@ -24,6 +24,8 @@ export interface Cluster extends CommonFields {
   description: string,
   disasterRecovery: boolean,
   onPrem: boolean
+  onHardware: boolean
+  isDefault: boolean
 }
 
 export default class CusterModel extends Model {
@@ -33,6 +35,7 @@ export default class CusterModel extends Model {
     'description',
     'disasterRecovery',
     'onPrem',
+    'onHardware',
   ];
   pool: Pool;
 
@@ -45,13 +48,14 @@ export default class CusterModel extends Model {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, description, disaster_recovery, on_prem)
-          VALUES ($1, $2, $3, $4) RETURNING *;`,
+          (name, description, disaster_recovery, on_prem, on_hardware)
+          VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
       values: [
         data.name,
         data.description,
         data.disasterRecovery,
         data.onPrem,
+        data.onHardware,
       ],
     };
 
@@ -71,14 +75,16 @@ export default class CusterModel extends Model {
       text: `
         UPDATE ${this.table}
           SET
-            name = $1, description = $2, disaster_recovery = $3, on_prem = $4
-          WHERE id = $5
+            name = $1, description = $2, disaster_recovery = $3, on_prem = $4,
+            on_hardware = $5,
+          WHERE id = $6
           RETURNING *;`,
       values: [
         data.name,
         data.description,
         data.disasterRecovery,
         data.onPrem,
+        data.onHardware,
         clusterId,
       ]
     };

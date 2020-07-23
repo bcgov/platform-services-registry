@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS ref_cluster (
     disaster_recovery BOOLEAN NOT NULL,
     on_prem           BOOLEAN NOT NULL,
     on_hardware       BOOLEAN NOT NULL,
-    "default"         BOOLEAN NOT NULL DEFAULT false,
+    is_default        BOOLEAN NOT NULL DEFAULT false,
     archived          BOOLEAN NOT NULL DEFAULT false,
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
     updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
