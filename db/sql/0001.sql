@@ -42,6 +42,25 @@ CREATE TRIGGER update_ref_bus_org_changetimestamp BEFORE UPDATE
 ON ref_bus_org FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
 
+CREATE TABLE IF NOT EXISTS user_profile (
+    id              SERIAL PRIMARY KEY,
+    keycloak_id     CHARACTER VARYING(36) NOT NULL,
+    last_seen_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    archived        BOOLEAN NOT NULL DEFAULT false,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3) NOT NULL,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3) NOT NULL
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_profile
+TO :ROLLNAME;
+GRANT USAGE ON SEQUENCE user_profile_id_seq
+TO :ROLLNAME;
+
+DROP TRIGGER IF EXISTS update_user_profile_changetimestamp on user_profile;
+CREATE TRIGGER update_user_profile_changetimestamp BEFORE UPDATE
+ON user_profile FOR EACH ROW EXECUTE PROCEDURE 
+update_changetimestamp_column();
+
 CREATE TABLE IF NOT EXISTS profile (
     id               serial PRIMARY KEY,
     namespace_prefix varchar(8) NOT NULL,
@@ -76,7 +95,7 @@ CREATE TABLE IF NOT EXISTS namespace (
     archived    BOOLEAN NOT NULL DEFAULT false,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-    UNIQUE      (name, cluster_id, archived)
+    UNIQUE      (name, archived)
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE namespace
@@ -161,25 +180,6 @@ TO :ROLLNAME;
 DROP TRIGGER IF EXISTS update_profile_contact_changetimestamp on profile_contact;
 CREATE TRIGGER update_profile_contact_changetimestamp BEFORE UPDATE
 ON profile_contact FOR EACH ROW EXECUTE PROCEDURE 
-update_changetimestamp_column();
-
-CREATE TABLE IF NOT EXISTS user_profile (
-    id              SERIAL PRIMARY KEY,
-    keycloak_id     CHARACTER VARYING(36) NOT NULL,
-    last_seen_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-    archived        BOOLEAN NOT NULL DEFAULT false,
-    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3) NOT NULL,
-    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3) NOT NULL
-);
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_profile
-TO :ROLLNAME;
-GRANT USAGE ON SEQUENCE user_profile_id_seq
-TO :ROLLNAME;
-
-DROP TRIGGER IF EXISTS update_user_profile_changetimestamp on user_profile;
-CREATE TRIGGER update_user_profile_changetimestamp BEFORE UPDATE
-ON user_profile FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
 
 END TRANSACTION;
