@@ -15,10 +15,10 @@ objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: ${NAME}-${GIT_REF}-build
+    name: ${NAME}-api-${GIT_REF}-build
     labels:
       app: ${NAME}-api
-      name: ${NAME}-${GIT_REF}-build
+      name: ${NAME}-api-${GIT_REF}-build
   spec:
     output:
       to:

@@ -2,28 +2,28 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   labels:
-    app: ${NAME}
+    app: ${NAME}-web
   name: ${NAME}-build
   namespace: devhub-dev
 objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: ${NAME}
+    name: ${NAME}-web
     labels:
-      app: ${NAME}
+      app: ${NAME}-web
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: ${NAME}-${GIT_REF}-build
+    name: ${NAME}-web-${GIT_REF}-build
     labels:
-      app: ${NAME}
-      name: ${NAME}-${GIT_REF}-build
+      app: ${NAME}-web
+      name: ${NAME}-web-${GIT_REF}-build
   spec:
     output:
       to:
-        kind: ImageStreamTag
-        name: ${NAME}:${OUTPUT_IMAGE_TAG}
+        kind: ImageStreamTag 
+        name: ${NAME}-web:${OUTPUT_IMAGE_TAG}
     resources:
       limits:
         cpu: ${CPU_LIMIT}
@@ -58,7 +58,7 @@ parameters:
   displayName: Name
   name: NAME
   required: true
-  value: platsrv-web
+  value: platsrv-registry
 - description: |
     The URL to your GIT repo, don't use the this default unless
     your just experimenting.
@@ -84,7 +84,7 @@ parameters:
 - description: The openshift project where builds and target images are stored.
   displayName: Build Project
   name: SOURCE_IMAGE_NAMESPACE
-  value: 'agehlers-sandbox'
+  # value: 'openshift'
   required: true
 - description: The name of the source image.
   displayName: Source Image Name
