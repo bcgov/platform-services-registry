@@ -131,12 +131,11 @@ parameters:
     The openshift project where builds and target images are stored.
   displayName: Build Project
   name: SOURCE_IMAGE_NAMESPACE
-  value: agehlers-sandbox
   required: true
 - description: The name of the source image.
   displayName: Source Image Name
   name: SOURCE_IMAGE_NAME
-  value: platsrv-web
+  value: platsrv-registry-web
   required: true
 - description: The tag of the source image.
   displayName: Source Image Tag
