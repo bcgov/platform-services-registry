@@ -35,7 +35,7 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const contact = contacts.filter(c => c.roleId === 2).pop();
-    const namespaces = await NamespaceModel.findForProfile(83);
+    const namespaces = await NamespaceModel.findForProfile(profileId);
 
     if (!profile || !contact || !namespaces) {
       logger.error('Unable to create context for provisioning');

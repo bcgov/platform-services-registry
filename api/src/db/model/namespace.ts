@@ -78,9 +78,7 @@ export default class NamespaceModel extends Model {
 
       const nsResults = await Promise.all(nsPromises);
       const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
-      const clResults = await Promise.all(clPromises);
-
-      console.log(nsResults, clResults)
+      await Promise.all(clPromises);
 
       return nsResults;
     } catch (err) {
