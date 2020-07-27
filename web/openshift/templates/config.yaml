@@ -35,7 +35,9 @@ objects:
 
         # Turn on the Web/file server
         file_server
-        templates
+        templates {
+          mime  application/javascript
+        }
 
         # The site root
         root * /opt/app-root/src
