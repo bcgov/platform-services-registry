@@ -36,7 +36,7 @@ objects:
         # Turn on the Web/file server
         file_server
         templates {
-          mime  application/javascript
+          mime  "text/javascript" "application/javascript"
         }
 
         # The site root
