@@ -60,6 +60,7 @@ export const verify = async (req, jwtPayload, done) => {
       let userProfile;
       const dm = new DataManager(shared.pgPool);
       const { UserProfileModel } = dm;
+
       userProfile = await UserProfileModel.findByKeycloakId(jwtPayload.sub);
       if (!userProfile) {
         // create one
@@ -82,6 +83,8 @@ export const verify = async (req, jwtPayload, done) => {
       // The returned user will be made available via `req.user`
       return done(null, profile); // OK
     } catch (err) {
+      const message = 'JWT verification error';
+      logger.error(`${message}, err = ${err.message}`);
       return done(null, null); // FAIL
     }
   }
