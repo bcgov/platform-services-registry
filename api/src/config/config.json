@@ -10,5 +10,12 @@
   "nats": {
     "host": "nats://registry-nats",
     "port": 4222
+  },
+  "db": {
+    "port": 5432,
+    "database": "registry",
+    "maxConnections": 10,
+    "idleTimeout": 10000,
+    "connectionTimeout": 2000
   }
 }

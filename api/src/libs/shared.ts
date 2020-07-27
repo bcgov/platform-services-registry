@@ -73,9 +73,9 @@ const main = async () => {
       database: config.get('db:database'),
       user: config.get('db:user'),
       password: config.get('db:password'),
-      max: 5,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
+      max: config.get('db:maxConnections'),
+      idleTimeoutMillis: config.get('db:idleTimeout'),
+      connectionTimeoutMillis: config.get('db:connectionTimeout'),
     }
 
     global[pgPoolKey] = new Pool(params);

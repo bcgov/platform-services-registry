@@ -32,12 +32,19 @@ objects:
       config.json: |
         {
           "sso": {
-            "authUrl": "https://sso.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/auth",
-            "tokenUrl": "https://sso.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
-            "certsUrl": "https://sso.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
+            "authUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/auth",
+            "tokenUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
+            "certsUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
           },
           "nats": {
             "host": "nats://nats.pye-sandbox.svc",
             "port": 4222
+          },
+          "db": {
+            "port": 5432,
+            "database": "registry",
+            "maxConnections": 100,
+            "idleTimeout": 10000,
+            "connectionTimeout": 2000
           }
         }
