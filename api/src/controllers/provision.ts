@@ -57,3 +57,31 @@ export const provisionProfileNamespaces = async (
     throw errorWithCode(message, 500);
   }
 };
+
+export const updateProvisionedNamespaces = async (
+  { body, params }: { body: any, params: any }, res: Response
+): Promise<void> => {
+  const { profileId } = params;
+  const { NamespaceModel } = dm;
+
+  try {
+    const promises: any = [];
+    body.forEach(namespace => {
+      const { namespaceId, clusters } = namespace;
+      clusters.forEach(cluster => {
+        const { clusterId, provisioned } = cluster;
+        console.log(namespaceId, clusterId, provisioned);
+        promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
+      });
+    });
+
+    await Promise.all(promises);
+
+    res.status(202).end();
+  } catch (err) {
+    const message = `Unable to update namespace status profile ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
