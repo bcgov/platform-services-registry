@@ -26,6 +26,17 @@ oc process -f api/openshift/templates/config.yaml | oc apply -f -
 
 oc process -f api/openshift/templates/deploy.yaml -p NAMESPACE=$(oc project --short) -p SOURCE_IMAGE_NAMESPACE=your-namespace-tools -p SOURCE_IMAGE_TAG=dev | oc apply -f -
 
+
+➜  platform-services-registry git:(master) ✗ oc tag platsrv-registry-web:latest platsrv-registry-web:dev
+
+Web
+
+➜  platform-services-registry git:(master) ✗ oc process -f web/openshift/templates/config.yaml | oc apply -f -
+
+oc process -f web/openshift/templates/deploy.yaml -p NAMESPACE=$(oc project --short) -p SOURCE_IMAGE_NAMESPACE=platform-registry-tools -p SOURCE_IMAGE_TAG=dev | oc apply -f -
+
+10452  oc process -f web/openshift/templates/deploy.yaml -p NAMESPACE=$(oc project --short) -p SOURCE_IMAGE_NAMESPACE=platform-registry-tools -p SOURCE_IMAGE_TAG=dev -p SSO_BASE_URL="https://sso-dev.pathfinder.gov.bc.ca" -p CLUSTER_DOMAIN=apps.thetis.devops.gov.bc.ca | oc apply -f -
+
 # schema
 oc get secret/registry-postgres-creds -o yaml
 
