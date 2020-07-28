@@ -37,8 +37,12 @@ export const provisionProfileNamespaces = async (
     if (existing.length === 0) {
       const clusters = await ClusterModel.findAll();
       // TODO:(jl) Everything goes to the default cluster for now.
-      const clusterId = clusters.filter(c => c.default === true).pop().id;
+      const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
       const profile = await ProfileModel.findById(profileId);
+
+      if (!clusterId || !profile) {
+        errorWithCode(500, 'Unable to fetch info for provisioning');
+      }
 
       await NamespaceModel.createProjectSet(profileId, clusterId, profile.namespacePrefix);
     }
