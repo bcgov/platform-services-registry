@@ -70,7 +70,6 @@ export const updateProvisionedNamespaces = async (
       const { namespaceId, clusters } = namespace;
       clusters.forEach(cluster => {
         const { clusterId, provisioned } = cluster;
-        console.log(namespaceId, clusterId, provisioned);
         promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
       });
     });
