@@ -20,11 +20,12 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { provisionProfileNamespaces } from '../../controllers/provision';
+import { provisionProfileNamespaces, updateProvisionedNamespaces } from '../../controllers/provision';
 
 const router = express.Router();
 
 // Provisioning
 router.post('/:profileId/namespace', asyncMiddleware(provisionProfileNamespaces));
+router.put('/:profileId/namespace', asyncMiddleware(updateProvisionedNamespaces));
 
 export default router;

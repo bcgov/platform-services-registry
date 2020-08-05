@@ -121,6 +121,33 @@ export default class NamespaceModel extends Model {
     }
   }
 
+  async updateProvisionStatus(namespaceId: number, clusterId: number, provisioned: boolean): Promise<void> {
+    const query = {
+      text: `
+        UPDATE cluster_namespace
+          SET
+            provisioned = $1
+          WHERE namespace_id = $2 AND cluster_id = $3
+        RETURNING *;`,
+      values: [
+        provisioned,
+        namespaceId,
+        clusterId,
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to update provisioning status for namespace ID ${namespaceId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async update(namespaceId: number, data: ProjectNamespace): Promise<ProjectNamespace> {
     const values: any[] = [];
     const query = {
