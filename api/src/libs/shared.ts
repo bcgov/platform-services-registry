@@ -18,8 +18,8 @@
 // Created by Jason Leach on 2018-07-23.
 //
 
-import { JWTServiceManager, logger } from '@bcgov/common-nodejs-utils';
-import nats from 'nats';
+import { JWTServiceManager } from '@bcgov/common-nodejs-utils';
+// import nats from 'nats';
 import { Pool } from 'pg';
 import config from '../config';
 
@@ -36,25 +36,25 @@ const gs = Object.getOwnPropertySymbols(global);
 const main = async () => {
 
   if (!(gs.indexOf(natsKey) > -1)) {
-    const host = `${config.get('nats:host')}:${config.get('nats:port')}`;
-    const nc = nats.connect({
-      json: true,
-      servers: [host],
-    });
+    // const host = `${config.get('nats:host')}:${config.get('nats:port')}`;
+    // const nc = nats.connect({
+    //   json: true,
+    //   servers: [host],
+    // });
 
-    nc.on('reconnecting', () => {
-      logger.info('nats reconnecting');
-    });
+    // nc.on('reconnecting', () => {
+    //   logger.info('nats reconnecting');
+    // });
 
-    nc.on('reconnect', conn => {
-      logger.info(`nats reconnect to ${conn.currentServer.url.host}`);
-    });
+    // nc.on('reconnect', conn => {
+    //   logger.info(`nats reconnect to ${conn.currentServer.url.host}`);
+    // });
 
-    nc.on('connect', conn => {
-      logger.info(`nats connect to ${conn.currentServer.url.host}`);
-    });
+    // nc.on('connect', conn => {
+    //   logger.info(`nats connect to ${conn.currentServer.url.host}`);
+    // });
 
-    global[natsKey] = nc;
+    global[natsKey] = undefined;
   }
 
   if (!(gs.indexOf(ssoKey) > -1)) {
