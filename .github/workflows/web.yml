@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "web/src/**/*.ts"
+      - "web/src/**/*.tsx"
       - "web/package*.json"
       - "web/public/**/*"
       - "web/Caddyfile"

@@ -5,7 +5,6 @@ import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import typography from './typography';
 
-
 ReactDOM.render(
   <React.StrictMode>
     <Global
