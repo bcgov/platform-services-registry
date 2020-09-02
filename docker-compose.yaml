@@ -29,10 +29,13 @@ services:
       - type: bind
         source: ./web
         target: /opt/app
+      # - type: bind
+      #   source: ./keycloak
+      #   target: /opt/app/node_modules/@bcgov/keycloak
       - type: tmpfs
         target: /tmp
         tmpfs:
-          size: 256m
+          size: 128000000
     ports:
       - 8101:8101
     depends_on:
