@@ -22,6 +22,7 @@ import { Input, Label, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
+import { toast } from 'react-toastify';
 import { Flex } from 'rebass';
 import { API, ROLES } from '../constants';
 import { ShadowBox } from './UI/shadowContainer';
@@ -61,6 +62,18 @@ const requiredField = (value: string) => (value ? undefined : 'Required')
 
 // const xxx = (value: string) => {
 //     console.log('vvvv', value);
+// }
+
+// const blarb = () => {
+//     toast.success('🦄 Your namespace request was successful 🦄', {
+//         position: toast.POSITION.TOP_CENTER,
+//         autoClose: 5000,
+//         hideProgressBar: false,
+//         closeOnClick: true,
+//         pauseOnHover: true,
+//         draggable: false,
+//         progress: undefined,
+//     });
 // }
 
 const transformFormData = (data: any) => {
@@ -105,8 +118,8 @@ const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
     const [ministry, setMinistrySponsor] = useState<any>([]);
 
-    const onSubmit = async (form: any) => {
-        const { profile, productOwner, technicalContact } = transformFormData(form);
+    const onSubmit = async (formData: any) => {
+        const { profile, productOwner, technicalContact } = transformFormData(formData);
 
         // TODO:(jl) This is lame. Need to figure out a better way to 
         // do form validation.
@@ -138,7 +151,26 @@ const MyForm: React.SFC = () => {
             await axi.post(`provision/${profileId}/namespace`);
 
             // 5.All good? Tell the user.
+            toast.success('🦄 Your namespace request was successful', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+            });
         } catch (err) {
+            toast.error('😥 Something went wrong', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
             console.log(err);
         }
     };
@@ -173,169 +205,171 @@ const MyForm: React.SFC = () => {
     }, []);
 
     return (
-        <Form
-            onSubmit={onSubmit}
-            validate={validate}>
-            {props => (
-                <form onSubmit={props.handleSubmit} >
-                    <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
-                        <StyledTitle>Tell us about your project</StyledTitle>
-                        <Field name="project-name" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="project-name">Name</Label>
-                                    <Input {...input} id="project-name" placeholder="Project X" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="project-description" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="project-description">Description</Label>
-                                    <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
+        <div>
+            <Form
+                onSubmit={onSubmit}
+                validate={validate}>
+                {props => (
+                    <form onSubmit={props.handleSubmit} >
+                        <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
+                            <StyledTitle>Tell us about your project</StyledTitle>
+                            <Field name="project-name" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="project-name">Name</Label>
+                                        <Input {...input} id="project-name" placeholder="Project X" />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
+                            <Field name="project-description" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="project-description">Description</Label>
+                                        <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
 
-                        <Flex>
-                            <Label variant="adjacentLabel">Is this a Priority Application?</Label>
-                            <Flex flex="1 1 auto" justifyContent="flex-end">
-                                <Label width="initial" px="8px">
-                                    <Field
-                                        name="project-prioritySystem"
-                                        component="input"
-                                        type="checkbox"
-                                        value="yes"
-                                    >
-                                        {({ input, meta }) => (
-                                            < >
-                                                <input
-                                                    style={{ width: '35px', height: '35px' }}
-                                                    name={input.name}
-                                                    type="checkbox"
-                                                    value="yes"
-                                                    checked={input.checked}
-                                                    onChange={input.onChange}
-                                                />
-                                                {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                            </>
-                                        )}
-                                    </Field>
-                                </Label>
-                            </Flex>
-                        </Flex>
-                        <Flex>
-                            <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
-                                <Field
-                                    flex="1 0 200px"
-                                    name="project-busOrgId"
-                                    component="select"
-                                >
-                                    {/* {({ input, meta }) => ( */}
-                                    <option>Select...</option>
-                                    {ministry.map((s: any) => (
-                                        <option
-                                            key={s.code}
-                                            value={s.code}
+                            <Flex>
+                                <Label variant="adjacentLabel">Is this a Priority Application?</Label>
+                                <Flex flex="1 1 auto" justifyContent="flex-end">
+                                    <Label width="initial" px="8px">
+                                        <Field
+                                            name="project-prioritySystem"
+                                            component="input"
+                                            type="checkbox"
+                                            value="yes"
                                         >
-                                            {s.name}
-                                        </option>
-                                    ))}
-                                    {/* )} */}
-                                </Field>
+                                            {({ input, meta }) => (
+                                                < >
+                                                    <input
+                                                        style={{ width: '35px', height: '35px' }}
+                                                        name={input.name}
+                                                        type="checkbox"
+                                                        value="yes"
+                                                        checked={input.checked}
+                                                        onChange={input.onChange}
+                                                    />
+                                                    {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                                </>
+                                            )}
+                                        </Field>
+                                    </Label>
+                                </Flex>
                             </Flex>
-                        </Flex>
-                    </ShadowBox>
-                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-                        <StyledTitle>Who is the product owner for this project?</StyledTitle>
+                            <Flex>
+                                <Label variant="adjacentLabel">Ministry Sponsor</Label>
+                                <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+                                    <Field
+                                        flex="1 0 200px"
+                                        name="project-busOrgId"
+                                        component="select"
+                                    >
+                                        {/* {({ input, meta }) => ( */}
+                                        <option>Select...</option>
+                                        {ministry.map((s: any) => (
+                                            <option
+                                                key={s.code}
+                                                value={s.code}
+                                            >
+                                                {s.name}
+                                            </option>
+                                        ))}
+                                        {/* )} */}
+                                    </Field>
+                                </Flex>
+                            </Flex>
+                        </ShadowBox>
+                        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                            <StyledTitle>Who is the product owner for this project?</StyledTitle>
 
-                        <Field name="po-firstName" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="po-first-name">First Name</Label>
-                                    <Input {...input} id="po-first-name" placeholder="Jane" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="po-lastName" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="po-last-name">Last Name</Label>
-                                    <Input {...input} id="po-last-name" placeholder="Doe" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="po-email" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="po-email">eMail Address</Label>
-                                    <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
+                            <Field name="po-firstName" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="po-first-name">First Name</Label>
+                                        <Input {...input} id="po-first-name" placeholder="Jane" />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
+                            <Field name="po-lastName" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="po-last-name">Last Name</Label>
+                                        <Input {...input} id="po-last-name" placeholder="Doe" />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
+                            <Field name="po-email" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="po-email">eMail Address</Label>
+                                        <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
 
-                        <Field name="po-githubId" validate={requiredField}>
-                            {({ input }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="po-github-id">GitHub ID</Label>
-                                    <Input {...input} id="po-github-id" placeholder="jane1100" />
-                                </Flex>
-                            )}
-                        </Field>
-                    </ShadowBox>
+                            <Field name="po-githubId" validate={requiredField}>
+                                {({ input }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="po-github-id">GitHub ID</Label>
+                                        <Input {...input} id="po-github-id" placeholder="jane1100" />
+                                    </Flex>
+                                )}
+                            </Field>
+                        </ShadowBox>
 
-                    <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-                        <StyledTitle>Who is the technical contact for this project?</StyledTitle>
+                        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
+                            <StyledTitle>Who is the technical contact for this project?</StyledTitle>
 
-                        <Field name="tc-firstName" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="tc-first-name">First Name</Label>
-                                    <Input {...input} id="tc-first-name" placeholder="Jane" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="tc-lastName" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="tc-last-name">Last Name</Label>
-                                    <Input {...input} id="tc-last-name" placeholder="Doe" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="tc-email" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="tc-email">eMail Address</Label>
-                                    <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
+                            <Field name="tc-firstName" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="tc-first-name">First Name</Label>
+                                        <Input {...input} id="tc-first-name" placeholder="Jane" />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
+                            <Field name="tc-lastName" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="tc-last-name">Last Name</Label>
+                                        <Input {...input} id="tc-last-name" placeholder="Doe" />
+                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
+                            <Field name="tc-email" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="tc-email">eMail Address</Label>
+                                        <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
+                                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
 
-                        <Field name="tc-githubId" validate={requiredField}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                    <Label htmlFor="tc-github-id">GitHub ID</Label>
-                                    <Input {...input} id="tc-github-id" placeholder="jane1100" />
-                                    {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <StyledButton type="submit">Request</StyledButton>
-                    </ShadowBox>
-                </form>
-            )
-            }
-        </Form >
+                            <Field name="tc-githubId" validate={requiredField}>
+                                {({ input, meta }) => (
+                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
+                                        <Label htmlFor="tc-github-id">GitHub ID</Label>
+                                        <Input {...input} id="tc-github-id" placeholder="jane1100" />
+                                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                                    </Flex>
+                                )}
+                            </Field>
+                            <StyledButton type="submit">Request</StyledButton>
+                        </ShadowBox>
+                    </form>
+                )
+                }
+            </Form >
+        </div>
     )
 };
 
