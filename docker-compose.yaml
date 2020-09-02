@@ -29,9 +29,6 @@ services:
       - type: bind
         source: ./web
         target: /opt/app
-      # - type: bind
-      #   source: ./keycloak
-      #   target: /opt/app/node_modules/@bcgov/keycloak
       - type: tmpfs
         target: /tmp
         tmpfs:
