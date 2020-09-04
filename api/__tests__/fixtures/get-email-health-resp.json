@@ -1,0 +1,19 @@
+{
+  "dependencies": [
+    {
+      "name": "database",
+      "healthy": true,
+      "info": "Database Service connected successfully."
+    },
+    {
+      "name": "queue",
+      "healthy": true,
+      "info": "Queue Service connected successfully."
+    },
+    {
+      "name": "smtp",
+      "healthy": true,
+      "info": "SMTP Service connected successfully."
+    }
+  ]
+}
