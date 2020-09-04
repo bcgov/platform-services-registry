@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Services Health check works correctly 1`] = `
+Array [
+  Object {
+    "healthy": true,
+    "info": "Database Service connected successfully.",
+    "name": "database",
+  },
+  Object {
+    "healthy": true,
+    "info": "Queue Service connected successfully.",
+    "name": "queue",
+  },
+  Object {
+    "healthy": true,
+    "info": "SMTP Service connected successfully.",
+    "name": "smtp",
+  },
+]
+`;
+
+exports[`Services Sending a message works correctly 1`] = `
+Object {
+  "messages": Array [
+    Object {
+      "messageId": "wcjrijro-6fca-4a78-ba16-fb93d094daa3",
+      "to": Array [
+        "phill@example.com",
+      ],
+    },
+  ],
+  "transactionId": "wcjrijro-5fd9-499b-8368-72b70196cf55",
+}
+`;

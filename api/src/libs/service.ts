@@ -18,7 +18,6 @@
 
 import { JWTServiceManager } from '@bcgov/common-nodejs-utils';
 import axios, { AxiosInstance } from 'axios';
-import config from '../config';
 
 export interface Dependency {
   name: string;
@@ -150,29 +149,3 @@ export class CommonEmailService {
     }
   }
 }
-
-const main = async () => {
-  const options: Options = {
-    baseURL: config.get('ches:baseURL'),
-    sso: {
-      uri: config.get('ches:ssoTokenURL'),
-      grantType: config.get('ches:ssoGrantType'),
-      clientId: config.get('ches:ssoClientId'),
-      clientSecret: config.get('ches:ssoClientSecret'),
-    },
-  }
-  const message: Message = {
-    bodyType: BodyType.Text,
-    body: 'Hello World',
-    from: 'jason.leach@gov.bc.ca',
-    subject: 'Test 123',
-    to: ['jason.leach@fullboar.ca'],
-  }
-
-  const x = new CommonEmailService(options);
-  // await x.health();
-  const reciept = await x.send(message);
-  console.log(reciept);
-}
-
-main();
