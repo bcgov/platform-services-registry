@@ -55,6 +55,14 @@ export const enum Priority {
   High = 'high',
 }
 
+export const enum MessageSendStatus {
+  Accepted = 'accepted',
+  Cancelled = 'cancelled',
+  Completed = 'completed',
+  Failed = 'failed',
+  Pending = 'pending',
+}
+
 export const enum AttachmentContentType {
   String = 'string',
 }
@@ -72,7 +80,7 @@ export interface Message {
   bodyType: BodyType;
   body: string;
   cc?: string[];
-  delayTS?: Date;
+  delayTS?: number;
   encoding?: Encoding;
   from: string;
   priority?: Priority;
@@ -86,9 +94,19 @@ export interface SentMessage {
   messageId: string;
 }
 
-export interface SendReciept {
+export interface SendReceipt {
   transactionId: string;
   messages: SentMessage[];
+}
+
+export interface MessageStatus {
+  createdAt: Date;
+  delayedUntil: Date;
+  messageId: string;
+  status: MessageSendStatus;
+  tag: string;
+  transactionId: string;
+  updatedAt: Date;
 }
 
 export class CommonEmailService {
@@ -121,15 +139,16 @@ export class CommonEmailService {
     }
   }
 
-  public async send(message: Message) {
+  public async send(message: Message): Promise<SendReceipt> {
     try {
       const token = await this.tokenManager.accessToken;
-      const response = await this.axi.post('email', message, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await this.axi.post('email', message,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
 
       const { txId, messages } = response.data;
       const theMessages = messages.map(m => {
@@ -145,6 +164,41 @@ export class CommonEmailService {
       }
     } catch (err) {
       const errmsg = 'Unable to send message';
+      throw new Error(`${errmsg}, reason = ${err.message}`);
+    }
+  }
+
+  public async status(receipt: SendReceipt): Promise<MessageStatus[]> {
+    const params = {
+      txID: receipt.transactionId,
+    };
+
+    try {
+      const token = await this.tokenManager.accessToken;
+      const response = await this.axi.get('status', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        params,
+      });
+
+      const processed = response.data.map(r => {
+        const { createdTS, delayTS, msgId, status, tag, txId, updatedTS } = r;
+        return {
+          createdAt: new Date(createdTS),
+          delayedUntil: new Date(delayTS),
+          messageId: msgId,
+          status,
+          tag,
+          transactionId: txId,
+          updatedAt: new Date(updatedTS),
+        }
+      })
+
+      return processed;
+    } catch (err) {
+      const errmsg = 'Unable to fetch message status';
       throw new Error(`${errmsg}, reason = ${err.message}`);
     }
   }
