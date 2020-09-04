@@ -36,7 +36,12 @@ describe('Services', () => {
     },
   }
   const emailSvs = new CommonEmailService(options);
-
+  const headers = {
+    'headers': {
+      'Authorization': 'Bearer undefined',
+      'Content-Type': 'application/json',
+    },
+  }
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -52,6 +57,13 @@ describe('Services', () => {
     const result = await emailSvs.health();
 
     expect(result).toMatchSnapshot();
+    // @ts-ignore
+    expect(mockAxios.fn.get).toHaveBeenCalledTimes(1);
+    // @ts-ignore
+    expect(mockAxios.fn.get).toHaveBeenCalledWith(
+      'health',
+      headers
+    );
   });
 
   it('Health check fails gracefully', async () => {
@@ -82,6 +94,14 @@ describe('Services', () => {
     const result = await emailSvs.send(message);
 
     expect(result).toMatchSnapshot();
+    // @ts-ignore
+    expect(mockAxios.fn.post).toHaveBeenCalledTimes(1);
+    // @ts-ignore
+    expect(mockAxios.fn.post).toHaveBeenCalledWith(
+      'email',
+      message,
+      headers
+    );
   });
 
   it('Sending a message fails gracefully', async () => {
