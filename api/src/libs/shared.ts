@@ -54,7 +54,7 @@ const main = async () => {
       logger.info(`nats connect to ${conn.currentServer.url.host}`);
     });
 
-    global[natsKey] = undefined;
+    global[natsKey] = nc;
   }
 
   if (!(gs.indexOf(ssoKey) > -1)) {
