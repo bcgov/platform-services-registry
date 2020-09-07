@@ -32,6 +32,9 @@ objects:
       config.json: |
         {
           "sso": {
+            "grantType": "client_credentials",
+            "clientId": "signing-api",
+            "callback": "/v1/auth/callback",
             "authUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/auth",
             "tokenUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
             "certsUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
