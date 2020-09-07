@@ -78,9 +78,7 @@ const main = async () => {
       connectionTimeoutMillis: config.get('db:connectionTimeout'),
     }
 
-    console.log(params);
     global[pgPoolKey] = new Pool(params);
-    console.log(global[pgPoolKey]);
   }
 }
 
