@@ -58,13 +58,17 @@ gulp.task('copy-node-config', () =>
   gulp.src(['package.json', 'package-lock.json']).pipe(gulp.dest('build'))
 );
 
+gulp.task('copy-templates', () =>
+  gulp.src(['templates/**']).pipe(gulp.dest('build/templates'))
+);
+
 gulp.task('link-env', () => child.spawn('ln', ['-sfh', '../.env', './build'], { stdio: 'inherit' }));
 
 gulp.task(
   'default',
   gulp.series(
     'clean',
-    gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config')
+    gulp.parallel('transpile-src', 'copy-app-config', 'copy-node-config', 'copy-templates')
   )
 );
 
