@@ -17,13 +17,19 @@
 import mockAxios from "axios";
 import fs from 'fs';
 import path from 'path';
-import { BodyType, CommonEmailService, Message, Options } from '../src/libs/service';
+import { BodyType, default as CommonEmailService, Message, Options } from '../src/libs/service';
 
 const p0 = path.join(__dirname, 'fixtures/get-email-health-resp.json');
 const health = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/post-send-email-resp.json');
 const send = JSON.parse(fs.readFileSync(p1, 'utf8'));
+
+const p2 = path.join(__dirname, 'fixtures/get-tx-status-resp.json');
+const txstat = JSON.parse(fs.readFileSync(p2, 'utf8'));
+
+const p3 = path.join(__dirname, 'fixtures/get-msg-status-resp.json');
+const msgstat = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
 describe('Services', () => {
   const options: Options = {
@@ -42,6 +48,11 @@ describe('Services', () => {
       'Content-Type': 'application/json',
     },
   }
+  // const params = {
+  //   'params': {
+  //     'txId': 'someidhere',
+  //   },
+  // };
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -119,5 +130,47 @@ describe('Services', () => {
     }
 
     await expect(emailSvs.send(message)).rejects.toThrow();
+  });
+
+  it('A transaction status is returned', async () => {
+    // @ts-ignore
+    mockAxios.fn.get.mockImplementationOnce(() =>
+      Promise.resolve({
+        data: txstat,
+      })
+    );
+
+    const result = await emailSvs.transactionStatus('someidhere');
+
+    expect(result).toMatchSnapshot();
+    // @ts-ignore
+    expect(mockAxios.fn.get).toHaveBeenCalledTimes(1);
+    // // @ts-ignore
+    // expect(mockAxios.fn.get).toHaveBeenCalledWith(
+    //   'status',
+    //   headers,
+    //   params
+    // );
+  });
+
+  it('A message status is returned', async () => {
+    // @ts-ignore
+    mockAxios.fn.get.mockImplementationOnce(() =>
+      Promise.resolve({
+        data: msgstat,
+      })
+    );
+
+    const result = await emailSvs.messageStatus('someidhere');
+
+    expect(result).toMatchSnapshot();
+    // @ts-ignore
+    expect(mockAxios.fn.get).toHaveBeenCalledTimes(1);
+    // // @ts-ignore
+    // expect(mockAxios.fn.get).toHaveBeenCalledWith(
+    //   'status',
+    //   headers,
+    //   params
+    // );
   });
 });

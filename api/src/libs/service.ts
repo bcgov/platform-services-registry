@@ -101,7 +101,7 @@ export interface SendReceipt {
 
 export interface MessageStatus {
   createdAt: Date;
-  delayedUntil: Date;
+  delayedUntil?: Date;
   messageId: string;
   status: MessageSendStatus;
   tag: string;
@@ -109,7 +109,7 @@ export interface MessageStatus {
   updatedAt: Date;
 }
 
-export class CommonEmailService {
+export default class CommonEmailService {
   private tokenManager: JWTServiceManager;
   private axi: AxiosInstance;
 
@@ -134,8 +134,8 @@ export class CommonEmailService {
 
       return dependencies
     } catch (err) {
-      const errmsg = 'Unable to fetch health status';
-      throw new Error(`${errmsg}, reason = ${err.message}`);
+      const msg = 'Unable to fetch health status';
+      throw new Error(`${msg}, reason = ${err.message}`);
     }
   }
 
@@ -163,14 +163,14 @@ export class CommonEmailService {
         messages: theMessages,
       }
     } catch (err) {
-      const errmsg = 'Unable to send message';
-      throw new Error(`${errmsg}, reason = ${err.message}`);
+      const msg = 'Unable to send message';
+      throw new Error(`${msg}, reason = ${err.message}`);
     }
   }
 
-  public async status(receipt: SendReceipt): Promise<MessageStatus[]> {
+  public async transactionStatus(transactionId: string): Promise<MessageStatus[]> {
     const params = {
-      txID: receipt.transactionId,
+      txId: transactionId,
     };
 
     try {
@@ -187,7 +187,7 @@ export class CommonEmailService {
         const { createdTS, delayTS, msgId, status, tag, txId, updatedTS } = r;
         return {
           createdAt: new Date(createdTS),
-          delayedUntil: new Date(delayTS),
+          delayedUntil: delayTS ? new Date(delayTS) : undefined,
           messageId: msgId,
           status,
           tag,
@@ -198,8 +198,43 @@ export class CommonEmailService {
 
       return processed;
     } catch (err) {
-      const errmsg = 'Unable to fetch message status';
-      throw new Error(`${errmsg}, reason = ${err.message}`);
+      const msg = 'Unable to fetch transaction status';
+      throw new Error(`${msg}, reason = ${err.message}`);
+    }
+  }
+
+  public async messageStatus(messageId: string): Promise<MessageStatus | undefined> {
+    const params = {
+      msgId: messageId,
+    };
+
+    try {
+      const token = await this.tokenManager.accessToken;
+      const response = await this.axi.get('status', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        params,
+      });
+
+      if (response.data.length === 0) {
+        return;
+      }
+
+      const { createdTS, delayTS, msgId, status, tag, txId, updatedTS } = response.data.pop();
+      return {
+        createdAt: new Date(createdTS),
+        delayedUntil: delayTS ? new Date(delayTS) : undefined,
+        messageId: msgId,
+        status,
+        tag,
+        transactionId: txId,
+        updatedAt: new Date(updatedTS),
+      }
+    } catch (err) {
+      const msg = 'Unable to fetch message status';
+      throw new Error(`${msg}, reason = ${err.message}`);
     }
   }
 }
