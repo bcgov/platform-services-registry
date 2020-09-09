@@ -42,12 +42,10 @@ const main = async () => {
 
   if (!(gs.indexOf(chesKey) > -1)) {
     const opts: Options = {
-      sso: {
-        uri: config.get('ches:ssoTokenURL'),
-        grantType: config.get('ches:ssoGrantType'),
-        clientId: config.get('ches:ssoClientId'),
-        clientSecret: config.get('ches:ssoClientSecret'),
-      },
+      uri: config.get('ches:ssoTokenURL'),
+      grantType: config.get('ches:ssoGrantType'),
+      clientId: config.get('ches:ssoClientId'),
+      clientSecret: config.get('ches:ssoClientSecret'),
       baseURL: config.get('ches:baseURL'),
     };
 

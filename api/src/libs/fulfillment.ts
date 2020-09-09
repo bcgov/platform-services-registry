@@ -17,40 +17,15 @@
 //
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import fs from 'fs';
-import path from 'path';
 import { SUBJECTS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
-import { BodyType, Message } from '../libs/service';
+import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
 export interface Context {
   something: any;
-}
-
-export const provisioningStartedMessage = async (profileId: number): Promise<Message | undefined> => {
-
-  const dm = new DataManager(shared.pgPool);
-  const { ContactModel } = dm;
-  const buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-received.txt'));
-  const contacts: Contact[] = await ContactModel.findForProject(profileId);
-  const to = [...new Set(contacts.map(c => c.email))];
-
-  if (to.length === 0) {
-    return;
-  }
-
-  const message: Message = {
-    bodyType: BodyType.Text,
-    body: buff.toString('utf8'),
-    to,
-    from: 'Registry <pathfinder@gov.bc.ca>',
-    subject: 'Namespace Provisioning',
-  }
-
-  return message;
 }
 
 export const contextForProvisioning = async (profileId: number): Promise<any> => {
@@ -105,10 +80,7 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
         nc.removeAllListeners(['error']);
       });
 
-      const message = await provisioningStartedMessage(profileId);
-      if (message) {
-        await shared.ches.send(message);
-      }
+      await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
 
       resolve();
     } catch (err) {

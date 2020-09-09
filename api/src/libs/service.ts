@@ -25,15 +25,11 @@ export interface Dependency {
   info: string;
 }
 
-export interface SSOConfig {
+export interface Options {
   uri: string;
   grantType: string;
   clientId: string;
   clientSecret: string;
-}
-
-export interface Options {
-  sso: SSOConfig;
   baseURL: string;
 }
 
@@ -114,7 +110,18 @@ export default class CommonEmailService {
   private axi: AxiosInstance;
 
   constructor(options: Options) {
-    this.tokenManager = new JWTServiceManager(options.sso);
+    const {
+      uri,
+      grantType,
+      clientId,
+      clientSecret,
+    } = options;
+    this.tokenManager = new JWTServiceManager({
+      uri,
+      grantType,
+      clientId,
+      clientSecret,
+    });
     this.axi = axios.create({
       baseURL: options.baseURL,
     });

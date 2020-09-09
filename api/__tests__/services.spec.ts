@@ -34,12 +34,10 @@ const msgstat = JSON.parse(fs.readFileSync(p3, 'utf8'));
 describe('Services', () => {
   const options: Options = {
     baseURL: 'something',
-    sso: {
-      uri: 'something',
-      grantType: 'something',
-      clientId: 'something',
-      clientSecret: 'something',
-    },
+    uri: 'something',
+    grantType: 'something',
+    clientId: 'something',
+    clientSecret: 'something',
   }
   const emailSvs = new CommonEmailService(options);
   const headers = {

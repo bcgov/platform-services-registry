@@ -1,0 +1,16 @@
+hey 👋,
+
+Good news. Your request for a new namespace set is done; logon to the cluster console and you'll see all four namespaces. If you have any more questions reach out to the Platform Services team in the #devops-how-to channel in RocketChat.
+
+
+Workflow Steps
+
+- ✅ Request
+- ✅ Approval
+- ✅ Provisioning
+
+
+
+Thanks Again,
+
+The Registry 🤖
