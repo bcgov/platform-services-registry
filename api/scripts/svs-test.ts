@@ -15,8 +15,8 @@ const main = async () => {
   const message: Message = {
     bodyType: BodyType.Text,
     body: 'Hello World',
-    to: ['jason.leach@fullboar.ca'],
-    from: 'jason.leach@gov.bc.ca',
+    to: [], // TODO: Set before use.
+    from: '', // TODO: Set before use.
     subject: 'Test Message',
   }
   const reciept = await ces.send(message);
