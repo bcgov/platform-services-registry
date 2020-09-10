@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Services Provisioning context is created 1`] = `
+Object {
+  "displayName": "Project X",
+  "namespaces": Array [
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-tools",
+      "namespaceId": 149,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-test",
+      "namespaceId": 151,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-dev",
+      "namespaceId": 150,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-prod",
+      "namespaceId": 152,
+    },
+  ],
+  "profileId": 118,
+  "technicalContact": Object {
+    "githubId": "jim1100",
+  },
+}
+`;

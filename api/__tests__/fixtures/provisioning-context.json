@@ -1,0 +1,53 @@
+{
+  "profileId": 118,
+  "displayName": "Project X",
+  "namespaces": [
+    {
+      "namespaceId": 149,
+      "name": "4ea35c-tools",
+      "clusters": [
+        {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false
+        }
+      ]
+    },
+    {
+      "namespaceId": 151,
+      "name": "4ea35c-test",
+      "clusters": [
+        {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false
+        }
+      ]
+    },
+    {
+      "namespaceId": 150,
+      "name": "4ea35c-dev",
+      "clusters": [
+        {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false
+        }
+      ]
+    },
+    {
+      "namespaceId": 152,
+      "name": "4ea35c-prod",
+      "clusters": [
+        {
+          "clusterId": 1,
+          "name": "kam",
+          "provisioned": false
+        }
+      ]
+    }
+  ],
+  "technicalContact": {
+    "githubId": "jim1100"
+  }
+}

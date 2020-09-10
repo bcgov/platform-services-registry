@@ -20,8 +20,6 @@ import path from 'path';
 import { Pool } from 'pg';
 import { contactsForProfile, MessageType, sendProvisioningMessage } from '../src/libs/messaging';
 
-const client = new Pool().connect();
-
 const p1 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
 const contacts = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
@@ -30,6 +28,8 @@ const send = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 
 describe('Services', () => {
+
+  const client = new Pool().connect();
 
   beforeEach(() => {
     jest.clearAllMocks();

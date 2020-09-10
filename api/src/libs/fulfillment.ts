@@ -35,6 +35,7 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const { ProfileModel, ContactModel, NamespaceModel } = dm;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
+
     const contact = contacts.filter(c => c.roleId === 2).pop();
     const namespaces = await NamespaceModel.findForProfile(profileId);
 
@@ -54,7 +55,7 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
 
     return context;
   } catch (err) {
-    const message = `Unable to build contect for profile ${profileId}`;
+    const message = `Unable to build context for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
@@ -68,6 +69,11 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
       const nc = shared.nats;
       const subject = SUBJECTS.NSPROVISION;
       const context = await contextForProvisioning(profileId);
+
+      if (!context) {
+        const errmsg = `No context for ${profileId}`;
+        reject(new Error(errmsg));
+      }
 
       nc.on('error', () => {
         const errmsg = `NATS error sending order ${profileId} to ${subject}`;
