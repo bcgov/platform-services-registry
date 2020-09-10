@@ -18,6 +18,7 @@ import { Response } from 'express';
 import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';
+import { Pool } from 'pg';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -26,10 +27,7 @@ const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
 const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-const client = {
-  query: jest.fn(),
-  release: jest.fn(),
-}
+const client = new Pool().connect();
 
 jest.mock('../src/db/utils', () => ({
   generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e6'),
@@ -42,20 +40,6 @@ jest.mock('../src/db/utils', () => ({
     return obj;
   }),
 }));
-
-jest.mock('pg', () => {
-  return {
-    Pool: jest.fn(() => {
-      return {
-        connect: jest.fn().mockImplementation(() => {
-          return client;
-        }),
-        query: jest.fn(),
-        end: jest.fn(),
-      }
-    }),
-  };
-});
 
 class FauxExpress {
   res: Partial<Response> = {

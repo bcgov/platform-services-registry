@@ -57,7 +57,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     }
 
     switch (messageType) {
-      case MessageType.ProvisioningCompleted:
+      case MessageType.ProvisioningStarted:
         buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-received.txt'));
         break;
       case MessageType.ProvisioningCompleted:
@@ -84,5 +84,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
   } catch (err) {
     const message = `Unable to send message for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
+
+    return;
   }
 }
