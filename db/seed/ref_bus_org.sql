@@ -7,7 +7,7 @@ INSERT INTO ref_bus_org (id, name) VALUES
   ('ALC', 'Agriculture Land Commission'),
   ('AG', 'Attorney General'),
   ('MCF', 'Children & Family Development'),
-  ('CITZ', 'Citizens''s Services'),
+  ('CITZ', 'Citizens'' Services'),
   ('DBC', 'Destination BC'),
   ('EMBC', 'Emergency Management BC'),
   ('EAO', 'Environmental Assessment Office'),
@@ -24,11 +24,10 @@ INSERT INTO ref_bus_org (id, name) VALUES
   ('MMHA', 'Mental Health & Addictions'),
   ('MAH', 'Municipal Affairs & Housing'),
   ('BCPC', 'Pension Corporation'),
-  ('PSA', 'Public Safety & Solicitor General & Emergency B.C.'),
+  ('PSA', 'Public Service Agency'),
+  ('PSSG', 'Public Safety & Solicitor General'),
   ('SDPR', 'Social Development & Poverty Reduction'),
   ('TCA', 'Tourism, Arts & Culture'),
   ('TRAN', 'Transportation & Infrastructure');
-
-
 
 END TRANSACTION;
