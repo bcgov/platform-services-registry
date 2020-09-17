@@ -51,6 +51,12 @@ nconf.overrides({
   sso: {
     clientSecret: process.env.SSO_CLIENT_SECRET,
   },
+  ches: {
+    baseURL: process.env.CHES_BASEURL,
+    ssoTokenURL: process.env.CHES_SSO_TOKEN_URL,
+    ssoClientId: process.env.CHES_SSO_CLIENT_ID,
+    ssoClientSecret: process.env.CHES_SSO_CLIENT_SECRET,
+  },
 });
 
 // load other properties from file.

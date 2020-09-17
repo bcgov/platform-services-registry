@@ -22,18 +22,36 @@ import { JWTServiceManager, logger } from '@bcgov/common-nodejs-utils';
 import nats from 'nats';
 import { Pool } from 'pg';
 import config from '../config';
+import { default as CommonEmailService, Options } from '../libs/service';
 
 interface Shared {
   pgPool: Pool;
   nats: any;
+  ches: CommonEmailService;
 }
+
 
 const ssoKey = Symbol.for('ca.bc.gov.platsrv.sso');
 const pgPoolKey = Symbol.for('ca.bc.gov.platsrv.pgpool');
-const natsKey = Symbol.for('ca.probateapp.nats');
+const natsKey = Symbol.for('ca.bc.gov.platsrv.nats');
+const chesKey = Symbol.for('ca.bc.gov.platsrv.CHES');
+
 const gs = Object.getOwnPropertySymbols(global);
 
 const main = async () => {
+
+  if (!(gs.indexOf(chesKey) > -1)) {
+    const opts: Options = {
+      uri: config.get('ches:ssoTokenURL'),
+      grantType: config.get('ches:ssoGrantType'),
+      clientId: config.get('ches:ssoClientId'),
+      clientSecret: config.get('ches:ssoClientSecret'),
+      baseURL: config.get('ches:baseURL'),
+    };
+
+    const ches = new CommonEmailService(opts)
+    global[chesKey] = ches;
+  }
 
   if (!(gs.indexOf(natsKey) > -1)) {
     const host = `${config.get('nats:host')}:${config.get('nats:port')}`;
@@ -96,6 +114,10 @@ Object.defineProperty(shared, 'pgPool', {
 
 Object.defineProperty(shared, 'nats', {
   get: () => global[natsKey],
+});
+
+Object.defineProperty(shared, 'ches', {
+  get: () => global[chesKey],
 });
 
 Object.freeze(shared);

@@ -1,6 +1,6 @@
 version: "3.6"
 x-env: &defaults
-  NODE_ENV:
+  NODE_ENV: development
   NODE_PATH:
   POSTGRESQL_HOST: registry-pg
   POSTGRESQL_PORT: 5432
@@ -9,6 +9,10 @@ x-env: &defaults
   APP_DB_USER:
   APP_DB_PASSWORD:
   SSO_CLIENT_SECRET:
+  CHES_BASEURL:
+  CHES_SSO_TOKEN_URL:
+  CHES_SSO_CLIENT_ID:
+  CHES_SSO_CLIENT_SECRET:
 # volumes:
 #   pg_data:
 # networks:
@@ -41,7 +45,7 @@ services:
       PORT: 8101
       NODE_ENV: development
     command: >
-      bash -c "sleep 3 && npm start"
+      bash -c "npm start"
   api:
     container_name: registry-api
     image: registry/api
@@ -55,7 +59,7 @@ services:
       - type: tmpfs
         target: /tmp
         tmpfs:
-          size: 256m
+          size: 128000000
     ports:
       - 8100:8100
       - 9229:9229

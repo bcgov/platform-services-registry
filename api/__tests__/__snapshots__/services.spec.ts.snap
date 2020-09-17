@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Services A message status is returned 1`] = `
+Object {
+  "createdAt": 2020-09-08T19:47:00.713Z,
+  "delayedUntil": undefined,
+  "messageId": "4e0d532b-35c9-4b30-8492-d68d10df73a1",
+  "status": "completed",
+  "tag": null,
+  "transactionId": "72e23d2a-da6b-4b51-8448-657b732202a4",
+  "updatedAt": 2020-09-08T19:47:01.006Z,
+}
+`;
+
+exports[`Services A transaction status is returned 1`] = `
+Array [
+  Object {
+    "createdAt": 2020-09-08T19:47:00.713Z,
+    "delayedUntil": undefined,
+    "messageId": "4e0d532b-35c9-4b30-8492-d68d10df73a3",
+    "status": "completed",
+    "tag": null,
+    "transactionId": "72e23d2a-da6b-4b51-8448-657b732202a8",
+    "updatedAt": 2020-09-08T19:47:01.006Z,
+  },
+]
+`;
+
+exports[`Services Health check works correctly 1`] = `
+Array [
+  Object {
+    "healthy": true,
+    "info": "Database Service connected successfully.",
+    "name": "database",
+  },
+  Object {
+    "healthy": true,
+    "info": "Queue Service connected successfully.",
+    "name": "queue",
+  },
+  Object {
+    "healthy": true,
+    "info": "SMTP Service connected successfully.",
+    "name": "smtp",
+  },
+]
+`;
+
+exports[`Services Sending a message works correctly 1`] = `
+Object {
+  "messages": Array [
+    Object {
+      "messageId": "wcjrijro-6fca-4a78-ba16-fb93d094daa3",
+      "to": Array [
+        "phill@example.com",
+      ],
+    },
+  ],
+  "transactionId": "wcjrijro-5fd9-499b-8368-72b70196cf55",
+}
+`;

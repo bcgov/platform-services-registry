@@ -22,6 +22,7 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
+import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -75,6 +76,10 @@ export const updateProvisionedNamespaces = async (
     });
 
     await Promise.all(promises);
+
+    // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
+    // be used for emailing.
+    await sendProvisioningMessage(profileId, MessageType.ProvisioningCompleted);
 
     res.status(202).end();
   } catch (err) {

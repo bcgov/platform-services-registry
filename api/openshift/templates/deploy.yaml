@@ -207,6 +207,20 @@ objects:
                     name: ${POSTGRESQL_SECRET_NAME}
               - name: POSTGRESQL_HOST
                 value: ${POSTGRES_DEPLOYMENT_NAME}.${NAMESPACE}.svc
+              - name: CHES_BASEURL
+                value: ${CHES_BASEURL}
+              - name: CHES_SSO_TOKEN_URL
+                value: ${CHES_SSO_TOKEN_URL}
+              - name: CHES_SECRET_NAME
+                valueFrom:
+                  secretKeyRef:
+                    key: clientId
+                    name: ${CHES_SSO_CLIENT_ID}
+              - name: CHES_SECRET_NAME
+                valueFrom:
+                  secretKeyRef:
+                    key: secret
+                    name: ${CHES_SSO_CLIENT_SECRET}
             resources:
               limits:
                 cpu: 300m
@@ -276,4 +290,16 @@ parameters:
 - description: The tag of the source image.
   displayName: Source Image Tag
   name: SOURCE_IMAGE_TAG
+  required: true
+- description: The Common Hosted Email Service secret name 
+  displayName: Email Service Secret Name
+  name: CHES_SECRET_NAME
+  value: registry-ches-creds
+- description: The base URL for the Common Hosted Email Service API
+  displayName: Email Service API URL
+  name: CHES_BASEURL
+  required: true
+- description: The Common Hosted Email Service SSO URL
+  displayName: Email Service SSO URL
+  name: CHES_SSO_TOKEN_URL
   required: true

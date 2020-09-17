@@ -21,6 +21,7 @@ import { SUBJECTS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
+import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
 export interface Context {
@@ -34,6 +35,7 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const { ProfileModel, ContactModel, NamespaceModel } = dm;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
+
     const contact = contacts.filter(c => c.roleId === 2).pop();
     const namespaces = await NamespaceModel.findForProfile(profileId);
 
@@ -53,7 +55,7 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
 
     return context;
   } catch (err) {
-    const message = `Unable to build contect for profile ${profileId}`;
+    const message = `Unable to build context for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
@@ -68,9 +70,14 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
       const subject = SUBJECTS.NSPROVISION;
       const context = await contextForProvisioning(profileId);
 
+      if (!context) {
+        const errmsg = `No context for ${profileId}`;
+        reject(new Error(errmsg));
+      }
+
       nc.on('error', () => {
-        const message = `NATS error sending order ${profileId} to ${subject}`;
-        reject(new Error(message));
+        const errmsg = `NATS error sending order ${profileId} to ${subject}`;
+        reject(new Error(errmsg));
       });
 
       nc.publish(subject, context);
@@ -79,9 +86,11 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
         nc.removeAllListeners(['error']);
       });
 
+      await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+
       resolve();
     } catch (err) {
-      const message = `Unable to provision namspaces for profile ${profileId}`;
+      const message = `Unable to provision namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
