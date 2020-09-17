@@ -11,7 +11,6 @@
     "ssoGrantType": "client_credentials"
   },
   "nats": {
-    "host": "nats://registry-nats",
     "port": 4222
   },
   "db": {

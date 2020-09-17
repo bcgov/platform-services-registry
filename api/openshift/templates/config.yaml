@@ -39,8 +39,10 @@ objects:
             "tokenUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
             "certsUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
           },
+          "ches": {
+            "ssoGrantType": "client_credentials"
+          },
           "nats": {
-            "host": "nats://nats.pye-sandbox.svc",
             "port": 4222
           },
           "db": {

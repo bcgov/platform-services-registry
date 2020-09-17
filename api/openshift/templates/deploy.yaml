@@ -211,16 +211,18 @@ objects:
                 value: ${CHES_BASEURL}
               - name: CHES_SSO_TOKEN_URL
                 value: ${CHES_SSO_TOKEN_URL}
-              - name: CHES_SECRET_NAME
+              - name: CHES_SSO_CLIENT_ID
                 valueFrom:
                   secretKeyRef:
                     key: clientId
-                    name: ${CHES_SSO_CLIENT_ID}
-              - name: CHES_SECRET_NAME
+                    name: ${CHES_SECRET_NAME}
+              - name: CHES_SSO_CLIENT_SECRET
                 valueFrom:
                   secretKeyRef:
                     key: secret
-                    name: ${CHES_SSO_CLIENT_SECRET}
+                    name: ${CHES_SECRET_NAME}
+              - name: NATS_HOST
+                value: ${NATS_HOST_URL}
             resources:
               limits:
                 cpu: 300m
@@ -302,4 +304,9 @@ parameters:
 - description: The Common Hosted Email Service SSO URL
   displayName: Email Service SSO URL
   name: CHES_SSO_TOKEN_URL
+  required: true
+- description: |
+    The NATS host URI
+  displayName: NATS Host URI
+  name: NATS_HOST_URL
   required: true

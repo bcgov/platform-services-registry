@@ -57,6 +57,9 @@ nconf.overrides({
     ssoClientId: process.env.CHES_SSO_CLIENT_ID,
     ssoClientSecret: process.env.CHES_SSO_CLIENT_SECRET,
   },
+  nats: {
+    host: process.env.NATS_HOST,
+  },
 });
 
 // load other properties from file.
