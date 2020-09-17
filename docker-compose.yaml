@@ -13,6 +13,7 @@ x-env: &defaults
   CHES_SSO_TOKEN_URL:
   CHES_SSO_CLIENT_ID:
   CHES_SSO_CLIENT_SECRET:
+  NATS_HOST: nats://registry-nats
 # volumes:
 #   pg_data:
 # networks:
