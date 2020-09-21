@@ -52,19 +52,42 @@ oc create -f -
 Secrets have been separated from the deployment template to prevent them from being regenerated every time you `oc apply` the main deployment template. Create the necessary secrets with the following command:
 
 ```console
-oc process -f api/openshift/templates/secret.yaml | \
-oc create -f -
+oc process -f api/openshift/templates/secret.yaml \
+  -p CHES_SSO_CLIENT_ID=XXXX
+  -p CHES_SSO_CLIENT_SECRET=XXXX \
+  -p SSO_CLIENT_SECRET=XXXX | \
+  oc create -f -
 ```
+
+| Name                   | Description |
+| :--------------------- | :-----------|
+| CHES_SSO_CLIENT_ID     | The CHES client ID provided from the Web UI; You have one for each of dev / test / prod |
+| CHES_SSO_CLIENT_SECRET | The CHES Token (Secret) provided from the Web UI; You have one for each of dev / test / prod |
+| SSO_CLIENT_SECRET      | The SSO shared secret for your client provided by the SSO Web UI.
+
 
 Next, deploy the newly minted API image with the following command. This will create all the components required to run the API.
 
 ```console
-  oc process -f api/openshift/templates/deploy.yaml \
-    -p NAMESPACE=$(oc project --short) \
-    -p SOURCE_IMAGE_NAMESPACE=<YOUR-TOOLS-NAMESPACE> \
-    -p SOURCE_IMAGE_TAG=dev | \
-    oc create -f -
+oc process -f api/openshift/templates/deploy.yaml \
+  -p NAMESPACE=$(oc project --short) \
+  -p SOURCE_IMAGE_NAMESPACE=<YOUR_TOOLS_NAMESPACE> \
+  -p SOURCE_IMAGE_TAG=XXXX \
+  -p CHES_BASEURL=https://blarb.example.com \
+  -p CHES_SSO_TOKEN_URL=https://sso-dev.example.com \
+  -p NATS_HOST_URL=nats://NAME.NAMESPACE.svc | \
+  oc apply -f -
   ```
+
+| Name                   | Description |
+| :--------------------- | :-----------|
+| NAMESPACE              | The namespace you are deploying to.
+| SOURCE_IMAGE_NAMESPACE | The namespace where the source images is located.
+| SOURCE_IMAGE_TAG       | The source image tag that will be deployed.
+| CHES_BASEURL           | The CHES API URL; ; You have one for each of dev / test / prod.
+| CHES_SSO_TOKEN_URL     | The CHES SSO token URL used for authentication; You have one for each of dev / test / prod.
+| NATS_HOST_URL          | The URL for the NATS service.
+
 
 ### Pro Tip 🤓
   
@@ -82,42 +105,31 @@ oc tag platsrv-registry-api:latest platsrv-registry-api:dev
 
 ### Schema Build-out (Step 4)
 
-We need to build out the database schema before the API can do anything useful with it.
-
-Examine your database credentials with the following command and make a note of the `user` property. This is the application (API Pod) account used to access the database.
+We need to build out the database schema before the API can do anything useful with it. Examine your database credentials with the following command and make a note of the `user` property. This is the application (API Pod) account used to access the database.
 
 ```console
 oc get secret/registry-postgres-creds -o yaml
 ```
 
-Find out what your database Pod name is and use a variant of the following command to port forward to it:
+Find out what your database Pod name is (`oc get pods`) and use a variant of the following command to port forward to it:
 
 ```console
 oc port-forward registry-postgres-1-rz6nz 5432
 ```
 
-Run a local instance of PostgreSQL. This will give you acess to the `psql` command line tool and mount a volume so we can access the SQL scripts. This command assumes you're running it form the `api` subdirectory in the source repo.
+Run a local instance of PostgreSQL. This will give you access to the `psql` command line tool and mount a volume so we can access the SQL scripts. This command assumes you're running it form the root directory of the repo.
 
 ```console
 docker run -it --rm --name blarb \
--v $(pwd):/opt/src postgres /bin/bash
+-v $(pwd)/db:/opt/src postgres /bin/bash
 ```
-docker run -it --rm --name blarb -v $(pwd):/opt/src postgres /bin/bash
-root@d7fc5e936e34:/# psql -U postgres -h host.docker.internal
-psql (12.0 (Debian 12.0-1.pgdg100+1), server 12.1)
-Type "help" for help.
 
-postgres=# \du
-                                   List of roles
- Role name |                         Attributes                         | Member of 
------------+------------------------------------------------------------+-----------
- 6yve3bce  |                                                            | {}
- postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+Repeat the following command, once for each of the SQL scripts located in `/opt/src/sql` then onces for each of the SQL scripts located in `/opt/src/seed`. This will build out the database schema and load in the reference data.
 
-postgres=# 
-
-psql -U postgres -d registry -h host.docker.internal -f /opt/src/db/sql/0001.sql -v ROLLNAME=app_api_oksb6iie
-
+```console
+psql -U postgres -d registry -h host.docker.internal \
+  -f /opt/src/db/sql/XXX.sql -v ROLLNAME=XXXX
+```
 
 ## Usage
 
