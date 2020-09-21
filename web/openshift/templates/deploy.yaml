@@ -97,7 +97,7 @@ objects:
       metadata:
         labels:
           app: platsrv-registry
-          role: web
+          role: frontend
           deploymentconfig: ${NAME}
         name: ${NAME}
       spec:
