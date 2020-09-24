@@ -72,4 +72,4 @@ jobs:
           parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             'version'
-            'start-build platsrv-web-master-build --follow -n platform-registry-tools'
+            'start-build platsrv-registry-web-master-build --follow -n platform-registry-tools'
