@@ -34,7 +34,7 @@ const AppRouter: React.FC = () => {
         <Redirect exact from='/' to='/public-landing' />
         <AppRoute path='/public-landing' component={PublicLanding} layout={Unauth} />
         <AppRoute protected path='/namespaces' component={form} layout={Auth} />
-        <AppRoute protected path='/namespaces/create-new-namespace' component={form} layout={Auth} />
+        <AppRoute protected path='/namespaces/create' component={form} layout={Auth} />
         <AppRoute path='/page-not-found' component={NotFound} layout={Min} />
         <Redirect to='/page-not-found' />
       </Switch>
