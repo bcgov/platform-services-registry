@@ -17,8 +17,8 @@
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Redirect, Router, Switch } from 'react-router-dom';
-import AppRoute from '../hoc/AppRoute';
-import form from './form';
+import form from './components/form';
+import AppRoute from './hoc/AppRoute';
 import Auth from './layouts/Auth';
 import Min from './layouts/Min';
 import Unauth from './layouts/Unauth';

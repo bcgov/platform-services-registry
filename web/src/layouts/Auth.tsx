@@ -18,10 +18,10 @@ import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Flex } from 'rebass';
-import Footer from '../footer';
-import Header from '../header';
+import Footer from '../components/layout/footer';
+import Header from '../components/layout/header';
 
-const Unauth: React.FC = (props) => {
+const Auth: React.FC = (props) => {
   const { children } = props;
   return (
     <div >
@@ -37,4 +37,4 @@ const Unauth: React.FC = (props) => {
   );
 };
 
-export default Unauth;
+export default Auth;
