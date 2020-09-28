@@ -20,6 +20,7 @@ import { Redirect, Router, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
 import AppRoute from './utils/AppRoute';
 import form from './views/form';
+import { Home } from './views/Home';
 import { NotFound } from './views/NotFound';
 import { PublicLanding } from './views/PublicLanding';
 
@@ -31,8 +32,8 @@ const AppRouter: React.FC = () => {
       <Switch>
         <Redirect exact from='/' to='/public-landing' />
         <AppRoute path='/public-landing' component={PublicLanding} layout={Layout} layoutName={'unauth'} />
-        <AppRoute path='/namespaces' component={form} layout={Layout} layoutName={'auth'} />
         <AppRoute path='/namespaces/create' component={form} layout={Layout} layoutName={'auth'} />
+        <AppRoute exact path='/namespaces' component={Home} layout={Layout} layoutName={'auth'} />
         <AppRoute path='/page-not-found' component={NotFound} layout={Layout} layoutName={'min'} />
         <Redirect to='/page-not-found' />
       </Switch>

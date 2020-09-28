@@ -19,6 +19,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Flex } from 'rebass';
 import { LayoutSet } from '../types';
+import clearDropdown from '../utils/clearDropdownMenu';
 import Footer from './footer';
 import Header from './header';
 
@@ -29,6 +30,11 @@ interface ILayoutProps {
 
 const Layout: React.FC<ILayoutProps> = props => {
   const { children, name } = props;
+
+  // this is to clear any left out dropdown menus
+  window.onclick = function () {
+    clearDropdown();
+  }
 
   return (
     <div >

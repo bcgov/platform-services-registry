@@ -20,9 +20,13 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { LayoutSet } from '../types';
+import { DROPDOWN_CLASSNAME } from '../constants';
+import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
 import Authbutton from './authbutton';
+import CreateButton from './CreateButton';
+import DropdownMenu from './DropdownMenu';
+import DropdownMenuItem from './DropdownMenuItem';
 import Icon from './Icon';
 import GovLogo from './UI/govlogo';
 
@@ -49,11 +53,9 @@ const StyledBanner = styled.div`
 const StyledDropdownMobile = styled.div`
   align-items: center;
   background-color: #355991;
-  padding-left: 30px;
-  padding-right: 30px;
-  display: flex;
+  padding: 30px;
+  display: block;
   flex-direction: row;
-  height: 65px;
 `;
 
 const StyledNav = styled.div`
@@ -83,14 +85,32 @@ const H2 = styled.h2`
   }
 `;
 
+const StyledDropdownItem = styled.text`
+  display: block;
+  padding: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  '&:hover': {
+    background: #ddd;
+  }
+`;
+
 interface INavProps {
   name: LayoutSet;
   isDDMobileOpen: boolean;
   handleDDMobile: (e: any) => void;
+  dirs: Array<MenuItem>;
 }
 
 const Nav: React.FC<INavProps> = props => {
-  const { name, handleDDMobile, isDDMobileOpen } = props;
+  const { name, handleDDMobile, isDDMobileOpen, dirs } = props;
+
+  const dropdownMenuID: string = 'DropdownCreatebutton';
+
+  const handleDDDesktop = (event: any) => {
+    event.stopPropagation();
+    document?.getElementById(dropdownMenuID)?.classList.toggle(DROPDOWN_CLASSNAME);
+  };
 
   if (name === 'min') {
     return null;
@@ -99,7 +119,9 @@ const Nav: React.FC<INavProps> = props => {
       <StyledNav>
         {(name === 'auth') ? (
           <ContainerDesktop>
+            <CreateButton buttonText='Create' onClick={handleDDDesktop} />
             <Authbutton />
+            <DropdownMenu menuItems={dirs} dropdownID={dropdownMenuID} />
           </ContainerDesktop>
         ) : (
             <ContainerDesktop>
@@ -140,12 +162,18 @@ const Header: React.FC<IHeaderProps> = props => {
       <StyledBanner>
         <GovLogo />
         <H2>Platform Services Registry</H2>
-        {(name !== 'min') && (<Nav name={name} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
+        {(name !== 'min') && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
       </StyledBanner>
       <ContainerMobile>
         {isDDMobileOpen && (
           <StyledDropdownMobile >
             <Authbutton />
+            {(name === 'auth') && (<div>
+              {dirs.map(
+                (item, index) =>
+                  <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
+              )} </div>
+            )}
           </StyledDropdownMobile>
         )}
       </ContainerMobile>

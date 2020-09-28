@@ -14,25 +14,18 @@
 // limitations under the License.
 //
 
-import { default as React, MouseEventHandler } from 'react';
+import { DROPDOWN_CLASSNAME } from '../constants';
 
-export type ColorSet
-  = 'white'
-  | 'primary'
-  | 'secondary'
-  | 'info'
-  | 'warning'
-  | 'danger'
-  | 'success'
+export default () => {
+  const dropdowns = document.querySelectorAll("div[id^='Dropdown']");
 
-export type LayoutSet
-  = 'unauth'
-  | 'auth'
-  | 'min'
-
-export interface MenuItem {
-  title: string;
-  subTitle: string;
-  href?: string;
-  onClickCB?: MouseEventHandler<React.ReactNode>;
+  if (dropdowns) {
+    let i;
+    for (i = 0; i < dropdowns.length; i++) {
+      let openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains(DROPDOWN_CLASSNAME)) {
+        openDropdown.classList.remove(DROPDOWN_CLASSNAME);
+      }
+    }
+  }
 }
