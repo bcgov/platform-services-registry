@@ -19,7 +19,7 @@ import { default as React } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { MenuItem as IMenuItemProps } from '../types';
 
-const StyledDropdownItem = styled.text`
+const StyledDropdownItem = styled.div`
   display: block;
   padding: 10px;
   cursor: pointer;
