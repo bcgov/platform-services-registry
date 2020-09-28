@@ -40,7 +40,7 @@ const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
       render={(props) => {
         if (!!keycloak.authenticated) {
           return (
-            <Layout>
+            <Layout name='auth' {...rest}>
               <Component {...props} {...rest.componentProps} />
             </Layout>
           );

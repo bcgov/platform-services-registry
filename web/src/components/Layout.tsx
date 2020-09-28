@@ -18,15 +18,22 @@ import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Flex } from 'rebass';
-import Footer from '../components/layout/footer';
-import Header from '../components/layout/header';
+import { LayoutSet } from '../types';
+import Footer from './footer';
+import Header from './header';
 
-const Unauth: React.FC = (props) => {
-  const { children } = props;
+interface ILayoutProps {
+  children: React.ReactNode;
+  name: LayoutSet;
+}
+
+const Layout: React.FC<ILayoutProps> = props => {
+  const { children, name } = props;
+
   return (
     <div >
       <ToastContainer style={{ width: "500px" }} />
-      <Header />
+      <Header name={name} />
       <Flex px={['60px', '130px']}>
         <main>
           {children}
@@ -37,4 +44,4 @@ const Unauth: React.FC = (props) => {
   );
 };
 
-export default Unauth;
+export default Layout;

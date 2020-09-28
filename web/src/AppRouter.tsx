@@ -17,11 +17,9 @@
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Redirect, Router, Switch } from 'react-router-dom';
-import form from './components/form';
-import AppRoute from './hoc/AppRoute';
-import Auth from './layouts/Auth';
-import Min from './layouts/Min';
-import Unauth from './layouts/Unauth';
+import Layout from './components/Layout';
+import AppRoute from './utils/AppRoute';
+import form from './views/form';
 import { NotFound } from './views/NotFound';
 import { PublicLanding } from './views/PublicLanding';
 
@@ -32,10 +30,10 @@ const AppRouter: React.FC = () => {
     <Router history={browserHistory}>
       <Switch>
         <Redirect exact from='/' to='/public-landing' />
-        <AppRoute path='/public-landing' component={PublicLanding} layout={Unauth} />
-        <AppRoute protected path='/namespaces' component={form} layout={Auth} />
-        <AppRoute protected path='/namespaces/create' component={form} layout={Auth} />
-        <AppRoute path='/page-not-found' component={NotFound} layout={Min} />
+        <AppRoute path='/public-landing' component={PublicLanding} layout={Layout} layoutName={'unauth'} />
+        <AppRoute path='/namespaces' component={form} layout={Layout} layoutName={'auth'} />
+        <AppRoute path='/namespaces/create' component={form} layout={Layout} layoutName={'auth'} />
+        <AppRoute path='/page-not-found' component={NotFound} layout={Layout} layoutName={'min'} />
         <Redirect to='/page-not-found' />
       </Switch>
     </Router>

@@ -16,36 +16,34 @@
 
 import React from 'react';
 import { Route, RouteProps } from 'react-router-dom';
+import { LayoutSet } from '../types';
 import PrivateRoute from './PrivateRoute';
 
-export type IAppRouteProps = RouteProps & {
-  protected?: boolean;
+interface IAppRouteProps extends RouteProps {
   component: React.ComponentType<any>;
-  layout?: React.ComponentType<any>;
+  layout: React.ComponentType<any>;
+  layoutName: LayoutSet;
 };
 
-const AppRoute: React.FC<IAppRouteProps> = ({
-  protected: usePrivateRoute,
-  component: Component,
-  layout,
-  ...rest
-}) => {
-  const Layout = layout === undefined ? (props: any) => <>{props.children}</> : layout;
+const AppRoute: React.FC<IAppRouteProps> = (props) => {
+  let { component: Component, layout: Layout, layoutName, ...rest } = props;
 
-  if (!!usePrivateRoute) {
-    return <PrivateRoute {...rest} component={Component} layout={Layout} />;
+  const usePrivateRoute: boolean = (layoutName === 'auth');
+
+  if (usePrivateRoute) {
+    return <PrivateRoute component={Component} layout={Layout} />;
+  } else {
+    return (
+      <Route
+        {...rest}
+        render={(props) => (
+          <Layout name={layoutName} >
+            <Component {...props} />
+          </Layout>
+        )}
+      />
+    );
   }
-
-  return (
-    <Route
-      {...rest}
-      render={(props) => (
-        <Layout>
-          <Component {...props} />
-        </Layout>
-      )}
-    />
-  );
 };
 
 export default AppRoute;
