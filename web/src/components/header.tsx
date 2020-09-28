@@ -85,16 +85,6 @@ const H2 = styled.h2`
   }
 `;
 
-const StyledDropdownItem = styled.text`
-  display: block;
-  padding: 10px;
-  cursor: pointer;
-  text-decoration: none;
-  '&:hover': {
-    background: #ddd;
-  }
-`;
-
 interface INavProps {
   name: LayoutSet;
   isDDMobileOpen: boolean;

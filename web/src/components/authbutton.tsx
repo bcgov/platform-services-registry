@@ -40,10 +40,6 @@ const StyledButton = styled.button`
   transition-duration: 0.4s;
 `;
 
-const Panel = styled.div`
-
-`;
-
 const titleForAuthenticationState = (keycloak: any): string => {
   if (keycloak.authenticated) {
     return 'Logout';
