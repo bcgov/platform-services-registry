@@ -24,8 +24,8 @@ import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { toast } from 'react-toastify';
 import { Flex } from 'rebass';
+import { ShadowBox } from '../components/UI/shadowContainer';
 import { API, ROLES } from '../constants';
-import { ShadowBox } from './UI/shadowContainer';
 
 const axi = axios.create({
     baseURL: API.BASE_URL(),
