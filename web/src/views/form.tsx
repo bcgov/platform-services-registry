@@ -189,15 +189,21 @@ const MyForm: React.SFC = () => {
 
     useEffect(() => {
         async function wrap() {
-            const result = await axi.get('ministry', {
-                headers: {
-                    Accept: 'application/json',
-                },
-            });
+            try {
+                const result = await axi.get('ministry', {
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
 
-            if (result.data) {
-                console.log('Fetched ministry sponsors!!!');
-                setMinistrySponsor(result.data);
+                if (result.data) {
+                    console.log('Fetched ministry sponsors!!!');
+                    setMinistrySponsor(result.data);
+                }
+            } catch (err) {
+                // if the api service is not available,
+                // provide empty list query than err that breaks the front-end
+                setMinistrySponsor([]);
             }
         }
 
