@@ -19,7 +19,7 @@
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import DataManager from '../db';
 import shared from '../libs/shared';
 
