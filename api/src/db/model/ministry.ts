@@ -15,22 +15,114 @@
 // Created by Jason Leach on 2020-06-22.
 //
 
+import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface Ministry extends CommonFields {
-    name: string,
+  name: string,
 }
 
 export default class MinistryModel extends Model {
-    table: string = 'ref_bus_org';
-    requiredFields: string[] = [
-        'name',
-    ];
-    pool: Pool;
+  table: string = 'ref_bus_org';
+  requiredFields: string[] = [
+    'name',
+  ];
+  pool: Pool;
 
-    constructor(pool: any) {
-        super();
-        this.pool = pool;
+  constructor(pool: any) {
+    super();
+    this.pool = pool;
+  }
+
+  async create(data: Ministry): Promise<Ministry> {
+    const query = {
+      text: `
+            INSERT INTO ${this.table}
+              (name)
+              VALUES ($1) RETURNING *;`,
+      values: [
+        data.name,
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to create ministry`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
     }
+  }
+
+  async findAllMinistries(): Promise<Ministry[]> {
+    const query = {
+      text: `
+        SELECT id, name 
+          FROM ${this.table}
+      `,
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to fetch ministries`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async update(ministryId: number, data: Ministry): Promise<Ministry> {
+    const values: any[] = [];
+    const query = {
+      text: `
+            UPDATE ${this.table}
+              SET
+                name = $1
+              WHERE id = ${ministryId}
+              RETURNING *;`,
+      values,
+    };
+
+    try {
+      const record = await this.findById(ministryId);
+      const aData = { ...record, ...data };
+      query.values = [
+        aData.name,
+      ];
+
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to update ministry ID ${ministryId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  };
+
+  async delete(ministryId: number): Promise<Ministry> {
+    const query = {
+      text: `
+            UPDATE ${this.table}
+              SET
+                archived = true
+              WHERE id = ${ministryId}
+              RETURNING *;
+          `,
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to archive ministry`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  };
 }

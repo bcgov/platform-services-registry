@@ -20,28 +20,55 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import DataManager from '../db';
+import shared from '../libs/shared';
 
-// const dm = new DataManager(shared.pgPool);
+const dm = new DataManager(shared.pgPool);
+//TODO: Create new ministry api
+// export const createMinistry = async (
+//   { params, body }: { params: any, body: any }, res: Response
+// ): Promise<void> => {
+//   const { MinistryModel } = dm;
+//   const { profileId } = params;
+//   const aBody = { ...body, profileId };
+
+//   const rv = validateObjProps(MinistryModel.requiredFields, aBody);
+//   if (rv) {
+//     throw rv;
+//   }
+
+//   try {
+//     const results = await MinistryModel.create(aBody);
+
+//     res.status(201).json(results);
+//   } catch (err) {
+//     const message = 'Unable create new ministry';
+//     logger.error(`${message}, err = ${err.message}`);
+
+//     throw errorWithCode(message, 500);
+//   }
+// };
 
 export const fetchMinistrySponsors = async (
   { headers, params }: { headers: any, params: any }, res: Response
 ): Promise<void> => {
-  // const { NamespaceModel } = dm;
+  const { MinistryModel } = dm;
   // const { profileId } = params;
   // console.log(headers);
   try {
-    // const results = await NamespaceModel.findForProfile(Number(profileId));
+    const results = await MinistryModel.findAllMinistries();
 
-    const results = [
-      {
-        name: 'Citizens\s Services',
-        code: 'CITZ',
-      },
-      {
-        name: 'Transportation & Infrastructure',
-        code: 'TRAN',
-      },
-    ]
+
+    // const results = [
+    //   {
+    //     name: 'Citizens\s Services',
+    //     code: 'CITZ',
+    //   },
+    //   {
+    //     name: 'Transportation & Infrastructure',
+    //     code: 'TRAN',
+    //   },
+    // ]
     res.status(200).json(results);
   } catch (err) {
     const message = `Unable fetch ministries`;
