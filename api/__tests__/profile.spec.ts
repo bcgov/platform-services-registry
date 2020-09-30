@@ -14,12 +14,12 @@
 // limitations under the License.
 //
 
-import { Response } from 'express';
 import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';
 import { Pool } from 'pg';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
+import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
 const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
@@ -40,25 +40,6 @@ jest.mock('../src/db/utils', () => ({
     return obj;
   }),
 }));
-
-class FauxExpress {
-  res: Partial<Response> = {
-    clearCookie: jest.fn(),
-    cookie: jest.fn(),
-    json: jest.fn().mockImplementation((param) => {
-      this.responseData = param;
-      return this.res;
-    }),
-    status: jest.fn().mockImplementation((code) => {
-      this.res.statusCode = code;
-      return this.res;
-    }),
-    statusCode: 200,
-    end: jest.fn(),
-  }
-  req: any;
-  responseData: any;
-}
 
 describe('Profile event handlers', () => {
   let ex;
@@ -214,7 +195,7 @@ describe('Profile event handlers', () => {
       body: aBody,
       user: {
         id: 1,
-      }
+      },
     }
 
     client.query.mockImplementation(() => { throw new Error() });
