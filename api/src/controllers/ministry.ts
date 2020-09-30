@@ -12,9 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Created by Jason Leach on 2020-06-15.
-//
 
 'use strict';
 
@@ -28,7 +25,7 @@ const dm = new DataManager(shared.pgPool);
 export const fetchMinistrySponsors = async (req: Request, res: Response): Promise<void> => {
   const { MinistryModel } = dm;
   try {
-    const results = await MinistryModel.findAllMinistries();
+    const results = await MinistryModel.findAll();
 
     res.status(200).json(results);
   } catch (err) {
