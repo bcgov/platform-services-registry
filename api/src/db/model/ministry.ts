@@ -54,24 +54,6 @@ export default class MinistryModel extends Model {
     }
   }
 
-  async findAllMinistries(): Promise<Ministry[]> {
-    const query = {
-      text: `
-        SELECT id, name 
-          FROM ${this.table}
-      `,
-    };
-
-    try {
-      return await this.runQuery(query);
-    } catch (err) {
-      const message = `Unable to fetch ministries`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
   async update(ministryId: number, data: Ministry): Promise<Ministry> {
     const values: any[] = [];
     const query = {
