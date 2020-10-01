@@ -29,7 +29,7 @@ const BaseIcon: React.FC<IBaseIconProps> = props => {
       onClick={onClick}
       viewBox={viewBox}
       fill={themes.colors[color]}
-      style={{ ...style, cursor: !!hover ? 'pointer' : undefined, width: `${width}rem`, height: `${height}rem` }}
+      style={{ ...style, cursor: !!hover ? 'pointer' : 'default', width: `${width}rem`, height: `${height}rem` }}
     >
       {children}
     </svg>
