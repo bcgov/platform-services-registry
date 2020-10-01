@@ -35,9 +35,9 @@ objects:
             "grantType": "client_credentials",
             "clientId": "signing-api",
             "callback": "/v1/auth/callback",
-            "authUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/auth",
-            "tokenUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
-            "certsUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
+            "authUrl": "${SSO_BASE_URL}/auth/realms/devhub/protocol/openid-connect/auth",
+            "tokenUrl": "${SSO_BASE_URL}/auth/realms/devhub/protocol/openid-connect/token",
+            "certsUrl": "${SSO_BASE_URL}/auth/realms/devhub/protocol/openid-connect/certs"
           },
           "ches": {
             "ssoGrantType": "client_credentials"
@@ -53,3 +53,9 @@ objects:
             "connectionTimeout": 2000
           }
         }
+parameters:
+- description: |
+    The URL where the application can locate the SSO service.
+  displayName: SSO URL
+  name: SSO_BASE_URL
+  required: true
