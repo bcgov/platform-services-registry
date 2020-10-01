@@ -133,6 +133,21 @@ export const updateProjectProfile = async (
     active,
     criticalSystem,
     prioritySystem,
+    notificationEmail,
+    notificationSMS,
+    notificationMSTeams,
+    paymentBambora,
+    paymentPayBC,
+    fileTransfer,
+    fileStorage,
+    geoMappingWeb,
+    geoMappingLocation,
+    schedulingCalendar,
+    schedulingAppointments,
+    identityManagementSiteMinder,
+    identityManagementKeyCloak,
+    identityManagementActiveDir,
+    other,
   } = body;
 
   try {
@@ -147,6 +162,21 @@ export const updateProjectProfile = async (
       prioritySystem,
       userId: record.userId,
       namespacePrefix: record.namespacePrefix,
+      notificationEmail,
+      notificationSMS,
+      notificationMSTeams,
+      paymentBambora,
+      paymentPayBC,
+      fileTransfer,
+      fileStorage,
+      geoMappingWeb,
+      geoMappingLocation,
+      schedulingCalendar,
+      schedulingAppointments,
+      identityManagementSiteMinder,
+      identityManagementKeyCloak,
+      identityManagementActiveDir,
+      other,
     };
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
 
