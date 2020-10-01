@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ministry event handlers All ministry sponsors are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM ref_bus_org
+        WHERE archived = false;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Ministry event handlers All ministry sponsors are returned 2`] = `200`;
+
+exports[`Ministry event handlers All ministry sponsors are returned 3`] = `
+Array [
+  Object {
+    "archived": false,
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "id": "AAAA",
+    "name": "Alpha",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "id": "BBBB",
+    "name": "Bravo",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "id": "CCCC",
+    "name": "Charlie",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "id": "DDDD",
+    "name": "Delta",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+]
+`;
+
+exports[`Ministry event handlers Fetch all profiles should throw 1`] = `"Unable fetch ministries"`;
+
+exports[`Ministry event handlers Fetch all profiles should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM ref_bus_org
+        WHERE archived = false;
+      ",
+    },
+  ],
+]
+`;

@@ -20,6 +20,28 @@ paths:
       responses:
         200:
           description: The server is OK.
+  /api/v1/ministry:
+    get:
+      operationId: fetchMinistrySponsors
+      summary: Fetch all ministry sponsors.
+      description: |-
+        Use this endpoint to fetch all of the ministry sponsors
+        that are not archived.
+      tags:
+        - Ministry
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ministry"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
   /api/v1/profile:
     post:
       operationId: CreateProjectProfile
@@ -406,3 +428,24 @@ components:
         description: "Helping citizen's track prescription history"
         category: "pathfinder"
         busOrgId: "HLTH"
+    Ministry:
+      title: Ministry Sponsors
+      description: Payload for the Ministry Sponsors
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        archived:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - name
+      example:
+        name: "Agriculture"
