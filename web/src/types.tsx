@@ -17,13 +17,8 @@
 import { default as React, MouseEventHandler } from 'react';
 
 export type ColorSet
-  = 'white'
+  = 'contrast'
   | 'primary'
-  | 'secondary'
-  | 'info'
-  | 'warning'
-  | 'danger'
-  | 'success'
 
 export type LayoutSet
   = 'unauth'

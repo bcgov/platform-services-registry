@@ -1,5 +1,6 @@
 import { CSSProperties, default as React, MouseEventHandler } from 'react';
 import { DEFAULT_ICON_HEIGHT, DEFAULT_ICON_WIDTH } from '../constants';
+import themes from '../theme';
 import { ColorSet } from '../types';
 
 type IconSet
@@ -12,7 +13,7 @@ interface IIconProps {
   hover?: boolean;
   viewBox?: string;
   name: IconSet;
-  color?: ColorSet;
+  color: ColorSet;
   width?: number | 'auto';
   height?: number | 'auto';
   style?: CSSProperties;
@@ -28,7 +29,7 @@ const BaseIcon: React.FC<IBaseIconProps> = props => {
     <svg
       onClick={onClick}
       viewBox={viewBox}
-      fill={color}
+      fill={themes.colors[color]}
       style={{ ...style, cursor: !!hover ? 'pointer' : undefined, width: `${width}rem`, height: `${height}rem` }}
     >
       {children}

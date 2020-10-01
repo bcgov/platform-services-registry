@@ -20,6 +20,8 @@ export default {
   breakpoints: ['40em', '52em', '64em'],
   colors: {
     bcblue: '#036',
+    primary: '#036',
+    contrast: '#fff'
   },
   forms: {
     label: {
