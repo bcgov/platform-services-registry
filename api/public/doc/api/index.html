@@ -1519,6 +1519,20 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
           </li>
         
           <li>
+            <a href="#registry-api-ministry" class="toc-h1 toc-link" data-title="Ministry">Ministry</a>
+            
+              <ul class="toc-list-h2">
+                
+                  <li>
+                    <a href="#fetchministrysponsors" class="toc-h2 toc-link" data-title="">fetchMinistrySponsors</a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li>
             <a href="#registry-api-profile" class="toc-h1 toc-link" data-title="Profile">Profile</a>
             
               <ul class="toc-list-h2">
@@ -1606,6 +1620,11 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
                     
                   </li>
                 
+                  <li>
+                    <a href="#tocsministry" class="toc-h2 toc-link" data-title="">Ministry</a>
+                    
+                  </li>
+                
               </ul>
             
           </li>
@@ -1673,6 +1692,151 @@ alive and well.</p>
 <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
 <td>The server is OK.</td>
 <td>None</td>
+</tr>
+</tbody>
+</table>
+<aside class="success">
+This operation does not require authentication
+</aside>
+<h1 id="registry-api-ministry">Ministry</h1>
+<h2 id="fetchministrysponsors">fetchMinistrySponsors</h2>
+<p><a id="opIdfetchMinistrySponsors"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/ministry \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/ministry'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/ministry</code></p>
+<p><em>Fetch all ministry sponsors.</em></p>
+<p>Use this endpoint to fetch all of the ministry sponsors
+that are not archived.</p>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>[
+  {
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Agriculture"</span>
+  }
+]
+</code></pre>
+<h3 id="fetchministrysponsors-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td>Inline</td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
+<td>The request was received but incorrect</td>
+<td>None</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fetchministrysponsors-responseschema">Response Schema</h3>
+<p>Status Code <strong>200</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>anonymous</em></td>
+<td>[<a href="#schemaministry">Ministry</a>]</td>
+<td>false</td>
+<td>none</td>
+<td>[Payload for the Ministry Sponsors]</td>
+</tr>
+<tr>
+<td>» Ministry Sponsors</td>
+<td><a href="#schemaministry">Ministry</a></td>
+<td>false</td>
+<td>none</td>
+<td>Payload for the Ministry Sponsors</td>
+</tr>
+<tr>
+<td>»» id</td>
+<td>string</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» name</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» archived</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» createdAt</td>
+<td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» updatedAt</td>
+<td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
 </tr>
 </tbody>
 </table>
@@ -3079,6 +3243,63 @@ This operation does not require authentication
 <tr>
 <td>category</td>
 <td>operational</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tocsministry">Ministry</h2>
+<p><a id="schemaministry"></a></p>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Agriculture"</span>
+}
+
+</code></pre>
+<p><em>Ministry Sponsors</em></p>
+<h3 id="properties-4">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>archived</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>updatedAt</td>
+<td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
 </tr>
 </tbody>
 </table>
