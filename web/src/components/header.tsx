@@ -20,7 +20,7 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { DROPDOWN_CLASSNAME } from '../constants';
+import { DROPDOWN_CLASSNAME, LAYOUT_SET_AUTH, LAYOUT_SET_MIN } from '../constants';
 import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
@@ -103,12 +103,12 @@ const Nav: React.FC<INavProps> = props => {
     document?.getElementById(dropdownMenuID)?.classList.toggle(DROPDOWN_CLASSNAME);
   };
 
-  if (name === 'min') {
+  if (name === LAYOUT_SET_MIN) {
     return null;
   } else {
     return (
       <StyledNav>
-        {(name === 'auth') ? (
+        {(name === LAYOUT_SET_AUTH) ? (
           <ContainerDesktop>
             <CreateButton onClick={handleDDDesktop}>
               Create
@@ -155,13 +155,13 @@ const Header: React.FC<IHeaderProps> = props => {
       <StyledBanner>
         <GovLogo />
         <H2>Platform Services Registry</H2>
-        {(name !== 'min') && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
+        {(name !== LAYOUT_SET_MIN) && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
       </StyledBanner>
       <ContainerMobile>
         {isDDMobileOpen && (
           <StyledDropdownMobile >
             <Authbutton />
-            {(name === 'auth') && (<div>
+            {(name === LAYOUT_SET_AUTH) && (<div>
               {dirs.map(
                 (item, index) =>
                   <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />

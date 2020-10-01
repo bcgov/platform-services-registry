@@ -17,6 +17,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
+import { LAYOUT_SET_AUTH } from '../constants';
 
 interface IPrivateRouteProps extends RouteProps {
   component: React.ComponentType<any>;
@@ -40,7 +41,7 @@ const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
       render={(props) => {
         if (!!keycloak.authenticated) {
           return (
-            <Layout name='auth' {...rest}>
+            <Layout name={LAYOUT_SET_AUTH} {...rest}>
               <Component {...props} {...rest.componentProps} />
             </Layout>
           );

@@ -37,3 +37,7 @@ export const ROLES = {
 export const DEFAULT_MINISTRY = 'CITZ';
 
 export const DROPDOWN_CLASSNAME = 'misc-class-m-show-dropdown';
+
+export const LAYOUT_SET_MIN = 'min';
+export const LAYOUT_SET_AUTH = 'auth';
+export const LAYOUT_SET_UNAUTH = 'unauth';
