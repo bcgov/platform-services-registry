@@ -98,6 +98,8 @@ const Nav: React.FC<INavProps> = props => {
 
   const dropdownMenuID: string = 'DropdownCreatebutton';
 
+  const isAuthenticated = (name === LAYOUT_SET_AUTH);
+
   const handleDDDesktop = (event: any) => {
     event.stopPropagation();
     document?.getElementById(dropdownMenuID)?.classList.toggle(DROPDOWN_CLASSNAME);
@@ -108,19 +110,11 @@ const Nav: React.FC<INavProps> = props => {
   } else {
     return (
       <StyledNav>
-        {(name === LAYOUT_SET_AUTH) ? (
-          <ContainerDesktop>
-            <CreateButton onClick={handleDDDesktop}>
-              Create
-            </CreateButton>
-            <Authbutton />
-            <DropdownMenu menuItems={dirs} dropdownID={dropdownMenuID} />
-          </ContainerDesktop>
-        ) : (
-            <ContainerDesktop>
-              <Authbutton />
-            </ContainerDesktop>
-          )}
+        <ContainerDesktop>
+          {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
+          <Authbutton />
+          {isAuthenticated && (<DropdownMenu menuItems={dirs} dropdownID={dropdownMenuID} />)}
+        </ContainerDesktop>
         <ContainerMobile>
           <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
             onClick={handleDDMobile} width={1.4} height={1.4} />
