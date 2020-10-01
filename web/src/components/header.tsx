@@ -110,7 +110,9 @@ const Nav: React.FC<INavProps> = props => {
       <StyledNav>
         {(name === 'auth') ? (
           <ContainerDesktop>
-            <CreateButton buttonText='Create' onClick={handleDDDesktop} />
+            <CreateButton onClick={handleDDDesktop}>
+              Create
+            </CreateButton>
             <Authbutton />
             <DropdownMenu menuItems={dirs} dropdownID={dropdownMenuID} />
           </ContainerDesktop>

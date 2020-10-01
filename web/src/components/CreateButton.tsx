@@ -16,13 +16,14 @@
 
 import styled from '@emotion/styled';
 import React from 'react';
+import theme from '../theme';
 
 const StyledButton = styled.button`
   margin-right: 16px;
   padding: 8px 16px;
   border: none;
-  background-color: #fcba19;
-  color: #003366;
+  background-color: ${theme.colors.bcorange};
+  color: ${theme.colors.bcblue};
   text-transform: uppercase;
   letter-spacing: 0.2em;
   border-radius: 2px;
@@ -33,14 +34,14 @@ const StyledButton = styled.button`
 
 interface ICreateButtonProps {
   onClick: (e: any) => void;
-  buttonText: string;
+  children: React.ReactNode;
 };
 
 const CreateButton: React.FC<ICreateButtonProps> = (props) => {
-  const { onClick, buttonText } = props;
+  const { children, ...rest } = props;
 
   return (
-    <StyledButton onClick={onClick}>{buttonText}</StyledButton>
+    <StyledButton {...rest}>{children}</StyledButton>
   );
 };
 

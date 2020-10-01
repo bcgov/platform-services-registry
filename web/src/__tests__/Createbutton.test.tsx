@@ -14,16 +14,33 @@
 // limitations under the License.
 //
 
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import Createbutton from '../components/CreateButton';
 
-test('renders create button', () => {
-  const stubPropCB = () => { };
+function renderCreatebutton() {
+  const stubPropCB = jest.fn();
   const stubPropButtonText = 'Create';
 
-  const { getByText } = render(<Createbutton buttonText={stubPropButtonText} onClick={stubPropCB} />);
+  const utils = render(
+    <Createbutton onClick={stubPropCB}>
+      {stubPropButtonText}
+    </Createbutton>
+  );
 
-  const buttonText = getByText(stubPropButtonText);
+  const buttonText = utils.getByText(stubPropButtonText);
+  return { ...utils, buttonText, stubPropCB };
+}
+
+test('renders create button - incoming query', () => {
+  const { buttonText } = renderCreatebutton();
+
   expect(buttonText).toBeInTheDocument();
+});
+
+test('renders create button - outgoing command', () => {
+  const { buttonText, stubPropCB } = renderCreatebutton();
+  fireEvent.click(buttonText);
+
+  expect(stubPropCB.mock.calls.length).toBe(1);
 });
