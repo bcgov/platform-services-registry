@@ -14,17 +14,10 @@
 // limitations under the License.
 //
 
-import styled from '@emotion/styled';
 import React from 'react';
-
-const Panel = styled.div`
-  margin-top: 80px;
-`;
 
 export const Home = () => {
   return (
-    <Panel>
-      <h1>Home</h1>
-    </Panel>
+    <h1>Home</h1>
   );
 };

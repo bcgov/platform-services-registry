@@ -36,7 +36,4 @@ export const ROLES = {
 
 export const DEFAULT_MINISTRY = 'CITZ';
 
-export const DEFAULT_ICON_WIDTH = 1;
-export const DEFAULT_ICON_HEIGHT = 1;
-
 export const DROPDOWN_CLASSNAME = 'misc-class-m-show-dropdown';

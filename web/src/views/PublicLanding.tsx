@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 
-import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
 import queryString from 'querystring';
 import React from 'react';
@@ -25,10 +24,6 @@ const useQuery = () => {
   const location = useLocation();
   return queryString.parse(location.search.replace('?', '')) as any;
 };
-
-const Panel = styled.div`
-  margin-top: 80px;
-`;
 
 export const PublicLanding = () => {
   const { keycloak } = useKeycloak();
@@ -43,9 +38,9 @@ export const PublicLanding = () => {
   }
 
   return (
-    <Panel>
+    <div>
       <h1>Welcome</h1>
       <h4>Please log in to proceed</h4>
-    </Panel>
+    </div>
   );
 };

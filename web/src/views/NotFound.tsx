@@ -14,19 +14,14 @@
 // limitations under the License.
 //
 
-import styled from '@emotion/styled';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Panel = styled.div`
-  margin-top: 80px;
-`;
-
 export const NotFound = () => {
   return (
-    <Panel>
+    <div>
       <h1>Page not found</h1>
       <Link to='/'>Go back to the home page</Link>
-    </Panel>
+    </div>
   );
 };

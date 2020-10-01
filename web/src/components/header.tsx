@@ -21,6 +21,7 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { DROPDOWN_CLASSNAME } from '../constants';
+import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
 import Authbutton from './authbutton';
@@ -31,29 +32,29 @@ import Icon from './Icon';
 import GovLogo from './UI/govlogo';
 
 const StyledHeader = styled.header`
-  background-color: #036;
-  color: #fff;
+  background-color: ${theme.colors.primary};
+  color: ${theme.colors.contrast}
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: ${theme.zIndices[4]};
 `;
 
 const StyledBanner = styled.div`
   align-items: center;
-  color: #fff;
+  color: ${theme.colors.contrast};
   display: flex;
   flex-direction: row;
-  height: 65px;
-  padding-left: 30px;
-  padding-right: 30px;
-  border-bottom: 2px solid #fcba19;
+  height: ${theme.navBar.desktopFixedHeight};
+  padding-left: ${theme.spacingIncrements[0]};
+  padding-right: ${theme.spacingIncrements[0]};
+  border-bottom: 2px solid ${theme.colors.bcorange};
 `;
 
 const StyledDropdownMobile = styled.div`
   align-items: center;
-  background-color: #355991;
-  padding: 30px;
+  background-color: ${theme.colors.bclightblue};
+  padding: ${theme.spacingIncrements[0]};
   display: block;
   flex-direction: row;
 `;
@@ -63,13 +64,13 @@ const StyledNav = styled.div`
 `;
 
 const ContainerDesktop = styled.div`
-  @media (max-width: 860px) {
+  @media (max-width: ${theme.breakpoints[1]}) {
     display: none;
   }
 `;
 
 const ContainerMobile = styled.div`
-  @media (min-width: 860px) {
+  @media (min-width: ${theme.breakpoints[1]}) {
     display: none;
   }
 `;
@@ -80,7 +81,7 @@ const H2 = styled.h2`
   padding: 0px 4px;
   text-decoration: none;
   font-size: 1.54912em;
-  @media (max-width: 600px) {
+  @media (max-width: ${theme.breakpoints[0]}) {
     font-size: 1em;
   }
 `;
@@ -119,7 +120,7 @@ const Nav: React.FC<INavProps> = props => {
             </ContainerDesktop>
           )}
         <ContainerMobile>
-          <Icon hover color={'white'} name={isDDMobileOpen ? 'close' : 'menuStack'}
+          <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
             onClick={handleDDMobile} width={1.4} height={1.4} />
         </ContainerMobile>
       </StyledNav>

@@ -20,8 +20,19 @@ export default {
   breakpoints: ['40em', '52em', '64em'],
   colors: {
     bcblue: '#036',
+    bcorange: '#fcba19',
+    bclightblue: '#355991',
     primary: '#036',
     contrast: '#fff'
+  },
+  spacingIncrements: ['30px', '60px'],
+  zIndices: [0, 1, 10, 100, 1000],
+  icons: {
+    defaultWidth: 1,
+    defaultHeight: 1
+  },
+  navBar: {
+    desktopFixedHeight: '65px'
   },
   forms: {
     label: {

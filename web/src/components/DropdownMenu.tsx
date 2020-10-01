@@ -17,6 +17,7 @@
 import styled from '@emotion/styled';
 import { default as React } from 'react';
 import { DROPDOWN_CLASSNAME } from '../constants';
+import theme from '../theme';
 import { MenuItem } from '../types';
 import DropdownMenuItem from './DropdownMenuItem';
 
@@ -24,8 +25,8 @@ const StyledDropdown = styled.div`
   display: none;
   position: absolute;
   min-width: 100px;
-  background-color: white;
-  zIndex: 11
+  background-color: ${theme.colors.contrast};
+  zIndex: ${theme.zIndices[2]}
 `;
 
 interface IDropdownMenuProps {

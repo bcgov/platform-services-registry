@@ -1,6 +1,5 @@
 import { CSSProperties, default as React, MouseEventHandler } from 'react';
-import { DEFAULT_ICON_HEIGHT, DEFAULT_ICON_WIDTH } from '../constants';
-import themes from '../theme';
+import { default as theme, default as themes } from '../theme';
 import { ColorSet } from '../types';
 
 type IconSet
@@ -24,7 +23,7 @@ interface IBaseIconProps extends IIconProps {
 }
 
 const BaseIcon: React.FC<IBaseIconProps> = props => {
-  const { onClick, hover, viewBox, color, width = DEFAULT_ICON_WIDTH, height = DEFAULT_ICON_HEIGHT, style = {}, children } = props;
+  const { onClick, hover, viewBox, color, width = theme.icons.defaultWidth, height = theme.icons.defaultHeight, style = {}, children } = props;
   return (
     <svg
       onClick={onClick}

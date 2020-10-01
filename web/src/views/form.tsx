@@ -217,7 +217,7 @@ const MyForm: React.SFC = () => {
                 validate={validate}>
                 {props => (
                     <form onSubmit={props.handleSubmit} >
-                        <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px">
                             <StyledTitle>Tell us about your project</StyledTitle>
                             <Field name="project-name" validate={requiredField}>
                                 {({ input, meta }) => (

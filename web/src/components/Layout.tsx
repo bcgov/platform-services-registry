@@ -14,10 +14,12 @@
 // limitations under the License.
 //
 
+import styled from '@emotion/styled';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Flex } from 'rebass';
+import theme from '../theme';
 import { LayoutSet } from '../types';
 import clearDropdown from '../utils/clearDropdownMenu';
 import Footer from './footer';
@@ -27,6 +29,10 @@ interface ILayoutProps {
   children: React.ReactNode;
   name: LayoutSet;
 }
+
+const StyledMain = styled.main`
+  margin-top: ${theme.spacingIncrements[1]};
+`;
 
 const Layout: React.FC<ILayoutProps> = props => {
   const { children, name } = props;
@@ -41,9 +47,9 @@ const Layout: React.FC<ILayoutProps> = props => {
       <ToastContainer style={{ width: "500px" }} />
       <Header name={name} />
       <Flex px={['60px', '130px']}>
-        <main>
+        <StyledMain>
           {children}
-        </main>
+        </StyledMain>
       </Flex>
       <Footer />
     </div>
