@@ -12,35 +12,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Created by Jason Leach on 2020-06-15.
-//
 
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import DataManager from '../db';
+import shared from '../libs/shared';
 
-// const dm = new DataManager(shared.pgPool);
+const dm = new DataManager(shared.pgPool);
 
-export const fetchMinistrySponsors = async (
-  { headers, params }: { headers: any, params: any }, res: Response
-): Promise<void> => {
-  // const { NamespaceModel } = dm;
-  // const { profileId } = params;
-  // console.log(headers);
+export const fetchMinistrySponsors = async (req: Request, res: Response): Promise<void> => {
+  const { MinistryModel } = dm;
   try {
-    // const results = await NamespaceModel.findForProfile(Number(profileId));
-    const results = [
-      {
-        name: 'Citizens\s Services',
-        code: 'CITZ',
-      },
-      {
-        name: 'Transportation & Infrastructure',
-        code: 'TRAN',
-      },
-    ]
+    const results = await MinistryModel.findAll();
+
     res.status(200).json(results);
   } catch (err) {
     const message = `Unable fetch ministries`;

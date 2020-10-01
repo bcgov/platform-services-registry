@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import mockAxios from "axios";
+import mockAxios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { BodyType, default as CommonEmailService, Message, Options } from '../src/libs/service';
