@@ -67,8 +67,15 @@ export default class ProfileModel extends Model {
       text: `
         INSERT INTO ${this.table}
           (name, description, bus_org_id, priority_system,
-            critical_system, user_id, namespace_prefix)
-          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
+            critical_system, user_id, namespace_prefix,
+            notificationEmail, notificationSMS, notificationMSTeams,
+            paymentBambora, paymentPayBC, fileTransfer, fileStorage,
+            geoMappingWeb, geoMappingLocation, schedulingCalendar,
+            schedulingAppointments, identityManagementSiteMinder,
+            identityManagementKeyCloak, identityManagementActiveDir,
+            other)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;`,
       values: [
         data.name,
         data.description,
@@ -77,20 +84,20 @@ export default class ProfileModel extends Model {
         data.criticalSystem ? data.criticalSystem : false,
         data.userId,
         data.namespacePrefix,
-        data.notificationEmail ? data.notificationEmail : false, ,
-        data.notificationSMS ? data.notificationSMS : false, ,
-        data.notificationMSTeams ? data.notificationMSTeams : false, ,
-        data.paymentBambora ? data.paymentBambora : false, ,
-        data.paymentPayBC ? data.paymentPayBC : false, ,
-        data.fileTransfer ? data.fileTransfer : false, ,
-        data.fileStorage ? data.fileStorage : false, ,
-        data.geoMappingWeb ? data.geoMappingWeb : false, ,
-        data.geoMappingLocation ? data.geoMappingLocation : false, ,
-        data.schedulingCalendar ? data.schedulingCalendar : false, ,
-        data.schedulingAppointments ? data.schedulingAppointments : false, ,
-        data.identityManagementSiteMinder ? data.identityManagementSiteMinder : false, ,
-        data.identityManagementKeyCloak ? data.identityManagementKeyCloak : false, ,
-        data.identityManagementActiveDir ? data.identityManagementActiveDir : false, ,
+        data.notificationEmail ? data.notificationEmail : false,
+        data.notificationSMS ? data.notificationSMS : false,
+        data.notificationMSTeams ? data.notificationMSTeams : false,
+        data.paymentBambora ? data.paymentBambora : false,
+        data.paymentPayBC ? data.paymentPayBC : false,
+        data.fileTransfer ? data.fileTransfer : false,
+        data.fileStorage ? data.fileStorage : false,
+        data.geoMappingWeb ? data.geoMappingWeb : false,
+        data.geoMappingLocation ? data.geoMappingLocation : false,
+        data.schedulingCalendar ? data.schedulingCalendar : false,
+        data.schedulingAppointments ? data.schedulingAppointments : false,
+        data.identityManagementSiteMinder ? data.identityManagementSiteMinder : false,
+        data.identityManagementKeyCloak ? data.identityManagementKeyCloak : false,
+        data.identityManagementActiveDir ? data.identityManagementActiveDir : false,
         data.other,
       ],
     };
@@ -113,7 +120,13 @@ export default class ProfileModel extends Model {
         UPDATE ${this.table}
           SET
             name = $1, description = $2, bus_org_id = $3,
-            active = $4, priority_system = $5, critical_system = $6
+            active = $4, priority_system = $5, critical_system = $6,
+            notificationEmail = $7, notificationSMS = $8, notificationMSTeams = $9,
+            paymentBambora = $10, paymentPayBC = $11, fileTransfer = $12,
+            fileStorage = $13, geoMappingWeb = $14, geoMappingLocation = $15,
+            schedulingCalendar = $16, schedulingAppointments = $17,
+            identityManagementSiteMinder = $18, identityManagementKeyCloak = $19,
+            identityManagementActiveDir = $20, other = $21
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -129,6 +142,21 @@ export default class ProfileModel extends Model {
         aData.active,
         aData.criticalSystem,
         aData.prioritySystem,
+        aData.notificationEmail,
+        aData.notificationSMS,
+        aData.notificationMSTeams,
+        aData.paymentBambora,
+        aData.paymentPayBC,
+        aData.fileTransfer,
+        aData.fileStorage,
+        aData.geoMappingWeb,
+        aData.geoMappingLocation,
+        aData.schedulingCalendar,
+        aData.schedulingAppointments,
+        aData.identityManagementSiteMinder,
+        aData.identityManagementKeyCloak,
+        aData.identityManagementActiveDir,
+        aData.other,
       ];
 
       const results = await this.runQuery(query);
