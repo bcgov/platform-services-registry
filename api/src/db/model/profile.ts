@@ -25,7 +25,6 @@ export interface ProjectProfile extends CommonFields {
   busOrgId: number,
   userId: number,
   namespacePrefix: string,
-  active?: boolean,
   prioritySystem?: boolean,
   criticalSystem?: boolean,
   notificationEmail?: boolean,
@@ -66,20 +65,21 @@ export default class ProfileModel extends Model {
     const query = {
       text: `
         INSERT INTO ${this.table}
-          (name, description, bus_org_id, priority_system,
+          (name, description, bus_org_id, other, priority_system,
             critical_system, user_id, namespace_prefix,
             notificationEmail, notificationSMS, notificationMSTeams,
             paymentBambora, paymentPayBC, fileTransfer, fileStorage,
             geoMappingWeb, geoMappingLocation, schedulingCalendar,
             schedulingAppointments, identityManagementSiteMinder,
             identityManagementKeyCloak, identityManagementActiveDir,
-            other)
+            )
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;`,
+            $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING *;`,
       values: [
         data.name,
         data.description,
         data.busOrgId,
+        data.other,
         data.prioritySystem ? data.prioritySystem : false,
         data.criticalSystem ? data.criticalSystem : false,
         data.userId,
@@ -98,7 +98,6 @@ export default class ProfileModel extends Model {
         data.identityManagementSiteMinder ? data.identityManagementSiteMinder : false,
         data.identityManagementKeyCloak ? data.identityManagementKeyCloak : false,
         data.identityManagementActiveDir ? data.identityManagementActiveDir : false,
-        data.other,
       ],
     };
 
@@ -120,13 +119,13 @@ export default class ProfileModel extends Model {
         UPDATE ${this.table}
           SET
             name = $1, description = $2, bus_org_id = $3,
-            active = $4, priority_system = $5, critical_system = $6,
+            other = $4, priority_system = $5, critical_system = $6,
             notificationEmail = $7, notificationSMS = $8, notificationMSTeams = $9,
             paymentBambora = $10, paymentPayBC = $11, fileTransfer = $12,
             fileStorage = $13, geoMappingWeb = $14, geoMappingLocation = $15,
             schedulingCalendar = $16, schedulingAppointments = $17,
             identityManagementSiteMinder = $18, identityManagementKeyCloak = $19,
-            identityManagementActiveDir = $20, other = $21
+            identityManagementActiveDir = $20
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -139,7 +138,7 @@ export default class ProfileModel extends Model {
         aData.name,
         aData.description,
         aData.busOrgId,
-        aData.active,
+        aData.other,
         aData.criticalSystem,
         aData.prioritySystem,
         aData.notificationEmail,
@@ -156,7 +155,6 @@ export default class ProfileModel extends Model {
         aData.identityManagementSiteMinder,
         aData.identityManagementKeyCloak,
         aData.identityManagementActiveDir,
-        aData.other,
       ];
 
       const results = await this.runQuery(query);
