@@ -20,10 +20,11 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { DROPDOWN_CLASSNAME, LAYOUT_SET_AUTH, LAYOUT_SET_MIN } from '../constants';
+import { LAYOUT_SET_AUTH, LAYOUT_SET_MIN } from '../constants';
 import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
+import useComponentVisible from '../utils/useComponentVisible';
 import Authbutton from './authbutton';
 import CreateButton from './CreateButton';
 import DropdownMenu from './DropdownMenu';
@@ -96,13 +97,12 @@ interface INavProps {
 const Nav: React.FC<INavProps> = props => {
   const { name, handleDDMobile, isDDMobileOpen, dirs } = props;
 
-  const dropdownMenuID: string = 'DropdownCreatebutton';
-
   const isAuthenticated = (name === LAYOUT_SET_AUTH);
 
-  const handleDDDesktop = (event: any) => {
-    event.stopPropagation();
-    document?.getElementById(dropdownMenuID)?.classList.toggle(DROPDOWN_CLASSNAME);
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+
+  const handleDDDesktop = () => {
+    setIsComponentVisible(true);
   };
 
   if (name === LAYOUT_SET_MIN) {
@@ -113,7 +113,7 @@ const Nav: React.FC<INavProps> = props => {
         <ContainerDesktop>
           {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
           <Authbutton />
-          {isAuthenticated && (<DropdownMenu menuItems={dirs} dropdownID={dropdownMenuID} />)}
+          {isAuthenticated && isComponentVisible && (<DropdownMenu ref={ref} menuItems={dirs} />)}
         </ContainerDesktop>
         <ContainerMobile>
           <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
