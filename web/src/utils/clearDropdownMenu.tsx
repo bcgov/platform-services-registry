@@ -14,19 +14,18 @@
 // limitations under the License.
 //
 
-import { Router } from '@reach/router';
-import React from 'react';
-import WithLayout from '../hoc/withLayout';
-import Form from './form';
+import { DROPDOWN_CLASSNAME } from '../constants';
 
-const ViewForm = WithLayout(Form);
+export default () => {
+  const dropdowns = document.querySelectorAll("div[id^='Dropdown']");
 
-const AppRouter: React.FC = () => {
-  return (
-    <Router>
-      <ViewForm path="/" />
-    </Router>
-  );
-};
-
-export default AppRouter;
+  if (dropdowns) {
+    let i;
+    for (i = 0; i < dropdowns.length; i++) {
+      let openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains(DROPDOWN_CLASSNAME)) {
+        openDropdown.classList.remove(DROPDOWN_CLASSNAME);
+      }
+    }
+  }
+}
