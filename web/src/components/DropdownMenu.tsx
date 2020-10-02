@@ -16,13 +16,12 @@
 
 import styled from '@emotion/styled';
 import { default as React } from 'react';
-import { DROPDOWN_CLASSNAME } from '../constants';
 import theme from '../theme';
 import { MenuItem } from '../types';
 import DropdownMenuItem from './DropdownMenuItem';
 
 const StyledDropdown = styled.div`
-  display: none;
+  display: block;
   position: absolute;
   min-width: 100px;
   background-color: ${theme.colors.contrast};
@@ -31,15 +30,17 @@ const StyledDropdown = styled.div`
 
 interface IDropdownMenuProps {
   menuItems: Array<MenuItem>;
-  dropdownID: string;
+  ref?: any;
 }
 
-const DropdownMenu: React.FC<IDropdownMenuProps> = (props) => {
-  const { menuItems, dropdownID } = props;
+const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref) => {
+  const { menuItems } = props;
 
   return (
-    <div className={DROPDOWN_CLASSNAME}>
-      <StyledDropdown id={dropdownID}>
+    // TODO: investigate ref type error
+    // @ts-ignore
+    <div ref={ref}>
+      <StyledDropdown>
         {menuItems.map(
           (item, index) =>
             <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
@@ -47,6 +48,6 @@ const DropdownMenu: React.FC<IDropdownMenuProps> = (props) => {
       </StyledDropdown>
     </div>
   );
-};
+});
 
 export default DropdownMenu;
