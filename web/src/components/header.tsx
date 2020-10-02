@@ -19,32 +19,60 @@
 //
 
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
+import { DROPDOWN_CLASSNAME, LAYOUT_SET_AUTH, LAYOUT_SET_MIN } from '../constants';
+import theme from '../theme';
+import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
-import AuthButton from './authbutton';
+import Authbutton from './authbutton';
+import CreateButton from './CreateButton';
+import DropdownMenu from './DropdownMenu';
+import DropdownMenuItem from './DropdownMenuItem';
+import Icon from './Icon';
 import GovLogo from './UI/govlogo';
 
 const StyledHeader = styled.header`
-  background-color: #036;
-  border-bottom: 2px solid #fcba19;
-  padding: 0 65px 0 65px;
-  color: #fff;
-  display: flex;
-  height: 65px;
-  top: 0px;
+  background-color: ${theme.colors.primary};
+  color: ${theme.colors.contrast}
   position: fixed;
+  top: 0;
   width: 100%;
-  z-index: 100;
+  z-index: ${theme.zIndices[4]};
 `;
 
 const StyledBanner = styled.div`
-  display: flex;
-  justify-content: flex-start;
   align-items: center;
-  margin: 0 10px 0 0;
-  /* border-style: dotted;
-  border-width: 1px;
-  border-color: lightgrey; */
+  color: ${theme.colors.contrast};
+  display: flex;
+  flex-direction: row;
+  height: ${theme.navBar.desktopFixedHeight};
+  padding-left: ${theme.spacingIncrements[0]};
+  padding-right: ${theme.spacingIncrements[0]};
+  border-bottom: 2px solid ${theme.colors.bcorange};
+`;
+
+const StyledDropdownMobile = styled.div`
+  align-items: center;
+  background-color: ${theme.colors.bclightblue};
+  padding: ${theme.spacingIncrements[0]};
+  display: block;
+  flex-direction: row;
+`;
+
+const StyledNav = styled.div`
+  margin-left: auto;
+`;
+
+const ContainerDesktop = styled.div`
+  @media (max-width: ${theme.breakpoints[1]}) {
+    display: none;
+  }
+`;
+
+const ContainerMobile = styled.div`
+  @media (min-width: ${theme.breakpoints[1]}) {
+    display: none;
+  }
 `;
 
 const H2 = styled.h2`
@@ -53,23 +81,91 @@ const H2 = styled.h2`
   padding: 0px 4px;
   text-decoration: none;
   font-size: 1.54912em;
+  @media (max-width: ${theme.breakpoints[0]}) {
+    font-size: 1em;
+  }
 `;
 
-const Container = styled.div`
-  display: flex;
-  font-size: 1em;
-`;
+interface INavProps {
+  name: LayoutSet;
+  isDDMobileOpen: boolean;
+  handleDDMobile: (e: any) => void;
+  dirs: Array<MenuItem>;
+}
 
-export default () => {
+const Nav: React.FC<INavProps> = props => {
+  const { name, handleDDMobile, isDDMobileOpen, dirs } = props;
+
+  const dropdownMenuID: string = 'DropdownCreatebutton';
+
+  const isAuthenticated = (name === LAYOUT_SET_AUTH);
+
+  const handleDDDesktop = (event: any) => {
+    event.stopPropagation();
+    document?.getElementById(dropdownMenuID)?.classList.toggle(DROPDOWN_CLASSNAME);
+  };
+
+  if (name === LAYOUT_SET_MIN) {
+    return null;
+  } else {
+    return (
+      <StyledNav>
+        <ContainerDesktop>
+          {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
+          <Authbutton />
+          {isAuthenticated && (<DropdownMenu menuItems={dirs} dropdownID={dropdownMenuID} />)}
+        </ContainerDesktop>
+        <ContainerMobile>
+          <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
+            onClick={handleDDMobile} width={1.4} height={1.4} />
+        </ContainerMobile>
+      </StyledNav>
+    )
+  }
+};
+
+interface IHeaderProps {
+  name: LayoutSet;
+}
+
+const Header: React.FC<IHeaderProps> = props => {
+  const { name } = props;
+
+  const [isDDMobileOpen, setIsDDMobileOpen] = useState(false);
+
+  const handleDDMobile = () => {
+    setIsDDMobileOpen(!isDDMobileOpen);
+  };
+
+  const dirs = [{
+    title: "Namespace",
+    subTitle: 'Add a namespace set',
+    href: "/namespaces/create",
+    onClickCB: () => { }
+  }];
+
   return (
     <StyledHeader>
       <StyledBanner>
         <GovLogo />
-        <Container>
-          <H2>Platform Services Registry</H2>
-        </Container>
+        <H2>Platform Services Registry</H2>
+        {(name !== LAYOUT_SET_MIN) && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
       </StyledBanner>
-      <AuthButton />
+      <ContainerMobile>
+        {isDDMobileOpen && (
+          <StyledDropdownMobile >
+            <Authbutton />
+            {(name === LAYOUT_SET_AUTH) && (<div>
+              {dirs.map(
+                (item, index) =>
+                  <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
+              )} </div>
+            )}
+          </StyledDropdownMobile>
+        )}
+      </ContainerMobile>
     </StyledHeader>
   );
 };
+
+export default Header;

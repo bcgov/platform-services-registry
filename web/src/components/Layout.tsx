@@ -14,24 +14,46 @@
 // limitations under the License.
 //
 
+import styled from '@emotion/styled';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Flex } from 'rebass';
-import Footer from '../components/footer';
-import Header from '../components/header';
+import theme from '../theme';
+import { LayoutSet } from '../types';
+import clearDropdown from '../utils/clearDropdownMenu';
+import Footer from './footer';
+import Header from './header';
 
-const WithLayout = (Component: React.FC) => (props: any) => {
+interface ILayoutProps {
+  children: React.ReactNode;
+  name: LayoutSet;
+}
+
+const StyledMain = styled.main`
+  margin-top: ${theme.spacingIncrements[1]};
+`;
+
+const Layout: React.FC<ILayoutProps> = props => {
+  const { children, name } = props;
+
+  // this is to clear any left out dropdown menus
+  window.onclick = function () {
+    clearDropdown();
+  }
+
   return (
     <div >
       <ToastContainer style={{ width: "500px" }} />
-      <Header />
+      <Header name={name} />
       <Flex px={['60px', '130px']}>
-        <Component {...props} />
+        <StyledMain>
+          {children}
+        </StyledMain>
       </Flex>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default WithLayout;
+export default Layout;

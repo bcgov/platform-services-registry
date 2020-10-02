@@ -29,26 +29,15 @@ export interface IButtonProps {
 
 const StyledButton = styled.button`
   padding: 8px 16px;
-  margin: 120px;
   border: none;
   background-color: #fcba19;
   color: #003366;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   border-radius: 2px;
-  outline-width: 0;
-  text-decoration: none;
-  overflow: hidden;
   cursor: pointer;
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
-`;
-
-const Panel = styled.div`
-  flex-grow: 1;
-  align-items: center;
-  justify-content: flex-end;
-  display: flex;
 `;
 
 const titleForAuthenticationState = (keycloak: any): string => {
@@ -71,14 +60,12 @@ const Button: React.SFC<IButtonProps> = (props) => {
   const { keycloak } = useKeycloak();
 
   return (
-    <Panel>
-      <StyledButton
-        onClick={actionForCurrentState(keycloak)}
-      >
-        {titleForAuthenticationState(keycloak)}
-        {props.children}
-      </StyledButton>
-    </Panel>
+    <StyledButton
+      onClick={actionForCurrentState(keycloak)}
+    >
+      {titleForAuthenticationState(keycloak)}
+      {props.children}
+    </StyledButton>
   );
 };
 

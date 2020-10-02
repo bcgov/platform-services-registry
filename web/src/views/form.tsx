@@ -24,8 +24,8 @@ import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { toast } from 'react-toastify';
 import { Flex } from 'rebass';
+import { ShadowBox } from '../components/UI/shadowContainer';
 import { API, ROLES } from '../constants';
-import { ShadowBox } from './UI/shadowContainer';
 
 const axi = axios.create({
     baseURL: API.BASE_URL(),
@@ -189,15 +189,21 @@ const MyForm: React.SFC = () => {
 
     useEffect(() => {
         async function wrap() {
-            const result = await axi.get('ministry', {
-                headers: {
-                    Accept: 'application/json',
-                },
-            });
+            try {
+                const result = await axi.get('ministry', {
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
 
-            if (result.data) {
-                console.log('Fetched ministry sponsors!!!');
-                setMinistrySponsor(result.data);
+                if (result.data) {
+                    console.log('Fetched ministry sponsors!!!');
+                    setMinistrySponsor(result.data);
+                }
+            } catch (err) {
+                // if the api service is not available,
+                // provide empty list query than err that breaks the front-end
+                setMinistrySponsor([]);
             }
         }
 
@@ -211,7 +217,7 @@ const MyForm: React.SFC = () => {
                 validate={validate}>
                 {props => (
                     <form onSubmit={props.handleSubmit} >
-                        <ShadowBox maxWidth="750px" p="24px" mt="150px" px="70px">
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px">
                             <StyledTitle>Tell us about your project</StyledTitle>
                             <Field name="project-name" validate={requiredField}>
                                 {({ input, meta }) => (
