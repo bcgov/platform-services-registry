@@ -1,10 +1,10 @@
 import { css, Global } from '@emotion/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import App from './App';
+import { DROPDOWN_CLASSNAME } from './constants';
 import * as serviceWorker from './serviceWorker';
 import typography from './typography';
-
 
 ReactDOM.render(
   <React.StrictMode>
@@ -24,6 +24,9 @@ ReactDOM.render(
             }
           code {
               font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+            }
+          div[id^='Dropdown'].${DROPDOWN_CLASSNAME} {
+              display: block;
             }
           `}
     />
