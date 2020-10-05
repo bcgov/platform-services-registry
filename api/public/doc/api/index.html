@@ -1860,7 +1860,22 @@ curl -X POST http://localhost:8100/api/v1/profile \
   "name": "Health Gateway",
   "description": "Helping citizen'</span>s track prescription history<span class="hljs-string">",
   "</span>category<span class="hljs-string">": "</span>pathfinder<span class="hljs-string">",
-  "</span>busOrgId<span class="hljs-string">": "</span>HLTH<span class="hljs-string">"
+  "</span>busOrgId<span class="hljs-string">": "</span>HLTH<span class="hljs-string">",
+  "</span>notificationEmail<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>notificationSMS<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>notificationMSTeams<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>paymentBambora<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>paymentPayBC<span class="hljs-string">": "</span><span class="hljs-literal">true</span><span class="hljs-string">",
+  "</span>fileTransfer<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>fileStorage<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>geoMappingWeb<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>geoMappingLocation<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>schedulingCalendar<span class="hljs-string">": "</span><span class="hljs-literal">true</span><span class="hljs-string">",
+  "</span>schedulingAppointments<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>identityManagementSiteMinder<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>identityManagementKeyCloak<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>identityManagementActiveDir<span class="hljs-string">": "</span><span class="hljs-literal">false</span><span class="hljs-string">",
+  "</span>other<span class="hljs-string">": "</span>Push notifications to slack<span class="hljs-string">"
 }';
 const headers = {
   'Content-Type':'application/json',
@@ -1891,7 +1906,22 @@ fetch('http://localhost:8100/api/v1/profile',
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Health Gateway"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Helping citizen's track prescription history"</span>,
   <span class="hljs-attr">"category"</span>: <span class="hljs-string">"pathfinder"</span>,
-  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>
+  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>,
+  <span class="hljs-attr">"notificationEmail"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationSMS"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationMSTeams"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentBambora"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentPayBC"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"fileTransfer"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"fileStorage"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingWeb"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 </code></pre>
 <h3 id="createprojectprofile-parameters">Parameters</h3>
@@ -1928,7 +1958,22 @@ the project details.</p>
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Health Gateway"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Helping citizen's track prescription history"</span>,
   <span class="hljs-attr">"category"</span>: <span class="hljs-string">"pathfinder"</span>,
-  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>
+  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>,
+  <span class="hljs-attr">"notificationEmail"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationSMS"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationMSTeams"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentBambora"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentPayBC"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"fileTransfer"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"fileStorage"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingWeb"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 </code></pre>
 <h3 id="createprojectprofile-responses">Responses</h3>
@@ -2010,7 +2055,22 @@ that are not archived.</p>
     <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Health Gateway"</span>,
     <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Helping citizen's track prescription history"</span>,
     <span class="hljs-attr">"category"</span>: <span class="hljs-string">"pathfinder"</span>,
-    <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>
+    <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>,
+    <span class="hljs-attr">"notificationEmail"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"notificationSMS"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"notificationMSTeams"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"paymentBambora"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"paymentPayBC"</span>: <span class="hljs-string">"true"</span>,
+    <span class="hljs-attr">"fileTransfer"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"fileStorage"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"geoMappingWeb"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-string">"true"</span>,
+    <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-string">"false"</span>,
+    <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
   }
 ]
 </code></pre>
@@ -2135,6 +2195,111 @@ that are not archived.</p>
 <td>none</td>
 <td>none</td>
 </tr>
+<tr>
+<td>»» notificationEmail</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» notificationSMS</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» notificationMSTeams</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» paymentBambora</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» paymentPayBC</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» fileTransfer</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» fileStorage</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» geoMappingWeb</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» geoMappingLocation</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» schedulingCalendar</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» schedulingAppointments</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» identityManagementSiteMinder</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» identityManagementKeyCloak</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» identityManagementActiveDir</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>»» other</td>
+<td>string</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
 </tbody>
 </table>
 <h4 id="enumerated-values">Enumerated Values</h4>
@@ -2225,7 +2390,22 @@ archived.</p>
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Health Gateway"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Helping citizen's track prescription history"</span>,
   <span class="hljs-attr">"category"</span>: <span class="hljs-string">"pathfinder"</span>,
-  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>
+  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>,
+  <span class="hljs-attr">"notificationEmail"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationSMS"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationMSTeams"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentBambora"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentPayBC"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"fileTransfer"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"fileStorage"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingWeb"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 </code></pre>
 <h3 id="getprojectprofile-responses">Responses</h3>
@@ -3145,7 +3325,22 @@ This operation does not require authentication
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Health Gateway"</span>,
   <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Helping citizen's track prescription history"</span>,
   <span class="hljs-attr">"category"</span>: <span class="hljs-string">"pathfinder"</span>,
-  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>
+  <span class="hljs-attr">"busOrgId"</span>: <span class="hljs-string">"HLTH"</span>,
+  <span class="hljs-attr">"notificationEmail"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationSMS"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"notificationMSTeams"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentBambora"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"paymentPayBC"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"fileTransfer"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"fileStorage"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingWeb"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-string">"true"</span>,
+  <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-string">"false"</span>,
+  <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 
 </code></pre>
@@ -3221,6 +3416,111 @@ This operation does not require authentication
 <tr>
 <td>updatedAt</td>
 <td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>notificationEmail</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>notificationSMS</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>notificationMSTeams</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>paymentBambora</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>paymentPayBC</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>fileTransfer</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>fileStorage</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>geoMappingWeb</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>geoMappingLocation</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>schedulingCalendar</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>schedulingAppointments</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>identityManagementSiteMinder</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>identityManagementKeyCloak</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>identityManagementActiveDir</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>other</td>
+<td>string</td>
 <td>false</td>
 <td>none</td>
 <td>none</td>
