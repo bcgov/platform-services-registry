@@ -125,7 +125,7 @@ export default class ProfileModel extends Model {
             file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
             scheduling_calendar = $15, scheduling_appointments = $16,
             identity_management_site_minder = $17, identity_management_keycloak = $18,
-            identity_management_active_dir = $19, other = $20,
+            identity_management_active_dir = $19, other = $20
           WHERE id = ${profileId}
           RETURNING *;`,
       values,

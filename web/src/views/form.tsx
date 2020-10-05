@@ -369,6 +369,7 @@ const MyForm: React.SFC = () => {
                                     </Flex>
                                 )}
                             </Field>
+
                             <StyledButton type="submit">Request</StyledButton>
                         </ShadowBox>
                     </form>
