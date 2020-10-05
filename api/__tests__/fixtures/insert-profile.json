@@ -10,7 +10,7 @@
   "notificationMSTeams": false,
   "paymentBambora": false,
   "paymentPayBC": false,
-  "fileTransfer": true,
+  "fileTransfer": false,
   "fileStorage": false,
   "geoMappingWeb": false,
   "geoMappingLocation": false,
