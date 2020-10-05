@@ -27,9 +27,6 @@ const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
 const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-const p2 = path.join(__dirname, 'fixtures/insert-profile-metadata.json');
-const insertProfileMetadata = JSON.parse(fs.readFileSync(p2, 'utf8'));
-
 const client = new Pool().connect();
 
 jest.mock('../src/db/utils', () => ({
@@ -186,7 +183,7 @@ describe('Profile event handlers', () => {
   });
 
   it('A project is updated with optional metadata', async () => {
-    const body = JSON.parse(JSON.stringify(insertProfileMetadata));
+    const body = JSON.parse(JSON.stringify(insertProfile));
     const aBody = {
       ...body,
       id: 9,
