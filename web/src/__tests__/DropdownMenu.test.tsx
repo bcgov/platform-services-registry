@@ -28,9 +28,8 @@ jest.mock('../components/DropdownMenuItem', () => {
 });
 
 test('renders dropdown menu - incoming query', () => {
-  const stubPropDropdownID = 'some sub title';
   const stubMenuItems = [{
-    title: "some title",
+    title: 'some title',
     subTitle: 'some sub title',
     href: "/some-path",
     onClickCB: () => { }
@@ -39,7 +38,6 @@ test('renders dropdown menu - incoming query', () => {
   const { queryAllByTestId } = render(
     <DropdownMenu
       menuItems={stubMenuItems}
-      dropdownID={stubPropDropdownID}
     />
   );
   const children = queryAllByTestId('dropdown-menu-item');
