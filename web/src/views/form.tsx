@@ -281,7 +281,6 @@ const MyForm: React.SFC = () => {
                                             <option
                                                 key={s.id}
                                                 value={s.id}
-                                                onClick={() => { }}
                                             >
                                                 {s.name}
                                             </option>
