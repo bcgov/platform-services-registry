@@ -27,6 +27,9 @@ const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
 const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
+const p2 = path.join(__dirname, 'fixtures/insert-profile-metadata.json');
+const insertProfileMetadata = JSON.parse(fs.readFileSync(p2, 'utf8'));
+
 const client = new Pool().connect();
 
 jest.mock('../src/db/utils', () => ({
@@ -161,6 +164,35 @@ describe('Profile event handlers', () => {
       id: 9,
       createdAt: '2020-05-19T20:02:54.561Z',
       updateAt: '2020-05-19T20:02:54.561Z',
+    };
+    const req = {
+      params: { profileId: 1 },
+      body,
+      user: {
+        id: 1,
+      },
+    }
+
+    client.query.mockReturnValue({ rows: [aBody] });
+
+    // @ts-ignore
+    await updateProjectProfile(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('A project is updated with optional metadata', async () => {
+    const body = JSON.parse(JSON.stringify(insertProfileMetadata));
+    const aBody = {
+      ...body,
+      id: 9,
+      createdAt: '2020-05-19T20:02:54.561Z',
+      updateAt: '2020-05-19T20:02:54.561Z',
+      fileTransfer: true,
     };
     const req = {
       params: { profileId: 1 },
