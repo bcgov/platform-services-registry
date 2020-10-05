@@ -268,17 +268,19 @@ const MyForm: React.SFC = () => {
                             <Flex>
                                 <Label variant="adjacentLabel">Ministry Sponsor</Label>
                                 <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+                                    {/* using a className prop as react final form Field does
+                                    not seem to expose any API to modify CSS */}
                                     <Field
-                                        flex="1 0 200px"
                                         name="project-busOrgId"
                                         component="select"
+                                        className="misc-class-m-dropdown-select"
                                     >
                                         {/* {({ input, meta }) => ( */}
                                         <option>Select...</option>
                                         {ministry.map((s: any) => (
                                             <option
-                                                key={s.code}
-                                                value={s.code}
+                                                key={s.id}
+                                                value={s.id}
                                             >
                                                 {s.name}
                                             </option>

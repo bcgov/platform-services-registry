@@ -24,6 +24,11 @@ ReactDOM.render(
           code {
               font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
             }
+          .misc-class-m-dropdown-select {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
           `}
     />
     <App />,
