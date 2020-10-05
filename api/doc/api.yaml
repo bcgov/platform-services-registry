@@ -418,6 +418,36 @@ components:
         updatedAt:
           type: string
           format: date
+        notificationEmail:
+          type: boolean
+        notificationSMS:
+          type: boolean
+        notificationMSTeams:
+          type: boolean
+        paymentBambora:
+          type: boolean
+        paymentPayBC:
+          type: boolean
+        fileTransfer:
+          type: boolean
+        fileStorage:
+          type: boolean
+        geoMappingWeb:
+          type: boolean
+        geoMappingLocation:
+          type: boolean
+        schedulingCalendar:
+          type: boolean
+        schedulingAppointments:
+          type: boolean
+        identityManagementSiteMinder:
+          type: boolean
+        identityManagementKeyCloak:
+          type: boolean
+        identityManagementActiveDir:
+          type: boolean
+        other:
+          type: string
       required:
         - name
         - description
@@ -428,6 +458,21 @@ components:
         description: "Helping citizen's track prescription history"
         category: "pathfinder"
         busOrgId: "HLTH"
+        notificationEmail: "false"
+        notificationSMS: "false"
+        notificationMSTeams: "false"
+        paymentBambora: "false"
+        paymentPayBC: "true"
+        fileTransfer: "false"
+        fileStorage: "false"
+        geoMappingWeb: "false"
+        geoMappingLocation: "false"
+        schedulingCalendar: "true"
+        schedulingAppointments: "false"
+        identityManagementSiteMinder: "false"
+        identityManagementKeyCloak: "false"
+        identityManagementActiveDir: "false"
+        other: "Push notifications to slack"
     Ministry:
       title: Ministry Sponsors
       description: Payload for the Ministry Sponsors
