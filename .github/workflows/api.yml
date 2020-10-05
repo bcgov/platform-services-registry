@@ -72,3 +72,4 @@ jobs:
           cmd: |
             'version'
             'start-build platsrv-registry-api-master-build --follow -n platform-registry-tools'
+            'tag platsrv-registry-api:latest platsrv-registry-api:dev'
