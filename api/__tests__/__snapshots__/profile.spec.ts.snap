@@ -106,7 +106,7 @@ Array [
         false,
         false,
         false,
-        undefined,
+        "This is a test",
       ],
     },
   ],
@@ -122,9 +122,24 @@ Object {
   "createdAt": Any<Date>,
   "criticalSystem": false,
   "description": "Patient prescription history website",
+  "fileStorage": false,
+  "fileTransfer": false,
+  "geoMappingLocation": false,
+  "geoMappingWeb": false,
   "id": 9,
+  "identityManagementActiveDir": false,
+  "identityManagementKeyCloak": false,
+  "identityManagementSiteMinder": false,
   "name": "Health Gateway",
+  "notificationEmail": false,
+  "notificationMsTeams": false,
+  "notificationSms": false,
+  "other": "This is a test",
+  "paymentBambora": false,
+  "paymentPayBc": false,
   "prioritySystem": false,
+  "schedulingAppointments": false,
+  "schedulingCalendar": false,
   "updatedAt": Any<Date>,
 }
 `;
@@ -172,21 +187,21 @@ Array [
         "HLTH",
         false,
         false,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        "This is a test",
       ],
     },
   ],
@@ -202,9 +217,119 @@ Object {
   "createdAt": "2020-05-19T20:02:54.561Z",
   "criticalSystem": false,
   "description": "Patient prescription history website",
+  "fileStorage": false,
+  "fileTransfer": false,
+  "geoMappingLocation": false,
+  "geoMappingWeb": false,
   "id": 9,
+  "identityManagementActiveDir": false,
+  "identityManagementKeyCloak": false,
+  "identityManagementSiteMinder": false,
   "name": "Health Gateway",
+  "notificationEmail": false,
+  "notificationMsTeams": false,
+  "notificationSms": false,
+  "other": "This is a test",
+  "paymentBambora": false,
+  "paymentPayBc": false,
   "prioritySystem": false,
+  "schedulingAppointments": false,
+  "schedulingCalendar": false,
+  "updateAt": "2020-05-19T20:02:54.561Z",
+}
+`;
+
+exports[`Profile event handlers A project is updated with optional metadata 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        UPDATE profile
+          SET
+            name = $1, description = $2, bus_org_id = $3,
+            priority_system = $4, critical_system = $5,
+            notification_email = $6, notification_sms = $7, notification_ms_teams = $8,
+            payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
+            file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
+            scheduling_calendar = $15, scheduling_appointments = $16,
+            identity_management_site_minder = $17, identity_management_keycloak = $18,
+            identity_management_active_dir = $19, other = $20
+          WHERE id = 1
+          RETURNING *;",
+      "values": Array [
+        "Health Gateway",
+        "Patient prescription history website",
+        "HLTH",
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        "This is a test",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A project is updated with optional metadata 2`] = `200`;
+
+exports[`Profile event handlers A project is updated with optional metadata 3`] = `
+Object {
+  "busOrgId": "HLTH",
+  "categoryId": 1,
+  "createdAt": "2020-05-19T20:02:54.561Z",
+  "criticalSystem": false,
+  "description": "Patient prescription history website",
+  "fileStorage": false,
+  "fileTransfer": true,
+  "geoMappingLocation": false,
+  "geoMappingWeb": false,
+  "id": 9,
+  "identityManagementActiveDir": false,
+  "identityManagementKeyCloak": false,
+  "identityManagementSiteMinder": false,
+  "name": "Health Gateway",
+  "notificationEmail": false,
+  "notificationMsTeams": false,
+  "notificationSms": false,
+  "other": "This is a test",
+  "paymentBambora": false,
+  "paymentPayBc": false,
+  "prioritySystem": false,
+  "schedulingAppointments": false,
+  "schedulingCalendar": false,
   "updateAt": "2020-05-19T20:02:54.561Z",
 }
 `;
