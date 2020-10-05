@@ -458,20 +458,20 @@ components:
         description: "Helping citizen's track prescription history"
         category: "pathfinder"
         busOrgId: "HLTH"
-        notificationEmail: "false"
-        notificationSMS: "false"
-        notificationMSTeams: "false"
-        paymentBambora: "false"
-        paymentPayBC: "true"
-        fileTransfer: "false"
-        fileStorage: "false"
-        geoMappingWeb: "false"
-        geoMappingLocation: "false"
-        schedulingCalendar: "true"
-        schedulingAppointments: "false"
-        identityManagementSiteMinder: "false"
-        identityManagementKeyCloak: "false"
-        identityManagementActiveDir: "false"
+        notificationEmail: false
+        notificationSMS: false
+        notificationMSTeams: false
+        paymentBambora: false
+        paymentPayBC: true
+        fileTransfer: false
+        fileStorage: false
+        geoMappingWeb: false
+        geoMappingLocation: false
+        schedulingCalendar: true
+        schedulingAppointments: false
+        identityManagementSiteMinder: false
+        identityManagementKeyCloak: false
+        identityManagementActiveDir: false
         other: "Push notifications to slack"
     Ministry:
       title: Ministry Sponsors
