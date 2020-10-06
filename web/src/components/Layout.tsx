@@ -30,8 +30,8 @@ const StyledDiv = styled.main`
 
 const StyledMain = styled.main`
   margin-top: ${theme.spacingIncrements[1]};
-  padding-left: ${theme.spacingIncrements[1]};
-  padding-right: ${theme.spacingIncrements[1]};
+  padding-left: ${theme.spacingIncrements[2]};
+  padding-right: ${theme.spacingIncrements[2]};
   @media (max-width: ${theme.breakpoints[0]}) {
     padding-left: ${theme.spacingIncrements[0]};
     padding-right: ${theme.spacingIncrements[0]};
