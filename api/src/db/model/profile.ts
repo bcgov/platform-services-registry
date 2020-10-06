@@ -182,4 +182,23 @@ export default class ProfileModel extends Model {
       throw err;
     }
   }
+
+  async findProfilesByUserID(id: number): Promise<any> {
+    const query = {
+      text: `
+        SELECT * FROM ${this.table}
+          WHERE user_id = $1 AND archived = false;`,
+      values: [id],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to fetch Profile(s) with User ID ${id}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
 }
