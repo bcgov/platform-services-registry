@@ -21,7 +21,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import { toast } from 'react-toastify';
-import { Flex } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
 import SubFormPO from '../components/SubFormPO';
 import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
@@ -56,6 +56,12 @@ const requiredField = (value: string) => (value ? undefined : 'Required')
 //         progress: undefined,
 //     });
 // }
+
+const txtForProjectForm = `If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to xxx@gov.bc.ca to get started.`;
+
+const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
+
+const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them within any technical questions or notify them about platform events.`;
 
 const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
@@ -163,16 +169,26 @@ const MyForm: React.SFC = () => {
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px" width={[1, 1, 2 / 3]}>
                             <SubFormProject ministry={ministry} requiredField={requiredField} />
                         </ShadowBox>
+                        <Box p={"30px"} width={[1, 1, 1 / 3]}>
+                            <Text>{txtForProjectForm}</Text>
+                            <Text pt={"24px"} >If you're new to OpenShift check out our {<a href="https://developer.gov.bc.ca/Getting-Started-on-the-DevOps-Platform/How-to-Request-a-New-OpenShift-Project" target="_blank">Getting Started</a>} on the DevOps Platform guide. It's full of tones of useful information.</Text>
+                        </Box>
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px">
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px" width={[1, 1, 2 / 3]}>
                             <SubFormPO requiredField={requiredField} />
                         </ShadowBox>
+                        <Box p={"30px"} width={[1, 1, 1 / 3]}>
+                            <Text>{txtForPO}</Text>
+                        </Box>
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px" >
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px" width={[1, 1, 2 / 3]}>
                             <SubFormTC requiredField={requiredField} />
                         </ShadowBox>
+                        <Box p={"30px"} width={[1, 1, 1 / 3]}>
+                            <Text>{txtForTC}</Text>
+                        </Box>
                     </Flex>
                 </form>
             )}
