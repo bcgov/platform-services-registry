@@ -15,10 +15,10 @@
 //
 
 import styled from '@emotion/styled';
-import { Input, Label } from '@rebass/forms';
-import React from 'react';
+import { Checkbox, Input, Label } from '@rebass/forms';
+import React, { useState } from 'react';
 import { Field } from 'react-final-form';
-import { Flex } from 'rebass';
+import { Flex, Text } from 'rebass';
 import SubFormTitle from './UI/subFormTitle';
 
 const StyledButton = styled.button`
@@ -31,12 +31,24 @@ const StyledButton = styled.button`
     font-size: 24px;
 `;
 
+const StyledDisabledButton = styled.button`
+    margin-top: 20px;
+    width: 50%;
+    height: 60px;
+    border-radius: 5px;
+    background-color: #d3d3d3;
+    color: #FFFFFF;
+    font-size: 24px;
+    `;
+
 interface ISubFormTCProps {
     requiredField: (value: string) => undefined | string;
 }
 
 const SubformTC: React.FC<ISubFormTCProps> = (props) => {
     const { requiredField } = props;
+
+    const [boxChecked, setBoxChecked] = useState(false);
 
     return (
         <div>
@@ -79,8 +91,14 @@ const SubformTC: React.FC<ISubFormTCProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <StyledButton type="submit">Request</StyledButton>
-        </div>
+
+            <Label>
+                <Checkbox type="checkbox" defaultChecked={boxChecked} onChange={() => { setBoxChecked(!boxChecked) }} />
+                <Text px='20px'>By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the {<a href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!" target="_blank">Onboarding Guide</a>}.</Text>
+            </Label>
+
+            {boxChecked ? (<StyledButton type="submit">Request</StyledButton>) : (<StyledDisabledButton disabled type="submit">Request</StyledDisabledButton>)}
+        </div >
     );
 };
 
