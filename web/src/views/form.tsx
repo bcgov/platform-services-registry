@@ -171,7 +171,7 @@ const MyForm: React.SFC = () => {
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForProjectForm}</Text>
-                            <Text pt={"24px"} >If you're new to OpenShift check out our {<a href="https://developer.gov.bc.ca/Getting-Started-on-the-DevOps-Platform/How-to-Request-a-New-OpenShift-Project" target="_blank">Getting Started</a>} on the DevOps Platform guide. It's full of tones of useful information.</Text>
+                            <Text pt={"24px"} >If you're new to OpenShift check out our {<a rel="noopener noreferrer" href="https://developer.gov.bc.ca/Getting-Started-on-the-DevOps-Platform/How-to-Request-a-New-OpenShift-Project" target="_blank">Getting Started</a>} on the DevOps Platform guide. It's full of tones of useful information.</Text>
                         </Box>
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px">

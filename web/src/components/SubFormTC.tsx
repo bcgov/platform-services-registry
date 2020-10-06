@@ -94,7 +94,7 @@ const SubformTC: React.FC<ISubFormTCProps> = (props) => {
 
             <Label>
                 <Checkbox type="checkbox" defaultChecked={boxChecked} onChange={() => { setBoxChecked(!boxChecked) }} />
-                <Text px='20px'>By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the {<a href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!" target="_blank">Onboarding Guide</a>}.</Text>
+                <Text px='20px'>By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the {<a rel="noopener noreferrer" href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!" target="_blank">Onboarding Guide</a>}.</Text>
             </Label>
 
             {boxChecked ? (<StyledButton type="submit">Request</StyledButton>) : (<StyledDisabledButton disabled type="submit">Request</StyledDisabledButton>)}
