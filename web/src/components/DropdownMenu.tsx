@@ -24,6 +24,8 @@ const StyledDropdown = styled.div`
   display: block;
   position: absolute;
   min-width: 100px;
+  margin-top: 15px;
+  margin-right: 15px;
   background-color: ${theme.colors.contrast};
   zIndex: ${theme.zIndices[2]}
 `;

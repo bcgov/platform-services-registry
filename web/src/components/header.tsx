@@ -127,8 +127,8 @@ const Header: React.FC<IHeaderProps> = props => {
   };
 
   const dirs = [{
-    title: "Namespace",
-    subTitle: 'Add a namespace set',
+    title: "A new Openshift Project Set",
+    subTitle: "Create 4 Project namespaces in Silver cluster",
     href: "/namespaces/create",
     onClickCB: () => { }
   }];

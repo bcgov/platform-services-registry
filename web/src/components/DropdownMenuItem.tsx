@@ -17,15 +17,15 @@
 import styled from '@emotion/styled';
 import { default as React } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { Text } from 'rebass';
+import theme from '../theme';
 import { MenuItem as IMenuItemProps } from '../types';
 
 const StyledDropdownItem = styled.div`
-  display: block;
-  padding: 10px;
-  cursor: pointer;
-  text-decoration: none;
-  '&:hover': {
-    background: #ddd;
+  margin: 15px;
+  border-bottom: 1px solid;
+  @media (max-width: ${theme.breakpoints[1]}) {
+    color: ${theme.colors.contrast};
   }
 `;
 
@@ -33,17 +33,17 @@ const DropdownMenuItem: React.FC<IMenuItemProps> = (props) => {
   const { href, title, subTitle, onClickCB } = props;
   if (!!href) {
     return (
-      <RouterLink to={href}>
+      <RouterLink className='misc-class-m-dropdown-link' to={href}>
         <StyledDropdownItem>
-          <h4>{title}</h4>
-          {subTitle}
+          <h3>{title}</h3>
+          <Text color={theme.colors.grey} mb='12px'>{subTitle}</Text>
         </StyledDropdownItem>
       </RouterLink>
     );
   } else {
     return (
       <StyledDropdownItem onClick={onClickCB}>
-        <h4>{title}</h4>
+        <h3>{title}</h3>
         {subTitle}
       </StyledDropdownItem>
     );
