@@ -73,4 +73,4 @@ jobs:
           cmd: |
             'version'
             'start-build platsrv-registry-web-master-build --follow -n platform-registry-tools'
-            'oc tag -n platform-registry-tools platsrv-registry-web:latest platsrv-registry-web:dev'
+            'tag -n platform-registry-tools platsrv-registry-web:latest platsrv-registry-web:dev'
