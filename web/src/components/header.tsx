@@ -31,6 +31,7 @@ import DropdownMenu from './DropdownMenu';
 import DropdownMenuItem from './DropdownMenuItem';
 import Icon from './Icon';
 import GovLogo from './UI/govlogo';
+import { ContainerDesktop, ContainerMobile } from './UI/responsiveContainer';
 
 const StyledHeader = styled.header`
   background-color: ${theme.colors.primary};
@@ -62,18 +63,6 @@ const StyledDropdownMobile = styled.div`
 
 const StyledNav = styled.div`
   margin-left: auto;
-`;
-
-const ContainerDesktop = styled.div`
-  @media (max-width: ${theme.breakpoints[1]}) {
-    display: none;
-  }
-`;
-
-const ContainerMobile = styled.div`
-  @media (min-width: ${theme.breakpoints[1]}) {
-    display: none;
-  }
 `;
 
 const H2 = styled.h2`

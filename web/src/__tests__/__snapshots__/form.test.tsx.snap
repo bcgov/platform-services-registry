@@ -1,0 +1,381 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches the snapshot 1`] = `
+<div>
+  <form>
+    <div
+      class="css-hdrfx9"
+    >
+      <div
+        class="css-5rvgix"
+      >
+        <div>
+          <h1
+            class="css-zi8sy1"
+          >
+            Tell us about your project
+          </h1>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="project-name"
+            >
+              Name
+            </label>
+            <input
+              class="css-4y926w"
+              id="project-name"
+              name="project-name"
+              placeholder="Project X"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="project-description"
+            >
+              Description
+            </label>
+            <textarea
+              class="css-4y926w"
+              id="project-description"
+              name="project-description"
+              placeholder="A cutting edge web platform that enables Citizens to ..."
+              rows="5"
+            />
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Is this a Priority Application?
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-prioritySystem"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Ministry Sponsor
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-busOrgId"
+            >
+              <select
+                class="misc-class-m-dropdown-select"
+                name="project-busOrgId"
+              >
+                <option>
+                  Select...
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-fpdtzh"
+      >
+        <div
+          class="css-vurnku"
+        >
+          If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to xxx@gov.bc.ca to get started.
+        </div>
+        <div
+          class="css-pmqufv"
+        >
+          If you're new to OpenShift check out our 
+          <a
+            href="https://developer.gov.bc.ca/Getting-Started-on-the-DevOps-Platform/How-to-Request-a-New-OpenShift-Project"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Getting Started
+          </a>
+           on the DevOps Platform guide. It's full of tones of useful information.
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-16n4rli"
+    >
+      <div
+        class="css-5rvgix"
+      >
+        <div>
+          <h1
+            class="css-zi8sy1"
+          >
+            Who is the product owner for this project?
+          </h1>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="po-first-name"
+            >
+              First Name
+            </label>
+            <input
+              class="css-4y926w"
+              id="po-first-name"
+              name="po-firstName"
+              placeholder="Jane"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="po-last-name"
+            >
+              Last Name
+            </label>
+            <input
+              class="css-4y926w"
+              id="po-last-name"
+              name="po-lastName"
+              placeholder="Doe"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="po-email"
+            >
+              eMail Address
+            </label>
+            <input
+              class="css-4y926w"
+              id="po-email"
+              name="po-email"
+              placeholder="jane.doe@gov.bc.ca"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="po-github-id"
+            >
+              GitHub ID
+            </label>
+            <input
+              class="css-4y926w"
+              id="po-github-id"
+              name="po-githubId"
+              placeholder="jane1100"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-fpdtzh"
+      >
+        <div
+          class="css-vurnku"
+        >
+          Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-16n4rli"
+    >
+      <div
+        class="css-5rvgix"
+      >
+        <div>
+          <h1
+            class="css-zi8sy1"
+          >
+            Who is the technical contact for this project?
+          </h1>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="tc-first-name"
+            >
+              First Name
+            </label>
+            <input
+              class="css-4y926w"
+              id="tc-first-name"
+              name="tc-firstName"
+              placeholder="Jane"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="tc-last-name"
+            >
+              Last Name
+            </label>
+            <input
+              class="css-4y926w"
+              id="tc-last-name"
+              name="tc-lastName"
+              placeholder="Doe"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="tc-email"
+            >
+              eMail Address
+            </label>
+            <input
+              class="css-4y926w"
+              id="tc-email"
+              name="tc-email"
+              placeholder="jane.doe@gov.bc.ca"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="css-761hsa"
+            style="position: relative;"
+          >
+            <label
+              class="css-knfhfe"
+              for="tc-github-id"
+            >
+              GitHub ID
+            </label>
+            <input
+              class="css-4y926w"
+              id="tc-github-id"
+              name="tc-githubId"
+              placeholder="jane1100"
+              type="text"
+              value=""
+            />
+          </div>
+          <label
+            class="css-knfhfe"
+          >
+            <div
+              class="css-vurnku"
+            >
+              <input
+                class="css-p19g2b"
+                type="checkbox"
+              />
+              <svg
+                aria-hidden="true"
+                class="css-1orewpb"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                />
+              </svg>
+              <svg
+                aria-hidden="true"
+                class="css-6gju6b"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-jqhguc"
+            >
+              By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the 
+              <a
+                href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Onboarding Guide
+              </a>
+              .
+            </div>
+          </label>
+          <button
+            class="css-14pfrwh"
+            disabled=""
+            type="submit"
+          >
+            Request
+          </button>
+        </div>
+      </div>
+      <div
+        class="css-fpdtzh"
+      >
+        <div
+          class="css-vurnku"
+        >
+          Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them within any technical questions or notify them about platform events.
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+`;

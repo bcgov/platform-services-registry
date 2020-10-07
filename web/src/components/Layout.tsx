@@ -18,35 +18,43 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Flex } from 'rebass';
 import theme from '../theme';
 import { LayoutSet } from '../types';
 import Footer from './footer';
 import Header from './header';
+
+// this is to set min width in windows resizing
+const StyledDiv = styled.main`
+  min-width: 380px;
+`;
+
+const StyledMain = styled.main`
+  margin-top: ${theme.spacingIncrements[1]};
+  padding-left: ${theme.spacingIncrements[2]};
+  padding-right: ${theme.spacingIncrements[2]};
+  @media (max-width: ${theme.breakpoints[0]}) {
+    padding-left: ${theme.spacingIncrements[0]};
+    padding-right: ${theme.spacingIncrements[0]};
+  }
+`;
 
 interface ILayoutProps {
   children: React.ReactNode;
   name: LayoutSet;
 }
 
-const StyledMain = styled.main`
-  margin-top: ${theme.spacingIncrements[1]};
-`;
-
 const Layout: React.FC<ILayoutProps> = props => {
   const { children, name } = props;
 
   return (
-    <div >
+    <StyledDiv>
       <ToastContainer style={{ width: "500px" }} />
       <Header name={name} />
-      <Flex px={['60px', '130px']}>
-        <StyledMain>
-          {children}
-        </StyledMain>
-      </Flex>
+      <StyledMain>
+        {children}
+      </StyledMain>
       <Footer />
-    </div>
+    </StyledDiv>
   );
 };
 

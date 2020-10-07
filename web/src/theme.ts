@@ -25,7 +25,7 @@ export default {
     primary: '#036',
     contrast: '#fff'
   },
-  spacingIncrements: ['30px', '60px'],
+  spacingIncrements: ['30px', '60px', "120px"],
   zIndices: [0, 1, 10, 100, 1000],
   icons: {
     defaultWidth: 1,
