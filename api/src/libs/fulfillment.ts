@@ -36,10 +36,11 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
 
-    const contact = contacts.filter(c => c.roleId === 2).pop();
+    const tcContact = contacts.filter(c => c.roleId === 2).pop();
+    const poContact = contacts.filter(c => c.roleId === 1).pop();
     const namespaces = await NamespaceModel.findForProfile(profileId);
 
-    if (!profile || !contact || !namespaces) {
+    if (!profile || !tcContact || !poContact || !namespaces) {
       logger.error('Unable to create context for provisioning');
       return; // This is a problem.
     }
@@ -49,7 +50,14 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
       displayName: profile.name,
       namespaces,
       technicalContact: {
-        githubId: contact.githubId,
+        userId: tcContact.githubId,
+        provider: 'github',
+        email: tcContact.email,
+      },
+      productOwner: {
+        userId: poContact.githubId,
+        provider: 'github',
+        email: poContact.email,
       },
     };
 
