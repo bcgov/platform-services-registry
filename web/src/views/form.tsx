@@ -166,7 +166,7 @@ const MyForm: React.SFC = () => {
             {props => (
                 <form onSubmit={props.handleSubmit} >
                     <Flex flexWrap='wrap' mx={-2}>
-                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px" width={[1, 1, 2 / 3]}>
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
                             <SubFormProject ministry={ministry} requiredField={requiredField} />
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
@@ -175,7 +175,7 @@ const MyForm: React.SFC = () => {
                         </Box>
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px">
-                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px" width={[1, 1, 2 / 3]}>
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
                             <SubFormPO requiredField={requiredField} />
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
@@ -183,7 +183,7 @@ const MyForm: React.SFC = () => {
                         </Box>
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px" >
-                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px" width={[1, 1, 2 / 3]}>
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
                             <SubFormTC requiredField={requiredField} />
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
