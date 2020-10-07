@@ -32,7 +32,7 @@ export const projectSetNames = [
   'prod',
 ];
 
-export const ROLE_ID = {
+export const ROLE_IDS = {
   PRODUCT_OWNER: 1,
-  TECHNICAL_STEWART: 2,
+  TECHNICAL_CONTACT: 2,
 };

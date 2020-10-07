@@ -17,7 +17,7 @@
 //
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import { ROLE_ID, SUBJECTS } from '../constants';
+import { ROLE_IDS, SUBJECTS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -35,8 +35,8 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const { ProfileModel, ContactModel, NamespaceModel } = dm;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-    const tcContact = contacts.filter(c => c.roleId === ROLE_ID.TECHNICAL_STEWART).pop();
-    const poContact = contacts.filter(c => c.roleId === ROLE_ID.PRODUCT_OWNER).pop();
+    const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
+    const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
     const namespaces = await NamespaceModel.findForProfile(profileId);
 
     if (!profile || !tcContact || !poContact || !namespaces) {
