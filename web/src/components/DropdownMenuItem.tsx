@@ -22,7 +22,7 @@ import theme from '../theme';
 import { MenuItem as IMenuItemProps } from '../types';
 
 const StyledDropdownItem = styled.div`
-  margin: 15px;
+  margin: 15px 15px 15px 0px;
   border-bottom: 1px solid;
   @media (max-width: ${theme.breakpoints[1]}) {
     color: ${theme.colors.contrast};
