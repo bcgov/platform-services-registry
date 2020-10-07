@@ -50,12 +50,12 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
       namespaces,
       technicalContact: {
         userId: tcContact.githubId,
-        provider: 'github',
+        provider: 'github', // TODO:(JL) Fix as part of #94.
         email: tcContact.email,
       },
       productOwner: {
         userId: poContact.githubId,
-        provider: 'github',
+        provider: 'github', // TODO:(JL) Fix as part of #94.
         email: poContact.email,
       },
     };
