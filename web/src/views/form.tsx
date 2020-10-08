@@ -178,10 +178,6 @@ const MyForm: React.SFC = () => {
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
                             <SubFormPO requiredField={requiredField} />
                         </ShadowBox>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Update form.tsx
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForPO}</Text>
                         </Box>
