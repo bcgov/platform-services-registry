@@ -17,7 +17,7 @@
 //
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import { SUBJECTS } from '../constants';
+import { ROLE_IDS, SUBJECTS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -35,11 +35,11 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const { ProfileModel, ContactModel, NamespaceModel } = dm;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-
-    const contact = contacts.filter(c => c.roleId === 2).pop();
+    const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
+    const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
     const namespaces = await NamespaceModel.findForProfile(profileId);
 
-    if (!profile || !contact || !namespaces) {
+    if (!profile || !tcContact || !poContact || !namespaces) {
       logger.error('Unable to create context for provisioning');
       return; // This is a problem.
     }
@@ -49,7 +49,14 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
       displayName: profile.name,
       namespaces,
       technicalContact: {
-        githubId: contact.githubId,
+        userId: tcContact.githubId,
+        provider: 'github', // TODO:(JL) Fix as part of #94.
+        email: tcContact.email,
+      },
+      productOwner: {
+        userId: poContact.githubId,
+        provider: 'github', // TODO:(JL) Fix as part of #94.
+        email: poContact.email,
       },
     };
 
