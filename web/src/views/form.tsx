@@ -16,41 +16,22 @@
 // Created by Jason Leach on 2020-06-09.
 //
 
-import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
-import { Input, Label, Textarea } from '@rebass/forms';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Field, Form } from 'react-final-form';
+import { Form } from 'react-final-form';
 import { toast } from 'react-toastify';
-import { Flex } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
+import SubFormPO from '../components/SubFormPO';
+import SubFormProject from '../components/SubFormProject';
+import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
-import { API, ROLES } from '../constants';
+import { API } from '../constants';
+import transformFormData from '../utils/transformFormData';
 
 const axi = axios.create({
     baseURL: API.BASE_URL(),
 });
-
-const StyledButton = styled.button`
-    margin-top: 20px;
-    width: 50%;
-    height: 60px;
-    border-radius: 5px;
-    background-color: #036;
-    color: #FFFFFF;
-    font-size: 24px;
-`;
-
-// @ts-ignore
-const StyledTitle = styled.h1`
-    font-size: 24px;
-    font-weight: bold;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #036;
-`;
 
 // const StyledSelect = styled.div`
 //     width: 100%;
@@ -76,43 +57,11 @@ const requiredField = (value: string) => (value ? undefined : 'Required')
 //     });
 // }
 
-const transformFormData = (data: any) => {
-    console.log(data);
-    const profile: any = {};
-    const productOwner: any = {
-        roleId: ROLES.PRODUCTOWNER,
-    };
-    const technicalContact: any = {
-        roleId: ROLES.TECHNICAL,
-    };
+const txtForProjectForm = `If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to xxx@gov.bc.ca to get started.`;
 
-    for (const [key, value] of Object.entries(data)) {
-        const [prefix, fieldName] = key.split('-');
+const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
 
-        if (prefix === 'project') {
-            profile[fieldName] = value;
-        }
-        if (prefix === 'po') {
-            productOwner[fieldName] = value;
-        }
-        if (prefix === 'tc') {
-            technicalContact[fieldName] = value;
-        }
-    }
-
-    if (typeof profile.prioritySystem !== 'undefined') {
-        const value = profile.prioritySystem.pop();
-        profile.prioritySystem = value === 'yes' ? true : false;
-    } else {
-        profile.prioritySystem = false;
-    }
-
-    return {
-        profile,
-        productOwner,
-        technicalContact,
-    }
-}
+const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them within any technical questions or notify them about platform events.`;
 
 const MyForm: React.SFC = () => {
     const { keycloak } = useKeycloak();
@@ -211,172 +160,39 @@ const MyForm: React.SFC = () => {
     }, []);
 
     return (
-        <div>
-            <Form
-                onSubmit={onSubmit}
-                validate={validate}>
-                {props => (
-                    <form onSubmit={props.handleSubmit} >
-                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px="70px">
-                            <StyledTitle>Tell us about your project</StyledTitle>
-                            <Field name="project-name" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="project-name">Name</Label>
-                                        <Input {...input} id="project-name" placeholder="Project X" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="project-description" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="project-description">Description</Label>
-                                        <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-
-                            <Flex>
-                                <Label variant="adjacentLabel">Is this a Priority Application?</Label>
-                                <Flex flex="1 1 auto" justifyContent="flex-end">
-                                    <Label width="initial" px="8px">
-                                        <Field
-                                            name="project-prioritySystem"
-                                            component="input"
-                                            type="checkbox"
-                                            value="yes"
-                                        >
-                                            {({ input, meta }) => (
-                                                < >
-                                                    <input
-                                                        style={{ width: '35px', height: '35px' }}
-                                                        name={input.name}
-                                                        type="checkbox"
-                                                        value="yes"
-                                                        checked={input.checked}
-                                                        onChange={input.onChange}
-                                                    />
-                                                    {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                                </>
-                                            )}
-                                        </Field>
-                                    </Label>
-                                </Flex>
-                            </Flex>
-                            <Flex>
-                                <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                                <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
-                                    <Field
-                                        flex="1 0 200px"
-                                        name="project-busOrgId"
-                                        component="select"
-                                    >
-                                        {/* {({ input, meta }) => ( */}
-                                        <option>Select...</option>
-                                        {ministry.map((s: any) => (
-                                            <option
-                                                key={s.code}
-                                                value={s.code}
-                                            >
-                                                {s.name}
-                                            </option>
-                                        ))}
-                                        {/* )} */}
-                                    </Field>
-                                </Flex>
-                            </Flex>
+        <Form
+            onSubmit={onSubmit}
+            validate={validate}>
+            {props => (
+                <form onSubmit={props.handleSubmit} >
+                    <Flex flexWrap='wrap' mx={-2}>
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
+                            <SubFormProject ministry={ministry} requiredField={requiredField} />
                         </ShadowBox>
-                        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-                            <StyledTitle>Who is the product owner for this project?</StyledTitle>
-
-                            <Field name="po-firstName" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="po-first-name">First Name</Label>
-                                        <Input {...input} id="po-first-name" placeholder="Jane" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="po-lastName" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="po-last-name">Last Name</Label>
-                                        <Input {...input} id="po-last-name" placeholder="Doe" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="po-email" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="po-email">eMail Address</Label>
-                                        <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-
-                            <Field name="po-githubId" validate={requiredField}>
-                                {({ input }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="po-github-id">GitHub ID</Label>
-                                        <Input {...input} id="po-github-id" placeholder="jane1100" />
-                                    </Flex>
-                                )}
-                            </Field>
+                        <Box p={"30px"} width={[1, 1, 1 / 3]}>
+                            <Text>{txtForProjectForm}</Text>
+                            <Text pt={"24px"} >If you're new to OpenShift check out our {<a rel="noopener noreferrer" href="https://developer.gov.bc.ca/Getting-Started-on-the-DevOps-Platform/How-to-Request-a-New-OpenShift-Project" target="_blank">Getting Started</a>} on the DevOps Platform guide. It's full of tones of useful information.</Text>
+                        </Box>
+                    </Flex>
+                    <Flex flexWrap='wrap' mx={-2} mt="68px">
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
+                            <SubFormPO requiredField={requiredField} />
                         </ShadowBox>
-
-                        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-                            <StyledTitle>Who is the technical contact for this project?</StyledTitle>
-
-                            <Field name="tc-firstName" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-first-name">First Name</Label>
-                                        <Input {...input} id="tc-first-name" placeholder="Jane" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="tc-lastName" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-last-name">Last Name</Label>
-                                        <Input {...input} id="tc-last-name" placeholder="Doe" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="tc-email" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-email">eMail Address</Label>
-                                        <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
-                                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-
-                            <Field name="tc-githubId" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-github-id">GitHub ID</Label>
-                                        <Input {...input} id="tc-github-id" placeholder="jane1100" />
-                                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-
-                            <StyledButton type="submit">Request</StyledButton>
+                        <Box p={"30px"} width={[1, 1, 1 / 3]}>
+                            <Text>{txtForPO}</Text>
+                        </Box>
+                    </Flex>
+                    <Flex flexWrap='wrap' mx={-2} mt="68px" >
+                        <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
+                            <SubFormTC requiredField={requiredField} />
                         </ShadowBox>
-                    </form>
-                )
-                }
-            </Form >
-        </div>
+                        <Box p={"30px"} width={[1, 1, 1 / 3]}>
+                            <Text>{txtForTC}</Text>
+                        </Box>
+                    </Flex>
+                </form>
+            )}
+        </Form >
     )
 };
 
