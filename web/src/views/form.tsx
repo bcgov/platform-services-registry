@@ -185,54 +185,6 @@ const MyForm: React.SFC = () => {
                     <Flex flexWrap='wrap' mx={-2} mt="68px" >
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
                             <SubFormTC requiredField={requiredField} />
-<<<<<<< HEAD
-=======
-
-                        <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
-                            <StyledTitle>Who is the technical contact for this project?</StyledTitle>
-
-                            <Field name="tc-firstName" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-first-name">First Name</Label>
-                                        <Input {...input} id="tc-first-name" placeholder="Jane" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="tc-lastName" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-last-name">Last Name</Label>
-                                        <Input {...input} id="tc-last-name" placeholder="Doe" />
-                                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-                            <Field name="tc-email" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-email">eMail Address</Label>
-                                        <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
-                                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-
-                            <Field name="tc-githubId" validate={requiredField}>
-                                {({ input, meta }) => (
-                                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                                        <Label htmlFor="tc-github-id">GitHub ID</Label>
-                                        <Input {...input} id="tc-github-id" placeholder="jane1100" />
-                                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
-                                    </Flex>
-                                )}
-                            </Field>
-
-                            <StyledButton type="submit">Request</StyledButton>
->>>>>>> Update PUT query: remove comma
-=======
->>>>>>> Update form.tsx
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForTC}</Text>
