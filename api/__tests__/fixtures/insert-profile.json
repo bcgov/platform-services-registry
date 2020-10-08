@@ -16,8 +16,8 @@
   "geoMappingLocation": false,
   "schedulingCalendar": false,
   "schedulingAppointments": false,
-  "identityManagementSiteMinder": false,
-  "identityManagementKeyCloak": false,
-  "identityManagementActiveDir": false,
+  "idmSiteMinder": false,
+  "idmKeyCloak": false,
+  "idmActiveDir": false,
   "other": "This is a test"
 }
