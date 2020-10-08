@@ -19,7 +19,7 @@
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -51,11 +51,17 @@ export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
   }
 }
 
-export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
+export const fetchAllProjectProfiles = async (
+  { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
   const { ProfileModel } = dm;
 
   try {
-    const results = await ProfileModel.findAll();
+    let results;
+    if (user.roles.includes('administrator')) {
+      results = await ProfileModel.findAll();
+    } else {
+      results = await ProfileModel.findProfilesByUserID(user.id);
+    }
 
     res.status(200).json(results);
   } catch (err) {
@@ -67,7 +73,7 @@ export const fetchAllProjectProfiles = async (req: Request, res: Response): Prom
 };
 
 export const fetchProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -75,7 +81,12 @@ export const fetchProjectProfile = async (
   try {
     const results = await ProfileModel.findById(Number(profileId));
 
-    res.status(200).json(results);
+    if (user.id === results.userId || user.roles.includes('administrator')) {
+      res.status(200).json(results);
+    } else {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
   } catch (err) {
     const message = `Unable fetch project profile with ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
