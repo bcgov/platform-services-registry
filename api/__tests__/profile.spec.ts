@@ -100,7 +100,10 @@ describe('Profile event handlers', () => {
 
 
   it('All profiles are returned', async () => {
-    const req = {};
+    const req = {
+      user: { roles: ['administrator',] },
+    };
+
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
     // @ts-ignore
@@ -127,6 +130,7 @@ describe('Profile event handlers', () => {
   it('A single profile is returned', async () => {
     const req = {
       params: { profileId: 1 },
+      user: { id: 2 },
     };
     client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
 
