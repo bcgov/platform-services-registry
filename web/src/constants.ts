@@ -39,3 +39,20 @@ export const DEFAULT_MINISTRY = 'CITZ';
 export const LAYOUT_SET_MIN = 'min';
 export const LAYOUT_SET_AUTH = 'auth';
 export const LAYOUT_SET_UNAUTH = 'unauth';
+
+export const COMPONENT_METADATA = [
+  { displayName: 'Notification: Email', inputValue: 'notificationEmail' },
+  { displayName: 'Notification: SMS', inputValue: 'notificationSMS' },
+  { displayName: 'Notification: MS Teams', inputValue: 'notificationMSTeams' },
+  { displayName: 'Payment processing: Bambora', inputValue: 'paymentBambora' },
+  { displayName: 'Payment processing: PayBC', inputValue: 'paymentPayBC' },
+  { displayName: 'File Transfer', inputValue: 'fileTransfer' },
+  { displayName: 'File Storage', inputValue: 'fileStorage' },
+  { displayName: 'Geo Mapping: Web-based', inputValue: 'geoMappingWeb' },
+  { displayName: 'Geo Mapping: Location Services', inputValue: 'geoMappingLocation' },
+  { displayName: 'Scheduling: Calendar', inputValue: 'schedulingCalendar' },
+  { displayName: 'Scheduling: Appointments', inputValue: 'schedulingAppointments' },
+  { displayName: 'Identity Management: SiteMinder', inputValue: 'identityManagementSiteMinder' },
+  { displayName: 'Identity Management: KeyCloak', inputValue: 'identityManagementKeyCloak' },
+  { displayName: 'Identity Management: Active Directory', inputValue: 'identityManagementActiveDir' }
+]

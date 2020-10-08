@@ -18,6 +18,7 @@ import { Input, Label, Textarea } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import { COMPONENT_METADATA } from '../constants';
 import SubFormTitle from './UI/subFormTitle';
 
 interface MinistryItem {
@@ -105,6 +106,46 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                     </Field>
                 </Flex>
             </Flex>
+            {COMPONENT_METADATA.map(item => (
+                <Flex key={item.inputValue}>
+                    <Label variant="adjacentLabel">{item.displayName}</Label>
+                    <Flex flex="1 1 auto" justifyContent="flex-end">
+                        <Label width="initial" px="8px">
+                            <Field
+                                name={`project-${item.inputValue}`}
+                                component="input"
+                                type="checkbox"
+                                value="yes"
+                            >
+                                {({ input, meta }) => (
+                                    < >
+                                        <input
+                                            style={{ width: '35px', height: '35px' }}
+                                            name={input.name}
+                                            type="checkbox"
+                                            value="yes"
+                                            checked={input.checked}
+                                            onChange={input.onChange}
+                                        />
+                                        {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                                    </>
+                                )}
+                            </Field>
+                        </Label>
+                    </Flex>
+                </Flex>
+            ))}
+            <Field name="project-others">
+                {({ input, meta }) => (
+                    <Flex>
+                        <Label htmlFor="project-others">Others:</Label>
+                        <Flex flex="1 1 auto" justifyContent="flex-end">
+                            <Input {...input} id="project-others" />
+                            {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                        </Flex>
+                    </Flex>
+                )}
+            </Field>
         </div>
     );
 };
