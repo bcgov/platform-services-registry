@@ -179,6 +179,9 @@ const MyForm: React.SFC = () => {
                             <SubFormPO requiredField={requiredField} />
                         </ShadowBox>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Update form.tsx
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForPO}</Text>
                         </Box>
@@ -186,6 +189,7 @@ const MyForm: React.SFC = () => {
                     <Flex flexWrap='wrap' mx={-2} mt="68px" >
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
                             <SubFormTC requiredField={requiredField} />
+<<<<<<< HEAD
 =======
 
                         <ShadowBox maxWidth="750px" p="24px" mt="68px" px="70px">
@@ -231,6 +235,8 @@ const MyForm: React.SFC = () => {
 
                             <StyledButton type="submit">Request</StyledButton>
 >>>>>>> Update PUT query: remove comma
+=======
+>>>>>>> Update form.tsx
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForTC}</Text>
