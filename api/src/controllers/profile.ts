@@ -73,7 +73,7 @@ export const fetchAllProjectProfiles = async (
 };
 
 export const fetchProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -81,7 +81,12 @@ export const fetchProjectProfile = async (
   try {
     const results = await ProfileModel.findById(Number(profileId));
 
-    res.status(200).json(results);
+    if (user.id == results.userId || user.roles.includes('administrator')) {
+      res.status(200).json(results);
+    } else {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
   } catch (err) {
     const message = `Unable fetch project profile with ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
