@@ -4,5 +4,20 @@
   "categoryId": 1,
   "busOrgId": "HLTH",
   "criticalSystem": false,
-  "prioritySystem": false
+  "prioritySystem": false,
+  "notificationEmail": false,
+  "notificationSMS": false,
+  "notificationMSTeams": false,
+  "paymentBambora": false,
+  "paymentPayBC": false,
+  "fileTransfer": false,
+  "fileStorage": false,
+  "geoMappingWeb": false,
+  "geoMappingLocation": false,
+  "schedulingCalendar": false,
+  "schedulingAppointments": false,
+  "idmSiteMinder": false,
+  "idmKeyCloak": false,
+  "idmActiveDir": false,
+  "other": "This is a test"
 }
