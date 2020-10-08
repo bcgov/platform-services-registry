@@ -81,7 +81,7 @@ export const fetchProjectProfile = async (
   try {
     const results = await ProfileModel.findById(Number(profileId));
 
-    if (user.id == results.userId || user.roles.includes('administrator')) {
+    if (user.id === results.userId || user.roles.includes('administrator')) {
       res.status(200).json(results);
     } else {
       throw errorWithCode('Unauthorized Access', 401);
