@@ -49,9 +49,16 @@ Object {
       "namespaceId": 152,
     },
   ],
+  "productOwner": Object {
+    "email": "jane@example.com",
+    "provider": "github",
+    "userId": "jane1100",
+  },
   "profileId": 118,
   "technicalContact": Object {
-    "githubId": "jim1100",
+    "email": "jim@example.com",
+    "provider": "github",
+    "userId": "jim1100",
   },
 }
 `;
