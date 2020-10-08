@@ -182,6 +182,35 @@ describe('Profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
+  it('A project is updated with optional metadata', async () => {
+    const body = JSON.parse(JSON.stringify(insertProfile));
+    const aBody = {
+      ...body,
+      id: 9,
+      createdAt: '2020-05-19T20:02:54.561Z',
+      updateAt: '2020-05-19T20:02:54.561Z',
+      fileTransfer: true,
+    };
+    const req = {
+      params: { profileId: 1 },
+      body,
+      user: {
+        id: 1,
+      },
+    }
+
+    client.query.mockReturnValue({ rows: [aBody] });
+
+    // @ts-ignore
+    await updateProjectProfile(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
   it('A project fails to update', async () => {
     const body = JSON.parse(JSON.stringify(insertProfile));
     const aBody = {

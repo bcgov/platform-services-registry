@@ -25,9 +25,23 @@ export interface ProjectProfile extends CommonFields {
   busOrgId: number,
   userId: number,
   namespacePrefix: string,
-  active?: boolean,
   prioritySystem?: boolean,
   criticalSystem?: boolean,
+  notificationEmail?: boolean,
+  notificationSMS?: boolean,
+  notificationMSTeams?: boolean,
+  paymentBambora?: boolean,
+  paymentPayBC?: boolean,
+  fileTransfer?: boolean,
+  fileStorage?: boolean,
+  geoMappingWeb?: boolean,
+  geoMappingLocation?: boolean,
+  schedulingCalendar?: boolean,
+  schedulingAppointments?: boolean,
+  idmSiteMinder?: boolean,
+  idmKeyCloak?: boolean,
+  idmActiveDir?: boolean,
+  other: string,
 }
 
 export default class ProfileModel extends Model {
@@ -52,8 +66,15 @@ export default class ProfileModel extends Model {
       text: `
         INSERT INTO ${this.table}
           (name, description, bus_org_id, priority_system,
-            critical_system, user_id, namespace_prefix)
-          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
+            critical_system, user_id, namespace_prefix,
+            notification_email, notification_sms, notification_ms_teams,
+            payment_bambora, payment_pay_bc, file_transfer, file_storage,
+            geo_mapping_web, geo_mapping_location, scheduling_calendar,
+            scheduling_appointments, identity_management_site_minder,
+            identity_management_keycloak, identity_management_active_dir,
+            other)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;`,
       values: [
         data.name,
         data.description,
@@ -62,6 +83,21 @@ export default class ProfileModel extends Model {
         data.criticalSystem ? data.criticalSystem : false,
         data.userId,
         data.namespacePrefix,
+        data.notificationEmail ? data.notificationEmail : false,
+        data.notificationSMS ? data.notificationSMS : false,
+        data.notificationMSTeams ? data.notificationMSTeams : false,
+        data.paymentBambora ? data.paymentBambora : false,
+        data.paymentPayBC ? data.paymentPayBC : false,
+        data.fileTransfer ? data.fileTransfer : false,
+        data.fileStorage ? data.fileStorage : false,
+        data.geoMappingWeb ? data.geoMappingWeb : false,
+        data.geoMappingLocation ? data.geoMappingLocation : false,
+        data.schedulingCalendar ? data.schedulingCalendar : false,
+        data.schedulingAppointments ? data.schedulingAppointments : false,
+        data.idmSiteMinder ? data.idmSiteMinder : false,
+        data.idmKeyCloak ? data.idmKeyCloak : false,
+        data.idmActiveDir ? data.idmActiveDir : false,
+        data.other,
       ],
     };
 
@@ -83,7 +119,13 @@ export default class ProfileModel extends Model {
         UPDATE ${this.table}
           SET
             name = $1, description = $2, bus_org_id = $3,
-            active = $4, priority_system = $5, critical_system = $6
+            priority_system = $4, critical_system = $5,
+            notification_email = $6, notification_sms = $7, notification_ms_teams = $8,
+            payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
+            file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
+            scheduling_calendar = $15, scheduling_appointments = $16,
+            identity_management_site_minder = $17, identity_management_keycloak = $18,
+            identity_management_active_dir = $19, other = $20
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -96,9 +138,23 @@ export default class ProfileModel extends Model {
         aData.name,
         aData.description,
         aData.busOrgId,
-        aData.active,
         aData.criticalSystem,
         aData.prioritySystem,
+        aData.notificationEmail,
+        aData.notificationSMS,
+        aData.notificationMSTeams,
+        aData.paymentBambora,
+        aData.paymentPayBC,
+        aData.fileTransfer,
+        aData.fileStorage,
+        aData.geoMappingWeb,
+        aData.geoMappingLocation,
+        aData.schedulingCalendar,
+        aData.schedulingAppointments,
+        aData.idmSiteMinder,
+        aData.idmKeyCloak,
+        aData.idmActiveDir,
+        aData.other,
       ];
 
       const results = await this.runQuery(query);
