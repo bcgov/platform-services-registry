@@ -23,7 +23,8 @@ export default {
     bcorange: '#fcba19',
     bclightblue: '#355991',
     primary: '#036',
-    contrast: '#fff'
+    contrast: '#fff',
+    grey: '#A9A9A9'
   },
   spacingIncrements: ['30px', '60px', "120px"],
   zIndices: [0, 1, 10, 100, 1000],
