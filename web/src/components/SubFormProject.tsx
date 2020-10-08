@@ -106,6 +106,7 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                     </Field>
                 </Flex>
             </Flex>
+            <Label htmlFor="project-componentMetadata">Please indicate what services you expect to utilize as part of your project?</Label>
             {COMPONENT_METADATA.map(item => (
                 <Flex key={item.inputValue}>
                     <Label variant="adjacentLabel">{item.displayName}</Label>
