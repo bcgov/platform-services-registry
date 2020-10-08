@@ -30,6 +30,10 @@ ReactDOM.render(
             text-overflow: ellipsis;
             max-width: 200px;
           }
+          .misc-class-m-dropdown-link {
+            text-decoration: none;
+            color: black;
+          }
           `}
     />
     <App />,
