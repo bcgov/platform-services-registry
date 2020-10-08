@@ -135,12 +135,12 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                     </Flex>
                 </Flex>
             ))}
-            <Field name="project-others">
+            <Field name="project-other">
                 {({ input, meta }) => (
                     <Flex>
-                        <Label htmlFor="project-others">Others:</Label>
+                        <Label htmlFor="project-other">Others:</Label>
                         <Flex flex="1 1 auto" justifyContent="flex-end">
-                            <Input {...input} id="project-others" />
+                            <Input {...input} id="project-other" />
                             {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                         </Flex>
                     </Flex>
