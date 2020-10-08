@@ -143,9 +143,9 @@ export const updateProjectProfile = async (
     geoMappingLocation,
     schedulingCalendar,
     schedulingAppointments,
-    identityManagementSiteMinder,
-    identityManagementKeyCloak,
-    identityManagementActiveDir,
+    idmSiteMinder,
+    idmKeyCloak,
+    idmActiveDir,
     other,
   } = body;
 
@@ -171,9 +171,9 @@ export const updateProjectProfile = async (
       geoMappingLocation,
       schedulingCalendar,
       schedulingAppointments,
-      identityManagementSiteMinder,
-      identityManagementKeyCloak,
-      identityManagementActiveDir,
+      idmSiteMinder,
+      idmKeyCloak,
+      idmActiveDir,
       other,
     };
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);

@@ -38,9 +38,9 @@ export interface ProjectProfile extends CommonFields {
   geoMappingLocation?: boolean,
   schedulingCalendar?: boolean,
   schedulingAppointments?: boolean,
-  identityManagementSiteMinder?: boolean,
-  identityManagementKeyCloak?: boolean,
-  identityManagementActiveDir?: boolean,
+  idmSiteMinder?: boolean,
+  idmKeyCloak?: boolean,
+  idmActiveDir?: boolean,
   other: string,
 }
 
@@ -94,9 +94,9 @@ export default class ProfileModel extends Model {
         data.geoMappingLocation ? data.geoMappingLocation : false,
         data.schedulingCalendar ? data.schedulingCalendar : false,
         data.schedulingAppointments ? data.schedulingAppointments : false,
-        data.identityManagementSiteMinder ? data.identityManagementSiteMinder : false,
-        data.identityManagementKeyCloak ? data.identityManagementKeyCloak : false,
-        data.identityManagementActiveDir ? data.identityManagementActiveDir : false,
+        data.idmSiteMinder ? data.idmSiteMinder : false,
+        data.idmKeyCloak ? data.idmKeyCloak : false,
+        data.idmActiveDir ? data.idmActiveDir : false,
         data.other,
       ],
     };
@@ -151,9 +151,9 @@ export default class ProfileModel extends Model {
         aData.geoMappingLocation,
         aData.schedulingCalendar,
         aData.schedulingAppointments,
-        aData.identityManagementSiteMinder,
-        aData.identityManagementKeyCloak,
-        aData.identityManagementActiveDir,
+        aData.idmSiteMinder,
+        aData.idmKeyCloak,
+        aData.idmActiveDir,
         aData.other,
       ];
 
