@@ -1872,9 +1872,9 @@ curl -X POST http://localhost:8100/api/v1/profile \
   "</span>geoMappingLocation<span class="hljs-string">": false,
   "</span>schedulingCalendar<span class="hljs-string">": true,
   "</span>schedulingAppointments<span class="hljs-string">": false,
-  "</span>identityManagementSiteMinder<span class="hljs-string">": false,
-  "</span>identityManagementKeyCloak<span class="hljs-string">": false,
-  "</span>identityManagementActiveDir<span class="hljs-string">": false,
+  "</span>idmSiteMinder<span class="hljs-string">": false,
+  "</span>idmKeyCloak<span class="hljs-string">": false,
+  "</span>idmActiveDir<span class="hljs-string">": false,
   "</span>other<span class="hljs-string">": "</span>Push notifications to slack<span class="hljs-string">"
 }';
 const headers = {
@@ -1918,9 +1918,9 @@ fetch('http://localhost:8100/api/v1/profile',
   <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmSiteMinder"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmKeyCloak"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmActiveDir"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 </code></pre>
@@ -1970,9 +1970,9 @@ the project details.</p>
   <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmSiteMinder"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmKeyCloak"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmActiveDir"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 </code></pre>
@@ -2067,9 +2067,9 @@ that are not archived.</p>
     <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-literal">false</span>,
     <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-literal">true</span>,
     <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-literal">false</span>,
-    <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-literal">false</span>,
-    <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-literal">false</span>,
-    <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"idmSiteMinder"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"idmKeyCloak"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"idmActiveDir"</span>: <span class="hljs-literal">false</span>,
     <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
   }
 ]
@@ -2273,21 +2273,21 @@ that are not archived.</p>
 <td>none</td>
 </tr>
 <tr>
-<td>»» identityManagementSiteMinder</td>
+<td>»» idmSiteMinder</td>
 <td>boolean</td>
 <td>false</td>
 <td>none</td>
 <td>none</td>
 </tr>
 <tr>
-<td>»» identityManagementKeyCloak</td>
+<td>»» idmKeyCloak</td>
 <td>boolean</td>
 <td>false</td>
 <td>none</td>
 <td>none</td>
 </tr>
 <tr>
-<td>»» identityManagementActiveDir</td>
+<td>»» idmActiveDir</td>
 <td>boolean</td>
 <td>false</td>
 <td>none</td>
@@ -2402,9 +2402,9 @@ archived.</p>
   <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmSiteMinder"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmKeyCloak"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmActiveDir"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 </code></pre>
@@ -3337,9 +3337,9 @@ This operation does not require authentication
   <span class="hljs-attr">"geoMappingLocation"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"schedulingCalendar"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"schedulingAppointments"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementSiteMinder"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementKeyCloak"</span>: <span class="hljs-literal">false</span>,
-  <span class="hljs-attr">"identityManagementActiveDir"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmSiteMinder"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmKeyCloak"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"idmActiveDir"</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">"other"</span>: <span class="hljs-string">"Push notifications to slack"</span>
 }
 
@@ -3498,21 +3498,21 @@ This operation does not require authentication
 <td>none</td>
 </tr>
 <tr>
-<td>identityManagementSiteMinder</td>
+<td>idmSiteMinder</td>
 <td>boolean</td>
 <td>false</td>
 <td>none</td>
 <td>none</td>
 </tr>
 <tr>
-<td>identityManagementKeyCloak</td>
+<td>idmKeyCloak</td>
 <td>boolean</td>
 <td>false</td>
 <td>none</td>
 <td>none</td>
 </tr>
 <tr>
-<td>identityManagementActiveDir</td>
+<td>idmActiveDir</td>
 <td>boolean</td>
 <td>false</td>
 <td>none</td>
