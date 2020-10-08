@@ -440,11 +440,11 @@ components:
           type: boolean
         schedulingAppointments:
           type: boolean
-        identityManagementSiteMinder:
+        idmSiteMinder:
           type: boolean
-        identityManagementKeyCloak:
+        idmKeyCloak:
           type: boolean
-        identityManagementActiveDir:
+        idmActiveDir:
           type: boolean
         other:
           type: string
@@ -469,9 +469,9 @@ components:
         geoMappingLocation: false
         schedulingCalendar: true
         schedulingAppointments: false
-        identityManagementSiteMinder: false
-        identityManagementKeyCloak: false
-        identityManagementActiveDir: false
+        idmSiteMinder: false
+        idmKeyCloak: false
+        idmActiveDir: false
         other: "Push notifications to slack"
     Ministry:
       title: Ministry Sponsors
