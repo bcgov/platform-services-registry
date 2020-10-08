@@ -18,7 +18,7 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Redirect, Router, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
-import { LAYOUT_SET_AUTH, LAYOUT_SET_MIN, LAYOUT_SET_UNAUTH } from './constants';
+import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, LAYOUT_SET_UNAUTH } from './constants';
 import AppRoute from './utils/AppRoute';
 import { Dashboard } from './views/Dashboard';
 import form from './views/form';
@@ -34,7 +34,7 @@ const AppRouter: React.FC = () => {
         <Redirect exact from='/' to='/public-landing' />
         <AppRoute path='/public-landing' component={PublicLanding} layout={Layout} layoutName={LAYOUT_SET_UNAUTH} />
         <AppRoute path='/namespaces/create' component={form} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
-        <AppRoute exact path='/namespaces' component={Dashboard} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
+        <AppRoute exact path={HOME_PAGE_URL} component={Dashboard} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
         <AppRoute path='/page-not-found' component={NotFound} layout={Layout} layoutName={LAYOUT_SET_MIN} />
         <Redirect to='/page-not-found' />
       </Switch>

@@ -56,3 +56,5 @@ export const COMPONENT_METADATA = [
   { displayName: 'Identity Management: KeyCloak', inputValue: 'idmKeyCloak' },
   { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' }
 ]
+
+export const HOME_PAGE_URL = '/dashboard';
