@@ -97,6 +97,12 @@ exports[`matches the snapshot 1`] = `
               </select>
             </div>
           </div>
+          <label
+            class="css-knfhfe"
+            for="project-componentMetadata"
+          >
+            Please indicate what services you expect to utilize as part of your project?
+          </label>
           <div
             class="css-4cffwv"
           >
@@ -424,7 +430,7 @@ exports[`matches the snapshot 1`] = `
           >
             <label
               class="css-knfhfe"
-              for="project-others"
+              for="project-other"
             >
               Others:
             </label>
@@ -433,8 +439,8 @@ exports[`matches the snapshot 1`] = `
             >
               <input
                 class="css-4y926w"
-                id="project-others"
-                name="project-others"
+                id="project-other"
+                name="project-other"
                 type="text"
                 value=""
               />
