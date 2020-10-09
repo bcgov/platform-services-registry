@@ -42,6 +42,45 @@ Build if you need a local image (defaults in this build have been changed to lev
 
 ## Deploy
 
+NOTES:
+cleanup
+oc delete all,pvc,sa,secret,role,rolebinding -l "app=platsrv-registry"
+
+➜  platform-services-registry git:(master) ✗ oc process -f openshift/templates/nsp.yaml -p NAMESPACE=$(oc project --short) | oc apply -f -
+networksecuritypolicy.security.devops.gov.bc.ca/api-to-db created
+networksecuritypolicy.security.devops.gov.bc.ca/frontend-to-api created
+networksecuritypolicy.security.devops.gov.bc.ca/api-to-nats created
+networksecuritypolicy.security.devops.gov.bc.ca/db-to-db created
+➜  platform-services-registry git:(master) ✗ 
+
+➜  platform-services-registry git:(master) ✗ oc process -f openshift/templates/patroni-pre-req.yaml| oc create -f -
+secret/registry-patroni-creds created
+serviceaccount/registry-patroni created
+role.rbac.authorization.k8s.io/registry-patroni created
+rolebinding.rbac.authorization.k8s.io/registry-patroni created
+
+➜  platform-services-registry git:(master) ✗ oc tag platform-registry-tools/patroni:v12-latest platform-registry-test/patroni:v12-latest
+Tag platform-registry-test/patroni:v12-latest set to platform-registry-tools/patroni@sha256:b19247085f64b41d6841dc0cbbe3af268910e1cba23766a89195ca1f3f7c1986.
+
+➜  platform-services-registry git:(master) ✗ oc process -f openshift/templates/patroni-deploy.yaml -p IMAGE_STREAM_NAMESPACE=platform-registry-prod -p PVC_SIZE=5Gi | oc apply -f - 
+service/registry-patroni-master created
+statefulset.apps/registry-patroni created
+
+Some time later...
+➜  platform-services-registry git:(master) ✗ oc get pods
+NAME                 READY   STATUS    RESTARTS   AGE
+registry-patroni-0   1/1     Running   0          4m8s
+registry-patroni-1   1/1     Running   0          3m16s
+registry-patroni-2   1/1     Running   0          2m11s
+
+➜  platform-services-registry git:(master) ✗ oc process -f api/openshift/templates/config.yaml -p SSO_BASE_URL=oidc.gov.bc.ca | oc create -f -
+configmap/registry-api-config created
+
+➜  platform-services-registry git:(master) ✗ oc process -f api/openshift/templates/secret.yaml -p CHES_SSO_CLIENT_ID=PS_REG_SERVICE_CLIENT -p CHES_SSO_CLIENT_SECRET=0ef7b07f-8709-44ed-bc93-803a0b0f6798 -p SSO_CLIENT_SECRET=71899a36-f27d-4d78-ad17-22764caa4fed| oc create -f -
+secret/registry-sso-creds created
+secret/registry-ches-creds created
+
+
 Deploy postgres service first (please set context to appropriate project/namespace):
 
 ```bash

@@ -36,7 +36,7 @@ objects:
           - 'role=api'
       destination:
         - - '$namespace=${NAMESPACE}'
-          - 'role=db'
+          - 'statefulset=${STATEFULSET_NAME}'
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
@@ -69,9 +69,31 @@ objects:
       destination:
         - - '$namespace=${NAMESPACE}'
           - 'role=nats'
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: db-to-db
+      labels:
+        app: platsrv-registry
+    spec:
+      description: |
+        allow patroni pods to talk to one another for replication
+        etc.
+      source:
+        - - '$namespace=${NAMESPACE}'
+          - 'statefulset=${STATEFULSET_NAME}'
+      destination:
+        - - '$namespace=${NAMESPACE}'
+          - 'statefulset=${STATEFULSET_NAME}'
 parameters:
   - name: NAMESPACE
     description: |
       The the name of the namespace the policy is being
       deployed to.
     required: true
+  - name: STATEFULSET_NAME
+    description: |
+      The the name of the namespace the policy is being
+      deployed to.
+    required: true
+    value: registry-patroni

@@ -33,7 +33,7 @@ objects:
         {
           "sso": {
             "grantType": "client_credentials",
-            "clientId": "signing-api",
+            "clientId": "registry-api",
             "callback": "/v1/auth/callback",
             "authUrl": "${SSO_BASE_URL}/auth/realms/devhub/protocol/openid-connect/auth",
             "tokenUrl": "${SSO_BASE_URL}/auth/realms/devhub/protocol/openid-connect/token",

@@ -39,33 +39,6 @@ objects:
         kind: Service
         name: ${API_NAME}
         weight: 100
-  # - apiVersion: v1
-  #   kind: PersistentVolumeClaim
-  #   metadata:
-  #     labels:
-  #       app: platsrv-registry
-  #     name: ${POSTGRES_VOLUME_NAME}
-  #   spec:
-  #     accessModes:
-  #     - ReadWriteOnce
-  #     resources:
-  #       requests:
-  #         storage: ${POSTGRES_VOLUME_CAPACITY}
-  #     storageClassName: netapp-file-standard
-  # - apiVersion: v1
-  #   kind: Service
-  #   metadata:
-  #     labels:
-  #       app: platsrv-registry
-  #     name: ${POSTGRES_DEPLOYMENT_NAME}
-  #   spec:
-  #     selector:
-  #       deploymentconfig: ${POSTGRES_DEPLOYMENT_NAME}
-  #     ports:
-  #       - name: 5432-tcp
-  #         port: 5432
-  #         protocol: TCP
-  #         targetPort: 5432
   - apiVersion: v1
     kind: Service
     metadata:
@@ -80,72 +53,6 @@ objects:
           port: 8080
           protocol: TCP
           targetPort: 8080
-  # - apiVersion: v1
-  #   kind: DeploymentConfig
-  #   metadata:
-  #     labels:
-  #       app: platsrv-registry
-  #     name: ${POSTGRES_DEPLOYMENT_NAME}
-  #   spec:
-  #     replicas: 1
-  #     selector:
-  #       deploymentconfig: ${POSTGRES_DEPLOYMENT_NAME}
-  #     strategy:
-  #       type: Rolling
-  #     template:
-  #       metadata:
-  #         labels:
-  #           app: platsrv-registry
-  #           role: db
-  #           deploymentconfig: ${POSTGRES_DEPLOYMENT_NAME}
-  #         name: ${POSTGRES_DEPLOYMENT_NAME}
-  #       spec:
-  #         containers:
-  #         - env:
-  #           - name: POSTGRESQL_USER
-  #             valueFrom:
-  #               secretKeyRef:
-  #                 key: user
-  #                 name: ${POSTGRESQL_SECRET_NAME}
-  #           - name: POSTGRESQL_PASSWORD
-  #             valueFrom:
-  #               secretKeyRef:
-  #                 key: password
-  #                 name: ${POSTGRESQL_SECRET_NAME}
-  #           - name: POSTGRESQL_DATABASE
-  #             value: ${POSTGRESQL_DATABASE}
-  #           image: registry.redhat.io/rhscl/postgresql-12-rhel7:latest
-  #           livenessProbe:
-  #             initialDelaySeconds: 60
-  #             tcpSocket:
-  #               port: 5432
-  #             timeoutSeconds: 1
-  #           name: ${POSTGRES_DEPLOYMENT_NAME}
-  #           ports:
-  #           - containerPort: 5432
-  #             protocol: TCP
-  #           readinessProbe:
-  #             exec:
-  #               command:
-  #               - /bin/sh
-  #               - -i
-  #               - -c
-  #               - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
-  #                 'SELECT 1'
-  #             initialDelaySeconds: 5
-  #             timeoutSeconds: 1
-  #           resources:
-  #             limits:
-  #               memory: ${POSTGRESQL_MEMORY_LIMIT}
-  #           volumeMounts:
-  #           - mountPath: /var/lib/pgsql/data
-  #             name: ${POSTGRES_VOLUME_NAME}
-  #         volumes:
-  #         - name: ${POSTGRES_VOLUME_NAME}
-  #           persistentVolumeClaim:
-  #             claimName: ${POSTGRES_VOLUME_NAME}
-  #     triggers:
-  #       - type: ConfigChange
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
@@ -206,7 +113,7 @@ objects:
                       key: app-db-password
                       name: ${POSTGRESQL_SECRET_NAME}
                 - name: POSTGRESQL_HOST
-                  value: ${POSTGRESQL_DATABASE}
+                  value: ${POSTGRESQL_DATABASE}.${NAMESPACE}.svc
                 - name: CHES_BASEURL
                   value: ${CHES_BASEURL}
                 - name: CHES_SSO_TOKEN_URL
@@ -260,7 +167,7 @@ parameters:
   - description: The secret name for the database.
     displayName: PostgreSQL secret name
     name: POSTGRESQL_SECRET_NAME
-    value: registry-patroni
+    value: registry-patroni-creds
   - displayName: The PostgreSQL database service name
     name: POSTGRESQL_DATABASE
     required: true

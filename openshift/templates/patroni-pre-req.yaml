@@ -18,9 +18,9 @@ objects:
     kind: Secret
     metadata:
       labels:
-        app: ${NAME}${SUFFIX}
-        cluster-name: ${NAME}${SUFFIX}
-      name: ${NAME}${SUFFIX}
+        app: platsrv-registry
+        cluster-name: ${NAME}
+      name: ${NAME}-creds
     stringData:
       replication-username: ${PATRONI_REPLICATION_USERNAME}
       replication-password: ${PATRONI_REPLICATION_PASSWORD}
@@ -33,14 +33,16 @@ objects:
     kind: ServiceAccount
     metadata:
       labels:
-        cluster-name: ${NAME}${SUFFIX}
-      name: ${NAME}${SUFFIX}
+        app: platsrv-registry
+        cluster-name: ${NAME}
+      name: ${NAME}
   - apiVersion: rbac.authorization.k8s.io/v1
     kind: Role
     metadata:
       labels:
-        cluster-name: ${NAME}${SUFFIX}
-      name: ${NAME}${SUFFIX}
+        app: platsrv-registry
+        cluster-name: ${NAME}
+      name: ${NAME}
     rules:
       - apiGroups:
           - ""
@@ -92,41 +94,42 @@ objects:
     kind: RoleBinding
     metadata:
       labels:
-        cluster-name: ${NAME}${SUFFIX}
-      name: ${NAME}${SUFFIX}
+        app: platsrv-registry
+        cluster-name: ${NAME}
+      name: ${NAME}
     roleRef:
       apiGroup: rbac.authorization.k8s.io
       kind: Role
-      name: ${NAME}${SUFFIX}
+      name: ${NAME}
     subjects:
       - kind: ServiceAccount
-        name: ${NAME}${SUFFIX}
+        name: ${NAME}
 parameters:
-  - description: The name of the application for labelling all artifacts.
+  - name: NAME
+    description: | 
+      The name of the application for labelling all artifacts.
     displayName: Application Name
-    name: NAME
-    value: patroni
-  - name: SUFFIX
-  - description: Username of the superuser account for initialization.
+    value: registry-patroni
+  - name: PATRONI_SUPERUSER_USERNAME
+    description: |
+      Username of the superuser account for initialization.
     displayName: Superuser Username
-    name: PATRONI_SUPERUSER_USERNAME
     value: postgres
-  #  generate: expression
-  #  from: super-[a-zA-Z0-9]{6}
-  - description: Password of the superuser account for initialization.
+  - name: PATRONI_SUPERUSER_PASSWORD
+    description: |
+      Password of the superuser account for initialization.
     displayName: Superuser Password
-    name: PATRONI_SUPERUSER_PASSWORD
     generate: expression
     from: "[a-zA-Z0-9]{32}"
-  - description: Username of the replication account for initialization.
+  - name: PATRONI_REPLICATION_USERNAME
+    description: |
+      Username of the replication account for initialization.
     displayName: Replication Username
-    name: PATRONI_REPLICATION_USERNAME
     value: replication
-  #  generate: expression
-  #  from: rep-[a-zA-Z0-9]{6}
-  - description: Password of the replication account for initialization.
+  - name: PATRONI_REPLICATION_PASSWORD
+    description: 
+      Password of the replication account for initialization.
     displayName: Replication Password
-    name: PATRONI_REPLICATION_PASSWORD
     generate: expression
     from: "[a-zA-Z0-9]{32}"
   - name: APP_DB_USERNAME

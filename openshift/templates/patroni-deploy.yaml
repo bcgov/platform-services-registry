@@ -11,103 +11,58 @@ metadata:
     tags: postgresql
   name: patroni-pgsql-persistent
 labels:
-  app: ${NAME}${SUFFIX}
+  app: platsrv-registry
   phase: deploy
-  app.kubernetes.io/instance: ${NAME}${SUFFIX}
+  app.kubernetes.io/instance: ${NAME}
   app.kubernetes.io/component: database
   app.kubernetes.io/name: patroni  
   app.kubernetes.io/managed-by: template
 objects:
-# It doesn't seem to be used/needed - remote it?
-#- apiVersion: v1
-#  kind: Service
-#  metadata:
-#    creationTimestamp: null
-#    labels:
-#      cluster-name: ${NAME}${SUFFIX}
-#    name: ${NAME}${SUFFIX}
-#  spec:
-#    ports:
-#    - name: 'postgresql'
-#      port: 5432
-#      protocol: TCP
-#      targetPort: 5432
-#    sessionAffinity: None
-#    type: ClusterIP
-#  status:
-#    loadBalancer: {}
 - apiVersion: v1
   kind: Service
   metadata:
     creationTimestamp: null
     labels:
-      cluster-name: ${NAME}${SUFFIX}
-    name: ${NAME}-master${SUFFIX}
+      app: platsrv-registry
+      cluster-name: ${NAME}
+    name: ${NAME}-master
   spec:
     ports:
     - port: 5432
-#      name: 'postgresql'
       protocol: TCP
       targetPort: 5432
     selector:
-      cluster-name: ${NAME}${SUFFIX}
+      cluster-name: ${NAME}
       role: master
       app.kubernetes.io/name: patroni
     sessionAffinity: None
     type: ClusterIP
   status:
     loadBalancer: {}
-#- apiVersion: v1
-#  kind: Service
-#  metadata:
-#    creationTimestamp: null
-#    labels:
-#      cluster-name: ${NAME}${SUFFIX}
-#    name: ${NAME}-replica${SUFFIX}
-#  spec:
-#    ports:
-#    - port: 5432
-##      name: 'postgresql'
-#      protocol: TCP
-#      targetPort: 5432
-#    selector:
-#      cluster-name: ${NAME}${SUFFIX}
-#      app.kubernetes.io/name: patroni
-#      role: replica
-#    sessionAffinity: None
-#    type: ClusterIP
-#  status:
-#    loadBalancer: {}
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: ${NAME}${SUFFIX}-config
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: ${NAME}${SUFFIX}-leader
 - apiVersion: apps/v1
   kind: StatefulSet
   metadata:
     creationTimestamp: null
     generation: 3
     labels:
-      cluster-name: ${NAME}${SUFFIX}
-    name: ${NAME}${SUFFIX}
+      app: platsrv-registry
+      cluster-name: ${NAME}
+    name: ${NAME}
   spec:
     podManagementPolicy: OrderedReady
     replicas: ${{REPLICAS}}
     revisionHistoryLimit: 10
     selector:
       matchLabels:
-        statefulset: ${NAME}${SUFFIX}
-    serviceName: ${NAME}${SUFFIX}
+        statefulset: ${NAME}
+    serviceName: ${NAME}
     template:
       metadata:
         creationTimestamp: null
         labels:
-          statefulset: ${NAME}${SUFFIX}
-          cluster-name: ${NAME}${SUFFIX}
+          app: platsrv-registry
+          statefulset: ${NAME}
+          cluster-name: ${NAME}
           app.kubernetes.io/name: patroni
       spec:
         affinity:
@@ -118,7 +73,7 @@ objects:
                 - key: statefulset
                   operator: In
                   values: 
-                  - ${NAME}${SUFFIX}
+                  - ${NAME}
               topologyKey: "kubernetes.io/hostname"
         containers:
         - env:
@@ -143,44 +98,44 @@ objects:
                 apiVersion: v1
                 fieldPath: metadata.namespace
           - name: PATRONI_KUBERNETES_LABELS
-            value: '{"cluster-name": "${NAME}${SUFFIX}", "app.kubernetes.io/name": "patroni"}'
+            value: '{"cluster-name": "${NAME}", "app.kubernetes.io/name": "patroni"}'
           - name: PATRONI_SUPERUSER_USERNAME
             valueFrom:
               secretKeyRef:
                 key: superuser-username
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: PATRONI_SUPERUSER_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: superuser-password
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: PATRONI_REPLICATION_USERNAME
             valueFrom:
               secretKeyRef:
                 key: replication-username
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: PATRONI_REPLICATION_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: replication-password
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: APP_USER
             valueFrom:
               secretKeyRef:
                 key: app-db-username
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: APP_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: app-db-password
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: APP_DATABASE
             valueFrom:
               secretKeyRef:
                 key: app-db-name
-                name: ${NAME}${SUFFIX}
+                name: ${NAME}-creds
           - name: PATRONI_SCOPE
-            value: ${NAME}${SUFFIX}
+            value: ${NAME}
           - name: PATRONI_NAME
             valueFrom:
               fieldRef:
@@ -229,7 +184,7 @@ objects:
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
-        serviceAccountName: ${NAME}${SUFFIX}
+        serviceAccountName: ${NAME}
         terminationGracePeriodSeconds: 0
     updateStrategy:
       type: RollingUpdate
@@ -238,7 +193,7 @@ objects:
         annotations:
           volume.beta.kubernetes.io/storage-class: ${STORAGE_CLASS}
         labels:
-          app: ${NAME}${SUFFIX}
+          app: platsrv-registry
         name: postgresql
       spec:
         storageClassName: ${STORAGE_CLASS}
@@ -247,56 +202,52 @@ objects:
         resources:
           requests:
             storage: ${PVC_SIZE}
-# It doesn't seem to be used/needed - remote it?
-#- apiVersion: v1
-#  kind: Endpoints
-#  metadata:
-#    labels:
-#      app: ${NAME}${SUFFIX}
-#      cluster-name: ${NAME}${SUFFIX}
-#    name: ${NAME}${SUFFIX}
-#  subsets: []
 parameters:
-- description: The name of the application for labelling all artifacts.
+- name: NAME
+  description: |
+    The name of the application for labelling all artifacts.
   displayName: Application Name
-  name: NAME
-  value: patroni
-- name: SUFFIX
-  description: A suffix appended to all artifact's name (NAME)
+  value: registry-patroni
 - name: REPLICAS
+  description: |
+    The number of StatefulSet replicas to use.
   displayName: REPLICAS
-  description: The number of statefulSet replicas to use.
   value: '3'
-- description: Starting amount of CPU the container can use.
+- name: CPU_REQUEST
+  description: |
+    Starting amount of CPU the container can use.
   displayName: CPU REQUEST
-  name: CPU_REQUEST
   value: '250m'
-- description: Maximum amount of CPU the container can use.
+- name: CPU_LIMIT
+  description: 
+    Maximum amount of CPU the container can use.
   displayName: CPU Limit
-  name: CPU_LIMIT
   value: '1'
-- description: Starting amount of memory the container can use.
+- name: MEMORY_REQUEST
+  description: 
+    Starting amount of memory the container can use.
   displayName: Memory Request
-  name: MEMORY_REQUEST
   value: 512Mi
-- description: Maximum amount of memory the container can use.
+- name: MEMORY_LIMIT
+  description: Maximum amount of memory the container can use.
   displayName: Memory Limit
-  name: MEMORY_LIMIT
   value: 512Mi
-- description: The OpenShift Namespace where the patroni and postgresql ImageStream
-    resides.
+- name: IMAGE_STREAM_NAMESPACE
+  description: |
+    The OpenShift Namespace where the patroni and postgresql
+    ImageStream resides.
   displayName: ImageStream Namespace
-  name: IMAGE_STREAM_NAMESPACE
-  value: "bcgov"
+  value: 'bcgov'
 - name: IMAGE_STREAM_TAG
-  description: Patroni ImageTag
-  value: patroni:v11-stable
-- description: The size of the persistent volume to create.
+  description: |
+    Patroni ImageTag
+  value: patroni:v12-latest
+- name: PVC_SIZE
+  description: 
+    The size of the persistent volume to create.
   displayName: Persistent Volume Size
-  name: PVC_SIZE
   value: 1Gi
 - name: STORAGE_CLASS
-  value: netapp-block-standard
+  value: netapp-file-standard
 - name: IMAGE_REGISTRY
-  #ocp3#docker-registry.default.svc:5000
   value: image-registry.openshift-image-registry.svc:5000
