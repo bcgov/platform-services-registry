@@ -82,6 +82,12 @@ const main = async () => {
       clientId: config.get('sso:clientId'),
       clientSecret: config.get('sso:clientSecret'),
     });
+    console.log({
+      uri: config.get('sso:tokenUrl'),
+      grantType: config.get('sso:grantType'),
+      clientId: config.get('sso:clientId'),
+      clientSecret: config.get('sso:clientSecret'),
+    });
   }
 
   if (!(gs.indexOf(pgPoolKey) > -1)) {
