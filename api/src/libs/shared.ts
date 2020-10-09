@@ -76,18 +76,15 @@ const main = async () => {
   }
 
   if (!(gs.indexOf(ssoKey) > -1)) {
-    global[ssoKey] = new JWTServiceManager({
+    const params = {
       uri: config.get('sso:tokenUrl'),
       grantType: config.get('sso:grantType'),
       clientId: config.get('sso:clientId'),
       clientSecret: config.get('sso:clientSecret'),
-    });
-    console.log({
-      uri: config.get('sso:tokenUrl'),
-      grantType: config.get('sso:grantType'),
-      clientId: config.get('sso:clientId'),
-      clientSecret: config.get('sso:clientSecret'),
-    });
+    };
+    console.log(params);
+
+    global[ssoKey] = new JWTServiceManager(params);
   }
 
   if (!(gs.indexOf(pgPoolKey) > -1)) {
@@ -101,6 +98,7 @@ const main = async () => {
       idleTimeoutMillis: config.get('db:idleTimeout'),
       connectionTimeoutMillis: config.get('db:connectionTimeout'),
     }
+    console.log(params);
 
     global[pgPoolKey] = new Pool(params);
   }
