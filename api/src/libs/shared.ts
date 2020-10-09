@@ -82,7 +82,6 @@ const main = async () => {
       clientId: config.get('sso:clientId'),
       clientSecret: config.get('sso:clientSecret'),
     };
-    console.log(params);
 
     global[ssoKey] = new JWTServiceManager(params);
   }
@@ -98,7 +97,6 @@ const main = async () => {
       idleTimeoutMillis: config.get('db:idleTimeout'),
       connectionTimeoutMillis: config.get('db:connectionTimeout'),
     }
-    console.log(params);
 
     global[pgPoolKey] = new Pool(params);
   }
