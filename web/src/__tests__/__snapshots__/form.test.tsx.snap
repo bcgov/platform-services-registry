@@ -97,6 +97,354 @@ exports[`matches the snapshot 1`] = `
               </select>
             </div>
           </div>
+          <label
+            class="css-knfhfe"
+          >
+            Please indicate what services you expect to utilize as part of your project?
+          </label>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Notification: Email
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-notificationEmail"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Notification: SMS
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-notificationSMS"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Notification: MS Teams
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-notificationMSTeams"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Payment processing: Bambora
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-paymentBambora"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Payment processing: PayBC
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-paymentPayBC"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              File Transfer
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-fileTransfer"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              File Storage
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-fileStorage"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Geo Mapping: Web-based
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-geoMappingWeb"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Geo Mapping: Location Services
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-geoMappingLocation"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Scheduling: Calendar
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-schedulingCalendar"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Scheduling: Appointments
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-schedulingAppointments"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Identity Management: SiteMinder
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-idmSiteMinder"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Identity Management: KeyCloak
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-idmKeyCloak"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+            >
+              Identity Management: Active Directory
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <label
+                class="css-v4bk2t"
+              >
+                <input
+                  name="project-idmActiveDir"
+                  style="width: 35px; height: 35px;"
+                  type="checkbox"
+                  value="yes"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-4cffwv"
+          >
+            <label
+              class="css-knfhfe"
+              for="project-other"
+            >
+              Other:
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <input
+                class="css-4y926w"
+                id="project-other"
+                name="project-other"
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
