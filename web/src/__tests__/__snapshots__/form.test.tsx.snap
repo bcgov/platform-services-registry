@@ -105,14 +105,20 @@ exports[`matches the snapshot 1`] = `
         <div
           class="css-vurnku"
         >
-          If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to xxx@gov.bc.ca to get started.
+          If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to 
+          <a
+            href="mailto: olena.mitovska@gov.bc.ca"
+          >
+            olena.mitovska@gov.bc.ca
+          </a>
+           to get started.
         </div>
         <div
           class="css-pmqufv"
         >
           If you're new to OpenShift check out our 
           <a
-            href="https://developer.gov.bc.ca/Getting-Started-on-the-DevOps-Platform/How-to-Request-a-New-OpenShift-Project"
+            href="https://docs.google.com/presentation/d/1UcT0b2YTPki_o0et9ZCLKv8vF19eYakJQitU85TAeD4/edit?usp=sharing"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -372,7 +378,7 @@ exports[`matches the snapshot 1`] = `
         <div
           class="css-vurnku"
         >
-          Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them within any technical questions or notify them about platform events.
+          Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.
         </div>
       </div>
     </div>
