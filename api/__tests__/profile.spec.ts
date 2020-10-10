@@ -19,6 +19,7 @@ import { camelCase } from 'lodash';
 import path from 'path';
 import { Pool } from 'pg';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
+import ProfileModel from '../src/db/model/profile';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -114,6 +115,41 @@ describe('Profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();
   });
+
+  it('ProfileModel findAll method is called when all profiles are returned to an admin user', async () => {
+    const req = {
+      user: { roles: ['administrator',] },
+    };
+
+    const findAll = ProfileModel.prototype.findAll = jest.fn();
+    const findProfilesByUserID = ProfileModel.prototype.findProfilesByUserID = jest.fn();
+
+    // @ts-ignore
+    await fetchAllProjectProfiles(req, ex.res);
+
+    expect(findAll).toHaveBeenCalledTimes(1);
+    expect(findProfilesByUserID).toHaveBeenCalledTimes(0);
+  });
+
+  it('ProfileModel findProfilesByUserID method is called when all profiles are returned to a non-admin user',
+    async () => {
+      const req = {
+        user: {
+          roles: [],
+          id: 1,
+        },
+      };
+
+      const findAll = ProfileModel.prototype.findAll = jest.fn();
+      const findProfilesByUserID = ProfileModel.prototype.findProfilesByUserID = jest.fn();
+
+      // @ts-ignore
+      await fetchAllProjectProfiles(req, ex.res);
+
+      expect(findAll).toHaveBeenCalledTimes(0);
+      expect(findProfilesByUserID).toHaveBeenCalledTimes(1);
+      expect(findProfilesByUserID.mock.calls[0][0]).toBe(req.user.id);
+    });
 
   it('Fetch all profiles should throw', async () => {
     const req = {};
