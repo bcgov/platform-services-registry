@@ -342,7 +342,7 @@ Array [
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        1,
+        118,
       ],
     },
   ],
@@ -360,11 +360,40 @@ Object {
   "name": "Health Gateway",
   "prioritySystem": false,
   "updatedAt": "2020-04-28T00:00:00.000Z",
-  "userId": 2,
+  "userId": 4,
 }
 `;
 
-exports[`Profile event handlers All profiles are returned 1`] = `
+exports[`Profile event handlers A single profile is returned as administrator 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        118,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A single profile is returned as administrator 2`] = `200`;
+
+exports[`Profile event handlers A single profile is returned as administrator 3`] = `
+Object {
+  "createdAt": "2020-04-28T00:00:00.000Z",
+  "criticalSystem": false,
+  "description": "This is some description",
+  "id": 3,
+  "name": "Mines Digital Services",
+  "prioritySystem": false,
+  "updatedAt": "2020-04-28T00:00:00.000Z",
+}
+`;
+
+exports[`Profile event handlers All profiles are returned as administrator 1`] = `
 Array [
   Array [
     Object {
@@ -377,9 +406,9 @@ Array [
 ]
 `;
 
-exports[`Profile event handlers All profiles are returned 2`] = `200`;
+exports[`Profile event handlers All profiles are returned as administrator 2`] = `200`;
 
-exports[`Profile event handlers All profiles are returned 3`] = `
+exports[`Profile event handlers All profiles are returned as administrator 3`] = `
 Array [
   Object {
     "createdAt": "2020-04-28T00:00:00.000Z",
@@ -389,7 +418,7 @@ Array [
     "name": "Health Gateway",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 2,
+    "userId": 4,
   },
   Object {
     "createdAt": "2020-04-28T00:00:00.000Z",
@@ -399,7 +428,7 @@ Array [
     "name": "EPIC",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 2,
+    "userId": 4,
   },
   Object {
     "createdAt": "2020-04-28T00:00:00.000Z",
@@ -409,7 +438,6 @@ Array [
     "name": "Mines Digital Services",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 2,
   },
   Object {
     "createdAt": "2020-04-28T00:00:00.000Z",
@@ -417,7 +445,64 @@ Array [
     "id": 4,
     "name": "Secure Image",
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 2,
+  },
+]
+`;
+
+exports[`Profile event handlers All user profiles are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE user_id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers All user profiles are returned 2`] = `200`;
+
+exports[`Profile event handlers All user profiles are returned 3`] = `
+Array [
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "criticalSystem": false,
+    "description": null,
+    "id": 1,
+    "name": "Health Gateway",
+    "prioritySystem": false,
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "userId": 4,
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "criticalSystem": true,
+    "description": "Hello World",
+    "id": 2,
+    "name": "EPIC",
+    "prioritySystem": false,
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "userId": 4,
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "criticalSystem": false,
+    "description": "This is some description",
+    "id": 3,
+    "name": "Mines Digital Services",
+    "prioritySystem": false,
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+  },
+  Object {
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "description": "This app is super cool",
+    "id": 4,
+    "name": "Secure Image",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
   },
 ]
 `;
