@@ -60,7 +60,7 @@ export const fetchAllProjectProfiles = async (
     if (user.roles.includes('administrator')) {
       results = await ProfileModel.findAll();
     } else {
-      results = await ProfileModel.findProfilesByUserID(user.id);
+      results = await ProfileModel.findProfilesByUserId(user.id);
     }
 
     res.status(200).json(results);

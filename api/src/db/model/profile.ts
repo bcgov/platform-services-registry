@@ -239,7 +239,7 @@ export default class ProfileModel extends Model {
     }
   }
 
-  async findProfilesByUserID(id: number): Promise<any> {
+  async findProfilesByUserId(id: number): Promise<any> {
     const query = {
       text: `
         SELECT * FROM ${this.table}
@@ -250,7 +250,7 @@ export default class ProfileModel extends Model {
     try {
       return await this.runQuery(query);
     } catch (err) {
-      const message = `Unable to fetch Profile(s) with User ID ${id}`;
+      const message = `Unable to fetch Profile(s) with User Id ${id}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
