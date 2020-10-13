@@ -143,16 +143,16 @@ describe('Profile event handlers', () => {
     };
 
     const findAll = ProfileModel.prototype.findAll = jest.fn();
-    const findProfilesByUserID = ProfileModel.prototype.findProfilesByUserID = jest.fn();
+    const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserId = jest.fn();
 
     // @ts-ignore
     await fetchAllProjectProfiles(req, ex.res);
 
     expect(findAll).toHaveBeenCalledTimes(1);
-    expect(findProfilesByUserID).toHaveBeenCalledTimes(0);
+    expect(findProfilesByUserId).toHaveBeenCalledTimes(0);
   });
 
-  it('ProfileModel findProfilesByUserID method is called when all profiles are returned to a non-admin user',
+  it('ProfileModel findProfilesByUserId method is called when all profiles are returned to a non-admin user',
     async () => {
       const req = {
         user: {
@@ -162,14 +162,14 @@ describe('Profile event handlers', () => {
       };
 
       const findAll = ProfileModel.prototype.findAll = jest.fn();
-      const findProfilesByUserID = ProfileModel.prototype.findProfilesByUserID = jest.fn();
+      const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserId = jest.fn();
 
       // @ts-ignore
       await fetchAllProjectProfiles(req, ex.res);
 
       expect(findAll).toHaveBeenCalledTimes(0);
-      expect(findProfilesByUserID).toHaveBeenCalledTimes(1);
-      expect(findProfilesByUserID.mock.calls[0][0]).toBe(req.user.id);
+      expect(findProfilesByUserId).toHaveBeenCalledTimes(1);
+      expect(findProfilesByUserId.mock.calls[0][0]).toBe(req.user.id);
     });
 
   it('Fetch all profiles should throw', async () => {
@@ -239,6 +239,7 @@ describe('Profile event handlers', () => {
       id: 9,
       createdAt: '2020-05-19T20:02:54.561Z',
       updateAt: '2020-05-19T20:02:54.561Z',
+      userId: 1,
     };
     const req = {
       params: { profileId: 1 },
@@ -268,6 +269,7 @@ describe('Profile event handlers', () => {
       createdAt: '2020-05-19T20:02:54.561Z',
       updateAt: '2020-05-19T20:02:54.561Z',
       fileTransfer: true,
+      userId: 1,
     };
     const req = {
       params: { profileId: 1 },

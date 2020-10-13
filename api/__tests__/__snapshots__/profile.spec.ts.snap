@@ -79,8 +79,8 @@ Array [
             notification_email, notification_sms, notification_ms_teams,
             payment_bambora, payment_pay_bc, file_transfer, file_storage,
             geo_mapping_web, geo_mapping_location, scheduling_calendar,
-            scheduling_appointments, identity_management_site_minder,
-            identity_management_keycloak, identity_management_active_dir,
+            scheduling_appointments, idm_site_minder,
+            idm_keycloak, idm_active_dir,
             other)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
             $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;",
@@ -177,8 +177,8 @@ Array [
             payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
             file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
             scheduling_calendar = $15, scheduling_appointments = $16,
-            identity_management_site_minder = $17, identity_management_keycloak = $18,
-            identity_management_active_dir = $19, other = $20
+            idm_site_minder = $17, idm_keycloak = $18,
+            idm_active_dir = $19, other = $20
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -188,6 +188,10 @@ Array [
         false,
         false,
         false,
+        undefined,
+        undefined,
+        false,
+        undefined,
         false,
         false,
         false,
@@ -195,11 +199,7 @@ Array [
         false,
         false,
         false,
-        false,
-        false,
-        false,
-        false,
-        false,
+        undefined,
         false,
         "This is a test",
       ],
@@ -236,6 +236,7 @@ Object {
   "schedulingAppointments": false,
   "schedulingCalendar": false,
   "updateAt": "2020-05-19T20:02:54.561Z",
+  "userId": 1,
 }
 `;
 
@@ -272,8 +273,8 @@ Array [
             payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
             file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
             scheduling_calendar = $15, scheduling_appointments = $16,
-            identity_management_site_minder = $17, identity_management_keycloak = $18,
-            identity_management_active_dir = $19, other = $20
+            idm_site_minder = $17, idm_keycloak = $18,
+            idm_active_dir = $19, other = $20
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -283,6 +284,10 @@ Array [
         false,
         false,
         false,
+        undefined,
+        undefined,
+        false,
+        undefined,
         false,
         false,
         false,
@@ -290,11 +295,7 @@ Array [
         false,
         false,
         false,
-        false,
-        false,
-        false,
-        false,
-        false,
+        undefined,
         false,
         "This is a test",
       ],
@@ -331,6 +332,7 @@ Object {
   "schedulingAppointments": false,
   "schedulingCalendar": false,
   "updateAt": "2020-05-19T20:02:54.561Z",
+  "userId": 1,
 }
 `;
 
