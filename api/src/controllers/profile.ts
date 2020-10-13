@@ -20,6 +20,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import { USER_ROLES } from '../constants';
 import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -57,7 +58,7 @@ export const fetchAllProjectProfiles = async (
 
   try {
     let results;
-    if (user.roles.includes('administrator')) {
+    if (user.roles.includes(USER_ROLES.ADMINISTRATOR)) {
       results = await ProfileModel.findAll();
     } else {
       results = await ProfileModel.findProfilesByUserId(user.id);
@@ -81,13 +82,16 @@ export const fetchProjectProfile = async (
   try {
     const results = await ProfileModel.findById(Number(profileId));
 
-    if (user.id === results.userId || user.roles.includes('administrator')) {
-      res.status(200).json(results);
-    } else {
+    if (!(user.id === results.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
       throw errorWithCode('Unauthorized Access', 401);
     }
 
+    res.status(200).json(results);
   } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
     const message = `Unable fetch project profile with ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
@@ -144,10 +148,10 @@ export const updateProjectProfile = async (
     criticalSystem,
     prioritySystem,
     notificationEmail,
-    notificationSMS,
-    notificationMSTeams,
+    notificationSms,
+    notificationMsTeams,
     paymentBambora,
-    paymentPayBC,
+    paymentPayBc,
     fileTransfer,
     fileStorage,
     geoMappingWeb,
@@ -155,7 +159,7 @@ export const updateProjectProfile = async (
     schedulingCalendar,
     schedulingAppointments,
     idmSiteMinder,
-    idmKeyCloak,
+    idmKeycloak,
     idmActiveDir,
     other,
   } = body;
@@ -172,10 +176,10 @@ export const updateProjectProfile = async (
       userId: record.userId,
       namespacePrefix: record.namespacePrefix,
       notificationEmail,
-      notificationSMS,
-      notificationMSTeams,
+      notificationSms,
+      notificationMsTeams,
       paymentBambora,
-      paymentPayBC,
+      paymentPayBc,
       fileTransfer,
       fileStorage,
       geoMappingWeb,
@@ -183,10 +187,15 @@ export const updateProjectProfile = async (
       schedulingCalendar,
       schedulingAppointments,
       idmSiteMinder,
-      idmKeyCloak,
+      idmKeycloak,
       idmActiveDir,
       other,
     };
+
+    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
 
     if (rv) {
@@ -197,6 +206,10 @@ export const updateProjectProfile = async (
 
     res.status(200).json(results);
   } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
     const message = `Unable update project profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
