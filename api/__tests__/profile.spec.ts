@@ -316,6 +316,32 @@ describe('Profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
+  it('A project fails to update with incorrect user Id', async () => {
+    const body = JSON.parse(JSON.stringify(insertProfile));
+    const aBody = {
+      id: 9,
+      ...body,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      userId: 2,
+    };
+    const req = {
+      params: { profileId: 1 },
+      body: aBody,
+      user: {
+        id: 1,
+      },
+    }
+
+    client.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(updateProjectProfile(req, ex.res)).rejects.toThrow();
+
+    expect(ex.res.status).not.toBeCalled();
+    expect(ex.res.json).not.toBeCalled();
+  });
+
   it('A project is archived', async () => {
     const aBody = {
       id: 9,
