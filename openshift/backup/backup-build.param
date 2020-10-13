@@ -1,0 +1,12 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: backup
+# Template File: https://github.com/BCDevOps/backup-container/blob/master/openshift/templates/backup/backup-build.json
+#=========================================================
+# Commented entries denote template default values
+# NAME=backup-postgres
+# GIT_REPO_URL=https://github.com/BCDevOps/backup-container.git
+# GIT_REF=master
+# SOURCE_CONTEXT_DIR=/docker
+# DOCKER_FILE_PATH=Dockerfile
+# OUTPUT_IMAGE_TAG=latest

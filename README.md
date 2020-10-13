@@ -38,9 +38,24 @@ https://github.com/bcgov/s2i-caddy-nodejs
 
 Build if you need a local image (defaults in this build have been changed to leverage postgres:12). Note the `oc create` instead of `oc apply`, this is to support multiple base image versions.
 
-`oc process -f openshift/templates/patroni-build.yaml | oc -n platform-registry-tools create -f -`
+```bash
+oc process -f openshift/templates/patroni-build.yaml | oc -n platform-registry-tools create -f -
+```
+
+### Backup-container
+
+Rather than maintaining a custom build configuration, this build will leverage the [backup-container](https://bcdevops/backup-container) templates directly with default values.
+
+```bash
+oc process -f https://raw.githubusercontent.com/BCDevOps/backup-container/master/openshift/templates/backup/backup-build.json | \
+  oc -n platform-registry-tools apply -f -
+```
+
+This will build a `latest` tagged image that can be integrated into the pipeline.
 
 ## Deploy
+
+### Postgres Service
 
 Deploy postgres service first (please set context to appropriate project/namespace):
 
@@ -54,6 +69,34 @@ oc process -f openshift/templates/patroni-deploy.yaml \
  -p REPLICAS=3 \
  -p PVC_SIZE=5Gi | oc apply -f -
 ```
+
+Once the postgres service has been deployed, add the helm repository for the published backup-container helm charts.
+
+```bash
+helm repo add bcgov https://bcgov.github.io/helm-charts
+```
+
+Modify ./openshift/backup/deploy-values.yaml and customize for the specific environment
+
+- ensure `image.repository` and `image.tag` are updated per environment/deploy
+- update `env.ENVIRONMENT_NAME.value` for the specific environment
+- verify `persistence.backup.size` and `persistence.verification.size` are appropriately sized.
+
+**Option 1: Deploy direct from helm:**
+
+```bash
+helm install db-backup bcgov/backup-storage -f ./openshift/backup/deploy-values.yaml
+```
+
+**Option 2: Generate manifest using helm, and then apply**
+
+```bash
+helm template db-backup bcgov/backup-storage -f ./openshift/backup/deploy-values.yaml > \
+  ./openshift/backup/db-backup-deploy.yaml
+oc apply -f ./openshift/backup/db-backup-deploy.yaml
+```
+
+### Application Services
 
 Edit as needed then do:
 oc process -f api/openshift/templates/config.yaml | oc apply -f -
