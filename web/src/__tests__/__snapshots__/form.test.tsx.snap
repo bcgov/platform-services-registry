@@ -140,7 +140,7 @@ exports[`matches the snapshot 1`] = `
                 class="css-v4bk2t"
               >
                 <input
-                  name="project-notificationSMS"
+                  name="project-notificationSms"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
                   value="yes"
@@ -163,7 +163,7 @@ exports[`matches the snapshot 1`] = `
                 class="css-v4bk2t"
               >
                 <input
-                  name="project-notificationMSTeams"
+                  name="project-notificationMsTeams"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
                   value="yes"
@@ -209,7 +209,7 @@ exports[`matches the snapshot 1`] = `
                 class="css-v4bk2t"
               >
                 <input
-                  name="project-paymentPayBC"
+                  name="project-paymentPayBc"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
                   value="yes"
@@ -393,7 +393,7 @@ exports[`matches the snapshot 1`] = `
                 class="css-v4bk2t"
               >
                 <input
-                  name="project-idmKeyCloak"
+                  name="project-idmKeycloak"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
                   value="yes"
