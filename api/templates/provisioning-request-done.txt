@@ -9,6 +9,9 @@ Workflow Steps
 - ✅ Approval
 - ✅ Provisioning
 
+You can access the Silver cluster console by copying this URL into your browser window:
+https://console.apps.silver.devops.gov.bc.ca/
+
 
 
 Thanks Again,
