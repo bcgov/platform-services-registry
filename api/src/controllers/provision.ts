@@ -60,30 +60,38 @@ export const provisionProfileNamespaces = async (
 };
 
 export const updateProvisionedNamespaces = async (
-  { body, params }: { body: any, params: any }, res: Response
+  { body }: { body: any }, res: Response
 ): Promise<void> => {
-  const { profileId } = params;
-  const { NamespaceModel } = dm;
-
+  const { NamespaceModel, ClusterModel } = dm;
+  const { prefix, clusterName } = body;
   try {
+
+    const namespaces = await NamespaceModel.findForPrefix(prefix);
+    const cluster = await ClusterModel.findByName(clusterName);
+
+    if ((!namespaces || namespaces.length === 0) || !cluster) {
+      throw new Error();
+    }
+
+    const clusterId = cluster.id;
+    const provisioned = true;
     const promises: any = [];
-    body.forEach(namespace => {
-      const { namespaceId, clusters } = namespace;
-      clusters.forEach(cluster => {
-        const { clusterId, provisioned } = cluster;
-        promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
-      });
+
+    namespaces.forEach(namespace => {
+      const { id } = namespace;
+      promises.push(NamespaceModel.updateProvisionStatus(Number(id), Number(clusterId), provisioned));
     });
 
     await Promise.all(promises);
 
+    const profileId = namespaces.pop()!.id;
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
-    await sendProvisioningMessage(profileId, MessageType.ProvisioningCompleted);
+    await sendProvisioningMessage(profileId!, MessageType.ProvisioningCompleted);
 
     res.status(202).end();
   } catch (err) {
-    const message = `Unable to update namespace status profile ID ${profileId}`;
+    const message = `Unable to update namespace status`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

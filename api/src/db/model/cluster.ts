@@ -70,6 +70,28 @@ export default class CusterModel extends Model {
     }
   }
 
+  async findByName(name: string): Promise<Cluster> {
+    const query = {
+      text: `
+        SELECT * FROM ${this.table} WHERE name = $1;
+      `,
+      values: [
+        name,
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to lookup cluster by name ${name}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  };
+
   async update(clusterId: number, data: Cluster): Promise<Cluster> {
     const query = {
       text: `
@@ -86,7 +108,7 @@ export default class CusterModel extends Model {
         data.onPrem,
         data.onHardware,
         clusterId,
-      ]
+      ],
     };
 
     try {

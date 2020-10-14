@@ -26,6 +26,6 @@ const router = express.Router();
 
 // Provisioning
 router.post('/:profileId/namespace', asyncMiddleware(provisionProfileNamespaces));
-router.put('/:profileId/namespace', asyncMiddleware(updateProvisionedNamespaces));
+router.put('/namespace', asyncMiddleware(updateProvisionedNamespaces));
 
 export default router;
