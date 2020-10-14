@@ -5,12 +5,11 @@ Array [
   Array [
     Object {
       "text": "
-        UPDATE profile
-          SET
-            archived = true
-          WHERE id = 9
-          RETURNING *;
-      ",
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        9,
+      ],
     },
   ],
 ]
@@ -20,6 +19,16 @@ exports[`Profile event handlers A project fails to archive 2`] = `200`;
 
 exports[`Profile event handlers A project is archived 1`] = `
 Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        9,
+      ],
+    },
+  ],
   Array [
     Object {
       "text": "

@@ -348,12 +348,17 @@ describe('Profile event handlers', () => {
       ...insertProfile,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      userId: 4,
     };
     const req = {
       params: { profileId: 9 },
+      user: {
+        roles: [],
+        id: 4,
+      },
     }
 
-    client.query.mockReturnValueOnce({ rows: [aBody] });
+    client.query.mockReturnValue({ rows: [aBody] });
 
     // @ts-ignore
     await archiveProjectProfile(req, ex.res);
