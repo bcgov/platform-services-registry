@@ -218,16 +218,25 @@ export const updateProjectProfile = async (
 };
 
 export const archiveProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
 
   try {
+    const record = await ProfileModel.findById(profileId);
+    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
     await ProfileModel.delete(profileId);
 
     res.status(204).end();
   } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
     const message = 'Unable create new project profile';
     logger.error(`${message}, err = ${err.message}`);
 
