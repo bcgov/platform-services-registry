@@ -225,6 +225,7 @@ export const archiveProjectProfile = async (
 
   try {
     const record = await ProfileModel.findById(profileId);
+
     if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
       throw errorWithCode('Unauthorized Access', 401);
     }
@@ -237,7 +238,7 @@ export const archiveProjectProfile = async (
       throw err
     }
 
-    const message = 'Unable create new project profile';
+    const message = 'Unable to archive project profile';
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
