@@ -23,6 +23,12 @@ curl -vX PUT -H "Content-Type: application/json" -H "Authorization: Bearer \${MY
 
 ## Build
 
+Configure initial project set RBAC (to allow images in -tools to be referenced by other projects)
+
+> Note: Namespace to apply to is hard-coded in the yaml
+
+`oc apply -f ./openshift/templates/project-set-rbac.yaml`
+
 ### API
 
 `oc process -f api/openshift/templates/build.yaml| oc apply -f -`

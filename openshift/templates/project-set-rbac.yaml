@@ -1,0 +1,37 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: project-set:image-puller
+  namespace: platform-registry-tools
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:image-puller
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: platform-registry-dev
+- kind: ServiceAccount
+  name: default
+  namespace: platform-registry-test
+- kind: ServiceAccount
+  name: default
+  namespace: platform-registry-prod
+- kind: ServiceAccount
+  name: db-backup-backup-storage
+  namespace: platform-registry-dev
+- kind: ServiceAccount
+  name: db-backup-backup-storage
+  namespace: platform-registry-test
+- kind: ServiceAccount
+  name: db-backup-backup-storage
+  namespace: platform-registry-prod
+- kind: ServiceAccount
+  name: registry-patroni
+  namespace: platform-registry-dev
+- kind: ServiceAccount
+  name: registry-patroni
+  namespace: platform-registry-test
+- kind: ServiceAccount
+  name: registry-patroni
+  namespace: platform-registry-prod
