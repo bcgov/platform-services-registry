@@ -67,8 +67,8 @@ objects:
         - - '$namespace=${NAMESPACE}'
           - 'role=api'
       destination:
-        - - '$namespace=${NAMESPACE}'
-          - 'role=nats'
+        - - '$namespace=${NATS_NAMESPACE}'
+          - '${NATS_APO_IDENTIFIER}'
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
@@ -97,3 +97,13 @@ parameters:
       deployed to.
     required: true
     value: registry-patroni
+  - name: NATS_NAMESPACE
+    description: |
+      The the name where NATS is located; it can be the same as NAMESPACE
+      or different.
+    required: true
+  - name: NATS_APO_IDENTIFIER
+    description: |
+      The the Aporeto identifier used by Aporeto to identify the NATS
+      service.
+    required: true
