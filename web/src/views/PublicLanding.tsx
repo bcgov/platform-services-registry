@@ -19,6 +19,7 @@ import queryString from 'querystring';
 import React from 'react';
 import { useLocation } from 'react-router';
 import { Redirect } from 'react-router-dom';
+import { HOME_PAGE_URL } from '../constants';
 
 const useQuery = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ export const PublicLanding = () => {
   }
 
   if (keycloak?.authenticated) {
-    return <Redirect to={redirect || '/namespaces'} />;
+    return <Redirect to={redirect || HOME_PAGE_URL} />;
   }
 
   return (
