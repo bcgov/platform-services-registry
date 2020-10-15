@@ -80,7 +80,9 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       subject: 'Namespace Provisioning',
     }
 
-    return await shared.ches.send(message);
+    const receipt = await shared.ches.send(message);
+    logger.info(`Message (${messageType}) sent with transaction details: ${receipt}`);
+    logger.info(`Message was: ${message}`);
   } catch (err) {
     const message = `Unable to send message for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
