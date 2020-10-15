@@ -2,10 +2,7 @@ name: Site Security Scan
 on:
   schedule:
     # Runs every Monday At 01:00.
-    # - cron:  '0 1 * * 1'
-
-    # Initial Test runs at minute one on the hour
-    - cron: "*/10 * * * *"
+    - cron: "0 1 * * 1"
 
 jobs:
   zap_scan:
