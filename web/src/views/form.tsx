@@ -16,8 +16,6 @@
 // Created by Jason Leach on 2020-06-09.
 //
 
-import { useKeycloak } from '@react-keycloak/web';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import { toast } from 'react-toastify';
@@ -26,76 +24,43 @@ import SubFormPO from '../components/SubFormPO';
 import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
-import { API } from '../constants';
 import transformFormData from '../utils/transformFormData';
-
-const axi = axios.create({
-    baseURL: API.BASE_URL(),
-});
-
-// const StyledSelect = styled.div`
-//     width: 100%;
-// `;
-
-// color: ${props => props.theme.color.bcblue };
+import useRegistryApi from '../utils/userRegistryApi';
 
 const requiredField = (value: string) => (value ? undefined : 'Required')
-
-// const xxx = (value: string) => {
-//     console.log('vvvv', value);
-// }
-
-// const blarb = () => {
-//     toast.success('🦄 Your namespace request was successful 🦄', {
-//         position: toast.POSITION.TOP_CENTER,
-//         autoClose: 5000,
-//         hideProgressBar: false,
-//         closeOnClick: true,
-//         pauseOnHover: true,
-//         draggable: false,
-//         progress: undefined,
-//     });
-// }
 
 const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
 
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
 
-const MyForm: React.SFC = () => {
-    const { keycloak } = useKeycloak();
-    const [ministry, setMinistrySponsor] = useState<any>([]);
+const MyForm: React.FC = () => {
+    const api = useRegistryApi();
+
+    const [ministry, setMinistry] = useState<any>([]);
 
     const onSubmit = async (formData: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(formData);
 
-        // TODO:(jl) This is lame. Need to figure out a better way to 
-        // do form validation.
         if (!profile.busOrgId) {
             alert("You need to select a Ministry Sponsor.");
             return;
         }
 
-        if (keycloak && keycloak.authenticated) {
-            axi.defaults.headers = {
-                'Authorization': `Bearer ${keycloak?.token}`
-            };
-        }
-
         try {
             // 1. Create the project profile.
-            const response: any = await axi.post('profile', profile);
+            const response: any = await api.createProfile(profile);
             const profileId = response.data.id;
 
             // 2. Create contacts.
-            const po: any = await axi.post('contact', productOwner);
-            const tc: any = await axi.post('contact', technicalContact);
+            const po: any = await api.createContact(productOwner);
+            const tc: any = await api.createContact(technicalContact);
 
             // 3. Link the contacts to the profile.
-            await axi.post(`profile/${profileId}/contact/${po.data.id}`);
-            await axi.post(`profile/${profileId}/contact/${tc.data.id}`);
+            await api.linkContactToProfileById(profileId, po.data.id);
+            await api.linkContactToProfileById(profileId, tc.data.id);
 
             // 4. Trigger provisioning
-            await axi.post(`provision/${profileId}/namespace`);
+            await api.createNamespaceByProfileId(profileId);
 
             // 5.All good? Tell the user.
             toast.success('🦄 Your namespace request was successful', {
@@ -136,26 +101,11 @@ const MyForm: React.SFC = () => {
 
     useEffect(() => {
         async function wrap() {
-            try {
-                const result = await axi.get('ministry', {
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                });
-
-                if (result.data) {
-                    console.log('Fetched ministry sponsors!!!');
-                    setMinistrySponsor(result.data);
-                }
-            } catch (err) {
-                // if the api service is not available,
-                // provide empty list query than err that breaks the front-end
-                setMinistrySponsor([]);
-            }
+            const response = await api.getMinistry();
+            setMinistry(response.data);
         }
-
         wrap();
-    }, []);
+    }, [api]);
 
     return (
         <Form
@@ -193,6 +143,5 @@ const MyForm: React.SFC = () => {
         </Form >
     )
 };
-
 
 export default MyForm;
