@@ -42,10 +42,10 @@ export const LAYOUT_SET_UNAUTH = 'unauth';
 
 export const COMPONENT_METADATA = [
   { displayName: 'Notification: Email', inputValue: 'notificationEmail' },
-  { displayName: 'Notification: SMS', inputValue: 'notificationSMS' },
-  { displayName: 'Notification: MS Teams', inputValue: 'notificationMSTeams' },
+  { displayName: 'Notification: SMS', inputValue: 'notificationSms' },
+  { displayName: 'Notification: MS Teams', inputValue: 'notificationMsTeams' },
   { displayName: 'Payment processing: Bambora', inputValue: 'paymentBambora' },
-  { displayName: 'Payment processing: PayBC', inputValue: 'paymentPayBC' },
+  { displayName: 'Payment processing: PayBC', inputValue: 'paymentPayBc' },
   { displayName: 'File Transfer', inputValue: 'fileTransfer' },
   { displayName: 'File Storage', inputValue: 'fileStorage' },
   { displayName: 'Geo Mapping: Web-based', inputValue: 'geoMappingWeb' },
@@ -53,7 +53,7 @@ export const COMPONENT_METADATA = [
   { displayName: 'Scheduling: Calendar', inputValue: 'schedulingCalendar' },
   { displayName: 'Scheduling: Appointments', inputValue: 'schedulingAppointments' },
   { displayName: 'Identity Management: SiteMinder', inputValue: 'idmSiteMinder' },
-  { displayName: 'Identity Management: KeyCloak', inputValue: 'idmKeyCloak' },
+  { displayName: 'Identity Management: KeyCloak', inputValue: 'idmKeycloak' },
   { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' }
 ]
 
