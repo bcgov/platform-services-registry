@@ -21,10 +21,6 @@ export const ENVIRONMENTS = {
   PRODUCTION: 'production',
 };
 
-export const SUBJECTS = {
-  NSPROVISION: 'registry_project_provisioning',
-};
-
 export const projectSetNames = [
   'tools',
   'dev',

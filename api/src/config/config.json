@@ -11,7 +11,8 @@
     "ssoGrantType": "client_credentials"
   },
   "nats": {
-    "port": 4222
+    "port": 4222,
+    "subject": "registry_project_provisioning"
   },
   "db": {
     "port": 5432,

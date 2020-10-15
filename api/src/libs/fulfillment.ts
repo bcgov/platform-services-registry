@@ -17,7 +17,8 @@
 //
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import { ROLE_IDS, SUBJECTS } from '../constants';
+import config from '../config';
+import { ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -75,7 +76,7 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
 
     try {
       const nc = shared.nats;
-      const subject = SUBJECTS.NSPROVISION;
+      const subject = config.get('nats:subject');
       const context = await contextForProvisioning(profileId);
 
       if (!context) {
