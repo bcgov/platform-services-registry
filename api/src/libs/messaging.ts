@@ -81,8 +81,8 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     }
 
     const receipt = await shared.ches.send(message);
-    logger.info(`Message (${messageType}) sent with transaction details: ${receipt}`);
-    logger.info(`Message was: ${message}`);
+    logger.info(`Message (${messageType}) sent with transaction details: ${JSON.stringify(receipt)}`);
+    logger.info(`Message was: ${JSON.stringify(message)}`);
 
     return receipt;
   } catch (err) {
