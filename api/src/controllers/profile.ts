@@ -19,7 +19,8 @@
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { USER_ROLES } from '../constants';
 import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -51,11 +52,17 @@ export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
   }
 }
 
-export const fetchAllProjectProfiles = async (req: Request, res: Response): Promise<void> => {
+export const fetchAllProjectProfiles = async (
+  { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
   const { ProfileModel } = dm;
 
   try {
-    const results = await ProfileModel.findAll();
+    let results;
+    if (user.roles.includes(USER_ROLES.ADMINISTRATOR)) {
+      results = await ProfileModel.findAll();
+    } else {
+      results = await ProfileModel.findProfilesByUserId(user.id);
+    }
 
     res.status(200).json(results);
   } catch (err) {
@@ -67,7 +74,7 @@ export const fetchAllProjectProfiles = async (req: Request, res: Response): Prom
 };
 
 export const fetchProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -75,8 +82,16 @@ export const fetchProjectProfile = async (
   try {
     const results = await ProfileModel.findById(Number(profileId));
 
+    if (!(user.id === results.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
     res.status(200).json(results);
   } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
     const message = `Unable fetch project profile with ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
@@ -133,10 +148,10 @@ export const updateProjectProfile = async (
     criticalSystem,
     prioritySystem,
     notificationEmail,
-    notificationSMS,
-    notificationMSTeams,
+    notificationSms,
+    notificationMsTeams,
     paymentBambora,
-    paymentPayBC,
+    paymentPayBc,
     fileTransfer,
     fileStorage,
     geoMappingWeb,
@@ -144,7 +159,7 @@ export const updateProjectProfile = async (
     schedulingCalendar,
     schedulingAppointments,
     idmSiteMinder,
-    idmKeyCloak,
+    idmKeycloak,
     idmActiveDir,
     other,
   } = body;
@@ -161,10 +176,10 @@ export const updateProjectProfile = async (
       userId: record.userId,
       namespacePrefix: record.namespacePrefix,
       notificationEmail,
-      notificationSMS,
-      notificationMSTeams,
+      notificationSms,
+      notificationMsTeams,
       paymentBambora,
-      paymentPayBC,
+      paymentPayBc,
       fileTransfer,
       fileStorage,
       geoMappingWeb,
@@ -172,10 +187,15 @@ export const updateProjectProfile = async (
       schedulingCalendar,
       schedulingAppointments,
       idmSiteMinder,
-      idmKeyCloak,
+      idmKeycloak,
       idmActiveDir,
       other,
     };
+
+    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
 
     if (rv) {
@@ -186,6 +206,10 @@ export const updateProjectProfile = async (
 
     res.status(200).json(results);
   } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
     const message = `Unable update project profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
@@ -194,17 +218,27 @@ export const updateProjectProfile = async (
 };
 
 export const archiveProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
 
   try {
+    const record = await ProfileModel.findById(profileId);
+
+    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
     await ProfileModel.delete(profileId);
 
     res.status(204).end();
   } catch (err) {
-    const message = 'Unable create new project profile';
+    if (err.code) {
+      throw err
+    }
+
+    const message = 'Unable to archive project profile';
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

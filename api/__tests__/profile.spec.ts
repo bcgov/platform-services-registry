@@ -19,6 +19,7 @@ import { camelCase } from 'lodash';
 import path from 'path';
 import { Pool } from 'pg';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
+import ProfileModel from '../src/db/model/profile';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -26,6 +27,9 @@ const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
 const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
+
+const p2 = path.join(__dirname, 'fixtures/user-template.json');
+const userRequest = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 const client = new Pool().connect();
 
@@ -99,8 +103,11 @@ describe('Profile event handlers', () => {
   });
 
 
-  it('All profiles are returned', async () => {
-    const req = {};
+  it('All profiles are returned as administrator', async () => {
+    const req = {
+      user: { roles: ['administrator',] },
+    };
+
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
     // @ts-ignore
@@ -112,6 +119,58 @@ describe('Profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();
   });
+
+  it('All user profiles are returned', async () => {
+    const req = {
+      user: userRequest,
+    };
+
+    client.query.mockReturnValueOnce({ rows: selectProfiles });
+
+    // @ts-ignore
+    await fetchAllProjectProfiles(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('ProfileModel findAll method is called when all profiles are returned to an admin user', async () => {
+    const req = {
+      user: { roles: ['administrator',] },
+    };
+
+    const findAll = ProfileModel.prototype.findAll = jest.fn();
+    const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserId = jest.fn();
+
+    // @ts-ignore
+    await fetchAllProjectProfiles(req, ex.res);
+
+    expect(findAll).toHaveBeenCalledTimes(1);
+    expect(findProfilesByUserId).toHaveBeenCalledTimes(0);
+  });
+
+  it('ProfileModel findProfilesByUserId method is called when all profiles are returned to a non-admin user',
+    async () => {
+      const req = {
+        user: {
+          roles: [],
+          id: 1,
+        },
+      };
+
+      const findAll = ProfileModel.prototype.findAll = jest.fn();
+      const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserId = jest.fn();
+
+      // @ts-ignore
+      await fetchAllProjectProfiles(req, ex.res);
+
+      expect(findAll).toHaveBeenCalledTimes(0);
+      expect(findProfilesByUserId).toHaveBeenCalledTimes(1);
+      expect(findProfilesByUserId.mock.calls[0][0]).toBe(req.user.id);
+    });
 
   it('Fetch all profiles should throw', async () => {
     const req = {};
@@ -126,9 +185,28 @@ describe('Profile event handlers', () => {
 
   it('A single profile is returned', async () => {
     const req = {
-      params: { profileId: 1 },
+      params: { profileId: 118 },
+      user: userRequest,
     };
     client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
+
+
+    // @ts-ignore
+    await fetchProjectProfile(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('A single profile is returned as administrator', async () => {
+    const req = {
+      params: { profileId: 118 },
+      user: { roles: ['administrator',] },
+    };
+    client.query.mockReturnValueOnce({ rows: [selectProfiles[2]] });
 
 
     // @ts-ignore
@@ -161,6 +239,7 @@ describe('Profile event handlers', () => {
       id: 9,
       createdAt: '2020-05-19T20:02:54.561Z',
       updateAt: '2020-05-19T20:02:54.561Z',
+      userId: 1,
     };
     const req = {
       params: { profileId: 1 },
@@ -190,6 +269,7 @@ describe('Profile event handlers', () => {
       createdAt: '2020-05-19T20:02:54.561Z',
       updateAt: '2020-05-19T20:02:54.561Z',
       fileTransfer: true,
+      userId: 1,
     };
     const req = {
       params: { profileId: 1 },
@@ -236,18 +316,49 @@ describe('Profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
+  it('A project fails to update with incorrect user Id', async () => {
+    const body = JSON.parse(JSON.stringify(insertProfile));
+    const aBody = {
+      id: 9,
+      ...body,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      userId: 2,
+    };
+    const req = {
+      params: { profileId: 1 },
+      body: aBody,
+      user: {
+        id: 1,
+      },
+    }
+
+    client.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(updateProjectProfile(req, ex.res)).rejects.toThrow();
+
+    expect(ex.res.status).not.toBeCalled();
+    expect(ex.res.json).not.toBeCalled();
+  });
+
   it('A project is archived', async () => {
     const aBody = {
       id: 9,
       ...insertProfile,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      userId: 4,
     };
     const req = {
       params: { profileId: 9 },
+      user: {
+        roles: [],
+        id: 4,
+      },
     }
 
-    client.query.mockReturnValueOnce({ rows: [aBody] });
+    client.query.mockReturnValue({ rows: [aBody] });
 
     // @ts-ignore
     await archiveProjectProfile(req, ex.res);
