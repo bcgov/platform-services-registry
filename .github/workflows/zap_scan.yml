@@ -5,13 +5,17 @@ on:
     # - cron:  '0 1 * * 1'
 
     # Initial Test runs at minute one on the hour
-    - cron: "1 * * * *"
+    - cron: "*/10 * * * *"
 
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
     name: Scan the platform services registry
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.4.0
         with:
