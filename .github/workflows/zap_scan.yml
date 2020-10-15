@@ -1,4 +1,4 @@
-name: site-security-scan
+name: Site Security Scan
 on:
   schedule:
     # Runs every Monday At 01:00.
