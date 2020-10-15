@@ -62,4 +62,4 @@ export default function transformFormData(data: any) {
     productOwner,
     technicalContact
   }
-}
+};
