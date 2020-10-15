@@ -112,6 +112,29 @@ export default class ProfileModel extends Model {
     }
   }
 
+  async findByPrefix(prefix: string): Promise<ProjectProfile> {
+    const query = {
+      text: `
+        SELECT * FROM ${this.table}
+          WHERE namespace_prefix = $1;
+      `,
+      values: [
+        prefix,
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to find Profile by prefix ${prefix}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async update(profileId, data: ProjectProfile): Promise<ProjectProfile> {
     const values: any[] = [];
     const query = {
