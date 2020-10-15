@@ -68,26 +68,33 @@ export const updateProvisionedNamespaces = async (
 
     const namespaces = await NamespaceModel.findForPrefix(prefix);
     const cluster = await ClusterModel.findByName(clusterName);
-
+    logger.info('A');
     if ((!namespaces || namespaces.length === 0) || !cluster) {
       throw new Error();
     }
+    logger.info('B');
 
     const clusterId = cluster.id;
     const provisioned = true;
     const promises: any = [];
+    logger.info('C');
 
     namespaces.forEach(namespace => {
       const { id } = namespace;
       promises.push(NamespaceModel.updateProvisionStatus(Number(id), Number(clusterId), provisioned));
     });
+    logger.info('D');
 
     await Promise.all(promises);
+    logger.info('D');
 
     const profileId = namespaces.pop()!.id;
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
+    logger.info('F');
+
     await sendProvisioningMessage(profileId!, MessageType.ProvisioningCompleted);
+    logger.info('G');
 
     res.status(202).end();
   } catch (err) {
