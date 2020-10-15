@@ -47,6 +47,7 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     const context = {
       profileId: profile.id,
       displayName: profile.name,
+      description: profile.description,
       namespaces,
       technicalContact: {
         userId: tcContact.githubId,
