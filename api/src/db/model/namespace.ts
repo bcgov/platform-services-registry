@@ -121,26 +121,6 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async findForPrefix(prefix: string): Promise<ProjectNamespace[]> {
-    const query = {
-      text: `
-        SELECT * FROM namespace WHERE name LIKE $1;
-      `,
-      values: [
-        `${prefix}-%`,
-      ],
-    };
-
-    try {
-      return await this.runQuery(query);
-    } catch (err) {
-      const message = `Unable to fetch namespaces with prefix ${prefix}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
   async updateProvisionStatus(namespaceId: number, clusterId: number, provisioned: boolean): Promise<void> {
     const query = {
       text: `
