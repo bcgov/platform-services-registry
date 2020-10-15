@@ -94,7 +94,7 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                     >
                         {/* {({ input, meta }) => ( */}
                         <option>Select...</option>
-                        {ministry.map((s: any) => (
+                        {(ministry.length > 0) && ministry.map((s: any) => (
                             <option
                                 key={s.id}
                                 value={s.id}
