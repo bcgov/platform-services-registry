@@ -2,6 +2,7 @@
 
 exports[`Services Provisioning context is created 1`] = `
 Object {
+  "description": "This is a cool project.",
   "displayName": "Project X",
   "namespaces": Array [
     Object {
