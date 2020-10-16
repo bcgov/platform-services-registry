@@ -25,7 +25,8 @@
     "react-toastify": "^6.0.8",
     "rebass": "^4.0.7",
     "typescript": "^3.9.7",
-    "typography": "^0.16.19"
+    "typography": "^0.16.19",
+    "validate.js": "^0.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
