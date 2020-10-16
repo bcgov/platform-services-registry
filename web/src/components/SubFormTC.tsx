@@ -19,6 +19,7 @@ import { Checkbox, Input, Label } from '@rebass/forms';
 import React, { useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex, Text } from 'rebass';
+import useValidator from '../utils/useValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 const StyledButton = styled.button`
@@ -39,14 +40,10 @@ const StyledDisabledButton = styled.button`
     background-color: #d3d3d3;
     color: #FFFFFF;
     font-size: 24px;
-    `;
+`;
 
-interface ISubFormTCProps {
-    requiredField: (value: string) => undefined | string;
-}
-
-const SubformTC: React.FC<ISubFormTCProps> = (props) => {
-    const { requiredField } = props;
+const SubformTC: React.FC = () => {
+    const validator = useValidator();
 
     const [boxChecked, setBoxChecked] = useState(false);
 
@@ -54,7 +51,7 @@ const SubformTC: React.FC<ISubFormTCProps> = (props) => {
         <div>
             <SubFormTitle>Who is the technical contact for this project?</SubFormTitle>
 
-            <Field name="tc-firstName" validate={requiredField}>
+            <Field name="tc-firstName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="tc-first-name">First Name</Label>
@@ -63,7 +60,7 @@ const SubformTC: React.FC<ISubFormTCProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-lastName" validate={requiredField}>
+            <Field name="tc-lastName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="tc-last-name">Last Name</Label>
@@ -72,22 +69,21 @@ const SubformTC: React.FC<ISubFormTCProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-email" validate={requiredField}>
+            <Field name="tc-email" validate={validator.mustBeValidEmail}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="tc-email">eMail Address</Label>
                         <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
-                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
-
-            <Field name="tc-githubId" validate={requiredField}>
+            <Field name="tc-githubId" validate={validator.mustBeValidGithubName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="tc-github-id">GitHub ID</Label>
                         <Input {...input} id="tc-github-id" placeholder="jane1100" />
-                        {meta.error && meta.touched && <Label variant="errorLabel">{meta.error}</Label>}
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>

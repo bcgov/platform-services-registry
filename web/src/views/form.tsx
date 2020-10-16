@@ -25,9 +25,7 @@ import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import transformFormData from '../utils/transformFormData';
-import useRegistryApi from '../utils/userRegistryApi';
-
-const requiredField = (value: string) => (value ? undefined : 'Required')
+import useRegistryApi from '../utils/useRegistryApi';
 
 const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
 
@@ -41,6 +39,7 @@ const MyForm: React.FC = () => {
     const onSubmit = async (formData: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(formData);
 
+        // TODO: fx this work-around
         if (!profile.busOrgId) {
             alert("You need to select a Ministry Sponsor.");
             return;
@@ -87,18 +86,6 @@ const MyForm: React.FC = () => {
         }
     };
 
-    const validate = (values: any): any => {
-        console.log('xxxv=', values);
-        // const errors = {}
-        // if (!values['project-busOrgId']) {
-        //     // @ts-ignore
-        //     errors['project-busOrgId'] = 'Required'
-        // }
-
-        // // console.log(errors);
-        // return errors;
-    };
-
     useEffect(() => {
         async function wrap() {
             const response = await api.getMinistry();
@@ -110,12 +97,16 @@ const MyForm: React.FC = () => {
     return (
         <Form
             onSubmit={onSubmit}
-            validate={validate}>
+            validate={values => {
+                const errors = {};
+                return errors;
+            }}
+        >
             {props => (
                 <form onSubmit={props.handleSubmit} >
                     <Flex flexWrap='wrap' mx={-2}>
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
-                            <SubFormProject ministry={ministry} requiredField={requiredField} />
+                            <SubFormProject ministry={ministry} />
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to {<a href="mailto: olena.mitovska@gov.bc.ca">olena.mitovska@gov.bc.ca</a>} to get started.</Text>
@@ -124,7 +115,7 @@ const MyForm: React.FC = () => {
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px">
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
-                            <SubFormPO requiredField={requiredField} />
+                            <SubFormPO />
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForPO}</Text>
@@ -132,7 +123,7 @@ const MyForm: React.FC = () => {
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px" >
                         <ShadowBox maxWidth="750px" p="24px" mt="0px" px={["24px", "24px", "70px"]} width={[1, 1, 2 / 3]}>
-                            <SubFormTC requiredField={requiredField} />
+                            <SubFormTC />
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForTC}</Text>

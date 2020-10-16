@@ -19,6 +19,7 @@ import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA } from '../constants';
+import useValidator from '../utils/useValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 interface MinistryItem {
@@ -28,16 +29,29 @@ interface MinistryItem {
 
 interface ISubFormProjectProps {
     ministry: Array<MinistryItem>;
-    requiredField: (value: string) => undefined | string;
 }
 
 const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
-    const { ministry, requiredField } = props;
+    const validator = useValidator();
+
+    const { ministry } = props;
+
+    let ministryOptions: any = [];
+
+    if (ministry.length > 0) {
+        ministry.forEach((s: any) => {
+            ministryOptions.push({
+                key: s.id,
+                text: s.name,
+                value: s.id
+            })
+        });
+    }
 
     return (
         <div>
             <SubFormTitle>Tell us about your project</SubFormTitle>
-            <Field name="project-name" validate={requiredField}>
+            <Field name="project-name" validate={validator.mustBeValidProfileName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="project-name">Name</Label>
@@ -46,7 +60,7 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <Field name="project-description" validate={requiredField}>
+            <Field name="project-description" validate={validator.mustBeValidProfileDescription}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="project-description">Description</Label>
@@ -66,7 +80,7 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                             value="yes"
                         >
                             {({ input, meta }) => (
-                                < >
+                                <>
                                     <input
                                         style={{ width: '35px', height: '35px' }}
                                         name={input.name}
@@ -136,14 +150,14 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                     </Flex>
                 </Flex>
             ))}
-            <Field name="project-other">
+            <Field name="project-other" validate={validator.mustBeValidComponentOthers}>
                 {({ input, meta }) => (
                     <Flex>
                         <Label htmlFor="project-other">Other:</Label>
                         <Flex flex="1 1 auto" justifyContent="flex-end">
                             <Input {...input} id="project-other" />
-                            {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                         </Flex>
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
