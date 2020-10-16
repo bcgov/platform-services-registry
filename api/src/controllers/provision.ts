@@ -93,7 +93,9 @@ export const updateProvisionedNamespaces = async (
 
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
+    logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
     await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
+    logger.info(`CHES message sent for ${profile.id}`);
 
     res.status(202).end();
   } catch (err) {

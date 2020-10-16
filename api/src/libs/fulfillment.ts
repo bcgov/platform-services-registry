@@ -89,13 +89,17 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
         reject(new Error(errmsg));
       });
 
+      logger.info(`Sending NATS message for ${profileId}`);
       nc.publish(subject, context);
+      logger.info(`NATS Message sent for ${profileId}`);
 
       nc.flush(() => {
         nc.removeAllListeners(['error']);
       });
 
+      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
       await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+      logger.info(`CHES message sent for ${profileId}`);
 
       resolve();
     } catch (err) {
