@@ -36,18 +36,6 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
 
     const { ministry } = props;
 
-    let ministryOptions: any = [];
-
-    if (ministry.length > 0) {
-        ministry.forEach((s: any) => {
-            ministryOptions.push({
-                key: s.id,
-                text: s.name,
-                value: s.id
-            })
-        });
-    }
-
     return (
         <div>
             <SubFormTitle>Tell us about your project</SubFormTitle>
