@@ -18,20 +18,17 @@ import { Input, Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import useValidator from '../utils/useValidator';
 import SubFormTitle from './UI/subFormTitle';
 
-interface ISubFormPOProps {
-    requiredField: (value: string) => undefined | string;
-}
-
-const SubformPO: React.FC<ISubFormPOProps> = (props) => {
-    const { requiredField } = props;
+const SubformPO: React.FC = () => {
+    const validator = useValidator();
 
     return (
         <div>
             <SubFormTitle>Who is the product owner for this project?</SubFormTitle>
 
-            <Field name="po-firstName" validate={requiredField}>
+            <Field name="po-firstName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="po-first-name">First Name</Label>
@@ -40,7 +37,7 @@ const SubformPO: React.FC<ISubFormPOProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <Field name="po-lastName" validate={requiredField}>
+            <Field name="po-lastName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="po-last-name">Last Name</Label>
@@ -49,7 +46,7 @@ const SubformPO: React.FC<ISubFormPOProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <Field name="po-email" validate={requiredField}>
+            <Field name="po-email" validate={validator.mustBeValidEmail}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="po-email">eMail Address</Label>
@@ -58,11 +55,12 @@ const SubformPO: React.FC<ISubFormPOProps> = (props) => {
                     </Flex>
                 )}
             </Field>
-            <Field name="po-githubId" validate={requiredField}>
-                {({ input }) => (
+            <Field name="po-githubId" validate={validator.mustBeValidGithubName}>
+                {({ input, meta }) => (
                     <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
                         <Label htmlFor="po-github-id">GitHub ID</Label>
                         <Input {...input} id="po-github-id" placeholder="jane1100" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
