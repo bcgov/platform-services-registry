@@ -26,9 +26,9 @@ Once configured, the workflow will trigger the S2I image build process when the 
 2. Set the `OpenShiftServerURL` to your OpenShift console URL.
 3. Set the `OpenShiftToken` to the access token created by Step 1; you'll find a newly minted secret with the relevant token.
 
-### Pro Tip 🤓
+### ProTip 🤓
 
-The workflow has CodeClimate integrated. Either setup your own CodeClimate instance or remove the reference in yur forked repo.
+The workflow has CodeClimate integrated. Either setup your own CodeClimate instance or remove the reference in your forked repo.
 
 ## Deploying the API
 
@@ -42,7 +42,7 @@ Now that you've successfully minted your very own copy of the API image in your 
 
 ### Deploy all the things (Step 1-3)
 
-The API uses an OCP4 `ConfigMap` to store necessary configuration such as the location of NATS, SSO or db connection parameters. Review [this](./openshift/templates/config.yaml) OCP template and make sure the properties are set correctly. Once updated, create the `ConfigMap` in OCP with the following command:
+The API uses an OCP4 `ConfigMap` to store necessary configuration such as the location of NATS (and topics), SSO or DB connection parameters. Review [this](./openshift/templates/config.yaml) OCP template and make sure the properties are set correctly. Once updated, create the `ConfigMap` in OCP with the following command:
 
 ```console
 oc process -f api/openshift/templates/config.yaml | \
@@ -89,7 +89,7 @@ oc process -f api/openshift/templates/deploy.yaml \
 | NATS_HOST_URL          | The URL for the NATS service.
 
 
-### Pro Tip 🤓
+### ProTip 🤓
   
 The deployment manifest assumes you're using image tags (or config changes) to trigger a deployment. Don't do your initial tag until you have created the database schema. If you have a running API pod, scale it down for now:
 
@@ -105,16 +105,16 @@ oc tag platsrv-registry-api:latest platsrv-registry-api:dev
 
 ### Schema Build-out (Step 4)
 
-We need to build out the database schema before the API can do anything useful with it. Examine your database credentials with the following command and make a note of the `user` property. This is the application (API Pod) account used to access the database.
+We need to build out the database schema before the API can do anything useful with it. Examine your database credentials with the following command and make a note of the `superuser-password` property. This is the application (API Pod) account used to access the database.
 
 ```console
-oc get secret/registry-postgres-creds -o yaml
+oc get secret/registry-patroni-creds -o yaml
 ```
 
-Find out what your database Pod name is (`oc get pods`) and use a variant of the following command to port forward to it:
+Find out what your database master Pod name is (`oc get pods` and `oc describe pod/NAME`) and use a variant of the following command to port forward to it:
 
 ```console
-oc port-forward registry-postgres-1-rz6nz 5432
+oc port-forward patroni-0 5432
 ```
 
 Run a local instance of PostgreSQL. This will give you access to the `psql` command line tool and mount a volume so we can access the SQL scripts. This command assumes you're running it form the root directory of the repo.
@@ -124,7 +124,13 @@ docker run -it --rm --name blarb \
 -v $(pwd)/db:/opt/src postgres /bin/bash
 ```
 
-Repeat the following command, once for each of the SQL scripts located in `/opt/src/sql` then onces for each of the SQL scripts located in `/opt/src/seed`. This will build out the database schema and load in the reference data.
+Now set the admin password so that it can be used by `psql`:
+
+```console
+export PGPASSWORD=<ADMIN_PASSWORD_HERE>
+```
+
+Repeat the following command, once for each of the SQL scripts located in `/opt/src/sql` then onces for each of the SQL scripts located in `/opt/src/seed`. This will build out the database schema and load in the reference data. Replace `ROLLNAME` with the name from the `app-db-username` property in the patroni secret above.
 
 ```console
 psql -U postgres -d registry -h host.docker.internal \
@@ -139,7 +145,7 @@ The API is designed to service different clients. Please reference the OpenAPI 3
 
 Here is a sample on how a client may use the API. In this sample the client will trigger the API to update the provisioning status of namespaces.
 
-All client access is governed by Single Sign On (SSO) provided by Keycloak. Clients are created in SSO with a shared secret that can be used to acquire a JWT for API access.
+All client access is governed by Single Sign On (SSO) provided by KeyCloak (KC). Clients are created in SSO with a shared secret that can be used to acquire a JWT for API access.
 
 Set the following environment variables with the credentials and URL provided to you.
 
@@ -164,11 +170,20 @@ Use the following command to update namespace provisioning status
 ```console
 curl -vX PUT \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${MY_JWT}" \
-  -d @data.json \
-  http://localhost:8100/api/v1/provision/1/namespace
+  -H "Authorization: Bearer ${MYTOKEN}" \
+  http://localhost:8100/api/v1/provision/namespace \
+  -d @data.json
 ```
 
-### Pro Tip 🤓
+Where `data.json` from above contains the namespace prefix of all the namespaces being updates:
+
+Sample `data.json`:
+```json
+{
+    "prefix": "54eab0"
+}
+```
+
+### ProTip 🤓
 
 See the OpenAPI 3.0 documentation to understand the structure of the `data.json` payload.
