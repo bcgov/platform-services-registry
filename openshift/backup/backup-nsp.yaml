@@ -1,0 +1,59 @@
+# Copyright 2020 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: |
+      The Network Security Policies (NSP) for the associated
+      Platform Services registry application.
+  name: hipster-store-demo
+objects:
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: backup-to-patroni
+      labels:
+        app: platsrv-registry
+    spec:
+      description: |
+        allow the API to communicate with the NATS pod. This may not be
+        required if you are using the production environment or, at the
+        verry least, it will require modification.
+      source:
+        - - "$namespace=${NAMESPACE}"
+          - "${BACKUP_CONTAINER_IDENTIFIER}"
+      destination:
+        - - "$namespace=${NAMESPACE}"
+          - "statefulset=${STATEFULSET_NAME}"
+parameters:
+  - name: NAMESPACE
+    description: |
+      The the name of the namespace the policy is being
+      deployed to.
+    required: true
+  - name: STATEFULSET_NAME
+    description: |
+      The the name of the namespace the policy is being
+      deployed to.
+    required: true
+    value: registry-patroni
+  - name: BACKUP_CONTAINER_IDENTIFIER
+    description: |
+      The the name of the identifier used by Aporeto to
+      isolate and identify the backup container pod(s).
+    required: true
+    value: app:k8s:serviceaccountname=db-backup-backup-storage
