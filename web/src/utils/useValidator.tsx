@@ -39,14 +39,14 @@ const schema = {
     presence: { allowEmpty: false, message: 'Required' },
     length: {
       maximum: 512,
-      tooLong: 'Max 512 chars'
+      tooLong: 'Max 512 characters'
     },
     format: { pattern: `^(?! ).+[A-Za-z0-9 ,)(.!?"']+`, flags: 'i', message: 'Invalid format' }
   },
   componenentOthers: {
     length: {
       maximum: 512,
-      tooLong: 'Max 512 chars'
+      tooLong: 'Max 512 characters'
     },
     format: { pattern: `^(?! ).+[A-Za-z0-9 ,)(.!?"']+`, flags: 'i', message: 'Invalid format' }
   },
@@ -62,7 +62,7 @@ const schema = {
     presence: { allowEmpty: false, message: 'Required' },
     length: {
       maximum: 32,
-      tooLong: 'Max 32 chars'
+      tooLong: 'Max 32 characters'
     },
     format: { pattern: `[A-Za-z0-9-]+`, flags: 'i', message: 'Invalid Github account format' }
   }
