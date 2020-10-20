@@ -92,7 +92,8 @@ const MyForm: React.FC = () => {
             setMinistry(response.data);
         }
         wrap();
-    }, [api]);
+        // eslint-disable-next-line
+    }, []);
 
     return (
         <Form
