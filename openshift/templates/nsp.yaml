@@ -36,7 +36,7 @@ objects:
           - 'role=api'
       destination:
         - - '$namespace=${NAMESPACE}'
-          - 'statefulset=${STATEFULSET_NAME}'
+          - '${DB_APO_IDENTIFIER}'
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
@@ -81,22 +81,51 @@ objects:
         etc.
       source:
         - - '$namespace=${NAMESPACE}'
-          - 'statefulset=${STATEFULSET_NAME}'
+          - '${DB_APO_IDENTIFIER}'
       destination:
         - - '$namespace=${NAMESPACE}'
-          - 'statefulset=${STATEFULSET_NAME}'
+          - '${DB_APO_IDENTIFIER}'
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: ExternalNetwork
+    metadata:
+      # This metadata field will be what you see with the command
+      # `oc get externalnetwork` or `kubctl get externalnetwork`.
+      name: all-things-external
+      labels:
+        app: platsrv-registry
+    spec:
+      # This name will be used internally by Aporeto; it should match
+      # the `name` field in metadata above.
+      description: |
+        specify a custom external network that can be
+        referenced by name. This allows pods to talk out to the
+        internet as needed.
+      entries:
+        - 0.0.0.0/0
+      servicePorts:
+        - "tcp/80"
+        - "tcp/443"
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: api-to-internet
+      labels:
+        app: platsrv-registry
+    spec:
+      description: |
+        allow the API pods to communicate with the internet so it can
+        talk to SSO on the OCP3 cluster.
+      source:
+        - - '$namespace=${NAMESPACE}'
+          - 'role=api'
+      destination:
+        - - 'ext:name=all-things-external'
 parameters:
   - name: NAMESPACE
     description: |
       The the name of the namespace the policy is being
       deployed to.
     required: true
-  - name: STATEFULSET_NAME
-    description: |
-      The the name of the namespace the policy is being
-      deployed to.
-    required: true
-    value: registry-patroni
   - name: NATS_NAMESPACE
     description: |
       The the name where NATS is located; it can be the same as NAMESPACE
@@ -105,5 +134,10 @@ parameters:
   - name: NATS_APO_IDENTIFIER
     description: |
       The the Aporeto identifier used by Aporeto to identify the NATS
+      service.
+    required: true
+  - name: DB_APO_IDENTIFIER
+    description: |
+      The Aporeto identifier used by Aporeto to identify the DB
       service.
     required: true
