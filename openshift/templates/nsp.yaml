@@ -36,7 +36,7 @@ objects:
           - 'role=api'
       destination:
         - - '$namespace=${NAMESPACE}'
-          - 'statefulset=${STATEFULSET_NAME}'
+          - '${DB_APO_IDENTIFIER}'
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
@@ -81,10 +81,10 @@ objects:
         etc.
       source:
         - - '$namespace=${NAMESPACE}'
-          - 'statefulset=${STATEFULSET_NAME}'
+          - '${DB_APO_IDENTIFIER}'
       destination:
         - - '$namespace=${NAMESPACE}'
-          - 'statefulset=${STATEFULSET_NAME}'
+          - '${DB_APO_IDENTIFIER}'
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: ExternalNetwork
     metadata:
@@ -126,12 +126,6 @@ parameters:
       The the name of the namespace the policy is being
       deployed to.
     required: true
-  - name: STATEFULSET_NAME
-    description: |
-      The the name of the namespace the policy is being
-      deployed to.
-    required: true
-    value: registry-patroni
   - name: NATS_NAMESPACE
     description: |
       The the name where NATS is located; it can be the same as NAMESPACE
@@ -140,5 +134,10 @@ parameters:
   - name: NATS_APO_IDENTIFIER
     description: |
       The the Aporeto identifier used by Aporeto to identify the NATS
+      service.
+    required: true
+  - name: DB_APO_IDENTIFIER
+    description: |
+      The Aporeto identifier used by Aporeto to identify the DB
       service.
     required: true
