@@ -20,7 +20,8 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { LAYOUT_SET_AUTH, LAYOUT_SET_MIN, ROUTE_PATHS } from '../constants';
+import { Link as RouterLink } from 'react-router-dom';
+import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
@@ -71,6 +72,7 @@ const H2 = styled.h2`
   padding: 0px 4px;
   text-decoration: none;
   font-size: 1.54912em;
+  color: ${theme.colors.contrast};
   @media (max-width: ${theme.breakpoints[0]}) {
     font-size: 1em;
   }
@@ -136,8 +138,10 @@ const Header: React.FC<IHeaderProps> = props => {
   return (
     <StyledHeader>
       <StyledBanner>
-        <GovLogo />
-        <H2>Platform Services Registry</H2>
+        <RouterLink style={{ display: 'flex', alignItems: 'center' }} to={HOME_PAGE_URL}>
+          <GovLogo />
+          <H2>Platform Services Registry</H2>
+        </RouterLink>
         {(name !== LAYOUT_SET_MIN) && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
       </StyledBanner>
       <ContainerMobile>
