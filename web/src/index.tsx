@@ -20,7 +20,6 @@ ReactDOM.render(
               -moz-osx-font-smoothing: grayscale;
             }
           #root {
-              height: 100vw;
             }
           code {
               font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
