@@ -104,7 +104,7 @@ const Nav: React.FC<INavProps> = props => {
         <ContainerDesktop>
           {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
           <Authbutton />
-          {isAuthenticated && isComponentVisible && (<DropdownMenu handleDDDesktop={handleDDDesktop} ref={ref} menuItems={dirs} />)}
+          {isAuthenticated && isComponentVisible && (<DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />)}
         </ContainerDesktop>
         <ContainerMobile>
           <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
@@ -151,7 +151,7 @@ const Header: React.FC<IHeaderProps> = props => {
             {(name === LAYOUT_SET_AUTH) && (<div>
               {dirs.map(
                 (item, index) =>
-                  <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
+                  <DropdownMenuItem handleOnClick={handleDDMobile} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
               )} </div>
             )}
           </StyledDropdownMobile>

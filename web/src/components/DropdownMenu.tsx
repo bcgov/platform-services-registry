@@ -33,11 +33,11 @@ const StyledDropdown = styled.div`
 interface IDropdownMenuProps {
   menuItems: Array<MenuItem>;
   ref?: any;
-  handleDDDesktop: MouseEventHandler<React.ReactNode>;
+  handleOnClick: MouseEventHandler<React.ReactNode>;
 }
 
 const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref) => {
-  const { menuItems, handleDDDesktop } = props;
+  const { menuItems, handleOnClick } = props;
 
   return (
     // TODO: investigate ref type error
@@ -46,7 +46,7 @@ const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref)
       <StyledDropdown>
         {menuItems.map(
           (item, index) =>
-            <DropdownMenuItem handleDDDesktop={handleDDDesktop} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
+            <DropdownMenuItem handleOnClick={handleOnClick} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
         )}
       </StyledDropdown>
     </div>
