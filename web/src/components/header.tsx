@@ -35,11 +35,11 @@ import { ContainerDesktop, ContainerMobile } from './UI/responsiveContainer';
 
 const StyledHeader = styled.header`
   background-color: ${theme.colors.primary};
-  color: ${theme.colors.contrast}
+  color: ${theme.colors.contrast};
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: ${theme.zIndices[4]};
+  z-index: ${theme.zIndices[1]};
 `;
 
 const StyledBanner = styled.div`
@@ -91,7 +91,7 @@ const Nav: React.FC<INavProps> = props => {
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
   const handleDDDesktop = () => {
-    setIsComponentVisible(true);
+    setIsComponentVisible(!isComponentVisible);
   };
 
   if (name === LAYOUT_SET_MIN) {
@@ -102,7 +102,7 @@ const Nav: React.FC<INavProps> = props => {
         <ContainerDesktop>
           {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
           <Authbutton />
-          {isAuthenticated && isComponentVisible && (<DropdownMenu ref={ref} menuItems={dirs} />)}
+          {isAuthenticated && isComponentVisible && (<DropdownMenu handleDDDesktop={handleDDDesktop} ref={ref} menuItems={dirs} />)}
         </ContainerDesktop>
         <ContainerMobile>
           <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}

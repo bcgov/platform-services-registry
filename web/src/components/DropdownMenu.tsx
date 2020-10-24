@@ -15,7 +15,7 @@
 //
 
 import styled from '@emotion/styled';
-import { default as React } from 'react';
+import { default as React, MouseEventHandler } from 'react';
 import theme from '../theme';
 import { MenuItem } from '../types';
 import DropdownMenuItem from './DropdownMenuItem';
@@ -33,10 +33,11 @@ const StyledDropdown = styled.div`
 interface IDropdownMenuProps {
   menuItems: Array<MenuItem>;
   ref?: any;
+  handleDDDesktop: MouseEventHandler<React.ReactNode>;
 }
 
 const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref) => {
-  const { menuItems } = props;
+  const { menuItems, handleDDDesktop } = props;
 
   return (
     // TODO: investigate ref type error
@@ -45,7 +46,7 @@ const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref)
       <StyledDropdown>
         {menuItems.map(
           (item, index) =>
-            <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
+            <DropdownMenuItem handleDDDesktop={handleDDDesktop} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
         )}
       </StyledDropdown>
     </div>

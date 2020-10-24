@@ -31,7 +31,9 @@ const txtForPO = `Tell us about the Product Owner (PO). This is typically the bu
 
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
 
-const MyForm: React.FC = () => {
+const MyForm: React.FC = (props: any) => {
+    const { openBackdropCB, closeBackdropCB } = props;
+
     const api = useRegistryApi();
 
     const [ministry, setMinistry] = useState<any>([]);
@@ -44,7 +46,7 @@ const MyForm: React.FC = () => {
             alert("You need to select a Ministry Sponsor.");
             return;
         }
-
+        openBackdropCB();
         try {
             // 1. Create the project profile.
             const response: any = await api.createProfile(profile);
@@ -61,6 +63,7 @@ const MyForm: React.FC = () => {
             // 4. Trigger provisioning
             await api.createNamespaceByProfileId(profileId);
 
+            closeBackdropCB();
             // 5.All good? Tell the user.
             toast.success('🦄 Your namespace request was successful', {
                 position: "top-center",
@@ -72,6 +75,7 @@ const MyForm: React.FC = () => {
                 progress: undefined,
             });
         } catch (err) {
+            closeBackdropCB();
             toast.error('😥 Something went wrong', {
                 position: "top-center",
                 autoClose: 5000,
@@ -92,6 +96,7 @@ const MyForm: React.FC = () => {
             setMinistry(response.data);
         }
         wrap();
+
         // eslint-disable-next-line
     }, []);
 
