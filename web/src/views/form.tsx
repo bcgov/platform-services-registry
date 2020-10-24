@@ -18,6 +18,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
+import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Box, Flex, Text } from 'rebass';
 import SubFormPO from '../components/SubFormPO';
@@ -37,6 +38,8 @@ const MyForm: React.FC = (props: any) => {
     const api = useRegistryApi();
 
     const [ministry, setMinistry] = useState<any>([]);
+
+    const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
     const onSubmit = async (formData: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(formData);
@@ -64,6 +67,7 @@ const MyForm: React.FC = (props: any) => {
             await api.createNamespaceByProfileId(profileId);
 
             closeBackdropCB();
+            setGoBackToDashboard(true);
             // 5.All good? Tell the user.
             toast.success('🦄 Your namespace request was successful', {
                 position: "top-center",
@@ -100,6 +104,9 @@ const MyForm: React.FC = (props: any) => {
         // eslint-disable-next-line
     }, []);
 
+    if (goBackToDashboard) {
+        return (<Redirect to={'/dashboard'} />);
+    }
     return (
         <Form
             onSubmit={onSubmit}
@@ -138,7 +145,7 @@ const MyForm: React.FC = (props: any) => {
                 </form>
             )}
         </Form >
-    )
+    );
 };
 
 export default MyForm;
