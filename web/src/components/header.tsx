@@ -20,7 +20,7 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { LAYOUT_SET_AUTH, LAYOUT_SET_MIN } from '../constants';
+import { LAYOUT_SET_AUTH, LAYOUT_SET_MIN, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
@@ -129,7 +129,7 @@ const Header: React.FC<IHeaderProps> = props => {
   const dirs = [{
     title: "A new Openshift Project Set",
     subTitle: "Create 4 Project namespaces in Silver cluster",
-    href: "/namespaces/create",
+    href: ROUTE_PATHS.FORM,
     onClickCB: () => { }
   }];
 

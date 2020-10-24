@@ -25,6 +25,7 @@ import SubFormPO from '../components/SubFormPO';
 import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
+import { ROUTE_PATHS } from '../constants';
 import transformFormData from '../utils/transformFormData';
 import useRegistryApi from '../utils/useRegistryApi';
 
@@ -105,7 +106,7 @@ const MyForm: React.FC = (props: any) => {
     }, []);
 
     if (goBackToDashboard) {
-        return (<Redirect to={'/dashboard'} />);
+        return (<Redirect to={ROUTE_PATHS.DASHBOARD} />);
     }
     return (
         <Form
