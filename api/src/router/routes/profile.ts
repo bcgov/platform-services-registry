@@ -21,7 +21,7 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/profile';
+import { addContactToProfile, archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProfileContacts, fetchProjectProfile, updateProjectProfile } from '../../controllers/profile';
 
 const router = express.Router();
 
@@ -40,6 +40,7 @@ router.put('/:profileId/namespace/:namespaceId', asyncMiddleware(updateProfileNa
 router.delete('/:profileId/namespace/:namespaceId', asyncMiddleware(archiveProfileNamespace));
 
 // Contacts
+router.get('/:profileId/contacts', asyncMiddleware(fetchProfileContacts));
 router.post('/:profileId/contact/:contactId', asyncMiddleware(addContactToProfile));
 
 export default router;
