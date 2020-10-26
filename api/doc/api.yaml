@@ -330,6 +330,39 @@ paths:
           description: The request was received but incorrect
         500:
           description: Internal Error
+  /api/v1/profile/{profileId}/contacts:
+    get:
+      operationId: fetchProfileContacts
+      summary: Fetch a given projects Product Owner and Technical Contact
+      description: |-
+        Use this endpoint to fetch a given projects Product Owner 
+        and Technical Contact. The projects contacts will be returned 
+        providing it is not archived.
+      tags:
+        - Contact
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being requested.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Contact"
+        400:
+          description: The request was received but incorrect
+        401:
+          description: The request was received but didn't have correct access permissions
+        500:
+          description: Internal Error
+
 components:
   schemas:
     Cluster:
@@ -494,3 +527,38 @@ components:
         - name
       example:
         name: "Agriculture"
+    Contact:
+      title: Project Contacts
+      description: Payload for the project contacts
+      type: object
+      properties:
+        id:
+          type: number
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        github_id:
+          type: string
+        role_id:
+          type: number
+        archived:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - first_name
+        - last_name
+        - email
+        - role_id
+      example:
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        role_id: 1
