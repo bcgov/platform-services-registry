@@ -31,11 +31,8 @@ const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 const p2 = path.join(__dirname, 'fixtures/user-template.json');
 const userRequest = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
-const p3 = path.join(__dirname, 'fixtures/select-profile-contact.json');
-const selectProfilesContact = JSON.parse(fs.readFileSync(p3, 'utf8'));
-
-const p4 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
-const selectProfilesContacts = JSON.parse(fs.readFileSync(p4, 'utf8'));
+const p3 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
+const selectProfilesContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
 const client = new Pool().connect();
 
@@ -412,7 +409,6 @@ describe('Profile event handlers', () => {
     };
 
     client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
-    client.query.mockReturnValueOnce({ rows: selectProfilesContact });
     client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
 
     // @ts-ignore

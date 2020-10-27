@@ -33,17 +33,25 @@ exports[`Profile event handlers A profiles contacts are returned 2`] = `200`;
 exports[`Profile event handlers A profiles contacts are returned 3`] = `
 Array [
   Object {
-    "contactId": 233,
+    "archived": false,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "id": 112,
-    "profileId": 1,
+    "email": "jane@example.com",
+    "firstName": "Jane",
+    "githubId": "jane1100",
+    "id": 233,
+    "lastName": "Doe",
+    "roleId": 1,
     "updatedAt": "2020-09-10T18:14:13.436Z",
   },
   Object {
-    "contactId": 234,
+    "archived": false,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "id": 113,
-    "profileId": 1,
+    "email": "jim@example.com",
+    "firstName": "Jim",
+    "githubId": "jim1100",
+    "id": 234,
+    "lastName": "Doe",
+    "roleId": 2,
     "updatedAt": "2020-09-10T18:14:13.436Z",
   },
 ]
