@@ -30,37 +30,37 @@ const SubformPO: React.FC = () => {
 
             <Field name="po-firstName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="po-first-name">First Name</Label>
-                        <Input {...input} id="po-first-name" placeholder="Jane" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-first-name">First Name</Label>
+                        <Input mt="8px" {...input} id="po-first-name" placeholder="Jane" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="po-lastName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="po-last-name">Last Name</Label>
-                        <Input {...input} id="po-last-name" placeholder="Doe" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-last-name">Last Name</Label>
+                        <Input mt="8px" {...input} id="po-last-name" placeholder="Doe" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="po-email" validate={validator.mustBeValidEmail}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="po-email">eMail Address</Label>
-                        <Input {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-email">eMail Address</Label>
+                        <Input mt="8px" {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="po-githubId" validate={validator.mustBeValidGithubName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="po-github-id">GitHub ID</Label>
-                        <Input {...input} id="po-github-id" placeholder="jane1100" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-github-id">GitHub ID</Label>
+                        <Input mt="8px" {...input} id="po-github-id" placeholder="jane1100" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>

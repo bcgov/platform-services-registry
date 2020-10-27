@@ -53,37 +53,37 @@ const SubformTC: React.FC = () => {
 
             <Field name="tc-firstName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="tc-first-name">First Name</Label>
-                        <Input {...input} id="tc-first-name" placeholder="Jane" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-first-name">First Name</Label>
+                        <Input mt="8px" {...input} id="tc-first-name" placeholder="Jane" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="tc-lastName" validate={validator.mustBeValidName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="tc-last-name">Last Name</Label>
-                        <Input {...input} id="tc-last-name" placeholder="Doe" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-last-name">Last Name</Label>
+                        <Input mt="8px" {...input} id="tc-last-name" placeholder="Doe" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="tc-email" validate={validator.mustBeValidEmail}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="tc-email">eMail Address</Label>
-                        <Input {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-email">eMail Address</Label>
+                        <Input mt="8px" {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="tc-githubId" validate={validator.mustBeValidGithubName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="tc-github-id">GitHub ID</Label>
-                        <Input {...input} id="tc-github-id" placeholder="jane1100" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-github-id">GitHub ID</Label>
+                        <Input mt="8px" {...input} id="tc-github-id" placeholder="jane1100" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
@@ -93,7 +93,7 @@ const SubformTC: React.FC = () => {
                 <Text px='20px'>By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the {<a rel="noopener noreferrer" href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!" target="_blank">Onboarding Guide</a>}.</Text>
             </Label>
 
-            {boxChecked ? (<StyledButton type="submit">Request</StyledButton>) : (<StyledDisabledButton disabled type="submit">Request</StyledDisabledButton>)}
+            {boxChecked ? (<StyledButton className="misc-class-m-form-submit-btn" type="submit">Request</StyledButton>) : (<StyledDisabledButton disabled type="submit">Request</StyledDisabledButton>)}
         </div >
     );
 };

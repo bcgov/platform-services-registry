@@ -20,8 +20,10 @@
 
 import styled from '@emotion/styled';
 import React from 'react';
+import theme from '../theme';
 
 const StyledFooter = styled.footer`
+  z-index: ${theme.zIndices[1]};
   background-color: #036;
   border-top: 2px solid #fcba19;
   color: #fff;
@@ -31,6 +33,9 @@ const StyledFooter = styled.footer`
   position: fixed;
   bottom: 0px;
   height: 46px;
+  @media (max-width: ${theme.breakpoints[1]}) {
+    height: 55px;
+  };
   width: 100%;
 `;
 

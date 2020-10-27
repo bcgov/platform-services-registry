@@ -22,7 +22,7 @@ import theme from '../theme';
 import { MenuItem as IMenuItemProps } from '../types';
 
 const StyledDropdownItem = styled.div`
-  margin: 15px 15px 15px 0px;
+  margin: 20px 15px 15px 0px;
   border-bottom: 1px solid;
   @media (max-width: ${theme.breakpoints[1]}) {
     color: ${theme.colors.contrast};
@@ -30,13 +30,14 @@ const StyledDropdownItem = styled.div`
 `;
 
 const DropdownMenuItem: React.FC<IMenuItemProps> = (props) => {
-  const { href, title, subTitle, onClickCB } = props;
+  const { href, title, subTitle, onClickCB, handleOnClick } = props;
+
   if (!!href) {
     return (
       <RouterLink className='misc-class-m-dropdown-link' to={href}>
-        <StyledDropdownItem>
+        <StyledDropdownItem onClick={handleOnClick}>
           <h3>{title}</h3>
-          <Text color={theme.colors.grey} mb='12px'>{subTitle}</Text>
+          <Text mb='12px'>{subTitle}</Text>
         </StyledDropdownItem>
       </RouterLink>
     );

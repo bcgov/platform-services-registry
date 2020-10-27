@@ -16,17 +16,17 @@ exports[`matches the snapshot 1`] = `
             Tell us about your project
           </h1>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="project-name"
             >
               Name
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="project-name"
               name="project-name"
               placeholder="Project X"
@@ -35,17 +35,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="project-description"
             >
               Description
             </label>
             <textarea
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="project-description"
               name="project-description"
               placeholder="A cutting edge web platform that enables Citizens to ..."
@@ -53,10 +53,10 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-4cffwv"
+            class="css-1alsiom"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
             >
               Is this a Priority Application?
             </label>
@@ -64,7 +64,7 @@ exports[`matches the snapshot 1`] = `
               class="css-xtali0"
             >
               <label
-                class="css-v4bk2t"
+                class="css-1grp5jk"
               >
                 <input
                   name="project-prioritySystem"
@@ -76,7 +76,7 @@ exports[`matches the snapshot 1`] = `
             </div>
           </div>
           <div
-            class="css-4cffwv"
+            class="css-1alsiom"
           >
             <label
               class="css-knfhfe"
@@ -425,7 +425,8 @@ exports[`matches the snapshot 1`] = `
             </div>
           </div>
           <div
-            class="css-4cffwv"
+            class="css-1vmgfxl"
+            style="position: relative;"
           >
             <label
               class="css-knfhfe"
@@ -489,17 +490,17 @@ exports[`matches the snapshot 1`] = `
             Who is the product owner for this project?
           </h1>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="po-first-name"
             >
               First Name
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="po-first-name"
               name="po-firstName"
               placeholder="Jane"
@@ -508,17 +509,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="po-last-name"
             >
               Last Name
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="po-last-name"
               name="po-lastName"
               placeholder="Doe"
@@ -527,17 +528,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="po-email"
             >
               eMail Address
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="po-email"
               name="po-email"
               placeholder="jane.doe@gov.bc.ca"
@@ -546,17 +547,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="po-github-id"
             >
               GitHub ID
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="po-github-id"
               name="po-githubId"
               placeholder="jane1100"
@@ -589,17 +590,17 @@ exports[`matches the snapshot 1`] = `
             Who is the technical contact for this project?
           </h1>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="tc-first-name"
             >
               First Name
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="tc-first-name"
               name="tc-firstName"
               placeholder="Jane"
@@ -608,17 +609,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="tc-last-name"
             >
               Last Name
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="tc-last-name"
               name="tc-lastName"
               placeholder="Doe"
@@ -627,17 +628,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="tc-email"
             >
               eMail Address
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="tc-email"
               name="tc-email"
               placeholder="jane.doe@gov.bc.ca"
@@ -646,17 +647,17 @@ exports[`matches the snapshot 1`] = `
             />
           </div>
           <div
-            class="css-761hsa"
+            class="css-j2gbad"
             style="position: relative;"
           >
             <label
-              class="css-knfhfe"
+              class="css-1h8msqk"
               for="tc-github-id"
             >
               GitHub ID
             </label>
             <input
-              class="css-4y926w"
+              class="css-1f2jrlr"
               id="tc-github-id"
               name="tc-githubId"
               placeholder="jane1100"
