@@ -1,0 +1,16 @@
+[
+  {
+    "id": 112,
+    "profile_id": 1,
+    "contact_id": 233,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "updatedAt": "2020-09-10T18:14:13.436Z"
+  },
+  {
+    "id": 113,
+    "profile_id": 1,
+    "contact_id": 234,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "updatedAt": "2020-09-10T18:14:13.436Z"
+  }
+]

@@ -18,7 +18,7 @@ import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';
 import { Pool } from 'pg';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProfileContacts, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
 import ProfileModel from '../src/db/model/profile';
 import FauxExpress from './src/fauxexpress';
 
@@ -30,6 +30,12 @@ const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const p2 = path.join(__dirname, 'fixtures/user-template.json');
 const userRequest = JSON.parse(fs.readFileSync(p2, 'utf8'));
+
+const p3 = path.join(__dirname, 'fixtures/select-profile-contact.json');
+const selectProfilesContact = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const p4 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
+const selectProfilesContacts = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 const client = new Pool().connect();
 
@@ -396,5 +402,39 @@ describe('Profile event handlers', () => {
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(result).toMatchSnapshot();
+  });
+
+
+  it('A profiles contacts are returned', async () => {
+    const req = {
+      params: { profileId: 1 },
+      user: userRequest,
+    };
+
+    client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
+    client.query.mockReturnValueOnce({ rows: selectProfilesContact });
+    client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
+
+    // @ts-ignore
+    await fetchProfileContacts(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('Fetch single profile contacts should throw', async () => {
+    const req = {
+      params: { profileId: 1 },
+    };
+    client.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(fetchProjectProfile(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.responseData).toBeUndefined();
   });
 });
