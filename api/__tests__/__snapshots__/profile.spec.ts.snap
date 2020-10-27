@@ -8,7 +8,7 @@ Array [
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        2,
+        1,
       ],
     },
   ],
@@ -21,7 +21,7 @@ Array [
             WHERE profile_contact.profile_id = $1;
       ",
       "values": Array [
-        2,
+        1,
       ],
     },
   ],
@@ -33,25 +33,17 @@ exports[`Profile event handlers A profiles contacts are returned 2`] = `200`;
 exports[`Profile event handlers A profiles contacts are returned 3`] = `
 Array [
   Object {
-    "archived": false,
+    "contactId": 233,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "email": "jane@example.com",
-    "firstName": "Jane",
-    "githubId": "jane1100",
-    "id": 233,
-    "lastName": "Doe",
-    "roleId": 1,
+    "id": 112,
+    "profileId": 1,
     "updatedAt": "2020-09-10T18:14:13.436Z",
   },
   Object {
-    "archived": false,
+    "contactId": 234,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "email": "jim@example.com",
-    "firstName": "Jim",
-    "githubId": "jim1100",
-    "id": 234,
-    "lastName": "Doe",
-    "roleId": 2,
+    "id": 113,
+    "profileId": 1,
     "updatedAt": "2020-09-10T18:14:13.436Z",
   },
 ]
