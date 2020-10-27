@@ -68,7 +68,7 @@ Then, in each of the other namespaces run the application specific NSP. It will 
 ```console
 oc process -f openshift/templates/nsp.yaml \
   -p NAMESPACE=$(oc project --short) \
-  -p NATS_NAMESPACE="platform-provisioner-dev" \
+  -p NATS_NAMESPACE=$(oc project --short) \
   -p NATS_APO_IDENTIFIER="app=nats"| \
   oc apply -f -
 ```
