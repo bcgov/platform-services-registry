@@ -138,7 +138,7 @@ const Header: React.FC<IHeaderProps> = props => {
   return (
     <StyledHeader>
       <StyledBanner>
-        <RouterLink style={{ display: 'flex', alignItems: 'center' }} to={HOME_PAGE_URL}>
+        <RouterLink style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} to={HOME_PAGE_URL}>
           <GovLogo />
           <H2>Platform Services Registry</H2>
         </RouterLink>
