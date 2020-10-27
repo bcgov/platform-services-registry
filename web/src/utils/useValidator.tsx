@@ -33,7 +33,7 @@ const schema = {
       maximum: 40,
       tooLong: 'Max 40 characters'
     },
-    format: { pattern: '^[a-zA-Z][A-Za-z0-9]+', flags: 'i', message: 'Must be alphanumetic starting with a letter' }
+    format: { pattern: '^[a-zA-Z][A-Za-z0-9 ]+', flags: 'i', message: 'Must be alphanumetic starting with a letter' }
   },
   profileDescription: {
     presence: { allowEmpty: false, message: 'Required' },

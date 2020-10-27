@@ -20,7 +20,8 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { LAYOUT_SET_AUTH, LAYOUT_SET_MIN } from '../constants';
+import { Link as RouterLink } from 'react-router-dom';
+import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
 import typography from '../typography';
@@ -35,11 +36,11 @@ import { ContainerDesktop, ContainerMobile } from './UI/responsiveContainer';
 
 const StyledHeader = styled.header`
   background-color: ${theme.colors.primary};
-  color: ${theme.colors.contrast}
+  color: ${theme.colors.contrast};
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: ${theme.zIndices[4]};
+  z-index: ${theme.zIndices[1]};
 `;
 
 const StyledBanner = styled.div`
@@ -71,6 +72,7 @@ const H2 = styled.h2`
   padding: 0px 4px;
   text-decoration: none;
   font-size: 1.54912em;
+  color: ${theme.colors.contrast};
   @media (max-width: ${theme.breakpoints[0]}) {
     font-size: 1em;
   }
@@ -91,7 +93,7 @@ const Nav: React.FC<INavProps> = props => {
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
   const handleDDDesktop = () => {
-    setIsComponentVisible(true);
+    setIsComponentVisible(!isComponentVisible);
   };
 
   if (name === LAYOUT_SET_MIN) {
@@ -102,7 +104,7 @@ const Nav: React.FC<INavProps> = props => {
         <ContainerDesktop>
           {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
           <Authbutton />
-          {isAuthenticated && isComponentVisible && (<DropdownMenu ref={ref} menuItems={dirs} />)}
+          {isAuthenticated && isComponentVisible && (<DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />)}
         </ContainerDesktop>
         <ContainerMobile>
           <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
@@ -129,15 +131,17 @@ const Header: React.FC<IHeaderProps> = props => {
   const dirs = [{
     title: "A new Openshift Project Set",
     subTitle: "Create 4 Project namespaces in Silver cluster",
-    href: "/namespaces/create",
+    href: ROUTE_PATHS.FORM,
     onClickCB: () => { }
   }];
 
   return (
     <StyledHeader>
       <StyledBanner>
-        <GovLogo />
-        <H2>Platform Services Registry</H2>
+        <RouterLink style={{ display: 'flex', alignItems: 'center' }} to={HOME_PAGE_URL}>
+          <GovLogo />
+          <H2>Platform Services Registry</H2>
+        </RouterLink>
         {(name !== LAYOUT_SET_MIN) && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
       </StyledBanner>
       <ContainerMobile>
@@ -147,7 +151,7 @@ const Header: React.FC<IHeaderProps> = props => {
             {(name === LAYOUT_SET_AUTH) && (<div>
               {dirs.map(
                 (item, index) =>
-                  <DropdownMenuItem key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
+                  <DropdownMenuItem handleOnClick={handleDDMobile} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
               )} </div>
             )}
           </StyledDropdownMobile>

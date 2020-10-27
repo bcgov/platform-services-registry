@@ -18,12 +18,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
+import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Box, Flex, Text } from 'rebass';
 import SubFormPO from '../components/SubFormPO';
 import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
+import { ROUTE_PATHS } from '../constants';
 import transformFormData from '../utils/transformFormData';
 import useRegistryApi from '../utils/useRegistryApi';
 
@@ -31,10 +33,14 @@ const txtForPO = `Tell us about the Product Owner (PO). This is typically the bu
 
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
 
-const MyForm: React.FC = () => {
+const MyForm: React.FC = (props: any) => {
+    const { openBackdropCB, closeBackdropCB } = props;
+
     const api = useRegistryApi();
 
     const [ministry, setMinistry] = useState<any>([]);
+
+    const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
     const onSubmit = async (formData: any) => {
         const { profile, productOwner, technicalContact } = transformFormData(formData);
@@ -44,7 +50,7 @@ const MyForm: React.FC = () => {
             alert("You need to select a Ministry Sponsor.");
             return;
         }
-
+        openBackdropCB();
         try {
             // 1. Create the project profile.
             const response: any = await api.createProfile(profile);
@@ -61,6 +67,8 @@ const MyForm: React.FC = () => {
             // 4. Trigger provisioning
             await api.createNamespaceByProfileId(profileId);
 
+            closeBackdropCB();
+            setGoBackToDashboard(true);
             // 5.All good? Tell the user.
             toast.success('🦄 Your namespace request was successful', {
                 position: "top-center",
@@ -72,6 +80,7 @@ const MyForm: React.FC = () => {
                 progress: undefined,
             });
         } catch (err) {
+            closeBackdropCB();
             toast.error('😥 Something went wrong', {
                 position: "top-center",
                 autoClose: 5000,
@@ -92,8 +101,13 @@ const MyForm: React.FC = () => {
             setMinistry(response.data);
         }
         wrap();
-    }, [api]);
 
+        // eslint-disable-next-line
+    }, []);
+
+    if (goBackToDashboard) {
+        return (<Redirect to={ROUTE_PATHS.DASHBOARD} />);
+    }
     return (
         <Form
             onSubmit={onSubmit}
@@ -132,7 +146,7 @@ const MyForm: React.FC = () => {
                 </form>
             )}
         </Form >
-    )
+    );
 };
 
 export default MyForm;

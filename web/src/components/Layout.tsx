@@ -24,18 +24,29 @@ import Footer from './footer';
 import Header from './header';
 
 // this is to set min width in windows resizing
-const StyledDiv = styled.main`
+const StyledDiv = styled.div`
   min-width: 380px;
 `;
 
 const StyledMain = styled.main`
-  margin-top: ${theme.spacingIncrements[1]};
-  padding-left: ${theme.spacingIncrements[2]};
-  padding-right: ${theme.spacingIncrements[2]};
-  @media (max-width: ${theme.breakpoints[0]}) {
-    padding-left: ${theme.spacingIncrements[0]};
-    padding-right: ${theme.spacingIncrements[0]};
-  }
+  margin-top: ${theme.navBar.desktopFixedHeight};
+  padding-top: ${theme.spacingIncrements[0]};
+  margin-left: ${theme.spacingIncrements[2]};
+  margin-right: ${theme.spacingIncrements[2]};
+  @media (max-width: ${theme.breakpoints[1]}) {
+    margin-left: ${theme.spacingIncrements[0]};
+    margin-right: ${theme.spacingIncrements[0]};
+  } 
+`;
+
+const StyledBackdrop = styled.div`
+  position:fixed;
+  z-index: ${theme.zIndices[2]};
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
 `;
 
 interface ILayoutProps {
@@ -46,12 +57,28 @@ interface ILayoutProps {
 const Layout: React.FC<ILayoutProps> = props => {
   const { children, name } = props;
 
+  const [openBackdrop, setOpenBackdrop] = React.useState(false);
+
+  const openBackdropCB = () => {
+    setOpenBackdrop(true);
+  };
+
+  const closeBackdropCB = () => {
+    setOpenBackdrop(false);
+  };
+
   return (
     <StyledDiv>
       <ToastContainer style={{ width: "500px" }} />
+      {openBackdrop && (<StyledBackdrop />)}
       <Header name={name} />
       <StyledMain>
-        {children}
+        {React.Children.map(children, (child: any) => {
+          return React.cloneElement(child, {
+            closeBackdropCB: closeBackdropCB,
+            openBackdropCB: openBackdropCB
+          });
+        })}
       </StyledMain>
       <Footer />
     </StyledDiv>

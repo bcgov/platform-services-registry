@@ -41,50 +41,47 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
             <SubFormTitle>Tell us about your project</SubFormTitle>
             <Field name="project-name" validate={validator.mustBeValidProfileName}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="project-name">Name</Label>
-                        <Input {...input} id="project-name" placeholder="Project X" />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="project-name">Name</Label>
+                        <Input mt="8px" {...input} id="project-name" placeholder="Project X" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
             <Field name="project-description" validate={validator.mustBeValidProfileDescription}>
                 {({ input, meta }) => (
-                    <Flex flexDirection="column" pb="12px" style={{ position: "relative" }}>
-                        <Label htmlFor="project-description">Description</Label>
-                        <Textarea {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="project-description">Description</Label>
+                        <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>
-            <Flex>
-                <Label variant="adjacentLabel">Is this a Priority Application?</Label>
+            <Flex pb="20px">
+                <Label m="0" variant="adjacentLabel">Is this a Priority Application?</Label>
                 <Flex flex="1 1 auto" justifyContent="flex-end">
-                    <Label width="initial" px="8px">
+                    <Label m="0" width="initial" px="8px">
                         <Field
                             name="project-prioritySystem"
                             component="input"
                             type="checkbox"
                             value="yes"
                         >
-                            {({ input, meta }) => (
-                                <>
-                                    <input
-                                        style={{ width: '35px', height: '35px' }}
-                                        name={input.name}
-                                        type="checkbox"
-                                        value="yes"
-                                        checked={input.checked}
-                                        onChange={input.onChange}
-                                    />
-                                    {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                </>
+                            {({ input }) => (
+                                <input
+                                    style={{ width: '35px', height: '35px' }}
+                                    name={input.name}
+                                    type="checkbox"
+                                    value="yes"
+                                    checked={input.checked}
+                                    onChange={input.onChange}
+                                />
                             )}
                         </Field>
                     </Label>
                 </Flex>
             </Flex>
-            <Flex>
+            <Flex pb="20px">
                 <Label variant="adjacentLabel">Ministry Sponsor</Label>
                 <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
                     {/* using a className prop as react final form Field does
@@ -120,18 +117,15 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                                 type="checkbox"
                                 value="yes"
                             >
-                                {({ input, meta }) => (
-                                    < >
-                                        <input
-                                            style={{ width: '35px', height: '35px' }}
-                                            name={input.name}
-                                            type="checkbox"
-                                            value="yes"
-                                            checked={input.checked}
-                                            onChange={input.onChange}
-                                        />
-                                        {meta.error && meta.modified && <Label as="span" style={{ position: "absolute", bottom: "-1em" }} variant="errorLabel">{meta.error}</Label>}
-                                    </>
+                                {({ input }) => (
+                                    <input
+                                        style={{ width: "35px", height: "35px" }}
+                                        name={input.name}
+                                        type="checkbox"
+                                        value="yes"
+                                        checked={input.checked}
+                                        onChange={input.onChange}
+                                    />
                                 )}
                             </Field>
                         </Label>
@@ -140,12 +134,12 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
             ))}
             <Field name="project-other" validate={validator.mustBeValidComponentOthers}>
                 {({ input, meta }) => (
-                    <Flex>
+                    <Flex pb="25px" style={{ position: "relative" }}>
                         <Label htmlFor="project-other">Other:</Label>
                         <Flex flex="1 1 auto" justifyContent="flex-end">
                             <Input {...input} id="project-other" />
                         </Flex>
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute" }} variant="errorLabel">{meta.error}</Label>}
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel" >{meta.error}</Label>}
                     </Flex>
                 )}
             </Field>

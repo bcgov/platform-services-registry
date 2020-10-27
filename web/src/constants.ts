@@ -57,4 +57,11 @@ export const COMPONENT_METADATA = [
   { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' }
 ]
 
-export const HOME_PAGE_URL = '/dashboard';
+export const ROUTE_PATHS = {
+  DASHBOARD: '/dashboard',
+  NOT_FOUND: '/page-not-found',
+  LANDING: '/public-landing',
+  FORM: '/projects/create'
+};
+
+export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;

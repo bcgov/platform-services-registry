@@ -30,4 +30,5 @@ export interface MenuItem {
   subTitle: string;
   href?: string;
   onClickCB?: MouseEventHandler<React.ReactNode>;
+  handleOnClick?: MouseEventHandler<React.ReactNode>;
 }

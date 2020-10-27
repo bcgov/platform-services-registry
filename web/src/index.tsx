@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import theme from './theme';
 import typography from './typography';
 
 ReactDOM.render(
@@ -19,7 +20,6 @@ ReactDOM.render(
               -moz-osx-font-smoothing: grayscale;
             }
           #root {
-              height: 100vw;
             }
           code {
               font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -32,7 +32,12 @@ ReactDOM.render(
           }
           .misc-class-m-dropdown-link {
             text-decoration: none;
-            color: black;
+            color: ${theme.colors.bcblue};
+          }
+
+          .misc-class-m-form-submit-btn:active {
+            position:relative;
+            top:1px;
           }
           `}
     />
