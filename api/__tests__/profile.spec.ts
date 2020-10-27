@@ -424,11 +424,12 @@ describe('Profile event handlers', () => {
   it('Fetch single profile contacts should throw', async () => {
     const req = {
       params: { profileId: 1 },
+      user: userRequest,
     };
     client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
-    await expect(fetchProjectProfile(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(fetchProfileContacts(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
