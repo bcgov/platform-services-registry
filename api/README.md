@@ -1,5 +1,3 @@
-
-
 # Platform Services Registry - API
 
 This is the API component for the Platform Services Registry. It is meant to be a central point of access to the data and functionality provided by the registry.
