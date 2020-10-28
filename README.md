@@ -34,7 +34,7 @@ These smart robots include:
 
 There are lots of moving parts in the registry even though its a relatively simple web app. Each section below will walk you through the parameters and commands needed to deploy.
 
-### ProTip 🤓
+**ProTip** 🤓
 
 All components should have the same label that can be used to remove them. This is usefull in dev and test so that multiple deployments can be tested from a clean working namespace:
 

@@ -1,3 +1,210 @@
+# Platform Services Registry - Database
+
+This is the Database component for the Platform Services Registry.
+
+## Build
+
+It is recommended to pull the Patroni image from the `bcgov` namespace; if you wish to customize it, a build manifest is located in the platform services repository used to generate the public image. 
+
+## Deploying the API
+
+# Prerequisites
+
+For Patroni to run as a `StatefulSet` it needs to have a Secret, Services Account an RBAC setup prior to deployment. This can be setup by first running the supplied [prerequisite.yaml](./openshift/templates/prerequisite.yaml) template:
+
+```console
+oc process -f openshift/prerequisite.yaml \
+  oc create -f -
+```
+
+Returns something similar to:
+```console
+➜  db git:(master) ✗ oc process -f openshift/prerequisite.yaml| oc create -f -
+secret/registry-patroni-creds created
+serviceaccount/registry-patroni created
+role.rbac.authorization.k8s.io/registry-patroni created
+rolebinding.rbac.authorization.k8s.io/registry-patroni created
+```
+
+**ProTim** 🤓
+
+Find the database and admin credential in the newly minted secret `registry-patroni-creds`;
+
+# Patroni StatefulSet
+
+Patroni will run as a `StatefulSet` of three pods, one of which will be deemed the "master"; the remaining two will be replicas. Patroni will use two `ConfigMap` objects to store its internal configuration and record which pod in the set is currently the master.
+
+Review and run the provided [deploy.yaml](./openshift/templates/deploy.yaml) template.
+
+```console
+oc process -f openshift/deploy.yaml | \
+  oc apply -f -
+```
+
+Returns something similar to:
+```
+➜  db git:(master) ✗ oc process -f openshift/deploy.yaml | oc apply -f -
+service/registry-patroni-master created
+statefulset.apps/registry-patroni created
+```
+
+**ProTim** 🤓
+- Seeing an error like `2020-10-27 20:39:48,765 ERROR: ObjectCache.run ProtocolError('Connection broken: IncompleteRead(0 bytes read)', IncompleteRead(0 bytes read))`? Did you apply your NSP?
+
+### Deploy all the things (Step 1-3)
+
+The API uses an OCP4 `ConfigMap` to store necessary configuration such as the location of NATS (and topics), SSO or DB connection parameters. Review [this](./openshift/templates/config.yaml) OCP template and make sure the properties are set correctly. Once updated, create the `ConfigMap` in OCP with the following command:
+
+```console
+oc process -f api/openshift/templates/config.yaml | \
+oc create -f -
+```
+
+Secrets have been separated from the deployment template to prevent them from being regenerated every time you `oc apply` the main deployment template. Create the necessary secrets with the following command:
+
+```console
+oc process -f api/openshift/templates/secret.yaml \
+  -p CHES_SSO_CLIENT_ID=XXXX
+  -p CHES_SSO_CLIENT_SECRET=XXXX \
+  -p SSO_CLIENT_SECRET=XXXX | \
+  oc create -f -
+```
+
+| Name                   | Description |
+| :--------------------- | :-----------|
+| CHES_SSO_CLIENT_ID     | The CHES client ID provided from the Web UI; You have one for each of dev / test / prod |
+| CHES_SSO_CLIENT_SECRET | The CHES Token (Secret) provided from the Web UI; You have one for each of dev / test / prod |
+| SSO_CLIENT_SECRET      | The SSO shared secret for your client provided by the SSO Web UI.
+
+
+Next, deploy the newly minted API image with the following command. This will create all the components required to run the API.
+
+```console
+oc process -f api/openshift/templates/deploy.yaml \
+  -p NAMESPACE=$(oc project --short) \
+  -p SOURCE_IMAGE_NAMESPACE=<YOUR_TOOLS_NAMESPACE> \
+  -p SOURCE_IMAGE_TAG=XXXX \
+  -p CHES_BASEURL=https://blarb.example.com \
+  -p CHES_SSO_TOKEN_URL=https://sso-dev.example.com \
+  -p NATS_HOST_URL=nats://NAME.NAMESPACE.svc | \
+  oc apply -f -
+  ```
+
+| Name                   | Description |
+| :--------------------- | :-----------|
+| NAMESPACE              | The namespace you are deploying to.
+| SOURCE_IMAGE_NAMESPACE | The namespace where the source images is located.
+| SOURCE_IMAGE_TAG       | The source image tag that will be deployed.
+| CHES_BASEURL           | The CHES API URL; ; You have one for each of dev / test / prod.
+| CHES_SSO_TOKEN_URL     | The CHES SSO token URL used for authentication; You have one for each of dev / test / prod.
+| NATS_HOST_URL          | The URL for the NATS service.
+
+
+### ProTip 🤓
+  
+The deployment manifest assumes you're using image tags (or config changes) to trigger a deployment. Don't do your initial tag until you have created the database schema. If you have a running API pod, scale it down for now:
+
+How to Scale
+```console
+oc scale dc/registry-api --replicas=0
+```
+
+How to Tag
+```console
+oc tag platsrv-registry-api:latest platsrv-registry-api:dev
+```
+
+### Schema Build-out (Step 4)
+
+We need to build out the database schema before the API can do anything useful with it. Examine your database credentials with the following command and make a note of the `superuser-password` property. This is the application (API Pod) account used to access the database.
+
+```console
+oc get secret/registry-patroni-creds -o yaml
+```
+
+Find out what your database master Pod name is (`oc get pods` and `oc describe pod/NAME`) and use a variant of the following command to port forward to it:
+
+```console
+oc port-forward patroni-0 5432
+```
+
+Run a local instance of PostgreSQL. This will give you access to the `psql` command line tool and mount a volume so we can access the SQL scripts. This command assumes you're running it form the root directory of the repo.
+
+```console
+docker run -it --rm --name blarb \
+-v $(pwd)/db:/opt/src postgres /bin/bash
+```
+
+Now set the admin password so that it can be used by `psql`:
+
+```console
+export PGPASSWORD=<ADMIN_PASSWORD_HERE>
+```
+
+Repeat the following command, once for each of the SQL scripts located in `/opt/src/sql` then onces for each of the SQL scripts located in `/opt/src/seed`. This will build out the database schema and load in the reference data. Replace `ROLLNAME` with the name from the `app-db-username` property in the patroni secret above.
+
+```console
+psql -U postgres -d registry -h host.docker.internal \
+  -f /opt/src/db/sql/XXX.sql -v ROLLNAME=XXXX
+```
+
+## Usage
+
+The API is designed to service different clients. Please reference the OpenAPI 3.0 documentation for API specifications.
+
+### Callbacks
+
+Here is a sample on how a client may use the API. In this sample the client will trigger the API to update the provisioning status of namespaces.
+
+All client access is governed by Single Sign On (SSO) provided by KeyCloak (KC). Clients are created in SSO with a shared secret that can be used to acquire a JWT for API access.
+
+Set the following environment variables with the credentials and URL provided to you.
+
+```console
+export SSO_TOKEN=YOUR_TOKEN_HERE
+export SSO_CLIENT_ID=YOUR_CLIENT_ID_HERE
+export SSO_TOKEN_URL=YOUR_TOKEN_URL_HERE
+```
+
+The following cURL command will fetch and print a JWT. Export the JWT to an environment variable called `MY_JWT` so subsequent command can utilize it. 
+
+```console
+curl -sX POST -H "Content-Type: application/x-www-form-urlencoded" \
+    --data "grant_type=client_credentials&client_id=${SSO_CLIENT_ID}&client_secret=${SSO_TOKEN}" \
+    ${SSO_TOKEN_URL} | \
+    jq '.access_token' | \
+    cut -d "\"" -f 2
+```
+
+Use the following command to update namespace provisioning status
+
+```console
+curl -vX PUT \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${MYTOKEN}" \
+  http://localhost:8100/api/v1/provision/namespace \
+  -d @data.json
+```
+
+Where `data.json` from above contains the namespace prefix of all the namespaces being updates:
+
+Sample `data.json`:
+```json
+{
+    "prefix": "54eab0"
+}
+```
+
+### ProTip 🤓
+
+See the OpenAPI 3.0 documentation to understand the structure of the `data.json` payload.
+
+
+
+-----
+
+
+
 
 ### Patroni
 
