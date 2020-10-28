@@ -25,12 +25,16 @@ node_modules
 *.out
 *.pid
 *.gz
+*.zip
+*.tgz
+*.tar.gz
 *.orig
 *.min.js
 !generated-docs/example-doc.pdf
 !logs/.gitkeep
 task-definition.json
 *.sqlite
+db/backups
 
 # These files contain credentials, do not add them to
 # the repo.
