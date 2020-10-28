@@ -18,11 +18,14 @@ import { Input, Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import useDecoder from '../utils/useDecoder';
 import useValidator from '../utils/useValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 const SubformPO: React.FC = () => {
     const validator = useValidator();
+
+    const decodedToken = useDecoder();
 
     return (
         <div>
@@ -32,7 +35,7 @@ const SubformPO: React.FC = () => {
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-first-name">First Name</Label>
-                        <Input mt="8px" {...input} id="po-first-name" placeholder="Jane" />
+                        <Input mt="8px" {...input} id="po-first-name" value={decodedToken.given_name} disabled />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
@@ -41,7 +44,7 @@ const SubformPO: React.FC = () => {
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-last-name">Last Name</Label>
-                        <Input mt="8px" {...input} id="po-last-name" placeholder="Doe" />
+                        <Input mt="8px" {...input} id="po-last-name" value={decodedToken.family_name} disabled />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
@@ -50,7 +53,7 @@ const SubformPO: React.FC = () => {
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-email">eMail Address</Label>
-                        <Input mt="8px" {...input} id="po-email" placeholder="jane.doe@gov.bc.ca" />
+                        <Input mt="8px" {...input} id="po-email" value={decodedToken.email} disabled />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
