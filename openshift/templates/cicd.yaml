@@ -52,7 +52,15 @@ objects:
           - image.openshift.io
           - ""
         resources:
+          - imagestreams
           - imagestreamimages
+        verbs:
+          - get
+          - list
+      - apiGroups:
+          - image.openshift.io
+          - ""
+        resources:
           - imagestreamtags
         verbs:
           - create
