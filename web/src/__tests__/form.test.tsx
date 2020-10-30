@@ -18,6 +18,20 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import Form from '../views/form';
 
+jest.mock('../utils/useDecoder', () => {
+  return function useDecoder() {
+    return (
+      {
+        email: "test@example.com",
+        family_name: "Jane",
+        given_name: "Doe",
+        name: "Jane Doe",
+        preferred_username: "janedoe@idir"
+      }
+    );
+  }
+});
+
 test('matches the snapshot', () => {
   const { container } = render(
     <Form />

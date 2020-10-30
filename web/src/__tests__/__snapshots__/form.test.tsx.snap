@@ -501,11 +501,11 @@ exports[`matches the snapshot 1`] = `
             </label>
             <input
               class="css-1f2jrlr"
+              disabled=""
               id="po-first-name"
               name="po-firstName"
-              placeholder="Jane"
               type="text"
-              value=""
+              value="Doe"
             />
           </div>
           <div
@@ -520,11 +520,11 @@ exports[`matches the snapshot 1`] = `
             </label>
             <input
               class="css-1f2jrlr"
+              disabled=""
               id="po-last-name"
               name="po-lastName"
-              placeholder="Doe"
               type="text"
-              value=""
+              value="Jane"
             />
           </div>
           <div
@@ -539,11 +539,11 @@ exports[`matches the snapshot 1`] = `
             </label>
             <input
               class="css-1f2jrlr"
+              disabled=""
               id="po-email"
               name="po-email"
-              placeholder="jane.doe@gov.bc.ca"
               type="text"
-              value=""
+              value="test@example.com"
             />
           </div>
           <div
