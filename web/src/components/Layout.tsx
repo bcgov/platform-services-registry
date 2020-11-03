@@ -29,6 +29,7 @@ const StyledDiv = styled.div`
 `;
 
 const StyledMain = styled.main`
+  margin-bottom: ${theme.spacingIncrements[1]};
   margin-top: ${theme.navBar.desktopFixedHeight};
   padding-top: ${theme.spacingIncrements[0]};
   margin-left: ${theme.spacingIncrements[2]};
