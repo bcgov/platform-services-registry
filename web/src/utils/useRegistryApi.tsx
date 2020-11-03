@@ -41,6 +41,10 @@ export default function useRegistryApi() {
     return api.get('ministry');
   };
 
+  const getProfile = async (): Promise<AxiosResponse<any>> => {
+    return api.get('profile');
+  };
+
   const createProfile = async (profile: any): Promise<AxiosResponse<any>> => {
     return api.post('profile', profile);
   };
@@ -59,6 +63,7 @@ export default function useRegistryApi() {
 
   return {
     getMinistry,
+    getProfile,
     createProfile,
     createContact,
     linkContactToProfileById,
