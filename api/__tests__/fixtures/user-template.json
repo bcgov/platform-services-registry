@@ -7,8 +7,8 @@
     "archived": false,
     "roles": [],
     "name": "Jane Doe",
-    "preferredUsername": "jdoe@github",
+    "preferredUsername": "jane1100@github",
     "givenName": "Jane",
     "familyName": "Doe",
-    "email": "jane.doe@gov.bc.ca"
+    "email": "jane@example.com"
 }

@@ -262,3 +262,31 @@ export const addContactToProfile = async (
     throw errorWithCode(message, 500);
   }
 };
+
+export const fetchProfileContacts = async (
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  const { ContactModel, ProfileModel } = dm;
+  const { profileId } = params;
+
+  try {
+    const record = await ProfileModel.findById(Number(profileId));
+
+    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
+      throw errorWithCode('Unauthorized Access', 401);
+    }
+
+    const results = await ContactModel.findForProject(Number(profileId));
+
+    res.status(200).json(results);
+  } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
+    const message = `Unable fetch profile contacts with profile ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
