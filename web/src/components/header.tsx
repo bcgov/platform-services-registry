@@ -21,6 +21,7 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { Text } from 'rebass';
 import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { LayoutSet, MenuItem } from '../types';
@@ -66,16 +67,11 @@ const StyledNav = styled.div`
   margin-left: auto;
 `;
 
-const H2 = styled.h2`
+const StyledText = styled(Text)`
   ${typography.toString()}
-  margin: 6px 3px 6px 0;
-  padding: 0px 4px;
   text-decoration: none;
-  font-size: 1.54912em;
-  color: ${theme.colors.contrast};
-  @media (max-width: ${theme.breakpoints[0]}) {
-    font-size: 1em;
-  }
+  font-weight: bold;
+  min-width: 150px;
 `;
 
 interface INavProps {
@@ -140,7 +136,16 @@ const Header: React.FC<IHeaderProps> = props => {
       <StyledBanner>
         <RouterLink style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} to={HOME_PAGE_URL}>
           <GovLogo />
-          <H2>Platform Services Registry</H2>
+          <StyledText
+            as="h2"
+            color={theme.colors.contrast}
+            fontSize={[3, 4, 4]}
+            fontWeight={500}
+            pl={[3, 0, 0]}
+          >
+            Platform Services Registry
+          </StyledText>
+          {/* <H2>Platform Services Registry</H2> */}
         </RouterLink>
         {(name !== LAYOUT_SET_MIN) && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
       </StyledBanner>

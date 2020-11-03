@@ -25,7 +25,7 @@ import Header from './header';
 
 // this is to set min width in windows resizing
 const StyledDiv = styled.div`
-  min-width: 380px;
+  min-width: 320px;
 `;
 
 const StyledMain = styled.main`
