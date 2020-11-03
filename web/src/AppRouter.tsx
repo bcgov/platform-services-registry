@@ -20,7 +20,7 @@ import { Redirect, Router, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
 import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, LAYOUT_SET_UNAUTH, ROUTE_PATHS } from './constants';
 import AppRoute from './utils/AppRoute';
-import { Dashboard } from './views/Dashboard';
+import Dashboard from './views/Dashboard';
 import form from './views/form';
 import { NotFound } from './views/NotFound';
 import { PublicLanding } from './views/PublicLanding';

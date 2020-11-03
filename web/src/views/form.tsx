@@ -30,10 +30,14 @@ import transformFormData from '../utils/transformFormData';
 import useRegistryApi from '../utils/useRegistryApi';
 
 const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
-
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
 
-const MyForm: React.FC = (props: any) => {
+interface IFormProps {
+    openBackdropCB: () => void;
+    closeBackdropCB: () => void;
+};
+
+const MyForm: React.FC<IFormProps> = (props: any) => {
     const { openBackdropCB, closeBackdropCB } = props;
 
     const api = useRegistryApi();
