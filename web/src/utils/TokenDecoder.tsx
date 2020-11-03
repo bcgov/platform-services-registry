@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 
-import { useKeycloak } from '@react-keycloak/web';
 import jwt_decode from "jwt-decode";
 
 interface UserProperties {
@@ -25,9 +24,8 @@ interface UserProperties {
     preferred_username: string;
 }
 
-export default function useDecoder() {
-    const { keycloak } = useKeycloak();
-    const decodedJWT = jwt_decode<UserProperties>(`${keycloak?.token}`);
+export default function getDecodedToken(token: string) {
+    const decodedJWT = jwt_decode<UserProperties>(token);
     return decodedJWT;
 };
 
