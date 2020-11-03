@@ -14,28 +14,18 @@
 // limitations under the License.
 //
 
-import { render } from '@testing-library/react';
-import React from 'react';
-import Form from '../views/form';
+import jwt_decode from "jwt-decode";
 
-jest.mock('../utils/TokenDecoder', () => {
-  return function getDecodedToken() {
-    return (
-      {
-        email: "test@example.com",
-        family_name: "Jane",
-        given_name: "Doe",
-        name: "Jane Doe",
-        preferred_username: "janedoe@idir"
-      }
-    );
-  }
-});
+interface UserProperties {
+    email: string;
+    family_name: string;
+    given_name: string;
+    name: string;
+    preferred_username: string;
+}
 
-test('matches the snapshot', () => {
-  const { container } = render(
-    <Form />
-  );
+export default function getDecodedToken(token: string) {
+    const decodedJWT = jwt_decode<UserProperties>(token);
+    return decodedJWT;
+};
 
-  expect(container).toMatchSnapshot();
-});

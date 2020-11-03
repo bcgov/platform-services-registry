@@ -1,5 +1,62 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Profile event handlers A profiles contacts are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers A profiles contacts are returned 2`] = `200`;
+
+exports[`Profile event handlers A profiles contacts are returned 3`] = `
+Array [
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "email": "jane@example.com",
+    "firstName": "Jane",
+    "githubId": "jane1100",
+    "id": 233,
+    "lastName": "Doe",
+    "roleId": 1,
+    "updatedAt": "2020-09-10T18:14:13.436Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "email": "jim@example.com",
+    "firstName": "Jim",
+    "githubId": "jim1100",
+    "id": 234,
+    "lastName": "Doe",
+    "roleId": 2,
+    "updatedAt": "2020-09-10T18:14:13.436Z",
+  },
+]
+`;
+
 exports[`Profile event handlers A project fails to archive 1`] = `
 Array [
   Array [
@@ -521,6 +578,23 @@ Array [
 exports[`Profile event handlers Fetch all profiles should throw 1`] = `"Unable fetch all project profiles"`;
 
 exports[`Profile event handlers Fetch all profiles should throw 2`] = `Array []`;
+
+exports[`Profile event handlers Fetch single profile contacts should throw 1`] = `"Unable fetch profile contacts with profile ID 1"`;
+
+exports[`Profile event handlers Fetch single profile contacts should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;
 
 exports[`Profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 1"`;
 
