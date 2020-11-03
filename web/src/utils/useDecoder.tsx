@@ -17,7 +17,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import jwt_decode from "jwt-decode";
 
-interface DecodedToken {
+interface UserProperties {
     email: string;
     family_name: string;
     given_name: string;
@@ -27,7 +27,7 @@ interface DecodedToken {
 
 export default function useDecoder() {
     const { keycloak } = useKeycloak();
-    const decodedJWT = jwt_decode<DecodedToken>(`${keycloak?.token}`);
+    const decodedJWT = jwt_decode<UserProperties>(`${keycloak?.token}`);
     return decodedJWT;
 };
 
