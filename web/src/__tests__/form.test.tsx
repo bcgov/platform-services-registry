@@ -18,8 +18,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import Form from '../views/form';
 
-jest.mock('../utils/useDecoder', () => {
-  return function useDecoder() {
+jest.mock('../utils/TokenDecoder', () => {
+  return function getDecodedToken() {
     return (
       {
         email: "test@example.com",

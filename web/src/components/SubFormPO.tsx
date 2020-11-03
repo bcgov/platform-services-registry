@@ -14,18 +14,21 @@
 // limitations under the License.
 //
 
+import { useKeycloak } from '@react-keycloak/web';
 import { Input, Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
-import useDecoder from '../utils/useDecoder';
+import getDecodedToken from '../utils/TokenDecoder';
 import useValidator from '../utils/useValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 const SubformPO: React.FC = () => {
     const validator = useValidator();
 
-    const decodedToken = useDecoder();
+    const { keycloak } = useKeycloak();
+
+    const decodedToken = getDecodedToken(`${keycloak?.token}`);
 
     return (
         <div>
