@@ -45,6 +45,14 @@ export const isAuthorized = jwtPayload => {
   return true;
 };
 
+export const getJwtPayloadRoles = (jwtPayload: object): string[] | [] => {
+  try {
+    return jwtPayload['resource_access']['registry-web']['roles'];
+  } catch (err) {
+    return [];
+  }
+};
+
 export const verify = async (req, jwtPayload, done) => {
 
   if (jwtPayload) {
@@ -70,7 +78,7 @@ export const verify = async (req, jwtPayload, done) => {
       }
 
       const user = {
-        roles: jwtPayload.roles ? jwtPayload.roles : [],
+        roles: getJwtPayloadRoles(jwtPayload),
         name: jwtPayload.name,
         preferredUsername: jwtPayload.preferred_username,
         givenName: jwtPayload.given_name,
