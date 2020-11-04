@@ -47,6 +47,7 @@ export const isAuthorized = jwtPayload => {
 
 export const getJwtPayloadRoles = (jwtPayload: object): string[] | [] => {
   try {
+    /* tslint:disable-next-line */
     return jwtPayload['resource_access']['registry-web']['roles'];
   } catch (err) {
     return [];
