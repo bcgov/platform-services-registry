@@ -51,14 +51,20 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
       >
         {textBody}
       </Text>
-      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+      <Text mb={3} as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
         {ministry}
       </Text>
       <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
-        Project owner: {PO}
+        Project owner:
       </Text>
       <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
-        Technical contact: {TC}
+        {PO}
+      </Text>
+      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+        Technical contact:
+      </Text>
+      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+        {TC}
       </Text>
     </Flex>
   );
