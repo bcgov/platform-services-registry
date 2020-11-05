@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches the snapshot 1`] = `
+<div>
+  <div
+    class="css-vlngyz"
+  >
+    <h2
+      class="css-ot5b10"
+    >
+      Health Gateway
+    </h2>
+    <h2
+      class="css-1v5xz9b"
+    >
+      This is a test description for health gateway app
+    </h2>
+    <p
+      class="css-3zufbi"
+    >
+      CITZ
+    </p>
+    <p
+      class="css-1wt0db7"
+    >
+      Project owner:
+    </p>
+    <p
+      class="css-1wt0db7"
+    >
+      jane@example.com
+    </p>
+    <p
+      class="css-1wt0db7"
+    >
+      Technical contact:
+    </p>
+    <p
+      class="css-1wt0db7"
+    >
+      jim@example.com
+    </p>
+  </div>
+</div>
+`;
