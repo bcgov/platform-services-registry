@@ -26,6 +26,7 @@ import { getJwtCertificate, logger } from '@bcgov/common-nodejs-utils';
 import passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import config from '../config';
+import { WEB_CLIENT_ID } from '../constants';
 import DataManager from '../db';
 import shared from './shared';
 
@@ -48,7 +49,7 @@ export const isAuthorized = jwtPayload => {
 export const getJwtPayloadRoles = (jwtPayload: object): string[] | [] => {
   try {
     /* tslint:disable-next-line */
-    return jwtPayload['resource_access']['registry-web']['roles'];
+    return jwtPayload['resource_access'][WEB_CLIENT_ID]['roles'];
   } catch (err) {
     return [];
   }
