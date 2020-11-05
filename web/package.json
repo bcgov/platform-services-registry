@@ -32,7 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -59,6 +59,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/rebass": "^4.0.7",
     "@types/rebass__forms": "^4.0.4",
-    "@types/typography": "^0.16.3"
+    "@types/typography": "^0.16.3",
+    "jest-environment-jsdom-sixteen": "^1.0.3"
   }
 }
