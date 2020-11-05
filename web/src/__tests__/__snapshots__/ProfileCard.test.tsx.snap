@@ -11,32 +11,32 @@ exports[`matches the snapshot 1`] = `
       Health Gateway
     </h2>
     <h2
-      class="css-1v5xz9b"
+      class="css-16ht1ln"
     >
       This is a test description for health gateway app
     </h2>
     <p
-      class="css-3zufbi"
+      class="css-xz2idv"
     >
       CITZ
     </p>
     <p
-      class="css-1wt0db7"
+      class="css-1guafq4"
     >
       Project owner:
     </p>
     <p
-      class="css-1wt0db7"
+      class="css-1guafq4"
     >
       jane@example.com
     </p>
     <p
-      class="css-1wt0db7"
+      class="css-1guafq4"
     >
       Technical contact:
     </p>
     <p
-      class="css-1wt0db7"
+      class="css-1guafq4"
     >
       jim@example.com
     </p>

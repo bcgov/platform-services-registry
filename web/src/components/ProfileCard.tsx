@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { Flex, Text } from 'rebass';
+import theme from '../theme';
 
 interface IProfileCardProps {
   title?: string;
@@ -44,26 +45,26 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
       </Text>
       <Text
         as="h2"
-        color="darkgrey"
+        color={theme.colors.grey}
         fontSize={[2, 3, 3]}
         fontWeight={500}
         mb={3}
       >
         {textBody}
       </Text>
-      <Text mb={3} as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+      <Text mb={3} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {ministry}
       </Text>
-      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         Project owner:
       </Text>
-      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {PO}
       </Text>
-      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         Technical contact:
       </Text>
-      <Text as="p" color="darkgrey" fontSize={[2, 3, 3]} mt={1}>
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {TC}
       </Text>
     </Flex>
