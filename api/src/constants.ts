@@ -36,3 +36,5 @@ export const ROLE_IDS = {
 export const USER_ROLES = {
   ADMINISTRATOR: 'administrator',
 };
+
+export const WEB_CLIENT_ID = 'registry-web';

@@ -25,10 +25,11 @@ import Header from './header';
 
 // this is to set min width in windows resizing
 const StyledDiv = styled.div`
-  min-width: 380px;
+  min-width: 320px;
 `;
 
 const StyledMain = styled.main`
+  margin-bottom: ${theme.spacingIncrements[1]};
   margin-top: ${theme.navBar.desktopFixedHeight};
   padding-top: ${theme.spacingIncrements[0]};
   margin-left: ${theme.spacingIncrements[2]};

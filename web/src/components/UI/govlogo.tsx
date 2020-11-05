@@ -4,6 +4,7 @@ import React from 'react';
 import logo from '../../assets/images/bcid_h_rgb_rev.svg';
 import logoMobile from '../../assets/images/logo.svg';
 import Aux from '../../hoc/auxillary';
+import theme from '../../theme';
 
 const noMargin = css`
   margin-bottom: 0;
@@ -12,7 +13,7 @@ const noMargin = css`
 const LargeLogo = styled.img`
   ${noMargin}
   width: 175px;
-  @media (max-width: 480px) {
+  @media (max-width: ${theme.breakpoints[0]}) {
     display: none;
   }
 `;
@@ -20,8 +21,8 @@ const LargeLogo = styled.img`
 const SmallLogo = styled.img`
   ${noMargin}
   width: 50px;
-  @media (min-width: 480px) {
-    display: none;
+  @media (min-width: ${theme.breakpoints[0]}) {
+    display: none;s
   }
 `;
 
