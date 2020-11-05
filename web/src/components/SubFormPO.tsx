@@ -34,31 +34,28 @@ const SubformPO: React.FC = () => {
         <div>
             <SubFormTitle>Who is the product owner for this project?</SubFormTitle>
 
-            <Field name="po-firstName" validate={validator.mustBeValidName}>
-                {({ input, meta }) => (
+            <Field name="po-firstName" defaultValue={''} initialValue={decodedToken.given_name} >
+                {({ input }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-first-name">First Name</Label>
-                        <Input mt="8px" {...input} id="po-first-name" value={decodedToken.given_name} disabled />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                    </Flex>
+                        <Input mt="8px" {...input} id="po-first-name" disabled />
+                        </Flex>
                 )}
             </Field>
-            <Field name="po-lastName" validate={validator.mustBeValidName}>
-                {({ input, meta }) => (
+            <Field name="po-lastName" defaultValue={''} initialValue={decodedToken.family_name} >
+                {({ input }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-last-name">Last Name</Label>
-                        <Input mt="8px" {...input} id="po-last-name" value={decodedToken.family_name} disabled />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                    </Flex>
+                        <Input mt="8px" {...input} id="po-last-name" disabled />
+                        </Flex>
                 )}
             </Field>
-            <Field name="po-email" validate={validator.mustBeValidEmail}>
-                {({ input, meta }) => (
+            <Field name="po-email" defaultValue={''} initialValue={decodedToken.email} >
+                {({ input }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-email">eMail Address</Label>
-                        <Input mt="8px" {...input} id="po-email" value={decodedToken.email} disabled />
-                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                    </Flex>
+                        <Input mt="8px" {...input} id="po-email" disabled />
+                        </Flex>
                 )}
             </Field>
             <Field name="po-githubId" validate={validator.mustBeValidGithubName}>
