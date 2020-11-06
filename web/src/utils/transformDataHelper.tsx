@@ -16,7 +16,7 @@
 
 import { COMPONENT_METADATA, ROLES } from '../constants';
 
-export default function transformFormData(data: any) {
+export function transformForm(data: any) {
   const profile: any = {};
   const productOwner: any = {
     roleId: ROLES.PRODUCTOWNER,
@@ -61,5 +61,13 @@ export default function transformFormData(data: any) {
     profile,
     productOwner,
     technicalContact
+  }
+};
+
+export function transformProfile(profileData: any): any[] | [] {
+  try {
+    return profileData.sort((a: any, b: any) => { return Date.parse(b.updatedAt) - Date.parse(a.updatedAt) });
+  } catch (err) {
+    return profileData;
   }
 };
