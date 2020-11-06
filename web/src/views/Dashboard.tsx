@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
 import { ShadowBox } from '../components/UI/shadowContainer';
+import { transformProfile } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
 
 interface IDashboardProps {
@@ -54,7 +55,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         }
 
         // 3. Then update dashboard cards with fetched profile info
-        setProfile(response.data);
+        setProfile(transformProfile(response.data));
         closeBackdropCB();
       } catch (err) {
         closeBackdropCB();

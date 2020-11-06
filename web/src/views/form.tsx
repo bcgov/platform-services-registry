@@ -26,7 +26,7 @@ import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import { ROUTE_PATHS } from '../constants';
-import transformFormData from '../utils/transformFormData';
+import { transformForm } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
 
 const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
@@ -47,7 +47,7 @@ const MyForm: React.FC<IFormProps> = (props: any) => {
     const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
     const onSubmit = async (formData: any) => {
-        const { profile, productOwner, technicalContact } = transformFormData(formData);
+        const { profile, productOwner, technicalContact } = transformForm(formData);
 
         // TODO: fx this work-around
         if (!profile.busOrgId) {
