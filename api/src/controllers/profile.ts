@@ -25,7 +25,7 @@ import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import shared from '../libs/shared';
-import { validateObjProps } from '../libs/utils';
+import { isNotAuthorized, validateObjProps } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -80,13 +80,15 @@ export const fetchProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const results = await ProfileModel.findById(Number(profileId));
+    const record = await ProfileModel.findById(Number(profileId));
 
-    if (!(user.id === results.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
-      throw errorWithCode('Unauthorized Access', 401);
+    const notAuthorized = isNotAuthorized(record, user);
+
+    if (notAuthorized) {
+      throw notAuthorized;
     }
 
-    res.status(200).json(results);
+    res.status(200).json(record);
   } catch (err) {
     if (err.code) {
       throw err
@@ -192,8 +194,10 @@ export const updateProjectProfile = async (
       other,
     };
 
-    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
-      throw errorWithCode('Unauthorized Access', 401);
+    const notAuthorized = isNotAuthorized(record, user);
+
+    if (notAuthorized) {
+      throw notAuthorized;
     }
 
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
@@ -226,8 +230,10 @@ export const archiveProjectProfile = async (
   try {
     const record = await ProfileModel.findById(profileId);
 
-    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
-      throw errorWithCode('Unauthorized Access', 401);
+    const notAuthorized = isNotAuthorized(record, user);
+
+    if (notAuthorized) {
+      throw notAuthorized;
     }
 
     await ProfileModel.delete(profileId);
@@ -272,8 +278,10 @@ export const fetchProfileContacts = async (
   try {
     const record = await ProfileModel.findById(Number(profileId));
 
-    if (!(user.id === record.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
-      throw errorWithCode('Unauthorized Access', 401);
+    const notAuthorized = isNotAuthorized(record, user);
+
+    if (notAuthorized) {
+      throw notAuthorized;
     }
 
     const results = await ContactModel.findForProject(Number(profileId));
