@@ -575,6 +575,11 @@ exports[`matches the snapshot 1`] = `
         >
           Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.
         </div>
+        <div
+          class="css-pmqufv"
+        >
+          Although not required, we strongly recommend the requestor be the product owner so that this record appears on their dashboard when logging on to the registry; only the requestor will be able to edit this project in the future.
+        </div>
       </div>
     </div>
     <div
