@@ -30,6 +30,7 @@ import { transformForm } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
 
 const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
+const txtForPO2 = `Although not required, we strongly recommend the requestor be the product owner so that this record appears on their dashboard when logging on to the registry; only the requestor will be able to edit this project in the future.`;
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
 
 interface IFormProps {
@@ -137,6 +138,7 @@ const MyForm: React.FC<IFormProps> = (props: any) => {
                         </ShadowBox>
                         <Box p={"30px"} width={[1, 1, 1 / 3]}>
                             <Text>{txtForPO}</Text>
+                            <Text pt={"24px"}>{txtForPO2}</Text>
                         </Box>
                     </Flex>
                     <Flex flexWrap='wrap' mx={-2} mt="68px" >
