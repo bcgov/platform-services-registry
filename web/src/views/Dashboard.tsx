@@ -14,13 +14,27 @@
 // limitations under the License.
 //
 
+import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
+import PendingLable from '../components/UI/pendingLabel';
 import { ShadowBox } from '../components/UI/shadowContainer';
-import { transformProfile } from '../utils/transformDataHelper';
+import theme from '../theme';
+import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
+
+const StyledBackdrop = styled.div`
+  position:absolute;
+  z-index: ${theme.zIndices[0]};
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background-color: white;
+  opacity: 0.5;
+`;
 
 interface IDashboardProps {
   openBackdropCB: () => void;
@@ -41,21 +55,25 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         // 1. First fetch the list of profiles the user is entitled to see
         const response = await api.getProfile();
 
-        // 2. Fetch contact info for each profile
+        // 2. Fetch contact info and provision status for each profile
+        const promisesForContact: any = [];
+        const promisesForProvision: any = [];
+
         for (let profile of response.data) {
-          const contactResponse = await api.getContactsByProfileId(profile.id);
-          contactResponse.data.forEach((contact: any) => {
-            if (contact.roleId === 1) {
-              profile.POEmail = contact.email;
-            }
-            if (contact.roleId === 2) {
-              profile.TCEmail = contact.email;
-            }
-          })
+          promisesForContact.push(api.getContactsByProfileId(profile.id));
+          promisesForProvision.push(api.getNamespaceByProfileId(profile.id));
+        }
+        const contactResponses: Array<any> = await Promise.all(promisesForContact);
+        const provisionResponses: Array<any> = await Promise.all(promisesForProvision);
+
+        // 3. Combine contact info and provision status to existing profile
+        for (let i: number = 0; i < response.data.length; i++) {
+          response.data[i] = { ...response.data[i], ...getProfileContacts(contactResponses[i].data) };
+          response.data[i].provisioned = isProfileProvisioned(provisionResponses[i].data);
         }
 
-        // 3. Then update dashboard cards with fetched profile info
-        setProfile(transformProfile(response.data));
+        // 4. Then update dashboard cards with fetched profile info
+        setProfile(sortProfileByDatetime(response.data));
         closeBackdropCB();
       } catch (err) {
         closeBackdropCB();
@@ -81,10 +99,12 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
     <Box sx={{
       display: 'grid',
       gridGap: 4,
-      gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
     }}>
       {(profile.length > 0) && profile.map((s: any) => (
-        <ShadowBox p={3} key={s.id}>
+        <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+          {!s.provisioned && <StyledBackdrop />}
+          {!s.provisioned && <PendingLable style={{ position: 'absolute', right: '12px', top: '12px' }} />}
           <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} />
         </ShadowBox>
       ))}

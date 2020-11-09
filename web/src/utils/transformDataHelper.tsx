@@ -64,10 +64,39 @@ export function transformForm(data: any) {
   }
 };
 
-export function transformProfile(profileData: any): any[] | [] {
+// sort the list of profiles from the latest to the earliest update_at
+export function sortProfileByDatetime(profileData: any): any[] | [] {
   try {
     return profileData.sort((a: any, b: any) => { return Date.parse(b.updatedAt) - Date.parse(a.updatedAt) });
   } catch (err) {
     return profileData;
   }
+};
+
+// returns true if ALL namespaces under a profile are provisioned true
+export function isProfileProvisioned(namespaceSet: any[]): boolean {
+  try {
+    namespaceSet.forEach((namespace: any) => {
+      if (!namespace.clusters.provisioned) {
+        throw Error;
+      }
+    });
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+// returns an object with key-values pairs for PO email and TC email
+export function getProfileContacts(contactSet: any[]): object {
+  let contacts: any = {};
+  contactSet.forEach((contact: any) => {
+    if (contact.roleId === 1) {
+      contacts.POEmail = contact.email;
+    }
+    if (contact.roleId === 2) {
+      contacts.TCEmail = contact.email;
+    }
+  });
+  return contacts;
 };
