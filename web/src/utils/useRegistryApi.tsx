@@ -65,6 +65,10 @@ export default function useRegistryApi() {
     return api.get(`profile/${profileId}/contacts`);
   };
 
+  const getNamespaceByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    return api.get(`profile/${profileId}/namespace`);
+  };
+
   return {
     getMinistry,
     getProfile,
@@ -72,6 +76,7 @@ export default function useRegistryApi() {
     createContact,
     linkContactToProfileById,
     createNamespaceByProfileId,
-    getContactsByProfileId
+    getContactsByProfileId,
+    getNamespaceByProfileId
   };
 };
