@@ -17,9 +17,9 @@
 function sleep(profiles: Array<any>, time: number) {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(profiles)
-        }, time)
-    })
+            resolve(profiles);
+        }, time);
+    });
 }
 
 function poll(profiles: any, setProfiles: any, promiseFn: any, time: number) {
