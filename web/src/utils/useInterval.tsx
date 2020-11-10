@@ -14,18 +14,23 @@
 // limitations under the License.
 //
 
-function sleep(profiles: Array<any>, time: number) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(profiles);
-        }, time);
-    });
-}
+import { useEffect, useRef } from 'react';
 
-function poll(profiles: any, setProfiles: any, promiseFn: any, time: number) {
-    promiseFn(profiles, setProfiles).then((profiles: any) => {
-        sleep(profiles, time).then((profiles) => poll(profiles, setProfiles, promiseFn, time));
-    });
-}
+export default function useInterval(callback: any, delay: number) {
+    const savedCallback = useRef();
 
-export default poll;
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
+
+    useEffect(() => {
+        function tick() {
+            //@ts-ignore
+            savedCallback.current();
+        }
+        if (delay !== null) {
+            let id = setInterval(tick, delay);
+            return () => clearInterval(id);
+        }
+    }, [delay]);
+};

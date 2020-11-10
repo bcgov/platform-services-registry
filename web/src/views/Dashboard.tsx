@@ -22,8 +22,8 @@ import ProfileCard from '../components/ProfileCard';
 import PendingLable from '../components/UI/pendingLabel';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import theme from '../theme';
-import poll from '../utils/poll';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
+import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
 
 const StyledBackdrop = styled.div`
@@ -48,24 +48,6 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
   const api = useRegistryApi();
 
   const [profile, setProfile] = useState<any>([]);
-
-  function pullProvisionStatus(pendingProfiles: any, setProfile: any) {
-    return new Promise(resolve => {
-      const promisesForProvision: any = [];
-      for (let p of pendingProfiles) {
-        promisesForProvision.push(api.getNamespaceByProfileId(p.id));
-      }
-
-      Promise.all(promisesForProvision)
-        .then((provisionResponses: any) => {
-          for (let i: number = 0; i < pendingProfiles.length; i++) {
-            pendingProfiles[i].provisioned = isProfileProvisioned(provisionResponses[i].data);
-          }
-          setProfile(pendingProfiles);
-          resolve(pendingProfiles);
-        })
-    });
-  }
 
   useEffect(() => {
     async function wrap() {
@@ -94,9 +76,6 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         // 4. Then update dashboard cards with fetched profile info
         setProfile(sortProfileByDatetime(response.data));
 
-        // 5. Start polling for profile provision status changes every 30s
-        poll(response.data.filter((p: any) => !p.provisioned), setProfile, pullProvisionStatus, 30000);
-
         closeBackdropCB();
       } catch (err) {
         closeBackdropCB();
@@ -117,6 +96,22 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
 
     // eslint-disable-next-line
   }, []);
+
+  // start polling for profile provision status changes every 30s
+  useInterval(() => {
+    const promisesForProvision: any = [];
+    for (let p of profile) {
+      promisesForProvision.push(api.getNamespaceByProfileId(p.id));
+    }
+
+    Promise.all(promisesForProvision)
+      .then((provisionResponses: any) => {
+        for (let i: number = 0; i < profile.length; i++) {
+          profile[i].provisioned = isProfileProvisioned(provisionResponses[i].data);
+        }
+        setProfile([...profile]);
+      })
+  }, 1000 * 30);
 
   return (
     <Box sx={{
