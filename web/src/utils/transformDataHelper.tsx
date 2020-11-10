@@ -73,11 +73,12 @@ export function sortProfileByDatetime(profileData: any): any[] | [] {
   }
 };
 
-// returns true if ALL namespaces under a profile are provisioned true
+// returns true if ALL namespaces under a profile in silver clusters are provisioned true
 export function isProfileProvisioned(namespaceSet: any[]): boolean {
   try {
     namespaceSet.forEach((namespace: any) => {
-      if (!namespace.clusters.provisioned) {
+      // TODO: refactor here when we add other clusters
+      if (!namespace.clusters[0].provisioned) {
         throw Error;
       }
     });
