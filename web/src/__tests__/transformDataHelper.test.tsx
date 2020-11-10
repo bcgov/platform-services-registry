@@ -14,7 +14,9 @@
 // limitations under the License.
 //
 
-import { sortProfileByDatetime } from '../utils/transformDataHelper';
+import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
+import profileContacts from './fixtures/profile-contacts.json';
+import profileNamespaces from './fixtures/profile-namespaces.json';
 import profiles from './fixtures/profiles.json';
 import sortedProfile from './fixtures/sorted-profiles.json';
 
@@ -39,5 +41,22 @@ describe("test the helper function sortProfileByDatetime", () => {
       }
     ];
     expect(sortProfileByDatetime(stubProfileData)).toMatchObject(stubProfileData);
+  });
+});
+
+describe("test the helper function isProfileProvisioned", () => {
+  test("should return true if all namespaces under a profile in silver cluster are provisioned", () => {
+    const stubProfileNamespaces = profileNamespaces;
+    expect(isProfileProvisioned(stubProfileNamespaces)).toEqual(true);
+  });
+});
+
+describe("test the helper function getProfileContacts", () => {
+  test("should returns an object with key-values pairs for PO email and TC email", () => {
+    const stubProfileContacts = profileContacts;
+    expect(getProfileContacts(stubProfileContacts)).toEqual({
+      POEmail: "jane@example.com",
+      TCEmail: "jim@example.com"
+    });
   });
 });
