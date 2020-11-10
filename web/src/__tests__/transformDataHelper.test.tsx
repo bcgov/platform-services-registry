@@ -14,59 +14,16 @@
 // limitations under the License.
 //
 
-import { transformProfile } from '../utils/transformDataHelper';
+import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
+import profileContacts from './fixtures/profile-contacts.json';
+import profileNamespaces from './fixtures/profile-namespaces.json';
+import profiles from './fixtures/profiles.json';
+import sortedProfile from './fixtures/sorted-profiles.json';
 
-describe("test the helper function transformProfile", () => {
+describe("test the helper function sortProfileByDatetime", () => {
   test("should return sorted profile data based so the order goes from the latest updated profile", () => {
-    // TODO: add path lib and DRY these repeated fixtures
-    const stubProfileData = [
-      {
-        'id': 2,
-        'name': 'EPIC',
-        'busOrgId': 'CITZ',
-        'description': 'Hello World',
-        'prioritySystem': false,
-        'criticalSystem': true,
-        'createdAt': '2020-02-28T00:00:00.000Z',
-        'updatedAt': '2020-02-28T00:00:00.000Z',
-        'userId': 4
-      },
-      {
-        'id': 1,
-        'name': 'Health Gateway',
-        'busOrgId': 'CITZ',
-        'description': null,
-        'prioritySystem': false,
-        'criticalSystem': false,
-        'createdAt': '2020-04-28T00:00:00.000Z',
-        'updatedAt': '2020-04-28T00:00:00.000Z',
-        'userId': 4
-      }
-    ];
-    expect(transformProfile(stubProfileData)).toMatchObject([
-      {
-        'id': 1,
-        'name': 'Health Gateway',
-        'busOrgId': 'CITZ',
-        'description': null,
-        'prioritySystem': false,
-        'criticalSystem': false,
-        'createdAt': '2020-04-28T00:00:00.000Z',
-        'updatedAt': '2020-04-28T00:00:00.000Z',
-        'userId': 4
-      },
-      {
-        'id': 2,
-        'name': 'EPIC',
-        'busOrgId': 'CITZ',
-        'description': 'Hello World',
-        'prioritySystem': false,
-        'criticalSystem': true,
-        'createdAt': '2020-02-28T00:00:00.000Z',
-        'updatedAt': '2020-02-28T00:00:00.000Z',
-        'userId': 4
-      }
-    ]);
+    const stubProfileData = profiles;
+    expect(sortProfileByDatetime(stubProfileData)).toMatchObject(sortedProfile);
   });
 
   test("should return original profile data upon errors", () => {
@@ -83,6 +40,23 @@ describe("test the helper function transformProfile", () => {
         'userId': 4
       }
     ];
-    expect(transformProfile(stubProfileData)).toMatchObject(stubProfileData);
+    expect(sortProfileByDatetime(stubProfileData)).toMatchObject(stubProfileData);
+  });
+});
+
+describe("test the helper function isProfileProvisioned", () => {
+  test("should return true if all namespaces under a profile in silver cluster are provisioned", () => {
+    const stubProfileNamespaces = profileNamespaces;
+    expect(isProfileProvisioned(stubProfileNamespaces)).toEqual(true);
+  });
+});
+
+describe("test the helper function getProfileContacts", () => {
+  test("should returns an object with key-values pairs for PO email and TC email", () => {
+    const stubProfileContacts = profileContacts;
+    expect(getProfileContacts(stubProfileContacts)).toEqual({
+      POEmail: "jane@example.com",
+      TCEmail: "jim@example.com"
+    });
   });
 });

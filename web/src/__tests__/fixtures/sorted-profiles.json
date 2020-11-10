@@ -1,0 +1,31 @@
+[
+  {
+    "id": 2,
+    "name": "EPIC",
+    "description": "Hello World",
+    "prioritySystem": false,
+    "criticalSystem": true,
+    "createdAt": "2020-10-28T03:00:00.000Z",
+    "updatedAt": "2020-10-28T03:00:00.000Z",
+    "userId": 4
+  },
+  {
+    "id": 1,
+    "name": "Health Gateway",
+    "description": null,
+    "prioritySystem": false,
+    "criticalSystem": false,
+    "createdAt": "2020-04-28T00:00:00.000Z",
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "userId": 4
+  },
+  {
+    "id": 3,
+    "name": "Mines Digital Services",
+    "description": "This is some description",
+    "prioritySystem": false,
+    "criticalSystem": false,
+    "createdAt": "2020-04-18T10:10:00.000Z",
+    "updatedAt": "2020-04-18T10:10:00.000Z"
+  }
+]

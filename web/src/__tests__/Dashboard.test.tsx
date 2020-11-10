@@ -18,6 +18,7 @@ import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import Dashboard from '../views/Dashboard';
 
+// TODO: use fixtures and make them work with jest mock values
 jest.mock('../utils/useRegistryApi', () => {
   return function useRegistryApi() {
     const getProfile = jest.fn().mockResolvedValue({
