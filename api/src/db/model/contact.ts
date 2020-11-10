@@ -52,7 +52,7 @@ export default class ContactModel extends Model {
         data.firstName,
         data.lastName,
         data.email,
-        data.githubId,
+        data.githubId.toLowerCase(),
         data.roleId,
       ],
     };
