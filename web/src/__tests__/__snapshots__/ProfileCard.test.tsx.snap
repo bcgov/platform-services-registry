@@ -5,11 +5,30 @@ exports[`matches the snapshot 1`] = `
   <div
     class="css-vlngyz"
   >
-    <h2
-      class="css-ot5b10"
+    <div
+      class="css-4cffwv"
     >
-      Health Gateway
-    </h2>
+      <div
+        class="css-wdgi07"
+      >
+        <h2
+          class="css-ot5b10"
+        >
+          Health Gateway
+        </h2>
+      </div>
+      <div
+        class="css-1ugviwv"
+        style="position: relative;"
+      >
+        <div
+          class="css-1rmctl5"
+          style="position: absolute; right: 0px; opacity: 0.2;"
+        >
+          Pending
+        </div>
+      </div>
+    </div>
     <h2
       class="css-16ht1ln"
     >

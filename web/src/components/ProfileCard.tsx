@@ -15,7 +15,8 @@
 //
 
 import React from 'react';
-import { Flex, Text } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
+import PendingLable from '../components/UI/pendingLabel';
 import theme from '../theme';
 
 interface IProfileCardProps {
@@ -24,10 +25,11 @@ interface IProfileCardProps {
   ministry?: string;
   PO?: string;
   TC?: string;
+  isProvisioned?: boolean
 };
 
 const ProfileCard: React.FC<IProfileCardProps> = (props) => {
-  const { title = '', textBody = '', ministry = '', PO = '', TC = '' } = props;
+  const { title = '', textBody = '', ministry = '', PO = '', TC = '', isProvisioned = false } = props;
 
   return (
     <Flex
@@ -35,14 +37,32 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
       justifyContent="center"
       flexDirection="column"
     >
-      <Text
-        as="h2"
-        fontSize={[3, 4, 4]}
-        fontWeight={500}
-        mb={3}
-      >
-        {title}
-      </Text>
+      {!isProvisioned ? (
+        <Flex>
+          <Box width={2 / 3}>
+            <Text
+              as="h2"
+              fontSize={[3, 4, 4]}
+              fontWeight={500}
+              mb={3}
+            >
+              {title}
+            </Text>
+          </Box>
+          <Box width={1 / 3} style={{ position: 'relative' }}>
+            <PendingLable style={{ position: 'absolute', right: 0 }} />
+          </Box>
+        </Flex>
+      ) : (
+          <Text
+            as="h2"
+            fontSize={[3, 4, 4]}
+            fontWeight={500}
+            mb={3}
+          >
+            {title}
+          </Text>
+        )}
       <Text
         as="h2"
         color={theme.colors.grey}

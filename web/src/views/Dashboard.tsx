@@ -19,7 +19,6 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
-import PendingLable from '../components/UI/pendingLabel';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import theme from '../theme';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
@@ -122,8 +121,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
       {(profile.length > 0) && profile.map((s: any) => (
         <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
           {!s.provisioned && <StyledBackdrop />}
-          {!s.provisioned && <PendingLable style={{ position: 'absolute', right: '12px', top: '12px' }} />}
-          <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} />
+          <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
         </ShadowBox>
       ))}
     </Box>
