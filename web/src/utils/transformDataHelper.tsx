@@ -67,7 +67,7 @@ export function transformForm(data: any) {
 // sort the list of profiles from the latest to the earliest update_at
 export function sortProfileByDatetime(profileData: any): any[] | [] {
   try {
-    return profileData.sort((a: any, b: any) => { return Date.parse(b.updatedAt) - Date.parse(a.updatedAt) });
+    return profileData.sort((a: any, b: any) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
   } catch (err) {
     return profileData;
   }
