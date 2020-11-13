@@ -20,6 +20,43 @@ paths:
       responses:
         200:
           description: The server is OK.
+  /api/v1/contact/{contactId}:
+    put:
+      operationId: UpdateContact
+      summary: Update a given contact
+      description: |-
+        Use this endpoint to update a given contact. The
+        updated contact will be returned.
+      tags:
+        - Contact
+      requestBody:
+        description: |
+          The request body contains a JSON formatted object with
+          the contact details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contact"
+      parameters:
+        - name: contactId
+          description: |-
+            The ID of the contact that is being updated.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error 
   /api/v1/ministry:
     get:
       operationId: fetchMinistrySponsors
@@ -35,9 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Ministry"
+                $ref: "#/components/schemas/Ministry"
         400:
           description: The request was received but incorrect
         500:
@@ -556,9 +591,10 @@ components:
         - first_name
         - last_name
         - email
+        - github_id
         - role_id
       example:
         first_name: "John"
         last_name: "Doe"
         email: "john.doe@example.com"
-        role_id: 1
+        github_id: "johndoe1100"

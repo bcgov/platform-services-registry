@@ -1519,6 +1519,25 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
           </li>
         
           <li>
+            <a href="#registry-api-contact" class="toc-h1 toc-link" data-title="Contact">Contact</a>
+            
+              <ul class="toc-list-h2">
+                
+                  <li>
+                    <a href="#updatecontact" class="toc-h2 toc-link" data-title="">UpdateContact</a>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="#fetchprofilecontacts" class="toc-h2 toc-link" data-title="">fetchProfileContacts</a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li>
             <a href="#registry-api-ministry" class="toc-h1 toc-link" data-title="Ministry">Ministry</a>
             
               <ul class="toc-list-h2">
@@ -1593,20 +1612,6 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
                 
                   <li>
                     <a href="#deleteaprojectnamespace" class="toc-h2 toc-link" data-title="">DeleteAProjectNamespace</a>
-                    
-                  </li>
-                
-              </ul>
-            
-          </li>
-        
-          <li>
-            <a href="#registry-api-contact" class="toc-h1 toc-link" data-title="Contact">Contact</a>
-            
-              <ul class="toc-list-h2">
-                
-                  <li>
-                    <a href="#fetchprofilecontacts" class="toc-h2 toc-link" data-title="">fetchProfileContacts</a>
                     
                   </li>
                 
@@ -1717,6 +1722,245 @@ alive and well.</p>
 <aside class="success">
 This operation does not require authentication
 </aside>
+<h1 id="registry-api-contact">Contact</h1>
+<h2 id="updatecontact">UpdateContact</h2>
+<p><a id="opIdUpdateContact"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X PUT http://localhost:8100/api/v1/contact/{contactId} \
+  -H <span class="hljs-string">'Content-Type: application/json'</span> \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+<span class="hljs-keyword">const</span> inputBody = <span class="hljs-string">'{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com",
+  "github_id": "johndoe1100"
+}'</span>;
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Content-Type'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/contact/{contactId}'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'PUT'</span>,
+  <span class="hljs-attr">body</span>: inputBody,
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>PUT /api/v1/contact/{contactId}</code></p>
+<p><em>Update a given contact</em></p>
+<p>Use this endpoint to update a given contact. The
+updated contact will be returned.</p>
+<blockquote>
+<p>Body parameter</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
+  <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+  <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+}
+</code></pre>
+<h3 id="updatecontact-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>contactId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>The ID of the contact that is being updated.</td>
+</tr>
+<tr>
+<td>body</td>
+<td>body</td>
+<td><a href="#schemacontact">Contact</a></td>
+<td>true</td>
+<td>The request body contains a JSON formatted object with</td>
+</tr>
+</tbody>
+</table>
+<h4 id="detailed-descriptions">Detailed descriptions</h4>
+<p><strong>body</strong>: The request body contains a JSON formatted object with
+the contact details.</p>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
+  <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+  <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+}
+</code></pre>
+<h3 id="updatecontact-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td><a href="#schemacontact">Contact</a></td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
+<td>The request was received but incorrect</td>
+<td>None</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<aside class="success">
+This operation does not require authentication
+</aside>
+<h2 id="fetchprofilecontacts">fetchProfileContacts</h2>
+<p><a id="opIdfetchProfileContacts"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/profile/{profileId}/contacts \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/contacts'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/profile/{profileId}/contacts</code></p>
+<p><em>Fetch a given projects Product Owner and Technical Contact</em></p>
+<p>Use this endpoint to fetch a given projects Product Owner
+and Technical Contact. The projects contacts will be returned
+providing it is not archived.</p>
+<h3 id="fetchprofilecontacts-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>profileId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>The ID of the profile that is being requested.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
+  <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+  <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+}
+</code></pre>
+<h3 id="fetchprofilecontacts-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td><a href="#schemacontact">Contact</a></td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
+<td>The request was received but incorrect</td>
+<td>None</td>
+</tr>
+<tr>
+<td>401</td>
+<td><a href="https://tools.ietf.org/html/rfc7235#section-3.1">Unauthorized</a></td>
+<td>The request was received but didn't have correct access permissions</td>
+<td>None</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<aside class="success">
+This operation does not require authentication
+</aside>
 <h1 id="registry-api-ministry">Ministry</h1>
 <h2 id="fetchministrysponsors">fetchMinistrySponsors</h2>
 <p><a id="opIdfetchMinistrySponsors"></a></p>
@@ -1758,11 +2002,9 @@ that are not archived.</p>
 <blockquote>
 <p>200 Response</p>
 </blockquote>
-<pre class="highlight tab tab-json"><code>[
-  {
-    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Agriculture"</span>
-  }
-]
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Agriculture"</span>
+}
 </code></pre>
 <h3 id="fetchministrysponsors-responses">Responses</h3>
 <table>
@@ -1779,7 +2021,7 @@ that are not archived.</p>
 <td>200</td>
 <td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
 <td>The request was successful</td>
-<td>Inline</td>
+<td><a href="#schemaministry">Ministry</a></td>
 </tr>
 <tr>
 <td>400</td>
@@ -1792,70 +2034,6 @@ that are not archived.</p>
 <td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
 <td>Internal Error</td>
 <td>None</td>
-</tr>
-</tbody>
-</table>
-<h3 id="fetchministrysponsors-responseschema">Response Schema</h3>
-<p>Status Code <strong>200</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Required</th>
-<th>Restrictions</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>anonymous</em></td>
-<td>[<a href="#schemaministry">Ministry</a>]</td>
-<td>false</td>
-<td>none</td>
-<td>[Payload for the Ministry Sponsors]</td>
-</tr>
-<tr>
-<td>» Ministry Sponsors</td>
-<td><a href="#schemaministry">Ministry</a></td>
-<td>false</td>
-<td>none</td>
-<td>Payload for the Ministry Sponsors</td>
-</tr>
-<tr>
-<td>»» id</td>
-<td>string</td>
-<td>false</td>
-<td>none</td>
-<td>none</td>
-</tr>
-<tr>
-<td>»» name</td>
-<td>string</td>
-<td>true</td>
-<td>none</td>
-<td>none</td>
-</tr>
-<tr>
-<td>»» archived</td>
-<td>boolean</td>
-<td>false</td>
-<td>none</td>
-<td>none</td>
-</tr>
-<tr>
-<td>»» createdAt</td>
-<td>string(date)</td>
-<td>false</td>
-<td>none</td>
-<td>none</td>
-</tr>
-<tr>
-<td>»» updatedAt</td>
-<td>string(date)</td>
-<td>false</td>
-<td>none</td>
-<td>none</td>
 </tr>
 </tbody>
 </table>
@@ -1964,7 +2142,7 @@ fetch('http://localhost:8100/api/v1/profile',
 </tr>
 </tbody>
 </table>
-<h4 id="detailed-descriptions">Detailed descriptions</h4>
+<h4 id="detailed-descriptions-2">Detailed descriptions</h4>
 <p><strong>body</strong>: The request body contains a JSON formatted object with
 the project details.</p>
 <blockquote>
@@ -3196,116 +3374,6 @@ endpoint or be accessible.</p>
 <aside class="success">
 This operation does not require authentication
 </aside>
-<h1 id="registry-api-contact">Contact</h1>
-<h2 id="fetchprofilecontacts">fetchProfileContacts</h2>
-<p><a id="opIdfetchProfileContacts"></a></p>
-<blockquote>
-<p>Code samples</p>
-</blockquote>
-<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
-curl -X GET http://localhost:8100/api/v1/profile/{profileId}/contacts \
-  -H <span class="hljs-string">'Accept: application/json'</span>
-
-</code></pre>
-<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
-
-<span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
-
-};
-
-fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/contacts'</span>,
-{
-  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
-
-  <span class="hljs-attr">headers</span>: headers
-})
-.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
-    <span class="hljs-keyword">return</span> res.json();
-}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(body);
-});
-
-</code></pre>
-<p><code>GET /api/v1/profile/{profileId}/contacts</code></p>
-<p><em>Fetch a given projects Product Owner and Technical Contact</em></p>
-<p>Use this endpoint to fetch a given projects Product Owner
-and Technical Contact. The projects contacts will be returned
-providing it is not archived.</p>
-<h3 id="fetchprofilecontacts-parameters">Parameters</h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>In</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>profileId</td>
-<td>path</td>
-<td>integer</td>
-<td>true</td>
-<td>The ID of the profile that is being requested.</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>Example responses</p>
-</blockquote>
-<blockquote>
-<p>200 Response</p>
-</blockquote>
-<pre class="highlight tab tab-json"><code>{
-  <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
-  <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
-  <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
-  <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
-}
-</code></pre>
-<h3 id="fetchprofilecontacts-responses">Responses</h3>
-<table>
-<thead>
-<tr>
-<th>Status</th>
-<th>Meaning</th>
-<th>Description</th>
-<th>Schema</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>200</td>
-<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
-<td>The request was successful</td>
-<td><a href="#schemacontact">Contact</a></td>
-</tr>
-<tr>
-<td>400</td>
-<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
-<td>The request was received but incorrect</td>
-<td>None</td>
-</tr>
-<tr>
-<td>401</td>
-<td><a href="https://tools.ietf.org/html/rfc7235#section-3.1">Unauthorized</a></td>
-<td>The request was received but didn't have correct access permissions</td>
-<td>None</td>
-</tr>
-<tr>
-<td>500</td>
-<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
-<td>Internal Error</td>
-<td>None</td>
-</tr>
-</tbody>
-</table>
-<aside class="success">
-This operation does not require authentication
-</aside>
 <h1 id="schemas">Schemas</h1>
 <h2 id="tocscluster">Cluster</h2>
 <p><a id="schemacluster"></a></p>
@@ -3738,7 +3806,7 @@ This operation does not require authentication
   <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
   <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
   <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
-  <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
 }
 
 </code></pre>
@@ -3786,7 +3854,7 @@ This operation does not require authentication
 <tr>
 <td>github_id</td>
 <td>string</td>
-<td>false</td>
+<td>true</td>
 <td>none</td>
 <td>none</td>
 </tr>
