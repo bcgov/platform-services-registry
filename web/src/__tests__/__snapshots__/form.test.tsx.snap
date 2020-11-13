@@ -501,7 +501,6 @@ exports[`matches the snapshot 1`] = `
             </label>
             <input
               class="css-1f2jrlr"
-              disabled=""
               id="po-first-name"
               name="po-firstName"
               type="text"
@@ -520,7 +519,6 @@ exports[`matches the snapshot 1`] = `
             </label>
             <input
               class="css-1f2jrlr"
-              disabled=""
               id="po-last-name"
               name="po-lastName"
               type="text"
@@ -539,7 +537,6 @@ exports[`matches the snapshot 1`] = `
             </label>
             <input
               class="css-1f2jrlr"
-              disabled=""
               id="po-email"
               name="po-email"
               type="text"
