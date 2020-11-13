@@ -38,7 +38,7 @@ const SubformPO: React.FC = () => {
                 {({ input }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-first-name">First Name</Label>
-                        <Input mt="8px" {...input} id="po-first-name" disabled />
+                        <Input mt="8px" {...input} id="po-first-name" />
                         </Flex>
                 )}
             </Field>
@@ -46,7 +46,7 @@ const SubformPO: React.FC = () => {
                 {({ input }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-last-name">Last Name</Label>
-                        <Input mt="8px" {...input} id="po-last-name" disabled />
+                        <Input mt="8px" {...input} id="po-last-name" />
                         </Flex>
                 )}
             </Field>
@@ -54,7 +54,7 @@ const SubformPO: React.FC = () => {
                 {({ input }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-email">eMail Address</Label>
-                        <Input mt="8px" {...input} id="po-email" disabled />
+                        <Input mt="8px" {...input} id="po-email" />
                         </Flex>
                 )}
             </Field>
