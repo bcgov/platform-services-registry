@@ -20,11 +20,12 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { createContact } from '../../controllers/contact';
+import { createContact, updateContact } from '../../controllers/contact';
 
 const router = express.Router();
 
 // Contact
 router.post('/', asyncMiddleware(createContact));
+router.put('/:contactId', asyncMiddleware(updateContact));
 
 export default router;
