@@ -16,11 +16,11 @@
 
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import theme from '../theme';
+import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
 import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
@@ -74,25 +74,13 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
 
         // 4. Then update dashboard cards with fetched profile info
         setProfile(sortProfileByDatetime(response.data));
-
-        closeBackdropCB();
       } catch (err) {
-        closeBackdropCB();
-        toast.error('😥 Something went wrong', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
+        promptErrToastWithText('Something went wrong');
         console.log(err);
       }
+      closeBackdropCB();
     }
     wrap();
-
     // eslint-disable-next-line
   }, []);
 
