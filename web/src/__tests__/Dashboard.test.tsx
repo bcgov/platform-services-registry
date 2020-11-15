@@ -75,7 +75,56 @@ jest.mock('../utils/useRegistryApi', () => {
       ]
     });
 
-    return { getProfile, getContactsByProfileId };
+    const getNamespaceByProfileId = jest.fn().mockResolvedValue({
+      data: [
+        {
+          "namespaceId": 149,
+          "name": "4ea35c-tools",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 151,
+          "name": "4ea35c-test",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 150,
+          "name": "4ea35c-dev",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 152,
+          "name": "4ea35c-prod",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        }
+      ]
+    });
+
+    return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
   }
 });
 

@@ -18,10 +18,11 @@ import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
+import Button from '../components/UI/button';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
+import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transfomJsonToCsv } from '../utils/transformDataHelper';
 import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
 
@@ -100,19 +101,45 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
       })
   }, 1000 * 30);
 
+  const downloadCSV = () => {
+    openBackdropCB();
+    try {
+      const clonedProfile = Array.from(profile);
+
+      clonedProfile.filter((item: any) => item.provisioned === true);
+      clonedProfile.forEach((item: any) => {
+        delete item.criticalSystem;
+        delete item.archived;
+        delete item.userId;
+        delete item.namespacePrefix;
+        delete item.provisioned;
+      });
+
+      let csv = transfomJsonToCsv(clonedProfile);
+      window.open("data:text/csv;charset=utf-8," + escape(csv));
+    } catch (err) {
+      promptErrToastWithText('Something went wrong');
+      console.log(err);
+    }
+    closeBackdropCB();
+  };
+
   return (
-    <Box sx={{
-      display: 'grid',
-      gridGap: 4,
-      gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
-    }}>
-      {(profile.length > 0) && profile.map((s: any) => (
-        <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-          {!s.provisioned && <StyledBackdrop />}
-          <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
-        </ShadowBox>
-      ))}
-    </Box>
+    <>
+      <Button onClick={downloadCSV}>Download CSV</Button>
+      <Box sx={{
+        display: 'grid',
+        gridGap: 4,
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
+      }}>
+        {(profile.length > 0) && profile.map((s: any) => (
+          <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+            {!s.provisioned && <StyledBackdrop />}
+            <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
+          </ShadowBox>
+        ))}
+      </Box>
+    </>
   );
 };
 
