@@ -8,12 +8,19 @@ x-env: &defaults
   APP_DB_NAME:
   APP_DB_USER:
   APP_DB_PASSWORD:
+  FLYWAY_URL: jdbc:postgresql://registry-pg/registry
+  FLYWAY_USER:
+  FLYWAY_PASSWORD:
+  FLYWAY_CONNECT_RETRIES: 60
+  FLYWAY_PLACEHOLDER_REPLACEMENT: 'true'
+  FLYWAY_PLACEHOLDERS_USERNAME:
   SSO_CLIENT_SECRET:
   CHES_BASEURL:
   CHES_SSO_TOKEN_URL:
   CHES_SSO_CLIENT_ID:
   CHES_SSO_CLIENT_SECRET:
   NATS_HOST: nats://registry-nats
+
 # volumes:
 #   pg_data:
 # networks:
@@ -106,6 +113,17 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+  flyway:
+    container_name: registry-pg-migrations
+    image: boxfuse/flyway:5.2.4-alpine
+    command: migrate
+    volumes:
+      - type: bind
+        source: ./db/sql
+        target: /flyway/sql
+    depends_on:
+      - postgres
+    environment: *defaults
   nats:
     container_name: registry-nats
     image: nats:latest
