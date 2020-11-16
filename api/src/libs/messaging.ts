@@ -29,15 +29,14 @@ export const enum MessageType {
   ProvisioningCompleted,
 }
 
-export const contactsForProfile = async (profileId: number): Promise<string[]> => {
+export const contactsForProfile = async (profileId: number): Promise<Contact[]> => {
 
   try {
     const dm = new DataManager(shared.pgPool);
     const { ContactModel } = dm;
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-    const to = [...new Set(contacts.map(c => c.email))];
 
-    return to;
+    return contacts;
   } catch (err) {
     const message = `Unable to fetch contacts for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -46,10 +45,38 @@ export const contactsForProfile = async (profileId: number): Promise<string[]> =
   }
 }
 
+export const profileDetails = async (profileId: number): Promise<string> => {
+
+  try {
+    const dm = new DataManager(shared.pgPool);
+    const { ProfileModel } = dm;
+    const profiles = await ProfileModel.findById(profileId);
+    const profileName = profiles.name;
+    return profileName;
+  } catch (err) {
+    const message = `Unable to fetch profile ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    return '';
+  }
+}
+
+export const inputVariables = async (buff: string, to: string[], profileName: string, names: string[]): Promise<any> => {
+  buff = buff.replace('${POName}', names[0]);
+  buff = buff.replace('${TCName}', names[1]);
+  buff = buff.replace('${POEmail}', to[0]);
+  buff = buff.replace('${TCEmail}', to[1]);
+  buff = buff.replace('${NamespaceName}', profileName);
+  return buff;
+}
+
 export const sendProvisioningMessage = async (profileId: number, messageType: MessageType): Promise<SendReceipt | undefined> => {
 
   try {
-    const to = await contactsForProfile(profileId);
+    const contacts = await contactsForProfile(profileId);
+    const names = contacts.map(c => c.firstName + ' ' + c.lastName);
+    const to = [...new Set(contacts.map(c => c.email))];
+    const profileName = await profileDetails(profileId);
     let buff;
 
     if (to.length === 0) {
@@ -58,7 +85,8 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
 
     switch (messageType) {
       case MessageType.ProvisioningStarted:
-        buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-received.txt'));
+        // tslint:disable-next-line: max-line-length
+        buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-received.txt')).toString();
         break;
       case MessageType.ProvisioningCompleted:
         buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-done.txt'));
@@ -72,13 +100,14 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
+    const bodyContent = await inputVariables(buff, to, profileName, names);
 
     const message: Message = {
       bodyType: BodyType.Text,
-      body: buff.toString('utf8'),
+      body: bodyContent,
       to,
       from: 'Registry <pathfinder@gov.bc.ca>',
-      subject: 'Namespace Provisioning',
+      subject: `${profileName} Namespace`,
     }
 
     const receipt = await shared.ches.send(message);

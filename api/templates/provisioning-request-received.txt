@@ -8,7 +8,11 @@ Workflow Steps
 - Approval      <-- You are here.
 - Provisioning
 
+Project Details
 
+- Project Name: ${NamespaceName}
+- Product Owner: ${POName} (${POEmail})
+- Technical Contact: ${TCName} (${TCEmail})
 
 Thanks Again,
 
