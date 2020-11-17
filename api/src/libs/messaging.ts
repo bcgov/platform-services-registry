@@ -61,20 +61,37 @@ export const profileDetails = async (profileId: number): Promise<string> => {
   }
 }
 
-export const inputVariables = async (buff: string, to: string[], profileName: string, names: string[]): Promise<any> => {
-  buff = buff.replace('${POName}', names[0]);
-  buff = buff.replace('${TCName}', names[1]);
-  buff = buff.replace('${POEmail}', to[0]);
-  buff = buff.replace('${TCEmail}', to[1]);
-  buff = buff.replace('${NamespaceName}', profileName);
-  return buff;
+export const updateEmailContent = async (buff: string, to: string[], profileName: string, contactNames: string[]): Promise<string> => {
+  try {
+    let emailContent: string;
+
+    const mapObj = {
+      POName: contactNames[0],
+      TCName: contactNames[1],
+      POEmail: to[0],
+      TCEmail: to[1],
+      projectName: profileName,
+    };
+
+    const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
+    emailContent = buff.replace(re, matched => {
+      return mapObj[matched];
+    });
+    return emailContent;
+  } catch (err) {
+    const message = `Unable to update email content`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    return '';
+  }
+
 }
 
 export const sendProvisioningMessage = async (profileId: number, messageType: MessageType): Promise<SendReceipt | undefined> => {
 
   try {
     const contacts = await contactsForProfile(profileId);
-    const names = contacts.map(c => c.firstName + ' ' + c.lastName);
+    const contactNames = contacts.map(c => c.firstName + ' ' + c.lastName);
     const to = [...new Set(contacts.map(c => c.email))];
     const profileName = await profileDetails(profileId);
     let buff;
@@ -85,11 +102,14 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
 
     switch (messageType) {
       case MessageType.ProvisioningStarted:
-        // tslint:disable-next-line: max-line-length
-        buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-received.txt')).toString();
+        buff = fs.readFileSync(
+          path.join(__dirname, '../../', 'templates/provisioning-request-received.txt')
+          ).toString();
         break;
       case MessageType.ProvisioningCompleted:
-        buff = fs.readFileSync(path.join(__dirname, '../../', 'templates/provisioning-request-done.txt'));
+        buff = fs.readFileSync(
+          path.join(__dirname, '../../', 'templates/provisioning-request-done.txt')
+          ).toString();
         break;
       default:
         logger.info('No message type given');
@@ -100,7 +120,11 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await inputVariables(buff, to, profileName, names);
+    const bodyContent = await updateEmailContent(buff, to, profileName, contactNames);
+
+    if (!bodyContent) {
+      return;
+    }
 
     const message: Message = {
       bodyType: BodyType.Text,

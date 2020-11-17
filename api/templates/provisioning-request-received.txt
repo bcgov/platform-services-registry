@@ -10,9 +10,9 @@ Workflow Steps
 
 Project Details
 
-- Project Name: ${NamespaceName}
-- Product Owner: ${POName} (${POEmail})
-- Technical Contact: ${TCName} (${TCEmail})
+- Project Name: projectName
+- Product Owner: POName (POEmail)
+- Technical Contact: TCName (TCEmail)
 
 Thanks Again,
 
