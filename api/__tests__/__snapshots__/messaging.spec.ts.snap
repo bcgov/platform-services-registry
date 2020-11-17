@@ -1,13 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Services Contact email addresses are returned 1`] = `
+exports[`Services Contact details are returned 1`] = `
 Array [
-  "jane@example.com",
-  "jim@example.com",
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "email": "jane@example.com",
+    "firstName": "Jane",
+    "githubId": "jane1100",
+    "id": 233,
+    "lastName": "Doe",
+    "roleId": 1,
+    "updatedAt": "2020-09-10T18:14:13.436Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "email": "jim@example.com",
+    "firstName": "Jim",
+    "githubId": "jim1100",
+    "id": 234,
+    "lastName": "Doe",
+    "roleId": 2,
+    "updatedAt": "2020-09-10T18:14:13.436Z",
+  },
 ]
 `;
 
-exports[`Services Contact email addresses are returned 2`] = `
+exports[`Services Contact details are returned 2`] = `
 Array [
   Array [
     Object {
@@ -25,9 +45,9 @@ Array [
 ]
 `;
 
-exports[`Services Contact email addresses not returned 1`] = `Array []`;
+exports[`Services Contact details not returned 1`] = `Array []`;
 
-exports[`Services Contact email addresses not returned 2`] = `
+exports[`Services Contact details not returned 2`] = `
 Array [
   Array [
     Object {

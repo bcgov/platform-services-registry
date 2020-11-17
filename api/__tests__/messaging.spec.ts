@@ -35,7 +35,7 @@ describe('Services', () => {
     jest.clearAllMocks();
   });
 
-  it('Contact email addresses are returned', async () => {
+  it('Contact details are returned', async () => {
 
     client.query.mockReturnValue({ rows: contacts });
 
@@ -46,7 +46,7 @@ describe('Services', () => {
     expect(client.query.mock.calls).toMatchSnapshot();
   });
 
-  it('Contact email addresses not returned', async () => {
+  it('Contact details not returned', async () => {
 
     client.query.mockImplementation(() => { throw new Error() });
 
