@@ -33,7 +33,7 @@ const schema = {
       maximum: 40,
       tooLong: 'Max 40 characters'
     },
-    format: { pattern: '^[a-zA-Z][A-Za-z0-9 ]+', flags: 'i', message: 'Must be alphanumetic starting with a letter' }
+    format: { pattern: '^[a-zA-Z][A-Za-z0-9 ]+(?<! )$', flags: 'i', message: 'Must be alphanumetic starting with a letter' }
   },
   profileDescription: {
     presence: { allowEmpty: false, message: 'Required' },
@@ -69,7 +69,7 @@ const schema = {
 };
 
 // TODO: the code below can be DRYer
-export default function useValidator() {
+export default function getValidator() {
   const mustBeValidEmail = (value: any) => {
     const errors = validate({ email: value }, schema, { fullMessages: false });
     if (errors && errors.email) {

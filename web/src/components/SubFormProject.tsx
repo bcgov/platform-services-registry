@@ -19,7 +19,7 @@ import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA } from '../constants';
-import useValidator from '../utils/useValidator';
+import getValidator from '../utils/getValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 interface MinistryItem {
@@ -32,7 +32,7 @@ interface ISubFormProjectProps {
 }
 
 const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
-    const validator = useValidator();
+    const validator = getValidator();
 
     const { ministry } = props;
 
