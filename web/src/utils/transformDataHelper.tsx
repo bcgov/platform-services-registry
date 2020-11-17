@@ -115,7 +115,7 @@ function convertDatetime(ISODatetimeString: string): string {
 }
 
 
-export function transfomJsonToCsv(objArray: any) {
+export function transformJsonToCsv(objArray: any) {
   const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
 
   array.forEach((item: any) => {

@@ -22,7 +22,7 @@ import Button from '../components/UI/button';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transfomJsonToCsv } from '../utils/transformDataHelper';
+import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
 import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
 
@@ -115,7 +115,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         delete item.provisioned;
       });
 
-      let csv = transfomJsonToCsv(clonedProfile);
+      let csv = transformJsonToCsv(clonedProfile);
       window.open("data:text/csv;charset=utf-8," + escape(csv));
     } catch (err) {
       promptErrToastWithText('Something went wrong');
