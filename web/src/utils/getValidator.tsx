@@ -41,7 +41,7 @@ const schema = {
       maximum: 512,
       tooLong: 'Max 512 characters'
     },
-    format: { pattern: `^(?! ).+[A-Za-z0-9 ,)(.!?"']+`, flags: 'i', message: 'Invalid format' }
+    format: { pattern: `^[A-Za-z0-9\n ,)(.!?"']+`, flags: 'i', message: 'No special characters allowed' }
   },
   componenentOthers: {
     length: {
