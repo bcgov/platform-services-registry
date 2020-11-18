@@ -137,7 +137,7 @@ export function transformJsonToCsv(objArray: any) {
     line = '';
 
     for (let index in array[i]) {
-      line += array[i][index] + ',';
+      line += '\"' + array[i][index] + '\"' + ',';
     }
 
     line = line.slice(0, -1);
