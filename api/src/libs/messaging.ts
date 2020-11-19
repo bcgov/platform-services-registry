@@ -45,23 +45,24 @@ export const contactsForProfile = async (profileId: number): Promise<Contact[]> 
   }
 }
 
-export const profileDetails = async (profileId: number): Promise<string> => {
+export const profileDetails = async (profileId: number): Promise<string | undefined> => {
 
   try {
     const dm = new DataManager(shared.pgPool);
     const { ProfileModel } = dm;
     const profiles = await ProfileModel.findById(profileId);
     const profileName = profiles.name;
+
     return profileName;
   } catch (err) {
     const message = `Unable to fetch profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
-    return '';
+    return;
   }
 }
 
-export const updateEmailContent = async (buff: string, to: string[], profileName: string, contactNames: string[]): Promise<string> => {
+export const updateEmailContent = async (buff: string, to: string[], profileName: string | undefined, contactNames: string[]): Promise<string> => {
   try {
     let emailContent: string;
 
