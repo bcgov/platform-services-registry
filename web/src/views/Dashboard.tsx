@@ -20,6 +20,7 @@ import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
 import Button from '../components/UI/button';
 import { ShadowBox } from '../components/UI/shadowContainer';
+import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
@@ -104,18 +105,19 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
   const downloadCSV = () => {
     openBackdropCB();
     try {
-      const clonedProfile = Array.from(profile);
+      const metadataAttributes: Array<string> = [];
+      COMPONENT_METADATA.forEach(m => {
+        metadataAttributes.push(m.inputValue);
+      })
 
-      clonedProfile.filter((item: any) => item.provisioned === true);
-      clonedProfile.forEach((item: any) => {
-        delete item.criticalSystem;
-        delete item.archived;
-        delete item.userId;
-        delete item.namespacePrefix;
-        delete item.provisioned;
-      });
+      const csvFilter = (obj: any) => [...CSV_PROFILE_ATTRIBUTES, ...metadataAttributes].reduce((acc, key) => {
+        return {
+          ...acc,
+          [key]: obj[key]
+        }
+      }, {});
 
-      let csv = transformJsonToCsv(clonedProfile);
+      const csv = transformJsonToCsv(profile.filter((item: any) => item.provisioned === true).map(csvFilter));
       window.open("data:text/csv;charset=utf-8," + escape(csv));
     } catch (err) {
       promptErrToastWithText('Something went wrong');
