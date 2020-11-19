@@ -128,7 +128,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
 
   return (
     <>
-      <Button onClick={downloadCSV}>Download CSV</Button>
+      {(profile.length > 0) && (<Button onClick={downloadCSV}>Download CSV</Button>)}
       <Box sx={{
         display: 'grid',
         gridGap: 4,
