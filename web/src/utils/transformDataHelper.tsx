@@ -92,12 +92,12 @@ export function isProfileProvisioned(namespaceSet: any[]): boolean {
 export function getProfileContacts(contactSet: any[]): object {
   let contacts: any = {};
   contactSet.forEach((contact: any) => {
-    if (contact.roleId === 1) {
+    if (contact.roleId === ROLES.PRODUCTOWNER) {
       contacts.POEmail = contact.email;
       contacts.POName = contact.firstName + ' ' + contact.lastName;
       contacts.POGithubId = contact.githubId;
     }
-    if (contact.roleId === 2) {
+    if (contact.roleId === ROLES.TECHNICAL) {
       contacts.TCEmail = contact.email;
       contacts.TCName = contact.firstName + ' ' + contact.lastName;
       contacts.TCGithubId = contact.githubId;
@@ -137,6 +137,8 @@ export function transformJsonToCsv(objArray: any) {
     line = '';
 
     for (let index in array[i]) {
+      // encapsulate the entries in escaped "" to protect the internal commas
+      // eslint-disable-next-line
       line += '\"' + array[i][index] + '\"' + ',';
     }
 
