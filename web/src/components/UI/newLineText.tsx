@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,19 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-16.
-//
 
-'use strict';
+import React from 'react';
 
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { createContact, updateContact } from '../../controllers/contact';
+// TODO: sort out a way to declare ts returned value to be null | array of react components
+const NewlineText = (props: any) => {
+    const text = props.text;
 
-const router = express.Router();
+    if (!text) {
+        return null;
+    }
 
-// Contact
-router.post('/', asyncMiddleware(createContact));
-router.put('/:contactId', asyncMiddleware(updateContact));
+    return text.split('\n\n').map((str: string, index: number) => <p key={index} >{str}</p>);
+}
 
-export default router;
+export default NewlineText;

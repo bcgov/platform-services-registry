@@ -12,7 +12,11 @@ Workflow Steps
 You can access the Silver cluster console by copying this URL into your browser window:
 https://console.apps.silver.devops.gov.bc.ca/
 
+Project Details
 
+- Project Name: projectName
+- Product Owner: POName (POEmail)
+- Technical Contact: TCName (TCEmail)
 
 Thanks Again,
 

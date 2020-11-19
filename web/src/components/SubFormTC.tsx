@@ -19,7 +19,7 @@ import { Checkbox, Input, Label } from '@rebass/forms';
 import React, { useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex, Text } from 'rebass';
-import useValidator from '../utils/useValidator';
+import getValidator from '../utils/getValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 const StyledButton = styled.button`
@@ -43,7 +43,7 @@ const StyledDisabledButton = styled.button`
 `;
 
 const SubformTC: React.FC = () => {
-    const validator = useValidator();
+    const validator = getValidator();
 
     const [boxChecked, setBoxChecked] = useState(false);
 
