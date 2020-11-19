@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { Box, Flex, Text } from 'rebass';
+import NewlineText from '../components/UI/newLineText';
 import PendingLable from '../components/UI/pendingLabel';
 import theme from '../theme';
 
@@ -70,7 +71,7 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
         fontWeight={500}
         mb={3}
       >
-        {textBody}
+        <NewlineText text={textBody} />
       </Text>
       <Text mb={3} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {ministry}
