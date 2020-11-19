@@ -92,12 +92,58 @@ export function isProfileProvisioned(namespaceSet: any[]): boolean {
 export function getProfileContacts(contactSet: any[]): object {
   let contacts: any = {};
   contactSet.forEach((contact: any) => {
-    if (contact.roleId === 1) {
+    if (contact.roleId === ROLES.PRODUCTOWNER) {
       contacts.POEmail = contact.email;
+      contacts.POName = contact.firstName + ' ' + contact.lastName;
+      contacts.POGithubId = contact.githubId;
     }
-    if (contact.roleId === 2) {
+    if (contact.roleId === ROLES.TECHNICAL) {
       contacts.TCEmail = contact.email;
+      contacts.TCName = contact.firstName + ' ' + contact.lastName;
+      contacts.TCGithubId = contact.githubId;
     }
   });
   return contacts;
 };
+
+// convert datetime string from YYYY-MM-DDTHH:MM:SSZ to DD-MM-YYYY HH:MM
+function convertDatetime(ISODatetimeString: string): string {
+  const splitted = ISODatetimeString.split('T');
+  const HHMM = splitted[1].replace(/\..+/, '').split(':');
+  HHMM.pop();
+  return splitted[0].split('-').reverse().join('-') + ' ' + HHMM.join(':');
+}
+
+
+export function transformJsonToCsv(objArray: any) {
+  const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+
+  array.forEach((item: any) => {
+    item.createdAt = convertDatetime(item.createdAt);
+    item.updatedAt = convertDatetime(item.updatedAt);
+  });
+
+  let str = '';
+  let line = '';
+
+  for (let index in array[0]) {
+    line += index + ',';
+  }
+
+  line = line.slice(0, -1);
+  str += line + '\r\n';
+
+  for (let i = 0; i < array.length; i++) {
+    line = '';
+
+    for (let index in array[i]) {
+      // encapsulate the entries in escaped "" to protect the internal commas
+      // eslint-disable-next-line
+      line += '\"' + array[i][index] + '\"' + ',';
+    }
+
+    line = line.slice(0, -1);
+    str += line + '\r\n';
+  }
+  return str;
+}

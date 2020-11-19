@@ -19,16 +19,15 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { Box, Flex, Text } from 'rebass';
 import SubFormPO from '../components/SubFormPO';
 import SubFormProject from '../components/SubFormProject';
 import SubFormTC from '../components/SubFormTC';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import { ROUTE_PATHS } from '../constants';
+import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformForm } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
-
 const txtForPO = `Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.`;
 const txtForPO2 = `Although not required, we strongly recommend the requestor be the product owner so that this record appears on their dashboard when logging on to the registry; only the requestor will be able to edit this project in the future.`;
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
@@ -75,27 +74,10 @@ const MyForm: React.FC<IFormProps> = (props: any) => {
             closeBackdropCB();
             setGoBackToDashboard(true);
             // 5.All good? Tell the user.
-            toast.success('🦄 Your namespace request was successful', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-            });
+            promptSuccessToastWithText('Your namespace request was successful');
         } catch (err) {
             closeBackdropCB();
-            toast.error('😥 Something went wrong', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-
+            promptErrToastWithText('Something went wrong');
             console.log(err);
         }
     };

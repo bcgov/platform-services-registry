@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime } from '../utils/transformDataHelper';
+import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
 import profileContacts from './fixtures/profile-contacts.json';
 import profileNamespaces from './fixtures/profile-namespaces.json';
 import profiles from './fixtures/profiles.json';
@@ -52,11 +52,24 @@ describe("test the helper function isProfileProvisioned", () => {
 });
 
 describe("test the helper function getProfileContacts", () => {
-  test("should returns an object with key-values pairs for PO email and TC email", () => {
+  test("should return an object with key-values pairs for PO email and TC email", () => {
     const stubProfileContacts = profileContacts;
     expect(getProfileContacts(stubProfileContacts)).toEqual({
       POEmail: "jane@example.com",
-      TCEmail: "jim@example.com"
+      POGithubId: "jane1100",
+      POName: "Jane Doe",
+      TCEmail: "jim@example.com",
+      TCGithubId: "jim1100",
+      TCName: "Jim Doe"
     });
+  });
+});
+
+
+describe("test the helper function transformJsonToCsv", () => {
+  test("should return correct csv", () => {
+    const stubJson = profiles;
+    const result = 'id,name,description,prioritySystem,criticalSystem,createdAt,updatedAt,userId\r\n"2","EPIC","Hello World","false","true","28-10-2020 03:00","28-10-2020 03:00","4"\r\n"1","Health Gateway","null","false","false","28-04-2020 00:00","28-04-2020 00:00","4"\r\n"3","Mines Digital Services","This is some description","false","false","18-04-2020 10:10","18-04-2020 10:10"\r\n';
+    expect(transformJsonToCsv(stubJson)).toEqual(result);
   });
 });
