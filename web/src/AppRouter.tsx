@@ -23,6 +23,7 @@ import AppRoute from './utils/AppRoute';
 import Dashboard from './views/Dashboard';
 import form from './views/form';
 import { NotFound } from './views/NotFound';
+import Profile from './views/Profile';
 import { PublicLanding } from './views/PublicLanding';
 
 const browserHistory = createBrowserHistory();
@@ -36,6 +37,7 @@ const AppRouter: React.FC = () => {
         <AppRoute exact path={ROUTE_PATHS.FORM} component={form} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
         <AppRoute exact path={HOME_PAGE_URL} component={Dashboard} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
         <AppRoute path={ROUTE_PATHS.NOT_FOUND} component={NotFound} layout={Layout} layoutName={LAYOUT_SET_MIN} />
+        <AppRoute exact path={ROUTE_PATHS.PROFILE} component={Profile} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
         <Redirect to={ROUTE_PATHS.NOT_FOUND} />
       </Switch>
     </Router>

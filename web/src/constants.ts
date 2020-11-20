@@ -63,7 +63,8 @@ export const ROUTE_PATHS = {
   DASHBOARD: '/dashboard',
   NOT_FOUND: '/page-not-found',
   LANDING: '/public-landing',
-  FORM: '/projects/create'
+  FORM: '/projects/create',
+  PROFILE: '/profile/:id'
 };
 
 export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;
