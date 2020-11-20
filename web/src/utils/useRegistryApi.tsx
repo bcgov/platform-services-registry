@@ -41,7 +41,7 @@ export default function useRegistryApi() {
     return api.get('ministry');
   };
 
-  const getProfile = async (): Promise<AxiosResponse<any>> => {
+  const getProfiles = async (): Promise<AxiosResponse<any>> => {
     return api.get('profile');
   };
 
@@ -69,14 +69,19 @@ export default function useRegistryApi() {
     return api.get(`profile/${profileId}/namespace`);
   };
 
+  const getProfileByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    return api.get(`profile/${profileId}`);
+  };
+
   return {
     getMinistry,
-    getProfile,
+    getProfiles,
     createProfile,
     createContact,
     linkContactToProfileById,
     createNamespaceByProfileId,
     getContactsByProfileId,
-    getNamespaceByProfileId
+    getNamespaceByProfileId,
+    getProfileByProfileId
   };
 };
