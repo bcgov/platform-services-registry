@@ -26,11 +26,12 @@ interface IProfileCardProps {
   ministry?: string;
   PO?: string;
   TC?: string;
+  profileID?: string;
   isProvisioned?: boolean
 };
 
 const ProfileCard: React.FC<IProfileCardProps> = (props) => {
-  const { title = '', textBody = '', ministry = '', PO = '', TC = '', isProvisioned = false } = props;
+  const { title = '', textBody = '', ministry = '', PO = '', TC = '', profileID = '', isProvisioned = false } = props;
 
   return (
     <Flex
@@ -87,6 +88,9 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
       </Text>
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {TC}
+      </Text>
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+        {profileID}
       </Text>
     </Flex>
   );
