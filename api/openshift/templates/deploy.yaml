@@ -62,6 +62,18 @@ objects:
     spec:
       strategy:
         type: Rolling
+        rollingParams:
+          pre:
+            failurePolicy: Retry
+            execNewPod:
+              containerName: flyway-migration
+              command:
+                - "flyway"
+                - "migrate"
+          maxSurge: 50%
+          maxUnavailable: 0
+          timeoutSeconds: 1200
+        activeDeadlineSeconds: 21600
       triggers:
         - type: ConfigChange
         - type: ImageChange
@@ -72,6 +84,15 @@ objects:
             from:
               kind: ImageStreamTag
               name: ${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}
+              namespace: ${SOURCE_IMAGE_NAMESPACE}
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - flyway-migration
+            from:
+              kind: ImageStreamTag
+              name: "${FLYWAY_IMAGE_NAME}:${FLYWAY_IMAGE_TAG}"
               namespace: ${SOURCE_IMAGE_NAMESPACE}
       replicas: 1
       selector:
@@ -146,6 +167,44 @@ objects:
                 - name: config-vol
                   mountPath: /opt/app-root/src/build/config/config.json
                   subPath: config.json
+            - name: flyway-migration
+              command:
+                - cat
+              stdin: true
+              image: " "
+              env:
+                - name: FLYWAY_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-username
+                      name: ${POSTGRESQL_SECRET_NAME}
+                - name: FLYWAY_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-password
+                      name: ${POSTGRESQL_SECRET_NAME}
+                - name: FLYWAY_DB_HOST
+                  value: ${POSTGRESQL_DATABASE}.${NAMESPACE}.svc
+                - name: FLYWAY_DB_NAME
+                  value: ${APP_DB_NAME}
+                - name: FLYWAY_URL
+                  value: jdbc:postgresql://${POSTGRESQL_DATABASE}.${NAMESPACE}.svc/${APP_DB_NAME}
+                - name: FLYWAY_CONNECT_RETRIES
+                  value: '60'
+                - name: FLYWAY_PLACEHOLDER_REPLACEMENT
+                  value: 'true'
+                - name: FLYWAY_PLACEHOLDERS_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-username
+                      name: ${POSTGRESQL_SECRET_NAME}
+              resources:
+                limits:
+                  cpu: 300m
+                  memory: 128Mi
+                requests:
+                  cpu: 200m
+                  memory: 92Mi
           volumes:
             - name: config-vol
               configMap:
@@ -207,3 +266,15 @@ parameters:
     displayName: SSO Shared Secret Name
     name: SSO_SECRET_NAME
     value: registry-sso-creds
+  - description: App db name
+    displayName: App db name
+    name: APP_DB_NAME
+    required: true
+  - description: The name of the flyway source image.
+    displayName: Flyway source image name
+    name: FLYWAY_IMAGE_NAME
+    required: true
+  - description: The tag of the flyway source image.
+    displayName: Flyway source Image Tag
+    name: FLYWAY_IMAGE_TAG
+    required: true

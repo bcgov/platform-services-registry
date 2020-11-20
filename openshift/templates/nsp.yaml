@@ -86,6 +86,21 @@ objects:
         - - '$namespace=${NAMESPACE}'
           - '${DB_APO_IDENTIFIER}'
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: flyway-to-db
+      labels:
+        app: platsrv-registry
+    spec:
+      description: |
+        allow flyway to communicate with the database pod.
+      source:
+        - - '$namespace=${NAMESPACE}'
+          - '${FLYWAY_IDENTIFIER}'
+      destination:
+        - - '$namespace=${NAMESPACE}'
+          - '${DB_APO_IDENTIFIER}'
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: ExternalNetwork
     metadata:
       # This metadata field will be what you see with the command
@@ -140,4 +155,8 @@ parameters:
     description: |
       The Aporeto identifier used by Aporeto to identify the DB
       service.
+    required: true
+  - name: FLYWAY_IDENTIFIER
+    description: |
+      The Aporeto identifier used by Aporeto to identify flyway pod.
     required: true
