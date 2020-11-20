@@ -30,29 +30,35 @@ const ContactCard: React.FC<IContactCardProps> = (props) => {
 
   return (
     <Flex flexWrap='wrap'>
-        <Box width={1/2} px={2}>
-            <Text as="h3" mt={4}>
-                Product Owner:
+        <Box width={1/2} px={2} mt={3}>
+            <Text as="h3">
+                Product Owner
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+            This is typically the business owner of the application;
             </Text>
         </Box>
-        <Box width={1/2} px={2}> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={2}>
+        <Box width={1/2} px={2} mt={3}> 
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 {POName}
             </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={2}>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 {POEmail}
             </Text>
         </Box>
-        <Box width={1/2} px={2}>
-            <Text as="h3" mt={4}>
-                Technical Contact:
+        <Box width={1/2} px={2} mt={3}>
+            <Text as="h3">
+                Technical Contact
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+            This is typically the DevOps specialist;
             </Text>
         </Box>
-        <Box width={1/2} px={2}> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={2}>
+        <Box width={1/2} px={2} mt={3}> 
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 {TCName}
             </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={2}>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 {TCEmail}
             </Text>
         </Box>
