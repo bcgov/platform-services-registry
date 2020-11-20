@@ -55,7 +55,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
       openBackdropCB();
       try {
         // 1. First fetch the list of profiles the user is entitled to see
-        const response = await api.getProfile();
+        const response = await api.getProfiles();
 
         // 2. Fetch contact info and provision status for each profile
         const promisesForContact: any = [];
