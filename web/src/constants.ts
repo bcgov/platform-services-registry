@@ -63,7 +63,19 @@ export const ROUTE_PATHS = {
   DASHBOARD: '/dashboard',
   NOT_FOUND: '/page-not-found',
   LANDING: '/public-landing',
-  FORM: '/projects/create'
+  FORM: '/projects/create',
+  PROFILE_EDITABLE: '/profile/:profileId/:viewName'
 };
 
 export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;
+
+export const PROFILE_VIEW_NAMES = {
+  OVERVIEW: 'overview',
+  PROJECT: 'project',
+  CONTACT: 'contact',
+  QUOTA: 'quota'
+};
+
+export const RESPONSE_STATUS_CODE = {
+  UNAUTHORIZED: 401
+};

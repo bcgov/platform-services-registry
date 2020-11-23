@@ -17,16 +17,17 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
-import { LAYOUT_SET_AUTH } from '../constants';
+import { LAYOUT_SET_AUTH, ROUTE_PATHS } from '../constants';
 
 interface IPrivateRouteProps extends RouteProps {
   component: React.ComponentType<any>;
   layout: React.ComponentType<any>;
   componentProps?: any;
+  checkQueryParams?: (props: any) => boolean;
 }
 
 const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
-  let { component: Component, layout: Layout, ...rest } = props;
+  let { component: Component, layout: Layout, checkQueryParams, ...rest } = props;
 
   const { keycloak } = useKeycloak();
   const location = useLocation();
@@ -39,6 +40,9 @@ const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
     <Route
       {...rest}
       render={(props) => {
+        if (checkQueryParams && !checkQueryParams(props)) {
+          return <Redirect to={ROUTE_PATHS.NOT_FOUND} />;
+        }
         if (!!keycloak.authenticated) {
           return (
             <Layout name={LAYOUT_SET_AUTH} {...rest}>
