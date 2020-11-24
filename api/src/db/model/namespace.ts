@@ -17,8 +17,16 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
-import { projectSetNames } from '../../constants';
+import { DEFAULT_QUOTA_SIZE_NAME, projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
+
+interface ClusterNamespace {
+  namespaceId: number,
+  clusterId: number,
+  quota_cpu?: string,
+  quota_memory?: string,
+  quota_storage?: string
+}
 
 export interface ProjectNamespace extends CommonFields {
   name: string,
@@ -65,8 +73,8 @@ export default class NamespaceModel extends Model {
     const query = {
       text: `
         INSERT INTO cluster_namespace
-          (namespace_id, cluster_id)
-          VALUES ($1, $2) RETURNING *;`,
+          (namespace_id, cluster_id, quota_cpu, quota_memory, quota_storage)
+          VALUES ($1, $2, $3, $3, $3) RETURNING *;`,
       values: [],
     };
     try {
@@ -77,7 +85,7 @@ export default class NamespaceModel extends Model {
       }));
 
       const nsResults = await Promise.all(nsPromises);
-      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
+      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId, DEFAULT_QUOTA_SIZE_NAME] }));
       await Promise.all(clPromises);
 
       return nsResults;
@@ -97,7 +105,7 @@ export default class NamespaceModel extends Model {
           (
             SELECT array_to_json(array_agg(row_to_json(x)))
             FROM (
-              SELECT ref_cluster.id AS "clusterId", ref_cluster.name, cluster_namespace.provisioned
+              SELECT ref_cluster.id AS "clusterId", ref_cluster.name, cluster_namespace.provisioned, cluster_namespace.quota_cpu, cluster_namespace.quota_memory, cluster_namespace.quota_storage 
               FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
               WHERE namespace.id = cluster_namespace.namespace_id
             ) x
@@ -142,6 +150,59 @@ export default class NamespaceModel extends Model {
       return results.pop();
     } catch (err) {
       const message = `Unable to update provisioning status for namespace ID ${namespaceId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findForNamespaceAndCluster(namespaceId: number, clusterId: number): Promise<ClusterNamespace> {
+    const query = {
+      text: `
+        SELECT * FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2
+        RETURNING *;`,
+      values: [
+        namespaceId, clusterId
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to fetch cluster_namespace for namespace ${namespaceId} and cluster ${clusterId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async updateQuota(namespaceId: number, clusterId: number, data: ClusterNamespace): Promise<void> {
+    const values: any[] = [];
+    const query = {
+      text: `
+        UPDATE cluster_namespace
+          SET
+            quota_cpu = $1, quota_memory = $2, quota_storage = $3
+          WHERE namespace_id = ${namespaceId} AND cluster_id = ${clusterId}
+        RETURNING *;`,
+      values,
+    };
+
+    try {
+      const record = await this.findForNamespaceAndCluster(namespaceId, clusterId);
+      const aData = { ...record, ...data }
+      const results = await this.runQuery(query);
+      query.values = [
+        aData.quota_cpu,
+        aData.quota_memory,
+        aData.quota_storage,
+      ];
+
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to update quota for namespace ID ${namespaceId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
