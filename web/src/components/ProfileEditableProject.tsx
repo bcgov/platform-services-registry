@@ -19,7 +19,7 @@ import React from 'react';
 const ProfileEditableProject: React.FC = () => {
     return (
         <div>
-            Contact
+            Profile
         </div>
     );
 };
