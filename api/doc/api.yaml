@@ -443,6 +443,24 @@ components:
           type: number
         clusterId:
           type: number
+        quotaCpu:
+          type: string
+          enum:
+            - small
+            - medium
+            - large
+        quotaMemory:
+          type: string
+          enum:
+            - small
+            - medium
+            - large
+        quotaStorage:
+          type: string
+          enum:
+            - small
+            - medium
+            - large
         archived:
           type: boolean
         createdAt:
