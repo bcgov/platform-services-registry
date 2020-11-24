@@ -15,14 +15,16 @@
 //
 
 import React, { useEffect, useState } from 'react';
+import { Form } from 'react-final-form';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
-import { Box, Text } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
 import ContactCard from '../components/ContactCard';
 import Icon from '../components/Icon';
 import ProfileDetailCard from '../components/ProfileDetailCard';
 import ProfileEditableContact from '../components/ProfileEditableContact';
 import ProfileEditableProject from '../components/ProfileEditableProject';
 import ProfileEditableQuota from '../components/ProfileEditableQuota';
+import QuotaCard from '../components/QuotaCard';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import { PROFILE_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
@@ -43,6 +45,16 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [initialRender, setInitialRender] = useState(true);
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
     const [profileJson, setProfileJson] = useState<any>({});
+
+    // @ts-ignore
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+    // @ts-ignore
+    const onSubmit = async values => {
+        await sleep(300)
+    // @ts-ignore
+        window.alert(JSON.stringify(values, 0, 2))
+      }
 
     useEffect(() => {
         async function wrap() {
@@ -89,28 +101,42 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                     {profileJson.name}
                     </Text>
                     <Box>
-                        <Box p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
-                            <Text as="h3" color={theme.colors.contrast}>
+                        <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
+                            <Text as="h3" color={theme.colors.contrast} mx={2} >
                                 Project Information
-                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/project`}>
-                                    <Icon hover color={'contrast'} name={'edit'} width={1} height={1} />
-                                </RouterLink>
                             </Text>
-                        </Box>
+                            <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/project`}>
+                                <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
+                            </RouterLink>
+                        </Flex>
                         <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                             <ProfileDetailCard title={profileJson.name} textBody={profileJson.description} ministry={profileJson.busOrgId} />
                         </ShadowBox> 
                     </Box>
                     <Box>
-                        <ShadowBox p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
-                            <Text as="h3" color={theme.colors.contrast}>Contact Information
-                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
-                                    <Icon hover color={'contrast'} name={'edit'} width={1} height={1} />
-                                </RouterLink>
+                        <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
+                            <Text as="h3" color={theme.colors.contrast} mx={2} >
+                                Contact Information
                             </Text>
-                        </ShadowBox>
+                            <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
+                                <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
+                            </RouterLink>
+                        </Flex>
                         <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                             <ContactCard POName={profileJson.POName} POEmail={profileJson.POEmail} TCName={profileJson.TCName} TCEmail={profileJson.TCEmail} />
+                        </ShadowBox> 
+                    </Box>
+                    <Box>
+                        <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
+                            <Text as="h3" color={theme.colors.contrast} mx={2} >
+                                Quota Information
+                            </Text>
+                            <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/quota`}>
+                                <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
+                            </RouterLink>
+                        </Flex>
+                        <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
+                            <QuotaCard />
                         </ShadowBox> 
                     </Box>
                 </ShadowBox>
@@ -120,23 +146,40 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     } else {
         return (
             <>
-                <Box p={3} mt={4} bg={theme.colors.bcblue}>
+            <Flex p={3} mt={4} bg={theme.colors.bcblue}>
                     {/* TODO: fix route url using constant */}
-                    <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/overview`}>
-                        <Icon hover color={'contrast'} name={'goBack'} width={1} height={1} />
-                    </RouterLink>
-                    <Text as="h3" color={theme.colors.contrast}>
-                        {(viewName)}
-                    </Text>
-                </Box>
+                        <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/overview`}>
+                            <Icon hover color={'contrast'} name={'goBack'} width={1} height={1} />
+                        </RouterLink>
+                        <Text as="h3" color={theme.colors.contrast} mx={2} >
+                            {(viewName)}
+                        </Text>
+                </Flex>
                 <ShadowBox p={3}>
-                    {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject />}
-                    {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact />}
-                    {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
-                    ------------
-                    <br />
-                    cancel button
-                    submit button
+                <Form
+                    onSubmit={onSubmit}
+                    validate={values => {
+                        const errors = {};
+                        return errors;
+                    }}
+                >
+                        {props => (
+                            <form onSubmit={props.handleSubmit} >
+                                <Flex flexWrap='wrap' m={3}>
+                                    <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
+                                        {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject />}
+                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact />}
+                                        {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
+                                        ------------
+                                        <br />
+                                        cancel button
+                                        submit button
+                                    </ShadowBox>
+                                </Flex>
+                            </form>
+                        )}
+                    </Form >
+
                 </ShadowBox>
             </>
         );
