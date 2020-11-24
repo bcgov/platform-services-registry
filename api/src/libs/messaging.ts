@@ -70,7 +70,7 @@ export const updateEmailContent = async (buff: string, to: string[], profileName
       POName: contactNames[0],
       TCName: contactNames[1],
       POEmail: to[0],
-      TCEmail: to[1],
+      TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
       projectName: profileName,
     };
 
