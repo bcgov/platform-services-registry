@@ -27,10 +27,6 @@ export default {
     grey: '#A9A9A9',
     black: '#000000'
   },
-  link: {
-    color: '#000000',
-    textDecoration: 'none'
-  },
   spacingIncrements: ['30px', '60px', "120px"],
   zIndices: [0, 1, 10, 100, 1000],
   icons: {
