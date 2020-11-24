@@ -140,7 +140,7 @@ Array [
           (
             SELECT array_to_json(array_agg(row_to_json(x)))
             FROM (
-              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned, cluster_namespace.quota_cpu, cluster_namespace.quota_memory, cluster_namespace.quota_storage 
               FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
               WHERE namespace.id = cluster_namespace.namespace_id
             ) x
@@ -212,7 +212,7 @@ Array [
           (
             SELECT array_to_json(array_agg(row_to_json(x)))
             FROM (
-              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned, cluster_namespace.quota_cpu, cluster_namespace.quota_memory, cluster_namespace.quota_storage 
               FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
               WHERE namespace.id = cluster_namespace.namespace_id
             ) x
