@@ -16,7 +16,7 @@
 
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
 import Button from '../components/UI/button';
@@ -136,7 +136,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
       }}>
         {(profile.length > 0) && profile.map((s: any) => (
-          <Link 
+          <RouterLink 
           to={{pathname: `/profile/${s.id}/overview`}}
           style={{ color: theme.colors.black, textDecoration: 'none' }}
           >
@@ -144,7 +144,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
             {!s.provisioned && <StyledBackdrop />}
             <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
           </ShadowBox>
-          </Link>
+          </RouterLink>
         ))}
       </Box>
     </>
