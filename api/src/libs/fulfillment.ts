@@ -109,3 +109,16 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
       throw err;
     }
   });
+
+
+export const fulfillNamespaceQuotaEdit = async (requestJson: any) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      // TODO:(yf) add logics here to SEND nats message and ADD request records
+    } catch (err) {
+      const message = `Unable to provision namespaces quota edit`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  });
