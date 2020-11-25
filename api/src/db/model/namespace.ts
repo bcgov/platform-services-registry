@@ -20,12 +20,13 @@ import { Pool } from 'pg';
 import { DEFAULT_QUOTA_SIZE_NAME, projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 
-interface ClusterNamespace {
+export interface ClusterNamespace {
+  id: number,
   namespaceId: number,
   clusterId: number,
-  quota_cpu?: string,
-  quota_memory?: string,
-  quota_storage?: string
+  quotaCpu?: string,
+  quotaMemory?: string,
+  quotaStorage?: string
 }
 
 export interface ProjectNamespace extends CommonFields {
@@ -160,8 +161,7 @@ export default class NamespaceModel extends Model {
     const query = {
       text: `
         SELECT * FROM cluster_namespace
-          WHERE namespace_id = $1 AND cluster_id = $2
-        RETURNING *;`,
+          WHERE namespace_id = $1 AND cluster_id = $2;`,
       values: [
         namespaceId, clusterId
       ],
@@ -169,6 +169,7 @@ export default class NamespaceModel extends Model {
 
     try {
       const results = await this.runQuery(query);
+
       return results.pop();
     } catch (err) {
       const message = `Unable to fetch cluster_namespace for namespace ${namespaceId} and cluster ${clusterId}`;
@@ -193,12 +194,12 @@ export default class NamespaceModel extends Model {
     try {
       const record = await this.findForNamespaceAndCluster(namespaceId, clusterId);
       const aData = { ...record, ...data }
-      const results = await this.runQuery(query);
       query.values = [
-        aData.quota_cpu,
-        aData.quota_memory,
-        aData.quota_storage,
+        aData.quotaCpu,
+        aData.quotaMemory,
+        aData.quotaStorage,
       ];
+      const results = await this.runQuery(query);
 
       return results.pop();
     } catch (err) {
