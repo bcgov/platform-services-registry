@@ -70,7 +70,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
             </Text>
         </Box>
 
-        <Box width={1/2} px={2} mt={3}>
+        {/* <Box width={1/2} px={2} mt={3}>
             <Text as="h3">
                 Application Metadata
             </Text>
@@ -82,7 +82,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
             <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 Notification: Email, Payment Processing: Bambora, File Storage;
             </Text>
-        </Box>
+        </Box> */}
     </Flex>
   );
 };
