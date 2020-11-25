@@ -169,7 +169,6 @@ export default class NamespaceModel extends Model {
 
     try {
       const results = await this.runQuery(query);
-
       return results.pop();
     } catch (err) {
       const message = `Unable to fetch cluster_namespace for namespace ${namespaceId} and cluster ${clusterId}`;
