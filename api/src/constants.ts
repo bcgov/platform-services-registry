@@ -28,6 +28,14 @@ export const projectSetNames = [
   'prod',
 ];
 
+export const quotaSizeNames = [
+  'small',
+  'medium',
+  'large'
+];
+
+export const DEFAULT_QUOTA_SIZE_NAME = quotaSizeNames[0];
+
 export const ROLE_IDS = {
   PRODUCT_OWNER: 1,
   TECHNICAL_CONTACT: 2,
