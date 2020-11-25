@@ -110,4 +110,23 @@ export default class RequestModel extends Model {
             throw err;
         }
     };
+
+    async findForClusterNamespace(clusterNamespaceId: number): Promise<Request> {
+        const query = {
+            text: `
+                SELECT * FROM ${this.table}
+                    WHERE cluster_namespace_id = ${clusterNamespaceId};
+            `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to find request by cluster_namespace ${clusterNamespaceId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    };
 }
