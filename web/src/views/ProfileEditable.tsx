@@ -29,7 +29,7 @@ import { ShadowBox } from '../components/UI/shadowContainer';
 import { PROFILE_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import { getProfileContacts } from '../utils/transformDataHelper';
+import { getProfileContacts, getProfileMinistry } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
 
 interface IProfileEditProps {
@@ -45,6 +45,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [initialRender, setInitialRender] = useState(true);
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
     const [profileJson, setProfileJson] = useState<any>({});
+    const [contactJson, setContactJson] = useState<any>({});
+    const [ministry, setMinistry] = useState<any>([]);
 
     // @ts-ignore
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -60,11 +62,17 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         async function wrap() {
             openBackdropCB();
             try {
-                const response = await api.getProfileByProfileId(profileId);
-                const contactDetails = await api.getContactsByProfileId(profileId);
+                const profileDetails = await api.getProfileByProfileId(profileId);
+                const ministryDetails = await api.getMinistry();
+                profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data)};
+                
+                setProfileJson(profileDetails.data);
+                setMinistry(ministryDetails.data);
 
-                response.data = { ...response.data, ...getProfileContacts(contactDetails.data) };
-                setProfileJson(response.data);
+                const contactDetails = await api.getContactsByProfileId(profileId);
+                contactDetails.data = { ...getProfileContacts(contactDetails.data) };
+                setContactJson(contactDetails.data);
+
             } catch (err) {
                 if (err.response && err.response.status && err.response.status === RESPONSE_STATUS_CODE.UNAUTHORIZED) {
                     setUnauthorizedToAccess(true);
@@ -110,7 +118,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                             </RouterLink>
                         </Flex>
                         <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
-                            <ProfileDetailCard title={profileJson.name} textBody={profileJson.description} ministry={profileJson.busOrgId} />
+                            <ProfileDetailCard title={profileJson.name} textBody={profileJson.description} ministry={profileJson.ministryName} />
                         </ShadowBox> 
                     </Box>
                     <Box>
@@ -122,8 +130,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                             </RouterLink>
                         </Flex>
-                        <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
-                            <ContactCard POName={profileJson.POName} POEmail={profileJson.POEmail} TCName={profileJson.TCName} TCEmail={profileJson.TCEmail} />
+                        <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
+                            <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} />
                         </ShadowBox> 
                     </Box>
                     <Box>
@@ -167,8 +175,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                             <form onSubmit={props.handleSubmit} >
                                 <Flex flexWrap='wrap' m={3}>
                                     <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
-                                        {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject />}
-                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact />}
+                                        {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject profileDetails={profileJson} ministry={ministry} />}
+                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact contactDetails={contactJson} />}
                                         {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
                                         ------------
                                         <br />
