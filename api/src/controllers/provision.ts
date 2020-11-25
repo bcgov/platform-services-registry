@@ -105,3 +105,46 @@ export const updateProvisionedNamespaces = async (
     throw errorWithCode(message, 500);
   }
 };
+
+
+export const updateNamespacesQuotaEdit = async (
+  { body }: { body: any }, res: Response
+): Promise<void> => {
+  const { NamespaceModel, ProfileModel } = dm;
+  const { prefix } = body;
+
+  try {
+    // TODO:(yf) add auth check here to make sure its bot
+    const profile = await ProfileModel.findByPrefix(prefix);
+    if (!profile) {
+      throw new Error();
+    }
+
+    const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
+    if (!namespaces) {
+      throw new Error();
+    }
+
+    // TODO:(yf) RETRIEVE nats message from requests table and UPDATE
+
+    // const promises: any = [];
+
+    // const clusters = await ClusterModel.findAll();
+    // const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
+
+    // for (let i = 0; i < namespaces.length; i++) {
+    //   const namespace = namespaces[i];
+    //   // @ts-ignore
+    //   const { namespaceId } = namespace;
+    //   promises.push(NamespaceModel.updateQuota(namespaceId, clusterId, body[i]));
+    // }
+    // await Promise.all(promises);
+
+    res.status(202).end();
+  } catch (err) {
+    const message = `Unable to update namespace quota`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
