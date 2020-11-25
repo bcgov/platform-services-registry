@@ -65,21 +65,20 @@ export const getQuotaOptions = async (clusterNamespace: ClusterNamespace): Promi
   new Promise(async (resolve, reject) => {
     const { RequestModel } = dm;
     const { namespaceId, clusterId, quotaCpu, quotaMemory, quotaStorage } = clusterNamespace;
-    let quotaOptionsObj = {
+    const quotaOptionsObj = {
       namespaceId,
       clusterId,
-      quotaCpu: new Array,
-      quotaMemory: new Array,
-      quotaStorage: new Array
+      quotaCpu: new Array(),
+      quotaMemory: new Array(),
+      quotaStorage: new Array(),
     }
 
     try {
       const existingRequest = await RequestModel.findForClusterNamespace(clusterNamespace.id);
-
       if (!existingRequest) {
         const spec = { quotaCpu, quotaMemory, quotaStorage };
         // TODO:(yf) think of a way to use constants
-        for (let i in spec) {
+        for (const i of Object.keys(spec)) {
           const currentSize = spec[i];
           switch (currentSize) {
             case 'small': {
@@ -113,11 +112,11 @@ export const validateQuotaRequestBody = (quotaOptions: any, body: any): Error | 
       spec.forEach(specName => {
         const requestedSize: string = body[i][specName];
         if (!quotaSizeNames.includes(requestedSize)) {
-          throw new Error;
+          throw new Error();
         }
         const allowedSizes: string[] = quotaOptions[i][specName];
         if (!allowedSizes.includes(requestedSize)) {
-          throw new Error;
+          throw new Error();
         }
       });
     }
@@ -144,9 +143,9 @@ export const MergeQuotasIntoNamespaces = (quotaBody: any, namespacesForQuotaEdit
           quotas: {
             cpu: quotaBody[i].quotaCpu,
             memory: quotaBody[i].quotaMemory,
-            storage: quotaBody[i].quotaStorage
-          }
-        }]
+            storage: quotaBody[i].quotaStorage,
+          },
+        }],
       };
 
       // @ts-ignore

@@ -160,7 +160,8 @@ const getNamespacesForQuotaEdit = async (params: any, user: AuthenticatedUser): 
     }
   });
 
-const getClusterNamespacesForQuotaEdit = async (namespacesForQuotaEdit: ProjectNamespace[]): Promise<ClusterNamespace[]> =>
+const getClusterNamespacesForQuotaEdit = async (
+  namespacesForQuotaEdit: ProjectNamespace[]): Promise<ClusterNamespace[]> =>
   new Promise(async (resolve, reject) => {
     const { NamespaceModel, ClusterModel } = dm;
 
