@@ -57,7 +57,7 @@ export const COMPONENT_METADATA = [
   { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' }
 ]
 
-export const CSV_PROFILE_ATTRIBUTES = ['id', 'name', 'description', 'prioritySystem', 'createdAt', 'updatedAt', 'POEmail', 'POName', 'POGithubId', 'TCEmail', 'TCName', 'TCGithubId'];
+export const CSV_PROFILE_ATTRIBUTES = ['id', 'name', 'description', 'busOrgId', 'prioritySystem', 'createdAt', 'updatedAt', 'POEmail', 'POName', 'POGithubId', 'TCEmail', 'TCName', 'TCGithubId'];
 
 export const ROUTE_PATHS = {
   DASHBOARD: '/dashboard',
