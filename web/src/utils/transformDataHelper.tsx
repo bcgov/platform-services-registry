@@ -96,11 +96,15 @@ export function getProfileContacts(contactSet: any[]): object {
       contacts.POEmail = contact.email;
       contacts.POName = contact.firstName + ' ' + contact.lastName;
       contacts.POGithubId = contact.githubId;
+      contacts.POFirstName = contact.firstName;
+      contacts.POLastName = contact.lastName;
     }
     if (contact.roleId === ROLES.TECHNICAL) {
       contacts.TCEmail = contact.email;
       contacts.TCName = contact.firstName + ' ' + contact.lastName;
       contacts.TCGithubId = contact.githubId;
+      contacts.TCFirstName = contact.firstName;
+      contacts.TCLastName = contact.lastName;
     }
   });
   return contacts;
@@ -146,4 +150,14 @@ export function transformJsonToCsv(objArray: any) {
     str += line + '\r\n';
   }
   return str;
+};
+
+export function getProfileMinistry(ministrySet: any[], profileDetails: any): object {
+  let ministryDetails: any = {};
+  ministrySet.forEach((ministry: any) => {
+    if (ministry.id === profileDetails.busOrgId) {
+      ministryDetails.ministryName = ministry.name;
+    }
+  });
+  return ministryDetails;
 }
