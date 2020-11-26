@@ -18,7 +18,7 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import config from '../config';
-import { ROLE_IDS } from '../constants';
+import { FULFILLMENT_CONTEXT, ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -46,6 +46,8 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     }
 
     const context = {
+      action: FULFILLMENT_CONTEXT.ACTIONS.CREATE,
+      type: FULFILLMENT_CONTEXT.TYPES.STANDARD,
       profileId: profile.id,
       displayName: profile.name,
       description: profile.description,
