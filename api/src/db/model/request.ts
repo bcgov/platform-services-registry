@@ -36,10 +36,9 @@ export default class RequestModel extends Model {
 
     async create(data: Request): Promise<Request> {
         const query = {
-            text: `
-        INSERT INTO ${this.table}
-            (name)
-            VALUES ($1) RETURNING *;`,
+            text: `INSERT INTO ${this.table}
+            (cluster_namespace_id, nats_subject, nats_context)
+            VALUES ($1, $2, $3) RETURNING *;`,
             values: [
                 data.clusterNamespaceId,
                 data.natsSubject,
@@ -61,10 +60,9 @@ export default class RequestModel extends Model {
     async update(requestId: number, data: Request): Promise<Request> {
         const values: any[] = [];
         const query = {
-            text: `
-        UPDATE ${this.table}
+            text: `UPDATE ${this.table}
             SET
-            name = $1
+            cluster_namespace_id = $1, nats_subject = $2, nats_context = $3
             WHERE id = ${requestId}
             RETURNING *;`,
             values,
@@ -91,8 +89,7 @@ export default class RequestModel extends Model {
 
     async delete(requestId: number): Promise<Request> {
         const query = {
-            text: `
-        UPDATE ${this.table}
+            text: `UPDATE ${this.table}
             SET
             archived = true
             WHERE id = ${requestId}
@@ -115,7 +112,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                    WHERE cluster_namespace_id = ${clusterNamespaceId};
+                    WHERE cluster_namespace_id = ${clusterNamespaceId} AND archived = false;
             `,
         };
 
