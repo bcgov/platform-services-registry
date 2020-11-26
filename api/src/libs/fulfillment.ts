@@ -22,6 +22,7 @@ import { FULFILLMENT_CONTEXT, ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
+import { Request } from '../db/model/request';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
@@ -113,10 +114,52 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
   });
 
 
-export const fulfillNamespaceQuotaEdit = async (requestJson: any) =>
+export const fulfillNamespaceQuotaEdit = async (profileId: number, clusterNamespaceIds: number[], requestJson: any) =>
   new Promise(async (resolve, reject) => {
+
     try {
-      // TODO:(yf) add logics here to SEND nats message and ADD request records
+      const dm = new DataManager(shared.pgPool);
+      const { RequestModel } = dm;
+      const nc = shared.nats;
+
+      const subject = config.get('nats:subject');
+
+      const context = await contextForProvisioning(profileId);
+      context.action = FULFILLMENT_CONTEXT.ACTIONS.EDIT;
+      context.namespaces = requestJson;
+
+      if (!context) {
+        const errmsg = `No context for ${profileId}`;
+        reject(new Error(errmsg));
+      }
+
+      nc.on('error', () => {
+        const errmsg = `NATS error sending order ${profileId} to ${subject}`;
+        reject(new Error(errmsg));
+      });
+
+      logger.info(`Sending NATS quota-edit message for ${profileId}`);
+      nc.publish(subject, context);
+      logger.info(`NATS quota-edit Message sent for ${profileId}`);
+
+      nc.flush(() => {
+        nc.removeAllListeners(['error']);
+      });
+
+      // TODO:(yf) writing requests to our db should not block
+      // from this promise being resolved
+      const promises: Promise<Request>[] = [];
+      clusterNamespaceIds.forEach(cnId => {
+        promises.push(
+          RequestModel.create({
+            clusterNamespaceId: cnId,
+            natsSubject: subject,
+            natsContext: JSON.stringify(context),
+          })
+        );
+      });
+
+      resolve();
     } catch (err) {
       const message = `Unable to provision namespaces quota edit`;
       logger.error(`${message}, err = ${err.message}`);

@@ -25,7 +25,7 @@ import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillNamespaceQuotaEdit } from '../libs/fulfillment';
 import shared from '../libs/shared';
-import { getQuotaOptions, isNotAuthorized, MergeQuotasIntoNamespaces, validateObjProps, validateQuotaRequestBody } from '../libs/utils';
+import { getQuotaOptions, isNotAuthorized, MergeRequestedQuotas, validateObjProps, validateQuotaRequestBody } from '../libs/utils';
 const dm = new DataManager(shared.pgPool);
 
 export const createNamespace = async (
@@ -212,6 +212,8 @@ export const requestProfileQuotaEdit = async (
   { params, user, body }: { params: any, user: AuthenticatedUser, body: any }, res: Response
 ): Promise<void> => {
   try {
+    const { profileId } = params;
+
     const namespaces = await getNamespacesForQuotaEdit(params, user);
     const clusterNamespaces = await getClusterNamespacesForQuotaEdit(namespaces);
 
@@ -227,12 +229,14 @@ export const requestProfileQuotaEdit = async (
       throw rv;
     }
 
+    const clusterNamespaceIds = clusterNamespaces.map(c => c.id);
     // TODO:(yf) add logics here so if the body[i] is exactly the same as current quotas
     // we save a trip to calling bot
 
-    const requestJson = MergeQuotasIntoNamespaces(body, namespaces)
+    const requestJson = MergeRequestedQuotas(body, namespaces)
     // send request nats message to bot
-    await fulfillNamespaceQuotaEdit(requestJson);
+    await fulfillNamespaceQuotaEdit(profileId, clusterNamespaceIds, requestJson);
+
     res.status(204).end();
   } catch (err) {
     const message = `Unable to update profile namespace quota`;

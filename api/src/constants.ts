@@ -38,7 +38,8 @@ export const DEFAULT_QUOTA_SIZE_NAME = quotaSizeNames[0];
 
 export const FULFILLMENT_CONTEXT = {
   ACTIONS: {
-    CREATE: 'create'
+    CREATE: 'create',
+    EDIT: 'edit'
   },
   TYPES: {
     STANDARD: 'standard'

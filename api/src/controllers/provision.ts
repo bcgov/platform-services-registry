@@ -21,6 +21,8 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { ClusterNamespace } from '../db/model/namespace';
+import { Request } from '../db/model/request';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import shared from '../libs/shared';
@@ -106,40 +108,74 @@ export const updateProvisionedNamespaces = async (
   }
 };
 
-
 export const updateNamespacesQuotaEdit = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
-  const { NamespaceModel, ProfileModel } = dm;
+  const { NamespaceModel, ProfileModel, ClusterModel, RequestModel } = dm;
   const { prefix } = body;
-
   try {
     // TODO:(yf) add auth check here to make sure its bot
     const profile = await ProfileModel.findByPrefix(prefix);
     if (!profile) {
       throw new Error();
     }
-
     const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
     if (!namespaces) {
       throw new Error();
     }
 
-    // TODO:(yf) RETRIEVE nats message from requests table and UPDATE
+    const clusters = await ClusterModel.findAll();
+    const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
 
-    // const promises: any = [];
+    const promises: Promise<ClusterNamespace>[] = [];
+    namespaces.forEach(namespace => {
+      // @ts-ignore
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, clusterId));
+    });
+    const clusterNamespaces = await Promise.all(promises);
 
-    // const clusters = await ClusterModel.findAll();
-    // const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
+    const requestPromises: Promise<Request>[] = [];
+    clusterNamespaces.forEach(clusterNamespace => {
+      // @ts-ignore
+      requestPromises.push(RequestModel.findForClusterNamespace(clusterNamespace.id));
+    });
 
-    // for (let i = 0; i < namespaces.length; i++) {
-    //   const namespace = namespaces[i];
-    //   // @ts-ignore
-    //   const { namespaceId } = namespace;
-    //   promises.push(NamespaceModel.updateQuota(namespaceId, clusterId, body[i]));
-    // }
-    // await Promise.all(promises);
+    const requests = await Promise.all(requestPromises);
 
+    // TODO: this needs to be changed when we have more than one cluster
+    const request = requests[0]
+    if (!request.natsContext) {
+      throw new Error();
+    }
+    const context = JSON.parse(request.natsContext);
+
+    const updatePromises: any = [];
+    const prep: any = [];
+    context.namespaces.forEach(namespace => {
+      // TODO: this needs to be changed when we have more than one cluster
+      const requestedQuotas = namespace.clusters[0].quotas;
+      prep.push({
+        namespaceId: namespace.namespaceId,
+        quotaBody: {
+          quotaCpu: requestedQuotas.cpu,
+          quotaMemory: requestedQuotas.memory,
+          quotaStorage: requestedQuotas.storage,
+        },
+      });
+    });
+
+    prep.forEach(p => {
+      updatePromises.push(NamespaceModel.updateQuota(p.namespaceId, clusterId, p.quotaBody));
+    });
+    await Promise.all(updatePromises);
+
+    const deletePromises: any = [];
+    requests.forEach(r => {
+      // @ts-ignore
+      deletePromises.push(RequestModel.delete(r.id));
+    })
+
+    await Promise.all(deletePromises);
     res.status(202).end();
   } catch (err) {
     const message = `Unable to update namespace quota`;

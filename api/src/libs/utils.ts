@@ -127,32 +127,21 @@ export const validateQuotaRequestBody = (quotaOptions: any, body: any): Error | 
 };
 
 // TODO:(yf) add error handling for fn params
-export const MergeQuotasIntoNamespaces = (quotaBody: any, namespacesForQuotaEdit: any): Error | object[] => {
+export const MergeRequestedQuotas = (quotaBody: any, namespacesForQuotaEdit: any): Error | object[] => {
   const merged = [];
   try {
     for (let i = 0; i < namespacesForQuotaEdit.length; i++) {
-      const { namespaceId } = namespacesForQuotaEdit[i];
-
-      const obj = {
-        namespaceId,
-        name: namespacesForQuotaEdit[i].name,
-        clusters: [{
-          clusterId: namespacesForQuotaEdit[i].clusters.clusterId,
-          name: namespacesForQuotaEdit[i].clusters.name,
-          provisioned: namespacesForQuotaEdit[i].clusters.provisioned,
-          quotas: {
-            cpu: quotaBody[i].quotaCpu,
-            memory: quotaBody[i].quotaMemory,
-            storage: quotaBody[i].quotaStorage,
-          },
-        }],
-      };
+      const namespace = namespacesForQuotaEdit[i];
+      // TODO: this needs to be changed when we have more than one cluster
+      namespace.clusters[0].quotas.cpu = quotaBody[i].quotaCpu;
+      namespace.clusters[0].quotas.memory = quotaBody[i].quotaMemory;
+      namespace.clusters[0].quotas.storage = quotaBody[i].quotaStorage;
 
       // @ts-ignore
-      merged.push(obj);
+      merged.push(namespace);
     }
     return merged;
   } catch (err) {
-    return errorWithCode('Unable to merge quotas into namespaces', 500);
+    return errorWithCode('Unable to merge requested quotas into namespaces', 500);
   }
 };
