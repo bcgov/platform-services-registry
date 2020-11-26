@@ -171,7 +171,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Flex flexWrap='wrap' m={3}>
                                     <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
                                         {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject/>}
-                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact/>}
+                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact contactDetails={contactJson} />}
                                         {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
                                         ------------
                                         <br />
