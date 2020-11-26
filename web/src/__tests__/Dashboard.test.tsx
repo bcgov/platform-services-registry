@@ -15,8 +15,12 @@
 //
 
 import { render, waitFor } from '@testing-library/react';
+import { createBrowserHistory } from 'history';
 import React from 'react';
+import { Router } from 'react-router-dom';
 import Dashboard from '../views/Dashboard';
+
+const browserHistory = createBrowserHistory();
 
 // TODO: use fixtures and make them work with jest mock values
 jest.mock('../utils/useRegistryApi', () => {
@@ -133,7 +137,9 @@ function renderDashboard() {
   const stubCloseBackdropCB = jest.fn();
 
   const utils = render(
-    <Dashboard openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+    <Router history={browserHistory} >
+      <Dashboard openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+    </Router>
   );
 
   return { ...utils };

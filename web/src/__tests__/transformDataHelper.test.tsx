@@ -14,8 +14,9 @@
 // limitations under the License.
 //
 
-import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
+import { getProfileContacts, getProfileMinistry, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
 import profileContacts from './fixtures/profile-contacts.json';
+import profileMinistry from './fixtures/profile-ministry.json';
 import profileNamespaces from './fixtures/profile-namespaces.json';
 import profiles from './fixtures/profiles.json';
 import sortedProfile from './fixtures/sorted-profiles.json';
@@ -56,15 +57,28 @@ describe("test the helper function getProfileContacts", () => {
     const stubProfileContacts = profileContacts;
     expect(getProfileContacts(stubProfileContacts)).toEqual({
       POEmail: "jane@example.com",
+      POFirstName: "Jane",
       POGithubId: "jane1100",
+      POLastName: "Doe",
       POName: "Jane Doe",
       TCEmail: "jim@example.com",
+      TCFirstName: "Jim",
       TCGithubId: "jim1100",
+      TCLastName: "Doe",
       TCName: "Jim Doe"
     });
   });
 });
 
+describe("test the helper function getProfileMinistry", () => {
+  test("should return an object with key-values pairs for PO email and TC email", () => {
+    const stubProfileMinistry = profileMinistry;
+    const ministry = {busOrgId: "ALC"};
+    expect(getProfileMinistry(stubProfileMinistry, ministry)).toEqual({
+      ministryName: "Agriculture Land Commission"
+    });
+  });
+});
 
 describe("test the helper function transformJsonToCsv", () => {
   test("should return correct csv", () => {
