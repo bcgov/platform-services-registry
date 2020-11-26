@@ -46,7 +46,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
     const [profileJson, setProfileJson] = useState<any>({});
     const [contactJson, setContactJson] = useState<any>({});
-    const [ministry, setMinistry] = useState<any>([]);
 
     // @ts-ignore
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -65,9 +64,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 const profileDetails = await api.getProfileByProfileId(profileId);
                 const ministryDetails = await api.getMinistry();
                 profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data)};
-                
                 setProfileJson(profileDetails.data);
-                setMinistry(ministryDetails.data);
 
                 const contactDetails = await api.getContactsByProfileId(profileId);
                 contactDetails.data = { ...getProfileContacts(contactDetails.data) };
@@ -175,8 +172,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                             <form onSubmit={props.handleSubmit} >
                                 <Flex flexWrap='wrap' m={3}>
                                     <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
-                                        {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject profileDetails={profileJson} ministry={ministry} />}
-                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact contactDetails={contactJson} />}
+                                        {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject/>}
+                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact/>}
                                         {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
                                         ------------
                                         <br />
