@@ -16,9 +16,9 @@ ADD COLUMN IF NOT EXISTS quota_storage VARCHAR(8);
 CREATE TABLE IF NOT EXISTS request (
     id               serial PRIMARY KEY,
     cluster_namespace_id INTEGER REFERENCES cluster_namespace(id) NOT NULL,
-    nats_subject     varchar(40),
-    nats_context     varchar(512),
-    archived        BOOLEAN NOT NULL DEFAULT false,
+    nats_subject     varchar(512),
+    nats_context     varchar(4096),
+    archived         BOOLEAN NOT NULL DEFAULT false,
     created_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
     updated_at       timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
