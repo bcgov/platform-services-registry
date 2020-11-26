@@ -108,18 +108,32 @@ export const getQuotaOptions = async (clusterNamespace: ClusterNamespace): Promi
 export const validateQuotaRequestBody = (quotaOptions: any, body: any): Error | undefined => {
   try {
     const spec = ['quotaCpu', 'quotaMemory', 'quotaStorage'];
-    for (let i = 0; i < quotaOptions.length; i++) {
+
+    body.forEach(item => {
+      const rv = validateObjProps(spec.concat(['clusterId', 'namespaceId']), item);
+      if (rv) {
+        throw rv;
+      }
+
+      const { clusterId, namespaceId } = item;
+      const quotaOption = quotaOptions.filter(option =>
+        (option.clusterId === clusterId) && (option.namespaceId === namespaceId));
+      if (!quotaOption) {
+        throw new Error();
+      }
+
+      const qo = quotaOption.pop();
       spec.forEach(specName => {
-        const requestedSize: string = body[i][specName];
+        const requestedSize: string = item[specName];
         if (!quotaSizeNames.includes(requestedSize)) {
           throw new Error();
         }
-        const allowedSizes: string[] = quotaOptions[i][specName];
+        const allowedSizes: string[] = qo[specName];
         if (!allowedSizes.includes(requestedSize)) {
           throw new Error();
         }
       });
-    }
+    })
     return;
   } catch (err) {
     return errorWithCode('Invalid quota request body', 400);
