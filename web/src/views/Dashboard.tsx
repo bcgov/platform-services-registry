@@ -136,15 +136,15 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
       }}>
         {(profile.length > 0) && profile.map((s: any) => (
-          <RouterLink 
-          to={{pathname: `/profile/${s.id}/overview`}}
-          style={{ color: theme.colors.black, textDecoration: 'none' }}
-          >
-          <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-            {!s.provisioned && <StyledBackdrop />}
-            <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
-          </ShadowBox>
-          </RouterLink>
+            <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+              <RouterLink 
+              to={{pathname: `/profile/${s.id}/overview`}}
+              style={{ color: theme.colors.black, textDecoration: 'none' }}
+              >
+                {!s.provisioned && <StyledBackdrop />}
+                <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
+              </RouterLink>
+            </ShadowBox>
         ))}
       </Box>
     </>
