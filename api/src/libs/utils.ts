@@ -99,7 +99,7 @@ export const getQuotaOptions = async (clusterNamespace: ClusterNamespace): Promi
 
       resolve(quotaOptionsObj);
     } catch (err) {
-      const message = `Unable to provide quota options for cluster namespce quota request`;
+      const message = `Unable to provide quota options for cluster namespace quota request`;
       logger.error(`${message}, err = ${err.message}`);
       resolve(quotaOptionsObj);
     }
