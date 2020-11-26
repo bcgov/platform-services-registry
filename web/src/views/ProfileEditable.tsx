@@ -93,7 +93,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         return <Redirect to={ROUTE_PATHS.NOT_FOUND} />;
     }
 
-    // here we divide profile-related views based on query param
     if (viewName === PROFILE_VIEW_NAMES.OVERVIEW) {
         return (
             <>
@@ -152,7 +151,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         return (
             <>
             <Flex p={3} mt={4} bg={theme.colors.bcblue}>
-                    {/* TODO: fix route url using constant */}
                         <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/overview`}>
                             <Icon hover color={'contrast'} name={'goBack'} width={1} height={1} />
                         </RouterLink>
