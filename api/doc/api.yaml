@@ -397,7 +397,62 @@ paths:
           description: The request was received but didn't have correct access permissions
         500:
           description: Internal Error
-
+  /api/v1/profile/{profileId}/quota-edit:
+    get:
+      operationId: fetchProfileQuotaOptions
+      summary: Fetch a list of quota-edit options for given clusternamespaces
+      description: |-
+        Use this endpoint to fetch a list of quota-edit options
+        given the project and default cluster. A list will be returned
+        providing it is not archived. A empty list will be returned if the
+        project is yet to be provisioned OR there is an
+        ongoing quota-edit request for this project.
+      tags:
+        - QuotaEdit
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being requested.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+        400:
+          description: The request was received but incorrect
+        401:
+          description: The request was received but didn't have correct access permissions
+        500:
+          description: Internal Error
+    post:
+      operationId: requestProfileQuotaEdit
+      summary: Create a new namespace for the given project
+      description: |-
+        Use this endpoint to request new quotas for cluster namespaces
+        under the given profile and default cluster.
+      tags:
+        - QuotaEdit
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the project profile that will own the namespace.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: The request was successful; No content returned.
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
 components:
   schemas:
     Cluster:
@@ -443,24 +498,6 @@ components:
           type: number
         clusterId:
           type: number
-        quotaCpu:
-          type: string
-          enum:
-            - small
-            - medium
-            - large
-        quotaMemory:
-          type: string
-          enum:
-            - small
-            - medium
-            - large
-        quotaStorage:
-          type: string
-          enum:
-            - small
-            - medium
-            - large
         archived:
           type: boolean
         createdAt:
@@ -616,3 +653,4 @@ components:
         last_name: "Doe"
         email: "john.doe@example.com"
         github_id: "johndoe1100"
+
