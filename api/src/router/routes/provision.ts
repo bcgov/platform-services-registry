@@ -20,15 +20,12 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { provisionProfileNamespaces, updateNamespacesQuotaEdit, updateProvisionedNamespaces } from '../../controllers/provision';
+import { provisionCallbackHandler, provisionProfileNamespaces } from '../../controllers/provision';
 
 const router = express.Router();
 
 // Provisioning
 router.post('/:profileId/namespace', asyncMiddleware(provisionProfileNamespaces));
-router.put('/namespace', asyncMiddleware(updateProvisionedNamespaces));
-
-// Bot callback when updating quota is complete
-router.put('/namespace/quota-edit', asyncMiddleware(updateNamespacesQuotaEdit));
+router.put('/namespace', asyncMiddleware(provisionCallbackHandler));
 
 export default router;
