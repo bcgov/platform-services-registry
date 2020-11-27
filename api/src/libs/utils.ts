@@ -64,13 +64,17 @@ export const isNotAuthorized = (results: any, user: any): Error | undefined => {
 export const getQuotaOptions = async (clusterNamespace: ClusterNamespace): Promise<any> =>
   new Promise(async (resolve, reject) => {
     const { RequestModel } = dm;
-    const { namespaceId, clusterId, quotaCpu, quotaMemory, quotaStorage } = clusterNamespace;
+    const { namespaceId, clusterId, quotaCpu, quotaMemory, quotaStorage, provisioned } = clusterNamespace;
     const quotaOptionsObj = {
       namespaceId,
       clusterId,
       quotaCpu: new Array(),
       quotaMemory: new Array(),
       quotaStorage: new Array(),
+    }
+
+    if (!provisioned) {
+      resolve(quotaOptionsObj);
     }
 
     try {
