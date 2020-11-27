@@ -99,7 +99,6 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  // TODO:(yf) refactor this query to remove LIMIT 1
   async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
       text: `
@@ -109,15 +108,13 @@ export default class NamespaceModel extends Model {
             SELECT array_to_json(array_agg(row_to_json(x)))
             FROM (
               SELECT ref_cluster.id AS "clusterId", ref_cluster.name, cluster_namespace.provisioned,
-              coalesce(
-                (
-                  SELECT (row_to_json(y))
-                  FROM (
-                    SELECT cluster_namespace.quota_cpu AS "cpu", cluster_namespace.quota_memory AS "memory", cluster_namespace.quota_storage AS "storage"
-                    FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
-                    WHERE namespace.id = cluster_namespace.namespace_id LIMIT 1
-                  ) y
-                ), '{}'
+              (
+                SELECT row_to_json(d)
+                from (
+                  SELECT cluster_namespace.quota_cpu AS "cpu", cluster_namespace.quota_memory AS "memory", cluster_namespace.quota_storage AS "storage"
+                  FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+                  WHERE namespace.id = cluster_namespace.namespace_id
+                ) d
               ) AS quotas
               FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
               WHERE namespace.id = cluster_namespace.namespace_id
