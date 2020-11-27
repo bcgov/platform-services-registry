@@ -115,7 +115,6 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                                 name={`project-${item.inputValue}`}
                                 component="input"
                                 type="checkbox"
-                                value="yes"
                             >
                                 {({ input }) => (
                                     <input

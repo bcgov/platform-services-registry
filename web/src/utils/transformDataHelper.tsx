@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { COMPONENT_METADATA, ROLES } from '../constants';
+import { ROLES } from '../constants';
 
 export function transformForm(data: any) {
   const profile: any = {};
@@ -45,17 +45,6 @@ export function transformForm(data: any) {
   } else {
     profile.prioritySystem = false;
   }
-
-  COMPONENT_METADATA.forEach(item => {
-    const checkboxValue: string = item.inputValue;
-
-    if (typeof profile[checkboxValue] !== 'undefined') {
-      const value = profile[checkboxValue].pop();
-      profile[checkboxValue] = value === 'yes' ? true : false;
-    } else {
-      profile[checkboxValue] = false;
-    }
-  });
 
   return {
     profile,
