@@ -46,10 +46,6 @@ export const FULFILLMENT_CONTEXT = {
   },
 };
 
-export const REQUEST_EDIT_TYPE = {
-  QUOTAS: 'namespaces:quotas',
-};
-
 export const ROLE_IDS = {
   PRODUCT_OWNER: 1,
   TECHNICAL_CONTACT: 2,

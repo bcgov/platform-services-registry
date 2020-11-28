@@ -50,7 +50,8 @@ export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: Clust
       ).pop();
 
       if (!targetNamespace || !targetNamespace.clusters) {
-        throw new Error();
+        throw new Error(`Cant find target namespace or its clusters for namespaceId
+        ${requestedClusterNamespace.namespaceId}`);
       }
       // @ts-ignore
       const num: number = targetNamespace.clusters.findIndex(
@@ -170,19 +171,19 @@ export const isQuotaRequestBodyValid = (quotaOptions: QuotaOptionsObject[], body
       const quotaOption = quotaOptions.filter(option =>
         (option.clusterId === clusterId) && (option.namespaceId === namespaceId));
       if (!quotaOption) {
-        throw new Error();
+        throw new Error(`Cant fetch quotaOption for clusterId ${clusterId} and namespaceId ${namespaceId}`);
       }
 
       const qo = quotaOption.pop();
       spec.forEach(specName => {
         const requestedSize: string = item[specName];
         if (!quotaSizeNames.includes(requestedSize)) {
-          throw new Error();
+          throw new Error('Incorrect requested quota size');
         }
         // @ts-ignore
         const allowedSizes: string[] = qo[specName];
         if (!allowedSizes.includes(requestedSize)) {
-          throw new Error();
+          throw new Error('Requested quota size not allowed');
         }
       });
     });
@@ -192,46 +193,6 @@ export const isQuotaRequestBodyValid = (quotaOptions: QuotaOptionsObject[], body
     logger.error(`${message}, err = ${err.message}`);
     throw err;
   }
-};
-
-export const writeRequest = (quotaOptions: QuotaOptionsObject[], body: any): void | Error => {
-  try {
-    body.forEach((item: any) => {
-      const rv = validateObjProps(spec.concat(['clusterId', 'namespaceId']), item);
-      if (rv) {
-        throw rv;
-      }
-
-      const { clusterId, namespaceId } = item;
-      const quotaOption = quotaOptions.filter(option =>
-        (option.clusterId === clusterId) && (option.namespaceId === namespaceId));
-      if (!quotaOption) {
-        throw new Error();
-      }
-
-      const qo = quotaOption.pop();
-      spec.forEach(specName => {
-        const requestedSize: string = item[specName];
-        if (!quotaSizeNames.includes(requestedSize)) {
-          throw new Error();
-        }
-        // @ts-ignore
-        const allowedSizes: string[] = qo[specName];
-        if (!allowedSizes.includes(requestedSize)) {
-          throw new Error();
-        }
-      });
-    });
-    return;
-  } catch (err) {
-    const message = `Unable to write request for ${whichService}`;
-    logger.error(`${message}, err = ${err.message}`);
-    throw err;
-  }
-};
-
-export const enum RequestEditType {
-  Namespaces = 'namespaces',
 };
 
 export const processNamespacesEditType = async (request: Request): Promise<void> => {

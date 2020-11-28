@@ -112,10 +112,11 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
     }
   });
 
-type RequestEditType
-  = 'technicalContact'
-  | 'productOwner'
-  | 'namespaces'
+export const enum RequestEditType {
+  ProductOwner = 'productOwner',
+  TechnicalContact = 'technicalContact',
+  Namespaces = 'namespaces',
+};
 
 interface NatsObject {
   natsSubject: string,

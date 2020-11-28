@@ -22,8 +22,8 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
 import { AuthenticatedUser } from '../libs/authmware';
-import { fulfillNamespaceEdit } from '../libs/fulfillment';
-import { getClusterNamespaces, getCNQuotaOptions, getNamespaceSet, isQuotaRequestBodyValid, mergeRequestedCNToNamespaceSet, QuotaOptionsObject, RequestEditType } from '../libs/quota-editing';
+import { fulfillNamespaceEdit, RequestEditType } from '../libs/fulfillment';
+import { getClusterNamespaces, getCNQuotaOptions, getNamespaceSet, isQuotaRequestBodyValid, mergeRequestedCNToNamespaceSet, QuotaOptionsObject } from '../libs/quota-editing';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
@@ -139,12 +139,12 @@ export const fetchProfileQuotaOptions = async (
   try {
     const namespaces = await getNamespaceSet(params, user);
     if (!namespaces) {
-      throw new Error();
+      throw new Error('Cant fetch namespaces for this profile');
     }
 
     const clusterNamespaces = await getClusterNamespaces(namespaces);
     if (!clusterNamespaces) {
-      throw new Error();
+      throw new Error('Cant fetch clusterNamespaces for this profile');
     }
 
     const promises: Promise<QuotaOptionsObject>[] = [];
@@ -169,12 +169,12 @@ export const requestProfileQuotaEdit = async (
 
     const namespaces = await getNamespaceSet(params, user);
     if (!namespaces) {
-      throw new Error();
+      throw new Error('Cant get namespaceSet');
     }
 
     const clusterNamespaces = await getClusterNamespaces(namespaces);
     if (!clusterNamespaces) {
-      throw new Error();
+      throw new Error('Cant get clusterNamespaces');
     }
 
     const promises: Promise<QuotaOptionsObject>[] = [];
@@ -191,7 +191,7 @@ export const requestProfileQuotaEdit = async (
     const editType = RequestEditType.Namespaces;
     const editObject = mergeRequestedCNToNamespaceSet(body, namespaces);
     if (!editObject) {
-      throw new Error();
+      throw new Error('Cant generate request edit object');
     }
     const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
     await RequestModel.create({

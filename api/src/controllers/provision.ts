@@ -23,9 +23,9 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
-import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
+import { fulfillNamespaceProvisioning, RequestEditType } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { getDefaultCluster, processNamespacesEditType, RequestEditType } from '../libs/quota-editing';
+import { getDefaultCluster, processNamespacesEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
 
 
@@ -71,11 +71,11 @@ export const provisionCallbackHandler = async (
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
     if (!profile) {
-      throw new Error();
+      throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
     const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
     if (!namespaces) {
-      throw new Error();
+      throw new Error(`Cant find any namespaces for the given prefix ${prefix}`);
     }
 
     const defaultCluster = await getDefaultCluster();
@@ -145,7 +145,7 @@ const updateNamespacesEdit = async (profile: ProjectProfile): Promise<void> => {
 
   try {
     if (!profile.id) {
-      throw new Error();
+      throw new Error('Cant read the given profileId');
     }
     const requests = await RequestModel.findForProfile(profile.id);
 
