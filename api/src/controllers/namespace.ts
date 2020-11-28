@@ -21,11 +21,12 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
 import { AuthenticatedUser } from '../libs/authmware';
-import { fulfillNamespaceQuotaEdit } from '../libs/fulfillment';
+import { fulfillNamespaceEdit } from '../libs/fulfillment';
+import { getClusterNamespaces, getCNQuotaOptions, getNamespaceSet, isQuotaRequestBodyValid, mergeRequestedCNToNamespaceSet, QuotaOptionsObject, RequestEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
-import { getQuotaOptions, isNotAuthorized, MergeRequestedQuotas, validateObjProps, validateQuotaRequestBody } from '../libs/utils';
+import { validateObjProps } from '../libs/utils';
+
 const dm = new DataManager(shared.pgPool);
 
 export const createNamespace = async (
@@ -131,73 +132,23 @@ export const archiveProfileNamespace = async (
   }
 };
 
-const getNamespacesForQuotaEdit = async (params: any, user: AuthenticatedUser): Promise<ProjectNamespace[]> =>
-  new Promise(async (resolve, reject) => {
-    const { NamespaceModel, ProfileModel } = dm;
-    const { profileId } = params;
-
-    // TODO:(yf) add further data sanity check
-    const rv = validateObjProps(['profileId'], { profileId });
-    if (rv) {
-      reject(rv);
-    }
-
-    try {
-      // user auth check
-      const record = await ProfileModel.findById(Number(profileId));
-      const notAuthorized = isNotAuthorized(record, user);
-      if (notAuthorized) {
-        reject(notAuthorized);
-      }
-
-      const namespaces = await NamespaceModel.findForProfile(Number(profileId));
-
-      resolve(namespaces);
-    } catch (err) {
-      const message = `Unable to process namespaces for quota request`;
-      logger.error(`${message}, err = ${err.message}`);
-      throw err;
-    }
-  });
-
-const getClusterNamespacesForQuotaEdit = async (
-  namespacesForQuotaEdit: ProjectNamespace[]): Promise<ClusterNamespace[]> =>
-  new Promise(async (resolve, reject) => {
-    const { NamespaceModel, ClusterModel } = dm;
-
-    try {
-      // TODO:(yf) DRY the code below by putting it into a method
-      const clusters = await ClusterModel.findAll();
-      const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
-
-      const promises: Promise<ClusterNamespace>[] = [];
-      namespacesForQuotaEdit.forEach(namespace => {
-        // @ts-ignore
-        promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, clusterId));
-      });
-
-      const clusterNamespaces = await Promise.all(promises);
-
-      resolve(clusterNamespaces);
-    } catch (err) {
-      const message = `Unable to process cluster namespaces for quota request`;
-      logger.error(`${message}, err = ${err.message}`);
-      throw err;
-    }
-  });
-
+// TODO:(yf) catch specific err in order to serve specific status code
 export const fetchProfileQuotaOptions = async (
   { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   try {
-    const namespaces = await getNamespacesForQuotaEdit(params, user);
-    const clusterNamespaces = await getClusterNamespacesForQuotaEdit(namespaces);
+    const namespaces = await getNamespaceSet(params, user);
+    if (!namespaces) {
+      throw new Error();
+    }
 
-    const promises: Promise<ClusterNamespace>[] = [];
-    clusterNamespaces.forEach(cn => {
-      promises.push(getQuotaOptions(cn));
-    });
+    const clusterNamespaces = await getClusterNamespaces(namespaces);
+    if (!clusterNamespaces) {
+      throw new Error();
+    }
 
+    const promises: Promise<QuotaOptionsObject>[] = [];
+    clusterNamespaces.forEach(cn => promises.push(getCNQuotaOptions(cn)));
     const quotaOptions = await Promise.all(promises);
 
     res.status(200).json(quotaOptions);
@@ -208,38 +159,51 @@ export const fetchProfileQuotaOptions = async (
   }
 };
 
+// TODO:(yf) catch specific err in order to serve specific status code
 export const requestProfileQuotaEdit = async (
   { params, user, body }: { params: any, user: AuthenticatedUser, body: any }, res: Response
 ): Promise<void> => {
+  const { RequestModel } = dm;
   try {
     const { profileId } = params;
 
-    const namespaces = await getNamespacesForQuotaEdit(params, user);
-    const clusterNamespaces = await getClusterNamespacesForQuotaEdit(namespaces);
+    const namespaces = await getNamespaceSet(params, user);
+    if (!namespaces) {
+      throw new Error();
+    }
 
-    const promises: Promise<ClusterNamespace>[] = [];
-    clusterNamespaces.forEach(cn => {
-      promises.push(getQuotaOptions(cn));
-    });
+    const clusterNamespaces = await getClusterNamespaces(namespaces);
+    if (!clusterNamespaces) {
+      throw new Error();
+    }
 
+    const promises: Promise<QuotaOptionsObject>[] = [];
+    clusterNamespaces.forEach(cn => promises.push(getCNQuotaOptions(cn)));
     const quotaOptions = await Promise.all(promises);
 
-    const rv = validateQuotaRequestBody(quotaOptions, body);
+    const rv = isQuotaRequestBodyValid(quotaOptions, body);
     if (rv) {
       throw rv;
     }
 
-    const clusterNamespaceIds = clusterNamespaces.map(c => c.id);
-    // TODO:(yf) add logics here so if the body[i] is exactly the same as current quotas
-    // we save a trip to calling bot
-
-    const requestJson = MergeRequestedQuotas(body, namespaces)
-    // send request nats message to bot
-    await fulfillNamespaceQuotaEdit(profileId, clusterNamespaceIds, requestJson);
-
+    // TODO:(yf) add logics here so if the body is exactly the same
+    // as current quotas, we save a trip to calling bot
+    const editType = RequestEditType.Namespaces;
+    const editObject = mergeRequestedCNToNamespaceSet(body, namespaces);
+    if (!editObject) {
+      throw new Error();
+    }
+    const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+    await RequestModel.create({
+      profileId,
+      editType,
+      editObject: JSON.stringify(editObject),
+      natsSubject,
+      natsContext: JSON.stringify(natsContext),
+    })
     res.status(204).end();
   } catch (err) {
-    const message = `Unable to update profile namespace quota`;
+    const message = `Unable to update quota`;
     logger.error(`${message}, err = ${err.message}`);
     throw errorWithCode(message, 500);
   }

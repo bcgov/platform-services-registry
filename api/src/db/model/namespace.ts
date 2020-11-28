@@ -20,19 +20,19 @@ import { Pool } from 'pg';
 import { DEFAULT_QUOTA_SIZE_NAME, projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 
-export interface ClusterNamespace {
-  id: number,
+export interface ClusterNamespace extends CommonFields {
   namespaceId: number,
   clusterId: number,
   provisioned: boolean,
   quotaCpu?: string,
   quotaMemory?: string,
-  quotaStorage?: string
+  quotaStorage?: string,
 }
 
 export interface ProjectNamespace extends CommonFields {
   name: string,
   profileId: number,
+  clusters?: ClusterNamespace[],
 }
 
 export default class NamespaceModel extends Model {
@@ -187,7 +187,7 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateQuota(namespaceId: number, clusterId: number, data: ClusterNamespace): Promise<void> {
+  async updateClusterNamespaceQuota(namespaceId: number, clusterId: number, data: ClusterNamespace): Promise<void> {
     const values: any[] = [];
     const query = {
       text: `

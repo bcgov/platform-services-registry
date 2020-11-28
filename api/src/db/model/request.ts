@@ -17,15 +17,17 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface Request extends CommonFields {
-    clusterNamespaceId: number,
+    profileId: number,
+    editType: string,
+    editObject: string,
     natsSubject?: string,
-    natsContext?: string
+    natsContext?: string,
 }
 
 export default class RequestModel extends Model {
     table: string = 'request';
     requiredFields: string[] = [
-        'clusterNamespaceId',
+        'profileId', 'editType', 'editObject'
     ];
     pool: Pool;
 
@@ -37,10 +39,12 @@ export default class RequestModel extends Model {
     async create(data: Request): Promise<Request> {
         const query = {
             text: `INSERT INTO ${this.table}
-            (cluster_namespace_id, nats_subject, nats_context)
-            VALUES ($1, $2, $3) RETURNING *;`,
+            (profile_id, edit_type, edit_object, nats_subject, nats_context)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
             values: [
-                data.clusterNamespaceId,
+                data.profileId,
+                data.editType,
+                data.editObject,
                 data.natsSubject,
                 data.natsContext
             ],
@@ -62,7 +66,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `UPDATE ${this.table}
             SET
-            cluster_namespace_id = $1, nats_subject = $2, nats_context = $3
+            profile_id = $1, edit_type = $2, edit_object = $3, nats_subject = $4, nats_context = $5
             WHERE id = ${requestId}
             RETURNING *;`,
             values,
@@ -72,7 +76,9 @@ export default class RequestModel extends Model {
             const record = await this.findById(requestId);
             const aData = { ...record, ...data };
             query.values = [
-                aData.clusterNamespaceId,
+                aData.profileId,
+                aData.editType,
+                aData.editObject,
                 aData.natsSubject,
                 aData.natsContext
             ];
@@ -108,19 +114,18 @@ export default class RequestModel extends Model {
         }
     };
 
-    async findForClusterNamespace(clusterNamespaceId: number): Promise<Request> {
+    async findForProfile(profileId: number): Promise<Request[]> {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                    WHERE cluster_namespace_id = ${clusterNamespaceId} AND archived = false;
+                    WHERE profile_id = ${profileId} AND archived = false;
             `,
         };
 
         try {
-            const results = await this.runQuery(query);
-            return results.pop();
+            return await this.runQuery(query);
         } catch (err) {
-            const message = `Unable to find request by cluster_namespace ${clusterNamespaceId}`;
+            const message = `Unable to fetch Request(s) with Profile Id ${profileId}`;
             logger.error(`${message}, err = ${err.message}`);
 
             throw err;

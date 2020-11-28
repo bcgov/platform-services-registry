@@ -21,11 +21,13 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { ClusterNamespace } from '../db/model/namespace';
-import { Request } from '../db/model/request';
+import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
+import { ProjectProfile } from '../db/model/profile';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
+import { getDefaultCluster, processNamespacesEditType, RequestEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
+
 
 const dm = new DataManager(shared.pgPool);
 
@@ -61,48 +63,40 @@ export const provisionProfileNamespaces = async (
   }
 };
 
-
 export const provisionCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
-  const { NamespaceModel, ProfileModel, ClusterModel } = dm;
+  const { NamespaceModel, ProfileModel } = dm;
   const { prefix } = body;
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
     if (!profile) {
       throw new Error();
     }
-
     const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
     if (!namespaces) {
       throw new Error();
     }
 
-    const clusters = await ClusterModel.findAll();
-    const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
+    const defaultCluster = await getDefaultCluster();
     const promises: Promise<ClusterNamespace>[] = [];
     namespaces.forEach(namespace => {
       // @ts-ignore
-      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, clusterId));
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, defaultCluster.id));
     });
     const clusterNamespaces = await Promise.all(promises);
 
     const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
       return clusterNamespace.provisioned;
     });
-
-    // for all 4 namespaces under default cluster and the given profile
-    // if they are all provisioned TRUE, we route it to CREAT
-    // if they are all provisioned FALSE, we route it EDIT
-    // other conditions...we might have a problem
     if (flags.every(f => f === true)) {
-      await updateNamespacesQuotaEdit(namespaces);
+      await updateNamespacesEdit(profile);
       res.status(202).end();
     } else if (flags.every(f => f === false)) {
       await updateProvisionedNamespaces(namespaces, profile);
       res.status(202).end();
     } else {
-      throw new Error();
+      throw new Error(`Need to fix project namespace set under profile ID ${profile.id}`);
     }
   } catch (err) {
     const message = `Unable to update namespace status`;
@@ -112,103 +106,63 @@ export const provisionCallbackHandler = async (
   }
 };
 
-const updateProvisionedNamespaces = async (namespaces: any, profile: any): Promise<void> =>
-  new Promise(async (resolve, reject) => {
-    const { NamespaceModel } = dm;
+const updateProvisionedNamespaces = async (namespaces: ProjectNamespace[], profile: ProjectProfile): Promise<void> => {
+  const { NamespaceModel } = dm;
 
-    try {
-      const provisioned = true;
-      const promises: any = [];
+  try {
+    const provisioned = true;
+    const promises: any = [];
 
-      namespaces.forEach(namespace => {
-        // @ts-ignore
-        const { namespaceId, clusters } = namespace;
-        clusters.forEach(cluster => {
-          // @ts-ignore
-          const { clusterId } = cluster;
-          promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
-        });
-      });
-
-      await Promise.all(promises);
-
-      // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
-      // be used for emailing.
-      logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
-      await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
-      logger.info(`CHES message sent for ${profile.id}`);
-
-      resolve();
-    } catch (err) {
-      const message = `Unable to update namespace status`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw errorWithCode(message, 500);
-    }
-  });
-
-const updateNamespacesQuotaEdit = async (namespaces: any): Promise<void> =>
-  new Promise(async (resolve, reject) => {
-    const { NamespaceModel, ClusterModel, RequestModel } = dm;
-
-    try {
-      const clusters = await ClusterModel.findAll();
-      const clusterId = clusters.filter(c => c.isDefault === true).pop().id;
-
-      const promises: Promise<ClusterNamespace>[] = [];
-      namespaces.forEach(namespace => {
-        // @ts-ignore
-        promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, clusterId));
-      });
-      const clusterNamespaces = await Promise.all(promises);
-
-      const requestPromises: Promise<Request>[] = [];
-      clusterNamespaces.forEach(clusterNamespace => {
-        // @ts-ignore
-        requestPromises.push(RequestModel.findForClusterNamespace(clusterNamespace.id));
-      });
-
-      const requests = await Promise.all(requestPromises);
-      // TODO: this needs to be changed when we have more than one cluster
-      const request = requests[0];
-      if (!request || !request.natsContext) {
-        resolve();
-      }
+    namespaces.forEach(namespace => {
       // @ts-ignore
-      const context = JSON.parse(request.natsContext);
-
-      const updatePromises: any = [];
-      const prep: any = [];
-      context.namespaces.forEach(namespace => {
-        // TODO: this needs to be changed when we have more than one cluster
-        const requestedQuotas = namespace.clusters[0].quotas;
-        prep.push({
-          namespaceId: namespace.namespaceId,
-          quotaBody: {
-            quotaCpu: requestedQuotas.cpu,
-            quotaMemory: requestedQuotas.memory,
-            quotaStorage: requestedQuotas.storage,
-          },
-        });
-      });
-
-      prep.forEach(p => {
-        updatePromises.push(NamespaceModel.updateQuota(p.namespaceId, clusterId, p.quotaBody));
-      });
-      await Promise.all(updatePromises);
-
-      const deletePromises: any = [];
-      requests.forEach(r => {
+      const { namespaceId, clusters } = namespace;
+      // @ts-ignore
+      clusters.forEach(cluster => {
         // @ts-ignore
-        deletePromises.push(RequestModel.delete(r.id));
-      })
+        const { clusterId } = cluster;
+        promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
+      });
+    });
 
-      await Promise.all(deletePromises);
-      resolve();
-    } catch (err) {
-      const message = `Unable to update namespace quota`;
-      logger.error(`${message}, err = ${err.message}`);
+    await Promise.all(promises);
 
-      throw errorWithCode(message, 500);
+    // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
+    // be used for emailing.
+    logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
+    await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
+    logger.info(`CHES message sent for ${profile.id}`);
+    return;
+  } catch (err) {
+    const message = `Unable to update namespace status`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+const updateNamespacesEdit = async (profile: ProjectProfile): Promise<void> => {
+  const { RequestModel } = dm;
+
+  try {
+    if (!profile.id) {
+      throw new Error();
     }
-  });
+    const requests = await RequestModel.findForProfile(profile.id);
+
+    if (requests.length === 0) {
+      return;
+    }
+
+    const request = requests[0];
+    if (request.editType === RequestEditType.Namespaces) {
+      await processNamespacesEditType(request);
+      await RequestModel.delete(Number(request.id));
+      return;
+    }
+  } catch (err) {
+    const message = `Unable to update namespace quota`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};

@@ -31,7 +31,7 @@ export const projectSetNames = [
 export const quotaSizeNames = [
   'small',
   'medium',
-  'large'
+  'large',
 ];
 
 export const DEFAULT_QUOTA_SIZE_NAME = quotaSizeNames[0];
@@ -39,11 +39,15 @@ export const DEFAULT_QUOTA_SIZE_NAME = quotaSizeNames[0];
 export const FULFILLMENT_CONTEXT = {
   ACTIONS: {
     CREATE: 'create',
-    EDIT: 'edit'
+    EDIT: 'edit',
   },
   TYPES: {
-    STANDARD: 'standard'
-  }
+    STANDARD: 'standard',
+  },
+};
+
+export const REQUEST_EDIT_TYPE = {
+  QUOTAS: 'namespaces:quotas',
 };
 
 export const ROLE_IDS = {

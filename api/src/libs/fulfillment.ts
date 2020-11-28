@@ -22,7 +22,6 @@ import { FULFILLMENT_CONTEXT, ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
-import { Request } from '../db/model/request';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
@@ -113,20 +112,25 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
     }
   });
 
+type RequestEditType
+  = 'technicalContact'
+  | 'productOwner'
+  | 'namespaces'
 
-export const fulfillNamespaceQuotaEdit = async (profileId: number, clusterNamespaceIds: number[], requestJson: any) =>
+interface NatsObject {
+  natsSubject: string,
+  natsContext: any,
+}
+
+export const fulfillNamespaceEdit = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
   new Promise(async (resolve, reject) => {
-
     try {
-      const dm = new DataManager(shared.pgPool);
-      const { RequestModel } = dm;
       const nc = shared.nats;
-
       const subject = config.get('nats:subject');
 
       const context = await contextForProvisioning(profileId);
       context.action = FULFILLMENT_CONTEXT.ACTIONS.EDIT;
-      context.namespaces = requestJson;
+      context[requestType] = requestEditObject;
 
       if (!context) {
         const errmsg = `No context for ${profileId}`;
@@ -138,30 +142,23 @@ export const fulfillNamespaceQuotaEdit = async (profileId: number, clusterNamesp
         reject(new Error(errmsg));
       });
 
-      logger.info(`Sending NATS quota-edit message for ${profileId}`);
+      logger.info(`Sending NATS message to edit ${requestType} under profileID ${profileId}`);
       nc.publish(subject, context);
-      logger.info(`NATS quota-edit Message sent for ${profileId}`);
+      logger.info(`NATS Message sent for ${profileId}`);
 
       nc.flush(() => {
         nc.removeAllListeners(['error']);
       });
 
-      // TODO:(yf) writing requests to our db should not block
-      // from this promise being resolved
-      const promises: Promise<Request>[] = [];
-      clusterNamespaceIds.forEach(cnId => {
-        promises.push(
-          RequestModel.create({
-            clusterNamespaceId: cnId,
-            natsSubject: subject,
-            natsContext: JSON.stringify(context),
-          })
-        );
+      // logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
+      // await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+      // logger.info(`CHES message sent for ${profileId}`);
+      resolve({
+        natsSubject: subject,
+        natsContext: context,
       });
-
-      resolve();
     } catch (err) {
-      const message = `Unable to provision namespaces quota edit`;
+      const message = `Unable to update namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
