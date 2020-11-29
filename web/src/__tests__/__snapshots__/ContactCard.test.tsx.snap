@@ -32,6 +32,9 @@ exports[`matches the snapshot 1`] = `
       >
         jane@example.com
       </p>
+      <p
+        class="css-1guafq4"
+      />
     </div>
     <div
       class="css-19crk1j"
@@ -60,6 +63,9 @@ exports[`matches the snapshot 1`] = `
       >
         jim@example.com
       </p>
+      <p
+        class="css-1guafq4"
+      />
     </div>
   </div>
 </div>
