@@ -15,7 +15,6 @@
 //
 
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-final-form';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import ContactCard from '../components/ContactCard';
@@ -46,16 +45,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
     const [profileJson, setProfileJson] = useState<any>({});
     const [contactJson, setContactJson] = useState<any>({});
-
-    // @ts-ignore
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-    // @ts-ignore
-    const onSubmit = async values => {
-        await sleep(300)
-    // @ts-ignore
-        window.alert(JSON.stringify(values, 0, 2))
-      }
+    const [ministry, setMinistry] = useState<any>([]);
 
     useEffect(() => {
         async function wrap() {
@@ -63,12 +53,15 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
             try {
                 const profileDetails = await api.getProfileByProfileId(profileId);
                 const ministryDetails = await api.getMinistry();
+                setMinistry(ministryDetails.data);
+
                 profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data)};
                 setProfileJson(profileDetails.data);
 
                 const contactDetails = await api.getContactsByProfileId(profileId);
                 contactDetails.data = { ...getProfileContacts(contactDetails.data) };
                 setContactJson(contactDetails.data);
+                console.log(contactDetails.data)
 
             } catch (err) {
                 if (err.response && err.response.status && err.response.status === RESPONSE_STATUS_CODE.UNAUTHORIZED) {
@@ -122,12 +115,9 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                             <Text as="h3" color={theme.colors.contrast} mx={2} >
                                 Contact Information
                             </Text>
-                            <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
-                                <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
-                            </RouterLink>
                         </Flex>
                         <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
-                            <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} />
+                            <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} POGithubId={contactJson.POGithubId} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} TCGithubId={contactJson.TCGithubId} />
                         </ShadowBox> 
                     </Box>
                     <Box>
@@ -159,30 +149,13 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                         </Text>
                 </Flex>
                 <ShadowBox p={3}>
-                <Form
-                    onSubmit={onSubmit}
-                    validate={values => {
-                        const errors = {};
-                        return errors;
-                    }}
-                >
-                        {props => (
-                            <form onSubmit={props.handleSubmit} >
-                                <Flex flexWrap='wrap' m={3}>
-                                    <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
-                                        {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject/>}
-                                        {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact/>}
-                                        {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
-                                        ------------
-                                        <br />
-                                        cancel button
-                                        submit button
-                                    </ShadowBox>
-                                </Flex>
-                            </form>
-                        )}
-                    </Form >
-
+                    <Flex flexWrap='wrap' m={3}>
+                        <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
+                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject/>}
+                            {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact/>}
+                            {(viewName === PROFILE_VIEW_NAMES.QUOTA) && <ProfileEditableQuota />}
+                        </ShadowBox>
+                    </Flex>
                 </ShadowBox>
             </>
         );
