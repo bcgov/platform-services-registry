@@ -45,7 +45,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
     const [profileJson, setProfileJson] = useState<any>({});
     const [contactJson, setContactJson] = useState<any>({});
-    const [ministry, setMinistry] = useState<any>([]);
 
     useEffect(() => {
         async function wrap() {
@@ -53,7 +52,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
             try {
                 const profileDetails = await api.getProfileByProfileId(profileId);
                 const ministryDetails = await api.getMinistry();
-                setMinistry(ministryDetails.data);
 
                 profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data)};
                 setProfileJson(profileDetails.data);
