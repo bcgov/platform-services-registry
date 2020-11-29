@@ -21,12 +21,14 @@ import theme from '../theme';
 interface IContactCardProps {
   POName?: string;
   POEmail?: string;
+  POGithubId?: string;
   TCName?: string;
   TCEmail?: string;
+  TCGithubId?: string;
 };
 
 const ContactCard: React.FC<IContactCardProps> = (props) => {
-  const { POName = '', POEmail = '', TCName = '', TCEmail = '' } = props;
+  const { POName = '', POEmail = '', POGithubId = '', TCName = '', TCEmail = '', TCGithubId = '' } = props;
 
   return (
     <Flex flexWrap='wrap'>
@@ -45,6 +47,9 @@ const ContactCard: React.FC<IContactCardProps> = (props) => {
             <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 {POEmail}
             </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                {POGithubId}
+            </Text>
         </Box>
         <Box width={1/2} px={2} mt={3}>
             <Text as="h3">
@@ -60,6 +65,9 @@ const ContactCard: React.FC<IContactCardProps> = (props) => {
             </Text>
             <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                 {TCEmail}
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                {TCGithubId}
             </Text>
         </Box>
     </Flex>
