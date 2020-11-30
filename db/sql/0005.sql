@@ -1,13 +1,5 @@
 BEGIN TRANSACTION;
 
-CREATE OR REPLACE FUNCTION update_changetimestamp_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = CURRENT_TIMESTAMP(3); 
-  RETURN NEW;
-END;
-$$ language 'plpgsql';
-
 ALTER TABLE cluster_namespace 
 ADD COLUMN IF NOT EXISTS quota_cpu VARCHAR(8),
 ADD COLUMN IF NOT EXISTS quota_memory VARCHAR(8),
