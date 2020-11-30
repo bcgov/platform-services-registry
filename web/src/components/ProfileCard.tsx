@@ -17,7 +17,7 @@
 import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import NewlineText from '../components/UI/newLineText';
-import PendingLable from '../components/UI/pendingLabel';
+import PendingLabel from '../components/UI/pendingLabel';
 import theme from '../theme';
 
 interface IProfileCardProps {
@@ -51,7 +51,7 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
             </Text>
           </Box>
           <Box width={1 / 3} style={{ position: 'relative' }}>
-            <PendingLable style={{ position: 'absolute', right: 0 }} />
+            <PendingLabel style={{ position: 'absolute', right: 0 }} />
           </Box>
         </Flex>
       ) : (

@@ -24,15 +24,16 @@ interface IAppRouteProps extends RouteProps {
   component: React.ComponentType<any>;
   layout: React.ComponentType<any>;
   layoutName: LayoutSet;
+  checkQueryParams?: (props: any) => boolean;
 };
 
 const AppRoute: React.FC<IAppRouteProps> = (props) => {
-  let { component: Component, layout: Layout, layoutName, ...rest } = props;
+  let { component: Component, layout: Layout, layoutName, checkQueryParams, ...rest } = props;
 
   const usePrivateRoute: boolean = (layoutName === LAYOUT_SET_AUTH);
 
   if (usePrivateRoute) {
-    return <PrivateRoute component={Component} layout={Layout} />;
+    return <PrivateRoute component={Component} layout={Layout} {...rest} checkQueryParams={checkQueryParams} />;
   } else {
     return (
       <Route

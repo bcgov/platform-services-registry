@@ -17,15 +17,15 @@
 import { render, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
-import { Router } from 'react-router-dom';
-import Dashboard from '../views/Dashboard';
+import { Route, Router } from 'react-router-dom';
+import ProfileEdit from '../views/ProfileEditable';
 
 const browserHistory = createBrowserHistory();
 
 // TODO: use fixtures and make them work with jest mock values
 jest.mock('../utils/useRegistryApi', () => {
   return function useRegistryApi() {
-    const getProfile = jest.fn().mockResolvedValue({
+    const getProfileByProfileId = jest.fn().mockResolvedValue({
       data: [
         {
           'id': 1,
@@ -37,17 +37,17 @@ jest.mock('../utils/useRegistryApi', () => {
           'createdAt': '2020-04-28T00:00:00.000Z',
           'updatedAt': '2020-04-28T00:00:00.000Z',
           'userId': 4
-        },
+        }
+      ]
+    });
+
+    const getMinistry = jest.fn().mockResolvedValue({
+      data: [
         {
-          'id': 2,
-          'name': 'EPIC',
-          'busOrgId': 'CITZ',
-          'description': 'Hello World',
-          'prioritySystem': false,
-          'criticalSystem': true,
+          'id': 'CITZ',
+          'name': 'Citizen\'s Services',
           'createdAt': '2020-04-28T00:00:00.000Z',
-          'updatedAt': '2020-04-28T00:00:00.000Z',
-          'userId': 4
+          'updatedAt': '2020-04-28T00:00:00.000Z'
         }
       ]
     });
@@ -79,66 +79,69 @@ jest.mock('../utils/useRegistryApi', () => {
       ]
     });
 
-    const getNamespaceByProfileId = jest.fn().mockResolvedValue({
-      data: [
-        {
-          "namespaceId": 149,
-          "name": "4ea35c-tools",
-          "clusters": [
-            {
-              "clusterId": 1,
-              "name": "kam",
-              "provisioned": true
-            }
-          ]
-        },
-        {
-          "namespaceId": 151,
-          "name": "4ea35c-test",
-          "clusters": [
-            {
-              "clusterId": 1,
-              "name": "kam",
-              "provisioned": true
-            }
-          ]
-        },
-        {
-          "namespaceId": 150,
-          "name": "4ea35c-dev",
-          "clusters": [
-            {
-              "clusterId": 1,
-              "name": "kam",
-              "provisioned": true
-            }
-          ]
-        },
-        {
-          "namespaceId": 152,
-          "name": "4ea35c-prod",
-          "clusters": [
-            {
-              "clusterId": 1,
-              "name": "kam",
-              "provisioned": true
-            }
-          ]
-        }
-      ]
-    });
+    
 
-    return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
+    return { getProfileByProfileId, getMinistry, getContactsByProfileId };
   }
 });
 
-function renderDashboard() {
+jest.mock('../utils/transformDataHelper', () => {
+  return function getProfileMinistry() {
+    const getProfileMinistry = jest.fn().mockResolvedValue({
+      data: [
+        {
+          'name': 'Citizen\'s Services'
+        }
+      ]
+    });
+    return { getProfileMinistry }
+  };
+});
+
+jest.mock('../utils/transformDataHelper', () => {
+  return function getProfileContacts() {
+  const getProfileContacts = jest.fn().mockResolvedValue({
+    data: [
+      {
+        'id': 233,
+        'firstName': 'Jane',
+        'lastName': 'Doe',
+        'email': 'jane@example.com',
+        'githubId': 'jane1100',
+        'roleId': 1,
+        'archived': false,
+        'createdAt': '2020-09-10T18:14:13.436Z',
+        'updatedAt': '2020-09-10T18:14:13.436Z',
+        'name': 'Jane Doe'
+      },
+      {
+        'id': 234,
+        'firstName': 'Jim',
+        'lastName': 'Doe',
+        'email': 'jim@example.com',
+        'githubId': 'jim1100',
+        'roleId': 2,
+        'archived': false,
+        'createdAt': '2020-09-10T18:14:13.436Z',
+        'updatedAt': '2020-09-10T18:14:13.436Z',
+        'name': 'Jim Doe'
+      }
+    ]
+  });
+  return { getProfileContacts }
+}
+});
+
+
+function renderProfileEdit() {
   const stubOpenBackdropCB = jest.fn();
   const stubCloseBackdropCB = jest.fn();
 
   const utils = render(
     <Router history={browserHistory} >
-      <Dashboard openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+      <Route path='/profile/1/overview'>
+        <ProfileEdit openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+      </Route>
     </Router>
   );
 
@@ -146,7 +149,7 @@ function renderDashboard() {
 }
 
 test('matches the snapshot', async () => {
-  const { container } = renderDashboard();
+  const { container } = renderProfileEdit();
 
   await waitFor(() => expect(container).toMatchSnapshot());
 });
