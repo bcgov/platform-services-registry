@@ -17,7 +17,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { contextForProvisioning, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
+import { contextForProvisioning, fulfillNamespaceEdit, fulfillNamespaceProvisioning, RequestEditType } from '../src/libs/fulfillment';
 
 const p1 = path.join(__dirname, 'fixtures/select-profile.json');
 const profile = JSON.parse(fs.readFileSync(p1, 'utf8'));
@@ -82,5 +82,38 @@ describe('Services', () => {
     client.query.mockReturnValueOnce({ rows: namespaces });
 
     await expect(fulfillNamespaceProvisioning(12345)).rejects.toThrow();
+  });
+
+  const requestEditObject = [
+    {
+      namespaceId: 177,
+      name: 'e3d89a-tools',
+      cluster: [],
+    },
+    {
+      namespaceId: 178,
+      name: 'e3d89a-dev',
+      cluster: [],
+    },
+    {
+      namespaceId: 179,
+      name: 'e3d89a-test',
+      cluster: [],
+    },
+    {
+      namespaceId: 180,
+      name: 'e3d89a-prod',
+      cluster: [],
+    },
+  ];
+  const requestEditType = RequestEditType.Namespaces;
+
+  it('Provisioned namespaces updating succeeds', async () => {
+
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: namespaces });
+
+    await expect(fulfillNamespaceEdit(12345, requestEditType, requestEditObject)).resolves.toBeDefined();
   });
 });

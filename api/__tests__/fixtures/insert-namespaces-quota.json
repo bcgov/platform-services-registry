@@ -1,0 +1,30 @@
+[
+    {
+        "namespaceId": 149,
+        "clusterId": 1,
+        "quotaCpu": "medium",
+        "quotaMemory": "medium",
+        "quotaStorage": "medium"
+    },
+    {
+        "namespaceId": 150,
+        "clusterId": 1,
+        "quotaCpu": "medium",
+        "quotaMemory": "medium",
+        "quotaStorage": "medium"
+    },
+    {
+        "namespaceId": 151,
+        "clusterId": 1,
+        "quotaCpu": "medium",
+        "quotaMemory": "medium",
+        "quotaStorage": "medium"
+    },
+    {
+        "namespaceId": 152,
+        "clusterId": 1,
+        "quotaCpu": "medium",
+        "quotaMemory": "medium",
+        "quotaStorage": "medium"
+    }
+]

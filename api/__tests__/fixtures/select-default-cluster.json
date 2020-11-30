@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "name": "kam",
+    "description": "Kamloop cluster",
+    "disasterRecovery": false,
+    "onPrem": true,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "updatedAt": "2020-09-10T18:14:13.304Z",
+    "archived": false,
+    "isDefault": true
+  }
+]

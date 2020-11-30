@@ -21,9 +21,13 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
+import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
+import { ProjectProfile } from '../db/model/profile';
+import { fulfillNamespaceProvisioning, RequestEditType } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
+import { getDefaultCluster, processNamespacesEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
+
 
 const dm = new DataManager(shared.pgPool);
 
@@ -59,29 +63,60 @@ export const provisionProfileNamespaces = async (
   }
 };
 
-export const updateProvisionedNamespaces = async (
+export const provisionCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { NamespaceModel, ProfileModel } = dm;
   const { prefix } = body;
   try {
-
     const profile = await ProfileModel.findByPrefix(prefix);
     if (!profile) {
-      throw new Error();
+      throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
-
     const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
     if (!namespaces) {
-      throw new Error();
+      throw new Error(`Cant find any namespaces for the given prefix ${prefix}`);
     }
 
+    const defaultCluster = await getDefaultCluster();
+    const promises: Promise<ClusterNamespace>[] = [];
+    namespaces.forEach(namespace => {
+      // @ts-ignore
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, defaultCluster.id));
+    });
+    const clusterNamespaces = await Promise.all(promises);
+
+    const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
+      return clusterNamespace.provisioned;
+    });
+    if (flags.every(f => f === true)) {
+      await updateNamespacesEdit(profile);
+      res.status(202).end();
+    } else if (flags.every(f => f === false)) {
+      await updateProvisionedNamespaces(namespaces, profile);
+      res.status(202).end();
+    } else {
+      throw new Error(`Need to fix project namespace set under profile ID ${profile.id}`);
+    }
+  } catch (err) {
+    const message = `Unable to update namespace status`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+const updateProvisionedNamespaces = async (namespaces: ProjectNamespace[], profile: ProjectProfile): Promise<void> => {
+  const { NamespaceModel } = dm;
+
+  try {
     const provisioned = true;
     const promises: any = [];
 
     namespaces.forEach(namespace => {
       // @ts-ignore
       const { namespaceId, clusters } = namespace;
+      // @ts-ignore
       clusters.forEach(cluster => {
         // @ts-ignore
         const { clusterId } = cluster;
@@ -96,10 +131,36 @@ export const updateProvisionedNamespaces = async (
     logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
     await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
     logger.info(`CHES message sent for ${profile.id}`);
-
-    res.status(202).end();
+    return;
   } catch (err) {
     const message = `Unable to update namespace status`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+const updateNamespacesEdit = async (profile: ProjectProfile): Promise<void> => {
+  const { RequestModel } = dm;
+
+  try {
+    if (!profile.id) {
+      throw new Error('Cant read the given profileId');
+    }
+    const requests = await RequestModel.findForProfile(profile.id);
+
+    if (requests.length === 0) {
+      return;
+    }
+
+    const request = requests[0];
+    if (request.editType === RequestEditType.Namespaces) {
+      await processNamespacesEditType(request);
+      await RequestModel.delete(Number(request.id));
+      return;
+    }
+  } catch (err) {
+    const message = `Unable to update namespace quota`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

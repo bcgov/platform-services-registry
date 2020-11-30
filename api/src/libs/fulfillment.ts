@@ -18,7 +18,7 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import config from '../config';
-import { ROLE_IDS } from '../constants';
+import { FULFILLMENT_CONTEXT, ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -46,6 +46,8 @@ export const contextForProvisioning = async (profileId: number): Promise<any> =>
     }
 
     const context = {
+      action: FULFILLMENT_CONTEXT.ACTIONS.CREATE,
+      type: FULFILLMENT_CONTEXT.TYPES.STANDARD,
       profileId: profile.id,
       displayName: profile.name,
       description: profile.description,
@@ -104,6 +106,61 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
       resolve();
     } catch (err) {
       const message = `Unable to provision namespaces for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  });
+
+export const enum RequestEditType {
+  ProductOwner = 'productOwner',
+  TechnicalContact = 'technicalContact',
+  Namespaces = 'namespaces',
+};
+
+interface NatsObject {
+  natsSubject: string,
+  natsContext: any,
+}
+
+export const fulfillNamespaceEdit = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const nc = shared.nats;
+      const subject = config.get('nats:subject');
+
+      const context = await contextForProvisioning(profileId);
+
+      if (!context) {
+        const errmsg = `No context for ${profileId}`;
+        reject(new Error(errmsg));
+      }
+
+      context.action = FULFILLMENT_CONTEXT.ACTIONS.EDIT;
+      context[requestType] = requestEditObject;
+
+      nc.on('error', () => {
+        const errmsg = `NATS error sending order ${profileId} to ${subject}`;
+        reject(new Error(errmsg));
+      });
+
+      logger.info(`Sending NATS message to edit ${requestType} under profileID ${profileId}`);
+      nc.publish(subject, context);
+      logger.info(`NATS Message sent for ${profileId}`);
+
+      nc.flush(() => {
+        nc.removeAllListeners(['error']);
+      });
+
+      // logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
+      // await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+      // logger.info(`CHES message sent for ${profileId}`);
+      resolve({
+        natsSubject: subject,
+        natsContext: context,
+      });
+    } catch (err) {
+      const message = `Unable to update namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
