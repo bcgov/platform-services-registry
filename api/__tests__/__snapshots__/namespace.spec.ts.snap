@@ -261,3 +261,307 @@ Array [
   ],
 ]
 `;
+
+exports[`Namespace event handlers Namespace set Quota edit should throw 1`] = `"Unable to fetch quota options"`;
+
+exports[`Namespace event handlers Namespace set Quota edit should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT namespace.id AS \\"namespaceId\\", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned,
+              (
+                SELECT row_to_json(d)
+                from (
+                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+                  WHERE namespace.id = cluster_namespace.namespace_id
+                ) d
+              ) AS quotas
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
+      ",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers Namespace set quota options are fetched for a given project profile 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT namespace.id AS \\"namespaceId\\", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned,
+              (
+                SELECT row_to_json(d)
+                from (
+                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+                  WHERE namespace.id = cluster_namespace.namespace_id
+                ) d
+              ) AS quotas
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
+      ",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM ref_cluster
+        WHERE archived = false;
+      ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2;",
+      "values": Array [
+        149,
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2;",
+      "values": Array [
+        151,
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2;",
+      "values": Array [
+        150,
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2;",
+      "values": Array [
+        152,
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        149,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        150,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        151,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM namespace
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        152,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT * FROM request
+                    WHERE profile_id = 4 AND archived = false;
+            ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT * FROM request
+                    WHERE profile_id = 4 AND archived = false;
+            ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT * FROM request
+                    WHERE profile_id = 4 AND archived = false;
+            ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT * FROM request
+                    WHERE profile_id = 4 AND archived = false;
+            ",
+    },
+  ],
+]
+`;
+
+exports[`Namespace event handlers Namespace set quota options are fetched for a given project profile 2`] = `200`;
+
+exports[`Namespace event handlers Namespace set quota options are fetched for a given project profile 3`] = `
+Array [
+  Object {
+    "clusterId": 1,
+    "namespaceId": 149,
+    "quotaCpu": Array [
+      "small",
+      "medium",
+    ],
+    "quotaMemory": Array [
+      "small",
+      "medium",
+    ],
+    "quotaStorage": Array [
+      "small",
+      "medium",
+    ],
+  },
+  Object {
+    "clusterId": 1,
+    "namespaceId": 150,
+    "quotaCpu": Array [
+      "small",
+      "medium",
+    ],
+    "quotaMemory": Array [
+      "small",
+      "medium",
+    ],
+    "quotaStorage": Array [
+      "small",
+      "medium",
+    ],
+  },
+  Object {
+    "clusterId": 1,
+    "namespaceId": 151,
+    "quotaCpu": Array [
+      "small",
+      "medium",
+    ],
+    "quotaMemory": Array [
+      "small",
+      "medium",
+    ],
+    "quotaStorage": Array [
+      "small",
+      "medium",
+    ],
+  },
+  Object {
+    "clusterId": 1,
+    "namespaceId": 152,
+    "quotaCpu": Array [
+      "small",
+      "medium",
+    ],
+    "quotaMemory": Array [
+      "small",
+      "medium",
+    ],
+    "quotaStorage": Array [
+      "small",
+      "medium",
+    ],
+  },
+]
+`;
+
+exports[`Namespace event handlers Namespace set quota options should throw 1`] = `"Unable to fetch quota options"`;
+
+exports[`Namespace event handlers Namespace set quota options should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT namespace.id AS \\"namespaceId\\", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned,
+              (
+                SELECT row_to_json(d)
+                from (
+                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+                  WHERE namespace.id = cluster_namespace.namespace_id
+                ) d
+              ) AS quotas
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
+      ",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+]
+`;

@@ -6,7 +6,12 @@
       {
         "clusterId": 1,
         "name": "kam",
-        "provisioned": false
+        "provisioned": false,
+        "quotas": {
+          "cpu": "small",
+          "memory": "small",
+          "storage": "small"
+        }
       }
     ]
   },
@@ -17,7 +22,12 @@
       {
         "clusterId": 1,
         "name": "kam",
-        "provisioned": false
+        "provisioned": false,
+        "quotas": {
+          "cpu": "small",
+          "memory": "small",
+          "storage": "small"
+        }
       }
     ]
   },
@@ -28,7 +38,12 @@
       {
         "clusterId": 1,
         "name": "kam",
-        "provisioned": false
+        "provisioned": false,
+        "quotas": {
+          "cpu": "small",
+          "memory": "small",
+          "storage": "small"
+        }
       }
     ]
   },
@@ -39,7 +54,12 @@
       {
         "clusterId": 1,
         "name": "kam",
-        "provisioned": false
+        "provisioned": false,
+        "quotas": {
+          "cpu": "small",
+          "memory": "small",
+          "storage": "small"
+        }
       }
     ]
   }
