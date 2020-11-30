@@ -130,13 +130,14 @@ export const fulfillNamespaceEdit = async (profileId: number, requestType: Reque
       const subject = config.get('nats:subject');
 
       const context = await contextForProvisioning(profileId);
-      context.action = FULFILLMENT_CONTEXT.ACTIONS.EDIT;
-      context[requestType] = requestEditObject;
 
       if (!context) {
         const errmsg = `No context for ${profileId}`;
         reject(new Error(errmsg));
       }
+
+      context.action = FULFILLMENT_CONTEXT.ACTIONS.EDIT;
+      context[requestType] = requestEditObject;
 
       nc.on('error', () => {
         const errmsg = `NATS error sending order ${profileId} to ${subject}`;
