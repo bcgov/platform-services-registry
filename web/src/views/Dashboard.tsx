@@ -19,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
-import Button from '../components/UI/button';
+import { Button } from '../components/UI/button';
 import { ShadowBox } from '../components/UI/shadowContainer';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import theme from '../theme';
@@ -136,20 +136,19 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
       }}>
         {(profile.length > 0) && profile.map((s: any) => (
-            <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-              <RouterLink 
-              to={{pathname: `/profile/${s.id}/overview`}}
+          <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+            <RouterLink
+              to={{ pathname: `/profile/${s.id}/overview` }}
               style={{ color: theme.colors.black, textDecoration: 'none' }}
-              >
-                {!s.provisioned && <StyledBackdrop />}
-                <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
-              </RouterLink>
-            </ShadowBox>
+            >
+              {!s.provisioned && <StyledBackdrop />}
+              <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
+            </RouterLink>
+          </ShadowBox>
         ))}
       </Box>
     </>
   );
 };
-
 
 export default Dashboard;
