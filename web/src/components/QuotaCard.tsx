@@ -18,88 +18,94 @@ import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import theme from '../theme';
 
-const QuotaCard: React.FC<any> = () => {
-    //TODO: Update from boiler plate
-  return (
-    <Flex flexWrap='wrap'>
-        <Box width={1/2} px={2} mt={3}>
-            <Text as="h3">
-                Production Namespace
+interface IQuotaCardProps {
+    licensePlate: string;
+    quotaSize: string
+};
+
+const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
+    const { licensePlate, quotaSize } = props;
+
+    return (
+        <Flex flexWrap='wrap'>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="h3">
+                    Production Namespace
             </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit;
+                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                    {`${licensePlate}-prod namespace in Silver cluster`}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    CPU: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Memory: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Storage: {quotaSize}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="h3">
+                    Test Namespace
             </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                CPU: Small
+                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                    {`${licensePlate}-test namespace in Silver cluster`}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    CPU: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Memory: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Storage: {quotaSize}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="h3">
+                    Development Namespace
             </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Memory: Small
-            </Text> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Storage: Small
+                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                    {`${licensePlate}-dev namespace in Silver cluster`}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    CPU: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Memory: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Storage: {quotaSize}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="h3">
+                    Tools Namespace
             </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}>
-            <Text as="h3">
-                Test Namespace
-            </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit;
-            </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                CPU: Small
-            </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Memory: Small
-            </Text> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Storage: Small
-            </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}>
-            <Text as="h3">
-                Development Namespace
-            </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit;
-            </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                CPU: Small
-            </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Memory: Small
-            </Text> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Storage: Small
-            </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}>
-            <Text as="h3">
-                Tools Namespace
-            </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit;
-            </Text>
-        </Box>
-        <Box width={1/2} px={2} mt={3}> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                CPU: Small
-            </Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Memory: Small
-            </Text> 
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Storage: Small
-            </Text>
-        </Box>
-    </Flex>
-  );
+                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                    {`${licensePlate}-tools namespace in Silver cluster`}
+                </Text>
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    CPU: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Memory: {quotaSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                    Storage: {quotaSize}
+                </Text>
+            </Box>
+        </Flex>
+    );
 };
 
 export default QuotaCard;
