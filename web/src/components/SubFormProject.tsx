@@ -65,14 +65,12 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                             name="project-prioritySystem"
                             component="input"
                             type="checkbox"
-                            value="yes"
                         >
                             {({ input }) => (
                                 <input
                                     style={{ width: '35px', height: '35px' }}
                                     name={input.name}
                                     type="checkbox"
-                                    value="yes"
                                     checked={input.checked}
                                     onChange={input.onChange}
                                 />
@@ -115,14 +113,12 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                                 name={`project-${item.inputValue}`}
                                 component="input"
                                 type="checkbox"
-                                value="yes"
                             >
                                 {({ input }) => (
                                     <input
                                         style={{ width: "35px", height: "35px" }}
                                         name={input.name}
                                         type="checkbox"
-                                        value="yes"
                                         checked={input.checked}
                                         onChange={input.onChange}
                                     />
