@@ -47,6 +47,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
     const [profileJson, setProfileJson] = useState<any>({});
     const [contactJson, setContactJson] = useState<any>({});
+    const [ministry, setMinistry] = useState<any>([]);
 
     const [namespacesJson, setNamespacesJson] = useState<Namespace[]>([]);
     const [quotaSize, setQuotaSize] = useState<QuotaSizeSet | ''>('');
@@ -65,6 +66,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
             try {
                 const profileDetails = await api.getProfileByProfileId(profileId);
                 const ministryDetails = await api.getMinistry();
+                setMinistry(ministryDetails.data);
 
                 profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data) };
                 setProfileJson(profileDetails.data);
@@ -72,7 +74,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 const contactDetails = await api.getContactsByProfileId(profileId);
                 contactDetails.data = { ...getProfileContacts(contactDetails.data) };
                 setContactJson(contactDetails.data);
-                console.log(contactDetails.data)
 
                 const namespaces = await api.getNamespacesByProfileId(profileId);
                 const cnQuotaOptions = await api.getCNQuotaOptionsByProfileId(profileId);
@@ -183,7 +184,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 <ShadowBox p={3}>
                     <Flex flexWrap='wrap' m={3}>
                         <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
-                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject />}
+                            {/* @ts-ignore */}
+                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject profileDetails={profileJson} ministry={ministry} openBackdropCB={openBackdropCB} closeBackdropCB={closeBackdropCB} />}
                             {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact />}
                             {(viewName === PROFILE_VIEW_NAMES.QUOTA) &&
                                 <ProfileEditableQuota
