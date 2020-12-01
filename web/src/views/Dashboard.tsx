@@ -14,30 +14,19 @@
 // limitations under the License.
 //
 
-import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
 import ProfileCard from '../components/ProfileCard';
 import { Button } from '../components/UI/button';
 import { ShadowBox } from '../components/UI/shadowContainer';
+import StyledBackdrop from '../components/UI/styledBackdrop';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
 import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
-
-const StyledBackdrop = styled.div`
-  position:absolute;
-  z-index: ${theme.zIndices[0]};
-  top:0px;
-  left:0px;
-  width:100%;
-  height:100%;
-  background-color: white;
-  opacity: 0.5;
-`;
 
 interface IDashboardProps {
   openBackdropCB: () => void;
