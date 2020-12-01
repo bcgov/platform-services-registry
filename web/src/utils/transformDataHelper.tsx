@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { COMPONENT_METADATA, ROLES } from '../constants';
+import { ROLES } from '../constants';
 
 export function transformForm(data: any) {
   const profile: any = {};
@@ -38,24 +38,6 @@ export function transformForm(data: any) {
       technicalContact[fieldName] = value;
     }
   }
-
-  if (typeof profile.prioritySystem !== 'undefined') {
-    const value = profile.prioritySystem.pop();
-    profile.prioritySystem = value === 'yes' ? true : false;
-  } else {
-    profile.prioritySystem = false;
-  }
-
-  COMPONENT_METADATA.forEach(item => {
-    const checkboxValue: string = item.inputValue;
-
-    if (typeof profile[checkboxValue] !== 'undefined') {
-      const value = profile[checkboxValue].pop();
-      profile[checkboxValue] = value === 'yes' ? true : false;
-    } else {
-      profile[checkboxValue] = false;
-    }
-  });
 
   return {
     profile,
