@@ -1,11 +1,11 @@
 {
   "sso": {
     "grantType": "client_credentials",
-    "clientId": "signing-api",
+    "clientId": "registry-api-dev",
     "callback": "/v1/auth/callback",
-    "authUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/auth",
-    "tokenUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
-    "certsUrl": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
+    "authUrl": "https://dev.oidc.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/auth",
+    "tokenUrl": "https://dev.oidc.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
+    "certsUrl": "https://dev.oidc.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/certs"
   },
   "ches": {
     "ssoGrantType": "client_credentials"
