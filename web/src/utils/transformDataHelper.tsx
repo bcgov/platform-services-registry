@@ -15,6 +15,7 @@
 //
 
 import { ROLES } from '../constants';
+import { CNQuotaOptions, CNQuotas, Namespace, QuotaSizeSet } from '../types';
 
 export function transformForm(data: any) {
   const profile: any = {};
@@ -143,3 +144,56 @@ export function getProfileMinistry(ministrySet: any[], profileDetails: any): obj
   });
   return ministryDetails;
 }
+
+// the following logics need to be changed when we no longer bundle all quota requests in one
+export function getCurrentQuotaSize(namespaces: Namespace[]): QuotaSizeSet | Error {
+  try {
+    return namespaces[0].clusters[0].quotas.cpu;
+  } catch (err) {
+    const msg = 'Unable to get current quota size given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+export function getLicensePlate(namespaces: Namespace[]): string | Error {
+  try {
+    return namespaces[0].name.split('-')[0];
+  } catch (err) {
+    const msg = 'Unable to get license plate given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+export function getCurrentQuotaOptions(cnQuotaOptionsList: CNQuotaOptions[], currentQuotaSize: QuotaSizeSet): QuotaSizeSet[] | [] | Error {
+  try {
+    const array: QuotaSizeSet[] = cnQuotaOptionsList[0].quotaCpu;
+    const index = array.indexOf(currentQuotaSize);
+    if (index === -1) {
+      return [];
+    } else {
+      array.splice(index, 1);
+      return array;
+    }
+  } catch (err) {
+    const msg = 'Unable to get current quota options given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+export function composeRequestBodyForQuotaEdit(requestNextSize: QuotaSizeSet, cnQuotaOptionsList: CNQuotaOptions[]): CNQuotas[] | [] | Error {
+  try {
+    return cnQuotaOptionsList.map((cnQuotaOptions: CNQuotaOptions) => {
+      const { namespaceId, clusterId } = cnQuotaOptions;
+      return {
+        namespaceId,
+        clusterId,
+        quotaCpu: requestNextSize,
+        quotaMemory: requestNextSize,
+        quotaStorage: requestNextSize,
+      };
+    });
+  } catch (err) {
+    const msg = 'Unable to compose request body for given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};

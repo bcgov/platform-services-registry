@@ -77,6 +77,18 @@ export default function useRegistryApi() {
     return api.get(`profile/${profileId}`);
   };
 
+  const getNamespacesByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    return api.get(`profile/${profileId}/namespace`);
+  };
+
+  const getCNQuotaOptionsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    return api.get(`profile/${profileId}/quota-edit`);
+  };
+
+  const requestCNQuotasByProfileId = async (profileId: string, requstedQuotas: any): Promise<AxiosResponse<any>> => {
+    return api.post(`profile/${profileId}/quota-edit`, requstedQuotas);
+  };
+
   return {
     getMinistry,
     getProfile,
@@ -87,6 +99,9 @@ export default function useRegistryApi() {
     createNamespaceByProfileId,
     getContactsByProfileId,
     getNamespaceByProfileId,
-    getProfileByProfileId
+    getProfileByProfileId,
+    getNamespacesByProfileId,
+    getCNQuotaOptionsByProfileId,
+    requestCNQuotasByProfileId,
   };
 };

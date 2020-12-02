@@ -79,3 +79,41 @@ export const PROFILE_VIEW_NAMES = {
 export const RESPONSE_STATUS_CODE = {
   UNAUTHORIZED: 401
 };
+
+// Small: ( provisioned by default for new namespaces) Long-running workload quotas:
+// CPU: 4 cores as request, 8 cores as limit
+// RAM: 16GBs as request, 32GBs as limit
+// 20 PVC count , 50Gbs overall storage with 25 GBs for backup storage
+
+// Medium: (needs to be requested and justified)
+// Long-running workload quotas:
+// CPU: 8 cores as request, 16 cores as limit
+// RAM: 32GBs as request, 64GBs as limit
+// Medium: 20 PVC count , 100Gbs overall storage with 50 GBs for backup storage
+
+// Large: (needs to be requested and justified)
+// Long-running workload quotas:
+// CPU: 16 cores as request, 32 cores as limit
+// RAM: 64GBs as request, 128GBs as limit
+// Large: 20 PVC count , 200Gbs overall storage with 100 GBs for backup storage
+
+export const QUOTA_SIZES = [
+  {
+    name: 'small',
+    cpuNums: [4, 8],
+    memoryNums: [16, 32],
+    storageNums: [50, 25],
+  },
+  {
+    name: 'medium',
+    cpuNums: [8, 16],
+    memoryNums: [32, 64],
+    storageNums: [100, 50],
+  },
+  {
+    name: 'large',
+    cpuNums: [16, 32],
+    memoryNums: [64, 128],
+    storageNums: [200, 100],
+  },
+];

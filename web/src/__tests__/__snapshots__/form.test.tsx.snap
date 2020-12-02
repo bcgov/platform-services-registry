@@ -700,9 +700,8 @@ exports[`matches the snapshot 1`] = `
             </div>
           </label>
           <button
-            class="css-12oshc9"
+            class="css-saon7w"
             disabled=""
-            type="submit"
           >
             Request
           </button>
