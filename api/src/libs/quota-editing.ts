@@ -40,6 +40,20 @@ export const getDefaultCluster = async (): Promise<Cluster | undefined> => {
   }
 };
 
+export interface QuotaObject {
+  cpu: string;
+  memory: string;
+  storage: boolean;
+};
+
+export interface NamespaceCN {
+  clusterId: number;
+  namespaceId: number;
+  name: string;
+  provisioned: boolean;
+  quotas: QuotaObject;
+};
+
 export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: ClusterNamespace[], namespaceSet: ProjectNamespace[]): ProjectNamespace[] | undefined => {
   try {
     const merged: ProjectNamespace[] = [];
@@ -58,7 +72,21 @@ export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: Clust
         (cn: ClusterNamespace) => cn.clusterId === requestedClusterNamespace.clusterId
       )
 
-      targetNamespace.clusters[num] = requestedClusterNamespace;
+      // TODO:(yf) refactor below
+      // convert from ClusterNamespace to NamespaceCN
+      const { clusterId, namespaceId, provisioned, quotaCpu, quotaMemory, quotaStorage } = requestedClusterNamespace;
+      targetNamespace.clusters[num] = {
+        clusterId,
+        namespaceId,
+        // @ts-ignore
+        name: 'kam',
+        provisioned,
+        quotas: {
+          cpu: quotaCpu,
+          memory: quotaMemory,
+          storage: quotaStorage,
+        },
+      };
       merged.push(targetNamespace);
     });
     return merged;
@@ -205,8 +233,19 @@ export const processNamespacesEditType = async (request: Request): Promise<void>
       if (!namespace.clusters) {
         throw new Error();
       }
-      const clusterNamespaces: ClusterNamespace[] = namespace.clusters;
-      clusterNamespaces.forEach((cn: ClusterNamespace) => {
+
+      // TODO:(yf) refactor below
+      // convert from NamespaceCN to ClusterNamespace
+      const NamespaceCNs: any[] = namespace.clusters;
+      NamespaceCNs.forEach((namespaceCN: NamespaceCN) => {
+        const { namespaceId, clusterId, quotas: { cpu, memory, storage } } = namespaceCN;
+        const cn = {
+          namespaceId,
+          clusterId,
+          quotaCpu: cpu,
+          quotaMemory: memory,
+          quotaStorage: storage,
+        }
         // @ts-ignore
         updatePromises.push(NamespaceModel.updateClusterNamespaceQuota(namespace.namespaceId, cn.clusterId, cn));
       });
