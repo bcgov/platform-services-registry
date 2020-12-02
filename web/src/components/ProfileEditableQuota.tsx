@@ -111,14 +111,14 @@ const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
                 <select value={selectedSize} onChange={handleChange}>
                     <option>Select...</option>
                     {/* @ts-ignore */}
-                    {/* {(quotaOptions.length > 0 && quotaOptions.length !== 0) && quotaOptions.map((opt: any) => (
+                    {(quotaOptions.length > 0 && quotaOptions.length !== 0) && quotaOptions.map((opt: any) => (
                         <option
                             key={opt}
                             value={opt}
                         >
                             {opt}
                         </option>
-                    ))} */}
+                    ))}
                 </select>
                 {/* @ts-ignore */}
                 {quotaOptions.includes(selectedSize) && quotaOptions.length !== 0 ? (

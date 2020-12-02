@@ -158,9 +158,9 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Quota Information
                                 </Text>
-                                {/* <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/quota`}>
+                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/quota`}>
                                     <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
-                                </RouterLink> */}
+                                </RouterLink>
                             </Flex>
                             <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                                 <QuotaCard licensePlate={licensePlate} quotaSize={quotaSize} />
