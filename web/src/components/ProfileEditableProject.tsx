@@ -13,11 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import styled from '@emotion/styled';
 import { Input, Label, Textarea } from '@rebass/forms';
-import React from 'react';
+import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
+import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
+import { StyledFormButton } from '../components/UI/button';
 import { COMPONENT_METADATA } from '../constants';
 import getValidator from '../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -37,20 +38,12 @@ interface MinistryItem {
     code: string;
 }
 
-const StyledButton = styled.button`
-    margin-top: 20px;
-    width: 50%;
-    height: 60px;
-    border-radius: 5px;
-    background-color: #036;
-    color: #FFFFFF;
-    font-size: 24px;
-`;
-
 const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) => {
     const api = useRegistryApi();
     const validator = getValidator();
     const { profileDetails, ministry, openBackdropCB, closeBackdropCB } = props;
+
+    const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
 
     const onSubmit = async (formData: any) => {
       const { profile } = transformForm(formData);
@@ -59,14 +52,21 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
           // 1. Update the project profile.
           await api.updateProfile(profileDetails.id, profile);
           closeBackdropCB();
+          setGoBackToProfileEditable(true);
+
           // 2. All good? Tell the user.
           promptSuccessToastWithText('Your profile update was successful');
+          window.location.reload()
       } catch (err) {
           closeBackdropCB();
           promptErrToastWithText('Something went wrong');
           console.log(err);
       }
   };
+    if (goBackToProfileEditable) {
+        // TODO:(yh) refactor here so as to use constants
+        return (<Redirect to={`/profile/${profileDetails.id}/overview`} />);
+    }
 
     return (
         <>
@@ -192,7 +192,8 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <StyledButton className="misc-class-m-form-submit-btn" type="submit">Request</StyledButton>
+            {/* @ts-ignore */}
+            <StyledFormButton style={{ display: 'block' }} onClick={onSubmit}>Update Profile</StyledFormButton>
             </form>
           )}
           </Form>

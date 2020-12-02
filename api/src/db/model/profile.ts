@@ -143,7 +143,7 @@ export default class ProfileModel extends Model {
           SET
             name = $1, description = $2, bus_org_id = $3,
             priority_system = $4, notification_email = $5, notification_sms = $6,
-            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9, 
+            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
