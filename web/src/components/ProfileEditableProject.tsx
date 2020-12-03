@@ -93,7 +93,7 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="project-description">Description</Label>
-                        <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
+                        <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} disabled />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
