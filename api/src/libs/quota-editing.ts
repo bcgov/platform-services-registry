@@ -54,7 +54,7 @@ export interface NamespaceCN {
   quotas: QuotaObject;
 };
 
-export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: ClusterNamespace[], namespaceSet: ProjectNamespace[]): ProjectNamespace[] | undefined => {
+export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: ClusterNamespace[], namespaceSet: ProjectNamespace[], defaultClusterName = ''): ProjectNamespace[] | undefined => {
   try {
     const merged: ProjectNamespace[] = [];
     requestedClusterNamespaces.forEach((requestedClusterNamespace: ClusterNamespace) => {
@@ -79,7 +79,7 @@ export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: Clust
         clusterId,
         namespaceId,
         // @ts-ignore
-        name: 'kam',
+        name: defaultClusterName,
         provisioned,
         quotas: {
           cpu: quotaCpu,

@@ -23,7 +23,7 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillNamespaceEdit, RequestEditType } from '../libs/fulfillment';
-import { getClusterNamespaces, getCNQuotaOptions, getNamespaceSet, isQuotaRequestBodyValid, mergeRequestedCNToNamespaceSet, QuotaOptionsObject } from '../libs/quota-editing';
+import { getClusterNamespaces, getCNQuotaOptions, getDefaultCluster, getNamespaceSet, isQuotaRequestBodyValid, mergeRequestedCNToNamespaceSet, QuotaOptionsObject } from '../libs/quota-editing';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
@@ -186,10 +186,13 @@ export const requestProfileQuotaEdit = async (
       throw rv;
     }
 
+    const defaultCluster = await getDefaultCluster();
+    const defaultClusterName = defaultCluster?.name;
+
     // TODO:(yf) add logics here so if the body is exactly the same
     // as current quotas, we save a trip to calling bot
     const editType = RequestEditType.Namespaces;
-    const editObject = mergeRequestedCNToNamespaceSet(body, namespaces);
+    const editObject = mergeRequestedCNToNamespaceSet(body, namespaces, defaultClusterName);
     if (!editObject) {
       throw new Error('Cant generate request edit object');
     }
