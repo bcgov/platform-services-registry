@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { ROLES } from '../constants';
+import { COMPONENT_METADATA, ROLES } from '../constants';
 import { CNQuotaOptions, CNQuotas, Namespace, QuotaSizeSet } from '../types';
 
 export function transformForm(data: any) {
@@ -39,6 +39,22 @@ export function transformForm(data: any) {
       technicalContact[fieldName] = value;
     }
   }
+
+  if (typeof profile.prioritySystem !== 'undefined') {
+    profile.prioritySystem = profile.prioritySystem ? true : false;
+  } else {
+    profile.prioritySystem = false;
+  }
+
+  COMPONENT_METADATA.forEach(item => {
+    const checkboxValue: string = item.inputValue;
+
+    if (typeof profile[checkboxValue] !== 'undefined') {
+      profile[checkboxValue] = profile[checkboxValue] ? true : false;
+    } else {
+      profile[checkboxValue] = false;
+    }
+  });
 
   return {
     profile,
