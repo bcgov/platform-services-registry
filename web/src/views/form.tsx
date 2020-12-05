@@ -77,7 +77,8 @@ const MyForm: React.FC<IFormProps> = (props: any) => {
             promptSuccessToastWithText('Your namespace request was successful');
         } catch (err) {
             closeBackdropCB();
-            promptErrToastWithText('Something went wrong');
+            const msg = `Unable to submit request at this time, reason = ${err.message}`;
+            promptErrToastWithText(msg);
             console.log(err);
         }
     };
