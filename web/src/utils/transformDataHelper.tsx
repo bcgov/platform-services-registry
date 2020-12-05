@@ -109,6 +109,7 @@ export function getProfileContacts(contactSet: any[]): object {
   return contacts;
 };
 
+
 // convert datetime string from YYYY-MM-DDTHH:MM:SSZ to DD-MM-YYYY HH:MM
 function convertDatetime(ISODatetimeString: string): string {
   const splitted = ISODatetimeString.split('T');
@@ -116,7 +117,6 @@ function convertDatetime(ISODatetimeString: string): string {
   HHMM.pop();
   return splitted[0].split('-').reverse().join('-') + ' ' + HHMM.join(':');
 }
-
 
 export function transformJsonToCsv(objArray: any) {
   const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
@@ -136,13 +136,26 @@ export function transformJsonToCsv(objArray: any) {
   line = line.slice(0, -1);
   str += line + '\r\n';
 
+  function sanitizeStringForCsv(desc: any) {
+    let itemDesc;
+    if (typeof desc !== 'string') {
+      return desc;
+    } else if (desc) {
+      itemDesc = desc.replace(/(\r\n|\n|\r|\s+|\t|&nbsp;)/gm, ' ');
+      itemDesc = itemDesc.replace(/"/g, '""');
+      itemDesc = itemDesc.replace(/ +(?= )/g, '');
+    } else {
+      itemDesc = '';
+    }
+    return itemDesc;
+  }
+
   for (let i = 0; i < array.length; i++) {
     line = '';
 
     for (let index in array[i]) {
-      // encapsulate the entries in escaped "" to protect the internal commas
       // eslint-disable-next-line
-      line += '\"' + array[i][index] + '\"' + ',';
+      line += '"' + sanitizeStringForCsv(array[i][index]) + '"' + ',';
     }
 
     line = line.slice(0, -1);
