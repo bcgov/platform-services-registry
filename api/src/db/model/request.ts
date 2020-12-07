@@ -16,9 +16,15 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
+export const enum RequestEditType {
+    ProductOwner = 'productOwner',
+    TechnicalContact = 'technicalContact',
+    Namespaces = 'namespaces',
+};
+
 export interface Request extends CommonFields {
     profileId: number;
-    editType: string;
+    editType: RequestEditType;
     editObject: string;
     natsSubject?: string;
     natsContext?: string;
@@ -46,7 +52,7 @@ export default class RequestModel extends Model {
                 data.editType,
                 data.editObject,
                 data.natsSubject,
-                data.natsContext
+                data.natsContext,
             ],
         };
 
@@ -80,7 +86,7 @@ export default class RequestModel extends Model {
                 aData.editType,
                 aData.editObject,
                 aData.natsSubject,
-                aData.natsContext
+                aData.natsContext,
             ];
 
             const results = await this.runQuery(query);

@@ -15,10 +15,9 @@
 //
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import { quotaSizeNames } from '../constants';
 import DataManager from '../db';
 import { Cluster } from '../db/model/cluster';
-import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
+import { ClusterNamespace, ProjectNamespace, QuotaSize } from '../db/model/namespace';
 import { Request } from '../db/model/request';
 import { AuthenticatedUser } from './authmware';
 import shared from './shared';
@@ -27,6 +26,7 @@ import { validateObjProps } from './utils';
 const dm = new DataManager(shared.pgPool);
 const { NamespaceModel, ClusterModel, RequestModel } = dm;
 const whichService = 'quota editing';
+const quotaSizeNames = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
 const spec = ['quotaCpu', 'quotaMemory', 'quotaStorage'];
 
 export const getDefaultCluster = async (): Promise<Cluster | undefined> => {
@@ -41,12 +41,12 @@ export const getDefaultCluster = async (): Promise<Cluster | undefined> => {
 };
 
 export interface QuotaObject {
-  cpu: string;
-  memory: string;
-  storage: boolean;
+  cpu: QuotaSize;
+  memory: QuotaSize;
+  storage: QuotaSize;
 };
 
-export interface NamespaceCN {
+export interface NamespaceCNObject {
   clusterId: number;
   namespaceId: number;
   name: string;
@@ -54,8 +54,19 @@ export interface NamespaceCN {
   quotas: QuotaObject;
 };
 
-export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: ClusterNamespace[], namespaceSet: ProjectNamespace[], defaultClusterName = ''): ProjectNamespace[] | undefined => {
+export const mergeRequestedCNToNamespaceSet = async (requestedClusterNamespaces: ClusterNamespace[], namespaceSet: ProjectNamespace[], clusterName: string): Promise<ProjectNamespace[] | undefined> => {
   try {
+    let cluster;
+    if (!clusterName) {
+      cluster = await getDefaultCluster();
+    } else {
+      cluster = await ClusterModel.findByName(clusterName);
+      if (!cluster) {
+        const errmsg = `Cant find given cluster name ${clusterName}`;
+        throw new Error(errmsg);
+      }
+    }
+
     const merged: ProjectNamespace[] = [];
     requestedClusterNamespaces.forEach((requestedClusterNamespace: ClusterNamespace) => {
       const targetNamespace = namespaceSet.filter(
@@ -67,20 +78,17 @@ export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: Clust
         throw new Error(`Cant find target namespace or its clusters for namespaceId
         ${requestedClusterNamespace.namespaceId}`);
       }
-      // @ts-ignore
+
       const num: number = targetNamespace.clusters.findIndex(
         (cn: ClusterNamespace) => cn.clusterId === requestedClusterNamespace.clusterId
       )
 
-      // TODO:(yf) refactor below
-      // convert from ClusterNamespace to NamespaceCN
+      // convert from ClusterNamespace to JSON-NamespaceCNObject
       const { clusterId, namespaceId, provisioned, quotaCpu, quotaMemory, quotaStorage } = requestedClusterNamespace;
       targetNamespace.clusters[num] = {
-        clusterId,
-        namespaceId,
+        clusterId, namespaceId, provisioned,
         // @ts-ignore
-        name: defaultClusterName,
-        provisioned,
+        name: cluster.name,
         quotas: {
           cpu: quotaCpu,
           memory: quotaMemory,
@@ -97,9 +105,7 @@ export const mergeRequestedCNToNamespaceSet = (requestedClusterNamespaces: Clust
   };
 };
 
-export const getNamespaceSet = async (params: any, user: AuthenticatedUser): Promise<ProjectNamespace[] | undefined> => {
-  const { profileId } = params;
-
+export const getNamespaceSet = async (profileId: string, user: AuthenticatedUser): Promise<ProjectNamespace[] | undefined> => {
   // TODO:(yf) add further data sanity check
   const rv = validateObjProps(['profileId'], { profileId });
   if (rv) {
@@ -107,6 +113,12 @@ export const getNamespaceSet = async (params: any, user: AuthenticatedUser): Pro
   }
 
   try {
+    // const record = await ProfileModel.findById(Number(profileId));
+    // const notAuthorized = isNotAuthorized(record, user);
+    // if (notAuthorized) {
+    //   throw notAuthorized;
+    // }
+
     return await NamespaceModel.findForProfile(Number(profileId));
   } catch (err) {
     const message = `Unable to get namespaceSet under profile ${profileId} for ${whichService}`;
@@ -114,29 +126,6 @@ export const getNamespaceSet = async (params: any, user: AuthenticatedUser): Pro
     return;
   }
 };
-
-export const getClusterNamespaces = async (namespaceSet: ProjectNamespace[]): Promise<ClusterNamespace[] | undefined> => {
-  try {
-    const defaultCluster = await getDefaultCluster();
-
-    const promises: Promise<ClusterNamespace>[] = [];
-    namespaceSet.forEach(namespace => {
-      // @ts-ignore
-      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, defaultCluster.id));
-    });
-
-    return await Promise.all(promises);
-  } catch (err) {
-    const message = `Unable to get clusterNamespaces for ${whichService}`;
-    logger.error(`${message}, err = ${err.message}`);
-    return;
-  }
-};
-
-type QuotaSize
-  = 'small'
-  | 'medium'
-  | 'large'
 
 export interface QuotaOptionsObject {
   namespaceId: number,
@@ -187,7 +176,42 @@ export const getCNQuotaOptions = async (clusterNamespace: ClusterNamespace): Pro
   }
 };
 
-export const isQuotaRequestBodyValid = (quotaOptions: QuotaOptionsObject[], body: any): void | Error => {
+export const getNamespaceSetQuotaOptions = async (namespaceSet: ProjectNamespace[], clusterName: string): Promise<QuotaOptionsObject[] | undefined> => {
+  try {
+    let cluster;
+    if (!clusterName) {
+      cluster = await getDefaultCluster();
+    } else {
+      cluster = await ClusterModel.findByName(clusterName);
+      if (!cluster) {
+        const errmsg = `Cant find given cluster name ${clusterName}`;
+        throw new Error(errmsg);
+      }
+    }
+
+    const promises: Promise<ClusterNamespace>[] = [];
+    namespaceSet.forEach(namespace => {
+      // @ts-ignore
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, cluster.id));
+    });
+
+    const clusterNamespaces = await Promise.all(promises);
+    if (!clusterNamespaces) {
+      const errmsg = `Cant fetch clusterNamespaces`;
+      throw new Error(errmsg);
+    }
+
+    const quotaOptionsPromises: Promise<QuotaOptionsObject>[] = [];
+    clusterNamespaces.forEach(cn => quotaOptionsPromises.push(getCNQuotaOptions(cn)));
+    return await Promise.all(quotaOptionsPromises);
+  } catch (err) {
+    const message = `Unable to get clusterNamespaces for ${whichService}`;
+    logger.error(`${message}, err = ${err.message}`);
+    return;
+  }
+};
+
+export const validateQuotaRequestBody = (quotaOptions: QuotaOptionsObject[], body: any): void | Error => {
   try {
     body.forEach((item: any) => {
       const rv = validateObjProps(spec.concat(['clusterId', 'namespaceId']), item);
@@ -204,12 +228,12 @@ export const isQuotaRequestBodyValid = (quotaOptions: QuotaOptionsObject[], body
 
       const qo = quotaOption.pop();
       spec.forEach(specName => {
-        const requestedSize: string = item[specName];
+        const requestedSize: QuotaSize = item[specName];
         if (!quotaSizeNames.includes(requestedSize)) {
           throw new Error('Incorrect requested quota size');
         }
         // @ts-ignore
-        const allowedSizes: string[] = qo[specName];
+        const allowedSizes: QuotaSize[] = qo[specName];
         if (!allowedSizes.includes(requestedSize)) {
           throw new Error('Requested quota size not allowed');
         }
@@ -223,7 +247,7 @@ export const isQuotaRequestBodyValid = (quotaOptions: QuotaOptionsObject[], body
   }
 };
 
-export const processNamespacesEditType = async (request: Request): Promise<void> => {
+export const processProfileNamespacesEditType = async (request: Request): Promise<void> => {
   try {
     const { editObject } = request;
     const namespaces = JSON.parse(editObject);
@@ -234,14 +258,12 @@ export const processNamespacesEditType = async (request: Request): Promise<void>
         throw new Error();
       }
 
-      // TODO:(yf) refactor below
-      // convert from NamespaceCN to ClusterNamespace
+      // convert JSON-NamespaceCNObject to ClusterNamespace
       const NamespaceCNs: any[] = namespace.clusters;
-      NamespaceCNs.forEach((namespaceCN: NamespaceCN) => {
-        const { namespaceId, clusterId, quotas: { cpu, memory, storage } } = namespaceCN;
+      NamespaceCNs.forEach((NamespaceCN: NamespaceCNObject) => {
+        const { namespaceId, clusterId, quotas: { cpu, memory, storage } } = NamespaceCN;
         const cn = {
-          namespaceId,
-          clusterId,
+          namespaceId, clusterId,
           quotaCpu: cpu,
           quotaMemory: memory,
           quotaStorage: storage,

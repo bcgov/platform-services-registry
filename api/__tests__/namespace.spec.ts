@@ -260,7 +260,6 @@ describe('Namespace event handlers', () => {
     const req = {
       params: { profileId: 1 },
     }
-
     client.query.mockReturnValueOnce({ rows: selectedNamespaces });
     client.query.mockReturnValueOnce({ rows: selectDefaultCluster });
     client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[0]] });

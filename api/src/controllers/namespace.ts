@@ -21,9 +21,10 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
-import { fulfillNamespaceEdit, RequestEditType } from '../libs/fulfillment';
-import { getClusterNamespaces, getCNQuotaOptions, getDefaultCluster, getNamespaceSet, isQuotaRequestBodyValid, mergeRequestedCNToNamespaceSet, QuotaOptionsObject } from '../libs/quota-editing';
+import { fulfillNamespaceEdit } from '../libs/fulfillment';
+import { getNamespaceSet, getNamespaceSetQuotaOptions, mergeRequestedCNToNamespaceSet, validateQuotaRequestBody } from '../libs/quota-editing';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
@@ -132,25 +133,20 @@ export const archiveProfileNamespace = async (
   }
 };
 
-// TODO:(yf) catch specific err in order to serve specific status code
 export const fetchProfileQuotaOptions = async (
   { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   try {
-    const namespaces = await getNamespaceSet(params, user);
+    // process request params to get namespaces
+    const { profileId, clusterName } = params;
+    const namespaces = await getNamespaceSet(profileId, user);
     if (!namespaces) {
-      throw new Error('Cant fetch namespaces for this profile');
+      const errmsg = `Cant fetch namespaces for user ${user.id}`;
+      throw new Error(errmsg);
     }
 
-    const clusterNamespaces = await getClusterNamespaces(namespaces);
-    if (!clusterNamespaces) {
-      throw new Error('Cant fetch clusterNamespaces for this profile');
-    }
-
-    const promises: Promise<QuotaOptionsObject>[] = [];
-    clusterNamespaces.forEach(cn => promises.push(getCNQuotaOptions(cn)));
-    const quotaOptions = await Promise.all(promises);
-
+    // fetch quota options for namespaces with an optional cluster name
+    const quotaOptions = await getNamespaceSetQuotaOptions(namespaces, clusterName);
     res.status(200).json(quotaOptions);
   } catch (err) {
     const message = `Unable to fetch quota options`;
@@ -159,43 +155,38 @@ export const fetchProfileQuotaOptions = async (
   }
 };
 
-// TODO:(yf) catch specific err in order to serve specific status code
 export const requestProfileQuotaEdit = async (
   { params, user, body }: { params: any, user: AuthenticatedUser, body: any }, res: Response
 ): Promise<void> => {
   const { RequestModel } = dm;
   try {
-    const { profileId } = params;
-
-    const namespaces = await getNamespaceSet(params, user);
+    // process request params to get namespaces
+    const { profileId, clusterName } = params;
+    const namespaces = await getNamespaceSet(profileId, user);
     if (!namespaces) {
-      throw new Error('Cant get namespaceSet');
+      const errmsg = `Cant fetch namespaces for user ${user.id}`;
+      throw new Error(errmsg);
     }
 
-    const clusterNamespaces = await getClusterNamespaces(namespaces);
-    if (!clusterNamespaces) {
-      throw new Error('Cant get clusterNamespaces');
+    // process request body for validation
+    const quotaOptions = await getNamespaceSetQuotaOptions(namespaces, clusterName);
+    if (!quotaOptions) {
+      const errmsg = `Cant fetch quota options for user ${user.id}`;
+      throw new Error(errmsg);
     }
-
-    const promises: Promise<QuotaOptionsObject>[] = [];
-    clusterNamespaces.forEach(cn => promises.push(getCNQuotaOptions(cn)));
-    const quotaOptions = await Promise.all(promises);
-
-    const rv = isQuotaRequestBodyValid(quotaOptions, body);
+    const rv = validateQuotaRequestBody(quotaOptions, body);
     if (rv) {
       throw rv;
     }
 
-    const defaultCluster = await getDefaultCluster();
-    const defaultClusterName = defaultCluster?.name;
-
-    // TODO:(yf) add logics here so if the body is exactly the same
-    // as current quotas, we save a trip to calling bot
-    const editType = RequestEditType.Namespaces;
-    const editObject = mergeRequestedCNToNamespaceSet(body, namespaces, defaultClusterName);
+    // create a request record and send nats message
+    const editObject = await mergeRequestedCNToNamespaceSet(body, namespaces, clusterName);
     if (!editObject) {
-      throw new Error('Cant generate request edit object');
+      const errmsg = 'Cant generate request edit object';
+      throw new Error(errmsg);
     }
+    const editType = RequestEditType.Namespaces;
+
     const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
     await RequestModel.create({
       profileId,

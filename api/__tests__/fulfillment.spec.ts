@@ -17,7 +17,8 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { contextForProvisioning, fulfillNamespaceEdit, fulfillNamespaceProvisioning, RequestEditType } from '../src/libs/fulfillment';
+import { RequestEditType } from '../src/db/model/request';
+import { contextForProvisioning, FulfillmentContextAction, fulfillNamespaceEdit, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
 
 const p1 = path.join(__dirname, 'fixtures/select-profile.json');
 const profile = JSON.parse(fs.readFileSync(p1, 'utf8'));
@@ -42,7 +43,7 @@ describe('Services', () => {
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: namespaces });
 
-    const result = await contextForProvisioning(12345);
+    const result = await contextForProvisioning(12345, FulfillmentContextAction.Create);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
@@ -54,7 +55,7 @@ describe('Services', () => {
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: namespaces });
 
-    const result = await contextForProvisioning(12345);
+    const result = await contextForProvisioning(12345, FulfillmentContextAction.Create);
 
     expect(result).not.toBeDefined();
   });
@@ -63,7 +64,7 @@ describe('Services', () => {
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    await expect(contextForProvisioning(12345)).rejects.toThrow();
+    await expect(contextForProvisioning(12345, FulfillmentContextAction.Create)).rejects.toThrow();
   });
 
   it('Namespace provisioning succeeds', async () => {
