@@ -3427,7 +3427,8 @@ fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId
 <p><code>GET /api/v1/profile/{profileId}/quota-edit</code></p>
 <p><em>Fetch a list of quota-edit options for given clusternamespaces</em></p>
 <p>Use this endpoint to fetch a list of quota-edit options
-given the project and default cluster. A list will be returned
+given the project and cluster name. If cluster name is not provided,
+the default cluster will be used. A list will be returned
 providing it is not archived. A empty list will be returned if the
 project is yet to be provisioned OR there is an
 ongoing quota-edit request for this project.</p>
@@ -3527,7 +3528,8 @@ fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId
 <p><code>POST /api/v1/profile/{profileId}/quota-edit</code></p>
 <p><em>Create a new namespace for the given project</em></p>
 <p>Use this endpoint to request new quotas for cluster namespaces
-under the given profile and default cluster.</p>
+under the given profile and cluster name. If cluster name is not provided,
+the default cluster will be used.</p>
 <h3 id="requestprofilequotaedit-parameters">Parameters</h3>
 <table>
 <thead>

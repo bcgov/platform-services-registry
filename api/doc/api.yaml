@@ -403,7 +403,8 @@ paths:
       summary: Fetch a list of quota-edit options for given clusternamespaces
       description: |-
         Use this endpoint to fetch a list of quota-edit options
-        given the project and default cluster. A list will be returned
+        given the project and cluster name. If cluster name is not provided,
+        the default cluster will be used. A list will be returned
         providing it is not archived. A empty list will be returned if the
         project is yet to be provisioned OR there is an
         ongoing quota-edit request for this project.
@@ -435,7 +436,8 @@ paths:
       summary: Create a new namespace for the given project
       description: |-
         Use this endpoint to request new quotas for cluster namespaces
-        under the given profile and default cluster.
+        under the given profile and cluster name. If cluster name is not provided,
+        the default cluster will be used.
       tags:
         - QuotaEdit
       parameters:
