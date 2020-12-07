@@ -20,28 +20,28 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface ProjectProfile extends CommonFields {
-  name: string,
-  description: string,
-  busOrgId: number,
-  userId: number,
-  namespacePrefix: string,
-  prioritySystem?: boolean,
-  criticalSystem?: boolean,
-  notificationEmail?: boolean,
-  notificationSms?: boolean,
-  notificationMsTeams?: boolean,
-  paymentBambora?: boolean,
-  paymentPayBc?: boolean,
-  fileTransfer?: boolean,
-  fileStorage?: boolean,
-  geoMappingWeb?: boolean,
-  geoMappingLocation?: boolean,
-  schedulingCalendar?: boolean,
-  schedulingAppointments?: boolean,
-  idmSiteMinder?: boolean,
-  idmKeycloak?: boolean,
-  idmActiveDir?: boolean,
-  other: string,
+  name: string;
+  description: string;
+  busOrgId: number;
+  userId: number;
+  namespacePrefix: string;
+  prioritySystem?: boolean;
+  criticalSystem?: boolean;
+  notificationEmail?: boolean;
+  notificationSms?: boolean;
+  notificationMsTeams?: boolean;
+  paymentBambora?: boolean;
+  paymentPayBc?: boolean;
+  fileTransfer?: boolean;
+  fileStorage?: boolean;
+  geoMappingWeb?: boolean;
+  geoMappingLocation?: boolean;
+  schedulingCalendar?: boolean;
+  schedulingAppointments?: boolean;
+  idmSiteMinder?: boolean;
+  idmKeycloak?: boolean;
+  idmActiveDir?: boolean;
+  other: string;
 }
 
 export default class ProfileModel extends Model {
@@ -185,7 +185,7 @@ export default class ProfileModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async delete(profileId): Promise<ProjectProfile> {
     const query = {
@@ -207,7 +207,7 @@ export default class ProfileModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async addContactToProfile(profileId: number, contactId: number): Promise<void> {
     const values: any[] = [];

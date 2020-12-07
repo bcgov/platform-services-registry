@@ -20,11 +20,11 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface Contact extends CommonFields {
-  firstName: string,
-  lastName: string,
-  email: string,
-  githubId: string,
-  roleId: number,
+  firstName: string;
+  lastName: string;
+  email: string;
+  githubId: string;
+  roleId: number;
 }
 
 export default class ContactModel extends Model {
@@ -123,7 +123,7 @@ export default class ContactModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async delete(contactId: number): Promise<Contact> {
     const query = {
@@ -145,5 +145,5 @@ export default class ContactModel extends Model {
 
       throw err;
     }
-  };
+  }
 }

@@ -17,11 +17,11 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface Request extends CommonFields {
-    profileId: number,
-    editType: string,
-    editObject: string,
-    natsSubject?: string,
-    natsContext?: string,
+    profileId: number;
+    editType: string;
+    editObject: string;
+    natsSubject?: string;
+    natsContext?: string;
 }
 
 export default class RequestModel extends Model {
@@ -91,7 +91,7 @@ export default class RequestModel extends Model {
 
             throw err;
         }
-    };
+    }
 
     async delete(requestId: number): Promise<Request> {
         const query = {
@@ -112,7 +112,7 @@ export default class RequestModel extends Model {
 
             throw err;
         }
-    };
+    }
 
     async findForProfile(profileId: number): Promise<Request[]> {
         const query = {
@@ -130,5 +130,5 @@ export default class RequestModel extends Model {
 
             throw err;
         }
-    };
+    }
 }
