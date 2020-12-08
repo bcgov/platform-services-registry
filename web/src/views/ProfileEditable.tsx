@@ -185,8 +185,20 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                     <Flex flexWrap='wrap' m={3}>
                         <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
                             {/* @ts-ignore */}
-                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject profileDetails={profileJson} ministry={ministry} openBackdropCB={openBackdropCB} closeBackdropCB={closeBackdropCB} />}
-                            {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact />}
+                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) &&
+                                <ProfileEditableProject
+                                    profileDetails={profileJson}
+                                    ministry={ministry}
+                                    openBackdropCB={openBackdropCB}
+                                    closeBackdropCB={closeBackdropCB}
+                                />
+                            }
+                            {(viewName === PROFILE_VIEW_NAMES.CONTACT) &&
+                                <ProfileEditableContact
+                                    profileDetails={profileJson}
+                                    contact={contactJson}
+                                    openBackdropCB={openBackdropCB}
+                                    closeBackdropCB={closeBackdropCB} />}
                             {(viewName === PROFILE_VIEW_NAMES.QUOTA) &&
                                 <ProfileEditableQuota
                                     licensePlate={licensePlate}
