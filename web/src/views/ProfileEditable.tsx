@@ -156,6 +156,9 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                             <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
                                 <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} POGithubId={contactJson.POGithubId} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} TCGithubId={contactJson.TCGithubId} />
                             </ShadowBox>
+                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
+                                    <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
+                                </RouterLink>
                         </Box>
                         <Box>
                             <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
