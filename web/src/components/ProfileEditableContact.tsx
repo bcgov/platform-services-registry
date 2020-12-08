@@ -14,13 +14,154 @@
 // limitations under the License.
 //
 
-import React from 'react';
+import { Input, Label } from '@rebass/forms';
+import React, { useState } from 'react';
+import { Field, Form } from 'react-final-form';
+import { Redirect } from 'react-router-dom';
+import { Flex } from 'rebass';
+import { StyledFormButton } from '../components/UI/button';
+import getValidator from '../utils/getValidator';
+import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
+import { transformForm } from '../utils/transformDataHelper';
+import useRegistryApi from '../utils/useRegistryApi';
+import SubFormTitle from './UI/subFormTitle';
 
-const ProfileEditableContact: React.FC = () => {
+interface IProfileEditableContactProps {
+    profileDetails: any;
+    contactDetails: any;
+    openBackdropCB: () => void;
+    closeBackdropCB: () => void;
+}
+
+const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) => {
+    const api = useRegistryApi();
+    const validator = getValidator();
+    const { profileDetails, contactDetails, openBackdropCB, closeBackdropCB } = props;
+
+    const [goBackToProfileOverview, setGoBackToProfileEditable] = useState<boolean>(false);
+
+    const poDetails = contactDetails.poDetails;
+    const tcDetails = contactDetails.tcDetails;
+
+    const onSubmit = async (formData: any) => {
+        const { profile } = transformForm(formData);
+        openBackdropCB();
+        try {
+            // 1. Update the project contacts.
+            const po: any = await api.updateContact(poDetails.id, poDetails);
+            const tc: any = await api.updateContact(tcDetails.id, tcDetails);
+
+            closeBackdropCB();
+            setGoBackToProfileEditable(true);
+  
+            // 2. All good? Tell the user.
+            promptSuccessToastWithText('Your profile update was successful');
+            window.location.reload()
+        } catch (err) {
+            closeBackdropCB();
+            promptErrToastWithText('Something went wrong');
+            console.log(err);
+        }
+    };
+      if (goBackToProfileOverview) {
+          // TODO:(yh) refactor here so as to use constants
+          return (<Redirect to={`/profile/${profileDetails.id}/overview`} />);
+      }
+
     return (
-        <div>
-            Contact
-        </div>
+        <>
+        <Form
+            onSubmit={onSubmit}
+            validate={values => {
+                const errors = {};
+                return errors;
+            }}
+        >
+          {props => (
+              <form onSubmit={props.handleSubmit} >
+            <SubFormTitle>Who is the product owner for this project?</SubFormTitle>
+
+            <Field name="po-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={poDetails.firstName} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-first-name">First Name</Label>
+                        <Input mt="8px" {...input} id="po-first-name" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            <Field name="po-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={poDetails.lastName} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-last-name">Last Name</Label>
+                        <Input mt="8px" {...input} id="po-last-name" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            <Field name="po-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={poDetails.email} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-email">eMail Address</Label>
+                        <Input mt="8px" {...input} id="po-email" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            <Field name="po-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={poDetails.githubId} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="po-github-id">GitHub ID</Label>
+                        <Input mt="8px" {...input} id="po-github-id" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+
+            <SubFormTitle>Who is the technical contact for this project?</SubFormTitle>
+
+            <Field name="tc-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={tcDetails.firstName} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-first-name">First Name</Label>
+                        <Input mt="8px" {...input} id="tc-first-name" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            <Field name="tc-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={tcDetails.lastName} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-last-name">Last Name</Label>
+                        <Input mt="8px" {...input} id="tc-last-name" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            <Field name="tc-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={tcDetails.email} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-email">eMail Address</Label>
+                        <Input mt="8px" {...input} id="tc-email" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            <Field name="tc-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={tcDetails.githubId} >
+                {({ input, meta }) => (
+                    <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                        <Label m="0" htmlFor="tc-github-id">GitHub ID</Label>
+                        <Input mt="8px" {...input} id="tc-github-id" />
+                        {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                    </Flex>
+                )}
+            </Field>
+            {/* @ts-ignore */}
+            <StyledFormButton style={{ display: 'block' }} onClick={onSubmit}>Update Profile</StyledFormButton>
+            </form>
+          )}
+          </Form>
+        </>
     );
 };
 
