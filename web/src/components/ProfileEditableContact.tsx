@@ -42,12 +42,12 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
 
     const onSubmit = async (formData: any) => {
         // TODO: Add logic to transform formdata to what is necessary for API
-        const { productOwner, technicalContact } = transformForm(formData);
+        const { updatedContacts } = transformForm(formData);
         openBackdropCB();
         try {
-            console.log(productOwner)
+            console.log(updatedContacts)
             // 1. Update the project contacts.
-            await api.updateContactRequest(contactDetails.POId, contactDetails);
+            await api.requestContactEdit(updatedContacts);
 
             closeBackdropCB();
             setGoBackToProfileEditable(true);
