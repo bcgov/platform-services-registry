@@ -23,11 +23,11 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
-import { fulfillNamespaceProvisioning, RequestEditType } from '../libs/fulfillment';
+import { RequestEditType } from '../db/model/request';
+import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { getDefaultCluster, processNamespacesEditType } from '../libs/quota-editing';
+import { getDefaultCluster, processProfileNamespacesEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
-
 
 const dm = new DataManager(shared.pgPool);
 
@@ -66,31 +66,44 @@ export const provisionProfileNamespaces = async (
 export const provisionCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
-  const { NamespaceModel, ProfileModel } = dm;
-  const { prefix } = body;
+  const { NamespaceModel, ProfileModel, ClusterModel } = dm;
+  const { prefix, clusterName } = body;
   try {
+    // process request params to get cluster namespaces
     const profile = await ProfileModel.findByPrefix(prefix);
     if (!profile) {
-      throw new Error(`Cant find any profile for the given prefix ${prefix}`);
+      const errmsg = `Cant find any profile for the given prefix ${prefix}`;
+      throw new Error(errmsg);
     }
     const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
     if (!namespaces) {
-      throw new Error(`Cant find any namespaces for the given prefix ${prefix}`);
+      const errmsg = `Cant find any namespaces for the given prefix ${prefix}`;
+      throw new Error(errmsg);
+    }
+    let cluster;
+    if (!clusterName) {
+      cluster = await getDefaultCluster();
+    } else {
+      cluster = await ClusterModel.findByName(clusterName);
+      if (!cluster) {
+        const errmsg = `Cant find given cluster name ${clusterName}`;
+        throw new Error(errmsg);
+      }
     }
 
-    const defaultCluster = await getDefaultCluster();
     const promises: Promise<ClusterNamespace>[] = [];
     namespaces.forEach(namespace => {
       // @ts-ignore
-      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, defaultCluster.id));
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, cluster.id));
     });
     const clusterNamespaces = await Promise.all(promises);
 
+    // check provisioning status and process accordingly
     const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
       return clusterNamespace.provisioned;
     });
     if (flags.every(f => f === true)) {
-      await updateNamespacesEdit(profile);
+      await updateProfileEdit(profile);
       res.status(202).end();
     } else if (flags.every(f => f === false)) {
       await updateProvisionedNamespaces(namespaces, profile);
@@ -116,8 +129,7 @@ const updateProvisionedNamespaces = async (namespaces: ProjectNamespace[], profi
     namespaces.forEach(namespace => {
       // @ts-ignore
       const { namespaceId, clusters } = namespace;
-      // @ts-ignore
-      clusters.forEach(cluster => {
+      clusters?.forEach(cluster => {
         // @ts-ignore
         const { clusterId } = cluster;
         promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
@@ -140,24 +152,28 @@ const updateProvisionedNamespaces = async (namespaces: ProjectNamespace[], profi
   }
 };
 
-const updateNamespacesEdit = async (profile: ProjectProfile): Promise<void> => {
+const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
   const { RequestModel } = dm;
 
   try {
     if (!profile.id) {
       throw new Error('Cant read the given profileId');
     }
-    const requests = await RequestModel.findForProfile(profile.id);
 
-    if (requests.length === 0) {
+    const requests = await RequestModel.findForProfile(profile.id);
+    const request = requests.pop();
+    if (!request) {
       return;
     }
-
-    const request = requests[0];
-    if (request.editType === RequestEditType.Namespaces) {
-      await processNamespacesEditType(request);
-      await RequestModel.delete(Number(request.id));
-      return;
+    // check request type and process accordingly
+    switch (request.editType) {
+      case RequestEditType.Namespaces:
+        await processProfileNamespacesEditType(request);
+        await RequestModel.delete(Number(request.id));
+        break;
+      default:
+        const errmsg = `Invalid edit type for request ${request.id}`;
+        throw new Error(errmsg);
     }
   } catch (err) {
     const message = `Unable to update namespace quota`;
@@ -166,3 +182,5 @@ const updateNamespacesEdit = async (profile: ProjectProfile): Promise<void> => {
     throw errorWithCode(message, 500);
   }
 };
+
+

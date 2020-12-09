@@ -130,5 +130,5 @@ export default class UserProfileModel extends Model {
 
       throw err;
     }
-  };
+  }
 }

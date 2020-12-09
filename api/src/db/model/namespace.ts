@@ -17,22 +17,28 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
-import { DEFAULT_QUOTA_SIZE_NAME, projectSetNames } from '../../constants';
+import { projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 
+export const enum QuotaSize {
+  Small = 'small',
+  Medium = 'medium',
+  Large = 'large',
+};
+
 export interface ClusterNamespace extends CommonFields {
-  namespaceId: number,
-  clusterId: number,
-  provisioned: boolean,
-  quotaCpu?: string,
-  quotaMemory?: string,
-  quotaStorage?: string,
+  namespaceId: number;
+  clusterId: number;
+  provisioned: boolean;
+  quotaCpu?: QuotaSize;
+  quotaMemory?: QuotaSize;
+  quotaStorage?: QuotaSize;
 }
 
 export interface ProjectNamespace extends CommonFields {
-  name: string,
-  profileId: number,
-  clusters?: ClusterNamespace[],
+  name: string;
+  profileId: number;
+  clusters?: ClusterNamespace[];
 }
 
 export default class NamespaceModel extends Model {
@@ -87,7 +93,8 @@ export default class NamespaceModel extends Model {
       }));
 
       const nsResults = await Promise.all(nsPromises);
-      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId, DEFAULT_QUOTA_SIZE_NAME] }));
+      // default quota size set to QuotaSize.Small
+      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId, QuotaSize.Small] }));
       await Promise.all(clPromises);
 
       return nsResults;
@@ -247,7 +254,7 @@ export default class NamespaceModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async delete(namespaceId: number): Promise<ProjectNamespace> {
     const query = {
@@ -269,5 +276,5 @@ export default class NamespaceModel extends Model {
 
       throw err;
     }
-  };
+  }
 }
