@@ -40,16 +40,14 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
 
     const [goBackToProfileOverview, setGoBackToProfileEditable] = useState<boolean>(false);
 
-    const poDetails = contactDetails.poDetails;
-    const tcDetails = contactDetails.tcDetails;
-
     const onSubmit = async (formData: any) => {
-        const { profile } = transformForm(formData);
+        // TODO: Add logic to transform formdata to what is necessary for API
+        const { productOwner, technicalContact } = transformForm(formData);
         openBackdropCB();
         try {
+            console.log(productOwner)
             // 1. Update the project contacts.
-            const po: any = await api.updateContact(poDetails.id, poDetails);
-            const tc: any = await api.updateContact(tcDetails.id, tcDetails);
+            await api.updateContactRequest(contactDetails.POId, contactDetails);
 
             closeBackdropCB();
             setGoBackToProfileEditable(true);
@@ -81,7 +79,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
               <form onSubmit={props.handleSubmit} >
             <SubFormTitle>Who is the product owner for this project?</SubFormTitle>
 
-            <Field name="po-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={poDetails.firstName} >
+            <Field name="po-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.POFirstName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-first-name">First Name</Label>
@@ -90,7 +88,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="po-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={poDetails.lastName} >
+            <Field name="po-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.POLastName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-last-name">Last Name</Label>
@@ -99,7 +97,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="po-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={poDetails.email} >
+            <Field name="po-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={contactDetails.POEmail} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-email">eMail Address</Label>
@@ -108,7 +106,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="po-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={poDetails.githubId} >
+            <Field name="po-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={contactDetails.POGithubId} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-github-id">GitHub ID</Label>
@@ -120,7 +118,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
 
             <SubFormTitle>Who is the technical contact for this project?</SubFormTitle>
 
-            <Field name="tc-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={tcDetails.firstName} >
+            <Field name="tc-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.TCFirstName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-first-name">First Name</Label>
@@ -129,7 +127,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={tcDetails.lastName} >
+            <Field name="tc-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.TCLastName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-last-name">Last Name</Label>
@@ -138,7 +136,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={tcDetails.email} >
+            <Field name="tc-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={contactDetails.TCEmail} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-email">eMail Address</Label>
@@ -147,7 +145,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={tcDetails.githubId} >
+            <Field name="tc-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={contactDetails.TCGithubId} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-github-id">GitHub ID</Label>
