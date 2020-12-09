@@ -30,6 +30,7 @@ import theme from '../theme';
 import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry } from '../utils/transformDataHelper';
+import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
 
@@ -70,10 +71,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
 
                 profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data) };
                 setProfileJson(profileDetails.data);
-
+                console.log(profileDetails.data)
                 const contactDetails = await api.getContactsByProfileId(profileId);
                 contactDetails.data = { ...getProfileContacts(contactDetails.data) };
                 setContactJson(contactDetails.data);
+                console.log(contactDetails.data)
 
                 const namespaces = await api.getNamespacesByProfileId(profileId);
                 const cnQuotaOptions = await api.getCNQuotaOptionsByProfileId(profileId);
@@ -110,6 +112,12 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         }
         wrap();
     }, [namespacesJson, cnQuotaOptionsJson, quotaSubmitRefresh]);
+
+    // start polling for profile update status changes every 30s
+    useInterval(() => {
+        // isNoActiveRequests
+
+    }, 1000 * 30);
 
     if (initialRender) {
         return null;
@@ -148,13 +156,13 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Contact Information
                             </Text>
+                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
+                                    <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
+                                </RouterLink>
                             </Flex>
                             <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
                                 <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} POGithubId={contactJson.POGithubId} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} TCGithubId={contactJson.TCGithubId} />
                             </ShadowBox>
-                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
-                                    <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
-                                </RouterLink>
                         </Box>
                         <Box>
                             <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
@@ -199,7 +207,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                             {(viewName === PROFILE_VIEW_NAMES.CONTACT) &&
                                 <ProfileEditableContact
                                     profileDetails={profileJson}
-                                    contact={contactJson}
+                                    contactDetails={contactJson}
                                     openBackdropCB={openBackdropCB}
                                     closeBackdropCB={closeBackdropCB} />}
                             {(viewName === PROFILE_VIEW_NAMES.QUOTA) &&
