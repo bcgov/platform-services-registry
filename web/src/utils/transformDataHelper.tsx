@@ -97,6 +97,7 @@ export function getProfileContacts(contactSet: any[]): object {
       contacts.POGithubId = contact.githubId;
       contacts.POFirstName = contact.firstName;
       contacts.POLastName = contact.lastName;
+      contacts.POId = contact.id;
     }
     if (contact.roleId === ROLES.TECHNICAL) {
       contacts.TCEmail = contact.email;
@@ -104,6 +105,7 @@ export function getProfileContacts(contactSet: any[]): object {
       contacts.TCGithubId = contact.githubId;
       contacts.TCFirstName = contact.firstName;
       contacts.TCLastName = contact.lastName;
+      contacts.TCId = contact.id;
     }
   });
   return contacts;
