@@ -57,8 +57,8 @@ export default function useRegistryApi() {
     return api.post('contact', contact);
   };
 
-  const updateContact = async (contactId: string, contact: any): Promise<AxiosResponse<any>> => {
-    return api.put(`contact/${contactId}`, contact);
+  const requestContactEdit = async (contact: any): Promise<AxiosResponse<any>> => {
+    return api.post(`contact/edit`, contact);
   };
 
   const linkContactToProfileById = async (profileId: string, contactId: string): Promise<AxiosResponse<any>> => {
@@ -99,7 +99,7 @@ export default function useRegistryApi() {
     createProfile,
     updateProfile,
     createContact,
-    updateContact,
+    requestContactEdit,
     linkContactToProfileById,
     createNamespaceByProfileId,
     getContactsByProfileId,
