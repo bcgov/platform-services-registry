@@ -29,8 +29,12 @@ import { PROFILE_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../consta
 import theme from '../theme';
 import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
+<<<<<<< HEAD
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
 import useInterval from '../utils/useInterval';
+=======
+import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry } from '../utils/transformDataHelper';
+>>>>>>> 11dd2fe (Remove useInterval)
 import useRegistryApi from '../utils/useRegistryApi';
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
 
@@ -116,12 +120,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         }
         wrap();
     }, [namespacesJson, cnQuotaOptionsJson, quotaSubmitRefresh]);
-
-    // start polling for profile update status changes every 30s
-    useInterval(() => {
-        // isNoActiveRequests
-
-    }, 1000 * 30);
 
     if (initialRender) {
         return null;
