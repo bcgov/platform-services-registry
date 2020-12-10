@@ -92,13 +92,16 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsObject;
 
+    // this is to fix the double quotes not being escaped issue
+    natsContext.description = JSON.stringify(natsContext.description);
+
     nc.on('error', () => {
       const errmsg = `NATS error sending order ${profileId} to ${natsSubject}`;
       throw new Error(errmsg);
     });
 
     logger.info(`Sending NATS message for ${profileId}`);
-    nc.publish(natsSubject, JSON.stringify(natsContext));
+    nc.publish(natsSubject, natsContext);
     logger.info(`NATS Message sent for ${profileId}`);
 
     nc.flush(() => {
