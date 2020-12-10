@@ -17,7 +17,7 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface Ministry extends CommonFields {
-  name: string,
+  name: string;
 }
 
 export default class MinistryModel extends Model {
@@ -81,7 +81,7 @@ export default class MinistryModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async delete(ministryId: number): Promise<Ministry> {
     const query = {
@@ -103,5 +103,5 @@ export default class MinistryModel extends Model {
 
       throw err;
     }
-  };
+  }
 }

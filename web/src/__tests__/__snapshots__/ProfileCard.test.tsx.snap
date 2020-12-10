@@ -32,7 +32,9 @@ exports[`matches the snapshot 1`] = `
     <h2
       class="css-16ht1ln"
     >
-      This is a test description for health gateway app
+      <p>
+        This is a test description for health gateway app
+      </p>
     </h2>
     <p
       class="css-xz2idv"

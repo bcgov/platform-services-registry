@@ -70,7 +70,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-prioritySystem"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -120,7 +119,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-notificationEmail"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -143,7 +141,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-notificationSms"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -166,7 +163,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-notificationMsTeams"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -189,7 +185,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-paymentBambora"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -212,7 +207,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-paymentPayBc"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -235,7 +229,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-fileTransfer"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -258,7 +251,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-fileStorage"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -281,7 +273,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-geoMappingWeb"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -304,7 +295,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-geoMappingLocation"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -327,7 +317,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-schedulingCalendar"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -350,7 +339,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-schedulingAppointments"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -373,7 +361,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-idmSiteMinder"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -396,7 +383,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-idmKeycloak"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -419,7 +405,6 @@ exports[`matches the snapshot 1`] = `
                   name="project-idmActiveDir"
                   style="width: 35px; height: 35px;"
                   type="checkbox"
-                  value="yes"
                 />
               </label>
             </div>
@@ -715,9 +700,8 @@ exports[`matches the snapshot 1`] = `
             </div>
           </label>
           <button
-            class="css-12oshc9"
+            class="css-saon7w"
             disabled=""
-            type="submit"
           >
             Request
           </button>

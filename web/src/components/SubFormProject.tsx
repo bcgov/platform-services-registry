@@ -19,7 +19,7 @@ import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA } from '../constants';
-import useValidator from '../utils/useValidator';
+import getValidator from '../utils/getValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 interface MinistryItem {
@@ -32,7 +32,7 @@ interface ISubFormProjectProps {
 }
 
 const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
-    const validator = useValidator();
+    const validator = getValidator();
 
     const { ministry } = props;
 
@@ -65,14 +65,12 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                             name="project-prioritySystem"
                             component="input"
                             type="checkbox"
-                            value="yes"
                         >
                             {({ input }) => (
                                 <input
                                     style={{ width: '35px', height: '35px' }}
                                     name={input.name}
                                     type="checkbox"
-                                    value="yes"
                                     checked={input.checked}
                                     onChange={input.onChange}
                                 />
@@ -115,14 +113,12 @@ const SubFormProject: React.FC<ISubFormProjectProps> = (props) => {
                                 name={`project-${item.inputValue}`}
                                 component="input"
                                 type="checkbox"
-                                value="yes"
                             >
                                 {({ input }) => (
                                     <input
                                         style={{ width: "35px", height: "35px" }}
                                         name={input.name}
                                         type="checkbox"
-                                        value="yes"
                                         checked={input.checked}
                                         onChange={input.onChange}
                                     />

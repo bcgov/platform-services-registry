@@ -16,7 +16,6 @@
 // Created by Jason Leach on 2020-05-14.
 //
 
-
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { difference, isEmpty, isUndefined } from 'lodash';
 import { USER_ROLES } from '../constants';
@@ -47,7 +46,7 @@ export const validateObjProps = (fields: string[], pojo: object): Error | undefi
   return;
 }
 
-export const isNotAuthorized = (results: any, user: any): Error | undefined  => {
+export const isNotAuthorized = (results: any, user: any): Error | undefined => {
 
   if (!(user.id === results.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
     return errorWithCode('Unauthorized Access', 401);

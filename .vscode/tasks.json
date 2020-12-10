@@ -1,8 +1,8 @@
 {
-  "version": "2.0.2",
+  "version": "2.0.0",
   "tasks": [
     {
-      "label": "gulp-watch-src-changes",
+      "label": "api-watch-src-changes",
       "command": "npx",
       "args": [
         "gulp",

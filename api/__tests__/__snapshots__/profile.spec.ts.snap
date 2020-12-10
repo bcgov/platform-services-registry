@@ -238,13 +238,12 @@ Array [
         UPDATE profile
           SET
             name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, critical_system = $5,
-            notification_email = $6, notification_sms = $7, notification_ms_teams = $8,
-            payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
-            file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
-            scheduling_calendar = $15, scheduling_appointments = $16,
-            idm_site_minder = $17, idm_keycloak = $18,
-            idm_active_dir = $19, other = $20
+            priority_system = $4, notification_email = $5, notification_sms = $6,
+            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
+            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
+            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
+            idm_site_minder = $16, idm_keycloak = $17,
+            idm_active_dir = $18, other = $19
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -254,10 +253,6 @@ Array [
         false,
         false,
         false,
-        undefined,
-        undefined,
-        false,
-        undefined,
         false,
         false,
         false,
@@ -265,7 +260,10 @@ Array [
         false,
         false,
         false,
-        undefined,
+        false,
+        false,
+        false,
+        false,
         false,
         "This is a test",
       ],
@@ -334,13 +332,12 @@ Array [
         UPDATE profile
           SET
             name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, critical_system = $5,
-            notification_email = $6, notification_sms = $7, notification_ms_teams = $8,
-            payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
-            file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
-            scheduling_calendar = $15, scheduling_appointments = $16,
-            idm_site_minder = $17, idm_keycloak = $18,
-            idm_active_dir = $19, other = $20
+            priority_system = $4, notification_email = $5, notification_sms = $6,
+            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
+            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
+            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
+            idm_site_minder = $16, idm_keycloak = $17,
+            idm_active_dir = $18, other = $19
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -350,10 +347,6 @@ Array [
         false,
         false,
         false,
-        undefined,
-        undefined,
-        false,
-        undefined,
         false,
         false,
         false,
@@ -361,7 +354,10 @@ Array [
         false,
         false,
         false,
-        undefined,
+        false,
+        false,
+        false,
+        false,
         false,
         "This is a test",
       ],

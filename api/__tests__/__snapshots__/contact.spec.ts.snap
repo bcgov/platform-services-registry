@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Contact event handlers A contact is updated 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        233,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        233,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        UPDATE contact
+          SET
+            first_name = $1, last_name = $2, email = $3, github_id = $4,
+            role_id = $5
+          WHERE id = 233
+          RETURNING *;",
+      "values": Array [
+        "John",
+        "Doe",
+        "john@example.com",
+        "john1100",
+        1,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Contact event handlers A contact is updated 2`] = `200`;
+
+exports[`Contact event handlers A contact is updated 3`] = `
+Object {
+  "archived": false,
+  "createdAt": "2020-09-10T18:14:13.436Z",
+  "email": "jane@example.com",
+  "firstName": "Jane",
+  "githubId": "jane1100",
+  "id": 233,
+  "lastName": "Doe",
+  "roleId": 1,
+  "updatedAt": "2020-09-10T18:14:13.436Z",
+}
+`;

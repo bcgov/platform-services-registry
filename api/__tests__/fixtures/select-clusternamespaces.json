@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "namespaceId": 149,
+        "clusterId": 1,
+        "provisioned": true,
+        "quota_cpu": "small",
+        "quota_memory": "small",
+        "quota_storage": "small"
+    },
+    {
+        "id": 2,
+        "namespaceId": 150,
+        "clusterId": 1,
+        "provisioned": true,
+        "quota_cpu": "small",
+        "quota_memory": "small",
+        "quota_storage": "small"
+    },
+    {
+        "id": 3,
+        "namespaceId": 151,
+        "clusterId": 1,
+        "provisioned": true,
+        "quota_cpu": "small",
+        "quota_memory": "small",
+        "quota_storage": "small"
+    },
+    {
+        "id": 4,
+        "namespaceId": 152,
+        "clusterId": 1,
+        "provisioned": true,
+        "quota_cpu": "small",
+        "quota_memory": "small",
+        "quota_storage": "small"
+    }
+]

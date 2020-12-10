@@ -15,6 +15,7 @@
 //
 
 import { COMPONENT_METADATA, ROLES } from '../constants';
+import { CNQuotaOptions, CNQuotas, Namespace, QuotaSizeSet } from '../types';
 
 export function transformForm(data: any) {
   const profile: any = {};
@@ -40,8 +41,7 @@ export function transformForm(data: any) {
   }
 
   if (typeof profile.prioritySystem !== 'undefined') {
-    const value = profile.prioritySystem.pop();
-    profile.prioritySystem = value === 'yes' ? true : false;
+    profile.prioritySystem = profile.prioritySystem ? true : false;
   } else {
     profile.prioritySystem = false;
   }
@@ -50,8 +50,7 @@ export function transformForm(data: any) {
     const checkboxValue: string = item.inputValue;
 
     if (typeof profile[checkboxValue] !== 'undefined') {
-      const value = profile[checkboxValue].pop();
-      profile[checkboxValue] = value === 'yes' ? true : false;
+      profile[checkboxValue] = profile[checkboxValue] ? true : false;
     } else {
       profile[checkboxValue] = false;
     }
@@ -92,12 +91,138 @@ export function isProfileProvisioned(namespaceSet: any[]): boolean {
 export function getProfileContacts(contactSet: any[]): object {
   let contacts: any = {};
   contactSet.forEach((contact: any) => {
-    if (contact.roleId === 1) {
+    if (contact.roleId === ROLES.PRODUCTOWNER) {
       contacts.POEmail = contact.email;
+      contacts.POName = contact.firstName + ' ' + contact.lastName;
+      contacts.POGithubId = contact.githubId;
+      contacts.POFirstName = contact.firstName;
+      contacts.POLastName = contact.lastName;
     }
-    if (contact.roleId === 2) {
+    if (contact.roleId === ROLES.TECHNICAL) {
       contacts.TCEmail = contact.email;
+      contacts.TCName = contact.firstName + ' ' + contact.lastName;
+      contacts.TCGithubId = contact.githubId;
+      contacts.TCFirstName = contact.firstName;
+      contacts.TCLastName = contact.lastName;
     }
   });
   return contacts;
+};
+
+
+// convert datetime string from YYYY-MM-DDTHH:MM:SSZ to DD-MM-YYYY HH:MM
+function convertDatetime(ISODatetimeString: string): string {
+  const splitted = ISODatetimeString.split('T');
+  const HHMM = splitted[1].replace(/\..+/, '').split(':');
+  HHMM.pop();
+  return splitted[0].split('-').reverse().join('-') + ' ' + HHMM.join(':');
+}
+
+export function transformJsonToCsv(objArray: any) {
+  const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+
+  array.forEach((item: any) => {
+    item.createdAt = convertDatetime(item.createdAt);
+    item.updatedAt = convertDatetime(item.updatedAt);
+  });
+
+  let str = '';
+  let line = '';
+
+  for (let index in array[0]) {
+    line += index + ',';
+  }
+
+  line = line.slice(0, -1);
+  str += line + '\r\n';
+
+  function sanitizeStringForCsv(desc: any) {
+    let itemDesc;
+    if (typeof desc !== 'string') {
+      return desc;
+    } else if (desc) {
+      itemDesc = desc.replace(/(\r\n|\n|\r|\s+|\t|&nbsp;)/gm, ' ');
+      itemDesc = itemDesc.replace(/"/g, '""');
+      itemDesc = itemDesc.replace(/ +(?= )/g, '');
+    } else {
+      itemDesc = '';
+    }
+    return itemDesc;
+  }
+
+  for (let i = 0; i < array.length; i++) {
+    line = '';
+
+    for (let index in array[i]) {
+      // eslint-disable-next-line
+      line += '"' + sanitizeStringForCsv(array[i][index]) + '"' + ',';
+    }
+
+    line = line.slice(0, -1);
+    str += line + '\r\n';
+  }
+  return str;
+};
+
+export function getProfileMinistry(ministrySet: any[], profileDetails: any): object {
+  let ministryDetails: any = {};
+  ministrySet.forEach((ministry: any) => {
+    if (ministry.id === profileDetails.busOrgId) {
+      ministryDetails.ministryName = ministry.name;
+    }
+  });
+  return ministryDetails;
+}
+
+// the following logics need to be changed when we no longer bundle all quota requests in one
+export function getCurrentQuotaSize(namespaces: Namespace[]): QuotaSizeSet | Error {
+  try {
+    return namespaces[0].clusters[0].quotas.cpu;
+  } catch (err) {
+    const msg = 'Unable to get current quota size given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+export function getLicensePlate(namespaces: Namespace[]): string | Error {
+  try {
+    return namespaces[0].name.split('-')[0];
+  } catch (err) {
+    const msg = 'Unable to get license plate given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+export function getCurrentQuotaOptions(cnQuotaOptionsList: CNQuotaOptions[], currentQuotaSize: QuotaSizeSet): QuotaSizeSet[] | [] | Error {
+  try {
+    const array: QuotaSizeSet[] = cnQuotaOptionsList[0].quotaCpu;
+    const index = array.indexOf(currentQuotaSize);
+    if (index === -1) {
+      return [];
+    } else {
+      array.splice(index, 1);
+      return array;
+    }
+  } catch (err) {
+    const msg = 'Unable to get current quota options given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+export function composeRequestBodyForQuotaEdit(requestNextSize: QuotaSizeSet, cnQuotaOptionsList: CNQuotaOptions[]): CNQuotas[] | [] | Error {
+  try {
+    return cnQuotaOptionsList.map((cnQuotaOptions: CNQuotaOptions) => {
+      const { namespaceId, clusterId } = cnQuotaOptions;
+      return {
+        namespaceId,
+        clusterId,
+        quotaCpu: requestNextSize,
+        quotaMemory: requestNextSize,
+        quotaStorage: requestNextSize,
+      };
+    });
+  } catch (err) {
+    const msg = 'Unable to compose request body for given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
 };

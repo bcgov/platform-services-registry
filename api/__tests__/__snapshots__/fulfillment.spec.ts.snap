@@ -2,6 +2,7 @@
 
 exports[`Services Provisioning context is created 1`] = `
 Object {
+  "action": "create",
   "description": "This is a cool project.",
   "displayName": "Project X",
   "namespaces": Array [
@@ -11,6 +12,11 @@ Object {
           "clusterId": 1,
           "name": "kam",
           "provisioned": false,
+          "quotas": Object {
+            "cpu": "small",
+            "memory": "small",
+            "storage": "small",
+          },
         },
       ],
       "name": "4ea35c-tools",
@@ -22,6 +28,11 @@ Object {
           "clusterId": 1,
           "name": "kam",
           "provisioned": false,
+          "quotas": Object {
+            "cpu": "small",
+            "memory": "small",
+            "storage": "small",
+          },
         },
       ],
       "name": "4ea35c-test",
@@ -33,6 +44,11 @@ Object {
           "clusterId": 1,
           "name": "kam",
           "provisioned": false,
+          "quotas": Object {
+            "cpu": "small",
+            "memory": "small",
+            "storage": "small",
+          },
         },
       ],
       "name": "4ea35c-dev",
@@ -44,6 +60,11 @@ Object {
           "clusterId": 1,
           "name": "kam",
           "provisioned": false,
+          "quotas": Object {
+            "cpu": "small",
+            "memory": "small",
+            "storage": "small",
+          },
         },
       ],
       "name": "4ea35c-prod",
@@ -61,5 +82,6 @@ Object {
     "provider": "github",
     "userId": "jim1100",
   },
+  "type": "standard",
 }
 `;

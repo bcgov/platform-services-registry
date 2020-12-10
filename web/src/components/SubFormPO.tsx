@@ -19,12 +19,12 @@ import { Input, Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import getValidator from '../utils/getValidator';
 import getDecodedToken from '../utils/TokenDecoder';
-import useValidator from '../utils/useValidator';
 import SubFormTitle from './UI/subFormTitle';
 
 const SubformPO: React.FC = () => {
-    const validator = useValidator();
+    const validator = getValidator();
 
     const { keycloak } = useKeycloak();
 
@@ -40,7 +40,7 @@ const SubformPO: React.FC = () => {
                         <Label m="0" htmlFor="po-first-name">First Name</Label>
                         <Input mt="8px" {...input} id="po-first-name" />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                        </Flex>
+                    </Flex>
                 )}
             </Field>
             <Field name="po-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={decodedToken.family_name} >
@@ -49,16 +49,16 @@ const SubformPO: React.FC = () => {
                         <Label m="0" htmlFor="po-last-name">Last Name</Label>
                         <Input mt="8px" {...input} id="po-last-name" />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                        </Flex>
+                    </Flex>
                 )}
             </Field>
-            <Field name="po-email"  validate={validator.mustBeValidEmail} defaultValue={''} initialValue={decodedToken.email} >
+            <Field name="po-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={decodedToken.email} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-email">eMail Address</Label>
                         <Input mt="8px" {...input} id="po-email" />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                        </Flex>
+                    </Flex>
                 )}
             </Field>
             <Field name="po-githubId" validate={validator.mustBeValidGithubName}>

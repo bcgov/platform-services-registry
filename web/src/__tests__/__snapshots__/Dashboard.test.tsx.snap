@@ -7,3 +7,116 @@ exports[`matches the snapshot 1`] = `
   />
 </div>
 `;
+
+exports[`matches the snapshot 2`] = `
+<div>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Download CSV
+  </button>
+  <div
+    class="css-6j9z3r"
+  >
+    <div
+      class="css-1i2ycdn"
+      style="position: relative;"
+    >
+      <a
+        href="/profile/1/overview"
+        style="color: rgb(0, 0, 0); text-decoration: none;"
+      >
+        <div
+          class="css-vlngyz"
+        >
+          <h2
+            class="css-ot5b10"
+          >
+            Health Gateway
+          </h2>
+          <h2
+            class="css-16ht1ln"
+          />
+          <p
+            class="css-xz2idv"
+          >
+            CITZ
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            Project owner:
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            jane@example.com
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            Technical contact:
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            jim@example.com
+          </p>
+        </div>
+      </a>
+    </div>
+    <div
+      class="css-1i2ycdn"
+      style="position: relative;"
+    >
+      <a
+        href="/profile/2/overview"
+        style="color: rgb(0, 0, 0); text-decoration: none;"
+      >
+        <div
+          class="css-vlngyz"
+        >
+          <h2
+            class="css-ot5b10"
+          >
+            EPIC
+          </h2>
+          <h2
+            class="css-16ht1ln"
+          >
+            <p>
+              Hello World
+            </p>
+          </h2>
+          <p
+            class="css-xz2idv"
+          >
+            CITZ
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            Project owner:
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            jane@example.com
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            Technical contact:
+          </p>
+          <p
+            class="css-1guafq4"
+          >
+            jim@example.com
+          </p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+`;

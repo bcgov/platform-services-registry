@@ -23,11 +23,12 @@ export interface Query {
   text: string;
   values?: any[];
 }
+
 export interface CommonFields {
-  id?: number,
-  archived?: boolean,
-  createdAt?: object,
-  updatedAt?: object,
+  id?: number;
+  archived?: boolean;
+  createdAt?: object;
+  updatedAt?: object;
 }
 
 export abstract class Model {

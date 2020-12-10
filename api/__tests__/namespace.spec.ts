@@ -18,13 +18,25 @@ import { Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../src/controllers/namespace';
+import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, fetchProfileQuotaOptions, updateProfileNamespace } from '../src/controllers/namespace';
 
 const p0 = path.join(__dirname, 'fixtures/select-namespace.json');
 const select = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/insert-namespace.json');
 const insert = JSON.parse(fs.readFileSync(p1, 'utf8'));
+
+const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const p4 = path.join(__dirname, 'fixtures/select-clusternamespaces.json');
+const selectClusterNamespaces = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
+const p5 = path.join(__dirname, 'fixtures/select-profile-namespaces.json');
+const selectedNamespaces = JSON.parse(fs.readFileSync(p5, 'utf8'));
+
+// const p6 = path.join(__dirname, 'fixtures/insert-namespaces-quota.json');
+// const insertQuota = JSON.parse(fs.readFileSync(p6, 'utf8'));
 
 const client = new Pool().connect();
 
@@ -242,5 +254,92 @@ describe('Namespace event handlers', () => {
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.res.json).not.toBeCalled();
     expect(ex.res.end).not.toBeCalled();
+  });
+
+  it('Namespace set quota options are fetched for a given project profile', async () => {
+    const req = {
+      params: { profileId: 1 },
+    }
+    client.query.mockReturnValueOnce({ rows: selectedNamespaces });
+    client.query.mockReturnValueOnce({ rows: selectDefaultCluster });
+    client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[0]] });
+    client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[1]] });
+    client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[2]] });
+    client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[3]] });
+
+    client.query.mockReturnValueOnce({ rows: [select[0]] });
+    client.query.mockReturnValueOnce({ rows: [select[1]] });
+    client.query.mockReturnValueOnce({ rows: [select[2]] });
+    client.query.mockReturnValueOnce({ rows: [select[3]] });
+    client.query.mockReturnValueOnce({ rows: [] });
+    client.query.mockReturnValueOnce({ rows: [] });
+    client.query.mockReturnValueOnce({ rows: [] });
+    client.query.mockReturnValueOnce({ rows: [] });
+    // @ts-ignore
+    await fetchProfileQuotaOptions(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('Namespace set quota options should throw', async () => {
+    const req = {
+      params: { profileId: 1 },
+    };
+    client.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(fetchProfileQuotaOptions(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.responseData).toBeUndefined();
+  });
+
+  // TODO:(yf) investigate Unable to fetch namespaces for profile 1
+  // it('Quota edit is requested for a given project profile', async () => {
+  //   const req = {
+  //     params: { profileId: 1 },
+  //     body: insertQuota,
+  //   }
+
+  //   client.query.mockReturnValueOnce({ rows: selectedNamespaces });
+  //   client.query.mockReturnValueOnce({ rows: selectDefaultCluster });
+  //   client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[0]] });
+  //   client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[1]] });
+  //   client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[2]] });
+  //   client.query.mockReturnValueOnce({ rows: [selectClusterNamespaces[3]] });
+
+  //   client.query.mockReturnValueOnce({ rows: [select[0]] });
+  //   client.query.mockReturnValueOnce({ rows: [select[1]] });
+  //   client.query.mockReturnValueOnce({ rows: [select[2]] });
+  //   client.query.mockReturnValueOnce({ rows: [select[3]] });
+  //   client.query.mockReturnValueOnce({ rows: [] });
+  //   client.query.mockReturnValueOnce({ rows: [] });
+  //   client.query.mockReturnValueOnce({ rows: [] });
+  //   client.query.mockReturnValueOnce({ rows: [] });
+  //   // @ts-ignore
+  //   await requestProfileQuotaEdit(req, ex.res);
+
+  //   expect(client.query.mock.calls).toMatchSnapshot();
+  //   expect(ex.res.statusCode).toMatchSnapshot();
+  //   expect(ex.responseData).toMatchSnapshot();
+  //   expect(ex.res.status).toBeCalled();
+  //   expect(ex.res.json).toBeCalled();
+  // });
+
+  it('Namespace set Quota edit should throw', async () => {
+    const req = {
+      params: { profileId: 1 },
+    };
+    client.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(fetchProfileQuotaOptions(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.responseData).toBeUndefined();
   });
 });

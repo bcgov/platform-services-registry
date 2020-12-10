@@ -24,7 +24,8 @@ export default {
     bclightblue: '#355991',
     primary: '#036',
     contrast: '#fff',
-    grey: '#A9A9A9'
+    grey: '#A9A9A9',
+    black: '#000000'
   },
   spacingIncrements: ['30px', '60px', "120px"],
   zIndices: [0, 1, 10, 100, 1000],

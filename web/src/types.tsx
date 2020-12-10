@@ -32,3 +32,45 @@ export interface MenuItem {
   onClickCB?: MouseEventHandler<React.ReactNode>;
   handleOnClick?: MouseEventHandler<React.ReactNode>;
 }
+
+export type QuotaSizeSet
+  = 'small'
+  | 'medium'
+  | 'large'
+
+interface ClusterNamespace {
+  clusterId: string;
+  namespaceId: string;
+  provisioned?: boolean;
+}
+
+export interface CNQuotas extends ClusterNamespace {
+  quotaCpu: QuotaSizeSet;
+  quotaMemory: QuotaSizeSet;
+  quotaStorage: QuotaSizeSet;
+}
+
+export interface CNQuotaOptions extends ClusterNamespace {
+  quotaCpu: QuotaSizeSet[] | [];
+  quotaMemory: QuotaSizeSet[] | [];
+  quotaStorage: QuotaSizeSet[] | [];
+}
+
+export interface NamespaceCNQuotaObj {
+  cpu: QuotaSizeSet;
+  memory: QuotaSizeSet;
+  storage: QuotaSizeSet;
+}
+
+export interface NamespaceCN {
+  clusterId: string;
+  name: string;
+  provisioned: boolean;
+  quotas: NamespaceCNQuotaObj;
+}
+
+export interface Namespace {
+  namespaceId: string;
+  name: string;
+  clusters: NamespaceCN[];
+}

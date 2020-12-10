@@ -20,12 +20,12 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface Cluster extends CommonFields {
-  name: string,
-  description: string,
-  disasterRecovery: boolean,
-  onPrem: boolean
-  onHardware: boolean
-  isDefault: boolean
+  name: string;
+  description: string;
+  disasterRecovery: boolean;
+  onPrem: boolean;
+  onHardware: boolean;
+  isDefault: boolean;
 }
 
 export default class CusterModel extends Model {
@@ -90,7 +90,7 @@ export default class CusterModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async update(clusterId: number, data: Cluster): Promise<Cluster> {
     const query = {
@@ -121,7 +121,7 @@ export default class CusterModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async delete(clusterId: number): Promise<Cluster> {
     const query = {
@@ -147,5 +147,5 @@ export default class CusterModel extends Model {
 
       throw err;
     }
-  };
+  }
 }

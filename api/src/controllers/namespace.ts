@@ -21,6 +21,10 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { RequestEditType } from '../db/model/request';
+import { AuthenticatedUser } from '../libs/authmware';
+import { fulfillNamespaceEdit } from '../libs/fulfillment';
+import { getNamespaceSet, getNamespaceSetQuotaOptions, mergeRequestedCNToNamespaceSet, validateQuotaRequestBody } from '../libs/quota-editing';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
@@ -125,6 +129,76 @@ export const archiveProfileNamespace = async (
     const message = `Unable to archive profile ${profileId} namespace ${namespaceId}`;
     logger.error(`${message}, err = ${err.message}`);
 
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchProfileQuotaOptions = async (
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  try {
+    // process request params to get namespaces
+    const { profileId, clusterName } = params;
+    const namespaces = await getNamespaceSet(profileId, user);
+    if (!namespaces) {
+      const errmsg = `Cant fetch namespaces for user ${user.id}`;
+      throw new Error(errmsg);
+    }
+
+    // fetch quota options for namespaces with an optional cluster name
+    const quotaOptions = await getNamespaceSetQuotaOptions(namespaces, clusterName);
+    res.status(200).json(quotaOptions);
+  } catch (err) {
+    const message = `Unable to fetch quota options`;
+    logger.error(`${message}, err = ${err.message}`);
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const requestProfileQuotaEdit = async (
+  { params, user, body }: { params: any, user: AuthenticatedUser, body: any }, res: Response
+): Promise<void> => {
+  const { RequestModel } = dm;
+  try {
+    // process request params to get namespaces
+    const { profileId, clusterName } = params;
+    const namespaces = await getNamespaceSet(profileId, user);
+    if (!namespaces) {
+      const errmsg = `Cant fetch namespaces for user ${user.id}`;
+      throw new Error(errmsg);
+    }
+
+    // process request body for validation
+    const quotaOptions = await getNamespaceSetQuotaOptions(namespaces, clusterName);
+    if (!quotaOptions) {
+      const errmsg = `Cant fetch quota options for user ${user.id}`;
+      throw new Error(errmsg);
+    }
+    const rv = validateQuotaRequestBody(quotaOptions, body);
+    if (rv) {
+      throw rv;
+    }
+
+    // create a request record and send nats message
+    const editObject = await mergeRequestedCNToNamespaceSet(body, namespaces, clusterName);
+    if (!editObject) {
+      const errmsg = 'Cant generate request edit object';
+      throw new Error(errmsg);
+    }
+    const editType = RequestEditType.Namespaces;
+
+    const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+    await RequestModel.create({
+      profileId,
+      editType,
+      editObject: JSON.stringify(editObject),
+      natsSubject,
+      natsContext: JSON.stringify(natsContext),
+    })
+    res.status(204).end();
+  } catch (err) {
+    const message = `Unable to update quota`;
+    logger.error(`${message}, err = ${err.message}`);
     throw errorWithCode(message, 500);
   }
 };

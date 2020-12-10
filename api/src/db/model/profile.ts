@@ -20,28 +20,28 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export interface ProjectProfile extends CommonFields {
-  name: string,
-  description: string,
-  busOrgId: number,
-  userId: number,
-  namespacePrefix: string,
-  prioritySystem?: boolean,
-  criticalSystem?: boolean,
-  notificationEmail?: boolean,
-  notificationSms?: boolean,
-  notificationMsTeams?: boolean,
-  paymentBambora?: boolean,
-  paymentPayBc?: boolean,
-  fileTransfer?: boolean,
-  fileStorage?: boolean,
-  geoMappingWeb?: boolean,
-  geoMappingLocation?: boolean,
-  schedulingCalendar?: boolean,
-  schedulingAppointments?: boolean,
-  idmSiteMinder?: boolean,
-  idmKeycloak?: boolean,
-  idmActiveDir?: boolean,
-  other: string,
+  name: string;
+  description: string;
+  busOrgId: number;
+  userId: number;
+  namespacePrefix: string;
+  prioritySystem?: boolean;
+  criticalSystem?: boolean;
+  notificationEmail?: boolean;
+  notificationSms?: boolean;
+  notificationMsTeams?: boolean;
+  paymentBambora?: boolean;
+  paymentPayBc?: boolean;
+  fileTransfer?: boolean;
+  fileStorage?: boolean;
+  geoMappingWeb?: boolean;
+  geoMappingLocation?: boolean;
+  schedulingCalendar?: boolean;
+  schedulingAppointments?: boolean;
+  idmSiteMinder?: boolean;
+  idmKeycloak?: boolean;
+  idmActiveDir?: boolean;
+  other: string;
 }
 
 export default class ProfileModel extends Model {
@@ -142,13 +142,12 @@ export default class ProfileModel extends Model {
         UPDATE ${this.table}
           SET
             name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, critical_system = $5,
-            notification_email = $6, notification_sms = $7, notification_ms_teams = $8,
-            payment_bambora = $9, payment_pay_bc = $10, file_transfer = $11,
-            file_storage = $12, geo_mapping_web = $13, geo_mapping_location = $14,
-            scheduling_calendar = $15, scheduling_appointments = $16,
-            idm_site_minder = $17, idm_keycloak = $18,
-            idm_active_dir = $19, other = $20
+            priority_system = $4, notification_email = $5, notification_sms = $6,
+            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
+            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
+            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
+            idm_site_minder = $16, idm_keycloak = $17,
+            idm_active_dir = $18, other = $19
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -161,25 +160,23 @@ export default class ProfileModel extends Model {
         aData.name,
         aData.description,
         aData.busOrgId,
-        aData.criticalSystem,
-        aData.prioritySystem,
-        aData.notificationEmail,
-        aData.notificationSms,
-        aData.notificationMsTeams,
-        aData.paymentBambora,
-        aData.paymentPayBc,
-        aData.fileTransfer,
-        aData.fileStorage,
-        aData.geoMappingWeb,
-        aData.geoMappingLocation,
-        aData.schedulingCalendar,
-        aData.schedulingAppointments,
-        aData.idmSiteMinder,
-        aData.idmKeycloak,
-        aData.idmActiveDir,
+        aData.prioritySystem ? aData.prioritySystem : false,
+        aData.notificationEmail ? aData.notificationEmail : false,
+        aData.notificationSms ? aData.notificationSms : false,
+        aData.notificationMsTeams ? aData.notificationMsTeams : false,
+        aData.paymentBambora ? aData.paymentBambora : false,
+        aData.paymentPayBc ? aData.paymentPayBc : false,
+        aData.fileTransfer ? aData.fileTransfer : false,
+        aData.fileStorage ? aData.fileStorage : false,
+        aData.geoMappingWeb ? aData.geoMappingWeb : false,
+        aData.geoMappingLocation ? aData.geoMappingLocation : false,
+        aData.schedulingCalendar ? aData.schedulingCalendar : false,
+        aData.schedulingAppointments ? aData.schedulingAppointments : false,
+        aData.idmSiteMinder ? aData.idmSiteMinder : false,
+        aData.idmKeycloak ? aData.idmKeycloak : false,
+        aData.idmActiveDir ? aData.idmActiveDir : false,
         aData.other,
       ];
-
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
@@ -188,7 +185,7 @@ export default class ProfileModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async delete(profileId): Promise<ProjectProfile> {
     const query = {
@@ -210,7 +207,7 @@ export default class ProfileModel extends Model {
 
       throw err;
     }
-  };
+  }
 
   async addContactToProfile(profileId: number, contactId: number): Promise<void> {
     const values: any[] = [];

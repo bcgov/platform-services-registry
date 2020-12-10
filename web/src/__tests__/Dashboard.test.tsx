@@ -15,8 +15,12 @@
 //
 
 import { render, waitFor } from '@testing-library/react';
+import { createBrowserHistory } from 'history';
 import React from 'react';
+import { Router } from 'react-router-dom';
 import Dashboard from '../views/Dashboard';
+
+const browserHistory = createBrowserHistory();
 
 // TODO: use fixtures and make them work with jest mock values
 jest.mock('../utils/useRegistryApi', () => {
@@ -75,7 +79,56 @@ jest.mock('../utils/useRegistryApi', () => {
       ]
     });
 
-    return { getProfile, getContactsByProfileId };
+    const getNamespaceByProfileId = jest.fn().mockResolvedValue({
+      data: [
+        {
+          "namespaceId": 149,
+          "name": "4ea35c-tools",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 151,
+          "name": "4ea35c-test",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 150,
+          "name": "4ea35c-dev",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 152,
+          "name": "4ea35c-prod",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "kam",
+              "provisioned": true
+            }
+          ]
+        }
+      ]
+    });
+
+    return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
   }
 });
 
@@ -84,7 +137,9 @@ function renderDashboard() {
   const stubCloseBackdropCB = jest.fn();
 
   const utils = render(
-    <Dashboard openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+    <Router history={browserHistory} >
+      <Dashboard openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+    </Router>
   );
 
   return { ...utils };

@@ -21,6 +21,7 @@ import ContactModel from './model/contact';
 import MinistryModel from './model/ministry';
 import NamespaceModel from './model/namespace';
 import ProfileModel from './model/profile';
+import RequestModel from './model/request';
 import UserProfileModel from './model/userprofile';
 
 export default class DataManager {
@@ -31,6 +32,7 @@ export default class DataManager {
   UserProfileModel: UserProfileModel;
   ClusterModel: ClusterModel;
   MinistryModel: MinistryModel;
+  RequestModel: RequestModel;
 
   constructor(pool: Pool) {
     this.pool = pool;
@@ -40,5 +42,6 @@ export default class DataManager {
     this.UserProfileModel = new UserProfileModel(pool);
     this.ClusterModel = new ClusterModel(pool);
     this.MinistryModel = new MinistryModel(pool);
+    this.RequestModel = new RequestModel(pool);
   }
 }

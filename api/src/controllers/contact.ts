@@ -47,3 +47,47 @@ export const createContact = async (
     throw errorWithCode(message, 500);
   }
 };
+
+export const updateContact = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
+  const { ContactModel } = dm;
+  const { contactId } = params;
+  const {
+    firstName,
+    lastName,
+    email,
+    githubId,
+  } = body;
+
+  try {
+    const record = await ContactModel.findById(contactId);
+    const aBody = {
+      userId: record.userId,
+      firstName,
+      lastName,
+      email,
+      githubId,
+      roleId: record.roleId,
+    };
+
+    const rv = validateObjProps(ContactModel.requiredFields, aBody);
+
+    if (rv) {
+      throw rv;
+    }
+
+    const results = await ContactModel.update(contactId, aBody);
+
+    res.status(200).json(results);
+  } catch (err) {
+    if (err.code) {
+      throw err
+    }
+
+    const message = `Unable update contact ID ${contactId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};

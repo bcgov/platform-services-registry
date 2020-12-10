@@ -14,36 +14,16 @@
 // limitations under the License.
 //
 
-import styled from '@emotion/styled';
 import { Checkbox, Input, Label } from '@rebass/forms';
 import React, { useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex, Text } from 'rebass';
-import useValidator from '../utils/useValidator';
+import getValidator from '../utils/getValidator';
+import { StyledFormButton, StyledFormDisabledButton } from './UI/button';
 import SubFormTitle from './UI/subFormTitle';
 
-const StyledButton = styled.button`
-    margin-top: 20px;
-    width: 50%;
-    height: 60px;
-    border-radius: 5px;
-    background-color: #036;
-    color: #FFFFFF;
-    font-size: 24px;
-`;
-
-const StyledDisabledButton = styled.button`
-    margin-top: 20px;
-    width: 50%;
-    height: 60px;
-    border-radius: 5px;
-    background-color: #d3d3d3;
-    color: #FFFFFF;
-    font-size: 24px;
-`;
-
 const SubformTC: React.FC = () => {
-    const validator = useValidator();
+    const validator = getValidator();
 
     const [boxChecked, setBoxChecked] = useState(false);
 
@@ -93,7 +73,8 @@ const SubformTC: React.FC = () => {
                 <Text px='20px'>By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the {<a rel="noopener noreferrer" href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!" target="_blank">Onboarding Guide</a>}.</Text>
             </Label>
 
-            {boxChecked ? (<StyledButton className="misc-class-m-form-submit-btn" type="submit">Request</StyledButton>) : (<StyledDisabledButton disabled type="submit">Request</StyledDisabledButton>)}
+            {/* @ts-ignore */}
+            {boxChecked ? (<StyledFormButton type="submit">Request</StyledFormButton>) : (<StyledFormDisabledButton>Request</StyledFormDisabledButton>)}
         </div >
     );
 };
