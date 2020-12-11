@@ -42,6 +42,7 @@ ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO ref_role (name, description) VALUES
   ('Product Owner', 'The business owner of this product'),
-  ('Technical Contact', 'Technical contact or DevOps specialist');
+  ('Technical Contact', 'Technical contact or DevOps specialist')
+ON CONFLICT (name) DO NOTHING;
 
 END TRANSACTION;

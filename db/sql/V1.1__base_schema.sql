@@ -109,7 +109,8 @@ CREATE TABLE IF NOT EXISTS ref_role (
     name              VARCHAR(32) NOT NULL,
     description       VARCHAR(256),
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3)
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+    UNIQUE            (name)
 );
 
 DROP TRIGGER IF EXISTS update_ref_role_changetimestamp on ref_role;

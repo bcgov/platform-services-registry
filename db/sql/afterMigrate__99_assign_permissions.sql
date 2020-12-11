@@ -33,3 +33,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE profile_contact
 TO ${username};
 GRANT USAGE ON SEQUENCE profile_contact_id_seq
 TO ${username};
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE request
+TO ${username};
+GRANT USAGE ON SEQUENCE request_id_seq
+TO ${username};
