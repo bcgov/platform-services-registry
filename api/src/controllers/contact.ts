@@ -91,3 +91,15 @@ export const updateContact = async (
     throw errorWithCode(message, 500);
   }
 };
+
+export const requestContactEdit = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
+  try {
+    res.status(201).end();
+  } catch (err) {
+    const message = `Unable to update quota`;
+    logger.error(`${message}, err = ${err.message}`);
+    throw errorWithCode(message, 500);
+  }
+};
