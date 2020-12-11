@@ -23,6 +23,7 @@ import express from 'express';
 import { requestContactEdit } from '../../controllers/contact';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, fetchProfileQuotaOptions, requestProfileQuotaEdit, updateProfileNamespace } from '../../controllers/namespace';
 import { addContactToProfile, archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProfileContacts, fetchProjectProfile, updateProjectProfile } from '../../controllers/profile';
+
 const router = express.Router();
 
 // Profiles
