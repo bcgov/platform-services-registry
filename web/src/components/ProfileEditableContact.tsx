@@ -48,7 +48,9 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
             if (!profileId) {
                 throw new Error(`'Unable to get profile id'`);
             }
+            //TODO: Remove console.log after duplicate testing is complete
             console.log(updatedContacts)
+            
             // 1. Update the project contacts.
             await api.requestContactEdit(profileId, updatedContacts);
 
