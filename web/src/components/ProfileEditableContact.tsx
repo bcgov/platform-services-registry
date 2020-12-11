@@ -27,7 +27,7 @@ import useRegistryApi from '../utils/useRegistryApi';
 import SubFormTitle from './UI/subFormTitle';
 
 interface IProfileEditableContactProps {
-    profileDetails: any;
+    profileId?: string;
     contactDetails: any;
     openBackdropCB: () => void;
     closeBackdropCB: () => void;
@@ -36,35 +36,36 @@ interface IProfileEditableContactProps {
 const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) => {
     const api = useRegistryApi();
     const validator = getValidator();
-    const { profileDetails, contactDetails, openBackdropCB, closeBackdropCB } = props;
+    const { profileId, contactDetails, openBackdropCB, closeBackdropCB } = props;
 
     const [goBackToProfileOverview, setGoBackToProfileEditable] = useState<boolean>(false);
-
+    
     const onSubmit = async (formData: any) => {
-        // TODO: Add logic to transform formdata to what is necessary for API
-        const { updatedContacts } = transformForm(formData);
+        const { productOwner, technicalContact } = transformForm(formData);
+        const updatedContacts = { productOwner, technicalContact }
         openBackdropCB();
         try {
+            if (!profileId) {
+                throw new Error(`'Unable to get profile id'`);
+            }
             console.log(updatedContacts)
             // 1. Update the project contacts.
-            await api.requestContactEdit(updatedContacts);
+            await api.requestContactEdit(profileId, updatedContacts);
 
             closeBackdropCB();
             setGoBackToProfileEditable(true);
-  
             // 2. All good? Tell the user.
             promptSuccessToastWithText('Your profile update was successful');
-            window.location.reload()
         } catch (err) {
             closeBackdropCB();
             promptErrToastWithText('Something went wrong');
             console.log(err);
         }
     };
-      if (goBackToProfileOverview) {
-          // TODO:(yh) refactor here so as to use constants
-          return (<Redirect to={`/profile/${profileDetails.id}/overview`} />);
-      }
+    if (goBackToProfileOverview) {
+        // TODO:(yh) refactor here so as to use constants
+        return (<Redirect to={`/profile/${profileId}/overview`} />);
+    }
 
     return (
         <>
@@ -78,8 +79,12 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
           {props => (
               <form onSubmit={props.handleSubmit} >
             <SubFormTitle>Who is the product owner for this project?</SubFormTitle>
-
-            <Field name="po-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.POFirstName} >
+            <Field name="po-id" initialValue={contactDetails.POId} >
+                {({ input }) => (
+                    <input type="hidden" {...input} id="po-Id" />
+                )}
+            </Field>
+            <Field name="po-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.POFirstName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-first-name">First Name</Label>
@@ -88,7 +93,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="po-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.POLastName} >
+            <Field name="po-lastName" validate={validator.mustBeValidName} initialValue={contactDetails.POLastName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-last-name">Last Name</Label>
@@ -97,7 +102,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="po-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={contactDetails.POEmail} >
+            <Field name="po-email" validate={validator.mustBeValidEmail} initialValue={contactDetails.POEmail} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-email">eMail Address</Label>
@@ -106,7 +111,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="po-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={contactDetails.POGithubId} >
+            <Field name="po-githubId" validate={validator.mustBeValidGithubName} initialValue={contactDetails.POGithubId} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="po-github-id">GitHub ID</Label>
@@ -117,8 +122,12 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
             </Field>
 
             <SubFormTitle>Who is the technical contact for this project?</SubFormTitle>
-
-            <Field name="tc-firstName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.TCFirstName} >
+            <Field name="tc-id" initialValue={contactDetails.TCId} >
+                {({ input }) => (
+                    <Input type="hidden" {...input} id="tc-Id" />
+                )}
+            </Field>
+            <Field name="tc-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.TCFirstName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-first-name">First Name</Label>
@@ -127,7 +136,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-lastName" validate={validator.mustBeValidName} defaultValue={''} initialValue={contactDetails.TCLastName} >
+            <Field name="tc-lastName" validate={validator.mustBeValidName} initialValue={contactDetails.TCLastName} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-last-name">Last Name</Label>
@@ -136,7 +145,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-email" validate={validator.mustBeValidEmail} defaultValue={''} initialValue={contactDetails.TCEmail} >
+            <Field name="tc-email" validate={validator.mustBeValidEmail} initialValue={contactDetails.TCEmail} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-email">eMail Address</Label>
@@ -145,7 +154,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            <Field name="tc-githubId" validate={validator.mustBeValidGithubName} defaultValue={''} initialValue={contactDetails.TCGithubId} >
+            <Field name="tc-githubId" validate={validator.mustBeValidGithubName} initialValue={contactDetails.TCGithubId} >
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="tc-github-id">GitHub ID</Label>
