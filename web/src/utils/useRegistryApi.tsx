@@ -57,8 +57,8 @@ export default function useRegistryApi() {
     return api.post('contact', contact);
   };
 
-  const requestContactEdit = async (contact: any): Promise<AxiosResponse<any>> => {
-    return api.post(`contact/edit`, contact);
+  const requestContactEdit = async (profileId: string, requestedContacts: any): Promise<AxiosResponse<any>> => {
+    return api.post(`profile/${profileId}/contact-edit`, requestedContacts);
   };
 
   const linkContactToProfileById = async (profileId: string, contactId: string): Promise<AxiosResponse<any>> => {
