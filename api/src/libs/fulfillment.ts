@@ -33,6 +33,7 @@ export interface Context {
 export const enum FulfillmentContextAction {
   Create = 'create',
   Edit = 'edit',
+  Sync = 'sync',
 };
 
 const enum FulfillmentContextType {

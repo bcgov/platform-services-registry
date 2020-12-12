@@ -73,7 +73,7 @@ export const getProvisionedProfileBotJson = async (
       throw new Error(errmsg);
     }
 
-    const context = await contextForProvisioning(profileId, FulfillmentContextAction.Edit);
+    const context = await contextForProvisioning(profileId, FulfillmentContextAction.Sync);
 
     res.status(200).json(context);
   } catch (err) {
