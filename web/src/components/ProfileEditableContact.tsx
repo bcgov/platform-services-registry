@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
-import { StyledFormButton } from '../components/UI/button';
+import { StyledFormButton, StyledFormDisabledButton } from '../components/UI/button';
 import getValidator from '../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformForm } from '../utils/transformDataHelper';
@@ -29,12 +29,14 @@ import SubFormTitle from './UI/subFormTitle';
 interface IProfileEditableContactProps {
     profileId?: string;
     contactDetails: any;
+    pendingEditRequest: boolean;
+    setPendingEditRequest: any;
     openBackdropCB: () => void;
     closeBackdropCB: () => void;
 }
 
 const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) => {
-    const { profileId, contactDetails, openBackdropCB, closeBackdropCB } = props;
+    const { profileId, contactDetails, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
 
     const api = useRegistryApi();
     
@@ -58,6 +60,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
             // 2. All good? Redirect back to overview and tell the user.
             closeBackdropCB();
             setGoBackToProfileEditable(true);
+            setPendingEditRequest(true);
             promptSuccessToastWithText('Your profile update was successful');
         } catch (err) {
             closeBackdropCB();
@@ -166,8 +169,16 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                             </Flex>
                         )}
                     </Field>
-                    {/* @ts-ignore */}
-                    <StyledFormButton style={{ display: 'block' }}>Update Profile</StyledFormButton>
+                    {pendingEditRequest === false ? (
+                    //@ts-ignore
+                    <StyledFormButton style={{ display: 'block' }} >Request Quota</StyledFormButton>
+                    ) : (
+                        <>
+                            {/* @ts-ignore */}
+                            <StyledFormDisabledButton style={{ display: 'block' }}>Request Quota</StyledFormDisabledButton>
+                            <Label as="span" variant="errorLabel" >Not available due to a pending edit request</Label>
+                        </>
+                    )}
                 </form>
             )}
           </Form>
