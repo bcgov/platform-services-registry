@@ -140,8 +140,8 @@ export const fetchProfileQuotaOptions = async (
     // process request params to get namespaces
     const { profileId, clusterName } = params;
     const namespaces = await getNamespaceSet(profileId, user);
-    if (!namespaces) {
-      const errmsg = `Cant fetch namespaces for user ${user.id}`;
+    if (namespaces.length === 0) {
+      const errmsg = `No fetched namespaces for user ${user.id}`;
       throw new Error(errmsg);
     }
 
@@ -163,8 +163,8 @@ export const requestProfileQuotaEdit = async (
     // process request params to get namespaces
     const { profileId, clusterName } = params;
     const namespaces = await getNamespaceSet(profileId, user);
-    if (!namespaces) {
-      const errmsg = `Cant fetch namespaces for user ${user.id}`;
+    if (namespaces.length === 0) {
+      const errmsg = `No fetched namespaces for user ${user.id}`;
       throw new Error(errmsg);
     }
 

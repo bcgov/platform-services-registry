@@ -21,12 +21,13 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
+import { ProjectNamespace } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { getDefaultCluster, processProfileNamespacesEditType } from '../libs/quota-editing';
+import { getDefaultCluster, isNamespaceSetProvisioned } from '../libs/namespace-set';
+import { processProfileNamespacesEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -91,25 +92,13 @@ export const provisionCallbackHandler = async (
       }
     }
 
-    const promises: Promise<ClusterNamespace>[] = [];
-    namespaces.forEach(namespace => {
-      // @ts-ignore
-      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, cluster.id));
-    });
-    const clusterNamespaces = await Promise.all(promises);
-
-    // check provisioning status and process accordingly
-    const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
-      return clusterNamespace.provisioned;
-    });
-    if (flags.every(f => f === true)) {
+    const result = await isNamespaceSetProvisioned(namespaces, cluster);
+    if (result) {
       await updateProfileEdit(profile);
       res.status(202).end();
-    } else if (flags.every(f => f === false)) {
+    } else {
       await updateProvisionedNamespaces(namespaces, profile);
       res.status(202).end();
-    } else {
-      throw new Error(`Need to fix project namespace set under profile ID ${profile.id}`);
     }
   } catch (err) {
     const message = `Unable to update namespace status`;
