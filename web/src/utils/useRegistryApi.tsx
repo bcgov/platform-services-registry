@@ -93,6 +93,10 @@ export default function useRegistryApi() {
     return api.post(`profile/${profileId}/quota-edit`, requstedQuotas);
   };
 
+  const getEditRequestStatus = async (profileId:string): Promise<AxiosResponse<any>> => {
+    return api.get(`profile/${profileId}/request`);
+  };
+  
   return {
     getMinistry,
     getProfile,
@@ -108,5 +112,6 @@ export default function useRegistryApi() {
     getNamespacesByProfileId,
     getCNQuotaOptionsByProfileId,
     requestCNQuotasByProfileId,
+    getEditRequestStatus,
   };
 };
