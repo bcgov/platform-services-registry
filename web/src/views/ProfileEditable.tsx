@@ -30,6 +30,7 @@ import theme from '../theme';
 import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry } from '../utils/transformDataHelper';
+import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
 
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
@@ -56,6 +57,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [cnQuotaOptionsJson, setCnQuotaOptionsJson] = useState<CNQuotaOptions[]>([]);
     const [quotaOptions, setQuotaOptions] = useState<QuotaSizeSet[]>([]);
     const [quotaSubmitRefresh, setQuotaSubmitRefresh] = useState<any>(0);
+
+    const [pendingEditRequest, setPendingEditRequest] = useState(true)
 
     const handleQuotaSubmitRefresh = () => {
         setQuotaSubmitRefresh(quotaSubmitRefresh + 1);
@@ -111,6 +114,37 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         }
         wrap();
     }, [namespacesJson, cnQuotaOptionsJson, quotaSubmitRefresh]);
+    
+    //TODO implement interval to check editrequeststatus
+    useEffect(() => {
+        async function wrap() {
+            const editRequest = await api.getEditRequestStatus(profileId);
+            if (editRequest.data.length === 0){
+                try {
+                    setPendingEditRequest(false);
+                } catch (err) {
+                    promptErrToastWithText(err.message);
+                }
+            }
+        }
+        wrap();
+        // eslint-disable-next-line
+    }, []);
+
+    // start polling for profile provision status changes every 30s
+    useInterval(() => {
+        async function wrap() {
+            const editRequest = await api.getEditRequestStatus(profileId);
+            if (editRequest.data.length === 0){
+                try {
+                    setPendingEditRequest(false);
+                } catch (err) {
+                    promptErrToastWithText(err.message);
+                }
+            }
+        }
+        wrap();
+    }, 1000 * 30);
 
     if (initialRender) {
         return null;
@@ -136,9 +170,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Project Information
                             </Text>
+                            { (pendingEditRequest === false) &&
                                 <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/project`}>
                                     <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                                 </RouterLink>
+                            }
                             </Flex>
                             <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                                 <ProfileDetailCard title={profileJson.name} textBody={profileJson.description} ministry={profileJson.ministryName} />
@@ -149,9 +185,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Contact Information
                             </Text>
+                            { (pendingEditRequest === false) &&
                                 <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
                                     <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                                 </RouterLink>
+                            }
                             </Flex>
                             <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
                                 <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} POGithubId={contactJson.POGithubId} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} TCGithubId={contactJson.TCGithubId} />
@@ -162,9 +200,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Quota Information
                                 </Text>
+                            { (pendingEditRequest === false) &&
                                 <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/quota`}>
                                     <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                                 </RouterLink>
+                            }
                             </Flex>
                             <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                                 <QuotaCard licensePlate={licensePlate} quotaSize={quotaSize} />
@@ -200,6 +240,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <ProfileEditableContact
                                     profileId={profileId}
                                     contactDetails={contactJson}
+                                    pendingEditRequest={pendingEditRequest}
+                                    setPendingEditRequest={setPendingEditRequest}
                                     openBackdropCB={openBackdropCB}
                                     closeBackdropCB={closeBackdropCB}
                                 />
