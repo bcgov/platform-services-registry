@@ -171,11 +171,11 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                     </Field>
                     {pendingEditRequest === false ? (
                     //@ts-ignore
-                    <StyledFormButton style={{ display: 'block' }} >Request Quota</StyledFormButton>
+                    <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
                     ) : (
                         <>
                             {/* @ts-ignore */}
-                            <StyledFormDisabledButton style={{ display: 'block' }}>Request Quota</StyledFormDisabledButton>
+                            <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
                             <Label as="span" variant="errorLabel" >Not available due to a pending edit request</Label>
                         </>
                     )}
