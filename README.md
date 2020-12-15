@@ -36,7 +36,7 @@ There are lots of moving parts in the registry even though its a relatively simp
 
 **ProTip** 🤓
 
-All components should have the same label that can be used to remove them. This is usefull in dev and test so that multiple deployments can be tested from a clean working namespace:
+All components should have the same label that can be used to remove them. This is useful in dev and test so that multiple deployments can be tested from a clean working namespace:
 
 ```console
 oc delete all,nsp,en,pvc,sa,secret,role,rolebinding \
@@ -63,7 +63,7 @@ oc process -f openshift/templates/nsp-tools.yaml \
   oc apply -f -
 ```
 
-Then, in each of the other namespaces run the application specific NSP. It will allow each component to talk to one another as necessary. To accommodate the different configuration of NATS in dev and test vs prod some parameters are quired by the OCP template:
+Then, in each of the other namespaces run the application specific NSP. It will allow each component to talk to one another as necessary. To accommodate the different configuration of NATS in dev and test vs prod some parameters are required by the OCP template:
 
 ```console
 oc process -f openshift/templates/nsp.yaml \

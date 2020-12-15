@@ -99,7 +99,7 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
     });
 
     logger.info(`Sending NATS message for ${profileId}`);
-    nc.publish(natsSubject, natsContext);
+    nc.publish(natsSubject, JSON.stringify(natsContext));
     logger.info(`NATS Message sent for ${profileId}`);
 
     nc.flush(() => {
