@@ -21,15 +21,19 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { Contact } from '../db/model/contact';
+import { Request, RequestEditType } from '../db/model/request';
+import { fulfillNamespaceEdit } from '../libs/fulfillment';
 import shared from '../libs/shared';
-import { validateObjProps } from '../libs/utils';
+import { formatNatsContactObject, validateObjProps } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
+const { ContactModel, RequestModel } = dm;
+const whichService = 'contact editing';
 
 export const createContact = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
-  const { ContactModel } = dm;
 
   const rv = validateObjProps(ContactModel.requiredFields, body);
   if (rv) {
@@ -51,7 +55,6 @@ export const createContact = async (
 export const updateContact = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
-  const { ContactModel } = dm;
   const { contactId } = params;
   const {
     firstName,
@@ -96,10 +99,55 @@ export const requestContactEdit = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   try {
-    res.status(201).end();
+    // process request params to get profileId and define RequestEditType
+    const { profileId } = params;
+    const { productOwner, technicalContact } = body;
+    const contact = [productOwner, technicalContact]
+    const editType = RequestEditType.Contacts;
+
+    // process request body for natsContext
+    const editObject = await formatNatsContactObject(body)
+    if (!editObject) {
+      const errmsg = 'Cant generate request edit object';
+      throw new Error(errmsg);
+    }
+
+    const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+
+    // create Request record for contact edit
+    await RequestModel.create({
+      profileId,
+      editType,
+      editObject: JSON.stringify(contact),
+      natsSubject,
+      natsContext: JSON.stringify(natsContext),
+    })
+    res.status(204).end();
   } catch (err) {
-    const message = `Unable to update quota`;
+    const message = `Unable to update contact`;
     logger.error(`${message}, err = ${err.message}`);
     throw errorWithCode(message, 500);
+  }
+};
+
+export const processContactEdit = async (request: Request): Promise<void> => {
+  try {
+    const { editObject } = request;
+    const contacts = JSON.parse(editObject);
+    // @ts-ignore
+    console.log(contacts)
+    const updatePromises: any = [];
+    contacts.forEach((contact: Contact) => {
+      // @ts-ignore
+      console.log(contact)
+      updatePromises.push(ContactModel.update(Number(contact.id), contact))
+    })
+
+    await Promise.all(updatePromises);
+    return;
+  } catch (err) {
+    const message = `Unable to process requestId ${request.id} on bot callback for ${whichService}`;
+    logger.error(`${message}, err = ${err.message}`);
+    throw err;
   }
 };
