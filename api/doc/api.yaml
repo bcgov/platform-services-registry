@@ -500,6 +500,51 @@ paths:
                 type: array
         500:
           description: Internal Error
+  /api/v1/provision/sync//under-pending-profile-ids:
+    get:
+      operationId: getAllProfileIdsUnderPending
+      summary: Fetch a list of provisioned profile ids
+      description: |-
+        Used by bot to fetch a list of profile ids for those
+        profiles that are under pending edit / create request.
+      tags:
+        - Provision
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+        500:
+          description: Internal Error
+  /api/v1/provision/sync/{profileId}/under-pending-profile-bot-json:
+    get:
+      operationId: getProfileBotJsonUnderPending
+      summary: Fetch a list of quota-edit options for given clusternamespaces
+      description: |-
+        Used by bot to fetch the JSON/NATS message for the queried profile
+        that is under pending edit / create request given the profile id.
+        The JSON/NATS message will reflect requested changes.
+      tags:
+        - Provision
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of profiles (currently under pending edit / create) that is being requested.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: array
+        500:
+          description: Internal Error
 components:
   schemas:
     Cluster:
