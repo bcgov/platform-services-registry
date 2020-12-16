@@ -102,8 +102,9 @@ export const requestContactEdit = async (
     // process request params to get profileId and define RequestEditType
     const { profileId } = params;
     const { productOwner, technicalContact } = body;
-    const contact = [productOwner, technicalContact]
     const editType = RequestEditType.Contacts;
+
+    const contacts = [productOwner, technicalContact]
 
     // process request body for natsContext
     const editObject = await formatNatsContactObject(body)
@@ -118,7 +119,7 @@ export const requestContactEdit = async (
     await RequestModel.create({
       profileId,
       editType,
-      editObject: JSON.stringify(contact),
+      editObject: JSON.stringify(contacts),
       natsSubject,
       natsContext: JSON.stringify(natsContext),
     })
@@ -134,12 +135,8 @@ export const processContactEdit = async (request: Request): Promise<void> => {
   try {
     const { editObject } = request;
     const contacts = JSON.parse(editObject);
-    // @ts-ignore
-    console.log(contacts)
     const updatePromises: any = [];
     contacts.forEach((contact: Contact) => {
-      // @ts-ignore
-      console.log(contact)
       updatePromises.push(ContactModel.update(Number(contact.id), contact))
     })
 
