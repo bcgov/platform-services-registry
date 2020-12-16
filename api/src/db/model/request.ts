@@ -37,7 +37,7 @@ export interface Request extends CommonFields {
 export default class RequestModel extends Model {
     table: string = 'request';
     requiredFields: string[] = [
-        'profileId', 'editType', 'editObject'
+        'profileId', 'editType', 'editObject',
     ];
     pool: Pool;
 
