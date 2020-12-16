@@ -298,13 +298,31 @@ export const fetchProfileContacts = async (
 };
 
 export const fetchProfileEditRequests = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser}, res: Response
 ): Promise<void> => {
+  const { RequestModel, ProfileModel } = dm;
+  const { profileId } = params;
+
   try {
-    res.status(201).end();
+    const record = await ProfileModel.findById(Number(profileId));
+
+    const notAuthorized = isNotAuthorized(record, user);
+
+    if (notAuthorized) {
+      throw notAuthorized;
+    }
+
+    const results = await RequestModel.findForProfile(Number(profileId));
+
+    res.status(200).json(results);
   } catch (err) {
-    const message = `Unable to update quota`;
+    if (err.code) {
+      throw err
+    }
+
+    const message = `Unable fetch profile contacts with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
+
     throw errorWithCode(message, 500);
   }
 };
