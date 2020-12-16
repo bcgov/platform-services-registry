@@ -17,7 +17,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { getAllProvisionedProfileIds, getProvisionedProfileBotJson } from '../src/controllers/sync';
+import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../src/controllers/sync';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
@@ -25,6 +25,10 @@ const selectProfile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/select-profile-namespaces.json');
 const selectProfileNamespaces = JSON.parse(fs.readFileSync(p1, 'utf8'));
+
+const p4 = path.join(__dirname, 'fixtures/select-request.json');
+const selectRequest = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
 
 const client = new Pool().connect();
 
@@ -110,4 +114,71 @@ describe('Sync event handlers', () => {
 
     expect(ex.responseData).toBeUndefined();
   });
+
+  it('All ids of profiles under pending edit / create are returned', async () => {
+    const req = {};
+    client.query.mockReturnValueOnce({ rows: selectRequest });
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: selectProfileNamespaces });
+
+    // @ts-ignore
+    await getAllProfileIdsUnderPending(req, ex.res);
+
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('Fetch all ids of profiles under pending edit / create should throw', async () => {
+    const req = {
+      params: {},
+    };
+    client.query.mockImplementation(() => { throw new Error() });
+
+    // @ts-ignore
+    await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+    expect(ex.responseData).toBeUndefined();
+  });
+
+  it('Bot json object for a queried profile under pending edit / create is returned', async () => {
+    jest.mock('../src/libs/namespace-set', () => {
+      const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+      const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
+
+      return {
+        isNamespaceSetProvisioned: jest.fn().mockReturnValue(false),
+        getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
+      };
+    });
+
+    const req = {
+      params: { profileId: 118 },
+    };
+    client.query.mockReturnValueOnce({ rows: selectRequest });
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: selectProfileNamespaces });
+    client.query.mockReturnValueOnce({ rows: [] });
+
+    // @ts-ignore
+    await getProfileBotJsonUnderPending(req, ex.res);
+
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  // it('Fetch all ids of profiles under pending edit / create should throw', async () => {
+  //   const req = {
+  //     params: {},
+  //   };
+  //   client.query.mockImplementation(() => { throw new Error() });
+
+  //   // @ts-ignore
+  //   await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+  //   expect(ex.responseData).toBeUndefined();
+  // });
 });
