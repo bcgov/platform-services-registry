@@ -17,9 +17,13 @@ import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
 export const enum RequestEditType {
+    Contacts = 'contacts',
+    Namespaces = 'namespaces',
+};
+
+export enum RequestEditContacts {
     ProductOwner = 'productOwner',
     TechnicalContact = 'technicalContact',
-    Namespaces = 'namespaces',
 };
 
 export interface Request extends CommonFields {
