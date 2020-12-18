@@ -54,3 +54,9 @@ export const isNotAuthorized = (results: any, user: any): Error | undefined => {
 
   return;
 }
+
+// TODO:(yf) refactor here
+export const replaceForDescription = (contextJson: any) => {
+  contextJson.description = contextJson.description.replace(/"/g, '\\"');
+  return contextJson;
+};

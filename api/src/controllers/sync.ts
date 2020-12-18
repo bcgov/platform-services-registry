@@ -24,6 +24,7 @@ import { Request } from '../db/model/request';
 import { contextForProvisioning, FulfillmentContextAction } from '../libs/fulfillment';
 import { getDefaultCluster, isNamespaceSetProvisioned } from '../libs/namespace-set';
 import shared from '../libs/shared';
+import { replaceForDescription } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -92,7 +93,11 @@ export const getProvisionedProfileBotJson = async (
     }
 
     const context = await contextForProvisioning(profileId, FulfillmentContextAction.Sync);
-    res.status(200).json(context);
+    const stringifiedMsg = JSON.stringify(replaceForDescription(context));
+
+    logger.info(`\n\nstringified JSON msg for ${profileId}`, stringifiedMsg, '\n\n');
+    // serve bot the stringified nats/json message to avoid not escaped double quotes issue
+    res.status(200).send(stringifiedMsg);
   } catch (err) {
     const message = `Unable get provisioned profile bot json for profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -145,8 +150,11 @@ export const getProfileBotJsonUnderPending = async (
       // if the queried profile is under pending create
       context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
     }
+    const stringifiedMsg = JSON.stringify(replaceForDescription(context));
 
-    res.status(200).json(context);
+    logger.info(`\n\nstringified JSON msg for ${profileId}`, stringifiedMsg, '\n\n');
+    // serve bot the stringified nats/json message to avoid not escaped double quotes issue
+    res.status(200).send(stringifiedMsg);
   } catch (err) {
     const message = `Unable get profile (currently under pending edit / create) bot json for profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
