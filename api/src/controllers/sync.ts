@@ -96,7 +96,6 @@ export const getProvisionedProfileBotJson = async (
     const stringifiedMsg = JSON.stringify(replaceForDescription(context));
 
     logger.info(`\n\nstringified JSON msg for ${profileId}`, stringifiedMsg, '\n\n');
-    // serve bot the stringified nats/json message to avoid not escaped double quotes issue
     res.status(200).send(stringifiedMsg);
   } catch (err) {
     const message = `Unable get provisioned profile bot json for profile ID ${profileId}`;
@@ -150,10 +149,9 @@ export const getProfileBotJsonUnderPending = async (
       // if the queried profile is under pending create
       context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
     }
-    const stringifiedMsg = JSON.stringify(replaceForDescription(context));
+    const stringifiedMsg = JSON.stringify(context);
 
     logger.info(`\n\nstringified JSON msg for ${profileId}`, stringifiedMsg, '\n\n');
-    // serve bot the stringified nats/json message to avoid not escaped double quotes issue
     res.status(200).send(stringifiedMsg);
   } catch (err) {
     const message = `Unable get profile (currently under pending edit / create) bot json for profile ID ${profileId}`;

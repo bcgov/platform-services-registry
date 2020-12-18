@@ -89,7 +89,9 @@ export const contextForProvisioning = async (profileId: number, action: Fulfillm
   }
 };
 
-const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promise<NatsObject> => {
+// isPendingEdit flag is added to help address the inconsistent double qoute issue
+const sendNatsMessage = async (profileId: number, natsObject: NatsObject, isPendingEdit: boolean):
+  Promise<NatsObject> => {
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsObject;
@@ -99,10 +101,17 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
       throw new Error(errmsg);
     });
 
-    const stringifiedMsg = JSON.stringify(replaceForDescription(natsContext));
+    let stringifiedMsg;
+    if (isPendingEdit) {
+      stringifiedMsg = JSON.stringify(natsContext);
+    } else {
+      stringifiedMsg = JSON.stringify(replaceForDescription(natsContext));
+    }
+
     logger.info(`Sending NATS message for ${profileId}`);
     logger.info(`\n\nstringified JSON msg for ${profileId}`,
       JSON.stringify(stringifiedMsg), '\n\n');
+
     nc.publish(natsSubject, stringifiedMsg);
     logger.info(`NATS Message sent for ${profileId}`);
 
@@ -133,7 +142,7 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
       await sendNatsMessage(profileId, {
         natsSubject: subject,
         natsContext: context,
-      });
+      }, false);
 
       logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
       await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
@@ -164,7 +173,7 @@ export const fulfillNamespaceEdit = async (profileId: number, requestType: Reque
       const natsObject = await sendNatsMessage(profileId, {
         natsSubject: subject,
         natsContext: context,
-      });
+      }, true);
 
       // TODO:(yf) add sending ches message here
       resolve(natsObject);
