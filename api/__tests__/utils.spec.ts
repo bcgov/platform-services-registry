@@ -18,7 +18,7 @@ import { replaceForDescription } from '../src/libs/utils';
 
 describe('Utils', () => {
   it('replaceForDescription works correctly', async () => {
-    const natsContext = {
+    const contextJson = {
       profileId: 118,
       displayName: 'Project X',
       description: 'test some "double quotes"',
@@ -30,6 +30,6 @@ describe('Utils', () => {
       description: 'test some  double quotes ',
     };
 
-    expect(replaceForDescription(natsContext)).toEqual(result);
+    expect(replaceForDescription(contextJson)).toEqual(result);
   });
 });
