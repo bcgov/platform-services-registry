@@ -23,7 +23,7 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
-import { replaceForDescription } from '../libs/utils';
+import { replaceForDescription0 } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
@@ -100,7 +100,7 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject):
       throw new Error(errmsg);
     });
 
-    const stringifiedMsg = JSON.stringify(replaceForDescription(natsContext));
+    const stringifiedMsg = JSON.stringify(replaceForDescription0(natsContext));
 
     logger.info(`Sending NATS message for ${profileId}`);
     logger.info(`\n\nstringified JSON msg for ${profileId}`,

@@ -57,17 +57,21 @@ export const isNotAuthorized = (results: any, user: any): Error | undefined => {
 
 // when we pass the nats/json message through nats / sync endpoints
 // there is an inconsistent double quote issue in profile description
-// that occur ONLY in create and sync, NOT edit (action type)
 
-// the function BELOW is to address such issue
-// so we are confident that the final manifest yaml file is valid
-// for example:
+// the functions BELOW are to address such inconsistency
+// in order to make surethe final manifest yaml file is valid e.g.
 
 // Action: create
 // DisplayName: Double quote Test
 // Description: A description that contains \"double quotes\"
 // ProfileID: 1
-export const replaceForDescription = (contextJson: any) => {
+export const replaceForDescription0 = (contextJson: any) => {
   contextJson.description = contextJson.description.replace(/"/g, '\\"');
   return contextJson;
 };
+
+export const replaceForDescription1 = (contextJson: any) => {
+  contextJson.description = contextJson.description.replace(/"/g, '\"');
+  return contextJson;
+};
+

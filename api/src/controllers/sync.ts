@@ -24,7 +24,7 @@ import { Request } from '../db/model/request';
 import { contextForProvisioning, FulfillmentContextAction } from '../libs/fulfillment';
 import { getDefaultCluster, isNamespaceSetProvisioned } from '../libs/namespace-set';
 import shared from '../libs/shared';
-import { replaceForDescription } from '../libs/utils';
+import { replaceForDescription0, replaceForDescription1 } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -93,7 +93,7 @@ export const getProvisionedProfileBotJson = async (
     }
 
     const context = await contextForProvisioning(profileId, FulfillmentContextAction.Sync);
-    const stringifiedMsg = JSON.stringify(replaceForDescription(context));
+    const stringifiedMsg = JSON.stringify(replaceForDescription0(context));
 
     logger.info(`\n\nstringified JSON msg for ${profileId}`, stringifiedMsg, '\n\n');
     res.status(200).send(stringifiedMsg);
@@ -149,7 +149,7 @@ export const getProfileBotJsonUnderPending = async (
       // if the queried profile is under pending create
       context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
     }
-    const stringifiedMsg = JSON.stringify(context);
+    const stringifiedMsg = JSON.stringify(replaceForDescription1(context));
 
     logger.info(`\n\nstringified JSON msg for ${profileId}`, stringifiedMsg, '\n\n');
     res.status(200).send(stringifiedMsg);
