@@ -99,11 +99,9 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
       throw new Error(errmsg);
     });
 
-    const stringifiedMsg = JSON.stringify(replaceForDescription(natsContext));
     logger.info(`Sending NATS message for ${profileId}`);
-    logger.info(`\n\nstringified JSON msg for ${profileId}`,
-      JSON.stringify(stringifiedMsg), '\n\n');
-    nc.publish(natsSubject, stringifiedMsg);
+
+    nc.publish(natsSubject, replaceForDescription(natsContext));
     logger.info(`NATS Message sent for ${profileId}`);
 
     nc.flush(() => {
