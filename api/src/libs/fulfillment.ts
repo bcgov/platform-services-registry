@@ -23,6 +23,7 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
+import { replaceForDescription } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
@@ -98,8 +99,11 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
       throw new Error(errmsg);
     });
 
+    const stringifiedMsg = JSON.stringify(replaceForDescription(natsContext));
     logger.info(`Sending NATS message for ${profileId}`);
-    nc.publish(natsSubject, JSON.stringify(natsContext));
+    logger.info(`\n\nstringified JSON msg for ${profileId}`,
+      JSON.stringify(stringifiedMsg), '\n\n');
+    nc.publish(natsSubject, stringifiedMsg);
     logger.info(`NATS Message sent for ${profileId}`);
 
     nc.flush(() => {
