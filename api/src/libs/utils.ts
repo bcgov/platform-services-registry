@@ -55,8 +55,14 @@ export const isNotAuthorized = (results: any, user: any): Error | undefined => {
   return;
 }
 
-// TODO:(yf) refactor here
+// when we pass the nats/json message through nats / sync endpoints
+// there is an inconsistent double quote issue in profile description
+
+// the function BELOW is to address such issue
+// in order to make sure the final manifest yaml file is valid to ocp
 export const replaceForDescription = (contextJson: any) => {
-  contextJson.description = contextJson.description.replace(/"/g, '\\"');
+  const doubleQuoteReplaced = contextJson.description.replace(/"/g, ' ').replace(/\\/g, '');
+
+  contextJson.description = doubleQuoteReplaced;
   return contextJson;
 };
