@@ -23,14 +23,14 @@ import FauxExpress from './src/fauxexpress';
 const p0 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
 const selectContact = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
-const p2 = path.join(__dirname, 'fixtures/select-contact-edit-request.json');
-const selectContactEditRequest = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const p1 = path.join(__dirname, 'fixtures/select-contact-edit-request.json');
+const selectContactEditRequest = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const client = new Pool().connect();
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p1 = path.join(__dirname, 'fixtures/provisioning-context.json');
-  const natsContext = JSON.parse(fs.readFileSync(p1, 'utf8'));
+  const p2 = path.join(__dirname, 'fixtures/provisioning-context.json');
+  const natsContext = JSON.parse(fs.readFileSync(p2, 'utf8'));
   const natsSubject = 'edit';
   return {
     fulfillNamespaceEdit: jest.fn().mockResolvedValue({natsContext, natsSubject}),
