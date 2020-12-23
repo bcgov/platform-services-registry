@@ -22,7 +22,7 @@ import { ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
-import { RequestEditType } from '../db/model/request';
+import { RequestEditContacts, RequestEditType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
@@ -157,7 +157,19 @@ export const fulfillNamespaceEdit = async (profileId: number, requestType: Reque
         reject(new Error(errmsg));
       }
 
-      context[requestType] = requestEditObject;
+      switch (requestType) {
+        case RequestEditType.Namespaces:
+          context[requestType] = requestEditObject;
+          break;
+        case RequestEditType.Contacts:
+          Object.values(RequestEditContacts).forEach(contact => {
+          context[contact] = requestEditObject[contact];
+          });
+          break;
+        default:
+          const errmsg = `Invalid edit type for request ${requestType}`;
+          throw new Error(errmsg);
+      }
 
       const natsObject = await sendNatsMessage(profileId, {
         natsSubject: subject,
