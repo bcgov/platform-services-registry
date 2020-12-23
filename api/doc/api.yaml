@@ -439,8 +439,11 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/ContactEditDetails"
+      # TODO (sb): figure out why this fails 
+      # requestBody:
+      #   description: Required request body.
+      #   required: true
+      #   $ref: "#/components/requestBodies/ContactEditDetails"
       responses:
         204:
           description: The request was successful; No content returned.
@@ -636,19 +639,6 @@ paths:
         500:
           description: Internal Error
 components:
-  requestBodies:
-    ContactEditDetails:
-      description: A JSON object containing the PO and TC details
-      required: true
-      type: object
-      content:
-          application/json:
-            schema:
-              properties:
-                productOwner:
-                  $ref: "#/components/schemas/Contact"
-                technicalContact:
-                  $ref: "#/components/schemas/Contact"
   schemas:
     Cluster:
       title: OCP Cluster
@@ -857,15 +847,15 @@ components:
         id:
           type: number        
         profileId: 
-          type: number;
+          type: number
         editType:
-          type: RequestEditType;
+          type: string
         editObject:
-          type: string;
+          type: string
         natsSubject:
-          type: string;
+          type: string
         natsContext:
-          type: string;
+          type: string
         archived:
           type: boolean
         createdAt:
@@ -878,6 +868,8 @@ components:
         - profileId
         - editType
         - editObject
+        - natsSubject
+        - natsContext
       example:
         id: 54
         profileId: 1
@@ -890,3 +882,16 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  # requestBodies:
+  #   ContactEditDetails:
+  #     description: A JSON object containing the PO and TC details
+  #     required: true
+  #     type: object
+  #     content:
+  #         application/json:
+  #           schema:
+  #             properties:
+  #               productOwner:
+  #                 $ref: "#/components/schemas/Contact"
+  #               technicalContact:
+  #                 $ref: "#/components/schemas/Contact"
