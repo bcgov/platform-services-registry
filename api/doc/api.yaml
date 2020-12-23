@@ -27,6 +27,8 @@ paths:
       description: |-
         Use this endpoint to update a given contact. The
         updated contact will be returned.
+      security:
+        - bearerAuth: [] 
       tags:
         - Contact
       requestBody:
@@ -83,6 +85,8 @@ paths:
       summary: Create a new project profile.
       description: |-
         Use this endpoint to create a new project profile.
+      security:
+        - bearerAuth: [] 
       tags:
         - Profile
       requestBody:
@@ -111,6 +115,8 @@ paths:
       description: |-
         Use this endpoint to fetch all of the project profiles
         that are not archived.
+      security:
+        - bearerAuth: [] 
       tags:
         - Profile
       responses:
@@ -134,6 +140,8 @@ paths:
         Use this endpoint to fetch a given project profile. The
         project profile will be returned providing it is not
         archived.
+      security:
+        - bearerAuth: [] 
       tags:
         - Profile
       parameters:
@@ -163,6 +171,8 @@ paths:
         Use this endpoint to update a given project profile. The
         updated project profile will be returned. This endpoint
         cannot be used to update an archived project.
+      security:
+        - bearerAuth: [] 
       tags:
         - Profile
       parameters:
@@ -187,6 +197,8 @@ paths:
         Use this endpoint to delete a given project profile. The
         profile is not actually delete but marked as `archived`
         and will not be returned by any other queries.
+      security:
+        - bearerAuth: [] 
       tags:
         - Profile
       parameters:
@@ -212,6 +224,8 @@ paths:
         Use this endpoint to create a new namespace. The
         new namespace will be returned. This endpoint
         cannot be used to create an archived namespace.
+      security:
+        - bearerAuth: [] 
       tags:
         - Namespace
       parameters:
@@ -241,6 +255,8 @@ paths:
         Use this endpoint to fetch a the namespaces associated with
         the given project. The namespaces will be returned providing
         they are not archived.
+      security:
+        - bearerAuth: [] 
       tags:
         - Namespace
       parameters:
@@ -273,6 +289,8 @@ paths:
         associated with the given project. The namespaces will
         be returned providing it is not not archived. This endpoint
         cannot be used to archive a namespace.
+      security:
+        - bearerAuth: [] 
       tags:
         - Namespace
       parameters:
@@ -304,6 +322,8 @@ paths:
         Use this endpoint to fetch an existing namespaces
         associated with the given project. The namespaces will
         be returned providing it is not not archived.
+      security:
+        - bearerAuth: [] 
       tags:
         - Namespace
       parameters:
@@ -341,6 +361,8 @@ paths:
         associated with the given project. The namespaces will
         be marked as archived and will not be returned by any other
         endpoint or be accessible.
+      security:
+        - bearerAuth: [] 
       tags:
         - Namespace
       parameters:
@@ -373,6 +395,8 @@ paths:
         Use this endpoint to fetch a given projects Product Owner 
         and Technical Contact. The projects contacts will be returned 
         providing it is not archived.
+      security:
+        - bearerAuth: [] 
       tags:
         - Contact
       parameters:
@@ -397,6 +421,33 @@ paths:
           description: The request was received but didn't have correct access permissions
         500:
           description: Internal Error
+  /api/v1/profile/{profileId}/contact-edit:
+    post:
+      operationId: requestContactEdit
+      summary: Create a new contact edit request for the given project
+      description: |-
+        Use this endpoint to request an update to a projects contact details.
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Contact
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the project profile that will own the namespace.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/ContactEditDetails"
+      responses:
+        204:
+          description: The request was successful; No content returned.
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
   /api/v1/profile/{profileId}/quota-edit:
     get:
       operationId: fetchProfileQuotaOptions
@@ -408,6 +459,8 @@ paths:
         providing it is not archived. A empty list will be returned if the
         project is yet to be provisioned OR there is an
         ongoing quota-edit request for this project.
+      security:
+        - bearerAuth: [] 
       tags:
         - QuotaEdit
       parameters:
@@ -438,6 +491,8 @@ paths:
         Use this endpoint to request new quotas for cluster namespaces
         under the given profile and cluster name. If cluster name is not provided,
         the default cluster will be used.
+      security:
+        - bearerAuth: [] 
       tags:
         - QuotaEdit
       parameters:
@@ -455,6 +510,37 @@ paths:
           description: The request was received but incorrect
         500:
           description: Internal Error
+  /api/v1/profile/{profileId}/request:
+    get:
+      operationId: GetProjectEditRequest
+      summary: Fetch a given project's edit request
+      description: |-
+        Use this endpoint to fetch a given project edit request. The
+        edit request will be returned providing it is not archived.
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Profile
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the profile that is being requested.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The request was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/EditRequest"
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
   /api/v1/provision/sync/provisioned-profile-ids:
     get:
       operationId: getAllProvisionedProfileIds
@@ -463,6 +549,8 @@ paths:
         Used by bot to fetch a list of provisioned profile ids.
         The definition of provisioned for a given profile is that
         all 4 namespaces in default cluster are provisioned.
+      security:
+        - bearerAuth: [] 
       tags:
         - Provision
       responses:
@@ -481,6 +569,8 @@ paths:
       description: |-
         Used by bot to fetch the JSON/NATS message for the provisioned profile
         given the profile id without any pending changes.
+      security:
+        - bearerAuth: [] 
       tags:
         - Provision
       parameters:
@@ -546,6 +636,19 @@ paths:
         500:
           description: Internal Error
 components:
+  requestBodies:
+    ContactEditDetails:
+      description: A JSON object containing the PO and TC details
+      required: true
+      type: object
+      content:
+          application/json:
+            schema:
+              properties:
+                productOwner:
+                  $ref: "#/components/schemas/Contact"
+                technicalContact:
+                  $ref: "#/components/schemas/Contact"
   schemas:
     Cluster:
       title: OCP Cluster
@@ -745,4 +848,45 @@ components:
         last_name: "Doe"
         email: "john.doe@example.com"
         github_id: "johndoe1100"
-
+        role_id: 1
+    EditRequest:
+      title: Edit Request
+      description: Payload for an edit request
+      type: object
+      properties:
+        id:
+          type: number        
+        profileId: 
+          type: number;
+        editType:
+          type: RequestEditType;
+        editObject:
+          type: string;
+        natsSubject:
+          type: string;
+        natsContext:
+          type: string;
+        archived:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      required:
+        - profileId
+        - editType
+        - editObject
+      example:
+        id: 54
+        profileId: 1
+        editType: "contacts"
+        editObject: "[{ \"id \": 233, \"firstName \": \"Jane \", \"lastName \": \"Doe \", \"email \": \"jane@example.com \", \"githubId \": \"janedoe \", \"roleId \": 1},{ \"id \": 234, \"firstName \": \"Jim \", \"lastName \": \"Doe \", \"email \": \"jim@example.com \", \"githubId \": \"jim1100 \", \"roleId \": 2}]"
+        natsSubject: "registry_project_provisioning"
+        natsContext: "{ \"action \": \"edit \", \"type\": \"standard \", \"profileId \": 118, \"displayName \": \"Project X \", \"namespaces \": [ { \"namespaceId \": 149, \"name \": \"4ea35c-tools \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 151, \"name \": \"4ea35c-test \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 150, \"name \": \"4ea35c-dev \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 152, \"name \": \"4ea35c-prod \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] } ], \"productOwner \": { \"userId \": \"jane1100 \", \"provider \": \"github \", \"email \": \"jane.doe@example.com \" }, \"technicalContact \": { \"userId \": \"john1100 \", \"provider \": \"github \", \"email \": \"john.doe@example.com \" } }"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

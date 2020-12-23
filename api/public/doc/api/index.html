@@ -1505,6 +1505,11 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
           </li>
         
           <li>
+            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
+            
+          </li>
+        
+          <li>
             <a href="#registry-api-health" class="toc-h1 toc-link" data-title="Health">Health</a>
             
               <ul class="toc-list-h2">
@@ -1530,6 +1535,11 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
                 
                   <li>
                     <a href="#fetchprofilecontacts" class="toc-h2 toc-link" data-title="">fetchProfileContacts</a>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="#requestcontactedit" class="toc-h2 toc-link" data-title="">requestContactEdit</a>
                     
                   </li>
                 
@@ -1578,6 +1588,11 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
                 
                   <li>
                     <a href="#deleteprojectprofile" class="toc-h2 toc-link" data-title="">DeleteProjectProfile</a>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="#getprojecteditrequest" class="toc-h2 toc-link" data-title="">GetProjectEditRequest</a>
                     
                   </li>
                 
@@ -1697,6 +1712,11 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
                     
                   </li>
                 
+                  <li>
+                    <a href="#tocseditrequest" class="toc-h2 toc-link" data-title="">EditRequest</a>
+                    
+                  </li>
+                
               </ul>
             
           </li>
@@ -1719,6 +1739,10 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
 <p>Base URLs:</p>
 <ul>
 <li><a href="http://localhost:8100">http://localhost:8100</a></li>
+</ul>
+<h1 id="authentication">Authentication</h1>
+<ul>
+<li>HTTP Authentication, scheme: bearer</li>
 </ul>
 <h1 id="registry-api-health">Health</h1>
 <h2 id="getserverstatus">GetServerStatus</h2>
@@ -1779,7 +1803,8 @@ This operation does not require authentication
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X PUT http://localhost:8100/api/v1/contact/{contactId} \
   -H <span class="hljs-string">'Content-Type: application/json'</span> \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
@@ -1787,11 +1812,13 @@ curl -X PUT http://localhost:8100/api/v1/contact/{contactId} \
   "first_name": "John",
   "last_name": "Doe",
   "email": "john.doe@example.com",
-  "github_id": "johndoe1100"
+  "github_id": "johndoe1100",
+  "role_id": 1
 }'</span>;
 <span class="hljs-keyword">const</span> headers = {
   <span class="hljs-string">'Content-Type'</span>:<span class="hljs-string">'application/json'</span>,
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -1819,7 +1846,8 @@ updated contact will be returned.</p>
   <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
   <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
   <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
-  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>,
+  <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
 }
 </code></pre>
 <h3 id="updatecontact-parameters">Parameters</h3>
@@ -1863,7 +1891,8 @@ the contact details.</p>
   <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
   <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
   <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
-  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>,
+  <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
 }
 </code></pre>
 <h3 id="updatecontact-responses">Responses</h3>
@@ -1897,8 +1926,9 @@ the contact details.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="fetchprofilecontacts">fetchProfileContacts</h2>
 <p><a id="opIdfetchProfileContacts"></a></p>
@@ -1907,13 +1937,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/profile/{profileId}/contacts \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -1966,7 +1998,8 @@ providing it is not archived.</p>
   <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
   <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
   <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
-  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>,
+  <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
 }
 </code></pre>
 <h3 id="fetchprofilecontacts-responses">Responses</h3>
@@ -2006,8 +2039,142 @@ providing it is not archived.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+<h2 id="requestcontactedit">requestContactEdit</h2>
+<p><a id="opIdrequestContactEdit"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X POST http://localhost:8100/api/v1/profile/{profileId}/contact-edit \
+  -H <span class="hljs-string">'Content-Type: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+<span class="hljs-keyword">const</span> inputBody = <span class="hljs-string">'{
+  "productOwner": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "github_id": "johndoe1100",
+    "role_id": 1
+  },
+  "technicalContact": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "github_id": "johndoe1100",
+    "role_id": 1
+  }
+}'</span>;
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Content-Type'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/contact-edit'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>,
+  <span class="hljs-attr">body</span>: inputBody,
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>POST /api/v1/profile/{profileId}/contact-edit</code></p>
+<p><em>Create a new contact edit request for the given project</em></p>
+<p>Use this endpoint to request an update to a projects contact details.</p>
+<blockquote>
+<p>Body parameter</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"productOwner"</span>: {
+    <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
+    <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+    <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
+    <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>,
+    <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
+  },
+  <span class="hljs-attr">"technicalContact"</span>: {
+    <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
+    <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+    <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
+    <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>,
+    <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
+  }
+}
+</code></pre>
+<h3 id="requestcontactedit-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>profileId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>The ID of the project profile that will own the namespace.</td>
+</tr>
+<tr>
+<td>body</td>
+<td>body</td>
+<td><a href="#schemacontacteditdetails">ContactEditDetails</a></td>
+<td>true</td>
+<td>A JSON object containing the PO and TC details</td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestcontactedit-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>204</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.5">No Content</a></td>
+<td>The request was successful; No content returned.</td>
+<td>None</td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
+<td>The request was received but incorrect</td>
+<td>None</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h1 id="registry-api-ministry">Ministry</h1>
 <h2 id="fetchministrysponsors">fetchMinistrySponsors</h2>
@@ -2097,7 +2264,8 @@ This operation does not require authentication
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X POST http://localhost:8100/api/v1/profile \
   -H <span class="hljs-string">'Content-Type: application/json'</span> \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
@@ -2124,7 +2292,8 @@ curl -X POST http://localhost:8100/api/v1/profile \
 }';
 const headers = {
   'Content-Type':'application/json',
-  'Accept':'application/json'
+  'Accept':'application/json',
+  'Authorization':'Bearer {access-token}'
 
 };
 
@@ -2252,8 +2421,9 @@ the project details.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="getallprojectprofiles">GetAllProjectProfiles</h2>
 <p><a id="opIdGetAllProjectProfiles"></a></p>
@@ -2262,13 +2432,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/profile \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -2566,8 +2738,9 @@ that are not archived.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="getprojectprofile">GetProjectProfile</h2>
 <p><a id="opIdGetProjectProfile"></a></p>
@@ -2576,13 +2749,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/profile/{profileId} \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -2684,8 +2859,9 @@ archived.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="updateprojectprofile">UpdateProjectProfile</h2>
 <p><a id="opIdUpdateProjectProfile"></a></p>
@@ -2693,15 +2869,22 @@ This operation does not require authentication
 <p>Code samples</p>
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
-curl -X PUT http://localhost:8100/api/v1/profile/{profileId}
+curl -X PUT http://localhost:8100/api/v1/profile/{profileId} \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
 fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}'</span>,
 {
-  <span class="hljs-attr">method</span>: <span class="hljs-string">'PUT'</span>
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'PUT'</span>,
 
+  <span class="hljs-attr">headers</span>: headers
 })
 .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
     <span class="hljs-keyword">return</span> res.json();
@@ -2767,8 +2950,9 @@ cannot be used to update an archived project.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="deleteprojectprofile">DeleteProjectProfile</h2>
 <p><a id="opIdDeleteProjectProfile"></a></p>
@@ -2776,15 +2960,22 @@ This operation does not require authentication
 <p>Code samples</p>
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
-curl -X DELETE http://localhost:8100/api/v1/profile/{profileId}
+curl -X DELETE http://localhost:8100/api/v1/profile/{profileId} \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
 fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}'</span>,
 {
-  <span class="hljs-attr">method</span>: <span class="hljs-string">'DELETE'</span>
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'DELETE'</span>,
 
+  <span class="hljs-attr">headers</span>: headers
 })
 .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
     <span class="hljs-keyword">return</span> res.json();
@@ -2850,8 +3041,116 @@ and will not be returned by any other queries.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+<h2 id="getprojecteditrequest">GetProjectEditRequest</h2>
+<p><a id="opIdGetProjectEditRequest"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/profile/{profileId}/request \
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/request'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/profile/{profileId}/request</code></p>
+<p><em>Fetch a given project's edit request</em></p>
+<p>Use this endpoint to fetch a given project edit request. The
+edit request will be returned providing it is not archived.</p>
+<h3 id="getprojecteditrequest-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>profileId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>The ID of the profile that is being requested.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"id"</span>: <span class="hljs-number">54</span>,
+  <span class="hljs-attr">"profileId"</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">"editType"</span>: <span class="hljs-string">"contacts"</span>,
+  <span class="hljs-attr">"editObject"</span>: <span class="hljs-string">"[{ \"id \": 233, \"firstName \": \"Jane \", \"lastName \": \"Doe \", \"email \": \"jane@example.com \", \"githubId \": \"janedoe \", \"roleId \": 1},{ \"id \": 234, \"firstName \": \"Jim \", \"lastName \": \"Doe \", \"email \": \"jim@example.com \", \"githubId \": \"jim1100 \", \"roleId \": 2}]"</span>,
+  <span class="hljs-attr">"natsSubject"</span>: <span class="hljs-string">"registry_project_provisioning"</span>,
+  <span class="hljs-attr">"natsContext"</span>: <span class="hljs-string">"{ \"action \": \"edit \", \"type\": \"standard \", \"profileId \": 118, \"displayName \": \"Project X \", \"namespaces \": [ { \"namespaceId \": 149, \"name \": \"4ea35c-tools \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 151, \"name \": \"4ea35c-test \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 150, \"name \": \"4ea35c-dev \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 152, \"name \": \"4ea35c-prod \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] } ], \"productOwner \": { \"userId \": \"jane1100 \", \"provider \": \"github \", \"email \": \"jane.doe@example.com \" }, \"technicalContact \": { \"userId \": \"john1100 \", \"provider \": \"github \", \"email \": \"john.doe@example.com \" } }"</span>
+}
+</code></pre>
+<h3 id="getprojecteditrequest-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td><a href="#schemaeditrequest">EditRequest</a></td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.5.1">Bad Request</a></td>
+<td>The request was received but incorrect</td>
+<td>None</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h1 id="registry-api-namespace">Namespace</h1>
 <h2 id="createprojectnamespace">CreateProjectNamespace</h2>
@@ -2861,13 +3160,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X POST http://localhost:8100/api/v1/profile/{profileId}/namespace \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -2953,8 +3254,9 @@ cannot be used to create an archived namespace.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="getprojectnamespace">GetProjectNamespace</h2>
 <p><a id="opIdGetProjectNamespace"></a></p>
@@ -2963,13 +3265,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/profile/{profileId}/namespace \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -3128,8 +3432,9 @@ they are not archived.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="updateprojectnamespace">UpdateProjectNamespace</h2>
 <p><a id="opIdUpdateProjectNamespace"></a></p>
@@ -3137,15 +3442,22 @@ This operation does not require authentication
 <p>Code samples</p>
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
-curl -X PUT http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId}
+curl -X PUT http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId} \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
 fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId}'</span>,
 {
-  <span class="hljs-attr">method</span>: <span class="hljs-string">'PUT'</span>
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'PUT'</span>,
 
+  <span class="hljs-attr">headers</span>: headers
 })
 .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
     <span class="hljs-keyword">return</span> res.json();
@@ -3219,8 +3531,9 @@ cannot be used to archive a namespace.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="getaprojectnamespace">GetAProjectNamespace</h2>
 <p><a id="opIdGetAProjectNamespace"></a></p>
@@ -3229,13 +3542,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId} \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -3328,8 +3643,9 @@ be returned providing it is not not archived.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="deleteaprojectnamespace">DeleteAProjectNamespace</h2>
 <p><a id="opIdDeleteAProjectNamespace"></a></p>
@@ -3337,15 +3653,22 @@ This operation does not require authentication
 <p>Code samples</p>
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
-curl -X DELETE http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId}
+curl -X DELETE http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId} \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
 fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/namespace/{namespaceId}'</span>,
 {
-  <span class="hljs-attr">method</span>: <span class="hljs-string">'DELETE'</span>
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'DELETE'</span>,
 
+  <span class="hljs-attr">headers</span>: headers
 })
 .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
     <span class="hljs-keyword">return</span> res.json();
@@ -3419,8 +3742,9 @@ endpoint or be accessible.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h1 id="registry-api-quotaedit">QuotaEdit</h1>
 <h2 id="fetchprofilequotaoptions">fetchProfileQuotaOptions</h2>
@@ -3430,13 +3754,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/profile/{profileId}/quota-edit \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -3528,8 +3854,9 @@ ongoing quota-edit request for this project.</p>
 </tbody>
 </table>
 <h3 id="fetchprofilequotaoptions-responseschema">Response Schema</h3>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="requestprofilequotaedit">requestProfileQuotaEdit</h2>
 <p><a id="opIdrequestProfileQuotaEdit"></a></p>
@@ -3537,15 +3864,22 @@ This operation does not require authentication
 <p>Code samples</p>
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
-curl -X POST http://localhost:8100/api/v1/profile/{profileId}/quota-edit
+curl -X POST http://localhost:8100/api/v1/profile/{profileId}/quota-edit \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
+
+};
+
 fetch(<span class="hljs-string">'http://localhost:8100/api/v1/profile/{profileId}/quota-edit'</span>,
 {
-  <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>,
 
+  <span class="hljs-attr">headers</span>: headers
 })
 .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
     <span class="hljs-keyword">return</span> res.json();
@@ -3611,8 +3945,9 @@ the default cluster will be used.</p>
 </tr>
 </tbody>
 </table>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h1 id="registry-api-provision">Provision</h1>
 <h2 id="getallprovisionedprofileids">getAllProvisionedProfileIds</h2>
@@ -3622,13 +3957,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/provision/sync/provisioned-profile-ids \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -3684,8 +4021,9 @@ all 4 namespaces in default cluster are provisioned.</p>
 </tbody>
 </table>
 <h3 id="getallprovisionedprofileids-responseschema">Response Schema</h3>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="getprovisionedprofilebotjson">getProvisionedProfileBotJson</h2>
 <p><a id="opIdgetProvisionedProfileBotJson"></a></p>
@@ -3694,13 +4032,15 @@ This operation does not require authentication
 </blockquote>
 <pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
 curl -X GET http://localhost:8100/api/v1/provision/sync/{profileId}/provisioned-profile-bot-json \
-  -H <span class="hljs-string">'Accept: application/json'</span>
+  -H <span class="hljs-string">'Accept: application/json'</span> \
+  -H <span class="hljs-string">'Authorization: Bearer {access-token}'</span>
 
 </code></pre>
 <pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>,
+  <span class="hljs-string">'Authorization'</span>:<span class="hljs-string">'Bearer {access-token}'</span>
 
 };
 
@@ -3776,8 +4116,9 @@ given the profile id without any pending changes.</p>
 </tbody>
 </table>
 <h3 id="getprovisionedprofilebotjson-responseschema">Response Schema</h3>
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
 </aside>
 <h2 id="getallprofileidsunderpending">getAllProfileIdsUnderPending</h2>
 <p><a id="opIdgetAllProfileIdsUnderPending"></a></p>
@@ -4375,7 +4716,8 @@ This operation does not require authentication
   <span class="hljs-attr">"first_name"</span>: <span class="hljs-string">"John"</span>,
   <span class="hljs-attr">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
   <span class="hljs-attr">"email"</span>: <span class="hljs-string">"john.doe@example.com"</span>,
-  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>
+  <span class="hljs-attr">"github_id"</span>: <span class="hljs-string">"johndoe1100"</span>,
+  <span class="hljs-attr">"role_id"</span>: <span class="hljs-number">1</span>
 }
 
 </code></pre>
@@ -4431,6 +4773,96 @@ This operation does not require authentication
 <td>role_id</td>
 <td>number</td>
 <td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>archived</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>updatedAt</td>
+<td>string(date)</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tocseditrequest">EditRequest</h2>
+<p><a id="schemaeditrequest"></a></p>
+<pre class="highlight tab tab-json"><code>{
+  <span class="hljs-attr">"id"</span>: <span class="hljs-number">54</span>,
+  <span class="hljs-attr">"profileId"</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">"editType"</span>: <span class="hljs-string">"contacts"</span>,
+  <span class="hljs-attr">"editObject"</span>: <span class="hljs-string">"[{ \"id \": 233, \"firstName \": \"Jane \", \"lastName \": \"Doe \", \"email \": \"jane@example.com \", \"githubId \": \"janedoe \", \"roleId \": 1},{ \"id \": 234, \"firstName \": \"Jim \", \"lastName \": \"Doe \", \"email \": \"jim@example.com \", \"githubId \": \"jim1100 \", \"roleId \": 2}]"</span>,
+  <span class="hljs-attr">"natsSubject"</span>: <span class="hljs-string">"registry_project_provisioning"</span>,
+  <span class="hljs-attr">"natsContext"</span>: <span class="hljs-string">"{ \"action \": \"edit \", \"type\": \"standard \", \"profileId \": 118, \"displayName \": \"Project X \", \"namespaces \": [ { \"namespaceId \": 149, \"name \": \"4ea35c-tools \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 151, \"name \": \"4ea35c-test \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 150, \"name \": \"4ea35c-dev \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] }, { \"namespaceId \": 152, \"name \": \"4ea35c-prod \", \"clusters \": [ { \"clusterId \": 1, \"name \": \"silver \", \"provisioned \": false, \"quotas \": { \"cpu \": \"small \", \"memory \": \"small \", \"storage \": \"small \" } } ] } ], \"productOwner \": { \"userId \": \"jane1100 \", \"provider \": \"github \", \"email \": \"jane.doe@example.com \" }, \"technicalContact \": { \"userId \": \"john1100 \", \"provider \": \"github \", \"email \": \"john.doe@example.com \" } }"</span>
+}
+
+</code></pre>
+<p><em>Edit Request</em></p>
+<h3 id="properties-6">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Required</th>
+<th>Restrictions</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>number</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>profileId</td>
+<td>number;</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>editType</td>
+<td>RequestEditType;</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>editObject</td>
+<td>string;</td>
+<td>true</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>natsSubject</td>
+<td>string;</td>
+<td>false</td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td>natsContext</td>
+<td>string;</td>
+<td>false</td>
 <td>none</td>
 <td>none</td>
 </tr>
