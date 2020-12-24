@@ -19,7 +19,7 @@ import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
 import { StyledFormButton } from '../components/UI/button';
-import { COMPONENT_METADATA } from '../constants';
+import { COMPONENT_METADATA, PROFILE_VIEW_NAMES, ROUTE_PATHS } from '../constants';
 import getValidator from '../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformForm } from '../utils/transformDataHelper';
@@ -56,16 +56,16 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
 
           // 2. All good? Tell the user.
           promptSuccessToastWithText('Your profile update was successful');
-          window.location.reload()
       } catch (err) {
           closeBackdropCB();
           promptErrToastWithText('Something went wrong');
           console.log(err);
       }
   };
-    if (goBackToProfileEditable) {
-        // TODO:(yh) refactor here so as to use constants
-        return (<Redirect to={`/profile/${profileDetails.id}/overview`} />);
+    if (goBackToProfileEditable && profileDetails.id) {
+        return (<Redirect to={
+            ROUTE_PATHS.PROFILE_EDITABLE.replace(':profileId', profileDetails.id).replace(':viewName', PROFILE_VIEW_NAMES.OVERVIEW)
+        } />);
     }
 
     return (
@@ -193,7 +193,7 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
                 )}
             </Field>
             {/* @ts-ignore */}
-            <StyledFormButton style={{ display: 'block' }} onClick={onSubmit}>Update Profile</StyledFormButton>
+            <StyledFormButton style={{ display: 'block' }}>Update Profile</StyledFormButton>
             </form>
           )}
           </Form>
