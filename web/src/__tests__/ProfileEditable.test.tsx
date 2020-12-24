@@ -19,67 +19,33 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
 import ProfileEdit from '../views/ProfileEditable';
+import contacts from './fixtures/profile-contacts.json';
+import ministries from './fixtures/profile-ministry.json';
+import profiles from './fixtures/profiles.json';
 
 const browserHistory = createBrowserHistory();
 
-// TODO: use fixtures and make them work with jest mock values
+const mockProfile = () => profiles[0];
+const mockMinistry = () => ministries[0];
+const mockContacts = () => contacts;
+
 jest.mock('../utils/useRegistryApi', () => {
   return function useRegistryApi() {
     const getProfileByProfileId = jest.fn().mockResolvedValue({
       data: [
-        {
-          'id': 1,
-          'name': 'Health Gateway',
-          'busOrgId': 'CITZ',
-          'description': null,
-          'prioritySystem': false,
-          'criticalSystem': false,
-          'createdAt': '2020-04-28T00:00:00.000Z',
-          'updatedAt': '2020-04-28T00:00:00.000Z',
-          'userId': 4
-        }
-      ]
+        mockProfile,
+      ],
     });
 
     const getMinistry = jest.fn().mockResolvedValue({
       data: [
-        {
-          'id': 'CITZ',
-          'name': 'Citizen\'s Services',
-          'createdAt': '2020-04-28T00:00:00.000Z',
-          'updatedAt': '2020-04-28T00:00:00.000Z'
-        }
-      ]
+        mockMinistry,
+      ],
     });
 
     const getContactsByProfileId = jest.fn().mockResolvedValue({
-      data: [
-        {
-          'id': 233,
-          'firstName': 'Jane',
-          'lastName': 'Doe',
-          'email': 'jane@example.com',
-          'githubId': 'jane1100',
-          'roleId': 1,
-          'archived': false,
-          'createdAt': '2020-09-10T18:14:13.436Z',
-          'updatedAt': '2020-09-10T18:14:13.436Z'
-        },
-        {
-          'id': 234,
-          'firstName': 'Jim',
-          'lastName': 'Doe',
-          'email': 'jim@example.com',
-          'githubId': 'jim1100',
-          'roleId': 2,
-          'archived': false,
-          'createdAt': '2020-09-10T18:14:13.436Z',
-          'updatedAt': '2020-09-10T18:14:13.436Z'
-        }
-      ]
+      data: mockContacts,
     });
-
-    
 
     return { getProfileByProfileId, getMinistry, getContactsByProfileId };
   }
@@ -100,36 +66,11 @@ jest.mock('../utils/transformDataHelper', () => {
 
 jest.mock('../utils/transformDataHelper', () => {
   return function getProfileContacts() {
-  const getProfileContacts = jest.fn().mockResolvedValue({
-    data: [
-      {
-        'id': 233,
-        'firstName': 'Jane',
-        'lastName': 'Doe',
-        'email': 'jane@example.com',
-        'githubId': 'jane1100',
-        'roleId': 1,
-        'archived': false,
-        'createdAt': '2020-09-10T18:14:13.436Z',
-        'updatedAt': '2020-09-10T18:14:13.436Z',
-        'name': 'Jane Doe'
-      },
-      {
-        'id': 234,
-        'firstName': 'Jim',
-        'lastName': 'Doe',
-        'email': 'jim@example.com',
-        'githubId': 'jim1100',
-        'roleId': 2,
-        'archived': false,
-        'createdAt': '2020-09-10T18:14:13.436Z',
-        'updatedAt': '2020-09-10T18:14:13.436Z',
-        'name': 'Jim Doe'
-      }
-    ]
-  });
-  return { getProfileContacts }
-}
+    const getProfileContacts = jest.fn().mockResolvedValue({
+      data: mockContacts,
+    });
+    return { getProfileContacts }
+  }
 });
 
 

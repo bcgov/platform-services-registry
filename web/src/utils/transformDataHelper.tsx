@@ -72,11 +72,11 @@ export function sortProfileByDatetime(profileData: any): any[] | [] {
   }
 };
 
-// returns true if ALL namespaces under a profile in silver clusters are provisioned true
+// returns true if ALL namespaces under a profile in default cluster are provisioned true
 export function isProfileProvisioned(namespaceSet: any[]): boolean {
   try {
     namespaceSet.forEach((namespace: any) => {
-      // TODO: refactor here when we add other clusters
+      // TODO: update this when we add other clusters besides default cluster
       if (!namespace.clusters[0].provisioned) {
         throw Error;
       }
@@ -174,16 +174,6 @@ export function getProfileMinistry(ministrySet: any[], profileDetails: any): obj
   return ministryDetails;
 }
 
-// the following logics need to be changed when we no longer bundle all quota requests in one
-export function getCurrentQuotaSize(namespaces: Namespace[]): QuotaSizeSet | Error {
-  try {
-    return namespaces[0].clusters[0].quotas.cpu;
-  } catch (err) {
-    const msg = 'Unable to get current quota size given namespaces json';
-    throw new Error(`${msg}, reason = ${err.message}`);
-  }
-};
-
 export function getLicensePlate(namespaces: Namespace[]): string | Error {
   try {
     return namespaces[0].name.split('-')[0];
@@ -193,6 +183,19 @@ export function getLicensePlate(namespaces: Namespace[]): string | Error {
   }
 };
 
+// TODO: update the following functions when we no longer bundle all quota requests in one
+// where one t-shirt size applies to all specs in all four namespaces
+export function getCurrentQuotaSize(namespaces: Namespace[]): QuotaSizeSet | Error {
+  try {
+    return namespaces[0].clusters[0].quotas.cpu;
+  } catch (err) {
+    const msg = 'Unable to get current quota size given namespaces json';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+};
+
+// the given list of quota options from registry api may include the current quota size
+// this function is to remove the current quota size for ui
 export function getCurrentQuotaOptions(cnQuotaOptionsList: CNQuotaOptions[], currentQuotaSize: QuotaSizeSet): QuotaSizeSet[] | [] | Error {
   try {
     const array: QuotaSizeSet[] = cnQuotaOptionsList[0].quotaCpu;

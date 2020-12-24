@@ -26,84 +26,28 @@ interface IQuotaCardProps {
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     const { licensePlate, quotaSize } = props;
 
+    const namespaceTexts = [['Production', 'prod'], ['Test', 'test'], ['Development', 'dev'], ['Tools', 'tools']];
+    const specTexts = ['CPU', 'Memory', 'Storage'];
+
     return (
         <Flex flexWrap='wrap'>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Production Namespace
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    {`${licensePlate}-prod namespace in Silver cluster`}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    CPU: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Memory: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Storage: {quotaSize}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Test Namespace
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    {`${licensePlate}-test namespace in Silver cluster`}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    CPU: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Memory: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Storage: {quotaSize}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Development Namespace
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    {`${licensePlate}-dev namespace in Silver cluster`}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    CPU: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Memory: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Storage: {quotaSize}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Tools Namespace
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    {`${licensePlate}-tools namespace in Silver cluster`}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    CPU: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Memory: {quotaSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Storage: {quotaSize}
-                </Text>
-            </Box>
+            {namespaceTexts.map((namespaceText: string[]) =>
+                <>
+                    <Box width={1 / 2} px={2} mt={3}>
+                        <Text as="h3">{namespaceText[0]} Namespace</Text>
+                        <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                            {`${licensePlate}-${namespaceText[1]} namespace in Silver cluster`}
+                        </Text>
+                    </Box>
+                    <Box width={1 / 2} px={2} mt={3}>
+                        {specTexts.map((specText: string) =>
+                            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                                {specText}: {quotaSize}
+                            </Text>
+                        )}
+                    </Box>
+                </>
+            )}
         </Flex>
     );
 };
