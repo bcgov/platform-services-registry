@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-// TODO: sort out a way to declare ts returned value to be null | array of react components
+// TODO: fix this to declare ts returned value to be null | array of react components
 const NewlineText = (props: any) => {
     const text = props.text;
 

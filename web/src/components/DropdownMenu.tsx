@@ -27,7 +27,7 @@ const StyledDropdown = styled.div`
   margin-top: 15px;
   margin-right: 15px;
   background-color: ${theme.colors.contrast};
-  zIndex: ${theme.zIndices[2]}
+  zIndex: ${theme.zIndices[2]};
 `;
 
 interface IDropdownMenuProps {
@@ -40,7 +40,6 @@ const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref)
   const { menuItems, handleOnClick } = props;
 
   return (
-    // TODO: investigate ref type error
     // @ts-ignore
     <div ref={ref}>
       <StyledDropdown>

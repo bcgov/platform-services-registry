@@ -49,7 +49,7 @@ const MyForm: React.FC<IFormProps> = (props: any) => {
     const onSubmit = async (formData: any) => {
         const { profile, productOwner, technicalContact } = transformForm(formData);
 
-        // TODO: fx this work-around
+        // TODO: fix this work-around
         if (!profile.busOrgId) {
             alert("You need to select a Ministry Sponsor.");
             return;

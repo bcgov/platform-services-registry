@@ -53,7 +53,7 @@ const actionForCurrentState = (keycloak: any): any => {
     return () => keycloak.logout();
   }
 
-  // TODO: will revert back once the better access control is in place
+  // TODO: update this once a better access control is in place
   // where we check if users are part of our GitHub organization
   return () => keycloak.login({ idpHint: 'idir' });
 };
