@@ -27,7 +27,7 @@ objects:
     metadata:
       name: api-to-db
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow the API to communicate with the database pod.
@@ -42,7 +42,7 @@ objects:
     metadata:
       name: frontend-to-api
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow the frontend to communicate with the API pod.
@@ -57,7 +57,7 @@ objects:
     metadata:
       name: api-to-nats
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow the API to communicate with the NATS pod. This may not be
@@ -74,7 +74,7 @@ objects:
     metadata:
       name: db-to-db
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow patroni pods to talk to one another for replication
@@ -90,7 +90,7 @@ objects:
     metadata:
       name: flyway-to-db
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow flyway to communicate with the database pod.
@@ -107,7 +107,7 @@ objects:
       # `oc get externalnetwork` or `kubctl get externalnetwork`.
       name: all-things-external
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       # This name will be used internally by Aporeto; it should match
       # the `name` field in metadata above.
@@ -125,7 +125,7 @@ objects:
     metadata:
       name: api-to-internet
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow the API pods to communicate with the internet so it can
@@ -160,3 +160,10 @@ parameters:
     description: |
       The Aporeto identifier used by Aporeto to identify flyway pod.
     required: true
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry

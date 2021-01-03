@@ -19,7 +19,7 @@ objects:
     kind: Secret
     metadata:
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
         cluster-name: ${NAME}
       name: ${NAME}-creds
     stringData:
@@ -34,14 +34,14 @@ objects:
     kind: ServiceAccount
     metadata:
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
         cluster-name: ${NAME}
       name: ${NAME}
   - apiVersion: rbac.authorization.k8s.io/v1
     kind: Role
     metadata:
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
         cluster-name: ${NAME}
       name: ${NAME}
     rules:
@@ -95,7 +95,7 @@ objects:
     kind: RoleBinding
     metadata:
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
         cluster-name: ${NAME}
       name: ${NAME}
     roleRef:
@@ -140,3 +140,10 @@ parameters:
   - name: APP_DB_PASSWORD
     generate: expression
     from: "[a-z0-9]{32}"
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry

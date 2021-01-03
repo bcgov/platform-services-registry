@@ -12,7 +12,7 @@ metadata:
     tags: postgresql
   name: patroni-pgsql-persistent
 labels:
-  app: platsrv-registry
+  app: ${APP_LABEL_NAME}
   phase: deploy
   app.kubernetes.io/instance: ${NAME}
   app.kubernetes.io/component: database
@@ -24,7 +24,7 @@ objects:
     metadata:
       creationTimestamp: null
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
         cluster-name: ${NAME}
       name: ${NAME}-master
     spec:
@@ -46,7 +46,7 @@ objects:
       creationTimestamp: null
       generation: 3
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
         cluster-name: ${NAME}
       name: ${NAME}
     spec:
@@ -61,7 +61,7 @@ objects:
         metadata:
           creationTimestamp: null
           labels:
-            app: platsrv-registry
+            app: ${APP_LABEL_NAME}
             statefulset: ${NAME}
             cluster-name: ${NAME}
             app.kubernetes.io/name: patroni
@@ -194,7 +194,7 @@ objects:
             annotations:
               volume.beta.kubernetes.io/storage-class: ${STORAGE_CLASS}
             labels:
-              app: platsrv-registry
+              app: ${APP_LABEL_NAME}
             name: postgresql
           spec:
             storageClassName: ${STORAGE_CLASS}
@@ -254,3 +254,10 @@ parameters:
     value: netapp-file-standard
   - name: IMAGE_REGISTRY
     value: image-registry.openshift-image-registry.svc:5000
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry
