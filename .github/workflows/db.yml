@@ -8,24 +8,15 @@ defaults:
     working-directory: ./db
 jobs:
   docker-build:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
-      - name: OpenShift action
+      - name: Docker Build
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: "latest"
-          openshift_server_url: ${{ secrets.OpenShiftServerURL}} 
+          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
           parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             'version'
-      - name: OC script for dev build
-        if: github.event_name == 'push' && github.ref != 'refs/heads/master'
-        run: |
-          oc process -f openshift/flyway.build.yaml -p GIT_REF="${GITHUB_REF##*/}" -p OUTPUT_IMAGE_TAG=latest -p SUFFIX="dev" | oc apply -f - -n platform-registry-tools
-      - name: OC script for master build
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: |
-          oc start-build platsrv-registry-flyway-master-build --follow -n platform-registry-tools
+            'start-build platsrv-registry-flyway-master-build --follow -n platform-registry-tools'
