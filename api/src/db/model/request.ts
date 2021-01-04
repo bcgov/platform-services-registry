@@ -19,12 +19,12 @@ import { CommonFields, Model } from './model';
 export const enum RequestEditType {
     Contacts = 'contacts',
     Namespaces = 'namespaces',
-};
+}
 
 export enum RequestEditContacts {
     ProductOwner = 'productOwner',
     TechnicalContact = 'technicalContact',
-};
+}
 
 export interface Request extends CommonFields {
     profileId: number;
