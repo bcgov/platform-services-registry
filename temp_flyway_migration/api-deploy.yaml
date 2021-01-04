@@ -1,0 +1,292 @@
+# Copyright 2020 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: |
+      Deployment template for the Platform Serices
+      project registry.
+    iconClass: icon-node
+  name: platform-services-registry
+objects:
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${APP_LABEL_NAME}
+      name: ${API_NAME}
+    spec:
+      path: ""
+      port:
+        targetPort: 8080-tcp
+      tls:
+        termination: edge
+      to:
+        kind: Service
+        name: ${API_NAME}
+        weight: 100
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: ${APP_LABEL_NAME}
+      name: ${API_NAME}
+    spec:
+      selector:
+        deploymentconfig: ${API_NAME}
+      ports:
+        - name: 8080-tcp
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        app: ${APP_LABEL_NAME}
+      name: ${API_NAME}
+    spec:
+      strategy:
+        type: Rolling
+        rollingParams:
+          pre:
+            failurePolicy: Retry
+            execNewPod:
+              containerName: flyway-migration
+              command:
+                - "flyway"
+                - "migrate"
+          maxSurge: 50%
+          maxUnavailable: 0
+          timeoutSeconds: 1200
+        activeDeadlineSeconds: 21600
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${API_NAME}
+            from:
+              kind: ImageStreamTag
+              name: ${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}
+              namespace: ${SOURCE_IMAGE_NAMESPACE}
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - flyway-migration
+            from:
+              kind: ImageStreamTag
+              name: "${FLYWAY_IMAGE_NAME}:${FLYWAY_IMAGE_TAG}"
+              namespace: ${SOURCE_IMAGE_NAMESPACE}
+      replicas: 1
+      selector:
+        deploymentconfig: ${API_NAME}
+      template:
+        metadata:
+          labels:
+            app: ${APP_LABEL_NAME}
+            role: api
+            deploymentconfig: ${API_NAME}
+          name: ${API_NAME}
+        spec:
+          containers:
+            - name: ${API_NAME}
+              image: " "
+              readinessProbe:
+                httpGet:
+                  path: /api/v1/ehlo
+                  port: 8080
+                initialDelaySeconds: 10
+                timeoutSeconds: 3
+              ports:
+                - containerPort: 8080
+              env:
+                - name: LOG_LEVEL
+                  value: debug
+                - name: PORT
+                  value: "8080"
+                - name: NODE_ENV
+                  value: production
+                - name: APP_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-username
+                      name: ${POSTGRESQL_SECRET_NAME}
+                - name: APP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-password
+                      name: ${POSTGRESQL_SECRET_NAME}
+                - name: POSTGRESQL_HOST
+                  value: ${POSTGRESQL_DATABASE}.${NAMESPACE}.svc
+                - name: CHES_BASEURL
+                  value: ${CHES_BASEURL}
+                - name: CHES_SSO_TOKEN_URL
+                  value: ${CHES_SSO_TOKEN_URL}
+                - name: CHES_SSO_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: clientId
+                      name: ${CHES_SECRET_NAME}
+                - name: CHES_SSO_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      key: secret
+                      name: ${CHES_SECRET_NAME}
+                - name: NATS_HOST
+                  value: ${NATS_HOST_URL}
+                - name: SSO_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      key: secret
+                      name: ${SSO_SECRET_NAME}
+              resources:
+                limits:
+                  cpu: 300m
+                  memory: 128Mi
+                requests:
+                  cpu: 200m
+                  memory: 92Mi
+              volumeMounts:
+                - name: config-vol
+                  mountPath: /opt/app-root/src/build/config/config.json
+                  subPath: config.json
+            - name: flyway-migration
+              command:
+                - cat
+              stdin: true
+              image: " "
+              env:
+                - name: FLYWAY_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-username
+                      name: ${POSTGRESQL_SECRET_NAME}
+                - name: FLYWAY_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-password
+                      name: ${POSTGRESQL_SECRET_NAME}
+                - name: FLYWAY_DB_HOST
+                  value: ${POSTGRESQL_DATABASE}.${NAMESPACE}.svc
+                - name: FLYWAY_DB_NAME
+                  value: ${APP_DB_NAME}
+                - name: FLYWAY_URL
+                  value: jdbc:postgresql://${POSTGRESQL_DATABASE}.${NAMESPACE}.svc/${APP_DB_NAME}
+                - name: FLYWAY_CONNECT_RETRIES
+                  value: '60'
+                - name: FLYWAY_PLACEHOLDER_REPLACEMENT
+                  value: 'true'
+                - name: FLYWAY_PLACEHOLDERS_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-username
+                      name: ${POSTGRESQL_SECRET_NAME}
+              resources:
+                limits:
+                  cpu: 300m
+                  memory: 128Mi
+                requests:
+                  cpu: 200m
+                  memory: 92Mi
+          volumes:
+            - name: config-vol
+              configMap:
+                name: ${ORIGINAL_NAME}-config
+parameters:
+  - description:
+      The name assigned to all of the objects defined in this template.  You
+      should keep this as default unless your know what your doing.
+    displayName: Name
+    name: API_NAME
+    required: true
+    value: registry-api-flyway
+  - name: ORIGINAL_NAME
+    description: |
+      The original name from the last setup to reuse api config.
+    displayName: Original Application Name
+    value: registry-api
+  - description:
+      The namespace of the OpenShift project containing the imagestream for
+      the application.
+    displayName: Environment namespace
+    name: NAMESPACE
+    required: true
+  - description: The secret name for the database.
+    displayName: PostgreSQL secret name
+    name: POSTGRESQL_SECRET_NAME
+    value: registry-patroni-creds
+  - displayName: The PostgreSQL database service name
+    name: POSTGRESQL_DATABASE
+    required: true
+    value: registry-patroni-flyway-master
+  - description: The openshift project where builds and target images are stored.
+    displayName: Build Project
+    name: SOURCE_IMAGE_NAMESPACE
+    required: true
+  - description: The name of the source image.
+    displayName: Source Image Name
+    name: SOURCE_IMAGE_NAME
+    value: platsrv-registry-api
+    required: true
+  - description: The tag of the source image.
+    displayName: Source Image Tag
+    name: SOURCE_IMAGE_TAG
+    required: true
+  - description: The Common Hosted Email Service secret name
+    displayName: Email Service Secret Name
+    name: CHES_SECRET_NAME
+    value: registry-ches-creds
+  - description: The base URL for the Common Hosted Email Service API
+    displayName: Email Service API URL
+    name: CHES_BASEURL
+    required: true
+  - description: The Common Hosted Email Service SSO URL
+    displayName: Email Service SSO URL
+    name: CHES_SSO_TOKEN_URL
+    required: true
+  - description: |
+      The NATS host URI
+    displayName: NATS Host URI
+    name: NATS_HOST_URL
+    required: true
+  - description: |
+      The name of the SSO client shared secret.
+    displayName: SSO Shared Secret Name
+    name: SSO_SECRET_NAME
+    value: registry-sso-creds
+  - description: App db name
+    displayName: App db name
+    name: APP_DB_NAME
+    required: true
+  - description: The name of the flyway source image.
+    displayName: Flyway source image name
+    name: FLYWAY_IMAGE_NAME
+    required: true
+  - description: The tag of the flyway source image.
+    displayName: Flyway source Image Tag
+    name: FLYWAY_IMAGE_TAG
+    required: true
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry-flyway

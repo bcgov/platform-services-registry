@@ -1,0 +1,92 @@
+# Copyright 2020 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: |
+      The Network Security Policies (NSP) for the associated
+      Platform Services registry application.
+  name: hipster-store-demo
+objects:
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: api-to-db-flyway
+      labels:
+        app: ${APP_LABEL_NAME}
+    spec:
+      description: |
+        allow the API to communicate with the database pod.
+      source:
+        - - '$namespace=${NAMESPACE}'
+          - 'role=api'
+      destination:
+        - - '$namespace=${NAMESPACE}'
+          - '${DB_APO_IDENTIFIER}'
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: db-to-db-flyway
+      labels:
+        app: ${APP_LABEL_NAME}
+    spec:
+      description: |
+        allow patroni pods to talk to one another for replication
+        etc.
+      source:
+        - - '$namespace=${NAMESPACE}'
+          - '${DB_APO_IDENTIFIER}'
+      destination:
+        - - '$namespace=${NAMESPACE}'
+          - '${DB_APO_IDENTIFIER}'
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: flyway-to-db-flyway
+      labels:
+        app: ${APP_LABEL_NAME}
+    spec:
+      description: |
+        allow flyway to communicate with the database pod.
+      source:
+        - - '$namespace=${NAMESPACE}'
+          - '${FLYWAY_IDENTIFIER}'
+      destination:
+        - - '$namespace=${NAMESPACE}'
+          - '${DB_APO_IDENTIFIER}'
+parameters:
+  - name: NAMESPACE
+    description: |
+      The the name of the namespace the policy is being
+      deployed to.
+    required: true
+  - name: DB_APO_IDENTIFIER
+    description: |
+      The Aporeto identifier used by Aporeto to identify the DB
+      service.
+    required: true
+  - name: FLYWAY_IDENTIFIER
+    description: |
+      The Aporeto identifier used by Aporeto to identify flyway pod.
+    required: true
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry-flyway
