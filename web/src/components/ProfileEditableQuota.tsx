@@ -36,12 +36,13 @@ interface IProfileEditableQuotaProps {
     openBackdropCB: () => void;
     closeBackdropCB: () => void;
     handleQuotaSubmitRefresh: any;
+    isProvisioned: boolean;
 }
 
 const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
     const api = useRegistryApi();
 
-    const { licensePlate, quotaSize, profileId, quotaOptions, cnQuotaOptionsJson, openBackdropCB, closeBackdropCB, handleQuotaSubmitRefresh } = props;
+    const { licensePlate, quotaSize, profileId, quotaOptions, cnQuotaOptionsJson, openBackdropCB, closeBackdropCB, handleQuotaSubmitRefresh, isProvisioned } = props;
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
     const [selectedSize, setSelectedSize] = useState('');
@@ -129,7 +130,7 @@ const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
                             {/* @ts-ignore */}
                             <StyledFormDisabledButton style={{ display: 'block' }}>Request Quota</StyledFormDisabledButton>
                             {quotaOptions.length === 0 && (
-                                <Label as="span" variant="errorLabel" >Not available due to a pending provisioning status / quota request</Label>
+                                <Label as="span" variant="errorLabel" >Not Available due to {isProvisioned ? 'Update' : 'Provision'} Pending</Label>
                             )}
                         </>
                     )}

@@ -29,7 +29,7 @@ import { PROFILE_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../consta
 import theme from '../theme';
 import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry } from '../utils/transformDataHelper';
+import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
 import useRegistryApi from '../utils/useRegistryApi';
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
 
@@ -49,6 +49,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [contactJson, setContactJson] = useState<any>({});
     const [ministry, setMinistry] = useState<any>([]);
 
+    const [isProvisioned, setIsProvisioned] = useState<boolean>(false);
     const [namespacesJson, setNamespacesJson] = useState<Namespace[]>([]);
     const [quotaSize, setQuotaSize] = useState<QuotaSizeSet | ''>('');
     const [licensePlate, setLicensePlate] = useState<string>('');
@@ -77,6 +78,9 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
 
                 const namespaces = await api.getNamespacesByProfileId(profileId);
                 const cnQuotaOptions = await api.getCNQuotaOptionsByProfileId(profileId);
+
+
+                setIsProvisioned(isProfileProvisioned(namespaces.data));
                 setNamespacesJson(namespaces.data);
                 setCnQuotaOptionsJson(cnQuotaOptions.data);
             } catch (err) {
@@ -197,6 +201,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                     openBackdropCB={openBackdropCB}
                                     closeBackdropCB={closeBackdropCB}
                                     handleQuotaSubmitRefresh={handleQuotaSubmitRefresh}
+                                    isProvisioned={isProvisioned}
                                 />
                             }
                         </ShadowBox>
