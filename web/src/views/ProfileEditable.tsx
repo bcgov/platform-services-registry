@@ -50,6 +50,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [profileJson, setProfileJson] = useState<any>({});
     const [contactJson, setContactJson] = useState<any>({});
     const [ministry, setMinistry] = useState<any>([]);
+    const [provisionedStatus, setProvisionedStatus] = useState<any>();
 
     const [isProvisioned, setIsProvisioned] = useState<boolean>(false);
     const [namespacesJson, setNamespacesJson] = useState<Namespace[]>([]);
@@ -87,6 +88,10 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 setIsProvisioned(isProfileProvisioned(namespaces.data));
                 setNamespacesJson(namespaces.data);
                 setCnQuotaOptionsJson(cnQuotaOptions.data);
+
+                const isProvisioned = isProfileProvisioned(namespaces.data);
+                setProvisionedStatus(isProvisioned);
+
             } catch (err) {
                 if (err.response && err.response.status && err.response.status === RESPONSE_STATUS_CODE.UNAUTHORIZED) {
                     setUnauthorizedToAccess(true);
@@ -244,6 +249,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                     profileId={profileId}
                                     contactDetails={contactJson}
                                     pendingEditRequest={pendingEditRequest}
+                                    isProvisioned={provisionedStatus}
                                     setPendingEditRequest={setPendingEditRequest}
                                     openBackdropCB={openBackdropCB}
                                     closeBackdropCB={closeBackdropCB}

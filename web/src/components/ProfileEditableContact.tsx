@@ -29,6 +29,7 @@ import SubFormTitle from './UI/subFormTitle';
 
 interface IProfileEditableContactProps {
     profileId?: string;
+    isProvisioned?: boolean;
     contactDetails: any;
     pendingEditRequest: boolean;
     setPendingEditRequest: any;
@@ -37,8 +38,8 @@ interface IProfileEditableContactProps {
 }
 
 const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) => {
-    const { profileId, contactDetails, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
-
+    const { profileId, isProvisioned, contactDetails, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
+    console.log(isProvisioned)
     const api = useRegistryApi();
     
     const validator = getValidator();
@@ -92,7 +93,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                             <input type="hidden" {...input} id="po-Id" />
                         )}
                     </Field>
-                    <Field name="po-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.POFirstName} >
+                    <Field name="po-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.POFirstName}>
                         {({ input, meta }) => (
                             <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                                 <Label m="0" htmlFor="po-first-name">First Name</Label>
@@ -171,14 +172,14 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
                             </Flex>
                         )}
                     </Field>
-                    {pendingEditRequest === false ? (
+                    {!pendingEditRequest && isProvisioned ? (
                     //@ts-ignore
                     <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
                     ) : (
                         <>
                             {/* @ts-ignore */}
                             <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
-                            <Label as="span" variant="errorLabel" >Not available due to a pending edit request</Label>
+                            <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
                         </>
                     )}
                 </form>
