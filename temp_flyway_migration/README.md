@@ -1,6 +1,6 @@
 This is to document a plan to integrate flyway in prod env with zero downtime
 
-all temporary artifacts will be created with a new app label with flyway as SUFFIX
+all temporary artifacts will be created with a new app label name using flyway as SUFFIX
 
 0. create new temporary nsp rules
 this is so the new db and api service (to be created next) can talk to each other
