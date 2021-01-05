@@ -135,7 +135,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         // eslint-disable-next-line
     }, []);
 
-    // start polling for profile provision status changes every 30s
     useInterval(() => {
         async function wrap() {
             const editRequest = await api.getEditRequestStatus(profileId);

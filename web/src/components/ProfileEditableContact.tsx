@@ -20,6 +20,7 @@ import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
 import { StyledFormButton, StyledFormDisabledButton } from '../components/UI/button';
+import { PROFILE_VIEW_NAMES, ROUTE_PATHS } from '../constants';
 import getValidator from '../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformForm } from '../utils/transformDataHelper';
@@ -42,7 +43,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
     
     const validator = getValidator();
 
-    const [goBackToProfileOverview, setGoBackToProfileEditable] = useState<boolean>(false);
+    const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
     
     const onSubmit = async (formData: any) => {
         const { productOwner, technicalContact } = transformForm(formData);
@@ -68,9 +69,10 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
             console.log(err);
         }
     };
-    if (goBackToProfileOverview) {
-        // TODO:(yh) refactor here so as to use constants
-        return (<Redirect to={`/profile/${profileId}/overview`} />);
+    if (goBackToProfileEditable && profileId) {
+        return (<Redirect to={
+            ROUTE_PATHS.PROFILE_EDITABLE.replace(':profileId', profileId).replace(':viewName', PROFILE_VIEW_NAMES.OVERVIEW)
+        } />);
     }
 
     return (
