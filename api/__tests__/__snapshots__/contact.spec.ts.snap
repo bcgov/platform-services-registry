@@ -4,6 +4,26 @@ exports[`Contact event handlers A contact edit request is created 1`] = `
 Array [
   Array [
     Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        233,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        234,
+      ],
+    },
+  ],
+  Array [
+    Object {
       "text": "INSERT INTO request
             (profile_id, edit_type, edit_object, nats_subject, nats_context)
             VALUES ($1, $2, $3, $4, $5) RETURNING *;",
