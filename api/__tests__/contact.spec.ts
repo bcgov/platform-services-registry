@@ -117,10 +117,19 @@ describe('Contact event handlers', () => {
     }
 
     client.query.mockResolvedValue({
+        roleId: 1,
+        id: 233,
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        githubId: 'jane1100',
+    });
+
+    client.query.mockResolvedValue({
       productOwner: {
         userId: 'jane1100',
         provider: 'github',
-        email: 'jane.doe@example.com',
+        email: 'jane.doe@example.ca',
       },
       technicalContact: {
         userId: 'john1100',
@@ -129,6 +138,8 @@ describe('Contact event handlers', () => {
       },
     });
 
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
 
     // @ts-ignore
