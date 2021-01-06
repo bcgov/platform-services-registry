@@ -11,7 +11,7 @@ persistence:
     size: 1Gi
 
 db:
-  secretName: registry-patroni
+  secretName: registry-patroni-creds
   usernameKey: superuser-username
   passwordKey: superuser-password
 
