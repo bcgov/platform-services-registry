@@ -100,31 +100,65 @@ export const requestContactEdit = async (
     const { profileId } = params;
     const { productOwner, technicalContact } = body;
     const editType = RequestEditType.Contacts;
-
     const contacts = [productOwner, technicalContact]
 
-    // process request body for natsContext
-    const editObject = await formatNatsContactObject(body)
-    if (!editObject) {
-      const errmsg = 'Cant generate request edit object';
-      throw new Error(errmsg);
-    }
+    // Step 1. GET current contact details
+    const currentPOvalues = await ContactModel.findById(productOwner.id);
+    const currentTCvalues = await ContactModel.findById(technicalContact.id);
 
-    const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+    // Step 2. Compare if GithubId or Email values were changed
+    const provisionerEdits = [
+      currentPOvalues.githubId !== productOwner.githubId,
+      currentPOvalues.email !== productOwner.email,
+      currentTCvalues.githubId !== technicalContact.githubId,
+      currentTCvalues.email !== technicalContact.email,
+    ];
 
-    // create Request record for contact edit
-    await RequestModel.create({
-      profileId,
-      editType,
-      editObject: JSON.stringify(contacts),
-      natsSubject,
-      natsContext: JSON.stringify(natsContext),
-    })
-    res.status(204).end();
+    // Step 3. Compare if first or last name details were altered
+    const contactNameEdits = [
+      currentPOvalues.firstName !== productOwner.firstName,
+      currentPOvalues.lastName !== productOwner.lastName,
+      currentTCvalues.firstName !== technicalContact.firstName,
+      currentTCvalues.lastName !== technicalContact.lastName,
+    ];
+
+    // Step 4. Assess if provisioner or contact edits occurred.
+    const provisionerEdit = provisionerEdits.some(provisionerEdits => provisionerEdits);
+    const contactNameEdit = contactNameEdits.some(contactNameEdits => contactNameEdits);
+
+    if (provisionerEdit) {
+      // process request body for natsContext
+      const editObject = await formatNatsContactObject(body)
+      if (!editObject) {
+        const errmsg = 'Cant generate request edit object';
+        throw new Error(errmsg);
+      }
+
+      const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+
+      // create Request record for contact edit
+      await RequestModel.create({
+        profileId,
+        editType,
+        editObject: JSON.stringify(contacts),
+        natsSubject,
+        natsContext: JSON.stringify(natsContext),
+      })
+      res.status(204).end();
+    } else if (contactNameEdit) {
+      const updatePromises: any = [];
+      contacts.forEach((contact: Contact) => {
+        updatePromises.push(ContactModel.update(Number(contact.id), contact))
+      })
+      await Promise.all(updatePromises);
+      res.status(204).end();
+    } else {
+      res.status(204).end();
+    };
   } catch (err) {
-    const message = `Unable to update contact`;
-    logger.error(`${message}, err = ${err.message}`);
-    throw errorWithCode(message, 500);
+  const message = `Unable to update contact`;
+  logger.error(`${message}, err = ${err.message}`);
+  throw errorWithCode(message, 500);
   }
 };
 
