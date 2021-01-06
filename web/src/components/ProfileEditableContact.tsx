@@ -39,7 +39,7 @@ interface IProfileEditableContactProps {
 
 const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) => {
     const { profileId, isProvisioned, contactDetails, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
-    console.log(isProvisioned)
+
     const api = useRegistryApi();
     
     const validator = getValidator();
