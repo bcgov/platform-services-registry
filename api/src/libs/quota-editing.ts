@@ -16,10 +16,10 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import DataManager from '../db';
-import { Cluster } from '../db/model/cluster';
 import { ClusterNamespace, ProjectNamespace, QuotaSize } from '../db/model/namespace';
 import { Request } from '../db/model/request';
 import { AuthenticatedUser } from './authmware';
+import { getDefaultCluster } from './namespace-set';
 import shared from './shared';
 import { validateObjProps } from './utils';
 
@@ -28,17 +28,6 @@ const { NamespaceModel, ClusterModel, RequestModel } = dm;
 const whichService = 'quota editing';
 const quotaSizeNames = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
 const spec = ['quotaCpu', 'quotaMemory', 'quotaStorage'];
-
-export const getDefaultCluster = async (): Promise<Cluster | undefined> => {
-  try {
-    const clusters = await ClusterModel.findAll();
-    return clusters.filter(c => c.isDefault === true).pop();
-  } catch (err) {
-    const message = `Unable to get default cluster for ${whichService}`;
-    logger.error(`${message}, err = ${err.message}`);
-    return;
-  }
-};
 
 export interface QuotaObject {
   cpu: QuotaSize;
@@ -105,7 +94,7 @@ export const mergeRequestedCNToNamespaceSet = async (requestedClusterNamespaces:
   };
 };
 
-export const getNamespaceSet = async (profileId: string, user: AuthenticatedUser): Promise<ProjectNamespace[] | undefined> => {
+export const getNamespaceSet = async (profileId: string, user: AuthenticatedUser): Promise<ProjectNamespace[]> => {
   // TODO:(yf) add further data sanity check
   const rv = validateObjProps(['profileId'], { profileId });
   if (rv) {
@@ -123,7 +112,7 @@ export const getNamespaceSet = async (profileId: string, user: AuthenticatedUser
   } catch (err) {
     const message = `Unable to get namespaceSet under profile ${profileId} for ${whichService}`;
     logger.error(`${message}, err = ${err.message}`);
-    return;
+    return [];
   }
 };
 

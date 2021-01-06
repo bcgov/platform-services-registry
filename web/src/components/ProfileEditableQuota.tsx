@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Text } from 'rebass';
 import { StyledFormButton, StyledFormDisabledButton } from '../components/UI/button';
-import { QUOTA_SIZES } from '../constants';
+import { PROFILE_VIEW_NAMES, QUOTA_SIZES, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { CNQuotaOptions, QuotaSizeSet } from '../types';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -31,17 +31,18 @@ interface IProfileEditableQuotaProps {
     licensePlate: string;
     quotaSize: QuotaSizeSet | '';
     profileId?: string;
-    quotaOptions: any[] | [];
-    cnQuotaOptionsJson: CNQuotaOptions[] | [];
+    quotaOptions: any[];
+    cnQuotaOptionsJson: CNQuotaOptions[];
     openBackdropCB: () => void;
     closeBackdropCB: () => void;
     handleQuotaSubmitRefresh: any;
+    isProvisioned: boolean;
 }
 
 const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
     const api = useRegistryApi();
 
-    const { licensePlate, quotaSize, profileId, quotaOptions, cnQuotaOptionsJson, openBackdropCB, closeBackdropCB, handleQuotaSubmitRefresh } = props;
+    const { licensePlate, quotaSize, profileId, quotaOptions, cnQuotaOptionsJson, openBackdropCB, closeBackdropCB, handleQuotaSubmitRefresh, isProvisioned } = props;
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
     const [selectedSize, setSelectedSize] = useState('');
@@ -78,9 +79,10 @@ const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
             console.log(err);
         }
     };
-    if (goBackToProfileEditable) {
-        // TODO:(yh) refactor here so as to use constants
-        return (<Redirect to={`/profile/${profileId}/overview`} />);
+    if (goBackToProfileEditable && profileId) {
+        return (<Redirect to={
+            ROUTE_PATHS.PROFILE_EDITABLE.replace(':profileId', profileId).replace(':viewName', PROFILE_VIEW_NAMES.OVERVIEW)
+        } />);
     }
     if (!specs) {
         return null;
@@ -111,7 +113,7 @@ const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
                 <select value={selectedSize} onChange={handleChange}>
                     <option>Select...</option>
                     {/* @ts-ignore */}
-                    {(quotaOptions.length > 0 && quotaOptions.length !== 0) && quotaOptions.map((opt: any) => (
+                    {(quotaOptions.length !== 0) && quotaOptions.map((opt: any) => (
                         <option
                             key={opt}
                             value={opt}
@@ -120,8 +122,7 @@ const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
                         </option>
                     ))}
                 </select>
-                {/* @ts-ignore */}
-                {quotaOptions.includes(selectedSize) && quotaOptions.length !== 0 ? (
+                {quotaOptions.length !== 0 && quotaOptions.includes(selectedSize) ? (
                     //@ts-ignore
                     <StyledFormButton style={{ display: 'block' }} onClick={handleSubmit}>Request Quota</StyledFormButton>
                 ) : (
@@ -129,7 +130,7 @@ const ProfileEditableQuota: React.FC<IProfileEditableQuotaProps> = (props) => {
                             {/* @ts-ignore */}
                             <StyledFormDisabledButton style={{ display: 'block' }}>Request Quota</StyledFormDisabledButton>
                             {quotaOptions.length === 0 && (
-                                <Label as="span" variant="errorLabel" >Not available due to a pending provisioning status / quota request</Label>
+                                <Label as="span" variant="errorLabel" >Not Available due to {isProvisioned ? 'Update' : 'Provision'} Pending</Label>
                             )}
                         </>
                     )}

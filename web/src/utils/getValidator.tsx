@@ -68,7 +68,6 @@ const schema = {
   }
 };
 
-// TODO: the code below can be DRYer
 export default function getValidator() {
   const mustBeValidEmail = (value: any) => {
     const errors = validate({ email: value }, schema, { fullMessages: false });

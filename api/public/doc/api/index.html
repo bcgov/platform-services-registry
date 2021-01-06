@@ -1639,6 +1639,35 @@ var n=this.pipeline.run(e.tokenizer(t)),r=new e.Vector,i=[],o=this._fields.reduc
           </li>
         
           <li>
+            <a href="#registry-api-provision" class="toc-h1 toc-link" data-title="Provision">Provision</a>
+            
+              <ul class="toc-list-h2">
+                
+                  <li>
+                    <a href="#getallprovisionedprofileids" class="toc-h2 toc-link" data-title="">getAllProvisionedProfileIds</a>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="#getprovisionedprofilebotjson" class="toc-h2 toc-link" data-title="">getProvisionedProfileBotJson</a>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="#getallprofileidsunderpending" class="toc-h2 toc-link" data-title="">getAllProfileIdsUnderPending</a>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="#getprofilebotjsonunderpending" class="toc-h2 toc-link" data-title="">getProfileBotJsonUnderPending</a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li>
             <a href="#schemas" class="toc-h1 toc-link" data-title="Schemas">Schemas</a>
             
               <ul class="toc-list-h2">
@@ -3582,6 +3611,335 @@ the default cluster will be used.</p>
 </tr>
 </tbody>
 </table>
+<aside class="success">
+This operation does not require authentication
+</aside>
+<h1 id="registry-api-provision">Provision</h1>
+<h2 id="getallprovisionedprofileids">getAllProvisionedProfileIds</h2>
+<p><a id="opIdgetAllProvisionedProfileIds"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/provision/sync/provisioned-profile-ids \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/provision/sync/provisioned-profile-ids'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/provision/sync/provisioned-profile-ids</code></p>
+<p><em>Fetch a list of provisioned profile ids</em></p>
+<p>Used by bot to fetch a list of provisioned profile ids.
+The definition of provisioned for a given profile is that
+all 4 namespaces in default cluster are provisioned.</p>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>[]
+</code></pre>
+<h3 id="getallprovisionedprofileids-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td>Inline</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="getallprovisionedprofileids-responseschema">Response Schema</h3>
+<aside class="success">
+This operation does not require authentication
+</aside>
+<h2 id="getprovisionedprofilebotjson">getProvisionedProfileBotJson</h2>
+<p><a id="opIdgetProvisionedProfileBotJson"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/provision/sync/{profileId}/provisioned-profile-bot-json \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/provision/sync/{profileId}/provisioned-profile-bot-json'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/provision/sync/{profileId}/provisioned-profile-bot-json</code></p>
+<p><em>Fetch a list of quota-edit options for given clusternamespaces</em></p>
+<p>Used by bot to fetch the JSON/NATS message for the provisioned profile
+given the profile id without any pending changes.</p>
+<h3 id="getprovisionedprofilebotjson-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>profileId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>The ID of the provisioned profile that is being requested.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>[]
+</code></pre>
+<h3 id="getprovisionedprofilebotjson-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td>Inline</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="getprovisionedprofilebotjson-responseschema">Response Schema</h3>
+<aside class="success">
+This operation does not require authentication
+</aside>
+<h2 id="getallprofileidsunderpending">getAllProfileIdsUnderPending</h2>
+<p><a id="opIdgetAllProfileIdsUnderPending"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/provision/sync/under-pending-profile-ids \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/provision/sync/under-pending-profile-ids'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/provision/sync//under-pending-profile-ids</code></p>
+<p><em>Fetch a list of provisioned profile ids</em></p>
+<p>Used by bot to fetch a list of profile ids for those
+profiles that are under pending edit / create request.</p>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>[]
+</code></pre>
+<h3 id="getallprofileidsunderpending-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td>Inline</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="getallprofileidsunderpending-responseschema">Response Schema</h3>
+<aside class="success">
+This operation does not require authentication
+</aside>
+<h2 id="getprofilebotjsonunderpending">getProfileBotJsonUnderPending</h2>
+<p><a id="opIdgetProfileBotJsonUnderPending"></a></p>
+<blockquote>
+<p>Code samples</p>
+</blockquote>
+<pre class="highlight tab tab-shell"><code><span class="hljs-comment"># You can also use wget</span>
+curl -X GET http://localhost:8100/api/v1/provision/sync/{profileId}/under-pending-profile-bot-json \
+  -H <span class="hljs-string">'Accept: application/json'</span>
+
+</code></pre>
+<pre class="highlight tab tab-javascript--nodejs"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node-fetch'</span>);
+
+<span class="hljs-keyword">const</span> headers = {
+  <span class="hljs-string">'Accept'</span>:<span class="hljs-string">'application/json'</span>
+
+};
+
+fetch(<span class="hljs-string">'http://localhost:8100/api/v1/provision/sync/{profileId}/under-pending-profile-bot-json'</span>,
+{
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+
+  <span class="hljs-attr">headers</span>: headers
+})
+.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) </span>{
+    <span class="hljs-keyword">return</span> res.json();
+}).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">body</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(body);
+});
+
+</code></pre>
+<p><code>GET /api/v1/provision/sync/{profileId}/under-pending-profile-bot-json</code></p>
+<p><em>Fetch a list of quota-edit options for given clusternamespaces</em></p>
+<p>Used by bot to fetch the JSON/NATS message for the queried profile
+that is under pending edit / create request given the profile id.
+The JSON/NATS message will reflect requested changes.</p>
+<h3 id="getprofilebotjsonunderpending-parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>profileId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>The ID of profiles (currently under pending edit / create) that is being requested.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Example responses</p>
+</blockquote>
+<blockquote>
+<p>200 Response</p>
+</blockquote>
+<pre class="highlight tab tab-json"><code>[]
+</code></pre>
+<h3 id="getprofilebotjsonunderpending-responses">Responses</h3>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Description</th>
+<th>Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>The request was successful</td>
+<td>Inline</td>
+</tr>
+<tr>
+<td>500</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.6.1">Internal Server Error</a></td>
+<td>Internal Error</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="getprofilebotjsonunderpending-responseschema">Response Schema</h3>
 <aside class="success">
 This operation does not require authentication
 </aside>

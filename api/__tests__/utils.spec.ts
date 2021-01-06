@@ -14,17 +14,22 @@
 // limitations under the License.
 //
 
-import React from 'react';
+import { replaceForDescription } from '../src/libs/utils';
 
-// TODO: fix this to declare ts returned value to be null | array of react components
-const NewlineText = (props: any) => {
-    const text = props.text;
+describe('Utils', () => {
+  it('replaceForDescription works correctly', async () => {
+    const contextJson = {
+      profileId: 118,
+      displayName: 'Project X',
+      description: 'test some "double quotes"',
+    };
 
-    if (!text) {
-        return null;
-    }
+    const result = {
+      profileId: 118,
+      displayName: 'Project X',
+      description: 'test some  double quotes ',
+    };
 
-    return text.split('\n\n').map((str: string, index: number) => <p key={index} >{str}</p>);
-}
-
-export default NewlineText;
+    expect(replaceForDescription(contextJson)).toEqual(result);
+  });
+});

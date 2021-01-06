@@ -21,6 +21,7 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { provisionCallbackHandler, provisionProfileNamespaces } from '../../controllers/provision';
+import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../../controllers/sync';
 
 const router = express.Router();
 
@@ -28,4 +29,9 @@ const router = express.Router();
 router.post('/:profileId/namespace', asyncMiddleware(provisionProfileNamespaces));
 router.put('/namespace', asyncMiddleware(provisionCallbackHandler));
 
+// Bot-json-sync
+router.get('/sync/provisioned-profile-ids', asyncMiddleware(getAllProvisionedProfileIds));
+router.get('/sync/:profileId/provisioned-profile-bot-json', asyncMiddleware(getProvisionedProfileBotJson));
+router.get('/sync/under-pending-profile-ids', asyncMiddleware(getAllProfileIdsUnderPending));
+router.get('/sync/:profileId/under-pending-profile-bot-json', asyncMiddleware(getProfileBotJsonUnderPending));
 export default router;

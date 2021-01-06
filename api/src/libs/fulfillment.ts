@@ -23,6 +23,7 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
+import { replaceForDescription } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import shared from './shared';
 
@@ -33,6 +34,7 @@ export interface Context {
 export const enum FulfillmentContextAction {
   Create = 'create',
   Edit = 'edit',
+  Sync = 'sync',
 };
 
 const enum FulfillmentContextType {
@@ -98,7 +100,8 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
     });
 
     logger.info(`Sending NATS message for ${profileId}`);
-    nc.publish(natsSubject, JSON.stringify(natsContext));
+
+    nc.publish(natsSubject, replaceForDescription(natsContext));
     logger.info(`NATS Message sent for ${profileId}`);
 
     nc.flush(() => {
