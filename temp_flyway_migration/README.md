@@ -1,4 +1,4 @@
-This is to document a plan to integrate flyway in prod env with zero downtime
+## This is to document a plan to integrate flyway in prod env with zero downtime
 
 all temporary artifacts will be created with a new app label name using flyway as SUFFIX
 
@@ -40,13 +40,11 @@ oc process -f temp_flyway_migration/api-deploy.yaml \
 
 4. test from postman / curl on the ministry list on fetching the list of ministries to make sure new api route is working fine - avoid testing other api endpoints that require user authentication, as it will create user records upon successful requests
 
-5. port forward to the existing db
+5. port forward to the EXISTING db and use a middle container to export seeds to file
 
 ```console
 oc port-forward $(oc get pods -l 'app in (platsrv-registry), role in (master), statefulset in (registry-patroni)' | awk 'NR==2{print $1}') 5432:5432
 ```
-
-6. use a middle container to export seeds to file
 
 ```console
 docker run -it --rm --name db_export_seeds -v $(pwd):/opt/src \
@@ -54,13 +52,11 @@ docker run -it --rm --name db_export_seeds -v $(pwd):/opt/src \
   postgres pg_dump -U postgres -h host.docker.internal -d registry -n public --data-only -f /opt/src/exported_data_flyway.dmp
 ```
 
-7. port forward to the new db
+6. port forward to the NEW db and use a middle container to import seeds
 
 ```console
 oc port-forward $(oc get pods -l 'app in (platsrv-registry-flyway), role in (master), statefulset in (registry-patroni-flyway)' | awk 'NR==2{print $1}') 5432:5432
 ```
-
-8. use a middle container to import seeds
 
 ```console
 docker run -it --rm --name db_import_seeds -v $(pwd):/opt/src \
@@ -68,39 +64,75 @@ docker run -it --rm --name db_import_seeds -v $(pwd):/opt/src \
   postgres psql -U postgres -d registry -h host.docker.internal -f /opt/src/exported_data_flyway.dmp
 ```
 
-9. test from postman / curl make sure all endpoints are working fine from the new api route
+7. test from postman / curl make sure all endpoints are working fine from the new api route
 
-if everything looks good, update the deploy config of existing web (ui portal) service to connect the new api service instead
+if everything looks good, update the existing Route object `registry-web-to-api` so it routes to `registry-api-flyway`
 
+8. test the whole flow to make sure everything is working - if there is any error, immediately roll back to using the previous api service from the step above
+
+9. to have another back-up container pod that points to the NEW db, run
 ```console
-oc process -f web/openshift/templates/deploy.yaml \
+oc process -f openshift/backup/backup-nsp.yaml 
   -p NAMESPACE=$(oc project --short) \
-  -p SOURCE_IMAGE_NAMESPACE=${SOURCE_IMAGE_NAMESPACE} \
-  -p SOURCE_IMAGE_TAG=${SOURCE_IMAGE_TAG} \
-  -p SSO_BASE_URL=${SSO_BASE_URL}\
-  -p CLUSTER_DOMAIN=${CLUSTER_DOMAIN} \
-  -p API_SERVICE_NAME="registry-api-flyway" | \
+  -p STATEFULSET_NAME="registry-patroni-flyway" \
+  -p BACKUP_CONTAINER_IDENTIFIER="app:k8s:serviceaccountname=db-backup-flyway-backup-storage" \
+  -p APP_LABEL_NAME="platsrv-registry-flyway"} | \
   oc apply -f -
 ```
 
-10. test the whole flow to make sure everything is working - if there is any error, immediately roll back to using the previous api service
+```console
+oc apply -f temp_flyway_migration/rbac.temp.yaml -n $TOOLS_NAMESPACE
+```
 
+```console
+helm repo add bcgov https://bcgov.github.io/helm-charts
 
-for the consistency of using the same app label name
+helm install db-backup-flyway bcgov/backup-storage -f temp_flyway_migration/deploy-values.temp.yaml 
+```
 
-we can then update the original set and remove the temporary new set with the temporary app label
+10. for the consistency of using the same app label name
+
+we could then choose to update the original set and remove the temporary new set with the temporary app label
 
 but do so when we are 100% confident the new set works with no issue
 
+-----------------
 
-update the existing nsp rules so the original set will work with the pre-hook container
+to update the original set:
+
+- update the existing nsp rules so the original set will work with the pre-hook container
 
 ```console
 oc process -f platform-services-registry/openshift/templates/nsp.yaml \
-  -p NAMESPACE="platform-registry" \
+  -p NAMESPACE=$(oc project --short) \
   -p DB_APO_IDENTIFIER="statefulset=registry-patroni" \
   -p NATS_NAMESPACE=${NATS_NAMESPACE} \
   -p NATS_APO_IDENTIFIER=$NATS_APO_IDENTIFIER} \
   -p FLYWAY_IDENTIFIER="openshift.io/deployer-pod.type=hook-pre" | \
   oc apply -f -
+```
+
+- sync the original db `registry-patroni` with data from `registry-patroni-flyway`
+
+- update the existing Route object `registry-web-to-api` so it routes back to `registry-api`
+
+to remove the temporary new set:
+
+- delete all artifacts under new back-up
+
+```console
+helm uninstall db-backup-flyway
+```
+
+- delete temporary service account role bindings created for new back-up
+
+```console
+oc apply -f openshift/rbac.yaml -n $TOOLS_NAMESPACE
+```
+
+- delete temporary api, db etc. artifacts that were created with the new app label name
+
+```console
+oc delete all,nsp,en,pvc,sa,secret,role,rolebinding \
+  -l "app=platsrv-registry-flyway"
 ```

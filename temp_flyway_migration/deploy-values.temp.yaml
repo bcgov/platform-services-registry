@@ -1,0 +1,30 @@
+image:
+  repository: image-registry.openshift-image-registry.svc:5000/platform-registry-tools/backup-postgres
+  pullPolicy: Always
+  tag: latest
+
+persistence:
+  backup:
+    size: 1Gi
+    storageClassName: netapp-file-backup
+  verification:
+    size: 1Gi
+
+db:
+  secretName: registry-patroni-creds
+  usernameKey: superuser-username
+  passwordKey: superuser-password
+
+env:
+  DATABASE_SERVICE_NAME:
+    value: registry-patroni-flyway-master
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "Project Registry DB Backups"
+  ENVIRONMENT_NAME:
+    value: "dev"
+
+backupConfig: |
+  postgres=registry-patroni-flyway-master:5432/registry
+
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
