@@ -27,7 +27,7 @@ objects:
     metadata:
       name: backup-to-patroni
       labels:
-        app: platsrv-registry
+        app: ${APP_LABEL_NAME}
     spec:
       description: |
         allow the API to communicate with the NATS pod. This may not be
@@ -57,3 +57,10 @@ parameters:
       isolate and identify the backup container pod(s).
     required: true
     value: app:k8s:serviceaccountname=db-backup-backup-storage
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry
