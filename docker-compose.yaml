@@ -115,7 +115,7 @@ services:
       retries: 5
   flyway:
     container_name: registry-pg-migrations
-    image: boxfuse/flyway:5.2.4-alpine
+    image: flyway/flyway:7.4.0-alpine
     command: migrate
     volumes:
       - type: bind
