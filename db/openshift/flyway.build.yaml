@@ -52,8 +52,8 @@ parameters:
   required: true
   value: platsrv-registry
 - description: |
-    The URL to your GIT repo, don't use the this default unless
-    your just experimenting.
+    The URL to your GIT repo, don't use the default unless
+    you're just experimenting.
   displayName: Git Repo URL
   name: GIT_REPO_URL
   required: true
