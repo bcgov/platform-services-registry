@@ -28,6 +28,7 @@ import { ShadowBox } from '../components/UI/shadowContainer';
 import { PROFILE_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
 import theme from '../theme';
 import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
+import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
 import useInterval from '../utils/useInterval';
@@ -42,6 +43,8 @@ interface IProfileEditProps {
 
 const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const api = useRegistryApi();
+    const profileStatus = getProfileStatus();
+    
     // @ts-ignore
     const { match: { params: { profileId, viewName } }, openBackdropCB, closeBackdropCB } = props;
 
@@ -92,6 +95,9 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 const isProvisioned = isProfileProvisioned(namespaces.data);
                 setProvisionedStatus(isProvisioned);
 
+                const isPendingEditRequest = await profileStatus.getPendingEditRequest(api, profileId)
+                setPendingEditRequest(isPendingEditRequest);
+
             } catch (err) {
                 if (err.response && err.response.status && err.response.status === RESPONSE_STATUS_CODE.UNAUTHORIZED) {
                     setUnauthorizedToAccess(true);
@@ -124,32 +130,10 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         wrap();
     }, [namespacesJson, cnQuotaOptionsJson, quotaSubmitRefresh]);
     
-    //TODO implement interval to check editrequeststatus
-    useEffect(() => {
-        async function wrap() {
-            const editRequest = await api.getEditRequestStatus(profileId);
-            if (editRequest.data.length === 0){
-                try {
-                    setPendingEditRequest(false);
-                } catch (err) {
-                    promptErrToastWithText(err.message);
-                }
-            }
-        }
-        wrap();
-        // eslint-disable-next-line
-    }, []);
-
     useInterval(() => {
         async function wrap() {
-            const editRequest = await api.getEditRequestStatus(profileId);
-            if (editRequest.data.length === 0){
-                try {
-                    setPendingEditRequest(false);
-                } catch (err) {
-                    promptErrToastWithText(err.message);
-                }
-            }
+            const isPendingEditRequest = await profileStatus.getPendingEditRequest(api, profileId)
+            setPendingEditRequest(isPendingEditRequest);
         }
         wrap();
     }, 1000 * 30);
