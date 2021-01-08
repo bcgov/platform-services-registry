@@ -60,7 +60,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [quotaOptions, setQuotaOptions] = useState<QuotaSizeSet[]>([]);
     const [quotaSubmitRefresh, setQuotaSubmitRefresh] = useState<any>(0);
 
-    const [pendingEditRequest, setPendingEditRequest] = useState(true)
+    const [pendingEditRequest, setPendingEditRequest] = useState(true);
 
     const handleQuotaSubmitRefresh = () => {
         setQuotaSubmitRefresh(quotaSubmitRefresh + 1);

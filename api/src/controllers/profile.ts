@@ -209,7 +209,7 @@ export const updateProjectProfile = async (
     res.status(200).json(results);
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = `Unable update project profile ID ${profileId}`;
@@ -239,7 +239,7 @@ export const archiveProjectProfile = async (
     res.status(204).end();
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = 'Unable to archive project profile';
@@ -287,7 +287,7 @@ export const fetchProfileContacts = async (
     res.status(200).json(results);
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = `Unable fetch profile contacts with profile ID ${profileId}`;
@@ -317,7 +317,7 @@ export const fetchProfileEditRequests = async (
     res.status(200).json(results);
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = `Unable fetch profile contacts with profile ID ${profileId}`;

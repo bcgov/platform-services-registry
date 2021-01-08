@@ -48,7 +48,7 @@ const ProfileEditableContact: React.FC<IProfileEditableContactProps> = (props) =
     
     const onSubmit = async (formData: any) => {
         const { productOwner, technicalContact } = transformForm(formData);
-        const updatedContacts = { productOwner, technicalContact }
+        const updatedContacts = { productOwner, technicalContact };
         openBackdropCB();
         
         try {

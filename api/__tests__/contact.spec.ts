@@ -209,7 +209,7 @@ describe('Contact event handlers', () => {
         email: 'jane.doe@example.com',
         githubId: 'janedoe',
       },
-    }
+    };
 
     const editedTC = {
       technicalContact: {
@@ -220,7 +220,7 @@ describe('Contact event handlers', () => {
         email: 'john.doe@example.com',
         githubId: 'john1100',
       },
-    }
+    };
 
     client.query.mockResolvedValue({ ...editedPO, ...editedTC});
 
@@ -230,7 +230,7 @@ describe('Contact event handlers', () => {
     client.query.mockResolvedValueOnce({ rows: [{ editedTC }] });
 
     JSON.parse = jest.fn().mockImplementationOnce(() => {
-      return selectContactEditRequest.editObject
+      return selectContactEditRequest.editObject;
     });
 
     await processContactEdit(req);

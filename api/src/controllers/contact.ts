@@ -123,12 +123,12 @@ export const requestContactEdit = async (
     ];
 
     // Step 4. Assess if provisioner or contact edits occurred.
-    const provisionerEdit = provisionerEdits.some(provisionerEdits => provisionerEdits);
-    const contactNameEdit = contactNameEdits.some(contactNameEdits => contactNameEdits);
+    const provisionerEdit = provisionerEdits.some(provisionerEditsChecks => provisionerEditsChecks);
+    const contactNameEdit = contactNameEdits.some(contactNameEditsChecks => contactNameEditsChecks);
 
     if (provisionerEdit) {
       // process request body for natsContext
-      const editObject = await formatNatsContactObject(body)
+      const editObject = await formatNatsContactObject(body);
       if (!editObject) {
         const errmsg = 'Cant generate request edit object';
         throw new Error(errmsg);
@@ -148,7 +148,7 @@ export const requestContactEdit = async (
     } else if (contactNameEdit) {
       const updatePromises: any = [];
       contacts.forEach((contact: Contact) => {
-        updatePromises.push(ContactModel.update(Number(contact.id), contact))
+        updatePromises.push(ContactModel.update(Number(contact.id), contact));
       })
       await Promise.all(updatePromises);
       res.status(204).end();
@@ -168,7 +168,7 @@ export const processContactEdit = async (request: Request): Promise<void> => {
     const contacts = JSON.parse(editObject);
     const updatePromises: any = [];
     contacts.forEach((contact: Contact) => {
-      updatePromises.push(ContactModel.update(Number(contact.id), contact))
+      updatePromises.push(ContactModel.update(Number(contact.id), contact));
     })
 
     await Promise.all(updatePromises);
