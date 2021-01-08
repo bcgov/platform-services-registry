@@ -20,6 +20,16 @@ import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { difference, isEmpty, isUndefined } from 'lodash';
 import { USER_ROLES } from '../constants';
 
+interface NatsContactDetails {
+  userId: string,
+  provider: string,
+  email: string,
+}
+
+interface NatsContactObject {
+  contact: NatsContactDetails[];
+}
+
 export const validateObjProps = (fields: string[], pojo: object): Error | undefined => {
   const diff = difference(fields, Object.keys(pojo));
   if (diff.length !== 0) {
@@ -66,3 +76,13 @@ export const replaceForDescription = (contextJson: any) => {
   contextJson.description = doubleQuoteReplaced;
   return contextJson;
 };
+
+export const formatNatsContactObject = async (body: any): Promise<NatsContactObject> => {
+  return Object.assign({}, ...Object.keys(body).map(contact => ({
+    [contact]: {
+      userId: body[contact].githubId,
+      provider: 'github',
+      email: body[contact].email,
+    },
+  })));
+}

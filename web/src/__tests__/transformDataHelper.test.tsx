@@ -59,11 +59,13 @@ describe("test the helper function getProfileContacts", () => {
       POEmail: "jane@example.com",
       POFirstName: "Jane",
       POGithubId: "jane1100",
+      POId: 233,
       POLastName: "Doe",
       POName: "Jane Doe",
       TCEmail: "jim@example.com",
       TCFirstName: "Jim",
       TCGithubId: "jim1100",
+      TCId: 234,
       TCLastName: "Doe",
       TCName: "Jim Doe"
     });

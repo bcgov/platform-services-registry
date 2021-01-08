@@ -57,6 +57,10 @@ export default function useRegistryApi() {
     return api.post('contact', contact);
   };
 
+  const requestContactEdit = async (profileId: string, requestedContacts: any): Promise<AxiosResponse<any>> => {
+    return api.post(`profile/${profileId}/contact-edit`, requestedContacts);
+  };
+
   const linkContactToProfileById = async (profileId: string, contactId: string): Promise<AxiosResponse<any>> => {
     return api.post(`profile/${profileId}/contact/${contactId}`);
   };
@@ -89,12 +93,17 @@ export default function useRegistryApi() {
     return api.post(`profile/${profileId}/quota-edit`, requstedQuotas);
   };
 
+  const getEditRequestStatus = async (profileId:string): Promise<AxiosResponse<any>> => {
+    return api.get(`profile/${profileId}/request`);
+  };
+  
   return {
     getMinistry,
     getProfile,
     createProfile,
     updateProfile,
     createContact,
+    requestContactEdit,
     linkContactToProfileById,
     createNamespaceByProfileId,
     getContactsByProfileId,
@@ -103,5 +112,6 @@ export default function useRegistryApi() {
     getNamespacesByProfileId,
     getCNQuotaOptionsByProfileId,
     requestCNQuotasByProfileId,
+    getEditRequestStatus,
   };
 };

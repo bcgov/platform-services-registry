@@ -209,7 +209,7 @@ export const updateProjectProfile = async (
     res.status(200).json(results);
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = `Unable update project profile ID ${profileId}`;
@@ -239,7 +239,7 @@ export const archiveProjectProfile = async (
     res.status(204).end();
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = 'Unable to archive project profile';
@@ -287,7 +287,37 @@ export const fetchProfileContacts = async (
     res.status(200).json(results);
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
+    }
+
+    const message = `Unable fetch profile contacts with profile ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchProfileEditRequests = async (
+  { params, user }: { params: any, user: AuthenticatedUser}, res: Response
+): Promise<void> => {
+  const { RequestModel, ProfileModel } = dm;
+  const { profileId } = params;
+
+  try {
+    const record = await ProfileModel.findById(Number(profileId));
+
+    const notAuthorized = isNotAuthorized(record, user);
+
+    if (notAuthorized) {
+      throw notAuthorized;
+    }
+
+    const results = await RequestModel.findForProfile(Number(profileId));
+
+    res.status(200).json(results);
+  } catch (err) {
+    if (err.code) {
+      throw err;
     }
 
     const message = `Unable fetch profile contacts with profile ID ${profileId}`;

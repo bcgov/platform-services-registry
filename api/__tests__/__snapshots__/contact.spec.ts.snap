@@ -1,5 +1,107 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Contact event handlers A contact edit request is created 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        233,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        234,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "INSERT INTO request
+            (profile_id, edit_type, edit_object, nats_subject, nats_context)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;",
+      "values": Array [
+        118,
+        "contacts",
+        "[{\\"roleId\\":1,\\"id\\":233,\\"firstName\\":\\"Jane\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"jane.doe@example.com\\",\\"githubId\\":\\"jane1100\\"},{\\"roleId\\":2,\\"id\\":234,\\"firstName\\":\\"John\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"john.doe@example.com\\",\\"githubId\\":\\"john1100\\"}]",
+        "edit",
+        "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Contact event handlers A contact edit request is created 2`] = `204`;
+
+exports[`Contact event handlers A contact edit request is processed 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        233,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        234,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        UPDATE contact
+          SET
+            first_name = $1, last_name = $2, email = $3, github_id = $4,
+            role_id = $5
+          WHERE id = 233
+          RETURNING *;",
+      "values": Array [
+        "Jane",
+        "Doe",
+        "jane@example.com",
+        "janedoe",
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        UPDATE contact
+          SET
+            first_name = $1, last_name = $2, email = $3, github_id = $4,
+            role_id = $5
+          WHERE id = 234
+          RETURNING *;",
+      "values": Array [
+        "Jim",
+        "Doe",
+        "jim@example.com",
+        "jim1100",
+        2,
+      ],
+    },
+  ],
+]
+`;
+
 exports[`Contact event handlers A contact is updated 1`] = `
 Array [
   Array [

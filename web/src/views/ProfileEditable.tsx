@@ -30,7 +30,9 @@ import theme from '../theme';
 import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
+import useInterval from '../utils/useInterval';
 import useRegistryApi from '../utils/useRegistryApi';
+
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
 
 interface IProfileEditProps {
@@ -48,6 +50,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [profileJson, setProfileJson] = useState<any>({});
     const [contactJson, setContactJson] = useState<any>({});
     const [ministry, setMinistry] = useState<any>([]);
+    const [provisionedStatus, setProvisionedStatus] = useState<any>();
 
     const [isProvisioned, setIsProvisioned] = useState<boolean>(false);
     const [namespacesJson, setNamespacesJson] = useState<Namespace[]>([]);
@@ -56,6 +59,8 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const [cnQuotaOptionsJson, setCnQuotaOptionsJson] = useState<CNQuotaOptions[]>([]);
     const [quotaOptions, setQuotaOptions] = useState<QuotaSizeSet[]>([]);
     const [quotaSubmitRefresh, setQuotaSubmitRefresh] = useState<any>(0);
+
+    const [pendingEditRequest, setPendingEditRequest] = useState(true);
 
     const handleQuotaSubmitRefresh = () => {
         setQuotaSubmitRefresh(quotaSubmitRefresh + 1);
@@ -83,6 +88,10 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 setIsProvisioned(isProfileProvisioned(namespaces.data));
                 setNamespacesJson(namespaces.data);
                 setCnQuotaOptionsJson(cnQuotaOptions.data);
+
+                const isProvisioned = isProfileProvisioned(namespaces.data);
+                setProvisionedStatus(isProvisioned);
+
             } catch (err) {
                 if (err.response && err.response.status && err.response.status === RESPONSE_STATUS_CODE.UNAUTHORIZED) {
                     setUnauthorizedToAccess(true);
@@ -114,6 +123,36 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         }
         wrap();
     }, [namespacesJson, cnQuotaOptionsJson, quotaSubmitRefresh]);
+    
+    //TODO implement interval to check editrequeststatus
+    useEffect(() => {
+        async function wrap() {
+            const editRequest = await api.getEditRequestStatus(profileId);
+            if (editRequest.data.length === 0){
+                try {
+                    setPendingEditRequest(false);
+                } catch (err) {
+                    promptErrToastWithText(err.message);
+                }
+            }
+        }
+        wrap();
+        // eslint-disable-next-line
+    }, []);
+
+    useInterval(() => {
+        async function wrap() {
+            const editRequest = await api.getEditRequestStatus(profileId);
+            if (editRequest.data.length === 0){
+                try {
+                    setPendingEditRequest(false);
+                } catch (err) {
+                    promptErrToastWithText(err.message);
+                }
+            }
+        }
+        wrap();
+    }, 1000 * 30);
 
     if (initialRender) {
         return null;
@@ -139,9 +178,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Project Information
                             </Text>
+                            { (pendingEditRequest === false) &&
                                 <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/project`}>
                                     <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                                 </RouterLink>
+                            }
                             </Flex>
                             <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                                 <ProfileDetailCard title={profileJson.name} textBody={profileJson.description} ministry={profileJson.ministryName} />
@@ -152,6 +193,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Contact Information
                             </Text>
+                            { (pendingEditRequest === false) &&
+                                <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
+                                    <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
+                                </RouterLink>
+                            }
                             </Flex>
                             <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
                                 <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} POGithubId={contactJson.POGithubId} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} TCGithubId={contactJson.TCGithubId} />
@@ -162,9 +208,11 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     Quota Information
                                 </Text>
+                            { (pendingEditRequest === false) &&
                                 <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/quota`}>
                                     <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                                 </RouterLink>
+                            }
                             </Flex>
                             <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
                                 <QuotaCard licensePlate={licensePlate} quotaSize={quotaSize} />
@@ -188,9 +236,25 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 <ShadowBox p={3}>
                     <Flex flexWrap='wrap' m={3}>
                         <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
-                            {/* @ts-ignore */}
-                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) && <ProfileEditableProject profileDetails={profileJson} ministry={ministry} openBackdropCB={openBackdropCB} closeBackdropCB={closeBackdropCB} />}
-                            {(viewName === PROFILE_VIEW_NAMES.CONTACT) && <ProfileEditableContact />}
+                            {(viewName === PROFILE_VIEW_NAMES.PROJECT) &&
+                                <ProfileEditableProject
+                                    profileDetails={profileJson}
+                                    ministry={ministry}
+                                    openBackdropCB={openBackdropCB}
+                                    closeBackdropCB={closeBackdropCB}
+                                />
+                            }
+                            {(viewName === PROFILE_VIEW_NAMES.CONTACT) &&
+                                <ProfileEditableContact
+                                    profileId={profileId}
+                                    contactDetails={contactJson}
+                                    pendingEditRequest={pendingEditRequest}
+                                    isProvisioned={provisionedStatus}
+                                    setPendingEditRequest={setPendingEditRequest}
+                                    openBackdropCB={openBackdropCB}
+                                    closeBackdropCB={closeBackdropCB}
+                                />
+                            }
                             {(viewName === PROFILE_VIEW_NAMES.QUOTA) &&
                                 <ProfileEditableQuota
                                     licensePlate={licensePlate}
