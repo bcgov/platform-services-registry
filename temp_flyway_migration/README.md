@@ -1,6 +1,8 @@
-## This is to document a plan to integrate flyway in prod env with zero downtime
+## This is to document a plan to integrate flyway in prod env
 
 all temporary artifacts will be created with a new app label name using flyway as SUFFIX
+
+All data will be preserved during step 5 - 8 so a maintenance window is needed here.
 
 0. create new temporary nsp rules
 this is so the new db and api service (to be created next) can talk to each other
