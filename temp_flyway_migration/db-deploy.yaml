@@ -4,7 +4,7 @@ kind: Template
 metadata:
   annotations:
     description: |-
-      Patroni Postgresql database cluster, with persistent storage.
+      Generate an internim artifacts for intergratng flyway.
     iconClass: icon-postgresql
     openshift.io/display-name: Patroni Postgresql (Persistent)
     openshift.io/long-description: This template deploys a patroni postgresql HA
@@ -19,6 +19,81 @@ labels:
   app.kubernetes.io/name: patroni
   app.kubernetes.io/managed-by: template
 objects:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      labels:
+        app: ${APP_LABEL_NAME}
+        cluster-name: ${NAME}
+      name: ${NAME}
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      labels:
+        app: ${APP_LABEL_NAME}
+        cluster-name: ${NAME}
+      name: ${NAME}
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - services
+        verbs:
+          - create
+          - get
+          - list
+          - patch
+          - update
+          - watch
+          - delete
+      - apiGroups:
+          - ""
+        resources:
+          - configmaps
+        verbs:
+          - create
+          - get
+          - list
+          - patch
+          - update
+          - watch
+          - delete
+      - apiGroups:
+          - ""
+        resources:
+          - endpoints
+        verbs:
+          - get
+          - patch
+          - update
+          - create
+          - list
+          - watch
+          - delete
+      - apiGroups:
+          - ""
+        resources:
+          - pods
+        verbs:
+          - get
+          - list
+          - patch
+          - update
+          - watch
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      labels:
+        app: ${APP_LABEL_NAME}
+        cluster-name: ${NAME}
+      name: ${NAME}
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: ${NAME}
+    subjects:
+      - kind: ServiceAccount
+        name: ${NAME}
   - apiVersion: v1
     kind: Service
     metadata:
@@ -104,37 +179,37 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       key: superuser-username
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: PATRONI_SUPERUSER_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: superuser-password
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: PATRONI_REPLICATION_USERNAME
                   valueFrom:
                     secretKeyRef:
                       key: replication-username
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: PATRONI_REPLICATION_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: replication-password
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: APP_USER
                   valueFrom:
                     secretKeyRef:
                       key: app-db-username
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: APP_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: app-db-password
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: APP_DATABASE
                   valueFrom:
                     secretKeyRef:
                       key: app-db-name
-                      name: ${NAME}-creds
+                      name: ${ORIGINAL_NAME}-creds
                 - name: PATRONI_SCOPE
                   value: ${NAME}
                 - name: PATRONI_NAME
@@ -208,6 +283,11 @@ parameters:
     description: |
       The name of the application for labelling all artifacts.
     displayName: Application Name
+    value: registry-patroni-flyway
+  - name: ORIGINAL_NAME
+    description: |
+      The original name from the last setup to reuse patroni credentials.
+    displayName: Original Application Name
     value: registry-patroni
   - name: REPLICAS
     description: |
@@ -260,4 +340,4 @@ parameters:
       in dev and test when you want to clear all and have a clean working namespace.
     name: APP_LABEL_NAME
     required: true
-    value: platsrv-registry
+    value: platsrv-registry-flyway

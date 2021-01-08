@@ -17,14 +17,14 @@ db:
 
 env:
   DATABASE_SERVICE_NAME:
-    value: registry-patroni-master
+    value: registry-patroni-flyway-master
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Project Registry DB Backups"
   ENVIRONMENT_NAME:
     value: "dev"
 
 backupConfig: |
-  postgres=registry-patroni-master:5432/registry
+  postgres=registry-patroni-flyway-master:5432/registry
 
   0 1 * * * default ./backup.sh -s
   0 4 * * * default ./backup.sh -s -v all

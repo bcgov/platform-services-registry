@@ -77,7 +77,7 @@ oc process -f api/openshift/templates/secret.yaml \
 | SSO_CLIENT_SECRET      | The SSO shared secret for your client provided by the SSO Web UI.
 
 
-Next, deploy the newly minted API image with the following command. This will create all the components required to run the API.
+Next, deploy the newly minted API image with the following command. This will create all the components required to run the API and its pre hook flyway
 
 ```console
 oc process -f api/openshift/templates/deploy.yaml \
@@ -86,7 +86,10 @@ oc process -f api/openshift/templates/deploy.yaml \
   -p SOURCE_IMAGE_TAG=XXXX \
   -p CHES_BASEURL=https://blarb.example.com \
   -p CHES_SSO_TOKEN_URL=https://sso-dev.example.com \
-  -p NATS_HOST_URL=nats://NAME.NAMESPACE.svc | \
+  -p NATS_HOST_URL=nats://NAME.NAMESPACE.svc \
+  -p APP_DB_NAME=<YOUR_DB_NAME> \
+  -p FLYWAY_IMAGE_NAME=<YOUR_FLYWAY_IMAGE_NAME> \
+  -p FLYWAY_IMAGE_TAG=<YOUR_FLYWAY_IMAGE_TAG> | \
   oc apply -f -
   ```
 
@@ -98,6 +101,9 @@ oc process -f api/openshift/templates/deploy.yaml \
 | CHES_BASEURL           | The CHES API URL; ; You have one for each of dev / test / prod.
 | CHES_SSO_TOKEN_URL     | The CHES SSO token URL used for authentication; You have one for each of dev / test / prod.
 | NATS_HOST_URL          | The URL for the NATS service.
+| APP_DB_NAME            | Database name.
+| FLYWAY_IMAGE_NAME      | Image name being used to run flyway pre hook pod.
+| FLYWAY_IMAGE_TAG       | Image tag being used to run flyway pre hook pod.
 
 
 ### ProTip 🤓
@@ -116,37 +122,10 @@ oc tag platsrv-registry-api:latest platsrv-registry-api:dev
 
 ### Schema Build-out (Step 4)
 
-We need to build out the database schema before the API can do anything useful with it. Examine your database credentials with the following command and make a note of the `superuser-password` property. This is the application (API Pod) account used to access the database.
+We use flyway (https://flywaydb.org/) to manage database migrations using SQL migration scripts located in `sql`following flyway naming conventions. 
 
-```console
-oc get secret/registry-patroni-creds -o yaml
-```
+Database schema and reference data will be loaded in / updated after having flyway pre hook run as part of API deployment process.
 
-Find out what your database master Pod name is (`oc get pods` and `oc describe pod/NAME`) and use a variant of the following command to port forward to it:
-
-```console
-oc port-forward patroni-0 5432
-```
-
-Run a local instance of PostgreSQL. This will give you access to the `psql` command line tool and mount a volume so we can access the SQL scripts. This command assumes you're running it form the root directory of the repo.
-
-```console
-docker run -it --rm --name blarb \
--v $(pwd)/db:/opt/src postgres /bin/bash
-```
-
-Now set the admin password so that it can be used by `psql`:
-
-```console
-export PGPASSWORD=<ADMIN_PASSWORD_HERE>
-```
-
-Repeat the following command, once for each of the SQL scripts located in `/opt/src/sql` then onces for each of the SQL scripts located in `/opt/src/seed`. This will build out the database schema and load in the reference data. Replace `ROLLNAME` with the name from the `app-db-username` property in the patroni secret above.
-
-```console
-psql -U postgres -d registry -h host.docker.internal \
-  -f /opt/src/db/sql/XXX.sql -v ROLLNAME=XXXX
-```
 
 ## Usage
 

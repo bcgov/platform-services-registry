@@ -27,7 +27,7 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: platsrv-registry
+      app: ${APP_LABEL_NAME}
     name: ${NAME}
   spec:
     selector:
@@ -45,7 +45,7 @@ objects:
   kind: DeploymentConfig
   metadata:
     labels:
-      app: platsrv-registry
+      app: ${APP_LABEL_NAME}
     name: ${NAME}
   spec:
     strategy:
@@ -58,7 +58,7 @@ objects:
     template:
       metadata:
         labels:
-          app: platsrv-registry
+          app: ${APP_LABEL_NAME}
           role: nats
           deploymentconfig: ${NAME}
         name: ${NAME}
@@ -101,3 +101,10 @@ parameters:
     displayName: Name
     name: NAME
     value: registry-nats
+  - displayName: App label name
+    description: |
+      The App label name used for all components of the application. This is useful
+      in dev and test when you want to clear all and have a clean working namespace.
+    name: APP_LABEL_NAME
+    required: true
+    value: platsrv-registry
