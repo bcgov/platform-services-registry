@@ -72,11 +72,11 @@ if everything looks good, update the existing Route object `registry-web-to-api`
 
 9. to have another back-up container pod that points to the NEW db, run
 ```console
-oc process -f openshift/backup/backup-nsp.yaml 
+oc process -f openshift/backup/backup-nsp.yaml \
   -p NAMESPACE=$(oc project --short) \
   -p STATEFULSET_NAME="registry-patroni-flyway" \
   -p BACKUP_CONTAINER_IDENTIFIER="app:k8s:serviceaccountname=db-backup-flyway-backup-storage" \
-  -p APP_LABEL_NAME="platsrv-registry-flyway"} | \
+  -p APP_LABEL_NAME="platsrv-registry-flyway" | \
   oc apply -f -
 ```
 
