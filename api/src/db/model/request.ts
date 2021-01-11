@@ -19,6 +19,7 @@ import { CommonFields, Model } from './model';
 export const enum RequestEditType {
     Contacts = 'contacts',
     Namespaces = 'namespaces',
+    Description = 'description',
 }
 
 export enum RequestEditContacts {
