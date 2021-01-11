@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,26 @@
 // limitations under the License.
 //
 
-import { PROFILE_EDIT_VIEW_NAMES } from '../constants';
+import styled from '@emotion/styled';
+import theme from '../../../theme';
 
-export function areQueryParamsForProfileValid(props: any) {
-  const { match: { params: { profileId, viewName } } } = props;
+export const BackdropForPendingItem = styled.div`
+  position:absolute;
+  z-index: ${theme.zIndices[0]};
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background-color: white;
+  opacity: 0.5;
+`;
 
-  const { OVERVIEW, PROJECT, CONTACT, QUOTA } = PROFILE_EDIT_VIEW_NAMES;
-  if (![OVERVIEW, PROJECT, CONTACT, QUOTA].includes(viewName)) {
-    return false;
-  } else {
-    try {
-      const id = parseInt(profileId);
-      return id >= 1;
-    } catch (err) {
-      return false;
-    }
-  }
-};
+export const BackdropForProcessing = styled.div`
+  position:fixed;
+  z-index: ${theme.zIndices[2]};
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+`;

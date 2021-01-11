@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,16 @@
 // limitations under the License.
 //
 
-import { PROFILE_EDIT_VIEW_NAMES } from '../constants';
+import React from 'react';
 
-export function areQueryParamsForProfileValid(props: any) {
-  const { match: { params: { profileId, viewName } } } = props;
+const NewlineText = (props: any) => {
+    const text = props.text;
 
-  const { OVERVIEW, PROJECT, CONTACT, QUOTA } = PROFILE_EDIT_VIEW_NAMES;
-  if (![OVERVIEW, PROJECT, CONTACT, QUOTA].includes(viewName)) {
-    return false;
-  } else {
-    try {
-      const id = parseInt(profileId);
-      return id >= 1;
-    } catch (err) {
-      return false;
+    if (!text) {
+        return null;
     }
-  }
-};
+
+    return text.split('\n\n').map((str: string, index: number) => <p key={index} >{str}</p>);
+}
+
+export default NewlineText;

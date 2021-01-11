@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,28 @@
 // limitations under the License.
 //
 
-import { PROFILE_EDIT_VIEW_NAMES } from '../constants';
+import styled from '@emotion/styled';
+import React from 'react';
 
-export function areQueryParamsForProfileValid(props: any) {
-  const { match: { params: { profileId, viewName } } } = props;
+const StyledTitle = styled.h1`
+  font-size: 24px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #036;
+`;
 
-  const { OVERVIEW, PROJECT, CONTACT, QUOTA } = PROFILE_EDIT_VIEW_NAMES;
-  if (![OVERVIEW, PROJECT, CONTACT, QUOTA].includes(viewName)) {
-    return false;
-  } else {
-    try {
-      const id = parseInt(profileId);
-      return id >= 1;
-    } catch (err) {
-      return false;
-    }
-  }
+interface ISubFormProps {
+  children: React.ReactNode;
+}
+
+const FormTitle: React.FC<ISubFormProps> = (props) => {
+  const { children } = props;
+  return (
+    <StyledTitle>{children}</StyledTitle>
+  );
 };
+
+export default FormTitle;
