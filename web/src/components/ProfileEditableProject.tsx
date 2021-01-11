@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
-import { StyledFormButton } from '../components/UI/button';
+import { StyledFormButton, StyledFormDisabledButton } from '../components/UI/button';
 import { COMPONENT_METADATA, PROFILE_VIEW_NAMES, ROUTE_PATHS } from '../constants';
 import getValidator from '../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -29,6 +29,9 @@ import SubFormTitle from './UI/subFormTitle';
 interface IProfileEditableProjectProps {
     profileDetails: any;
     ministry: Array<MinistryItem>;
+    isProvisioned?: boolean;
+    pendingEditRequest: boolean;
+    setPendingEditRequest: any;
     openBackdropCB: () => void;
     closeBackdropCB: () => void;
 }
@@ -41,7 +44,7 @@ interface MinistryItem {
 const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) => {
     const api = useRegistryApi();
     const validator = getValidator();
-    const { profileDetails, ministry, openBackdropCB, closeBackdropCB } = props;
+    const { profileDetails, ministry, isProvisioned, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
 
@@ -49,13 +52,19 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
       const { profile } = transformForm(formData);
       openBackdropCB();
       try {
-          // 1. Update the project profile.
-          await api.updateProfile(profileDetails.id, profile);
-          closeBackdropCB();
-          setGoBackToProfileEditable(true);
+        // 1. Check if the project profile description has changed.
+        if (profileDetails.description !== profile.description) {
+            await api.requestProfileEdit(profileDetails.id, profile);
+        } else {
+            await api.updateProfile(profileDetails.id, profile);
+        }
 
-          // 2. All good? Tell the user.
-          promptSuccessToastWithText('Your profile update was successful');
+        closeBackdropCB();
+        setGoBackToProfileEditable(true);
+        setPendingEditRequest(true);
+
+        // 2. All good? Tell the user.
+        promptSuccessToastWithText('Your profile update was successful');
       } catch (err) {
           closeBackdropCB();
           promptErrToastWithText('Something went wrong');
@@ -93,7 +102,7 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                         <Label m="0" htmlFor="project-description">Description</Label>
-                        <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} disabled />
+                        <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
                         {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                     </Flex>
                 )}
@@ -192,8 +201,17 @@ const ProfileEditableProject: React.FC<IProfileEditableProjectProps> = (props) =
                     </Flex>
                 )}
             </Field>
-            {/* @ts-ignore */}
-            <StyledFormButton style={{ display: 'block' }}>Update Profile</StyledFormButton>
+            {!pendingEditRequest && isProvisioned ? (
+                //@ts-ignore
+                <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
+                ) : (
+                    <>
+                        {/* @ts-ignore */}
+                        <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
+                        <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
+                    </>
+                )
+            }
             </form>
           )}
           </Form>

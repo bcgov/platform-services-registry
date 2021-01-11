@@ -53,6 +53,10 @@ export default function useRegistryApi() {
     return api.put(`profile/${profileId}`, profile);
   };
 
+  const requestProfileEdit = async (profileId: string, profile: any): Promise<AxiosResponse<any>> => {
+    return api.post(`profile/${profileId}/profile-edit`, profile);
+  };
+
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
     return api.post('contact', contact);
   };
@@ -102,6 +106,7 @@ export default function useRegistryApi() {
     getProfile,
     createProfile,
     updateProfile,
+    requestProfileEdit,
     createContact,
     requestContactEdit,
     linkContactToProfileById,
