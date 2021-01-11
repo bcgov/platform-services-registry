@@ -22,12 +22,15 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import { USER_ROLES } from '../constants';
 import DataManager from '../db';
+import { Request, RequestEditType } from '../db/model/request';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
+import { fulfillNamespaceEdit } from '../libs/fulfillment';
 import shared from '../libs/shared';
 import { isNotAuthorized, validateObjProps } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
+const whichService = 'profile editing';
 
 export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
   const { ProfileModel } = dm;
@@ -324,5 +327,54 @@ export const fetchProfileEditRequests = async (
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
+  }
+};
+
+export const requestProfileEdit = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
+  const { RequestModel } = dm;
+  const { profileId } = params;
+  const profile = body;
+
+  try {
+    const editType = RequestEditType.Description;
+    const editObject = profile.description;
+    if (!editObject) {
+      const errmsg = 'Cant generate request edit object';
+      throw new Error(errmsg);
+    }
+
+    const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+
+    // create Request record for contact edit
+    await RequestModel.create({
+      profileId,
+      editType,
+      editObject: JSON.stringify(profile),
+      natsSubject,
+      natsContext: JSON.stringify(natsContext),
+    })
+
+    res.status(204).end();
+
+  } catch (err) {
+    const message = `Unable to update contact`;
+    logger.error(`${message}, err = ${err.message}`);
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const processProfileEdit = async (request: Request): Promise<void> => {
+  const { ProfileModel } = dm;
+  try {
+    const { profileId, editObject } = request;
+    const profile = JSON.parse(editObject);
+    await ProfileModel.update(Number(profileId), profile);
+    return;
+  } catch (err) {
+    const message = `Unable to process requestId ${request.id} on bot callback for ${whichService}`;
+    logger.error(`${message}, err = ${err.message}`);
+    throw err;
   }
 };

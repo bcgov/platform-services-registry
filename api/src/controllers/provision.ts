@@ -30,6 +30,7 @@ import { getDefaultCluster, isNamespaceSetProvisioned } from '../libs/namespace-
 import { processProfileNamespacesEditType } from '../libs/quota-editing';
 import shared from '../libs/shared';
 import { processContactEdit } from './contact';
+import { processProfileEdit } from './profile';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -163,6 +164,10 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
         break;
       case RequestEditType.Contacts:
         await processContactEdit(request);
+        await RequestModel.delete(Number(request.id));
+        break;
+      case RequestEditType.Description:
+        await processProfileEdit(request);
         await RequestModel.delete(Number(request.id));
         break;
       default:
