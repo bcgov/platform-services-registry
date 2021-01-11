@@ -16,7 +16,7 @@
 
 import { render } from '@testing-library/react';
 import React from 'react';
-import ProfileCard from '../components/ProfileCard';
+import ProfileCard from '../components/dashboard/ProfileCard';
 
 test('matches the snapshot', () => {
   const stubPropTitle = 'Health Gateway';

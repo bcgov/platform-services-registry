@@ -16,7 +16,7 @@
 
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import Createbutton from '../components/CreateButton';
+import Createbutton from '../components/common/UI/CreateButton';
 
 function renderCreatebutton() {
   const stubPropCB = jest.fn();

@@ -75,7 +75,7 @@ describe("test the helper function getProfileContacts", () => {
 describe("test the helper function getProfileMinistry", () => {
   test("should return an object with key-values pairs for PO email and TC email", () => {
     const stubProfileMinistry = profileMinistry;
-    const ministry = {busOrgId: "ALC"};
+    const ministry = { busOrgId: "ALC" };
     expect(getProfileMinistry(stubProfileMinistry, ministry)).toEqual({
       ministryName: "Agriculture Land Commission"
     });
