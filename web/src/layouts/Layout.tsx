@@ -43,11 +43,11 @@ const StyledMain = styled.main`
 
 interface ILayoutProps {
   children: React.ReactNode;
-  name?: LayoutSet;
+  name: LayoutSet;
 }
 
 const Layout: React.FC<ILayoutProps> = props => {
-  const { children, name = 'auth' } = props;
+  const { children, name } = props;
 
   const [openBackdrop, setOpenBackdrop] = React.useState(false);
 
