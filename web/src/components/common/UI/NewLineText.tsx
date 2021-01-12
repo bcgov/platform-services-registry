@@ -14,26 +14,16 @@
 // limitations under the License.
 //
 
-import { render } from '@testing-library/react';
 import React from 'react';
-import ProfileCard from '../components/dashboard/ProfileCard';
 
-test('matches the snapshot', () => {
-  const stubPropTitle = 'Health Gateway';
-  const stubPropTextBody = 'This is a test description for health gateway app';
-  const stubPropMinistry = 'CITZ';
-  const stubPropPO = 'jane@example.com';
-  const stubPropTC = 'jim@example.com';
+const NewlineText = (props: any) => {
+    const text = props.text;
 
-  const { container } = render(
-    <ProfileCard
-      title={stubPropTitle}
-      textBody={stubPropTextBody}
-      ministry={stubPropMinistry}
-      PO={stubPropPO}
-      TC={stubPropTC}
-    />
-  );
+    if (!text) {
+        return null;
+    }
 
-  expect(container).toMatchSnapshot();
-});
+    return text.split('\n\n').map((str: string, index: number) => <p key={index} >{str}</p>);
+}
+
+export default NewlineText;

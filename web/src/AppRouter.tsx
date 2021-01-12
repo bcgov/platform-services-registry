@@ -17,14 +17,14 @@
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Redirect, Router, Switch } from 'react-router-dom';
-import Layout from './components/Layout';
 import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, LAYOUT_SET_UNAUTH, ROUTE_PATHS } from './constants';
+import Layout from './layouts/Layout';
 import AppRoute from './utils/AppRoute';
 import { areQueryParamsForProfileValid } from './utils/checkQueryParamsHelper';
 import Dashboard from './views/Dashboard';
-import form from './views/form';
 import { NotFound } from './views/NotFound';
-import ProfileQuotaEdit from './views/ProfileEditable';
+import ProfileCreate from './views/ProfileCreate';
+import ProfileEdit from './views/ProfileEdit';
 import { PublicLanding } from './views/PublicLanding';
 
 const browserHistory = createBrowserHistory();
@@ -35,9 +35,9 @@ const AppRouter: React.FC = () => {
       <Switch>
         <Redirect exact from='/' to={ROUTE_PATHS.LANDING} />
         <AppRoute path={ROUTE_PATHS.LANDING} component={PublicLanding} layout={Layout} layoutName={LAYOUT_SET_UNAUTH} />
-        <AppRoute exact path={ROUTE_PATHS.FORM} component={form} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
+        <AppRoute exact path={ROUTE_PATHS.PROFILE_CREATE} component={ProfileCreate} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
         <AppRoute exact path={HOME_PAGE_URL} component={Dashboard} layout={Layout} layoutName={LAYOUT_SET_AUTH} />
-        <AppRoute exact path={ROUTE_PATHS.PROFILE_EDITABLE} component={ProfileQuotaEdit} layout={Layout} layoutName={LAYOUT_SET_AUTH} checkQueryParams={areQueryParamsForProfileValid} />
+        <AppRoute exact path={ROUTE_PATHS.PROFILE_EDIT} component={ProfileEdit} layout={Layout} layoutName={LAYOUT_SET_AUTH} checkQueryParams={areQueryParamsForProfileValid} />
         <AppRoute path={ROUTE_PATHS.NOT_FOUND} component={NotFound} layout={Layout} layoutName={LAYOUT_SET_MIN} />
         <Redirect to={ROUTE_PATHS.NOT_FOUND} />
       </Switch>

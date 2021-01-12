@@ -14,26 +14,28 @@
 // limitations under the License.
 //
 
-import { render } from '@testing-library/react';
+import styled from '@emotion/styled';
 import React from 'react';
-import ProfileCard from '../components/dashboard/ProfileCard';
 
-test('matches the snapshot', () => {
-  const stubPropTitle = 'Health Gateway';
-  const stubPropTextBody = 'This is a test description for health gateway app';
-  const stubPropMinistry = 'CITZ';
-  const stubPropPO = 'jane@example.com';
-  const stubPropTC = 'jim@example.com';
+const StyledTitle = styled.h1`
+  font-size: 24px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #036;
+`;
 
-  const { container } = render(
-    <ProfileCard
-      title={stubPropTitle}
-      textBody={stubPropTextBody}
-      ministry={stubPropMinistry}
-      PO={stubPropPO}
-      TC={stubPropTC}
-    />
+interface ISubFormProps {
+  children: React.ReactNode;
+}
+
+const FormTitle: React.FC<ISubFormProps> = (props) => {
+  const { children } = props;
+  return (
+    <StyledTitle>{children}</StyledTitle>
   );
+};
 
-  expect(container).toMatchSnapshot();
-});
+export default FormTitle;

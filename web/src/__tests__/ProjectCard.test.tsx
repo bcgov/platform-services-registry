@@ -16,22 +16,18 @@
 
 import { render } from '@testing-library/react';
 import React from 'react';
-import ProfileCard from '../components/dashboard/ProfileCard';
+import ProjectCard from '../components/profileEdit/ProjectCard';
 
 test('matches the snapshot', () => {
   const stubPropTitle = 'Health Gateway';
   const stubPropTextBody = 'This is a test description for health gateway app';
-  const stubPropMinistry = 'CITZ';
-  const stubPropPO = 'jane@example.com';
-  const stubPropTC = 'jim@example.com';
+  const stubPropMinistry = 'Citizen\'s Services';
 
   const { container } = render(
-    <ProfileCard
+    <ProjectCard
       title={stubPropTitle}
       textBody={stubPropTextBody}
       ministry={stubPropMinistry}
-      PO={stubPropPO}
-      TC={stubPropTC}
     />
   );
 

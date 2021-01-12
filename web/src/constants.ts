@@ -54,26 +54,26 @@ export const COMPONENT_METADATA = [
   { displayName: 'Scheduling: Appointments', inputValue: 'schedulingAppointments' },
   { displayName: 'Identity Management: SiteMinder', inputValue: 'idmSiteMinder' },
   { displayName: 'Identity Management: KeyCloak', inputValue: 'idmKeycloak' },
-  { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' }
+  { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' },
 ]
 
 export const CSV_PROFILE_ATTRIBUTES = ['id', 'name', 'description', 'busOrgId', 'prioritySystem', 'createdAt', 'updatedAt', 'POEmail', 'POName', 'POGithubId', 'TCEmail', 'TCName', 'TCGithubId'];
 
 export const ROUTE_PATHS = {
-  DASHBOARD: '/dashboard',
   NOT_FOUND: '/page-not-found',
   LANDING: '/public-landing',
-  FORM: '/projects/create',
-  PROFILE_EDITABLE: '/profile/:profileId/:viewName'
+  DASHBOARD: '/dashboard',
+  PROFILE_CREATE: '/profile/create',
+  PROFILE_EDIT: '/profile/:profileId/:viewName',
 };
 
 export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;
 
-export const PROFILE_VIEW_NAMES = {
+export const PROFILE_EDIT_VIEW_NAMES = {
   OVERVIEW: 'overview',
   PROJECT: 'project',
   CONTACT: 'contact',
-  QUOTA: 'quota'
+  QUOTA: 'quota',
 };
 
 export const RESPONSE_STATUS_CODE = {

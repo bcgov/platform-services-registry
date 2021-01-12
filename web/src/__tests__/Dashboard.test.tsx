@@ -23,7 +23,7 @@ import Dashboard from '../views/Dashboard';
 const browserHistory = createBrowserHistory();
 
 // TODO: use fixtures and make them work with jest mock values
-jest.mock('../utils/useRegistryApi', () => {
+jest.mock('../hooks/useRegistryApi', () => {
   return function useRegistryApi() {
     const getProfile = jest.fn().mockResolvedValue({
       data: [

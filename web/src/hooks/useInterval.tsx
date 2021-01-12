@@ -14,24 +14,25 @@
 // limitations under the License.
 //
 
-import { render } from '@testing-library/react';
-import React from 'react';
-import ContactCard from '../components/profileEdit/ContactCard';
+import { useEffect, useRef } from 'react';
 
-test('matches the snapshot', () => {
-  const stubPropPOName = 'Jane Doe';
-  const stubPropPOEmail = 'jane@example.com';
-  const stubPropTCName = 'Jim Doe';
-  const stubPropTCEmail = 'jim@example.com';
+export default function useInterval(callback: any, delay: number) {
+    const savedCallback = useRef();
 
-  const { container } = render(
-    <ContactCard
-      POName={stubPropPOName}
-      POEmail={stubPropPOEmail}
-      TCName={stubPropTCName}
-      TCEmail={stubPropTCEmail}
-    />
-  );
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
 
-  expect(container).toMatchSnapshot();
-});
+    useEffect(() => {
+        function tick() {
+            //@ts-ignore
+            savedCallback.current();
+        }
+        if (delay === null) {
+            return;
+        }
+
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+    }, [delay]);
+};

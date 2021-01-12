@@ -16,9 +16,9 @@
 
 import { render } from "@testing-library/react";
 import React from "react";
-import DropdownMenu from '../components/DropdownMenu';
+import DropdownMenu from '../components/common/UI/DropdownMenu';
 
-jest.mock('../components/DropdownMenuItem', () => {
+jest.mock('../components/common/UI/DropdownMenuItem', () => {
   return function DummyDropdownMenuItem() {
     return (
       <div data-testid='dropdown-menu-item'>
@@ -38,6 +38,7 @@ test('renders dropdown menu - incoming query', () => {
   const { queryAllByTestId } = render(
     <DropdownMenu
       menuItems={stubMenuItems}
+      handleOnClick={jest.fn()}
     />
   );
   const children = queryAllByTestId('dropdown-menu-item');

@@ -18,7 +18,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
-import DropdownMenuItem from '../components/DropdownMenuItem';
+import DropdownMenuItem from '../components/common/UI/DropdownMenuItem';
 
 const browserHistory = createBrowserHistory();
 

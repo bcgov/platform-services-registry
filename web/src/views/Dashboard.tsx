@@ -17,16 +17,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
-import ProfileCard from '../components/ProfileCard';
-import { Button } from '../components/UI/button';
-import { ShadowBox } from '../components/UI/shadowContainer';
-import StyledBackdrop from '../components/UI/styledBackdrop';
+import { BackdropForPendingItem } from '../components/common/UI/Backdrop';
+import { Button } from '../components/common/UI/Button';
+import { ShadowBox } from '../components/common/UI/ShadowContainer';
+import ProfileCard from '../components/dashboard/ProfileCard';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
+import useInterval from '../hooks/useInterval';
+import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
-import useInterval from '../utils/useInterval';
-import useRegistryApi from '../utils/useRegistryApi';
 
 interface IDashboardProps {
   openBackdropCB: () => void;
@@ -130,7 +130,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
               to={{ pathname: `/profile/${s.id}/overview` }}
               style={{ color: theme.colors.black, textDecoration: 'none' }}
             >
-              {!s.provisioned && <StyledBackdrop />}
+              {!s.provisioned && <BackdropForPendingItem />}
               <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
             </RouterLink>
           </ShadowBox>

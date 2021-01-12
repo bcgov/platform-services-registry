@@ -16,23 +16,27 @@
 
 import { render } from '@testing-library/react';
 import React from 'react';
-import ProfileCard from '../components/dashboard/ProfileCard';
+import ProfileCreate from '../views/ProfileCreate';
+
+jest.mock('../utils/TokenDecoder', () => {
+  return function getDecodedToken() {
+    return (
+      {
+        email: "test@example.com",
+        family_name: "Jane",
+        given_name: "Doe",
+        name: "Jane Doe",
+        preferred_username: "janedoe@idir"
+      }
+    );
+  }
+});
 
 test('matches the snapshot', () => {
-  const stubPropTitle = 'Health Gateway';
-  const stubPropTextBody = 'This is a test description for health gateway app';
-  const stubPropMinistry = 'CITZ';
-  const stubPropPO = 'jane@example.com';
-  const stubPropTC = 'jim@example.com';
+  const stubPropCB = jest.fn();
 
   const { container } = render(
-    <ProfileCard
-      title={stubPropTitle}
-      textBody={stubPropTextBody}
-      ministry={stubPropMinistry}
-      PO={stubPropPO}
-      TC={stubPropTC}
-    />
+    <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} />
   );
 
   expect(container).toMatchSnapshot();
