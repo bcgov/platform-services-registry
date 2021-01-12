@@ -14,9 +14,11 @@
 // limitations under the License.
 //
 
+import { useKeycloak } from '@react-keycloak/web';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Redirect, Router, Switch } from 'react-router-dom';
+import { BackdropForProcessing } from './components/common/UI/Backdrop';
 import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, LAYOUT_SET_UNAUTH, ROUTE_PATHS } from './constants';
 import Layout from './layouts/Layout';
 import AppRoute from './utils/AppRoute';
@@ -30,6 +32,12 @@ import { PublicLanding } from './views/PublicLanding';
 const browserHistory = createBrowserHistory();
 
 const AppRouter: React.FC = () => {
+  const { initialized } = useKeycloak();
+
+  if (!initialized) {
+    return (<BackdropForProcessing />);
+  }
+
   return (
     <Router history={browserHistory}>
       <Switch>

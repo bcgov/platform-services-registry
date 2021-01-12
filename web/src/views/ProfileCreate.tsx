@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-09.
-//
 
+import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
@@ -39,10 +38,10 @@ interface IProfileCreateProps {
 };
 
 const ProfileCreate: React.FC<IProfileCreateProps> = (props: any) => {
-    const { openBackdropCB, closeBackdropCB } = props;
-
     const api = useRegistryApi();
+    const { keycloak } = useKeycloak();
 
+    const { openBackdropCB, closeBackdropCB } = props;
     const [ministry, setMinistry] = useState<any>([]);
 
     const [goBackToDashboard, setGoBackToDashboard] = useState(false);
@@ -90,9 +89,8 @@ const ProfileCreate: React.FC<IProfileCreateProps> = (props: any) => {
             setMinistry(response.data);
         }
         wrap();
-
         // eslint-disable-next-line
-    }, []);
+    }, [keycloak]);
 
     if (goBackToDashboard) {
         return (<Redirect to={ROUTE_PATHS.DASHBOARD} />);

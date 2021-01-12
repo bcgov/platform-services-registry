@@ -17,14 +17,27 @@
 import { KeycloakProvider } from '@react-keycloak/web';
 import { ThemeProvider } from 'emotion-theming';
 import React from 'react';
-import 'react-toastify/dist/ReactToastify.css';
 import AppRouter from './AppRouter';
 import keycloak from './keycloak';
 import theme from './theme';
 
+
+const eventLogger = (event: unknown, error: unknown) => {
+  console.log('onKeycloakEvent', event, error)
+}
+
+const tokenLogger = (tokens: unknown) => {
+  console.log('onKeycloakTokens', tokens)
+}
+
+
 const App = () => {
   return (
-    <KeycloakProvider keycloak={keycloak}>
+    <KeycloakProvider
+      keycloak={keycloak}
+      onEvent={eventLogger}
+      onTokens={tokenLogger}
+    >
       <ThemeProvider theme={theme}>
         <AppRouter />
       </ThemeProvider>

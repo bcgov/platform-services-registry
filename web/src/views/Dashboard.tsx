@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
@@ -37,6 +38,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
   const { openBackdropCB, closeBackdropCB } = props;
 
   const api = useRegistryApi();
+  const { keycloak } = useKeycloak();
 
   const [profile, setProfile] = useState<any>([]);
 
@@ -74,9 +76,8 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
     }
     wrap();
     // eslint-disable-next-line
-  }, []);
+  }, [keycloak]);
 
-  // start polling for profile provision status changes every 30s
   useInterval(() => {
     const promisesForProvision: any = [];
     for (let p of profile) {

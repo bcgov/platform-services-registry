@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
@@ -33,7 +34,6 @@ import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
-
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
 
 interface IProfileEditProps {
@@ -43,6 +43,8 @@ interface IProfileEditProps {
 
 const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const api = useRegistryApi();
+    const { keycloak } = useKeycloak();
+
     const profileStatus = getProfileStatus();
 
     // @ts-ignore
@@ -111,7 +113,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
         }
         wrap();
         // eslint-disable-next-line
-    }, []);
+    }, [keycloak]);
 
     useEffect(() => {
         async function wrap() {
