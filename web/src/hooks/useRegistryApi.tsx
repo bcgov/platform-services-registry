@@ -75,7 +75,7 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return axiosInstance.current.post(`profile/${profileId}`, profile);
+      return axiosInstance.current.put(`profile/${profileId}`, profile);
     }
   };
 
