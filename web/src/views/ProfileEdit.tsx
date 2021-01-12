@@ -226,6 +226,9 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                 <ProjectCardEdit
                                     profileDetails={profileJson}
                                     ministry={ministry}
+                                    isProvisioned={provisionedStatus}
+                                    pendingEditRequest={pendingEditRequest}
+                                    setPendingEditRequest={setPendingEditRequest}
                                     openBackdropCB={openBackdropCB}
                                     closeBackdropCB={closeBackdropCB}
                                 />

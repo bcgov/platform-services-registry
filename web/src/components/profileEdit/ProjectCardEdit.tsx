@@ -23,12 +23,15 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { transformForm } from '../../utils/transformDataHelper';
-import { StyledFormButton } from '../common/UI/Button';
+import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 
 interface IProjectCardEditProps {
     profileDetails: any;
     ministry: Array<MinistryItem>;
+    isProvisioned?: boolean;
+    pendingEditRequest: boolean;
+    setPendingEditRequest: any;
     openBackdropCB: () => void;
     closeBackdropCB: () => void;
 }
@@ -41,7 +44,7 @@ interface MinistryItem {
 const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
     const api = useRegistryApi();
     const validator = getValidator();
-    const { profileDetails, ministry, openBackdropCB, closeBackdropCB } = props;
+    const { profileDetails, ministry, isProvisioned, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
 
@@ -49,10 +52,16 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         const { profile } = transformForm(formData);
         openBackdropCB();
         try {
-            // 1. Update the project profile.
+            // 1. Check if the project profile description has changed.
+        if (profileDetails.description !== profile.description) {
+            await api.requestProfileEdit(profileDetails.id, profile);
+            setPendingEditRequest(true);
+        } else {
             await api.updateProfile(profileDetails.id, profile);
-            closeBackdropCB();
-            setGoBackToProfileEditable(true);
+        }
+
+        closeBackdropCB();
+        setGoBackToProfileEditable(true);
 
             // 2. All good? Tell the user.
             promptSuccessToastWithText('Your profile update was successful');
@@ -93,7 +102,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                             {({ input, meta }) => (
                                 <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
                                     <Label m="0" htmlFor="project-description">Description</Label>
-                                    <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} disabled />
+                                    <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
                                     {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
                                 </Flex>
                             )}
@@ -192,8 +201,17 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                                 </Flex>
                             )}
                         </Field>
-                        {/* @ts-ignore */}
-                        <StyledFormButton style={{ display: 'block' }}>Update Profile</StyledFormButton>
+                        {!pendingEditRequest && isProvisioned ? (
+                            //@ts-ignore
+                            <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
+                            ) : (
+                                <>
+                                    {/* @ts-ignore */}
+                                    <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
+                                    <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
+                                </>
+                            )
+                        }
                     </form>
                 )}
             </Form>
