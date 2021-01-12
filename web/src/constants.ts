@@ -32,6 +32,7 @@ export const API = {
 export const ROLES = {
   PRODUCTOWNER: 1,
   TECHNICAL: 2,
+  ADMINISTRATOR: 'administrator',
 };
 
 export const DEFAULT_MINISTRY = 'CITZ';
@@ -55,7 +56,7 @@ export const COMPONENT_METADATA = [
   { displayName: 'Identity Management: SiteMinder', inputValue: 'idmSiteMinder' },
   { displayName: 'Identity Management: KeyCloak', inputValue: 'idmKeycloak' },
   { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' },
-]
+];
 
 export const CSV_PROFILE_ATTRIBUTES = ['id', 'name', 'description', 'busOrgId', 'prioritySystem', 'createdAt', 'updatedAt', 'POEmail', 'POName', 'POGithubId', 'TCEmail', 'TCName', 'TCGithubId'];
 

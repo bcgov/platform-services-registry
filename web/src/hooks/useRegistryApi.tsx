@@ -15,88 +15,158 @@
 //
 
 import { useKeycloak } from '@react-keycloak/web';
-import axios, { AxiosResponse } from 'axios';
-import { useMemo } from 'react';
+import type { AxiosInstance, AxiosResponse } from 'axios';
+import axios from 'axios';
+import { useEffect, useRef } from 'react';
 import { API } from '../constants';
 
-export const useApi = () => {
-  const { keycloak } = useKeycloak();
-  const instance = useMemo(() => {
-    return axios.create({
+const useAxios = () => {
+  const axiosInstance = useRef<AxiosInstance>();
+  const { keycloak, initialized } = useKeycloak();
+  const kcToken = keycloak?.token ?? '';
+
+  useEffect(() => {
+    axiosInstance.current = axios.create({
+      baseURL: API.BASE_URL(),
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${keycloak?.token}`
+        Authorization: initialized ? `Bearer ${kcToken}` : undefined,
       },
-      baseURL: API.BASE_URL()
     });
-  }, [keycloak]);
 
-  return instance;
+    return () => {
+      axiosInstance.current = undefined;
+    };
+  }, [initialized, kcToken]);
+
+  return axiosInstance;
 };
 
+const errorMsg = 'axios instance not initialized';
+
 export default function useRegistryApi() {
-  const api = useApi();
+  const axiosInstance = useAxios();
 
   const getMinistry = async (): Promise<AxiosResponse<any>> => {
-    return api.get('ministry');
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('ministry');
+    }
   };
 
   const getProfile = async (): Promise<AxiosResponse<any>> => {
-    return api.get('profile');
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('profile');
+    }
   };
 
   const createProfile = async (profile: any): Promise<AxiosResponse<any>> => {
-    return api.post('profile', profile);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post('profile', profile);
+    }
   };
 
   const updateProfile = async (profileId: string, profile: any): Promise<AxiosResponse<any>> => {
-    return api.put(`profile/${profileId}`, profile);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.put(`profile/${profileId}`, profile);
+    }
   };
 
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
-    return api.post('contact', contact);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post('contact', contact);
+    }
   };
 
   const requestContactEdit = async (profileId: string, requestedContacts: any): Promise<AxiosResponse<any>> => {
-    return api.post(`profile/${profileId}/contact-edit`, requestedContacts);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/contact-edit`, requestedContacts);
+    }
   };
 
   const linkContactToProfileById = async (profileId: string, contactId: string): Promise<AxiosResponse<any>> => {
-    return api.post(`profile/${profileId}/contact/${contactId}`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/contact/${contactId}`);
+    }
   };
 
   const createNamespaceByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    return api.post(`provision/${profileId}/namespace`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`provision/${profileId}/namespace`);
+    }
   };
 
   const getContactsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    return api.get(`profile/${profileId}/contacts`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/contacts`);
+    }
   };
 
   const getNamespaceByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    return api.get(`profile/${profileId}/namespace`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/namespace`);
+    }
   };
 
   const getProfileByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    return api.get(`profile/${profileId}`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}`);
+    }
   };
 
   const getNamespacesByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    return api.get(`profile/${profileId}/namespace`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/namespace`);
+    }
   };
 
   const getCNQuotaOptionsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    return api.get(`profile/${profileId}/quota-edit`);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/quota-edit`);
+    }
   };
 
   const requestCNQuotasByProfileId = async (profileId: string, requstedQuotas: any): Promise<AxiosResponse<any>> => {
-    return api.post(`profile/${profileId}/quota-edit`, requstedQuotas);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/quota-edit`, requstedQuotas);
+    }
   };
 
-  const getEditRequestStatus = async (profileId:string): Promise<AxiosResponse<any>> => {
-    return api.get(`profile/${profileId}/request`);
+  const getEditRequestStatus = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/request`);
+    }
   };
-  
+
   return {
     getMinistry,
     getProfile,
