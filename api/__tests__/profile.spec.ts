@@ -445,7 +445,6 @@ describe('Profile event handlers', () => {
   });
 
   it('A profile edit request is created', async () => {
-    
     const req = {
       params: { profileId: 118 },
       body: selectProfiles[2],
