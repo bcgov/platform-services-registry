@@ -451,6 +451,31 @@ paths:
           description: The request was received but incorrect
         500:
           description: Internal Error
+  /api/v1/profile/{profileId}/profile-edit:
+    post:
+      operationId: requestProfileEdit
+      summary: Create a new profile edit request for the given project
+      description: |-
+        Use this endpoint to request an update to a projects details.
+      security:
+        - bearerAuth: [] 
+      tags:
+        - Profile
+      parameters:
+        - name: profileId
+          description: |-
+            The ID of the project profile that will own the namespace.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: The request was successful; No content returned.
+        400:
+          description: The request was received but incorrect
+        500:
+          description: Internal Error
   /api/v1/profile/{profileId}/quota-edit:
     get:
       operationId: fetchProfileQuotaOptions
