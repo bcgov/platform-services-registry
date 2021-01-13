@@ -18,7 +18,7 @@ import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';
 import { Pool } from 'pg';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProfileContacts, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProfileContacts, fetchProjectProfile, requestProfileEdit, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/profile';
 import ProfileModel from '../src/db/model/profile';
 import FauxExpress from './src/fauxexpress';
 
@@ -47,6 +47,15 @@ jest.mock('../src/db/utils', () => ({
     return obj;
   }),
 }));
+
+jest.mock('../src/libs/fulfillment', () => {
+  const p4 = path.join(__dirname, 'fixtures/provisioning-context.json');
+  const natsContext = JSON.parse(fs.readFileSync(p4, 'utf8'));
+  const natsSubject = 'edit';
+  return {
+    fulfillNamespaceEdit: jest.fn().mockResolvedValue({natsContext, natsSubject}),
+  };
+});
 
 describe('Profile event handlers', () => {
   let ex;
@@ -434,4 +443,21 @@ describe('Profile event handlers', () => {
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
+
+  it('A profile edit request is created', async () => {
+    
+    const req = {
+      params: { profileId: 118 },
+      body: selectProfiles[2],
+    }
+
+    client.query.mockResolvedValue({ rows: [{ count: '0' }] });
+
+    await requestProfileEdit(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.end).toBeCalled();
+  })
 });
