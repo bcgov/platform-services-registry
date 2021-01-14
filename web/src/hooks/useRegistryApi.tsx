@@ -80,7 +80,11 @@ export default function useRegistryApi() {
   };
 
   const requestProfileEdit = async (profileId: string, profile: any): Promise<AxiosResponse<any>> => {
-    return api.post(`profile/${profileId}/profile-edit`, profile);
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/profile-edit`, profile);;
+    }
   };
 
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
