@@ -20,6 +20,7 @@ import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA } from '../../constants';
 import getValidator from '../../utils/getValidator';
+import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 
 interface MinistryItem {
@@ -39,6 +40,17 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
     return (
         <div>
             <FormTitle>Tell us about your project</FormTitle>
+            <FormSubtitle>
+                As the capacity in the Silver cluster remains to be an issue due to the slow progress of the
+                app migration, the priority will be given to provisioning namespaces for the projects that:
+                <blockquote>
+                    <br /> a) migrate from OCP3 and
+                    <br /> b) have short 2-3 week migration timelines starting from when the 
+                    namespaces are provisioned. 
+                </blockquote>
+                Please, indicate in the project description field if your project 
+                meets the 2 criteria above
+            </FormSubtitle>
             <Field name="project-name" validate={validator.mustBeValidProfileName}>
                 {({ input, meta }) => (
                     <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
