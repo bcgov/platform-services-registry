@@ -48,8 +48,8 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
                     <br /> b) have short 2-3 week migration timelines starting from when the 
                     namespaces are provisioned. 
                 </blockquote>
-                Please, indicate in the project description field if your project 
-                meets the 2 criteria above
+                Please indicate in the project description field if your project 
+                meets the two criteria above and include the license plate number for the OCP3 project set.
             </FormSubtitle>
             <Field name="project-name" validate={validator.mustBeValidProfileName}>
                 {({ input, meta }) => (
