@@ -15,6 +15,11 @@ exports[`matches the snapshot 1`] = `
           >
             Tell us about your project
           </h1>
+          <h3
+            class="css-ao0kz4"
+          >
+            As the capacity in the Silver cluster remains to be an issue due to the slow progress of the app migration, the priority will be given to provisioning namespaces for the projects that a) migrate from OCP3 and b) have short 2-3 week migration timelines starting from when the namespaces are provisioned. Please, indicate in the project description field if your project meets the 2 criteria above
+          </h3>
           <div
             class="css-j2gbad"
             style="position: relative;"
