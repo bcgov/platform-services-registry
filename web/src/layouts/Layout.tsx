@@ -15,14 +15,14 @@
 //
 
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../components/common/layout/Footer';
 import Header from '../components/common/layout/Header';
 import { BackdropForProcessing } from '../components/common/UI/Backdrop';
+import CommonStateContext from '../contexts/commonStateContext';
 import theme from '../theme';
-import { LayoutSet } from '../types';
 
 // this is to set min width in windows resizing
 const StyledDiv = styled.div`
@@ -43,38 +43,38 @@ const StyledMain = styled.main`
 
 interface ILayoutProps {
   children: React.ReactNode;
-  name: LayoutSet;
 }
 
-const Layout: React.FC<ILayoutProps> = props => {
-  const { children, name } = props;
+export const AuthLayout: React.FC<ILayoutProps> = props => {
+  const { children } = props;
 
-  const [openBackdrop, setOpenBackdrop] = React.useState(false);
-
-  const openBackdropCB = () => {
-    setOpenBackdrop(true);
-  };
-
-  const closeBackdropCB = () => {
-    setOpenBackdrop(false);
-  };
+  const [openBackdrop, setOpenBackdrop] = useState(false);
 
   return (
     <StyledDiv>
       <ToastContainer style={{ width: "500px" }} />
       {openBackdrop && (<BackdropForProcessing />)}
-      <Header name={name} />
-      <StyledMain>
-        {React.Children.map(children, (child: any) => {
-          return React.cloneElement(child, {
-            closeBackdropCB: closeBackdropCB,
-            openBackdropCB: openBackdropCB
-          });
-        })}
-      </StyledMain>
+      <Header auth />
+      <CommonStateContext.Provider value={{ setOpenBackdrop }}>
+        <StyledMain>
+          {children}
+        </StyledMain>
+      </CommonStateContext.Provider>
       <Footer />
     </StyledDiv>
   );
 };
 
-export default Layout;
+export const PublicLayout: React.FC<ILayoutProps> = props => {
+  const { children } = props;
+
+  return (
+    <StyledDiv>
+      <Header />
+      <StyledMain>
+        {children}
+      </StyledMain>
+      <Footer />
+    </StyledDiv>
+  );
+};

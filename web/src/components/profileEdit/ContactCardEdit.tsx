@@ -20,6 +20,7 @@ import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
+import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
@@ -33,12 +34,11 @@ interface IContactCardEditProps {
     contactDetails: any;
     pendingEditRequest: boolean;
     setPendingEditRequest: any;
-    openBackdropCB: () => void;
-    closeBackdropCB: () => void;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
-    const { profileId, isProvisioned, contactDetails, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
+    const { profileId, isProvisioned, contactDetails, pendingEditRequest, setPendingEditRequest } = props;
+    const { setOpenBackdrop } = useCommonState();
 
     const api = useRegistryApi();
 
@@ -49,7 +49,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     const onSubmit = async (formData: any) => {
         const { productOwner, technicalContact } = transformForm(formData);
         const updatedContacts = { productOwner, technicalContact };
-        openBackdropCB();
+        setOpenBackdrop(true);
 
         try {
             if (!profileId) {
@@ -60,12 +60,12 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             await api.requestContactEdit(profileId, updatedContacts);
 
             // 2. All good? Redirect back to overview and tell the user.
-            closeBackdropCB();
+            setOpenBackdrop(false);
             setGoBackToProfileEditable(true);
             setPendingEditRequest(true);
             promptSuccessToastWithText('Your profile update was successful');
         } catch (err) {
-            closeBackdropCB();
+            setOpenBackdrop(false);
             promptErrToastWithText('Something went wrong');
             console.log(err);
         }

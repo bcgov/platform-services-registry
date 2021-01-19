@@ -27,6 +27,7 @@ import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
 import QuotaCard from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
 import { PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
+import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
@@ -34,21 +35,17 @@ import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
+
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
 
-interface IProfileEditProps {
-    openBackdropCB: () => void;
-    closeBackdropCB: () => void;
-};
+const ProfileEdit: React.FC = (props: any) => {
+    // @ts-ignore
+    const { match: { params: { profileId, viewName } }, } = props;
 
-const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
     const api = useRegistryApi();
     const { keycloak } = useKeycloak();
-
+    const { setOpenBackdrop } = useCommonState();
     const profileStatus = getProfileStatus();
-
-    // @ts-ignore
-    const { match: { params: { profileId, viewName } }, openBackdropCB, closeBackdropCB } = props;
 
     const [initialRender, setInitialRender] = useState(true);
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
@@ -73,7 +70,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
 
     useEffect(() => {
         async function wrap() {
-            openBackdropCB();
+            setOpenBackdrop(true);
             try {
                 const profileDetails = await api.getProfileByProfileId(profileId);
                 const ministryDetails = await api.getMinistry();
@@ -109,7 +106,7 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                 }
             }
             setInitialRender(false);
-            closeBackdropCB();
+            setOpenBackdrop(false);
         }
         wrap();
         // eslint-disable-next-line
@@ -229,8 +226,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                     isProvisioned={provisionedStatus}
                                     pendingEditRequest={pendingEditRequest}
                                     setPendingEditRequest={setPendingEditRequest}
-                                    openBackdropCB={openBackdropCB}
-                                    closeBackdropCB={closeBackdropCB}
                                 />
                             }
                             {(viewName === PROFILE_EDIT_VIEW_NAMES.CONTACT) &&
@@ -240,8 +235,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                     pendingEditRequest={pendingEditRequest}
                                     isProvisioned={provisionedStatus}
                                     setPendingEditRequest={setPendingEditRequest}
-                                    openBackdropCB={openBackdropCB}
-                                    closeBackdropCB={closeBackdropCB}
                                 />
                             }
                             {(viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA) &&
@@ -251,8 +244,6 @@ const ProfileEdit: React.FC<IProfileEditProps> = (props) => {
                                     profileId={profileId}
                                     quotaOptions={quotaOptions}
                                     cnQuotaOptionsJson={cnQuotaOptionsJson}
-                                    openBackdropCB={openBackdropCB}
-                                    closeBackdropCB={closeBackdropCB}
                                     handleQuotaSubmitRefresh={handleQuotaSubmitRefresh}
                                     isProvisioned={isProvisioned}
                                 />

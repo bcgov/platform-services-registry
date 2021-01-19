@@ -24,6 +24,7 @@ import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
 import CreateFormTC from '../components/profileCreate/CreateFormTC';
 import { ROUTE_PATHS } from '../constants';
+import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformForm } from '../utils/transformDataHelper';
@@ -32,16 +33,10 @@ const txtForPO = `Tell us about the Product Owner (PO). This is typically the bu
 const txtForPO2 = `Although not required, we strongly recommend the requestor be the product owner so that this record appears on their dashboard when logging on to the registry; only the requestor will be able to edit this project in the future.`;
 const txtForTC = `Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.`;
 
-interface IProfileCreateProps {
-    openBackdropCB: () => void;
-    closeBackdropCB: () => void;
-};
-
-const ProfileCreate: React.FC<IProfileCreateProps> = (props: any) => {
+const ProfileCreate: React.FC = () => {
     const api = useRegistryApi();
     const { keycloak } = useKeycloak();
-
-    const { openBackdropCB, closeBackdropCB } = props;
+    const { setOpenBackdrop } = useCommonState();
     const [ministry, setMinistry] = useState<any>([]);
 
     const [goBackToDashboard, setGoBackToDashboard] = useState(false);
@@ -54,7 +49,7 @@ const ProfileCreate: React.FC<IProfileCreateProps> = (props: any) => {
             alert("You need to select a Ministry Sponsor.");
             return;
         }
-        openBackdropCB();
+        setOpenBackdrop(true);
         try {
             // 1. Create the project profile.
             const response: any = await api.createProfile(profile);
@@ -71,12 +66,12 @@ const ProfileCreate: React.FC<IProfileCreateProps> = (props: any) => {
             // 4. Trigger provisioning
             await api.createNamespaceByProfileId(profileId);
 
-            closeBackdropCB();
+            setOpenBackdrop(false);
             setGoBackToDashboard(true);
             // 5.All good? Tell the user.
             promptSuccessToastWithText('Your namespace request was successful');
         } catch (err) {
-            closeBackdropCB();
+            setOpenBackdrop(false);
             const msg = `Unable to submit request at this time, reason = ${err.message}`;
             promptErrToastWithText(msg);
             console.log(err);

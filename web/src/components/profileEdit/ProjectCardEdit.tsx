@@ -19,6 +19,7 @@ import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA, PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
+import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
@@ -32,8 +33,6 @@ interface IProjectCardEditProps {
     isProvisioned?: boolean;
     pendingEditRequest: boolean;
     setPendingEditRequest: any;
-    openBackdropCB: () => void;
-    closeBackdropCB: () => void;
 }
 
 interface MinistryItem {
@@ -44,29 +43,32 @@ interface MinistryItem {
 const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
     const api = useRegistryApi();
     const validator = getValidator();
-    const { profileDetails, ministry, isProvisioned, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
+    const { profileDetails, ministry, isProvisioned, pendingEditRequest, setPendingEditRequest } = props;
+    const { setOpenBackdrop } = useCommonState();
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
 
     const onSubmit = async (formData: any) => {
         const { profile } = transformForm(formData);
-        openBackdropCB();
+        setOpenBackdrop(true);
         try {
             // 1. Check if the project profile description has changed.
-        if (profileDetails.description !== profile.description) {
-            await api.requestProfileEdit(profileDetails.id, profile);
-            setPendingEditRequest(true);
-        } else {
-            await api.updateProfile(profileDetails.id, profile);
-        }
+            if (profileDetails.description !== profile.description) {
+                await api.requestProfileEdit(profileDetails.id, profile);
+                setPendingEditRequest(true);
+            } else {
+                await api.updateProfile(profileDetails.id, profile);
+            }
 
-        closeBackdropCB();
-        setGoBackToProfileEditable(true);
+            setOpenBackdrop(false);
+            setGoBackToProfileEditable(true);
+            setOpenBackdrop(true);
+            setGoBackToProfileEditable(true);
 
             // 2. All good? Tell the user.
             promptSuccessToastWithText('Your profile update was successful');
         } catch (err) {
-            closeBackdropCB();
+            setOpenBackdrop(false);
             promptErrToastWithText('Something went wrong');
             console.log(err);
         }
@@ -204,7 +206,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                         {!pendingEditRequest && isProvisioned ? (
                             //@ts-ignore
                             <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
-                            ) : (
+                        ) : (
                                 <>
                                     {/* @ts-ignore */}
                                     <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>

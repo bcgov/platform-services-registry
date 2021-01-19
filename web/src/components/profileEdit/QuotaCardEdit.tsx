@@ -19,6 +19,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Text } from 'rebass';
 import { PROFILE_EDIT_VIEW_NAMES, QUOTA_SIZES, ROUTE_PATHS } from '../../constants';
+import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import theme from '../../theme';
 import { CNQuotaOptions, QuotaSizeSet } from '../../types';
@@ -33,16 +34,15 @@ interface IQuotaCardEditProps {
     profileId?: string;
     quotaOptions: any[];
     cnQuotaOptionsJson: CNQuotaOptions[];
-    openBackdropCB: () => void;
-    closeBackdropCB: () => void;
     handleQuotaSubmitRefresh: any;
     isProvisioned: boolean;
 }
 
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     const api = useRegistryApi();
+    const { setOpenBackdrop } = useCommonState();
 
-    const { licensePlate, quotaSize, profileId, quotaOptions, cnQuotaOptionsJson, openBackdropCB, closeBackdropCB, handleQuotaSubmitRefresh, isProvisioned } = props;
+    const { licensePlate, quotaSize, profileId, quotaOptions, cnQuotaOptionsJson, handleQuotaSubmitRefresh, isProvisioned } = props;
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
     const [selectedSize, setSelectedSize] = useState('');
@@ -54,7 +54,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     };
 
     const handleSubmit = async () => {
-        openBackdropCB();
+        setOpenBackdrop(true);
         try {
             if (!profileId || !quotaSize) {
                 throw new Error(`'Unable to get profile id'`);
@@ -67,14 +67,14 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             // 2. Trigger quota request call
             await api.requestCNQuotasByProfileId(profileId, requestBody);
 
-            closeBackdropCB();
+            setOpenBackdrop(false);
             handleQuotaSubmitRefresh();
             setGoBackToProfileEditable(true);
 
             // 3.All good? Tell the user.
             promptSuccessToastWithText('Your quota request was successful');
         } catch (err) {
-            closeBackdropCB();
+            setOpenBackdrop(false);
             promptErrToastWithText('Something went wrong');
             console.log(err);
         }
