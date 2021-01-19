@@ -166,6 +166,9 @@ export const fulfillNamespaceEdit = async (profileId: number, requestType: Reque
           context[contact] = requestEditObject[contact];
           });
           break;
+        case RequestEditType.Description:
+          context[requestType] = requestEditObject;
+          break;
         default:
           const errmsg = `Invalid edit type for request ${requestType}`;
           throw new Error(errmsg);

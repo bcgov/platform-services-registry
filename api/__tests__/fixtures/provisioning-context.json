@@ -1,6 +1,7 @@
 {
   "profileId": 118,
   "displayName": "Project X",
+  "description": "This is a sample description",
   "namespaces": [
     {
       "namespaceId": 149,

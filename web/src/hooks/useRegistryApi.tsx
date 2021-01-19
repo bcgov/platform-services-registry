@@ -79,6 +79,14 @@ export default function useRegistryApi() {
     }
   };
 
+  const requestProfileEdit = async (profileId: string, profile: any): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/profile-edit`, profile);
+    }
+  };
+
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -172,6 +180,7 @@ export default function useRegistryApi() {
     getProfile,
     createProfile,
     updateProfile,
+    requestProfileEdit,
     createContact,
     requestContactEdit,
     linkContactToProfileById,
