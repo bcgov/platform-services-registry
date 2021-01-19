@@ -354,12 +354,12 @@ export const requestProfileEdit = async (
       editObject: JSON.stringify(profile),
       natsSubject,
       natsContext: JSON.stringify(natsContext),
-    })
+    });
 
     res.status(204).end();
 
   } catch (err) {
-    const message = `Unable to update contact`;
+    const message = `Unable to update profile`;
     logger.error(`${message}, err = ${err.message}`);
     throw errorWithCode(message, 500);
   }
