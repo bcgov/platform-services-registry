@@ -19,4 +19,4 @@ import CommonStateContext from '../contexts/commonStateContext';
 
 export default function useCommonState() {
     return useContext(CommonStateContext);
-};
+}
