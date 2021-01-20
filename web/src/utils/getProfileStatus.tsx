@@ -14,13 +14,13 @@
 // limitations under the License.
 //
 
-
 export default function getProfileStatus() {
-    const getPendingEditRequest = async (api: any, profileId: string): Promise<any> => {
+    const hasPendingEditRequest = async (api: any, profileId: string): Promise<any> => {
         const editRequest = await api.getEditRequestStatus(profileId);
         return !(editRequest.data.length === 0);
-    }
+    };
+
     return {
-        getPendingEditRequest
-    }
-};
+        hasPendingEditRequest,
+    };
+}
