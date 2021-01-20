@@ -40,7 +40,7 @@ const txtForQuotaEdit = `All quota increase requests require Platform Services T
 
 const ProfileEdit: React.FC = (props: any) => {
     // @ts-ignore
-    const { match: { params: { profileId, viewName } }, } = props;
+    const { match: { params: { profileId, viewName } } } = props;
 
     const api = useRegistryApi();
     const { keycloak } = useKeycloak();

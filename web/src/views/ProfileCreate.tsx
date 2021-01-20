@@ -37,8 +37,8 @@ const ProfileCreate: React.FC = () => {
     const api = useRegistryApi();
     const { keycloak } = useKeycloak();
     const { setOpenBackdrop } = useCommonState();
-    const [ministry, setMinistry] = useState<any>([]);
 
+    const [ministry, setMinistry] = useState<any>([]);
     const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
     const onSubmit = async (formData: any) => {
