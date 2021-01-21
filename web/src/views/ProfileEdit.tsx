@@ -98,8 +98,8 @@ const ProfileEdit: React.FC = (props: any) => {
         // @ts-ignore
         const quotaOptions = getCurrentQuotaOptions(cnQuotaOptions.data, quotaSize);
 
-        setProfileState((profileState: any) => ({
-            ...profileState,
+        setProfileState((profileState0: any) => ({
+            ...profileState0,
             baseData: {
                 namespacesJson: namespaces.data,
                 ministryJson: ministry.data,
@@ -180,8 +180,8 @@ const ProfileEdit: React.FC = (props: any) => {
                     <Text as="h1">
                         {profileState.projectDetails.name}
                     </Text>
-                    {(cards.length > 0) && cards.map((c: any) => (
-                        <Box>
+                    {(cards.length > 0) && cards.map((c: any, index: number) => (
+                        <Box key={index}>
                             <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
                                     {c.title}

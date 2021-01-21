@@ -64,7 +64,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             // 1. Prepare quota edit request body.
             const requestBody = composeRequestBodyForQuotaEdit(selectedSize, cnQuotaOptionsJson);
 
-            // 2. Request the profile contact edit.
+            // 2. Request the profile quota edit.
             await api.requestCNQuotasByProfileId(profileId, requestBody);
 
             // 3. All good? Redirect back to overview and tell the user.

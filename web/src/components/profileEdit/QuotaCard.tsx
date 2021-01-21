@@ -38,8 +38,8 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
 
     return (
         <Flex flexWrap='wrap'>
-            {namespaceTexts.map((namespaceText: string[], index: number) =>
-                <Aux key={index}>
+            {namespaceTexts.map((namespaceText: string[], index0: number) =>
+                <Aux key={index0}>
                     <Box width={1 / 2} px={2} mt={3}>
                         <Text as="h3">{namespaceText[0]} Namespace</Text>
                         <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
@@ -47,8 +47,8 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                         </Text>
                     </Box>
                     <Box width={1 / 2} px={2} mt={3}>
-                        {specTexts.map((specText: string, index: number) =>
-                            <Text key={index} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                        {specTexts.map((specText: string, index1: number) =>
+                            <Text key={index1} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                                 {specText}: {quotaSize}
                             </Text>
                         )}
