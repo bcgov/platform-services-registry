@@ -20,89 +20,114 @@ import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import Icon from '../components/common/UI/Icon';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
-import ContactCard from '../components/profileEdit/ContactCard';
+import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
-import ProjectCard from '../components/profileEdit/ProjectCard';
+import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCard';
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
-import QuotaCard from '../components/profileEdit/QuotaCard';
+import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
 import { PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
-import { CNQuotaOptions, Namespace, QuotaSizeSet } from '../types';
+import { CNQuotaOptions, Namespace } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getCurrentQuotaOptions, getCurrentQuotaSize, getLicensePlate, getProfileContacts, getProfileMinistry, isProfileProvisioned } from '../utils/transformDataHelper';
 
 const txtForQuotaEdit = `All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).`;
+const { hasPendingEditRequest } = getProfileStatus();
+
+export interface BaseData {
+    namespacesJson: Namespace[];
+    ministryJson: any[];
+    cnQuotaOptionsJson: CNQuotaOptions[];
+}
+
+interface IProfileState {
+    baseData: BaseData;
+    isProvisioned: boolean;
+    hasPendingEdit: boolean;
+    projectDetails: ProjectDetails;
+    contactDetails: ContactDetails;
+    quotaDetails: QuotaDetails;
+}
 
 const ProfileEdit: React.FC = (props: any) => {
-    // @ts-ignore
     const { match: { params: { profileId, viewName } } } = props;
 
     const api = useRegistryApi();
     const { keycloak } = useKeycloak();
     const { setOpenBackdrop } = useCommonState();
-    const profileStatus = getProfileStatus();
+
+    const [profileState, setProfileState] = useState<IProfileState>({
+        baseData: {
+            namespacesJson: [],
+            ministryJson: [],
+            cnQuotaOptionsJson: [],
+        },
+        isProvisioned: false,
+        hasPendingEdit: true,
+        projectDetails: {},
+        contactDetails: {},
+        quotaDetails: {},
+    });
 
     const [initialRender, setInitialRender] = useState(true);
     const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
-    const [profileJson, setProfileJson] = useState<any>({});
-    const [contactJson, setContactJson] = useState<any>({});
-    const [ministry, setMinistry] = useState<any>([]);
-    const [provisionedStatus, setProvisionedStatus] = useState<any>();
+    const [submitRefresh, setSubmitRefresh] = useState<any>(0);
 
-    const [isProvisioned, setIsProvisioned] = useState<boolean>(false);
-    const [namespacesJson, setNamespacesJson] = useState<Namespace[]>([]);
-    const [quotaSize, setQuotaSize] = useState<QuotaSizeSet | ''>('');
-    const [licensePlate, setLicensePlate] = useState<string>('');
-    const [cnQuotaOptionsJson, setCnQuotaOptionsJson] = useState<CNQuotaOptions[]>([]);
-    const [quotaOptions, setQuotaOptions] = useState<QuotaSizeSet[]>([]);
-    const [quotaSubmitRefresh, setQuotaSubmitRefresh] = useState<any>(0);
-
-    const [pendingEditRequest, setPendingEditRequest] = useState(true);
-
-    const handleQuotaSubmitRefresh = () => {
-        setQuotaSubmitRefresh(quotaSubmitRefresh + 1);
+    const handleSubmitRefresh = () => {
+        setSubmitRefresh(submitRefresh + 1);
     };
+
+    async function updateProfileState() {
+        const namespaces = await api.getNamespacesByProfileId(profileId);
+        const ministry = await api.getMinistry();
+        const cnQuotaOptions = await api.getCNQuotaOptionsByProfileId(profileId);
+        const hasPendingEdit = await hasPendingEditRequest(api, profileId);
+
+        const projectDetails = await api.getProfileByProfileId(profileId);
+        projectDetails.data = { ...projectDetails.data, ...getProfileMinistry(ministry.data, projectDetails.data) };
+
+        const contactDetails = await api.getContactsByProfileId(profileId);
+        contactDetails.data = { ...getProfileContacts(contactDetails.data) };
+
+        const quotaSize = getCurrentQuotaSize(namespaces.data);
+        // @ts-ignore
+        const quotaOptions = getCurrentQuotaOptions(cnQuotaOptions.data, quotaSize);
+
+        setProfileState((profileState: any) => ({
+            ...profileState,
+            baseData: {
+                namespacesJson: namespaces.data,
+                ministryJson: ministry.data,
+                cnQuotaOptionsJson: cnQuotaOptions.data,
+            },
+            hasPendingEdit,
+            isProvisioned: isProfileProvisioned(namespaces.data),
+            projectDetails: projectDetails.data,
+            contactDetails: contactDetails.data,
+            quotaDetails: {
+                licensePlate: getLicensePlate(namespaces.data),
+                quotaSize,
+                quotaOptions,
+            },
+        }));
+    }
 
     useEffect(() => {
         async function wrap() {
             setOpenBackdrop(true);
             try {
-                const profileDetails = await api.getProfileByProfileId(profileId);
-                const ministryDetails = await api.getMinistry();
-                setMinistry(ministryDetails.data);
-
-                profileDetails.data = { ...profileDetails.data, ...getProfileMinistry(ministryDetails.data, profileDetails.data) };
-                setProfileJson(profileDetails.data);
-
-                const contactDetails = await api.getContactsByProfileId(profileId);
-                contactDetails.data = { ...getProfileContacts(contactDetails.data) };
-                setContactJson(contactDetails.data);
-
-                const namespaces = await api.getNamespacesByProfileId(profileId);
-                const cnQuotaOptions = await api.getCNQuotaOptionsByProfileId(profileId);
-
-
-                setIsProvisioned(isProfileProvisioned(namespaces.data));
-                setNamespacesJson(namespaces.data);
-                setCnQuotaOptionsJson(cnQuotaOptions.data);
-
-                const isProvisioned = isProfileProvisioned(namespaces.data);
-                setProvisionedStatus(isProvisioned);
-
-                const isPendingEditRequest = await profileStatus.getPendingEditRequest(api, profileId)
-                setPendingEditRequest(isPendingEditRequest);
-
+                await updateProfileState();
             } catch (err) {
                 if (err.response && err.response.status && err.response.status === RESPONSE_STATUS_CODE.UNAUTHORIZED) {
                     setUnauthorizedToAccess(true);
                 } else {
-                    // when api returns 500 or queried profile entry does not exist
-                    promptErrToastWithText('Something went wrong');
+                    // when api returns 500 or queried profileState entry does not exist
+                    promptErrToastWithText(err.message);
                 }
             }
             setInitialRender(false);
@@ -110,29 +135,15 @@ const ProfileEdit: React.FC = (props: any) => {
         }
         wrap();
         // eslint-disable-next-line
-    }, [keycloak]);
-
-    useEffect(() => {
-        async function wrap() {
-            if (namespacesJson.length === 0 || cnQuotaOptionsJson.length === 0) { return; }
-            try {
-                // @ts-ignore
-                setLicensePlate(getLicensePlate(namespacesJson));
-                // @ts-ignore
-                setQuotaSize(getCurrentQuotaSize(namespacesJson));
-                // @ts-ignore
-                setQuotaOptions(getCurrentQuotaOptions(cnQuotaOptionsJson, getCurrentQuotaSize(namespacesJson)));
-            } catch (err) {
-                promptErrToastWithText(err.message);
-            }
-        }
-        wrap();
-    }, [namespacesJson, cnQuotaOptionsJson, quotaSubmitRefresh]);
+    }, [keycloak, submitRefresh]);
 
     useInterval(() => {
         async function wrap() {
-            const isPendingEditRequest = await profileStatus.getPendingEditRequest(api, profileId)
-            setPendingEditRequest(isPendingEditRequest);
+            try {
+                await updateProfileState();
+            } catch (err) {
+                return;
+            }
         }
         wrap();
     }, 1000 * 30);
@@ -145,71 +156,55 @@ const ProfileEdit: React.FC = (props: any) => {
         return <Redirect to={ROUTE_PATHS.NOT_FOUND} />;
     }
 
+    const cards = [{
+        title: 'Project Information',
+        href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.PROJECT),
+        component: (<ProjectCard projectDetails={profileState.projectDetails} />),
+    }, {
+        title: 'Contact Information',
+        href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.CONTACT),
+        component: (<ContactCard contactDetails={profileState.contactDetails} />),
+    }, {
+        title: 'Quota Information',
+        href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.QUOTA),
+        component: (<QuotaCard quotaDetails={profileState.quotaDetails} />),
+    }];
+
     if (viewName === PROFILE_EDIT_VIEW_NAMES.OVERVIEW) {
         return (
-            <>
-                <Box sx={{
-                    display: 'grid',
-                    gridGap: 4
-                }}>
-                    <ShadowBox p={5} style={{ position: 'relative' }}>
-                        <Text as="h1">
-                            {profileJson.name}
-                        </Text>
+            <Box sx={{
+                display: 'grid',
+                gridGap: 4
+            }}>
+                <ShadowBox p={5} style={{ position: 'relative' }}>
+                    <Text as="h1">
+                        {profileState.projectDetails.name}
+                    </Text>
+                    {(cards.length > 0) && cards.map((c: any) => (
                         <Box>
                             <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
                                 <Text as="h3" color={theme.colors.contrast} mx={2} >
-                                    Project Information
-                            </Text>
-                                {(pendingEditRequest === false) &&
-                                    <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/project`}>
-                                        <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
-                                    </RouterLink>
-                                }
-                            </Flex>
-                            <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
-                                <ProjectCard title={profileJson.name} textBody={profileJson.description} ministry={profileJson.ministryName} />
-                            </ShadowBox>
-                        </Box>
-                        <Box>
-                            <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
-                                <Text as="h3" color={theme.colors.contrast} mx={2} >
-                                    Contact Information
-                            </Text>
-                                {(pendingEditRequest === false) &&
-                                    <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/contact`}>
-                                        <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
-                                    </RouterLink>
-                                }
-                            </Flex>
-                            <ShadowBox p={3} key={contactJson.id} style={{ position: 'relative' }}>
-                                <ContactCard POName={contactJson.POName} POEmail={contactJson.POEmail} POGithubId={contactJson.POGithubId} TCName={contactJson.TCName} TCEmail={contactJson.TCEmail} TCGithubId={contactJson.TCGithubId} />
-                            </ShadowBox>
-                        </Box>
-                        <Box>
-                            <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
-                                <Text as="h3" color={theme.colors.contrast} mx={2} >
-                                    Quota Information
+                                    {c.title}
                                 </Text>
-                                {(pendingEditRequest === false) &&
-                                    <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/quota`}>
+                                {!profileState.hasPendingEdit && profileState.isProvisioned &&
+                                    <RouterLink className='misc-class-m-dropdown-link' to={c.href}>
                                         <Icon hover color={'contrast'} name={'edit'} width={1.5} height={1.5} />
                                     </RouterLink>
                                 }
                             </Flex>
-                            <ShadowBox p={3} key={profileJson.id} style={{ position: 'relative' }}>
-                                <QuotaCard licensePlate={licensePlate} quotaSize={quotaSize} />
+                            <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
+                                {c.component}
                             </ShadowBox>
                         </Box>
-                    </ShadowBox>
-                </Box>
-            </>
+                    ))}
+                </ShadowBox>
+            </Box >
         );
     } else {
         return (
             <>
                 <Flex p={3} mt={4} bg={theme.colors.bcblue}>
-                    <RouterLink className='misc-class-m-dropdown-link' to={`/profile/${profileId}/overview`}>
+                    <RouterLink className='misc-class-m-dropdown-link' to={ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.OVERVIEW)}>
                         <Icon hover color={'contrast'} name={'goBack'} width={1} height={1} />
                     </RouterLink>
                     <Text as="h3" color={theme.colors.contrast} mx={2} >
@@ -221,31 +216,30 @@ const ProfileEdit: React.FC = (props: any) => {
                         <ShadowBox p="24px" mt="0px" px={["24px", "24px", "70px"]} >
                             {(viewName === PROFILE_EDIT_VIEW_NAMES.PROJECT) &&
                                 <ProjectCardEdit
-                                    profileDetails={profileJson}
-                                    ministry={ministry}
-                                    isProvisioned={provisionedStatus}
-                                    pendingEditRequest={pendingEditRequest}
-                                    setPendingEditRequest={setPendingEditRequest}
+                                    projectDetails={profileState.projectDetails}
+                                    ministry={profileState.baseData.ministryJson}
+                                    handleSubmitRefresh={handleSubmitRefresh}
+                                    isProvisioned={profileState.isProvisioned}
+                                    hasPendingEdit={profileState.hasPendingEdit}
                                 />
                             }
                             {(viewName === PROFILE_EDIT_VIEW_NAMES.CONTACT) &&
                                 <ContactCardEdit
                                     profileId={profileId}
-                                    contactDetails={contactJson}
-                                    pendingEditRequest={pendingEditRequest}
-                                    isProvisioned={provisionedStatus}
-                                    setPendingEditRequest={setPendingEditRequest}
+                                    contactDetails={profileState.contactDetails}
+                                    handleSubmitRefresh={handleSubmitRefresh}
+                                    isProvisioned={profileState.isProvisioned}
+                                    hasPendingEdit={profileState.hasPendingEdit}
                                 />
                             }
                             {(viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA) &&
                                 <QuotaCardEdit
-                                    licensePlate={licensePlate}
-                                    quotaSize={quotaSize}
                                     profileId={profileId}
-                                    quotaOptions={quotaOptions}
-                                    cnQuotaOptionsJson={cnQuotaOptionsJson}
-                                    handleQuotaSubmitRefresh={handleQuotaSubmitRefresh}
-                                    isProvisioned={isProvisioned}
+                                    quotaDetails={profileState.quotaDetails}
+                                    baseData={profileState.baseData}
+                                    handleSubmitRefresh={handleSubmitRefresh}
+                                    isProvisioned={profileState.isProvisioned}
+                                    hasPendingEdit={profileState.hasPendingEdit}
                                 />
                             }
                         </ShadowBox>

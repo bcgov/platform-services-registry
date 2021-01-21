@@ -19,16 +19,26 @@ import { Box, Flex, Text } from 'rebass';
 import theme from '../../theme';
 
 interface IContactCardProps {
+    contactDetails: ContactDetails;
+}
+
+export interface ContactDetails {
+    POId?: string;
+    POFirstName?: string;
+    POLastName?: string;
     POName?: string;
     POEmail?: string;
     POGithubId?: string;
+    TCId?: string;
+    TCFirstName?: string;
+    TCLastName?: string;
     TCName?: string;
     TCEmail?: string;
     TCGithubId?: string;
-};
+}
 
 const ContactCard: React.FC<IContactCardProps> = (props) => {
-    const { POName = '', POEmail = '', POGithubId = '', TCName = '', TCEmail = '', TCGithubId = '' } = props;
+    const { contactDetails: { POName = '', POEmail = '', POGithubId = '', TCName = '', TCEmail = '', TCGithubId = '' } } = props;
 
     return (
         <Flex flexWrap='wrap'>

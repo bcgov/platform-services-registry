@@ -166,10 +166,10 @@ export function transformJsonToCsv(objArray: any) {
   return str;
 };
 
-export function getProfileMinistry(ministrySet: any[], profileDetails: any): object {
+export function getProfileMinistry(ministrySet: any[], projectDetails: any): object {
   let ministryDetails: any = {};
   ministrySet.forEach((ministry: any) => {
-    if (ministry.id === profileDetails.busOrgId) {
+    if (ministry.id === projectDetails.busOrgId) {
       ministryDetails.ministryName = ministry.name;
     }
   });

@@ -16,23 +16,30 @@
 
 import React from 'react';
 import { Box, Flex, Text } from 'rebass';
+import Aux from '../../hoc/auxillary';
 import theme from '../../theme';
+import { QuotaSizeSet } from '../../types';
 
 interface IQuotaCardProps {
-    licensePlate: string;
-    quotaSize: string
-};
+    quotaDetails: QuotaDetails;
+}
+
+export interface QuotaDetails {
+    licensePlate?: string;
+    quotaSize?: string;
+    quotaOptions?: QuotaSizeSet[];
+}
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
-    const { licensePlate, quotaSize } = props;
+    const { quotaDetails: { licensePlate = '', quotaSize = '' } } = props;
 
     const namespaceTexts = [['Production', 'prod'], ['Test', 'test'], ['Development', 'dev'], ['Tools', 'tools']];
     const specTexts = ['CPU', 'Memory', 'Storage'];
 
     return (
         <Flex flexWrap='wrap'>
-            {namespaceTexts.map((namespaceText: string[]) =>
-                <>
+            {namespaceTexts.map((namespaceText: string[], index: number) =>
+                <Aux key={index}>
                     <Box width={1 / 2} px={2} mt={3}>
                         <Text as="h3">{namespaceText[0]} Namespace</Text>
                         <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
@@ -40,13 +47,13 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                         </Text>
                     </Box>
                     <Box width={1 / 2} px={2} mt={3}>
-                        {specTexts.map((specText: string) =>
-                            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                        {specTexts.map((specText: string, index: number) =>
+                            <Text key={index} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
                                 {specText}: {quotaSize}
                             </Text>
                         )}
                     </Box>
-                </>
+                </Aux>
             )}
         </Flex>
     );

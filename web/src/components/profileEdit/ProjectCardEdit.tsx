@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
 import { Input, Label, Textarea } from '@rebass/forms';
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
@@ -26,13 +27,16 @@ import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/
 import { transformForm } from '../../utils/transformDataHelper';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
+import { ProjectDetails } from './ProjectCard';
+
+const validator = getValidator();
 
 interface IProjectCardEditProps {
-    profileDetails: any;
+    projectDetails: ProjectDetails;
     ministry: Array<MinistryItem>;
+    handleSubmitRefresh: any;
     isProvisioned?: boolean;
-    pendingEditRequest: boolean;
-    setPendingEditRequest: any;
+    hasPendingEdit?: boolean;
 }
 
 interface MinistryItem {
@@ -41,88 +45,144 @@ interface MinistryItem {
 }
 
 const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
+    const { projectDetails, ministry, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
+
     const api = useRegistryApi();
-    const validator = getValidator();
-    const { profileDetails, ministry, isProvisioned, pendingEditRequest, setPendingEditRequest } = props;
     const { setOpenBackdrop } = useCommonState();
 
-    const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
+    const [goBackToProfileEdit, setGoBackToProfileEditable] = useState<boolean>(false);
 
     const onSubmit = async (formData: any) => {
-        const { profile } = transformForm(formData);
+        if (!projectDetails.id) {
+            throw new Error('Unable to get profile id');
+        }
+
         setOpenBackdrop(true);
         try {
-            // 1. Check if the project profile description has changed.
-            if (profileDetails.description !== profile.description) {
-                await api.requestProfileEdit(profileDetails.id, profile);
-                setPendingEditRequest(true);
-            } else {
-                await api.updateProfile(profileDetails.id, profile);
-            }
+            // 1. Prepare project edit request body.
+            const { profile } = transformForm(formData);
 
-            setOpenBackdrop(false);
-            setGoBackToProfileEditable(true);
-            setOpenBackdrop(true);
-            setGoBackToProfileEditable(true);
+            // 2. Request the profile project edit.
+            await api.updateProfile(projectDetails.id, profile);
 
-            // 2. All good? Tell the user.
+            // 3. All good? Redirect back to overview and tell the user.
+            setGoBackToProfileEditable(true);
+            handleSubmitRefresh();
             promptSuccessToastWithText('Your profile update was successful');
         } catch (err) {
-            setOpenBackdrop(false);
-            promptErrToastWithText('Something went wrong');
+            promptErrToastWithText(err.message);
             console.log(err);
         }
+        setOpenBackdrop(false);
     };
-    if (goBackToProfileEditable && profileDetails.id) {
+
+    if (goBackToProfileEdit && projectDetails.id) {
         return (<Redirect to={
-            ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileDetails.id).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.OVERVIEW)
+            ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', projectDetails.id).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.OVERVIEW)
         } />);
     }
 
     return (
-        <>
-            <Form
-                onSubmit={onSubmit}
-                validate={values => {
-                    const errors = {};
-                    return errors;
-                }}
-            >
-                {props => (
-                    <form onSubmit={props.handleSubmit} >
-                        <FormTitle>Tell us about your project</FormTitle>
-                        <Field name="project-name" validate={validator.mustBeValidProfileName} defaultValue={''} initialValue={profileDetails.name} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="project-name">Name</Label>
-                                    <Input mt="8px" {...input} id="project-name" placeholder="Project X" disabled />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="project-description" validate={validator.mustBeValidProfileDescription} defaultValue={''} initialValue={profileDetails.description} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="project-description">Description</Label>
-                                    <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Flex pb="20px">
-                            <Label m="0" variant="adjacentLabel">Is this a Priority Application?</Label>
+        <Form
+            onSubmit={onSubmit}
+            validate={values => {
+                const errors = {};
+                return errors;
+            }}
+        >
+            {props => (
+                <form onSubmit={props.handleSubmit} >
+                    <FormTitle>Tell us about your project</FormTitle>
+                    <Field name="project-name" validate={validator.mustBeValidProfileName} defaultValue={''} initialValue={projectDetails.name} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="project-name">Name</Label>
+                                <Input mt="8px" {...input} id="project-name" placeholder="Project X" disabled />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="project-description" validate={validator.mustBeValidProfileDescription} defaultValue={''} initialValue={projectDetails.description} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="project-description">Description</Label>
+                                <Textarea mt="8px" {...input} id="project-description" placeholder="A cutting edge web platform that enables Citizens to ..." rows={5} />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Flex pb="20px">
+                        <Label m="0" variant="adjacentLabel">Is this a Priority Application?</Label>
+                        <Flex flex="1 1 auto" justifyContent="flex-end">
+                            <Label m="0" width="initial" px="8px">
+                                <Field
+                                    name="project-prioritySystem"
+                                    component="input"
+                                    type="checkbox"
+                                    defaultValue={''}
+                                    initialValue={projectDetails.prioritySystem}
+                                >
+                                    {({ input }) => (
+                                        <input
+                                            style={{ width: '35px', height: '35px' }}
+                                            name={input.name}
+                                            type="checkbox"
+                                            value="yes"
+                                            checked={input.checked}
+                                            onChange={input.onChange}
+                                        />
+                                    )}
+                                </Field>
+                            </Label>
+                        </Flex>
+                    </Flex>
+                    <Flex pb="20px">
+                        <Label variant="adjacentLabel">Ministry Sponsor</Label>
+                        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+                            {/* using a className prop as react final form Field does
+                    not seem to expose any API to modify CSS */}
+                            <Field
+                                name="project-busOrgId"
+                                component="select"
+                                className="misc-class-m-dropdown-select"
+                                defaultValue={projectDetails.busOrgId}
+                            >
+                                {/* {({ input, meta }) => ( */}
+                                <option
+                                    key={projectDetails.busOrgId}
+                                    value={projectDetails.busOrgId}
+                                >
+                                    {projectDetails.ministryName}
+                                </option>
+                                {(ministry.length > 0) && ministry.map((s: any) => (
+                                    <option
+                                        key={s.id}
+                                        value={s.id}
+                                    >
+                                        {s.name}
+                                    </option>
+                                ))}
+                                {/* )} */}
+                            </Field>
+                        </Flex>
+                    </Flex>
+                    <Label variant="adjacentLabel">Please indicate what services you expect to utilize as part of your project?</Label>
+                    {COMPONENT_METADATA.map(item => (
+                        <Flex key={item.inputValue}>
+                            <Label variant="adjacentLabel">{item.displayName}</Label>
                             <Flex flex="1 1 auto" justifyContent="flex-end">
-                                <Label m="0" width="initial" px="8px">
+                                <Label width="initial" px="8px">
                                     <Field
-                                        name="project-prioritySystem"
+                                        name={`project-${item.inputValue}`}
                                         component="input"
                                         type="checkbox"
                                         defaultValue={''}
-                                        initialValue={profileDetails.prioritySystem}
+                                        // @ts-ignore
+                                        initialValue={projectDetails[item.inputValue]}
                                     >
                                         {({ input }) => (
                                             <input
-                                                style={{ width: '35px', height: '35px' }}
+                                                style={{ width: "35px", height: "35px" }}
                                                 name={input.name}
                                                 type="checkbox"
                                                 value="yes"
@@ -134,90 +194,32 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                                 </Label>
                             </Flex>
                         </Flex>
-                        <Flex pb="20px">
-                            <Label variant="adjacentLabel">Ministry Sponsor</Label>
-                            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
-                                {/* using a className prop as react final form Field does
-                    not seem to expose any API to modify CSS */}
-                                <Field
-                                    name="project-busOrgId"
-                                    component="select"
-                                    className="misc-class-m-dropdown-select"
-                                    defaultValue={profileDetails.busOrgId}
-                                >
-                                    {/* {({ input, meta }) => ( */}
-                                    <option
-                                        key={profileDetails.busOrgId}
-                                        value={profileDetails.busOrgId}
-                                    >
-                                        {profileDetails.ministryName}
-                                    </option>
-                                    {(ministry.length > 0) && ministry.map((s: any) => (
-                                        <option
-                                            key={s.id}
-                                            value={s.id}
-                                        >
-                                            {s.name}
-                                        </option>
-                                    ))}
-                                    {/* )} */}
-                                </Field>
-                            </Flex>
-                        </Flex>
-                        <Label variant="adjacentLabel">Please indicate what services you expect to utilize as part of your project?</Label>
-                        {COMPONENT_METADATA.map(item => (
-                            <Flex key={item.inputValue}>
-                                <Label variant="adjacentLabel">{item.displayName}</Label>
+                    ))}
+                    <Field name="project-other" validate={validator.mustBeValidComponentOthers} defaultValue={''} initialValue={projectDetails.other}>
+                        {({ input, meta }) => (
+                            <Flex pb="25px" style={{ position: "relative" }}>
+                                <Label htmlFor="project-other">Other:</Label>
                                 <Flex flex="1 1 auto" justifyContent="flex-end">
-                                    <Label width="initial" px="8px">
-                                        <Field
-                                            name={`project-${item.inputValue}`}
-                                            component="input"
-                                            type="checkbox"
-                                            defaultValue={''}
-                                            initialValue={profileDetails[item.inputValue]}
-                                        >
-                                            {({ input }) => (
-                                                <input
-                                                    style={{ width: "35px", height: "35px" }}
-                                                    name={input.name}
-                                                    type="checkbox"
-                                                    value="yes"
-                                                    checked={input.checked}
-                                                    onChange={input.onChange}
-                                                />
-                                            )}
-                                        </Field>
-                                    </Label>
+                                    <Input {...input} id="project-other" />
                                 </Flex>
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel" >{meta.error}</Label>}
                             </Flex>
-                        ))}
-                        <Field name="project-other" validate={validator.mustBeValidComponentOthers} defaultValue={''} initialValue={profileDetails.other}>
-                            {({ input, meta }) => (
-                                <Flex pb="25px" style={{ position: "relative" }}>
-                                    <Label htmlFor="project-other">Other:</Label>
-                                    <Flex flex="1 1 auto" justifyContent="flex-end">
-                                        <Input {...input} id="project-other" />
-                                    </Flex>
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel" >{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        {!pendingEditRequest && isProvisioned ? (
-                            //@ts-ignore
-                            <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
-                        ) : (
-                                <>
-                                    {/* @ts-ignore */}
-                                    <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
-                                    <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
-                                </>
-                            )
-                        }
-                    </form>
-                )}
-            </Form>
-        </>
+                        )}
+                    </Field>
+                    {!hasPendingEdit && isProvisioned ? (
+                        //@ts-ignore
+                        <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
+                    ) : (
+                            <>
+                                {/* @ts-ignore */}
+                                <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
+                                <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request </Label>
+                            </>
+                        )
+                    }
+                </form>
+            )}
+        </Form>
     );
 };
 

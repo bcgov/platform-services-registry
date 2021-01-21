@@ -19,13 +19,21 @@ import { Box, Flex, Text } from 'rebass';
 import theme from '../../theme';
 
 interface IProjectCardProps {
-    title?: string;
-    textBody?: string
-    ministry?: string;
-};
+    projectDetails: ProjectDetails;
+}
+
+export interface ProjectDetails {
+    id?: string;
+    name?: string;
+    description?: string;
+    prioritySystem?: string;
+    busOrgId?: string;
+    ministryName?: string;
+    other?: string;
+}
 
 const ProjectCard: React.FC<IProjectCardProps> = (props) => {
-    const { title = '', textBody = '', ministry = '', } = props;
+    const { projectDetails: { name = '', description = '', ministryName = '' } } = props;
 
     return (
         <Flex flexWrap='wrap'>
@@ -39,7 +47,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
                 <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {title}
+                    {name}
                 </Text>
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
@@ -52,7 +60,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
                 <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {textBody}
+                    {description}
                 </Text>
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
@@ -65,7 +73,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
                 <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {ministry}
+                    {ministryName}
                 </Text>
             </Box>
 
