@@ -18,6 +18,15 @@ Project Details
 - Product Owner: POName (POEmail)
 - Technical Contact: TCName (TCEmail)
 
+Namespace Details
+- Cluster: Silver
+- Dev: devLicensePlate
+- Test: testLicensePlate
+- Prod: prodLicensePlate
+- Tools: toolsLicensePlate
+
+Do not forget to check the OCP 4 Migration Guide(https://github.com/BCDevOps/OpenShift4-Migration) and it’s Q&A section and connect with other teams working on the OCP 4 Platform in RocketChat’s #devops-ocp4-migration (https://chat.developer.gov.bc.ca/channel/devops-ocp4-migration) channel. Welcome to OCP 4 Platform!
+
 Thanks Again,
 
 The Registry 🤖
