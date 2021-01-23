@@ -63,7 +63,11 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
             const { profile } = transformForm(formData);
 
             // 2. Request the profile project edit.
-            await api.updateProfile(projectDetails.id, profile);
+            if (projectDetails.description !== profile.description) {
+                await api.requestProfileEdit(projectDetails.id, profile);
+            } else {
+                await api.updateProfile(projectDetails.id, profile);
+            }
 
             // 3. All good? Redirect back to overview and tell the user.
             setGoBackToProfileEditable(true);
