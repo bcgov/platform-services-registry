@@ -17,7 +17,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
-import { LAYOUT_SET_AUTH, ROUTE_PATHS } from '../constants';
+import { ROUTE_PATHS } from '../constants';
 
 interface IPrivateRouteProps extends RouteProps {
   component: React.ComponentType<any>;
@@ -45,14 +45,14 @@ const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
         }
         if (!!keycloak.authenticated) {
           return (
-            <Layout name={LAYOUT_SET_AUTH} {...rest}>
+            <Layout {...rest}>
               <Component {...props} {...rest.componentProps} />
             </Layout>
           );
         } else {
-          if (props.location.pathname !== '/public-landing') {
+          if (props.location.pathname !== ROUTE_PATHS.LANDING) {
             const redirectTo = encodeURI(`${location.pathname}${location.search}`);
-            return <Redirect to={`/public-landing?redirect=${redirectTo}`} />;
+            return <Redirect to={`${ROUTE_PATHS.LANDING}?redirect=${redirectTo}`} />;
           }
         }
       }}

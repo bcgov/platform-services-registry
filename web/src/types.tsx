@@ -20,11 +20,6 @@ export type ColorSet
   = 'contrast'
   | 'primary'
 
-export type LayoutSet
-  = 'unauth'
-  | 'auth'
-  | 'min'
-
 export interface MenuItem {
   title: string;
   subTitle: string;

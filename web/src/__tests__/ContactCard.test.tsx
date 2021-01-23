@@ -26,10 +26,12 @@ test('matches the snapshot', () => {
 
   const { container } = render(
     <ContactCard
-      POName={stubPropPOName}
-      POEmail={stubPropPOEmail}
-      TCName={stubPropTCName}
-      TCEmail={stubPropTCEmail}
+      contactDetails={{
+        POName: stubPropPOName,
+        POEmail: stubPropPOEmail,
+        TCName: stubPropTCName,
+        TCEmail: stubPropTCEmail,
+      }}
     />
   );
 

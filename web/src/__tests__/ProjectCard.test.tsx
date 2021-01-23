@@ -25,9 +25,11 @@ test('matches the snapshot', () => {
 
   const { container } = render(
     <ProjectCard
-      title={stubPropTitle}
-      textBody={stubPropTextBody}
-      ministry={stubPropMinistry}
+      projectDetails={{
+        name: stubPropTitle,
+        description: stubPropTextBody,
+        ministryName: stubPropMinistry,
+      }}
     />
   );
 

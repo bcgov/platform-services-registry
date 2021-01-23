@@ -23,28 +23,23 @@ import { Button } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ProfileCard from '../components/dashboard/ProfileCard';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
+import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
 
-interface IDashboardProps {
-  openBackdropCB: () => void;
-  closeBackdropCB: () => void;
-};
-
-const Dashboard: React.FC<IDashboardProps> = (props) => {
-  const { openBackdropCB, closeBackdropCB } = props;
-
+const Dashboard: React.FC = () => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
+  const { setOpenBackdrop } = useCommonState();
 
   const [profile, setProfile] = useState<any>([]);
 
   useEffect(() => {
     async function wrap() {
-      openBackdropCB();
+      setOpenBackdrop(true);
       try {
         // 1. First fetch the list of profiles the user is entitled to see
         const response = await api.getProfile();
@@ -72,7 +67,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
         promptErrToastWithText('Something went wrong');
         console.log(err);
       }
-      closeBackdropCB();
+      setOpenBackdrop(false);
     }
     wrap();
     // eslint-disable-next-line
@@ -94,7 +89,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
   }, 1000 * 30);
 
   const downloadCSV = () => {
-    openBackdropCB();
+    setOpenBackdrop(true);
     try {
       const metadataAttributes: Array<string> = [];
       COMPONENT_METADATA.forEach(m => {
@@ -114,7 +109,7 @@ const Dashboard: React.FC<IDashboardProps> = (props) => {
       promptErrToastWithText('Something went wrong');
       console.log(err);
     }
-    closeBackdropCB();
+    setOpenBackdrop(false);
   };
 
   return (

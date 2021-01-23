@@ -20,56 +20,58 @@ import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
+import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { transformForm } from '../../utils/transformDataHelper';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
+import { ContactDetails } from './ContactCard';
+
+const validator = getValidator();
 
 interface IContactCardEditProps {
     profileId?: string;
+    contactDetails: ContactDetails;
+    handleSubmitRefresh: any;
     isProvisioned?: boolean;
-    contactDetails: any;
-    pendingEditRequest: boolean;
-    setPendingEditRequest: any;
-    openBackdropCB: () => void;
-    closeBackdropCB: () => void;
+    hasPendingEdit: boolean;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
-    const { profileId, isProvisioned, contactDetails, pendingEditRequest, setPendingEditRequest, openBackdropCB, closeBackdropCB } = props;
+    const { profileId, contactDetails, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
 
+    const { setOpenBackdrop } = useCommonState();
     const api = useRegistryApi();
-
-    const validator = getValidator();
 
     const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
 
     const onSubmit = async (formData: any) => {
-        const { productOwner, technicalContact } = transformForm(formData);
-        const updatedContacts = { productOwner, technicalContact };
-        openBackdropCB();
-
+        setOpenBackdrop(true);
         try {
             if (!profileId) {
-                throw new Error(`'Unable to get profile id'`);
+                throw new Error('Unable to get profile id');
             }
 
-            // 1. Request the project contact edit.
+            // 1. Prepare contact edit request body.
+            const { productOwner, technicalContact } = transformForm(formData);
+            const updatedContacts = { productOwner, technicalContact };
+
+            // 2. Request the profile contact edit.
             await api.requestContactEdit(profileId, updatedContacts);
 
-            // 2. All good? Redirect back to overview and tell the user.
-            closeBackdropCB();
+            // 3. All good? Redirect back to overview and tell the user.
             setGoBackToProfileEditable(true);
-            setPendingEditRequest(true);
+            handleSubmitRefresh();
             promptSuccessToastWithText('Your profile update was successful');
         } catch (err) {
-            closeBackdropCB();
-            promptErrToastWithText('Something went wrong');
+            promptErrToastWithText(err.message);
             console.log(err);
         }
+        setOpenBackdrop(false);
     };
+
     if (goBackToProfileEditable && profileId) {
         return (<Redirect to={
             ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.OVERVIEW)
@@ -77,115 +79,113 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     }
 
     return (
-        <>
-            <Form
-                onSubmit={onSubmit}
-                validate={values => {
-                    const errors = {};
-                    return errors;
-                }}
-            >
-                {props => (
-                    <form onSubmit={props.handleSubmit} >
-                        <FormTitle>Who is the product owner for this project?</FormTitle>
-                        <Field name="po-id" initialValue={contactDetails.POId} >
-                            {({ input }) => (
-                                <input type="hidden" {...input} id="po-Id" />
-                            )}
-                        </Field>
-                        <Field name="po-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.POFirstName}>
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="po-first-name">First Name</Label>
-                                    <Input mt="8px" {...input} id="po-first-name" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="po-lastName" validate={validator.mustBeValidName} initialValue={contactDetails.POLastName} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="po-last-name">Last Name</Label>
-                                    <Input mt="8px" {...input} id="po-last-name" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="po-email" validate={validator.mustBeValidEmail} initialValue={contactDetails.POEmail} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="po-email">eMail Address</Label>
-                                    <Input mt="8px" {...input} id="po-email" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="po-githubId" validate={validator.mustBeValidGithubName} initialValue={contactDetails.POGithubId} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="po-github-id">GitHub ID</Label>
-                                    <Input mt="8px" {...input} id="po-github-id" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
+        <Form
+            onSubmit={onSubmit}
+            validate={values => {
+                const errors = {};
+                return errors;
+            }}
+        >
+            {props => (
+                <form onSubmit={props.handleSubmit} >
+                    <FormTitle>Who is the product owner for this project?</FormTitle>
+                    <Field name="po-id" initialValue={contactDetails.POId} >
+                        {({ input }) => (
+                            <input type="hidden" {...input} id="po-Id" />
+                        )}
+                    </Field>
+                    <Field name="po-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.POFirstName}>
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="po-first-name">First Name</Label>
+                                <Input mt="8px" {...input} id="po-first-name" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="po-lastName" validate={validator.mustBeValidName} initialValue={contactDetails.POLastName} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="po-last-name">Last Name</Label>
+                                <Input mt="8px" {...input} id="po-last-name" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="po-email" validate={validator.mustBeValidEmail} initialValue={contactDetails.POEmail} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="po-email">eMail Address</Label>
+                                <Input mt="8px" {...input} id="po-email" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="po-githubId" validate={validator.mustBeValidGithubName} initialValue={contactDetails.POGithubId} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="po-github-id">GitHub ID</Label>
+                                <Input mt="8px" {...input} id="po-github-id" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
 
-                        <FormTitle>Who is the technical contact for this project?</FormTitle>
-                        <Field name="tc-id" initialValue={contactDetails.TCId} >
-                            {({ input }) => (
-                                <Input type="hidden" {...input} id="tc-Id" />
-                            )}
-                        </Field>
-                        <Field name="tc-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.TCFirstName} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="tc-first-name">First Name</Label>
-                                    <Input mt="8px" {...input} id="tc-first-name" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="tc-lastName" validate={validator.mustBeValidName} initialValue={contactDetails.TCLastName} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="tc-last-name">Last Name</Label>
-                                    <Input mt="8px" {...input} id="tc-last-name" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="tc-email" validate={validator.mustBeValidEmail} initialValue={contactDetails.TCEmail} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="tc-email">eMail Address</Label>
-                                    <Input mt="8px" {...input} id="tc-email" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        <Field name="tc-githubId" validate={validator.mustBeValidGithubName} initialValue={contactDetails.TCGithubId} >
-                            {({ input, meta }) => (
-                                <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
-                                    <Label m="0" htmlFor="tc-github-id">GitHub ID</Label>
-                                    <Input mt="8px" {...input} id="tc-github-id" />
-                                    {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
-                                </Flex>
-                            )}
-                        </Field>
-                        {!pendingEditRequest && isProvisioned ? (
-                            //@ts-ignore
-                            <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
-                        ) : (
-                                <>
-                                    {/* @ts-ignore */}
-                                    <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
-                                    <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
-                                </>
-                            )}
-                    </form>
-                )}
-            </Form>
-        </>
+                    <FormTitle>Who is the technical contact for this project?</FormTitle>
+                    <Field name="tc-id" initialValue={contactDetails.TCId} >
+                        {({ input }) => (
+                            <Input type="hidden" {...input} id="tc-Id" />
+                        )}
+                    </Field>
+                    <Field name="tc-firstName" validate={validator.mustBeValidName} initialValue={contactDetails.TCFirstName} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="tc-first-name">First Name</Label>
+                                <Input mt="8px" {...input} id="tc-first-name" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="tc-lastName" validate={validator.mustBeValidName} initialValue={contactDetails.TCLastName} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="tc-last-name">Last Name</Label>
+                                <Input mt="8px" {...input} id="tc-last-name" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="tc-email" validate={validator.mustBeValidEmail} initialValue={contactDetails.TCEmail} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="tc-email">eMail Address</Label>
+                                <Input mt="8px" {...input} id="tc-email" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    <Field name="tc-githubId" validate={validator.mustBeValidGithubName} initialValue={contactDetails.TCGithubId} >
+                        {({ input, meta }) => (
+                            <Flex flexDirection="column" pb="25px" style={{ position: "relative" }}>
+                                <Label m="0" htmlFor="tc-github-id">GitHub ID</Label>
+                                <Input mt="8px" {...input} id="tc-github-id" />
+                                {meta.error && meta.touched && <Label as="span" style={{ position: "absolute", bottom: "0" }} variant="errorLabel">{meta.error}</Label>}
+                            </Flex>
+                        )}
+                    </Field>
+                    {!hasPendingEdit && isProvisioned ? (
+                        //@ts-ignore
+                        <StyledFormButton style={{ display: 'block' }} >Request Update</StyledFormButton>
+                    ) : (
+                            <>
+                                {/* @ts-ignore */}
+                                <StyledFormDisabledButton style={{ display: 'block' }}>Request Update</StyledFormDisabledButton>
+                                <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
+                            </>
+                        )}
+                </form>
+            )}
+        </Form>
     );
 };
 

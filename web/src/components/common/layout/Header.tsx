@@ -18,10 +18,10 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Text } from 'rebass';
-import { HOME_PAGE_URL, LAYOUT_SET_AUTH, LAYOUT_SET_MIN, ROUTE_PATHS } from '../../../constants';
+import { HOME_PAGE_URL, ROUTE_PATHS } from '../../../constants';
 import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
-import { LayoutSet, MenuItem } from '../../../types';
+import { MenuItem } from '../../../types';
 import typography from '../../../typography';
 import Authbutton from '../UI/AuthButton';
 import CreateButton from '../UI/CreateButton';
@@ -71,16 +71,14 @@ const StyledText = styled(Text)`
 `;
 
 interface INavProps {
-  name: LayoutSet;
+  isAuthenticated: boolean;
   isDDMobileOpen: boolean;
   handleDDMobile: (e: any) => void;
   dirs: Array<MenuItem>;
 }
 
 const Nav: React.FC<INavProps> = props => {
-  const { name, handleDDMobile, isDDMobileOpen, dirs } = props;
-
-  const isAuthenticated = (name === LAYOUT_SET_AUTH);
+  const { isAuthenticated, handleDDMobile, isDDMobileOpen, dirs } = props;
 
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
@@ -88,31 +86,27 @@ const Nav: React.FC<INavProps> = props => {
     setIsComponentVisible(!isComponentVisible);
   };
 
-  if (name === LAYOUT_SET_MIN) {
-    return null;
-  } else {
-    return (
-      <StyledNav>
-        <ContainerDesktop>
-          {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
-          <Authbutton />
-          {isAuthenticated && isComponentVisible && (<DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />)}
-        </ContainerDesktop>
-        <ContainerMobile>
-          <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
-            onClick={handleDDMobile} width={1.4} height={1.4} />
-        </ContainerMobile>
-      </StyledNav>
-    )
-  }
+  return (
+    <StyledNav>
+      <ContainerDesktop>
+        {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
+        <Authbutton />
+        {isAuthenticated && isComponentVisible && (<DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />)}
+      </ContainerDesktop>
+      <ContainerMobile>
+        <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
+          onClick={handleDDMobile} width={1.4} height={1.4} />
+      </ContainerMobile>
+    </StyledNav>
+  );
 };
 
 interface IHeaderProps {
-  name: LayoutSet;
+  auth?: boolean;
 }
 
 const Header: React.FC<IHeaderProps> = props => {
-  const { name } = props;
+  const { auth: useAuthHeader } = props;
 
   const [isDDMobileOpen, setIsDDMobileOpen] = useState(false);
 
@@ -124,7 +118,7 @@ const Header: React.FC<IHeaderProps> = props => {
     title: "A new Openshift Project Set",
     subTitle: "Create 4 Project namespaces in Silver cluster",
     href: ROUTE_PATHS.PROFILE_CREATE,
-    onClickCB: () => { }
+    onClickCB: () => { },
   }];
 
   return (
@@ -141,15 +135,14 @@ const Header: React.FC<IHeaderProps> = props => {
           >
             Platform Services Registry
           </StyledText>
-          {/* <H2>Platform Services Registry</H2> */}
         </RouterLink>
-        {(name !== LAYOUT_SET_MIN) && (<Nav name={name} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />)}
+        <Nav isAuthenticated={!!useAuthHeader} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />
       </StyledBanner>
       <ContainerMobile>
         {isDDMobileOpen && (
           <StyledDropdownMobile >
             <Authbutton />
-            {(name === LAYOUT_SET_AUTH) && (<div>
+            {!!useAuthHeader && (<div>
               {dirs.map(
                 (item, index) =>
                   <DropdownMenuItem handleOnClick={handleDDMobile} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
