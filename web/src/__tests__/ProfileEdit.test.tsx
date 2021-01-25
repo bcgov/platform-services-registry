@@ -19,35 +19,31 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
 import ProfileEdit from '../views/ProfileEdit';
-import contacts from './fixtures/profile-contacts.json';
-import ministries from './fixtures/profile-ministry.json';
-import profiles from './fixtures/profiles.json';
+import mockContacts from './fixtures/profile-contacts.json';
+import mockMinistry from './fixtures/profile-ministry.json';
+import mockProfile from './fixtures/profiles.json';
 
 const browserHistory = createBrowserHistory();
 
-const mockProfile = () => profiles[0];
-const mockMinistry = () => ministries[0];
-const mockContacts = () => contacts;
+jest.mock('../hooks/useRegistryApi', () => {
+  return function useRegistryApi() {
+    const getProfileByProfileId = jest.fn().mockResolvedValue({
+      data: [
+        mockProfile,
+      ],
+    });
 
-jest.mock(
-  '../hooks/useRegistryApi',
-  () =>
-    function useRegistryApi() {
-      const getProfileByProfileId = jest.fn().mockResolvedValue({
-        data: [mockProfile],
-      });
+    const getMinistry = jest.fn().mockResolvedValue({
+      data: [mockMinistry],
+    });
 
-      const getMinistry = jest.fn().mockResolvedValue({
-        data: [mockMinistry],
-      });
+    const getContactsByProfileId = jest.fn().mockResolvedValue({
+      data: mockContacts,
+    });
 
-      const getContactsByProfileId = jest.fn().mockResolvedValue({
-        data: mockContacts,
-      });
-
-      return { getProfileByProfileId, getMinistry, getContactsByProfileId };
-    },
-);
+    return { getProfileByProfileId, getMinistry, getContactsByProfileId };
+  }
+});
 
 jest.mock(
   '../utils/transformDataHelper',
@@ -76,13 +72,10 @@ jest.mock(
 );
 
 function renderProfileEdit() {
-  const stubOpenBackdropCB = jest.fn();
-  const stubCloseBackdropCB = jest.fn();
-
   const utils = render(
-    <Router history={browserHistory}>
-      <Route path="/profile/1/overview">
-        <ProfileEdit openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+    <Router history={browserHistory} >
+      <Route path='/profile/1/overview'>
+        <ProfileEdit />
       </Route>
     </Router>,
   );

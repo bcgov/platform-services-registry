@@ -19,129 +19,35 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
 import Dashboard from '../views/Dashboard';
+import mockContacts from './fixtures/profile-contacts.json';
+import mockNamespaces from './fixtures/profile-namespaces.json';
+import mockProfiles from './fixtures/profiles.json';
 
 const browserHistory = createBrowserHistory();
 
-// TODO: use fixtures and make them work with jest mock values
-jest.mock(
-  '../hooks/useRegistryApi',
-  () =>
-    function useRegistryApi() {
-      const getProfile = jest.fn().mockResolvedValue({
-        data: [
-          {
-            id: 1,
-            name: 'Health Gateway',
-            busOrgId: 'CITZ',
-            description: null,
-            prioritySystem: false,
-            criticalSystem: false,
-            createdAt: '2020-04-28T00:00:00.000Z',
-            updatedAt: '2020-04-28T00:00:00.000Z',
-            userId: 4,
-          },
-          {
-            id: 2,
-            name: 'EPIC',
-            busOrgId: 'CITZ',
-            description: 'Hello World',
-            prioritySystem: false,
-            criticalSystem: true,
-            createdAt: '2020-04-28T00:00:00.000Z',
-            updatedAt: '2020-04-28T00:00:00.000Z',
-            userId: 4,
-          },
-        ],
-      });
+jest.mock('../hooks/useRegistryApi', () => {
+  return function useRegistryApi() {
+    const getProfile = jest.fn().mockResolvedValue({
+      data: mockProfiles,
+    });
 
-      const getContactsByProfileId = jest.fn().mockResolvedValue({
-        data: [
-          {
-            id: 233,
-            firstName: 'Jane',
-            lastName: 'Doe',
-            email: 'jane@example.com',
-            githubId: 'jane1100',
-            roleId: 1,
-            archived: false,
-            createdAt: '2020-09-10T18:14:13.436Z',
-            updatedAt: '2020-09-10T18:14:13.436Z',
-          },
-          {
-            id: 234,
-            firstName: 'Jim',
-            lastName: 'Doe',
-            email: 'jim@example.com',
-            githubId: 'jim1100',
-            roleId: 2,
-            archived: false,
-            createdAt: '2020-09-10T18:14:13.436Z',
-            updatedAt: '2020-09-10T18:14:13.436Z',
-          },
-        ],
-      });
+    const getContactsByProfileId = jest.fn().mockResolvedValue({
+      data: mockContacts,
+    });
 
-      const getNamespaceByProfileId = jest.fn().mockResolvedValue({
-        data: [
-          {
-            namespaceId: 149,
-            name: '4ea35c-tools',
-            clusters: [
-              {
-                clusterId: 1,
-                name: 'kam',
-                provisioned: true,
-              },
-            ],
-          },
-          {
-            namespaceId: 151,
-            name: '4ea35c-test',
-            clusters: [
-              {
-                clusterId: 1,
-                name: 'kam',
-                provisioned: true,
-              },
-            ],
-          },
-          {
-            namespaceId: 150,
-            name: '4ea35c-dev',
-            clusters: [
-              {
-                clusterId: 1,
-                name: 'kam',
-                provisioned: true,
-              },
-            ],
-          },
-          {
-            namespaceId: 152,
-            name: '4ea35c-prod',
-            clusters: [
-              {
-                clusterId: 1,
-                name: 'kam',
-                provisioned: true,
-              },
-            ],
-          },
-        ],
-      });
+    const getNamespaceByProfileId = jest.fn().mockResolvedValue({
+      data: mockNamespaces,
+    });
 
-      return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
-    },
-);
+    return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
+  }
+});
 
 function renderDashboard() {
-  const stubOpenBackdropCB = jest.fn();
-  const stubCloseBackdropCB = jest.fn();
-
   const utils = render(
-    <Router history={browserHistory}>
-      <Dashboard openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
-    </Router>,
+    <Router history={browserHistory} >
+      <Dashboard />
+    </Router>
   );
 
   return { ...utils };
