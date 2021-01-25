@@ -51,7 +51,7 @@ export default class ContactModel extends Model {
       values: [
         data.firstName,
         data.lastName,
-        data.email,
+        data.email.toLowerCase(),
         data.githubId.toLowerCase(),
         data.roleId,
       ],
@@ -110,8 +110,8 @@ export default class ContactModel extends Model {
       query.values = [
         aData.firstName,
         aData.lastName,
-        aData.email,
-        aData.githubId,
+        aData.email.toLowerCase(),
+        aData.githubId.toLowerCase(),
         aData.roleId,
       ];
 
