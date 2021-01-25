@@ -21,42 +21,49 @@ import theme from '../../theme';
 import { QuotaSizeSet } from '../../types';
 
 interface IQuotaCardProps {
-    quotaDetails: QuotaDetails;
+  quotaDetails: QuotaDetails;
 }
 
 export interface QuotaDetails {
-    licensePlate?: string;
-    quotaSize?: string;
-    quotaOptions?: QuotaSizeSet[];
+  licensePlate?: string;
+  quotaSize?: string;
+  quotaOptions?: QuotaSizeSet[];
 }
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
-    const { quotaDetails: { licensePlate = '', quotaSize = '' } } = props;
+  const {
+    quotaDetails: { licensePlate = '', quotaSize = '' },
+  } = props;
 
-    const namespaceTexts = [['Production', 'prod'], ['Test', 'test'], ['Development', 'dev'], ['Tools', 'tools']];
-    const specTexts = ['CPU', 'Memory', 'Storage'];
+  const namespaceTexts = [
+    ['Production', 'prod'],
+    ['Test', 'test'],
+    ['Development', 'dev'],
+    ['Tools', 'tools'],
+  ];
+  const specTexts = ['CPU', 'Memory', 'Storage'];
 
-    return (
-        <Flex flexWrap='wrap'>
-            {namespaceTexts.map((namespaceText: string[], index0: number) =>
-                <Aux key={index0}>
-                    <Box width={1 / 2} px={2} mt={3}>
-                        <Text as="h3">{namespaceText[0]} Namespace</Text>
-                        <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                            {`${licensePlate}-${namespaceText[1]} namespace in Silver cluster`}
-                        </Text>
-                    </Box>
-                    <Box width={1 / 2} px={2} mt={3}>
-                        {specTexts.map((specText: string, index1: number) =>
-                            <Text key={index1} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                                {specText}: {quotaSize}
-                            </Text>
-                        )}
-                    </Box>
-                </Aux>
-            )}
-        </Flex>
-    );
+  return (
+    <Flex flexWrap="wrap">
+      {namespaceTexts.map((namespaceText: string[], index0: number) => (
+        <Aux key={index0}>
+          <Box width={1 / 2} px={2} mt={3}>
+            <Text as="h3">{namespaceText[0]} Namespace</Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+              {`${licensePlate}-${namespaceText[1]} namespace in Silver cluster`}
+            </Text>
+          </Box>
+          <Box width={1 / 2} px={2} mt={3}>
+            {specTexts.map((specText: string, index1: number) => (
+              <Text key={index1} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                {specText}: {quotaSize}
+              </Text>
+            ))}
+          </Box>
+        </Aux>
+      ))}
+    </Flex>
+  );
 };
 
 export default QuotaCard;

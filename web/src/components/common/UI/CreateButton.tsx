@@ -35,14 +35,12 @@ const StyledButton = styled.button`
 interface ICreateButtonProps {
   onClick: (e: any) => void;
   children: React.ReactNode;
-};
+}
 
 const CreateButton: React.FC<ICreateButtonProps> = (props) => {
   const { children, ...rest } = props;
 
-  return (
-    <StyledButton {...rest}>{children}</StyledButton>
-  );
+  return <StyledButton {...rest}>{children}</StyledButton>;
 };
 
 export default CreateButton;

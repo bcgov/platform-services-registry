@@ -32,23 +32,22 @@ const StyledDropdownItem = styled.div`
 const DropdownMenuItem: React.FC<IMenuItemProps> = (props) => {
   const { href, title, subTitle, onClickCB, handleOnClick } = props;
 
-  if (!!href) {
+  if (href) {
     return (
-      <RouterLink className='misc-class-m-dropdown-link' to={href}>
+      <RouterLink className="misc-class-m-dropdown-link" to={href}>
         <StyledDropdownItem onClick={handleOnClick}>
           <h3>{title}</h3>
-          <Text mb='12px'>{subTitle}</Text>
+          <Text mb="12px">{subTitle}</Text>
         </StyledDropdownItem>
       </RouterLink>
     );
-  } else {
-    return (
-      <StyledDropdownItem onClick={onClickCB}>
-        <h3>{title}</h3>
-        {subTitle}
-      </StyledDropdownItem>
-    );
   }
+  return (
+    <StyledDropdownItem onClick={onClickCB}>
+      <h3>{title}</h3>
+      {subTitle}
+    </StyledDropdownItem>
+  );
 };
 
 export default DropdownMenuItem;

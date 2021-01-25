@@ -23,7 +23,7 @@ const StyledButton = styled.button`
   height: 60px;
   border-radius: 5px;
   background-color: #036;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 24px;
 `;
 
@@ -33,7 +33,7 @@ const StyledDisabledButton = styled.button`
   height: 60px;
   border-radius: 5px;
   background-color: #d3d3d3;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 24px;
 `;
 
@@ -56,8 +56,8 @@ export const StyledFormDisabledButton: React.FC = (props: any) => {
 };
 
 export interface IButtonProps {
-  children?: React.ReactNode,
-  onClick?: (e: any) => void,
+  children?: React.ReactNode;
+  onClick?: (e: any) => void;
 }
 
 const styles = {
@@ -78,5 +78,5 @@ export const Button: React.SFC<IButtonProps> = (props) => (
 
 Button.defaultProps = {
   children: null,
-  onClick: () => { }
+  onClick: () => {},
 };

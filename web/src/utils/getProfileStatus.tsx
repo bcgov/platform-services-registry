@@ -15,12 +15,12 @@
 //
 
 export default function getProfileStatus() {
-    const hasPendingEditRequest = async (api: any, profileId: string): Promise<any> => {
-        const editRequest = await api.getEditRequestStatus(profileId);
-        return !(editRequest.data.length === 0);
-    };
+  const hasPendingEditRequest = async (api: any, profileId: string): Promise<any> => {
+    const editRequest = await api.getEditRequestStatus(profileId);
+    return !(editRequest.data.length === 0);
+  };
 
-    return {
-        hasPendingEditRequest,
-    };
+  return {
+    hasPendingEditRequest,
+  };
 }

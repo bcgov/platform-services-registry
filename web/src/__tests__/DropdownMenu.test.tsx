@@ -14,32 +14,30 @@
 // limitations under the License.
 //
 
-import { render } from "@testing-library/react";
-import React from "react";
+import { render } from '@testing-library/react';
+import React from 'react';
 import DropdownMenu from '../components/common/UI/DropdownMenu';
 
-jest.mock('../components/common/UI/DropdownMenuItem', () => {
-  return function DummyDropdownMenuItem() {
-    return (
-      <div data-testid='dropdown-menu-item'>
-      </div>
-    );
-  }
-});
+jest.mock(
+  '../components/common/UI/DropdownMenuItem',
+  () =>
+    function DummyDropdownMenuItem() {
+      return <div data-testid="dropdown-menu-item" />;
+    },
+);
 
 test('renders dropdown menu - incoming query', () => {
-  const stubMenuItems = [{
-    title: 'some title',
-    subTitle: 'some sub title',
-    href: "/some-path",
-    onClickCB: () => { }
-  }];
+  const stubMenuItems = [
+    {
+      title: 'some title',
+      subTitle: 'some sub title',
+      href: '/some-path',
+      onClickCB: () => {},
+    },
+  ];
 
   const { queryAllByTestId } = render(
-    <DropdownMenu
-      menuItems={stubMenuItems}
-      handleOnClick={jest.fn()}
-    />
+    <DropdownMenu menuItems={stubMenuItems} handleOnClick={jest.fn()} />,
   );
   const children = queryAllByTestId('dropdown-menu-item');
 

@@ -22,11 +22,7 @@ function renderCreatebutton() {
   const stubPropCB = jest.fn();
   const stubPropButtonText = 'Create';
 
-  const utils = render(
-    <Createbutton onClick={stubPropCB}>
-      {stubPropButtonText}
-    </Createbutton>
-  );
+  const utils = render(<Createbutton onClick={stubPropCB}>{stubPropButtonText}</Createbutton>);
 
   const buttonText = utils.getByText(stubPropButtonText);
   return { ...utils, buttonText, stubPropCB };

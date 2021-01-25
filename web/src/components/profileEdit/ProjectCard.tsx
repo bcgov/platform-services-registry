@@ -19,65 +19,61 @@ import { Box, Flex, Text } from 'rebass';
 import theme from '../../theme';
 
 interface IProjectCardProps {
-    projectDetails: ProjectDetails;
+  projectDetails: ProjectDetails;
 }
 
 export interface ProjectDetails {
-    id?: string;
-    name?: string;
-    description?: string;
-    prioritySystem?: string;
-    busOrgId?: string;
-    ministryName?: string;
-    other?: string;
+  id?: string;
+  name?: string;
+  description?: string;
+  prioritySystem?: string;
+  busOrgId?: string;
+  ministryName?: string;
+  other?: string;
 }
 
 const ProjectCard: React.FC<IProjectCardProps> = (props) => {
-    const { projectDetails: { name = '', description = '', ministryName = '' } } = props;
+  const {
+    projectDetails: { name = '', description = '', ministryName = '' },
+  } = props;
 
-    return (
-        <Flex flexWrap='wrap'>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Project Name
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    This is the public name of the application, please avoid acronyms;
-            </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {name}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Project Description
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    This is a brief description of your project;
-            </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {description}
-                </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Ministry
-            </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    This is the ministry that is responsible for your application;
-            </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {ministryName}
-                </Text>
-            </Box>
+  return (
+    <Flex flexWrap="wrap">
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="h3">Project Name</Text>
+        <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+          This is the public name of the application, please avoid acronyms;
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+          {name}
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="h3">Project Description</Text>
+        <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+          This is a brief description of your project;
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+          {description}
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="h3">Ministry</Text>
+        <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+          This is the ministry that is responsible for your application;
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+          {ministryName}
+        </Text>
+      </Box>
 
-            {/* <Box width={1 / 2} px={2} mt={3}>
+      {/* <Box width={1 / 2} px={2} mt={3}>
                 <Text as="h3">
                     Application Metadata
             </Text>
@@ -90,8 +86,8 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
                     Notification: Email, Payment Processing: Bambora, File Storage;
             </Text>
             </Box> */}
-        </Flex>
-    );
+    </Flex>
+  );
 };
 
 export default ProjectCard;

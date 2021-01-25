@@ -14,18 +14,17 @@
 // limitations under the License.
 //
 
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 
 interface UserProperties {
-    email: string;
-    family_name: string;
-    given_name: string;
-    name: string;
-    preferred_username: string;
+  email: string;
+  family_name: string;
+  given_name: string;
+  name: string;
+  preferred_username: string;
 }
 
 export default function getDecodedToken(token: string) {
-    const decodedJWT = jwt_decode<UserProperties>(token);
-    return decodedJWT;
-};
-
+  const decodedJWT = jwt_decode<UserProperties>(token);
+  return decodedJWT;
+}

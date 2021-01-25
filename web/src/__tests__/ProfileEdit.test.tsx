@@ -29,61 +29,62 @@ const mockProfile = () => profiles[0];
 const mockMinistry = () => ministries[0];
 const mockContacts = () => contacts;
 
-jest.mock('../hooks/useRegistryApi', () => {
-  return function useRegistryApi() {
-    const getProfileByProfileId = jest.fn().mockResolvedValue({
-      data: [
-        mockProfile,
-      ],
-    });
+jest.mock(
+  '../hooks/useRegistryApi',
+  () =>
+    function useRegistryApi() {
+      const getProfileByProfileId = jest.fn().mockResolvedValue({
+        data: [mockProfile],
+      });
 
-    const getMinistry = jest.fn().mockResolvedValue({
-      data: [
-        mockMinistry,
-      ],
-    });
+      const getMinistry = jest.fn().mockResolvedValue({
+        data: [mockMinistry],
+      });
 
-    const getContactsByProfileId = jest.fn().mockResolvedValue({
-      data: mockContacts,
-    });
+      const getContactsByProfileId = jest.fn().mockResolvedValue({
+        data: mockContacts,
+      });
 
-    return { getProfileByProfileId, getMinistry, getContactsByProfileId };
-  }
-});
+      return { getProfileByProfileId, getMinistry, getContactsByProfileId };
+    },
+);
 
-jest.mock('../utils/transformDataHelper', () => {
-  return function getProfileMinistry() {
-    const getProfileMinistry = jest.fn().mockResolvedValue({
-      data: [
-        {
-          'name': 'Citizen\'s Services'
-        }
-      ]
-    });
-    return { getProfileMinistry }
-  };
-});
+jest.mock(
+  '../utils/transformDataHelper',
+  () =>
+    function getProfileMinistry() {
+      const getProfileMinistry = jest.fn().mockResolvedValue({
+        data: [
+          {
+            name: "Citizen's Services",
+          },
+        ],
+      });
+      return { getProfileMinistry };
+    },
+);
 
-jest.mock('../utils/transformDataHelper', () => {
-  return function getProfileContacts() {
-    const getProfileContacts = jest.fn().mockResolvedValue({
-      data: mockContacts,
-    });
-    return { getProfileContacts }
-  }
-});
-
+jest.mock(
+  '../utils/transformDataHelper',
+  () =>
+    function getProfileContacts() {
+      const getProfileContacts = jest.fn().mockResolvedValue({
+        data: mockContacts,
+      });
+      return { getProfileContacts };
+    },
+);
 
 function renderProfileEdit() {
   const stubOpenBackdropCB = jest.fn();
   const stubCloseBackdropCB = jest.fn();
 
   const utils = render(
-    <Router history={browserHistory} >
-      <Route path='/profile/1/overview'>
+    <Router history={browserHistory}>
+      <Route path="/profile/1/overview">
         <ProfileEdit openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
       </Route>
-    </Router>
+    </Router>,
   );
 
   return { ...utils };

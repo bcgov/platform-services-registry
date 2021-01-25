@@ -28,13 +28,9 @@ test('renders dropdown menu item with react route path - incoming query', () => 
   const stubPropSubTitle = 'some sub title';
 
   const { getByText } = render(
-    <Router history={browserHistory} >
-      <DropdownMenuItem
-        href={stubPropHref}
-        title={stubPropTitle}
-        subTitle={stubPropSubTitle}
-      />
-    </Router>
+    <Router history={browserHistory}>
+      <DropdownMenuItem href={stubPropHref} title={stubPropTitle} subTitle={stubPropSubTitle} />
+    </Router>,
   );
   const routeText = getByText(stubPropTitle);
 
@@ -48,13 +44,9 @@ function renderDropdownMenuItem() {
   const stubPropSubTitle = 'some sub title';
 
   const utils = render(
-    <Router history={browserHistory} >
-      <DropdownMenuItem
-        title={stubPropTitle}
-        subTitle={stubPropSubTitle}
-        onClickCB={stubPropCB}
-      />
-    </Router>
+    <Router history={browserHistory}>
+      <DropdownMenuItem title={stubPropTitle} subTitle={stubPropSubTitle} onClickCB={stubPropCB} />
+    </Router>,
   );
 
   const routeText = utils.getByText(stubPropTitle);

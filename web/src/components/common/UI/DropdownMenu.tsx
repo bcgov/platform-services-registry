@@ -27,7 +27,7 @@ const StyledDropdown = styled.div`
   margin-top: 15px;
   margin-right: 15px;
   background-color: ${theme.colors.contrast};
-  zIndex: ${theme.zIndices[2]};
+  zindex: ${theme.zIndices[2]};
 `;
 
 interface IDropdownMenuProps {
@@ -43,10 +43,16 @@ const DropdownMenu: React.FC<IDropdownMenuProps> = React.forwardRef((props, ref)
     // @ts-ignore
     <div ref={ref}>
       <StyledDropdown>
-        {menuItems.map(
-          (item, index) =>
-            <DropdownMenuItem handleOnClick={handleOnClick} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
-        )}
+        {menuItems.map((item, index) => (
+          <DropdownMenuItem
+            handleOnClick={handleOnClick}
+            key={index + item.title}
+            href={item.href}
+            title={item.title}
+            subTitle={item.subTitle}
+            onClickCB={item.onClickCB}
+          />
+        ))}
       </StyledDropdown>
     </div>
   );

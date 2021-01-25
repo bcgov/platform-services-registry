@@ -18,22 +18,22 @@ import styled from '@emotion/styled';
 import theme from '../../../theme';
 
 export const BackdropForPendingItem = styled.div`
-  position:absolute;
+  position: absolute;
   z-index: ${theme.zIndices[0]};
-  top:0px;
-  left:0px;
-  width:100%;
-  height:100%;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
   background-color: white;
   opacity: 0.5;
 `;
 
 export const BackdropForProcessing = styled.div`
-  position:fixed;
+  position: fixed;
   z-index: ${theme.zIndices[2]};
-  top:0px;
-  left:0px;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
 `;

@@ -32,7 +32,7 @@ test('matches the snapshot', () => {
         TCName: stubPropTCName,
         TCEmail: stubPropTCEmail,
       }}
-    />
+    />,
   );
 
   expect(container).toMatchSnapshot();

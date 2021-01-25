@@ -31,110 +31,127 @@ import FormTitle from '../common/UI/FormTitle';
 import { QuotaDetails } from './QuotaCard';
 
 interface IQuotaCardEditProps {
-    profileId?: string;
-    quotaDetails: QuotaDetails;
-    baseData: BaseData;
-    handleSubmitRefresh: any;
-    isProvisioned: boolean;
-    hasPendingEdit: boolean;
+  profileId?: string;
+  quotaDetails: QuotaDetails;
+  baseData: BaseData;
+  handleSubmitRefresh: any;
+  isProvisioned: boolean;
+  hasPendingEdit: boolean;
 }
 
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
-    const { quotaDetails: { licensePlate = '', quotaSize = '', quotaOptions = [] }, baseData: { cnQuotaOptionsJson }, profileId, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
+  const {
+    quotaDetails: { licensePlate = '', quotaSize = '', quotaOptions = [] },
+    baseData: { cnQuotaOptionsJson },
+    profileId,
+    handleSubmitRefresh,
+    isProvisioned,
+    hasPendingEdit,
+  } = props;
 
-    const api = useRegistryApi();
-    const { setOpenBackdrop } = useCommonState();
+  const api = useRegistryApi();
+  const { setOpenBackdrop } = useCommonState();
 
-    const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
-    const [selectedSize, setSelectedSize] = useState<QuotaSizeSet>('small');
+  const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
+  const [selectedSize, setSelectedSize] = useState<QuotaSizeSet>('small');
 
-    const specs = QUOTA_SIZES.filter((size: any) => { return size.name === quotaSize }).pop();
+  const specs = QUOTA_SIZES.filter((size: any) => size.name === quotaSize).pop();
 
-    const handleChange = (event: any) => {
-        setSelectedSize(event.target.value);
-    };
+  const handleChange = (event: any) => {
+    setSelectedSize(event.target.value);
+  };
 
-    const handleSubmit = async () => {
-        setOpenBackdrop(true);
-        try {
-            if (!profileId || !quotaSize) {
-                throw new Error('Unable to get profile id or quota size');
-            }
+  const handleSubmit = async () => {
+    setOpenBackdrop(true);
+    try {
+      if (!profileId || !quotaSize) {
+        throw new Error('Unable to get profile id or quota size');
+      }
 
-            // 1. Prepare quota edit request body.
-            const requestBody = composeRequestBodyForQuotaEdit(selectedSize, cnQuotaOptionsJson);
+      // 1. Prepare quota edit request body.
+      const requestBody = composeRequestBodyForQuotaEdit(selectedSize, cnQuotaOptionsJson);
 
-            // 2. Request the profile quota edit.
-            await api.requestCNQuotasByProfileId(profileId, requestBody);
+      // 2. Request the profile quota edit.
+      await api.requestCNQuotasByProfileId(profileId, requestBody);
 
-            // 3. All good? Redirect back to overview and tell the user.
-            handleSubmitRefresh();
-            setGoBackToProfileEditable(true);
-            promptSuccessToastWithText('Your quota request was successful');
-        } catch (err) {
-            promptErrToastWithText(err.message);
-            console.log(err);
-        }
-        setOpenBackdrop(false);
-    };
-
-    if (goBackToProfileEditable && profileId) {
-        return (<Redirect to={
-            ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(':viewName', PROFILE_EDIT_VIEW_NAMES.OVERVIEW)
-        } />);
+      // 3. All good? Redirect back to overview and tell the user.
+      handleSubmitRefresh();
+      setGoBackToProfileEditable(true);
+      promptSuccessToastWithText('Your quota request was successful');
+    } catch (err) {
+      promptErrToastWithText(err.message);
+      console.log(err);
     }
+    setOpenBackdrop(false);
+  };
 
-    if (!specs) {
-        return null;
-    } else {
-        return (
-            <>
-                <FormTitle>License plates for the openshift namespaces</FormTitle>
-                <Label m="0" htmlFor="project-quotaCpu">{licensePlate}</Label>
-                <br />
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {quotaSize.toUpperCase()} size quota for CPU:
-                    <br />
-                    {specs.cpuNums[0]} cores as request, {specs.cpuNums[1]} cores as limit
-                </Text>
-                <br />
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {quotaSize.toUpperCase()} size quota for RAM:
-                    <br />
-                    {specs.memoryNums[0]}GBs as request, {specs.memoryNums[1]}GBs as limit
-                </Text>
-                <br />
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    {quotaSize.toUpperCase()} size quota for storage: 20 PVC count,
-                    <br />
-                    {specs.storageNums[0]}Gbs overall storage with {specs.storageNums[1]}GBs for backup storage
-                </Text>
-                <br />
-                <select value={selectedSize} onChange={handleChange}>
-                    <option>Select...</option>
-                    {/* @ts-ignore */}
-                    {(quotaOptions.length !== 0) && quotaOptions.map((opt: any) => (
-                        <option
-                            key={opt}
-                            value={opt}
-                        >
-                            {opt}
-                        </option>
-                    ))}
-                </select>
-                {!hasPendingEdit && isProvisioned ? (
-                    //@ts-ignore
-                    <StyledFormButton style={{ display: 'block' }} onClick={handleSubmit}>Request Quota</StyledFormButton>
-                ) : (
-                        <>
-                            {/* @ts-ignore */}
-                            <StyledFormDisabledButton style={{ display: 'block' }}>Request Quota</StyledFormDisabledButton>
-                            <Label as="span" variant="errorLabel" >Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request</Label>
-                        </>
-                    )}
-            </>
-        );
-    }
+  if (goBackToProfileEditable && profileId) {
+    return (
+      <Redirect
+        to={ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
+          ':viewName',
+          PROFILE_EDIT_VIEW_NAMES.OVERVIEW,
+        )}
+      />
+    );
+  }
+
+  if (!specs) {
+    return null;
+  }
+  return (
+    <>
+      <FormTitle>License plates for the openshift namespaces</FormTitle>
+      <Label m="0" htmlFor="project-quotaCpu">
+        {licensePlate}
+      </Label>
+      <br />
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+        {quotaSize.toUpperCase()} size quota for CPU:
+        <br />
+        {specs.cpuNums[0]} cores as request, {specs.cpuNums[1]} cores as limit
+      </Text>
+      <br />
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+        {quotaSize.toUpperCase()} size quota for RAM:
+        <br />
+        {specs.memoryNums[0]}GBs as request, {specs.memoryNums[1]}GBs as limit
+      </Text>
+      <br />
+      <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+        {quotaSize.toUpperCase()} size quota for storage: 20 PVC count,
+        <br />
+        {specs.storageNums[0]}Gbs overall storage with {specs.storageNums[1]}GBs for backup storage
+      </Text>
+      <br />
+      <select value={selectedSize} onChange={handleChange}>
+        <option>Select...</option>
+        {/* @ts-ignore */}
+        {quotaOptions.length !== 0 &&
+          quotaOptions.map((opt: any) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+      </select>
+      {!hasPendingEdit && isProvisioned ? (
+        // @ts-ignore
+        <StyledFormButton style={{ display: 'block' }} onClick={handleSubmit}>
+          Request Quota
+        </StyledFormButton>
+      ) : (
+        <>
+          {/* @ts-ignore */}
+          <StyledFormDisabledButton style={{ display: 'block' }}>
+            Request Quota
+          </StyledFormDisabledButton>
+          <Label as="span" variant="errorLabel">
+            Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+          </Label>
+        </>
+      )}
+    </>
+  );
 };
 
 export default QuotaCardEdit;

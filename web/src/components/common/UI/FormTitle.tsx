@@ -33,9 +33,7 @@ interface ISubFormProps {
 
 const FormTitle: React.FC<ISubFormProps> = (props) => {
   const { children } = props;
-  return (
-    <StyledTitle>{children}</StyledTitle>
-  );
+  return <StyledTitle>{children}</StyledTitle>;
 };
 
 export default FormTitle;

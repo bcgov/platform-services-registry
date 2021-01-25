@@ -21,9 +21,9 @@ import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 
 export interface IButtonProps {
-  children?: React.ReactNode,
-  onClick?: (e: any) => void
-};
+  children?: React.ReactNode;
+  onClick?: (e: any) => void;
+}
 
 const StyledButton = styled.button`
   padding: 8px 16px;
@@ -60,9 +60,7 @@ const Button: React.SFC<IButtonProps> = (props) => {
   const { keycloak } = useKeycloak();
 
   return (
-    <StyledButton
-      onClick={actionForCurrentState(keycloak)}
-    >
+    <StyledButton onClick={actionForCurrentState(keycloak)}>
       {titleForAuthenticationState(keycloak)}
       {props.children}
     </StyledButton>
@@ -71,7 +69,7 @@ const Button: React.SFC<IButtonProps> = (props) => {
 
 Button.defaultProps = {
   children: null,
-  onClick: () => { }
+  onClick: () => {},
 };
 
 export default Button;

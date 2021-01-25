@@ -17,17 +17,20 @@
 import { PROFILE_EDIT_VIEW_NAMES } from '../constants';
 
 export function areQueryParamsForProfileValid(props: any) {
-  const { match: { params: { profileId, viewName } } } = props;
+  const {
+    match: {
+      params: { profileId, viewName },
+    },
+  } = props;
 
   const { OVERVIEW, PROJECT, CONTACT, QUOTA } = PROFILE_EDIT_VIEW_NAMES;
   if (![OVERVIEW, PROJECT, CONTACT, QUOTA].includes(viewName)) {
     return false;
-  } else {
-    try {
-      const id = parseInt(profileId);
-      return id >= 1;
-    } catch (err) {
-      return false;
-    }
   }
-};
+  try {
+    const id = parseInt(profileId);
+    return id >= 1;
+  } catch (err) {
+    return false;
+  }
+}

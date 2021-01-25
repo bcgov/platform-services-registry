@@ -17,13 +17,13 @@
 import React from 'react';
 
 const NewlineText = (props: any) => {
-    const text = props.text;
+  const { text } = props;
 
-    if (!text) {
-        return null;
-    }
+  if (!text) {
+    return null;
+  }
 
-    return text.split('\n\n').map((str: string, index: number) => <p key={index} >{str}</p>);
-}
+  return text.split('\n\n').map((str: string, index: number) => <p key={index}>{str}</p>);
+};
 
 export default NewlineText;

@@ -35,17 +35,28 @@ const AppRouter: React.FC = () => {
   const { initialized } = useKeycloak();
 
   if (!initialized) {
-    return (<BackdropForProcessing />);
+    return <BackdropForProcessing />;
   }
 
   return (
     <Router history={browserHistory}>
       <Switch>
-        <Redirect exact from='/' to={ROUTE_PATHS.LANDING} />
+        <Redirect exact from="/" to={ROUTE_PATHS.LANDING} />
         <AppRoute path={ROUTE_PATHS.LANDING} component={PublicLanding} layout={PublicLayout} />
-        <AppRoute exact path={ROUTE_PATHS.PROFILE_CREATE} component={ProfileCreate} layout={AuthLayout} />
+        <AppRoute
+          exact
+          path={ROUTE_PATHS.PROFILE_CREATE}
+          component={ProfileCreate}
+          layout={AuthLayout}
+        />
         <AppRoute exact path={HOME_PAGE_URL} component={Dashboard} layout={AuthLayout} />
-        <AppRoute exact path={ROUTE_PATHS.PROFILE_EDIT} component={ProfileEdit} layout={AuthLayout} checkQueryParams={areQueryParamsForProfileValid} />
+        <AppRoute
+          exact
+          path={ROUTE_PATHS.PROFILE_EDIT}
+          component={ProfileEdit}
+          layout={AuthLayout}
+          checkQueryParams={areQueryParamsForProfileValid}
+        />
         <AppRoute path={ROUTE_PATHS.NOT_FOUND} component={NotFound} layout={PublicLayout} />
         <Redirect to={ROUTE_PATHS.NOT_FOUND} />
       </Switch>

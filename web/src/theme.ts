@@ -25,16 +25,16 @@ export default {
     primary: '#036',
     contrast: '#fff',
     grey: '#A9A9A9',
-    black: '#000000'
+    black: '#000000',
   },
-  spacingIncrements: ['30px', '60px', "120px"],
+  spacingIncrements: ['30px', '60px', '120px'],
   zIndices: [0, 1, 10, 100, 1000],
   icons: {
     defaultWidth: 1,
-    defaultHeight: 1
+    defaultHeight: 1,
   },
   navBar: {
-    desktopFixedHeight: '65px'
+    desktopFixedHeight: '65px',
   },
   forms: {
     label: {
@@ -69,7 +69,7 @@ export default {
       borderRadius: '5px',
       border: 'solid 1px #036',
       backgroundColor: '#fafafa',
-      color: '#036'
+      color: '#036',
     },
     textarea: {
       borderRadius: '5px',
@@ -84,6 +84,6 @@ export default {
       borderRadius: '5px',
       border: 'solid 1px #036',
       color: '#036',
-    }
-  }
-}
+    },
+  },
+};
