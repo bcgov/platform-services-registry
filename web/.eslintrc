@@ -22,7 +22,7 @@
       }
     ],
     "@typescript-eslint/semi": [
-      "off"
+      "warn"
     ],
     "@typescript-eslint/no-unused-vars": [
       "warn",
@@ -56,22 +56,21 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": [
-          "**/*.test.js",
-          "**/*.test.jsx",
-          "**/*.test.ts",
-          "**/*.test.tsx",
-          "src/tests/**/*"
-        ]
+        "devDependencies": true
       }
     ],
-    "react/jsx-props-no-spreading": "off",
+    "no-param-reassign": "warn",
+    "consistent-return": "warn",
+    "import/no-cycle": "warn",
+    "react/no-array-index-key": "warn",
     "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/jsx-boolean-value": "off",
     "react/prop-types": "off",
     "react/no-unescaped-entities": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-wrap-multilines": "off",
-    "react/destructuring-assignment": "off"
+    "react/destructuring-assignment": "off",
+
   }
 }

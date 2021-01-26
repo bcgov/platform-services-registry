@@ -3,3 +3,4 @@ public/*
 openshift/*  
 src/react-app-env.d.ts  
 src/serviceWorker.ts
+src/setupTests.ts
