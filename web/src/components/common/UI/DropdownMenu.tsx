@@ -15,7 +15,7 @@
 //
 
 import styled from '@emotion/styled';
-import { default as React, MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from 'react';
 import theme from '../../../theme';
 import { MenuItem } from '../../../types';
 import DropdownMenuItem from './DropdownMenuItem';

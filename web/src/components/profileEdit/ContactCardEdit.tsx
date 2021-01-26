@@ -91,8 +91,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(props) => (
-        <form onSubmit={props.handleSubmit}>
+      {(formProps) => (
+        <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
           <Field name="po-id" initialValue={contactDetails.POId}>
             {({ input }) => <input type="hidden" {...input} id="po-Id" />}

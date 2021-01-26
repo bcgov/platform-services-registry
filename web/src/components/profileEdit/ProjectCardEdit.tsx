@@ -99,8 +99,8 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(props) => (
-        <form onSubmit={props.handleSubmit}>
+      {(formProps) => (
+        <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Tell us about your project</FormTitle>
           <Field
             name="project-name"

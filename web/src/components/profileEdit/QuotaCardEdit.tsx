@@ -109,19 +109,25 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {quotaSize.toUpperCase()} size quota for CPU:
         <br />
-        {specs.cpuNums[0]} cores as request, {specs.cpuNums[1]} cores as limit
+        {specs.cpuNums[0]} cores as request,{specs.cpuNums[1]} cores as limit
       </Text>
       <br />
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {quotaSize.toUpperCase()} size quota for RAM:
         <br />
-        {specs.memoryNums[0]}GBs as request, {specs.memoryNums[1]}GBs as limit
+        {specs.memoryNums[0]}
+        GBs as request,
+        {specs.memoryNums[1]}
+        GBs as limit
       </Text>
       <br />
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {quotaSize.toUpperCase()} size quota for storage: 20 PVC count,
         <br />
-        {specs.storageNums[0]}Gbs overall storage with {specs.storageNums[1]}GBs for backup storage
+        {specs.storageNums[0]}
+        Gbs overall storage with
+        {specs.storageNums[1]}
+        GBs for backup storage
       </Text>
       <br />
       <select value={selectedSize} onChange={handleChange}>

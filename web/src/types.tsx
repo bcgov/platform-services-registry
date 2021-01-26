@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { default as React, MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from 'react';
 
 export type ColorSet = 'contrast' | 'primary';
 

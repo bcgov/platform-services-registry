@@ -28,7 +28,7 @@ export function areQueryParamsForProfileValid(props: any) {
     return false;
   }
   try {
-    const id = parseInt(profileId);
+    const id = parseInt(profileId, 10);
     return id >= 1;
   } catch (err) {
     return false;

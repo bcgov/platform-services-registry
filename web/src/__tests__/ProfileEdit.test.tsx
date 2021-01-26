@@ -53,14 +53,14 @@ jest.mock(
   '../utils/transformDataHelper',
   () =>
     function getProfileMinistry() {
-      const getProfileMinistry = jest.fn().mockResolvedValue({
+      const mockGetProfileMinistry = jest.fn().mockResolvedValue({
         data: [
           {
             name: "Citizen's Services",
           },
         ],
       });
-      return { getProfileMinistry };
+      return { mockGetProfileMinistry };
     },
 );
 
@@ -68,10 +68,10 @@ jest.mock(
   '../utils/transformDataHelper',
   () =>
     function getProfileContacts() {
-      const getProfileContacts = jest.fn().mockResolvedValue({
+      const mockGetProfileContacts = jest.fn().mockResolvedValue({
         data: mockContacts,
       });
-      return { getProfileContacts };
+      return { mockGetProfileContacts };
     },
 );
 

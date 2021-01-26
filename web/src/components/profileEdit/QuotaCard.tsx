@@ -56,7 +56,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
           <Box width={1 / 2} px={2} mt={3}>
             {specTexts.map((specText: string, index1: number) => (
               <Text key={index1} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                {specText}: {quotaSize}
+                {specText}:{quotaSize}
               </Text>
             ))}
           </Box>

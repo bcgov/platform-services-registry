@@ -14,8 +14,8 @@
 // limitations under the License.
 //
 
-import { CSSProperties, default as React, MouseEventHandler } from 'react';
-import { default as theme, default as themes } from '../../../theme';
+import React, { CSSProperties, MouseEventHandler } from 'react';
+import theme from '../../../theme';
 import { ColorSet } from '../../../types';
 
 type IconSet = 'user' | 'menuStack' | 'close' | 'goBack' | 'edit' | 'email' | 'github';
@@ -50,7 +50,7 @@ const BaseIcon: React.FC<IBaseIconProps> = (props) => {
     <svg
       onClick={onClick}
       viewBox={viewBox}
-      fill={themes.colors[color]}
+      fill={theme.colors[color]}
       style={{
         ...style,
         cursor: hover ? 'pointer' : 'default',

@@ -78,7 +78,7 @@ export function isProfileProvisioned(namespaceSet: any[]): boolean {
     namespaceSet.forEach((namespace: any) => {
       // TODO: update this when we add other clusters besides default cluster
       if (!namespace.clusters[0].provisioned) {
-        throw Error;
+        throw Error(`${namespace.name} is not provisioned yet`);
       }
     });
     return true;
@@ -130,6 +130,7 @@ export function transformJsonToCsv(objArray: any) {
   let str = '';
   let line = '';
 
+  // eslint-disable-next-line
   for (const index in array[0]) {
     line += `${index},`;
   }
@@ -154,7 +155,7 @@ export function transformJsonToCsv(objArray: any) {
 
   for (let i = 0; i < array.length; i++) {
     line = '';
-
+    // eslint-disable-next-line
     for (const index in array[i]) {
       // eslint-disable-next-line
       line += '"' + sanitizeStringForCsv(array[i][index]) + '"' + ',';

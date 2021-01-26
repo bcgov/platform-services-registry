@@ -15,7 +15,7 @@
 //
 
 import styled from '@emotion/styled';
-import { default as React } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Text } from 'rebass';
 import theme from '../../../theme';

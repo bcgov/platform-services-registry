@@ -53,9 +53,9 @@ const Dashboard: React.FC = () => {
         const promisesForContact: any = [];
         const promisesForProvision: any = [];
 
-        for (const profile of response.data) {
-          promisesForContact.push(api.getContactsByProfileId(profile.id));
-          promisesForProvision.push(api.getNamespaceByProfileId(profile.id));
+        for (const profileData of response.data) {
+          promisesForContact.push(api.getContactsByProfileId(profileData.id));
+          promisesForProvision.push(api.getNamespaceByProfileId(profileData.id));
         }
         const contactResponses: Array<any> = await Promise.all(promisesForContact);
         const provisionResponses: Array<any> = await Promise.all(promisesForProvision);

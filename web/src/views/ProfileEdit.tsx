@@ -160,7 +160,10 @@ const ProfileEdit: React.FC = (props: any) => {
     async function wrap() {
       try {
         await updateProfileState();
-      } catch (err) {}
+      } catch (err) {
+        const msg = 'Unable to update Profile State';
+        throw new Error(`${msg}, reason = ${err.message}`);
+      }
     }
     wrap();
   }, 1000 * 30);
