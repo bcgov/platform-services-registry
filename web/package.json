@@ -15,7 +15,7 @@
     "axios": "^0.21.1",
     "emotion-theming": "^10.0.27",
     "final-form": "^4.20.1",
-    "history": "^5.0.0",
+    "history": "4.10.1",
     "jwt-decode": "^3.0.0",
     "keycloak-js": "^9.0.3",
     "prop-types": "^15.7.2",
