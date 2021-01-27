@@ -23,7 +23,7 @@ jobs:
       - name: Unit tests w/ coverage
         run: npm run test -- --coverage --passWithNoTests
       - name: LINTing
-        run: npm run lint -- --quiet
+        run: npm run lint -- --quiet -f codeframe
       - name: Prettier
         run: npm run format -- --check
       # - name: Upload coverage report
