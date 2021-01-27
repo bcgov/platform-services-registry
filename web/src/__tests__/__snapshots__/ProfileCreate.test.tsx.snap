@@ -451,7 +451,8 @@ exports[`matches the snapshot 1`] = `
         <div
           class="css-vurnku"
         >
-          If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to 
+          If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to
+           
           <a
             href="mailto: olena.mitovska@gov.bc.ca"
           >
@@ -462,7 +463,8 @@ exports[`matches the snapshot 1`] = `
         <div
           class="css-pmqufv"
         >
-          If you're new to OpenShift check out our 
+          If you're new to OpenShift check out our
+           
           <a
             href="https://docs.google.com/presentation/d/1UcT0b2YTPki_o0et9ZCLKv8vF19eYakJQitU85TAeD4/edit?usp=sharing"
             rel="noopener noreferrer"
@@ -470,7 +472,8 @@ exports[`matches the snapshot 1`] = `
           >
             Getting Started
           </a>
-           on the DevOps Platform guide. It's full of tones of useful information.
+           
+          on the DevOps Platform guide. It's full of tones of useful information.
         </div>
       </div>
     </div>
@@ -698,7 +701,8 @@ exports[`matches the snapshot 1`] = `
             <div
               class="css-jqhguc"
             >
-              By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the 
+              By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the
+               
               <a
                 href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!"
                 rel="noopener noreferrer"
@@ -710,7 +714,7 @@ exports[`matches the snapshot 1`] = `
             </div>
           </label>
           <button
-            class="css-saon7w"
+            class="css-s0jrgc"
             disabled=""
           >
             Request
