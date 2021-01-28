@@ -19,15 +19,11 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
 import ProfileEdit from '../views/ProfileEdit';
-import contacts from './fixtures/profile-contacts.json';
-import ministries from './fixtures/profile-ministry.json';
-import profiles from './fixtures/profiles.json';
+import mockContacts from './fixtures/profile-contacts.json';
+import mockMinistry from './fixtures/profile-ministry.json';
+import mockProfile from './fixtures/profiles.json';
 
 const browserHistory = createBrowserHistory();
-
-const mockProfile = () => profiles[0];
-const mockMinistry = () => ministries[0];
-const mockContacts = () => contacts;
 
 jest.mock(
   '../hooks/useRegistryApi',
@@ -76,13 +72,10 @@ jest.mock(
 );
 
 function renderProfileEdit() {
-  const stubOpenBackdropCB = jest.fn();
-  const stubCloseBackdropCB = jest.fn();
-
   const utils = render(
     <Router history={browserHistory}>
       <Route path="/profile/1/overview">
-        <ProfileEdit openBackdropCB={stubOpenBackdropCB} closeBackdropCB={stubCloseBackdropCB} />
+        <ProfileEdit />
       </Route>
     </Router>,
   );

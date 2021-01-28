@@ -59,6 +59,7 @@ export const CSV_PROFILE_ATTRIBUTES = [
   'description',
   'busOrgId',
   'prioritySystem',
+  'quotaSize',
   'createdAt',
   'updatedAt',
   'POEmail',

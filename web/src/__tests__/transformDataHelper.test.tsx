@@ -90,9 +90,13 @@ describe('test the helper function getProfileMinistry', () => {
 
 describe('test the helper function transformJsonToCsv', () => {
   test('should return correct csv', () => {
-    const stubJson = profiles;
+    const stubJson = profiles.map((profile: any) => {
+      profile.quotaSize = 'small';
+      return profile;
+    });
+
     const result =
-      'id,name,description,prioritySystem,criticalSystem,createdAt,updatedAt,userId\r\n"2","EPIC","Hello World","false","true","28-10-2020 03:00","28-10-2020 03:00","4"\r\n"1","Health Gateway","null","false","false","28-04-2020 00:00","28-04-2020 00:00","4"\r\n"3","Mines Digital Services","This is some description","false","false","18-04-2020 10:10","18-04-2020 10:10"\r\n';
+      'id,name,description,prioritySystem,criticalSystem,createdAt,updatedAt,userId,quotaSize\r\n"2","EPIC","Hello World","false","true","28-10-2020 03:00","28-10-2020 03:00","4","small"\r\n"1","Health Gateway","null","false","false","28-04-2020 00:00","28-04-2020 00:00","4","small"\r\n"3","Mines Digital Services","This is some description","false","false","18-04-2020 10:10","18-04-2020 10:10","small"\r\n';
     expect(transformJsonToCsv(stubJson)).toEqual(result);
   });
 });
