@@ -15,7 +15,7 @@
 //
 
 import React from 'react';
-import { RouteProps } from 'react-router-dom';
+import { Route, RouteProps } from 'react-router-dom';
 import { PublicLayout } from '../layouts/Layout';
 import PrivateRoute from './PrivateRoute';
 
@@ -26,23 +26,21 @@ interface IAppRouteProps extends RouteProps {
 }
 
 const AppRoute: React.FC<IAppRouteProps> = (props) => {
-  let { protected: usePrivateRoute, component: Component, checkQueryParams, ...rest } = props;
+  const { protected: usePrivateRoute, component: Component, checkQueryParams, ...rest } = props;
 
   if (usePrivateRoute) {
     return <PrivateRoute component={Component} {...rest} checkQueryParams={checkQueryParams} />;
-  } else {
-    return (
-      <PrivateRoute
-        component={Component}
-        {...rest}
-        render={(props) => (
-          <PublicLayout>
-            <Component {...props} />
-          </PublicLayout>
-        )}
-      />
-    );
   }
+  return (
+    <Route
+      {...rest}
+      render={(props0) => (
+        <PublicLayout>
+          <Component {...props0} />
+        </PublicLayout>
+      )}
+    />
+  );
 };
 
 export default AppRoute;

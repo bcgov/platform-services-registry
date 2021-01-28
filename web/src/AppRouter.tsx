@@ -40,11 +40,17 @@ const AppRouter: React.FC = () => {
   return (
     <Router history={browserHistory}>
       <Switch>
-        <Redirect exact from='/' to={ROUTE_PATHS.LANDING} />
+        <Redirect exact from="/" to={ROUTE_PATHS.LANDING} />
         <AppRoute path={ROUTE_PATHS.LANDING} component={PublicLanding} />
         <AppRoute protected exact path={ROUTE_PATHS.PROFILE_CREATE} component={ProfileCreate} />
         <AppRoute protected exact path={HOME_PAGE_URL} component={Dashboard} />
-        <AppRoute protected exact path={ROUTE_PATHS.PROFILE_EDIT} component={ProfileEdit} checkQueryParams={areQueryParamsForProfileValid} />
+        <AppRoute
+          protected
+          exact
+          path={ROUTE_PATHS.PROFILE_EDIT}
+          component={ProfileEdit}
+          checkQueryParams={areQueryParamsForProfileValid}
+        />
         <AppRoute path={ROUTE_PATHS.NOT_FOUND} component={NotFound} />
         <Redirect to={ROUTE_PATHS.NOT_FOUND} />
       </Switch>

@@ -27,7 +27,7 @@ interface IPrivateRouteProps extends RouteProps {
 }
 
 const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
-  let { component: Component, checkQueryParams, ...rest } = props;
+  const { component: Component, checkQueryParams, ...rest } = props;
 
   const { keycloak } = useKeycloak();
   const location = useLocation();
@@ -39,18 +39,18 @@ const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
   return (
     <Route
       {...rest}
-      render={(routeProps) => {
-        if (checkQueryParams && !checkQueryParams(routeProps)) {
+      render={(props0) => {
+        if (checkQueryParams && !checkQueryParams(props0)) {
           return <Redirect to={ROUTE_PATHS.NOT_FOUND} />;
         }
         if (keycloak.authenticated) {
           return (
             <AuthLayout {...rest}>
-              <Component {...props} {...rest.componentProps} />
+              <Component {...props0} {...rest.componentProps} />
             </AuthLayout>
           );
         }
-        if (routeProps.location.pathname !== ROUTE_PATHS.LANDING) {
+        if (props0.location.pathname !== ROUTE_PATHS.LANDING) {
           const redirectTo = encodeURI(`${location.pathname}${location.search}`);
           return <Redirect to={`${ROUTE_PATHS.LANDING}?redirect=${redirectTo}`} />;
         }
