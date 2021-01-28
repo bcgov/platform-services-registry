@@ -14,44 +14,35 @@
 // limitations under the License.
 //
 
-import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
-import { Route, RouteProps } from 'react-router-dom';
+import { RouteProps } from 'react-router-dom';
+import { PublicLayout } from '../layouts/Layout';
 import PrivateRoute from './PrivateRoute';
 
 interface IAppRouteProps extends RouteProps {
+  protected?: boolean;
   component: React.ComponentType<any>;
-  layout: React.ComponentType<any>;
   checkQueryParams?: (props: any) => boolean;
 }
 
 const AppRoute: React.FC<IAppRouteProps> = (props) => {
-  const { component: Component, layout: Layout, checkQueryParams, ...rest } = props;
-
-  const { keycloak } = useKeycloak();
-
-  const usePrivateRoute: boolean = !!(keycloak && keycloak.authenticated);
+  let { protected: usePrivateRoute, component: Component, checkQueryParams, ...rest } = props;
 
   if (usePrivateRoute) {
+    return <PrivateRoute component={Component} {...rest} checkQueryParams={checkQueryParams} />;
+  } else {
     return (
       <PrivateRoute
         component={Component}
-        layout={Layout}
         {...rest}
-        checkQueryParams={checkQueryParams}
+        render={(props) => (
+          <PublicLayout>
+            <Component {...props} />
+          </PublicLayout>
+        )}
       />
     );
   }
-  return (
-    <Route
-      {...rest}
-      render={(routeProps) => (
-        <Layout>
-          <Component {...routeProps} />
-        </Layout>
-      )}
-    />
-  );
 };
 
 export default AppRoute;
