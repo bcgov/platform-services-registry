@@ -71,7 +71,7 @@ export const updateEmailContent = async (buff: string, to: string[], profile: an
       POEmail: to[0],
       TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
       projectName: profile.name,
-      //TODO (sb): Make dynamic when multicluster supported
+      // TODO (sb): Make dynamic when multicluster supported
       setCluster: 'Silver',
       licensePlate: `${profile.namespacePrefix}`,
     };
