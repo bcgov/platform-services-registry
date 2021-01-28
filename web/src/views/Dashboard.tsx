@@ -33,7 +33,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -54,9 +54,9 @@ const Dashboard: React.FC = () => {
         const promisesForContact: any = [];
         const promisesForNamespaces: any = [];
 
-        for (let profile of response.data) {
-          promisesForContact.push(api.getContactsByProfileId(profile.id));
-          promisesForNamespaces.push(api.getNamespaceByProfileId(profile.id));
+        for (const p of response.data) {
+          promisesForContact.push(api.getContactsByProfileId(p.id));
+          promisesForNamespaces.push(api.getNamespaceByProfileId(p.id));
         }
         const contactResponses: Array<any> = await Promise.all(promisesForContact);
         const namespacesResponses: Array<any> = await Promise.all(promisesForNamespaces);

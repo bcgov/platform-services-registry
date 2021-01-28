@@ -19,7 +19,7 @@ import {
   getProfileMinistry,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 import profileContacts from './fixtures/profile-contacts.json';
 import profileMinistry from './fixtures/profile-ministry.json';
