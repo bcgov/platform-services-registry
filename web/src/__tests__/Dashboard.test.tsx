@@ -25,21 +25,25 @@ import mockProfiles from './fixtures/profiles.json';
 
 const browserHistory = createBrowserHistory();
 
-jest.mock('../hooks/useRegistryApi', () => function useRegistryApi() {
-  const getProfile = jest.fn().mockResolvedValue({
-    data: mockProfiles,
-  });
+jest.mock(
+  '../hooks/useRegistryApi',
+  () =>
+    function useRegistryApi() {
+      const getProfile = jest.fn().mockResolvedValue({
+        data: mockProfiles,
+      });
 
-  const getContactsByProfileId = jest.fn().mockResolvedValue({
-    data: mockContacts,
-  });
+      const getContactsByProfileId = jest.fn().mockResolvedValue({
+        data: mockContacts,
+      });
 
-  const getNamespaceByProfileId = jest.fn().mockResolvedValue({
-    data: mockNamespaces,
-  });
+      const getNamespaceByProfileId = jest.fn().mockResolvedValue({
+        data: mockNamespaces,
+      });
 
-  return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
-});
+      return { getProfile, getContactsByProfileId, getNamespaceByProfileId };
+    },
+);
 
 function renderDashboard() {
   const utils = render(

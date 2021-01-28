@@ -25,23 +25,25 @@ import mockProfile from './fixtures/profiles.json';
 
 const browserHistory = createBrowserHistory();
 
-jest.mock('../hooks/useRegistryApi', () => function useRegistryApi() {
-  const getProfileByProfileId = jest.fn().mockResolvedValue({
-    data: [
-      mockProfile,
-    ],
-  });
+jest.mock(
+  '../hooks/useRegistryApi',
+  () =>
+    function useRegistryApi() {
+      const getProfileByProfileId = jest.fn().mockResolvedValue({
+        data: [mockProfile],
+      });
 
-  const getMinistry = jest.fn().mockResolvedValue({
-    data: [mockMinistry],
-  });
+      const getMinistry = jest.fn().mockResolvedValue({
+        data: [mockMinistry],
+      });
 
-  const getContactsByProfileId = jest.fn().mockResolvedValue({
-    data: mockContacts,
-  });
+      const getContactsByProfileId = jest.fn().mockResolvedValue({
+        data: mockContacts,
+      });
 
-  return { getProfileByProfileId, getMinistry, getContactsByProfileId };
-});
+      return { getProfileByProfileId, getMinistry, getContactsByProfileId };
+    },
+);
 
 jest.mock(
   '../utils/transformDataHelper',
@@ -72,7 +74,7 @@ jest.mock(
 function renderProfileEdit() {
   const utils = render(
     <Router history={browserHistory}>
-      <Route path='/profile/1/overview'>
+      <Route path="/profile/1/overview">
         <ProfileEdit />
       </Route>
     </Router>,
