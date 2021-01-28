@@ -71,10 +71,9 @@ export const updateEmailContent = async (buff: string, to: string[], profile: an
       POEmail: to[0],
       TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
       projectName: profile.name,
-      devLicensePlate: `${profile.namespacePrefix}-dev`,
-      testLicensePlate:  `${profile.namespacePrefix}-test`,
-      prodLicensePlate:  `${profile.namespacePrefix}-prod`,
-      toolsLicensePlate:  `${profile.namespacePrefix}-tools`,
+      //TODO (sb): Make dynamic when multicluster supported
+      setCluster: 'Silver',
+      licensePlate: `${profile.namespacePrefix}`,
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -112,7 +111,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
         break;
       case MessageType.ProvisioningCompleted:
         buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/provisioning-request-done.txt')
+          path.join(__dirname, '../../', 'templates/provisioning-request-done.html')
           ).toString();
         break;
       default:
