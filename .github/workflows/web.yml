@@ -22,8 +22,10 @@ jobs:
         run: npm ci
       - name: Unit tests w/ coverage
         run: npm run test -- --coverage --passWithNoTests
-      # - name: LINTing
-      #   run: npm run test:lint
+      - name: LINTing
+        run: npm run lint -- --quiet -f codeframe
+      - name: Prettier
+        run: npm run format -- --check
       # - name: Upload coverage report
       #   env:
       #     CC_TEST_REPORTER_ID: ${{ secrets.TestReporterID }}

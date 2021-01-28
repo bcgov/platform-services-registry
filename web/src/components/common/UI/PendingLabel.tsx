@@ -33,7 +33,8 @@ const PendingLabel = (props: any) => {
         px: 2,
         py: 1,
         borderRadius: 5,
-      }}>
+      }}
+    >
       Pending
     </Box>
   );

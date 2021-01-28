@@ -43,4 +43,4 @@ export default function useComponentVisible(initialIsVisible: boolean) {
   });
 
   return { ref, isComponentVisible, setIsComponentVisible };
-};
+}

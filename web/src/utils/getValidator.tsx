@@ -20,52 +20,60 @@ const schema = {
   email: {
     presence: { allowEmpty: false, message: 'Required' },
     email: {
-      message: 'Invalid format'
+      message: 'Invalid format',
     },
     length: {
       maximum: 32,
-      tooLong: 'Max 32 characters'
-    }
+      tooLong: 'Max 32 characters',
+    },
   },
   profileName: {
     presence: { allowEmpty: false, message: 'Required' },
     length: {
       maximum: 40,
-      tooLong: 'Max 40 characters'
+      tooLong: 'Max 40 characters',
     },
-    format: { pattern: '^[a-zA-Z][A-Za-z0-9 ]+(?<! )$', flags: 'i', message: 'Must be alphanumetic starting with a letter' }
+    format: {
+      pattern: '^[a-zA-Z][A-Za-z0-9 ]+(?<! )$',
+      flags: 'i',
+      message: 'Must be alphanumetic starting with a letter',
+    },
   },
   profileDescription: {
     presence: { allowEmpty: false, message: 'Required' },
     length: {
       maximum: 512,
-      tooLong: 'Max 512 characters'
+      tooLong: 'Max 512 characters',
     },
-    format: { pattern: `^[A-Za-z0-9\n ,)(.!?"']+`, flags: 'i', message: 'No special characters allowed' }
+    format: {
+      pattern: '^[A-Za-z0-9\n ,)(.!?"\']+',
+      flags: 'i',
+      message: 'No special characters allowed',
+    },
   },
   componenentOthers: {
     length: {
       maximum: 512,
-      tooLong: 'Max 512 characters'
+      tooLong: 'Max 512 characters',
     },
-    format: { pattern: `^(?! ).+[A-Za-z0-9 ,)(.!?"']+`, flags: 'i', message: 'Invalid format' }
+    format: { pattern: '^(?! ).+[A-Za-z0-9 ,)(.!?"\']+', flags: 'i', message: 'Invalid format' },
   },
   name: {
     presence: { allowEmpty: false, message: 'Required' },
     length: {
       maximum: 32,
-      tooLong: 'Max 32 characters'
+      tooLong: 'Max 32 characters',
     },
-    format: { pattern: '[A-Za-z]+', flags: 'i', message: 'Must be alphabetic' }
+    format: { pattern: '[A-Za-z]+', flags: 'i', message: 'Must be alphabetic' },
   },
   githubName: {
     presence: { allowEmpty: false, message: 'Required' },
     length: {
       maximum: 32,
-      tooLong: 'Max 32 characters'
+      tooLong: 'Max 32 characters',
     },
-    format: { pattern: `[A-Za-z0-9-]+`, flags: 'i', message: 'Invalid Github account format' }
-  }
+    format: { pattern: '[A-Za-z0-9-]+', flags: 'i', message: 'Invalid Github account format' },
+  },
 };
 
 export default function getValidator() {
@@ -117,6 +125,6 @@ export default function getValidator() {
     mustBeValidProfileDescription,
     mustBeValidName,
     mustBeValidGithubName,
-    mustBeValidComponentOthers
+    mustBeValidComponentOthers,
   };
-};
+}

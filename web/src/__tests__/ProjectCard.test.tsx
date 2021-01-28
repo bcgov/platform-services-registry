@@ -21,7 +21,7 @@ import ProjectCard from '../components/profileEdit/ProjectCard';
 test('matches the snapshot', () => {
   const stubPropTitle = 'Health Gateway';
   const stubPropTextBody = 'This is a test description for health gateway app';
-  const stubPropMinistry = 'Citizen\'s Services';
+  const stubPropMinistry = "Citizen's Services";
 
   const { container } = render(
     <ProjectCard
@@ -30,7 +30,7 @@ test('matches the snapshot', () => {
         description: stubPropTextBody,
         ministryName: stubPropMinistry,
       }}
-    />
+    />,
   );
 
   expect(container).toMatchSnapshot();

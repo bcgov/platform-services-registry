@@ -19,7 +19,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import logo from '../../../assets/images/bcid_h_rgb_rev.svg';
 import logoMobile from '../../../assets/images/logo.svg';
-import Aux from "../../../hoc/auxillary";
+import Aux from '../../../hoc/auxillary';
 import theme from '../../../theme';
 
 const noMargin = css`

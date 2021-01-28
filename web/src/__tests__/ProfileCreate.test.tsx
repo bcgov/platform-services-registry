@@ -18,25 +18,25 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import ProfileCreate from '../views/ProfileCreate';
 
-jest.mock('../utils/TokenDecoder', () => {
-  return function getDecodedToken() {
-    return (
-      {
-        email: "test@example.com",
-        family_name: "Jane",
-        given_name: "Doe",
-        name: "Jane Doe",
-        preferred_username: "janedoe@idir"
-      }
-    );
-  }
-});
+jest.mock(
+  '../utils/TokenDecoder',
+  () =>
+    function getDecodedToken() {
+      return {
+        email: 'test@example.com',
+        family_name: 'Jane',
+        given_name: 'Doe',
+        name: 'Jane Doe',
+        preferred_username: 'janedoe@idir',
+      };
+    },
+);
 
 test('matches the snapshot', () => {
   const stubPropCB = jest.fn();
 
   const { container } = render(
-    <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} />
+    <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} />,
   );
 
   expect(container).toMatchSnapshot();

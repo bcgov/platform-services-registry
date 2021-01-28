@@ -22,31 +22,29 @@ import PendingLabel from '../common/UI/PendingLabel';
 
 interface IProfileCardProps {
   title?: string;
-  textBody?: string
+  textBody?: string;
   ministry?: string;
   PO?: string;
   TC?: string;
-  isProvisioned?: boolean
-};
+  isProvisioned?: boolean;
+}
 
 const ProfileCard: React.FC<IProfileCardProps> = (props) => {
-  const { title = '', textBody = '', ministry = '', PO = '', TC = '', isProvisioned = false } = props;
+  const {
+    title = '',
+    textBody = '',
+    ministry = '',
+    PO = '',
+    TC = '',
+    isProvisioned = false,
+  } = props;
 
   return (
-    <Flex
-      alignItems="left"
-      justifyContent="center"
-      flexDirection="column"
-    >
+    <Flex alignItems="left" justifyContent="center" flexDirection="column">
       {!isProvisioned ? (
         <Flex>
           <Box width={2 / 3}>
-            <Text
-              as="h2"
-              fontSize={[3, 4, 4]}
-              fontWeight={500}
-              mb={3}
-            >
+            <Text as="h2" fontSize={[3, 4, 4]} fontWeight={500} mb={3}>
               {title}
             </Text>
           </Box>
@@ -55,22 +53,11 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
           </Box>
         </Flex>
       ) : (
-          <Text
-            as="h2"
-            fontSize={[3, 4, 4]}
-            fontWeight={500}
-            mb={3}
-          >
-            {title}
-          </Text>
-        )}
-      <Text
-        as="h2"
-        color={theme.colors.grey}
-        fontSize={[2, 3, 3]}
-        fontWeight={500}
-        mb={3}
-      >
+        <Text as="h2" fontSize={[3, 4, 4]} fontWeight={500} mb={3}>
+          {title}
+        </Text>
+      )}
+      <Text as="h2" color={theme.colors.grey} fontSize={[2, 3, 3]} fontWeight={500} mb={3}>
         <NewlineText text={textBody} />
       </Text>
       <Text mb={3} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>

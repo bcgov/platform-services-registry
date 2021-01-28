@@ -17,11 +17,11 @@
 import { createContext } from 'react';
 
 export interface ICommonState {
-    setOpenBackdrop: any;
+  setOpenBackdrop: any;
 }
 
 const CommonStateContext = createContext<ICommonState>({
-    setOpenBackdrop: () => { },
+  setOpenBackdrop: () => {},
 });
 
 export default CommonStateContext;

@@ -79,7 +79,10 @@ export default function useRegistryApi() {
     }
   };
 
-  const requestProfileEdit = async (profileId: string, profile: any): Promise<AxiosResponse<any>> => {
+  const requestProfileEdit = async (
+    profileId: string,
+    profile: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
@@ -95,7 +98,10 @@ export default function useRegistryApi() {
     }
   };
 
-  const requestContactEdit = async (profileId: string, requestedContacts: any): Promise<AxiosResponse<any>> => {
+  const requestContactEdit = async (
+    profileId: string,
+    requestedContacts: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
@@ -103,7 +109,10 @@ export default function useRegistryApi() {
     }
   };
 
-  const linkContactToProfileById = async (profileId: string, contactId: string): Promise<AxiosResponse<any>> => {
+  const linkContactToProfileById = async (
+    profileId: string,
+    contactId: string,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
@@ -159,7 +168,10 @@ export default function useRegistryApi() {
     }
   };
 
-  const requestCNQuotasByProfileId = async (profileId: string, requstedQuotas: any): Promise<AxiosResponse<any>> => {
+  const requestCNQuotasByProfileId = async (
+    profileId: string,
+    requstedQuotas: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
@@ -193,4 +205,4 @@ export default function useRegistryApi() {
     requestCNQuotasByProfileId,
     getEditRequestStatus,
   };
-};
+}

@@ -32,7 +32,7 @@ test('matches the snapshot', () => {
       ministry={stubPropMinistry}
       PO={stubPropPO}
       TC={stubPropTC}
-    />
+    />,
   );
 
   expect(container).toMatchSnapshot();

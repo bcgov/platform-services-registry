@@ -38,42 +38,38 @@ const StyledMain = styled.main`
   @media (max-width: ${theme.breakpoints[1]}) {
     margin-left: ${theme.spacingIncrements[0]};
     margin-right: ${theme.spacingIncrements[0]};
-  } 
+  }
 `;
 
 interface ILayoutProps {
   children: React.ReactNode;
 }
 
-export const AuthLayout: React.FC<ILayoutProps> = props => {
+export const AuthLayout: React.FC<ILayoutProps> = (props) => {
   const { children } = props;
 
   const [openBackdrop, setOpenBackdrop] = useState(false);
 
   return (
     <StyledDiv>
-      <ToastContainer style={{ width: "500px" }} />
-      {openBackdrop && (<BackdropForProcessing />)}
+      <ToastContainer style={{ width: '500px' }} />
+      {openBackdrop && <BackdropForProcessing />}
       <Header auth />
       <CommonStateContext.Provider value={{ setOpenBackdrop }}>
-        <StyledMain>
-          {children}
-        </StyledMain>
+        <StyledMain>{children}</StyledMain>
       </CommonStateContext.Provider>
       <Footer />
     </StyledDiv>
   );
 };
 
-export const PublicLayout: React.FC<ILayoutProps> = props => {
+export const PublicLayout: React.FC<ILayoutProps> = (props) => {
   const { children } = props;
 
   return (
     <StyledDiv>
       <Header />
-      <StyledMain>
-        {children}
-      </StyledMain>
+      <StyledMain>{children}</StyledMain>
       <Footer />
     </StyledDiv>
   );

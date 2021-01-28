@@ -23,7 +23,7 @@ const boxShadow = `
 
 export const ShadowBox = styled(Box)`
   ${boxShadow};
-`
+`;
 export const ShadowFlex = styled(Flex)`
   ${boxShadow};
-`
+`;

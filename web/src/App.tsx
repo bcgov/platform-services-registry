@@ -8,7 +8,7 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an 'AS IS' BASIS,git 
+// distributed under the License is distributed on an 'AS IS' BASIS,git
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -29,18 +29,12 @@ import theme from './theme';
 //   console.log('onKeycloakTokens', tokens)
 // }
 
-const App = () => {
-  return (
-    <KeycloakProvider
-      keycloak={keycloak}
-    // onEvent={eventLogger}
-    // onTokens={tokenLogger}
-    >
-      <ThemeProvider theme={theme}>
-        <AppRouter />
-      </ThemeProvider>
-    </KeycloakProvider>
-  )
-}
+const App = () => (
+  <KeycloakProvider keycloak={keycloak}>
+    <ThemeProvider theme={theme}>
+      <AppRouter />
+    </ThemeProvider>
+  </KeycloakProvider>
+);
 
 export default App;

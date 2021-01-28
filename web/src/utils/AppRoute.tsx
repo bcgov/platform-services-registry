@@ -23,29 +23,35 @@ interface IAppRouteProps extends RouteProps {
   component: React.ComponentType<any>;
   layout: React.ComponentType<any>;
   checkQueryParams?: (props: any) => boolean;
-};
+}
 
 const AppRoute: React.FC<IAppRouteProps> = (props) => {
-  let { component: Component, layout: Layout, checkQueryParams, ...rest } = props;
+  const { component: Component, layout: Layout, checkQueryParams, ...rest } = props;
 
   const { keycloak } = useKeycloak();
 
   const usePrivateRoute: boolean = !!(keycloak && keycloak.authenticated);
 
   if (usePrivateRoute) {
-    return <PrivateRoute component={Component} layout={Layout} {...rest} checkQueryParams={checkQueryParams} />;
-  } else {
     return (
-      <Route
+      <PrivateRoute
+        component={Component}
+        layout={Layout}
         {...rest}
-        render={(props) => (
-          <Layout>
-            <Component {...props} />
-          </Layout>
-        )}
+        checkQueryParams={checkQueryParams}
       />
     );
   }
+  return (
+    <Route
+      {...rest}
+      render={(routeProps) => (
+        <Layout>
+          <Component {...routeProps} />
+        </Layout>
+      )}
+    />
+  );
 };
 
 export default AppRoute;

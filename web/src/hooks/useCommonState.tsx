@@ -18,5 +18,5 @@ import { useContext } from 'react';
 import CommonStateContext from '../contexts/commonStateContext';
 
 export default function useCommonState() {
-    return useContext(CommonStateContext);
+  return useContext(CommonStateContext);
 }

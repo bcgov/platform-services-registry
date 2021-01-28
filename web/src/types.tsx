@@ -14,11 +14,9 @@
 // limitations under the License.
 //
 
-import { default as React, MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from 'react';
 
-export type ColorSet
-  = 'contrast'
-  | 'primary'
+export type ColorSet = 'contrast' | 'primary';
 
 export interface MenuItem {
   title: string;
@@ -28,10 +26,7 @@ export interface MenuItem {
   handleOnClick?: MouseEventHandler<React.ReactNode>;
 }
 
-export type QuotaSizeSet
-  = 'small'
-  | 'medium'
-  | 'large'
+export type QuotaSizeSet = 'small' | 'medium' | 'large';
 
 interface ClusterNamespace {
   clusterId: string;

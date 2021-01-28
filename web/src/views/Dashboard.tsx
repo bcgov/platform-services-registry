@@ -8,7 +8,7 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an 'AS IS' BASIS,git 
+// distributed under the License is distributed on an 'AS IS' BASIS,git
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -28,7 +28,12 @@ import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import { getProfileContacts, isProfileProvisioned, sortProfileByDatetime, transformJsonToCsv } from '../utils/transformDataHelper';
+import {
+  getProfileContacts,
+  isProfileProvisioned,
+  sortProfileByDatetime,
+  transformJsonToCsv,
+} from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
   const api = useRegistryApi();
@@ -48,16 +53,19 @@ const Dashboard: React.FC = () => {
         const promisesForContact: any = [];
         const promisesForProvision: any = [];
 
-        for (let profile of response.data) {
-          promisesForContact.push(api.getContactsByProfileId(profile.id));
-          promisesForProvision.push(api.getNamespaceByProfileId(profile.id));
+        for (const profileData of response.data) {
+          promisesForContact.push(api.getContactsByProfileId(profileData.id));
+          promisesForProvision.push(api.getNamespaceByProfileId(profileData.id));
         }
         const contactResponses: Array<any> = await Promise.all(promisesForContact);
         const provisionResponses: Array<any> = await Promise.all(promisesForProvision);
 
         // 3. Combine contact info and provision status to existing profile
         for (let i: number = 0; i < response.data.length; i++) {
-          response.data[i] = { ...response.data[i], ...getProfileContacts(contactResponses[i].data) };
+          response.data[i] = {
+            ...response.data[i],
+            ...getProfileContacts(contactResponses[i].data),
+          };
           response.data[i].provisioned = isProfileProvisioned(provisionResponses[i].data);
         }
 
@@ -75,36 +83,39 @@ const Dashboard: React.FC = () => {
 
   useInterval(() => {
     const promisesForProvision: any = [];
-    for (let p of profile) {
+    for (const p of profile) {
       promisesForProvision.push(api.getNamespaceByProfileId(p.id));
     }
 
-    Promise.all(promisesForProvision)
-      .then((provisionResponses: any) => {
-        for (let i: number = 0; i < profile.length; i++) {
-          profile[i].provisioned = isProfileProvisioned(provisionResponses[i].data);
-        }
-        setProfile([...profile]);
-      })
+    Promise.all(promisesForProvision).then((provisionResponses: any) => {
+      for (let i: number = 0; i < profile.length; i++) {
+        profile[i].provisioned = isProfileProvisioned(provisionResponses[i].data);
+      }
+      setProfile([...profile]);
+    });
   }, 1000 * 30);
 
   const downloadCSV = () => {
     setOpenBackdrop(true);
     try {
       const metadataAttributes: Array<string> = [];
-      COMPONENT_METADATA.forEach(m => {
+      COMPONENT_METADATA.forEach((m) => {
         metadataAttributes.push(m.inputValue);
-      })
+      });
 
-      const csvFilter = (obj: any) => [...CSV_PROFILE_ATTRIBUTES, ...metadataAttributes].reduce((acc, key) => {
-        return {
-          ...acc,
-          [key]: obj[key]
-        }
-      }, {});
+      const csvFilter = (obj: any) =>
+        [...CSV_PROFILE_ATTRIBUTES, ...metadataAttributes].reduce(
+          (acc, key) => ({
+            ...acc,
+            [key]: obj[key],
+          }),
+          {},
+        );
 
-      const csv = transformJsonToCsv(profile.filter((item: any) => item.provisioned === true).map(csvFilter));
-      window.open("data:text/csv;charset=utf-8," + escape(csv));
+      const csv = transformJsonToCsv(
+        profile.filter((item: any) => item.provisioned === true).map(csvFilter),
+      );
+      window.open(`data:text/csv;charset=utf-8,${escape(csv)}`);
     } catch (err) {
       promptErrToastWithText('Something went wrong');
       console.log(err);
@@ -114,23 +125,33 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      {(profile.length > 0) && (<Button onClick={downloadCSV}>Download CSV</Button>)}
-      <Box sx={{
-        display: 'grid',
-        gridGap: 4,
-        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
-      }}>
-        {(profile.length > 0) && profile.map((s: any) => (
-          <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-            <RouterLink
-              to={{ pathname: `/profile/${s.id}/overview` }}
-              style={{ color: theme.colors.black, textDecoration: 'none' }}
-            >
-              {!s.provisioned && <BackdropForPendingItem />}
-              <ProfileCard title={s.name} textBody={s.description} ministry={s.busOrgId} PO={s.POEmail} TC={s.TCEmail} isProvisioned={s.provisioned} />
-            </RouterLink>
-          </ShadowBox>
-        ))}
+      {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
+      <Box
+        sx={{
+          display: 'grid',
+          gridGap: 4,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        }}
+      >
+        {profile.length > 0 &&
+          profile.map((s: any) => (
+            <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+              <RouterLink
+                to={{ pathname: `/profile/${s.id}/overview` }}
+                style={{ color: theme.colors.black, textDecoration: 'none' }}
+              >
+                {!s.provisioned && <BackdropForPendingItem />}
+                <ProfileCard
+                  title={s.name}
+                  textBody={s.description}
+                  ministry={s.busOrgId}
+                  PO={s.POEmail}
+                  TC={s.TCEmail}
+                  isProvisioned={s.provisioned}
+                />
+              </RouterLink>
+            </ShadowBox>
+          ))}
       </Box>
     </>
   );

@@ -16,9 +16,8 @@
 // Created by Jason Leach on 2020-06-05.
 //
 
-export const SSO_BASE_URL = process.env.NODE_ENV === 'production'
-  ? '{{env "SSO_BASE_URL"}}'
-  : 'https://dev.oidc.gov.bc.ca';
+export const SSO_BASE_URL =
+  process.env.NODE_ENV === 'production' ? '{{env "SSO_BASE_URL"}}' : 'https://dev.oidc.gov.bc.ca';
 export const SSO_CLIENT_ID = 'registry-web';
 export const SSO_REALM_NAME = 'devhub';
 
@@ -54,7 +53,21 @@ export const COMPONENT_METADATA = [
   { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir' },
 ];
 
-export const CSV_PROFILE_ATTRIBUTES = ['id', 'name', 'description', 'busOrgId', 'prioritySystem', 'createdAt', 'updatedAt', 'POEmail', 'POName', 'POGithubId', 'TCEmail', 'TCName', 'TCGithubId'];
+export const CSV_PROFILE_ATTRIBUTES = [
+  'id',
+  'name',
+  'description',
+  'busOrgId',
+  'prioritySystem',
+  'createdAt',
+  'updatedAt',
+  'POEmail',
+  'POName',
+  'POGithubId',
+  'TCEmail',
+  'TCName',
+  'TCGithubId',
+];
 
 export const ROUTE_PATHS = {
   NOT_FOUND: '/page-not-found',
@@ -74,7 +87,7 @@ export const PROFILE_EDIT_VIEW_NAMES = {
 };
 
 export const RESPONSE_STATUS_CODE = {
-  UNAUTHORIZED: 401
+  UNAUTHORIZED: 401,
 };
 
 // Small: ( provisioned by default for new namespaces) Long-running workload quotas:

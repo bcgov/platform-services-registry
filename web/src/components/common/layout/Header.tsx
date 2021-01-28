@@ -77,7 +77,7 @@ interface INavProps {
   dirs: Array<MenuItem>;
 }
 
-const Nav: React.FC<INavProps> = props => {
+const Nav: React.FC<INavProps> = (props) => {
   const { isAuthenticated, handleDDMobile, isDDMobileOpen, dirs } = props;
 
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
@@ -89,13 +89,21 @@ const Nav: React.FC<INavProps> = props => {
   return (
     <StyledNav>
       <ContainerDesktop>
-        {isAuthenticated && (<CreateButton onClick={handleDDDesktop}>Create</CreateButton>)}
+        {isAuthenticated && <CreateButton onClick={handleDDDesktop}>Create</CreateButton>}
         <Authbutton />
-        {isAuthenticated && isComponentVisible && (<DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />)}
+        {isAuthenticated && isComponentVisible && (
+          <DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />
+        )}
       </ContainerDesktop>
       <ContainerMobile>
-        <Icon hover color={'contrast'} name={isDDMobileOpen ? 'close' : 'menuStack'}
-          onClick={handleDDMobile} width={1.4} height={1.4} />
+        <Icon
+          hover
+          color="contrast"
+          name={isDDMobileOpen ? 'close' : 'menuStack'}
+          onClick={handleDDMobile}
+          width={1.4}
+          height={1.4}
+        />
       </ContainerMobile>
     </StyledNav>
   );
@@ -105,7 +113,7 @@ interface IHeaderProps {
   auth?: boolean;
 }
 
-const Header: React.FC<IHeaderProps> = props => {
+const Header: React.FC<IHeaderProps> = (props) => {
   const { auth: useAuthHeader } = props;
 
   const [isDDMobileOpen, setIsDDMobileOpen] = useState(false);
@@ -114,17 +122,22 @@ const Header: React.FC<IHeaderProps> = props => {
     setIsDDMobileOpen(!isDDMobileOpen);
   };
 
-  const dirs = [{
-    title: "A new Openshift Project Set",
-    subTitle: "Create 4 Project namespaces in Silver cluster",
-    href: ROUTE_PATHS.PROFILE_CREATE,
-    onClickCB: () => { },
-  }];
+  const dirs = [
+    {
+      title: 'A new Openshift Project Set',
+      subTitle: 'Create 4 Project namespaces in Silver cluster',
+      href: ROUTE_PATHS.PROFILE_CREATE,
+      onClickCB: () => {},
+    },
+  ];
 
   return (
     <StyledHeader>
       <StyledBanner>
-        <RouterLink style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} to={HOME_PAGE_URL}>
+        <RouterLink
+          style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}
+          to={HOME_PAGE_URL}
+        >
           <GovLogo />
           <StyledText
             as="h2"
@@ -136,17 +149,30 @@ const Header: React.FC<IHeaderProps> = props => {
             Platform Services Registry
           </StyledText>
         </RouterLink>
-        <Nav isAuthenticated={!!useAuthHeader} dirs={dirs} handleDDMobile={handleDDMobile} isDDMobileOpen={isDDMobileOpen} />
+        <Nav
+          isAuthenticated={!!useAuthHeader}
+          dirs={dirs}
+          handleDDMobile={handleDDMobile}
+          isDDMobileOpen={isDDMobileOpen}
+        />
       </StyledBanner>
       <ContainerMobile>
         {isDDMobileOpen && (
-          <StyledDropdownMobile >
+          <StyledDropdownMobile>
             <Authbutton />
-            {!!useAuthHeader && (<div>
-              {dirs.map(
-                (item, index) =>
-                  <DropdownMenuItem handleOnClick={handleDDMobile} key={index + item.title} href={item.href} title={item.title} subTitle={item.subTitle} onClickCB={item.onClickCB} />
-              )} </div>
+            {!!useAuthHeader && (
+              <div>
+                {dirs.map((item, index) => (
+                  <DropdownMenuItem
+                    handleOnClick={handleDDMobile}
+                    key={index + item.title}
+                    href={item.href}
+                    title={item.title}
+                    subTitle={item.subTitle}
+                    onClickCB={item.onClickCB}
+                  />
+                ))}
+              </div>
             )}
           </StyledDropdownMobile>
         )}
