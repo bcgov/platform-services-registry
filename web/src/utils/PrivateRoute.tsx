@@ -39,18 +39,18 @@ const PrivateRoute: React.FC<IPrivateRouteProps> = (props) => {
   return (
     <Route
       {...rest}
-      render={(props0) => {
-        if (checkQueryParams && !checkQueryParams(props0)) {
+      render={(routeProps) => {
+        if (checkQueryParams && !checkQueryParams(routeProps)) {
           return <Redirect to={ROUTE_PATHS.NOT_FOUND} />;
         }
         if (keycloak.authenticated) {
           return (
             <AuthLayout {...rest}>
-              <Component {...props0} {...rest.componentProps} />
+              <Component {...routeProps} {...rest.componentProps} />
             </AuthLayout>
           );
         }
-        if (props0.location.pathname !== ROUTE_PATHS.LANDING) {
+        if (routeProps.location.pathname !== ROUTE_PATHS.LANDING) {
           const redirectTo = encodeURI(`${location.pathname}${location.search}`);
           return <Redirect to={`${ROUTE_PATHS.LANDING}?redirect=${redirectTo}`} />;
         }

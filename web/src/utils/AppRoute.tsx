@@ -34,9 +34,9 @@ const AppRoute: React.FC<IAppRouteProps> = (props) => {
   return (
     <Route
       {...rest}
-      render={(props0) => (
+      render={(routeProps) => (
         <PublicLayout>
-          <Component {...props0} />
+          <Component {...routeProps} />
         </PublicLayout>
       )}
     />
