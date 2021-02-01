@@ -45,24 +45,23 @@ export const contactsForProfile = async (profileId: number): Promise<Contact[]> 
   }
 }
 
-export const profileDetails = async (profileId: number): Promise<string | undefined> => {
+export const profileDetails = async (profileId: number): Promise<any> => {
 
   try {
     const dm = new DataManager(shared.pgPool);
     const { ProfileModel } = dm;
-    const profiles = await ProfileModel.findById(profileId);
-    const profileName = profiles.name;
+    const profile: any = await ProfileModel.findById(profileId);
 
-    return profileName;
+    return profile;
   } catch (err) {
     const message = `Unable to fetch profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
-    return;
+    return [];
   }
 }
 
-export const updateEmailContent = async (buff: string, to: string[], profileName: string | undefined, contactNames: string[]): Promise<string> => {
+export const updateEmailContent = async (buff: string, to: string[], profile: any, contactNames: string[]): Promise<string> => {
   try {
     let emailContent: string;
 
@@ -71,7 +70,10 @@ export const updateEmailContent = async (buff: string, to: string[], profileName
       TCName: contactNames[1],
       POEmail: to[0],
       TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
-      projectName: profileName,
+      projectName: profile.name,
+      // TODO (sb): Make dynamic when multicluster supported
+      setCluster: 'Silver',
+      licensePlate: `${profile.namespacePrefix}`,
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -94,7 +96,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     const contacts = await contactsForProfile(profileId);
     const contactNames = contacts.map(c => c.firstName + ' ' + c.lastName);
     const to = [...new Set(contacts.map(c => c.email))];
-    const profileName = await profileDetails(profileId);
+    const profile = await profileDetails(profileId);
     let buff;
 
     if (to.length === 0) {
@@ -104,12 +106,12 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     switch (messageType) {
       case MessageType.ProvisioningStarted:
         buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/provisioning-request-received.txt')
+          path.join(__dirname, '../../', 'templates/provisioning-request-received.html')
           ).toString();
         break;
       case MessageType.ProvisioningCompleted:
         buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/provisioning-request-done.txt')
+          path.join(__dirname, '../../', 'templates/provisioning-request-done.html')
           ).toString();
         break;
       default:
@@ -121,18 +123,18 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await updateEmailContent(buff, to, profileName, contactNames);
+    const bodyContent = await updateEmailContent(buff, to, profile, contactNames);
 
     if (!bodyContent) {
       return;
     }
 
     const message: Message = {
-      bodyType: BodyType.Text,
+      bodyType: BodyType.HTML,
       body: bodyContent,
       to,
       from: 'Registry <pathfinder@gov.bc.ca>',
-      subject: `${profileName} Namespace`,
+      subject: `${profile.name} OCP 4 Project Set`,
     }
 
     const receipt = await shared.ches.send(message);
