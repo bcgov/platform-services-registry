@@ -264,7 +264,7 @@ Array [
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19
+            idm_active_dir = $18, other = $19, primary_cluster_name = $20
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -287,6 +287,7 @@ Array [
         false,
         false,
         "This is a test",
+        undefined,
       ],
     },
   ],
@@ -358,7 +359,7 @@ Array [
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19
+            idm_active_dir = $18, other = $19, primary_cluster_name = $20
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -381,6 +382,7 @@ Array [
         false,
         false,
         "This is a test",
+        undefined,
       ],
     },
   ],
