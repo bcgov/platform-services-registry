@@ -20,34 +20,41 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import DataManager from '../db';
 import { Cluster } from '../db/model/cluster';
 import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
+import { ProjectProfile } from '../db/model/profile';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
 const { NamespaceModel, ClusterModel } = dm;
 
-export const isNamespaceSetProvisioned = async (namespaces: ProjectNamespace[], cluster: Cluster): Promise<boolean | Error> => {
+export const isProfileProvisioned = async (profile: ProjectProfile): Promise<boolean | Error> => {
   try {
+    const primaryCluster = await ClusterModel.findByName(profile.primaryClusterName);
+    // @ts-ignore
+    const namespaces: ProjectNamespace[] = await NamespaceModel.findForProfile(profile.id);
+    if (!primaryCluster || !namespaces) {
+      throw new Error('Unable to find primary cluster or namespaces');
+    }
+
     const promises: Promise<ClusterNamespace>[] = [];
     namespaces.forEach(namespace => {
       // @ts-ignore
-      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, cluster.id));
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, primaryCluster.id));
     });
     const clusterNamespaces = await Promise.all(promises);
 
-    // check provisioning status and filter only the all provisioned
     const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
       return clusterNamespace.provisioned;
     });
-
     if (flags.every(f => f === true)) {
       return true;
     } else if (flags.every(f => f === false)) {
       return false;
     } else {
-      throw new Error('Need to fix project namespace set');
+      throw new Error(`Need to fix profile as the primary namespace set
+      on ${profile.primaryClusterName} is not consistent`);
     }
   } catch (err) {
-    const message = `Unable to check if the namespace set is provisioned`;
+    const message = `Unable to determin if profile ${profile.id} is provisioned`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;

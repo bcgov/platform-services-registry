@@ -102,7 +102,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   return (
     <>
       <FormTitle>License plates for the openshift namespaces</FormTitle>
-      <Label m="0" htmlFor="project-quotaCpu">
+      <Label m="0" htmlFor="project-quotaCpuSize">
         {licensePlate}
       </Label>
       <br />
@@ -146,16 +146,16 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           Request Quota
         </StyledFormButton>
       ) : (
-        <>
-          {/* @ts-ignore */}
-          <StyledFormDisabledButton style={{ display: 'block' }}>
-            Request Quota
+          <>
+            {/* @ts-ignore */}
+            <StyledFormDisabledButton style={{ display: 'block' }}>
+              Request Quota
           </StyledFormDisabledButton>
-          <Label as="span" variant="errorLabel">
-            Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+            <Label as="span" variant="errorLabel">
+              Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
           </Label>
-        </>
-      )}
+          </>
+        )}
     </>
   );
 };
