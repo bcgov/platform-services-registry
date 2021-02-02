@@ -38,3 +38,5 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE request
 TO ${username};
 GRANT USAGE ON SEQUENCE request_id_seq
 TO ${username};
+
+GRANT SELECT ON TABLE ref_quota TO ${username};
