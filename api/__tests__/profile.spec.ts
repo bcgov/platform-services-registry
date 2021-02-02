@@ -53,7 +53,7 @@ jest.mock('../src/libs/fulfillment', () => {
   const natsContext = JSON.parse(fs.readFileSync(p4, 'utf8'));
   const natsSubject = 'edit';
   return {
-    fulfillNamespaceEdit: jest.fn().mockResolvedValue({natsContext, natsSubject}),
+    fulfillNamespaceEdit: jest.fn().mockResolvedValue({ natsContext, natsSubject }),
   };
 });
 

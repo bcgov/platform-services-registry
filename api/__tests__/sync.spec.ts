@@ -36,7 +36,7 @@ jest.mock('../src/libs/namespace-set', () => {
   const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
   return {
-    isNamespaceSetProvisioned: jest.fn().mockReturnValue(true),
+    isProfileProvisioned: jest.fn().mockReturnValue(true),
     getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
   };
 });
@@ -153,7 +153,7 @@ describe('Sync event handlers', () => {
       const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
       return {
-        isNamespaceSetProvisioned: jest.fn().mockReturnValue(false),
+        isProfileProvisioned: jest.fn().mockReturnValue(false),
         getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
       };
     });

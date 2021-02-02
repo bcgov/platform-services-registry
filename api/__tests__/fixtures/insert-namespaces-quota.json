@@ -2,29 +2,29 @@
     {
         "namespaceId": 149,
         "clusterId": 1,
-        "quotaCpu": "medium",
-        "quotaMemory": "medium",
-        "quotaStorage": "medium"
+        "quotaCpuSize": "medium",
+        "quotaMemorySize": "medium",
+        "quotaStorageSize": "medium"
     },
     {
         "namespaceId": 150,
         "clusterId": 1,
-        "quotaCpu": "medium",
-        "quotaMemory": "medium",
-        "quotaStorage": "medium"
+        "quotaCpuSize": "medium",
+        "quotaMemorySize": "medium",
+        "quotaStorageSize": "medium"
     },
     {
         "namespaceId": 151,
         "clusterId": 1,
-        "quotaCpu": "medium",
-        "quotaMemory": "medium",
-        "quotaStorage": "medium"
+        "quotaCpuSize": "medium",
+        "quotaMemorySize": "medium",
+        "quotaStorageSize": "medium"
     },
     {
         "namespaceId": 152,
         "clusterId": 1,
-        "quotaCpu": "medium",
-        "quotaMemory": "medium",
-        "quotaStorage": "medium"
+        "quotaCpuSize": "medium",
+        "quotaMemorySize": "medium",
+        "quotaStorageSize": "medium"
     }
 ]
