@@ -19,6 +19,7 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
+// TODO:(yh) make primary_cluster_name from profile table NOT NULL
 export interface ProjectProfile extends CommonFields {
   name: string;
   description: string;

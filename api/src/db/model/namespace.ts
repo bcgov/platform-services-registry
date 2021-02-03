@@ -26,14 +26,15 @@ export const enum QuotaSize {
   Large = 'large',
 };
 
-// TODO:(yh) make quotaCpuSize, quotaMemorySize, quotaStorageSize NOT NULL
+// TODO:(yh) make quota_cpu_size, quota_memory_size, quota_storage_size NOT NULL
+// and to delete quota_cpu, quota_memory and quota_storage from ref_quota table
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
   clusterId: number;
   provisioned: boolean;
-  quotaCpuSize?: QuotaSize;
-  quotaMemorySize?: QuotaSize;
-  quotaStorageSize?: QuotaSize;
+  quotaCpuSize: QuotaSize;
+  quotaMemorySize: QuotaSize;
+  quotaStorageSize: QuotaSize;
 }
 
 export interface ProjectNamespace extends CommonFields {
