@@ -23,8 +23,8 @@ import FauxExpress from './src/fauxexpress';
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
 const selectProfile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
-const p4 = path.join(__dirname, 'fixtures/select-request.json');
-const selectRequest = JSON.parse(fs.readFileSync(p4, 'utf8'));
+const p1 = path.join(__dirname, 'fixtures/select-request.json');
+const selectRequest = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const client = new Pool().connect();
 
