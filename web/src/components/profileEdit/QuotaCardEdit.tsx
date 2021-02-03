@@ -146,16 +146,16 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           Request Quota
         </StyledFormButton>
       ) : (
-          <>
-            {/* @ts-ignore */}
-            <StyledFormDisabledButton style={{ display: 'block' }}>
-              Request Quota
+        <>
+          {/* @ts-ignore */}
+          <StyledFormDisabledButton style={{ display: 'block' }}>
+            Request Quota
           </StyledFormDisabledButton>
-            <Label as="span" variant="errorLabel">
-              Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+          <Label as="span" variant="errorLabel">
+            Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
           </Label>
-          </>
-        )}
+        </>
+      )}
     </>
   );
 };
