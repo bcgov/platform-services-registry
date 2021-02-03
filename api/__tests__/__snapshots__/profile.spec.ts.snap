@@ -162,6 +162,14 @@ Array [
   Array [
     Object {
       "text": "
+      SELECT * FROM ref_cluster
+        WHERE archived = false;
+      ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
         SELECT COUNT(*) FROM profile
           WHERE namespace_prefix = $1;",
       "values": Array [
@@ -179,10 +187,9 @@ Array [
             payment_bambora, payment_pay_bc, file_transfer, file_storage,
             geo_mapping_web, geo_mapping_location, scheduling_calendar,
             scheduling_appointments, idm_site_minder,
-            idm_keycloak, idm_active_dir,
-            other)
+            idm_keycloak, idm_active_dir, other, primary_cluster_name)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;",
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) RETURNING *;",
       "values": Array [
         "Health Gateway",
         "Patient prescription history website",
@@ -206,6 +213,7 @@ Array [
         false,
         false,
         "This is a test",
+        "kam",
       ],
     },
   ],
