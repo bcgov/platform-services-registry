@@ -19,5 +19,6 @@
   "idmSiteMinder": false,
   "idmKeyCloak": false,
   "idmActiveDir": false,
-  "other": "This is a test"
+  "other": "This is a test",
+  "primaryClusterName": "silver"
 }

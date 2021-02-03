@@ -52,8 +52,8 @@ jest.mock('../src/db/utils', () => ({
 }));
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p4 = path.join(__dirname, 'fixtures/provisioning-context.json');
-  const natsContext = JSON.parse(fs.readFileSync(p4, 'utf8'));
+  const p5 = path.join(__dirname, 'fixtures/provisioning-context.json');
+  const natsContext = JSON.parse(fs.readFileSync(p5, 'utf8'));
   const natsSubject = 'edit';
   return {
     fulfillNamespaceEdit: jest.fn().mockResolvedValue({ natsContext, natsSubject }),
