@@ -25,9 +25,10 @@ import DataManager from '../db';
 import { Request, RequestEditType } from '../db/model/request';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
+import { getAuthorization } from '../libs/authorization';
 import { fulfillNamespaceEdit } from '../libs/fulfillment';
 import shared from '../libs/shared';
-import { isNotAuthorized, validateObjProps } from '../libs/utils';
+import { validateObjProps } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 const whichService = 'profile editing';
@@ -83,15 +84,15 @@ export const fetchProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(Number(profileId));
+    const projectDetails = await ProfileModel.findById(Number(profileId));
 
-    const notAuthorized = isNotAuthorized(record, user);
+    const isAuthorized = getAuthorization(profileId, user, projectDetails, undefined);
 
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
-    res.status(200).json(record);
+    res.status(200).json(projectDetails);
   } catch (err) {
     if (err.code) {
       throw err
@@ -169,15 +170,15 @@ export const updateProjectProfile = async (
   } = body;
 
   try {
-    const record = await ProfileModel.findById(profileId);
+    const currentProjectDetails = await ProfileModel.findById(profileId);
     const aBody = {
       name,
       description,
       categoryId,
       busOrgId,
       prioritySystem,
-      userId: record.userId,
-      namespacePrefix: record.namespacePrefix,
+      userId: currentProjectDetails.userId,
+      namespacePrefix: currentProjectDetails.namespacePrefix,
       notificationEmail,
       notificationSms,
       notificationMsTeams,
@@ -195,10 +196,10 @@ export const updateProjectProfile = async (
       other,
     };
 
-    const notAuthorized = isNotAuthorized(record, user);
+    const isAuthorized = getAuthorization(profileId, user, currentProjectDetails, undefined);
 
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
@@ -207,9 +208,9 @@ export const updateProjectProfile = async (
       throw rv;
     }
 
-    const results = await ProfileModel.update(profileId, aBody);
+    const updatedProject = await ProfileModel.update(profileId, aBody);
 
-    res.status(200).json(results);
+    res.status(200).json(updatedProject);
   } catch (err) {
     if (err.code) {
       throw err;
@@ -229,12 +230,10 @@ export const archiveProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(profileId);
+    const isAuthorized = getAuthorization(profileId, user, undefined, undefined);
 
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
     await ProfileModel.delete(profileId);
@@ -273,21 +272,19 @@ export const addContactToProfile = async (
 export const fetchProfileContacts = async (
   { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ContactModel, ProfileModel } = dm;
+  const { ContactModel } = dm;
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(Number(profileId));
+    const projectContacts = await ContactModel.findForProject(Number(profileId));
 
-    const notAuthorized = isNotAuthorized(record, user);
+    const isAuthorized = getAuthorization(profileId, user, undefined, projectContacts);
 
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
-    const results = await ContactModel.findForProject(Number(profileId));
-
-    res.status(200).json(results);
+    res.status(200).json(projectContacts);
   } catch (err) {
     if (err.code) {
       throw err;
@@ -303,16 +300,14 @@ export const fetchProfileContacts = async (
 export const fetchProfileEditRequests = async (
   { params, user }: { params: any, user: AuthenticatedUser}, res: Response
 ): Promise<void> => {
-  const { RequestModel, ProfileModel } = dm;
+  const { RequestModel, } = dm;
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(Number(profileId));
+    const isAuthorized = getAuthorization(profileId, user, undefined, undefined);
 
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
     const results = await RequestModel.findForProfile(Number(profileId));
