@@ -27,7 +27,7 @@ import { QuotaSize } from '../db/model/quota';
 import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillEditRequest } from '../libs/fulfillment';
-import { getQuotaOptions } from '../libs/primary-namespace-set';
+import { getCurrentQuotaSize, getQuotaOptions } from '../libs/primary-namespace-set';
 import shared from '../libs/shared';
 import { formatNatsContactObject, isNotAuthorized } from '../libs/utils';
 
@@ -75,6 +75,29 @@ export const fetchProfileContacts = async (
     }
 
     const message = `Unable fetch profile contacts with profile ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchProfileQuotaSize = async (
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  const { ProfileModel } = dm;
+  const { profileId } = params;
+
+  try {
+    const profile = await ProfileModel.findById(Number(profileId));
+    const quotaSize: QuotaSize = await getCurrentQuotaSize(profile);
+
+    res.status(200).json({ quotaSize });
+  } catch (err) {
+    if (err.code) {
+      throw err;
+    }
+
+    const message = `Unable fetch profile quota size with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
