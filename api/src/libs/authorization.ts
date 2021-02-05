@@ -12,9 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Created by Jason Leach on 2020-05-14.
-//
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { USER_ROLES } from '../constants';
