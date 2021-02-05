@@ -603,10 +603,14 @@ Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM profile
-          WHERE user_id = $1 AND archived = false;",
+      SELECT DISTINCT(profile.id), profile.name, profile.description, profile.bus_org_id,
+      profile.user_id, profile.namespace_prefix FROM profile
+      JOIN profile_contact ON profile_contact.profile_id = profile.id
+      JOIN contact ON contact.id = profile_contact.contact_id
+      WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;",
       "values": Array [
         4,
+        "jane@example.com",
       ],
     },
   ],
