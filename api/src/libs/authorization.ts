@@ -22,17 +22,14 @@ const dm = new DataManager(shared.pgPool);
 
 export const getAuthorization = async(profileId: number, user: any, projectDetails?:any, projectContacts?:any): Promise<boolean | Error> => {
   const { ProfileModel, ContactModel } = dm;
-  console.log('param details:', projectDetails)
-  console.log('param details:', projectContacts)
+
   if (!projectDetails){
     projectDetails = await ProfileModel.findById(Number(profileId));
-  }
+  };
 
   if (!projectContacts){
     projectContacts = await ContactModel.findForProject(Number(profileId));
-  }
-  console.log('post details:', projectDetails)
-  console.log('post details:', projectContacts)
+  };
 
   const authorizedEmails = projectContacts.map(contact => contact.email);
 
@@ -42,7 +39,7 @@ export const getAuthorization = async(profileId: number, user: any, projectDetai
     || user.roles.includes(USER_ROLES.ADMINISTRATOR)
   )) {
     return errorWithCode('Unauthorized Access', 401);
-  }
+  };
 
   return true;
 }
