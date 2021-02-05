@@ -20,242 +20,18 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { USER_ROLES } from '../constants';
 import DataManager from '../db';
-import { Request, RequestEditType } from '../db/model/request';
-import { generateNamespacePrefix } from '../db/utils';
+import { Contact } from '../db/model/contact';
+import { ProjectProfile } from '../db/model/profile';
+import { QuotaSize } from '../db/model/quota';
+import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
-import { fulfillNamespaceEdit } from '../libs/fulfillment';
-import { getDefaultCluster } from '../libs/primary-namespace-set';
+import { fulfillEditRequest } from '../libs/fulfillment';
+import { getQuotaOptions } from '../libs/primary-namespace-set';
 import shared from '../libs/shared';
-import { isNotAuthorized, validateObjProps } from '../libs/utils';
+import { formatNatsContactObject, isNotAuthorized } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
-const whichService = 'profile editing';
-
-export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
-  const { ProfileModel } = dm;
-  const attempts = 3;
-  const candidates = Array.from({ length: attempts }, () => generateNamespacePrefix())
-  const promises = candidates.map(c => ProfileModel.isNamespacePrefixUnique(c));
-
-  try {
-    const results = await Promise.all(promises);
-    const values = results.map((cur, idx) => {
-      if (cur) {
-        return candidates[idx];
-      }
-
-      return;
-    }).filter(v => typeof v !== 'undefined');
-
-    return values.pop();
-  } catch (err) {
-    logger.error(err.message);
-    return;
-  }
-}
-
-export const fetchAllProjectProfiles = async (
-  { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
-  const { ProfileModel } = dm;
-
-  try {
-    let results;
-    if (user.roles.includes(USER_ROLES.ADMINISTRATOR)) {
-      results = await ProfileModel.findAll();
-    } else {
-      results = await ProfileModel.findProfilesByUserId(user.id);
-    }
-
-    res.status(200).json(results);
-  } catch (err) {
-    const message = 'Unable fetch all project profiles';
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-export const fetchProjectProfile = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
-): Promise<void> => {
-  const { ProfileModel } = dm;
-  const { profileId } = params;
-
-  try {
-    const record = await ProfileModel.findById(Number(profileId));
-
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
-    }
-
-    res.status(200).json(record);
-  } catch (err) {
-    if (err.code) {
-      throw err
-    }
-
-    const message = `Unable fetch project profile with ID ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-export const createProjectProfile = async (
-  { body, user }: { body: any, user: any }, res: Response
-): Promise<void> => {
-  const { ProfileModel } = dm;
-  const data = { ...body, userId: user.id };
-
-  // User cannot set the namespace prefix OR primary cluster name (current default cluster).
-  // If it exists, this overwrites it with a place holder value. It will be replaced
-  // with the actual value further on.
-  const rv = validateObjProps(ProfileModel.requiredFields, {
-    ...data,
-    namespacePrefix: 'placeholder',
-    primaryClusterName: 'placeholder',
-  });
-
-  if (rv) {
-    throw rv;
-  }
-
-  try {
-    const namespacePrefix = await uniqueNamespacePrefix();
-    if (!namespacePrefix) {
-      throw errorWithCode(500, 'Unable to generate unique namespace prefix');
-    }
-
-    const defaultCluster = await getDefaultCluster();
-    if (!defaultCluster) {
-      throw errorWithCode(500, 'Unable to set primary cluster id based on default cluster');
-    }
-
-    const results = await ProfileModel.create({ ...data, namespacePrefix, primaryClusterName: defaultCluster.name });
-
-    res.status(200).json(results);
-  } catch (err) {
-    const message = 'Unable create new project profile';
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-export const updateProjectProfile = async (
-  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
-): Promise<void> => {
-  const { ProfileModel } = dm;
-  const { profileId } = params;
-  const {
-    name,
-    description,
-    busOrgId,
-    prioritySystem,
-    notificationEmail,
-    notificationSms,
-    notificationMsTeams,
-    paymentBambora,
-    paymentPayBc,
-    fileTransfer,
-    fileStorage,
-    geoMappingWeb,
-    geoMappingLocation,
-    schedulingCalendar,
-    schedulingAppointments,
-    idmSiteMinder,
-    idmKeycloak,
-    idmActiveDir,
-    other,
-  } = body;
-
-  try {
-    const record = await ProfileModel.findById(profileId);
-    const aBody = {
-      name,
-      description,
-      busOrgId,
-      prioritySystem,
-      userId: record.userId,
-      namespacePrefix: record.namespacePrefix,
-      notificationEmail,
-      notificationSms,
-      notificationMsTeams,
-      paymentBambora,
-      paymentPayBc,
-      fileTransfer,
-      fileStorage,
-      geoMappingWeb,
-      geoMappingLocation,
-      schedulingCalendar,
-      schedulingAppointments,
-      idmSiteMinder,
-      idmKeycloak,
-      idmActiveDir,
-      other,
-      primaryClusterName: record.primaryClusterName,
-    };
-
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
-    }
-
-    const rv = validateObjProps(ProfileModel.requiredFields, aBody);
-
-    if (rv) {
-      throw rv;
-    }
-
-    const results = await ProfileModel.update(profileId, aBody);
-
-    res.status(200).json(results);
-  } catch (err) {
-    if (err.code) {
-      throw err;
-    }
-
-    const message = `Unable update project profile ID ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-export const archiveProjectProfile = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
-): Promise<void> => {
-  const { ProfileModel } = dm;
-  const { profileId } = params;
-
-  try {
-    const record = await ProfileModel.findById(profileId);
-
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
-    }
-
-    await ProfileModel.delete(profileId);
-
-    res.status(204).end();
-  } catch (err) {
-    if (err.code) {
-      throw err;
-    }
-
-    const message = 'Unable to archive project profile';
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
 
 export const addContactToProfile = async (
   { params }: { params: any }, res: Response
@@ -335,7 +111,11 @@ export const fetchProfileEditRequests = async (
   }
 };
 
-export const requestProfileEdit = async (
+// TODO:(yh) think of a way to run a base method for the following edit async to check
+// 0. if the profile has any existing request
+// 1. if profile id is in valid format
+// 2. user is authorized to operate around this profile
+export const requestProjectProfileEdit = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   const { RequestModel } = dm;
@@ -350,9 +130,9 @@ export const requestProfileEdit = async (
       throw new Error(errmsg);
     }
 
-    const { natsContext, natsSubject } = await fulfillNamespaceEdit(profileId, editType, editObject);
+    const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
 
-    // create Request record for contact edit
+    // create Request record for project-profile edit
     await RequestModel.create({
       profileId,
       editType,
@@ -362,24 +142,144 @@ export const requestProfileEdit = async (
     });
 
     res.status(204).end();
-
   } catch (err) {
     const message = `Unable to update profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const requestProfileContactsEdit = async (
+  { params, body }: { params: any, body: any }, res: Response
+): Promise<void> => {
+  const { RequestModel, ContactModel } = dm;
+  const { profileId } = params;
+  const { productOwner, technicalContact } = body;
+
+  try {
+    // process request params to get profileId and define RequestEditType
+    const editType = RequestEditType.Contacts;
+    const contacts = [productOwner, technicalContact]
+
+    // Step 1. GET current contact details
+    const currentPOvalues = await ContactModel.findById(productOwner.id);
+    const currentTCvalues = await ContactModel.findById(technicalContact.id);
+
+    // Step 2. Compare if GithubId or Email values were changed
+    const provisionerEdits = [
+      currentPOvalues.githubId !== productOwner.githubId,
+      currentPOvalues.email !== productOwner.email,
+      currentTCvalues.githubId !== technicalContact.githubId,
+      currentTCvalues.email !== technicalContact.email,
+    ];
+
+    // Step 3. Compare if first or last name details were altered
+    const contactNameEdits = [
+      currentPOvalues.firstName !== productOwner.firstName,
+      currentPOvalues.lastName !== productOwner.lastName,
+      currentTCvalues.firstName !== technicalContact.firstName,
+      currentTCvalues.lastName !== technicalContact.lastName,
+    ];
+
+    // Step 4. Assess if provisioner or contact edits occurred.
+    const provisionerEdit = provisionerEdits.some(provisionerEditsChecks => provisionerEditsChecks);
+    const contactNameEdit = contactNameEdits.some(contactNameEditsChecks => contactNameEditsChecks);
+
+    if (provisionerEdit) {
+      // process request body for natsContext
+      const editObject = await formatNatsContactObject(body);
+      if (!editObject) {
+        const errmsg = 'Cant generate request edit object';
+        throw new Error(errmsg);
+      }
+
+      const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
+
+      // create Request record for contact edit
+      await RequestModel.create({
+        profileId,
+        editType,
+        editObject: JSON.stringify(contacts),
+        natsSubject,
+        natsContext: JSON.stringify(natsContext),
+      })
+      res.status(204).end();
+    } else if (contactNameEdit) {
+      const updatePromises: any = [];
+      contacts.forEach((contact: Contact) => {
+        updatePromises.push(ContactModel.update(Number(contact.id), contact));
+      })
+      await Promise.all(updatePromises);
+      res.status(204).end();
+    } else {
+      res.status(204).end();
+    };
+  } catch (err) {
+    const message = `Unable to update contact`;
     logger.error(`${message}, err = ${err.message}`);
     throw errorWithCode(message, 500);
   }
 };
 
-export const processProfileEdit = async (request: Request): Promise<void> => {
+export const fetchProfileQuotaOptions = async (
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
   const { ProfileModel } = dm;
+  const { profileId } = params;
+
   try {
-    const { profileId, editObject } = request;
-    const profile = JSON.parse(editObject);
-    await ProfileModel.update(Number(profileId), profile);
-    return;
+    const profile: ProjectProfile = await ProfileModel.findById(profileId);
+    const quotaOptions: QuotaSize[] = await getQuotaOptions(profile);
+
+    res.status(200).json(quotaOptions);
   } catch (err) {
-    const message = `Unable to process requestId ${request.id} on bot callback for ${whichService}`;
+    const message = `Unable to fetch quota options for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
-    throw err;
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const requestProfileQuotaEdit = async (
+  { params, user, body }: { params: any, user: AuthenticatedUser, body: any }, res: Response
+): Promise<void> => {
+  const { RequestModel, ProfileModel, QuotaModel } = dm;
+  const { profileId } = params;
+  const { requestedQuotaSize } = body;
+
+  try {
+    const profile = await ProfileModel.findById(profileId);
+    const quotaOptions = await getQuotaOptions(profile);
+
+    // 0. Verify if requested quota size is valid
+    if (!(requestedQuotaSize && quotaOptions.includes(requestedQuotaSize))) {
+      const errmsg = 'Please provide correct requested quota size in body';
+      throw new Error(errmsg);
+    }
+
+    // 1. Pass request to provisioning bot
+    const editObject = {
+      quota: requestedQuotaSize,
+      quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
+    };
+    const editType = RequestEditType.QuotaSize;
+    const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
+
+    // 2. Save request to track later
+    await RequestModel.create({
+      profileId,
+      editType,
+      editObject: JSON.stringify(editObject),
+      natsSubject,
+      natsContext: JSON.stringify(natsContext),
+    });
+
+    res.status(204).end();
+  } catch (err) {
+    const message = `Unable to request quota size for profile ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
   }
 };

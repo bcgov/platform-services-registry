@@ -21,6 +21,7 @@ import DataManager from '../db';
 import { Cluster } from '../db/model/cluster';
 import { ClusterNamespace, ProjectNamespace } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
+import { QuotaSize } from '../db/model/quota';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -28,23 +29,13 @@ const { NamespaceModel, ClusterModel } = dm;
 
 export const isProfileProvisioned = async (profile: ProjectProfile): Promise<boolean | Error> => {
   try {
-    const primaryCluster = await ClusterModel.findByName(profile.primaryClusterName);
+    const clusterNamespaces = await getPrimaryNamespaceSet(profile);
+
     // @ts-ignore
-    const namespaces: ProjectNamespace[] = await NamespaceModel.findForProfile(profile.id);
-    if (!primaryCluster || !namespaces) {
-      throw new Error('Unable to find primary cluster or namespaces');
-    }
-
-    const promises: Promise<ClusterNamespace>[] = [];
-    namespaces.forEach(namespace => {
-      // @ts-ignore
-      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, primaryCluster.id));
-    });
-    const clusterNamespaces = await Promise.all(promises);
-
     const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
       return clusterNamespace.provisioned;
     });
+
     if (flags.every(f => f === true)) {
       return true;
     } else if (flags.every(f => f === false)) {
@@ -61,13 +52,111 @@ export const isProfileProvisioned = async (profile: ProjectProfile): Promise<boo
   }
 };
 
-export const getDefaultCluster = async (): Promise<Cluster | undefined> => {
+export const getCurrentQuotaSize = async (profile: ProjectProfile): Promise<QuotaSize> => {
+  try {
+    const clusterNamespaces = await getPrimaryNamespaceSet(profile);
+    const quotaSizes: QuotaSize[] = [];
+    clusterNamespaces.forEach((clusterNamespace: ClusterNamespace): any => {
+      const { quotaCpuSize, quotaMemorySize, quotaStorageSize } = clusterNamespace;
+      quotaSizes.push(quotaCpuSize, quotaMemorySize, quotaStorageSize);
+    })
+
+    const hasSameQuotaSizes = (quotaSizes.every((val, i, arr) => val === arr[0]));
+    if (hasSameQuotaSizes) {
+      return quotaSizes[0];
+    } else {
+      throw new Error(`Need to fix profile as the quota sizes of primary namespace set
+      on ${profile.primaryClusterName} are not consistent`);
+    }
+  } catch (err) {
+    const message = `Unable to get quota size for profile ${profile.id}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+export const getQuotaOptions = async (profile: ProjectProfile): Promise<QuotaSize[]> => {
+  const quotaSizeNames = Object.values(QuotaSize);
+
+  try {
+    const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
+    const currentSize = await getCurrentQuotaSize(profile);
+    const num: number = quotaSizeNames.indexOf(currentSize);
+
+    // allows current size itself, +1 size and all the smaller sizes
+    return allQuotaOptions.slice(
+      1, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length);
+  } catch (err) {
+    const message = `Unable to get quota size for profile ${profile.id}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+interface QuotaData {
+  quotaCpuSize: QuotaSize,
+  quotaMemorySize: QuotaSize,
+  quotaStorageSize: QuotaSize,
+}
+
+export const applyRequestedQuotaSize = async (profile: ProjectProfile, quotaSize: QuotaSize): Promise<void | Error> => {
+  try {
+    const clusterNamespaces = await getPrimaryNamespaceSet(profile);
+    const updatePromises: any = [];
+
+    const data: QuotaData = {
+      quotaCpuSize: quotaSize,
+      quotaMemorySize: quotaSize,
+      quotaStorageSize: quotaSize,
+    }
+
+    clusterNamespaces.forEach((clusterNamespace: ClusterNamespace): any => {
+      // @ts-ignore
+      updatePromises.push(NamespaceModel.updateQuotaSize(clusterNamespace.namespaceId, clusterNamespace.id, data));
+    });
+
+    await Promise.all(updatePromises);
+  } catch (err) {
+    const message = `Unable to get quota size for profile ${profile.id}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+export const getDefaultCluster = async (): Promise<Cluster | Error> => {
   try {
     const clusters = await ClusterModel.findAll();
     return clusters.filter(c => c.isDefault === true).pop();
   } catch (err) {
     const message = 'Unable to get default cluster';
     logger.error(`${message}, err = ${err.message}`);
-    return;
+
+    throw err;
+  }
+};
+
+const getPrimaryNamespaceSet = async (profile: ProjectProfile): Promise<ClusterNamespace[]> => {
+  try {
+    const primaryCluster = await ClusterModel.findByName(profile.primaryClusterName);
+    // @ts-ignore
+    const namespaces: ProjectNamespace[] = await NamespaceModel.findForProfile(profile.id);
+    if (!primaryCluster || !namespaces) {
+      throw new Error('Unable to find primary cluster or namespaces');
+    }
+
+    const promises: Promise<ClusterNamespace>[] = [];
+    namespaces.forEach(namespace => {
+      // @ts-ignore
+      promises.push(NamespaceModel.findForNamespaceAndCluster(namespace.namespaceId, primaryCluster.id));
+    });
+    return await Promise.all(promises);
+  } catch (err) {
+    const message = 'Unable to get primary namespace set for the profile';
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
   }
 };
