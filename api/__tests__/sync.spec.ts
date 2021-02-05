@@ -80,7 +80,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getAllProvisionedProfileIds(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
@@ -109,7 +108,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getProvisionedProfileBotJson(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
@@ -135,7 +133,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
@@ -174,7 +171,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();

@@ -1,0 +1,20 @@
+[
+  {
+    "jsonBuildObject": {
+      "cpu": {
+        "requests": 4,
+        "limits": 8
+      },
+      "memory": {
+        "requests": "16Gi",
+        "limits": "32Gi"
+      },
+      "storage": {
+        "block": "50Gi",
+        "file": "50Gi",
+        "backup": "25Gi",
+        "capacity": "50Gi"
+      }
+    }
+  }
+]

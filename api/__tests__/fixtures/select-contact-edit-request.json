@@ -26,6 +26,24 @@
     "type": "standard",
     "profileId": 118,
     "displayName": "Project X",
+    "newDisplayName": "NULL",
+    "quota": "small",
+    "quotas": {
+      "cpu": {
+        "requests": "4",
+        "limits": "8"
+      },
+      "memory": {
+        "requests": "16Gi",
+        "limits": "32Gi"
+      },
+      "storage": {
+        "block": "50Gi",
+        "file": "50Gi",
+        "backup": "25Gi",
+        "capacity": "50Gi"
+      }
+    },
     "namespaces": [
       {
         "namespaceId": 149,
@@ -34,12 +52,7 @@
           {
             "clusterId": 1,
             "name": "silver",
-            "provisioned": false,
-            "quotas": {
-              "cpu": "small",
-              "memory": "small",
-              "storage": "small"
-            }
+            "provisioned": true
           }
         ]
       },
@@ -50,12 +63,7 @@
           {
             "clusterId": 1,
             "name": "silver",
-            "provisioned": false,
-            "quotas": {
-              "cpu": "small",
-              "memory": "small",
-              "storage": "small"
-            }
+            "provisioned": true
           }
         ]
       },
@@ -66,12 +74,7 @@
           {
             "clusterId": 1,
             "name": "silver",
-            "provisioned": false,
-            "quotas": {
-              "cpu": "small",
-              "memory": "small",
-              "storage": "small"
-            }
+            "provisioned": true
           }
         ]
       },
@@ -82,25 +85,20 @@
           {
             "clusterId": 1,
             "name": "silver",
-            "provisioned": false,
-            "quotas": {
-              "cpu": "small",
-              "memory": "small",
-              "storage": "small"
-            }
+            "provisioned": true
           }
         ]
       }
     ],
     "productOwner": {
-        "userId": "jane1100",
-        "provider": "github",
-        "email": "jane.doe@example.com"
+      "userId": "jane1100",
+      "provider": "github",
+      "email": "jane.doe@example.com"
     },
     "technicalContact": {
-        "userId": "john1100",
-        "provider": "github",
-        "email": "john.doe@example.com"
+      "userId": "john1100",
+      "provider": "github",
+      "email": "john.doe@example.com"
     }
   },
   "archived": false,
