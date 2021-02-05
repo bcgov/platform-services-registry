@@ -91,7 +91,7 @@ export const fetchProfileQuotaSize = async (
     const profile = await ProfileModel.findById(Number(profileId));
     const quotaSize: QuotaSize = await getCurrentQuotaSize(profile);
 
-    res.status(200).json({ quotaSize });
+    res.status(200).json(quotaSize);
   } catch (err) {
     if (err.code) {
       throw err;
