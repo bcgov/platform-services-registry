@@ -93,7 +93,6 @@ const ProfileEdit: React.FC = (props: any) => {
   async function updateProfileState() {
     const namespaces = await api.getNamespacesByProfileId(profileId);
     const ministry = await api.getMinistry();
-    const quotaOptions = await api.getQuotaOptionsByProfileId(profileId);
     const hasPendingEdit = await hasPendingEditRequest(api, profileId);
 
     const projectDetails = await api.getProfileByProfileId(profileId);
@@ -105,7 +104,8 @@ const ProfileEdit: React.FC = (props: any) => {
     const contactDetails = await api.getContactsByProfileId(profileId);
     contactDetails.data = { ...getProfileContacts(contactDetails.data) };
 
-    const quotaSize = namespaces.data.quota;
+    const quotaOptions = await api.getQuotaOptionsByProfileId(profileId);
+    const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
     setProfileState((profileState0: any) => ({
       ...profileState0,
@@ -119,8 +119,8 @@ const ProfileEdit: React.FC = (props: any) => {
       contactDetails: contactDetails.data,
       quotaDetails: {
         licensePlate: getLicensePlate(namespaces.data),
-        quotaSize,
-        quotaOptions,
+        quotaSize: quotaSize.data,
+        quotaOption: quotaOptions.data,
       },
     }));
   }

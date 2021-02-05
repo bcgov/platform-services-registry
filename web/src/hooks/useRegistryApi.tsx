@@ -160,6 +160,14 @@ export default function useRegistryApi() {
     }
   };
 
+  const getQuotaSizeByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/quota-size`);
+    }
+  };
+
   const getQuotaOptionsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -199,6 +207,7 @@ export default function useRegistryApi() {
     createNamespaceByProfileId,
     getContactsByProfileId,
     getNamespaceByProfileId,
+    getQuotaSizeByProfileId,
     getProfileByProfileId,
     getNamespacesByProfileId,
     getQuotaOptionsByProfileId,
