@@ -115,8 +115,10 @@ export const applyRequestedQuotaSize = async (profile: ProjectProfile, quotaSize
     }
 
     clusterNamespaces.forEach((clusterNamespace: ClusterNamespace): any => {
-      // @ts-ignore
-      updatePromises.push(NamespaceModel.updateQuotaSize(clusterNamespace.namespaceId, clusterNamespace.clusterId, data));
+      updatePromises.push(NamespaceModel.updateQuotaSize(
+        // @ts-ignore
+        clusterNamespace.namespaceId, clusterNamespace.clusterId, data)
+      );
     });
 
     await Promise.all(updatePromises);
