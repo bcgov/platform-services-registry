@@ -20,7 +20,7 @@ export enum QuotaSize {
     Small = 'small',
     Medium = 'medium',
     Large = 'large',
-};
+}
 
 export interface Quotas {
     cpu: {
@@ -37,7 +37,7 @@ export interface Quotas {
         backup: string;
         capacity: string;
     };
-};
+}
 
 export interface Quota extends CommonFields {
     cpuRequests: number;

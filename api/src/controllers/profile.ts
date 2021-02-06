@@ -226,18 +226,15 @@ export const requestProfileContactsEdit = async (
         editObject: JSON.stringify(contacts),
         natsSubject,
         natsContext: JSON.stringify(natsContext),
-      })
-      res.status(204).end();
+      });
     } else if (contactNameEdit) {
       const updatePromises: any = [];
       contacts.forEach((contact: Contact) => {
         updatePromises.push(ContactModel.update(Number(contact.id), contact));
       })
       await Promise.all(updatePromises);
-      res.status(204).end();
-    } else {
-      res.status(204).end();
-    };
+    }
+    res.status(204).end();
   } catch (err) {
     const message = `Unable to update contact`;
     logger.error(`${message}, err = ${err.message}`);
