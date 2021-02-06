@@ -22,7 +22,6 @@ import { PROFILE_EDIT_VIEW_NAMES, QUOTA_SIZES, ROUTE_PATHS } from '../../constan
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import theme from '../../theme';
-import { QuotaSize } from '../../types';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { composeRequestBodyForQuotaEdit } from '../../utils/transformDataHelper';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
@@ -50,7 +49,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const { setOpenBackdrop } = useCommonState();
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
-  const [selectedSize, setSelectedSize] = useState<QuotaSize>('small');
+  const [selectedSize, setSelectedSize] = useState<any>('');
 
   const specs = QUOTA_SIZES.filter((size: any) => size.name === quotaSize).pop();
 
@@ -138,22 +137,22 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             </option>
           ))}
       </select>
-      {!hasPendingEdit && isProvisioned ? (
+      {!hasPendingEdit && isProvisioned && selectedSize !== '' ? (
         // @ts-ignore
         <StyledFormButton style={{ display: 'block' }} onClick={handleSubmit}>
           Request Quota
         </StyledFormButton>
       ) : (
-          <>
-            {/* @ts-ignore */}
-            <StyledFormDisabledButton style={{ display: 'block' }}>
-              Request Quota
-          </StyledFormDisabledButton>
-            <Label as="span" variant="errorLabel">
-              Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
-          </Label>
-          </>
-        )}
+        // @ts-ignore
+        <StyledFormDisabledButton style={{ display: 'block' }}>
+          Request Quota
+        </StyledFormDisabledButton>
+      )}
+      {!(!hasPendingEdit && isProvisioned) && (
+        <Label as="span" variant="errorLabel">
+          Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+        </Label>
+      )}
     </>
   );
 };
