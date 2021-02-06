@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
             ...getProfileContacts(contactResponses[i].data),
           };
           response.data[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
-          response.data[i].quotaSize = quotaSizeResponse[i].data.quotaSize;
+          response.data[i].quotaSize = quotaSizeResponse[i].data;
         }
 
         // 4. Then update dashboard cards with fetched profile info

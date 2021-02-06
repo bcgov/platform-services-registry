@@ -130,6 +130,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       <select value={selectedSize} onChange={handleChange}>
         <option>Select...</option>
         {/* @ts-ignore */}
+
         {quotaOptions.length !== 0 &&
           quotaOptions.map((opt: any) => (
             <option key={opt} value={opt}>

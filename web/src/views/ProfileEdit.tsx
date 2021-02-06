@@ -120,7 +120,7 @@ const ProfileEdit: React.FC = (props: any) => {
       quotaDetails: {
         licensePlate: getLicensePlate(namespaces.data),
         quotaSize: quotaSize.data,
-        quotaOption: quotaOptions.data,
+        quotaOptions: quotaOptions.data,
       },
     }));
   }
