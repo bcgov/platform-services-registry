@@ -193,7 +193,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
     const updatePromises: any = [];
     contacts.forEach((contact: Contact) => {
       updatePromises.push(ContactModel.update(Number(contact.id), contact));
-    })
+    });
 
     await Promise.all(updatePromises);
   } catch (err) {
@@ -211,8 +211,7 @@ const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
     const { quota } = JSON.parse(editObject);
     const profile = await ProfileModel.findById(profileId);
 
-    // @ts-ignore
-    await applyRequestedQuotaSize(profile, quota)
+    await applyRequestedQuotaSize(profile, quota);
   } catch (err) {
     const message = `Unable to process requestId ${request.id} on bot callback`;
     logger.error(`${message}, err = ${err.message}`);

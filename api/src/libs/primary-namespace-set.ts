@@ -84,9 +84,11 @@ export const getQuotaOptions = async (profile: ProjectProfile): Promise<QuotaSiz
     const currentSize = await getCurrentQuotaSize(profile);
     const num: number = quotaSizeNames.indexOf(currentSize);
 
-    // allows current size itself, +1 size and all the smaller sizes
+    // allows +1 size and all the smaller sizes
     return allQuotaOptions.slice(
-      1, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length);
+      0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
+        size => size !== currentSize
+      );
   } catch (err) {
     const message = `Unable to get quota size for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -114,7 +116,7 @@ export const applyRequestedQuotaSize = async (profile: ProjectProfile, quotaSize
 
     clusterNamespaces.forEach((clusterNamespace: ClusterNamespace): any => {
       // @ts-ignore
-      updatePromises.push(NamespaceModel.updateQuotaSize(clusterNamespace.namespaceId, clusterNamespace.id, data));
+      updatePromises.push(NamespaceModel.updateQuotaSize(clusterNamespace.namespaceId, clusterNamespace.clusterId, data));
     });
 
     await Promise.all(updatePromises);
