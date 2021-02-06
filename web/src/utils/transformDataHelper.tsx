@@ -186,9 +186,7 @@ export function getLicensePlate(namespaces: Namespace[]): string | Error {
   }
 }
 
-export function composeRequestBodyForQuotaEdit(
-  requestedQuotaSize: QuotaSize,
-): any {
+export function composeRequestBodyForQuotaEdit(requestedQuotaSize: QuotaSize): any {
   try {
     return {
       requestedQuotaSize,
