@@ -209,7 +209,7 @@ const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
   try {
     const { profileId, editObject } = request;
     const { quota } = JSON.parse(editObject);
-    const profile = ProfileModel.findById(profileId);
+    const profile = await ProfileModel.findById(profileId);
 
     // @ts-ignore
     await applyRequestedQuotaSize(profile, quota)
