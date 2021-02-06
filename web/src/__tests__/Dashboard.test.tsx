@@ -42,10 +42,15 @@ jest.mock(
       });
 
       const getQuotaSizeByProfileId = jest.fn().mockResolvedValue({
-        data: "small",
+        data: 'small',
       });
 
-      return { getProfile, getContactsByProfileId, getNamespaceByProfileId, getQuotaSizeByProfileId };
+      return {
+        getProfile,
+        getContactsByProfileId,
+        getNamespaceByProfileId,
+        getQuotaSizeByProfileId,
+      };
     },
 );
 
