@@ -25,11 +25,11 @@ export const getAuthorization = async(profileId: number, user: any, projectDetai
 
   if (!projectDetails){
     projectDetails = await ProfileModel.findById(Number(profileId));
-  };
+  }
 
   if (!projectContacts){
     projectContacts = await ContactModel.findForProject(Number(profileId));
-  };
+  }
 
   const authorizedEmails = projectContacts.map(contact => contact.email);
 
@@ -39,7 +39,7 @@ export const getAuthorization = async(profileId: number, user: any, projectDetai
     || user.roles.includes(USER_ROLES.ADMINISTRATOR)
   )) {
     return errorWithCode('Unauthorized Access', 401);
-  };
+  }
 
   return true;
 }

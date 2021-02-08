@@ -12,9 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Created by Jason Leach on 2020-04-27.
-//
 
 'use strict';
 
@@ -86,10 +83,10 @@ export const fetchProjectProfile = async (
   try {
     const projectDetails = await ProfileModel.findById(Number(profileId));
 
-    const isAuthorized = getAuthorization(profileId, user, projectDetails, undefined);
+    const isNotAuthorized = getAuthorization(profileId, user, projectDetails);
 
-    if (!(isAuthorized)) {
-      throw isAuthorized;
+    if (isNotAuthorized) {
+      throw isNotAuthorized;
     }
 
     res.status(200).json(projectDetails);
@@ -196,10 +193,10 @@ export const updateProjectProfile = async (
       other,
     };
 
-    const isAuthorized = getAuthorization(profileId, user, currentProjectDetails, undefined);
+    const isNotAuthorized = getAuthorization(profileId, user, currentProjectDetails);
 
-    if (!(isAuthorized)) {
-      throw isAuthorized;
+    if (isNotAuthorized) {
+      throw isNotAuthorized;
     }
 
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
@@ -230,10 +227,10 @@ export const archiveProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const isAuthorized = getAuthorization(profileId, user, undefined, undefined);
+    const isNotAuthorized = getAuthorization(profileId, user);
 
-    if (!(isAuthorized)) {
-      throw isAuthorized;
+    if (isNotAuthorized) {
+      throw isNotAuthorized;
     }
 
     await ProfileModel.delete(profileId);
@@ -278,10 +275,10 @@ export const fetchProfileContacts = async (
   try {
     const projectContacts = await ContactModel.findForProject(Number(profileId));
 
-    const isAuthorized = getAuthorization(profileId, user, undefined, projectContacts);
+    const isNotAuthorized = getAuthorization(profileId, user, undefined, projectContacts);
 
-    if (!(isAuthorized)) {
-      throw isAuthorized;
+    if (isNotAuthorized) {
+      throw isNotAuthorized;
     }
 
     res.status(200).json(projectContacts);
@@ -304,10 +301,10 @@ export const fetchProfileEditRequests = async (
   const { profileId } = params;
 
   try {
-    const isAuthorized = getAuthorization(profileId, user, undefined, undefined);
+    const isNotAuthorized = getAuthorization(profileId, user);
 
-    if (!(isAuthorized)) {
-      throw isAuthorized;
+    if (isNotAuthorized) {
+      throw isNotAuthorized;
     }
 
     const results = await RequestModel.findForProfile(Number(profileId));
