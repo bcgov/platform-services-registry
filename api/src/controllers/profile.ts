@@ -86,7 +86,7 @@ export const fetchProjectProfile = async (
   try {
     const projectDetails = await ProfileModel.findById(Number(profileId));
 
-    const isAuthorized = getAuthorization(profileId, user, projectDetails, undefined);
+    const isAuthorized = getAuthorization(profileId, user, projectDetails);
 
     if (!(isAuthorized)) {
       throw isAuthorized;
@@ -196,7 +196,7 @@ export const updateProjectProfile = async (
       other,
     };
 
-    const isAuthorized = getAuthorization(profileId, user, currentProjectDetails, undefined);
+    const isAuthorized = getAuthorization(profileId, user, currentProjectDetails);
 
     if (!(isAuthorized)) {
       throw isAuthorized;
@@ -230,7 +230,7 @@ export const archiveProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const isAuthorized = getAuthorization(profileId, user, undefined, undefined);
+    const isAuthorized = getAuthorization(profileId, user);
 
     if (!(isAuthorized)) {
       throw isAuthorized;
@@ -304,7 +304,7 @@ export const fetchProfileEditRequests = async (
   const { profileId } = params;
 
   try {
-    const isAuthorized = getAuthorization(profileId, user, undefined, undefined);
+    const isAuthorized = getAuthorization(profileId, user);
 
     if (!(isAuthorized)) {
       throw isAuthorized;
