@@ -65,7 +65,7 @@ export const fetchAllProjectProfiles = async (
     if (user.roles.includes(USER_ROLES.ADMINISTRATOR)) {
       results = await ProfileModel.findAll();
     } else {
-      results = await ProfileModel.findProfilesByUserId(user.id);
+      results = await ProfileModel.findProfilesByUserIdOrEmail(user.id, user.email);
     }
 
     res.status(200).json(results);
