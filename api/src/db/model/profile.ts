@@ -276,4 +276,25 @@ export default class ProfileModel extends Model {
       throw err;
     }
   }
+
+  async findProfilesByUserIdOrEmail(id: number, email: string): Promise<any> {
+    const query = {
+      text: `
+      SELECT DISTINCT(profile.id), profile.name, profile.description, profile.bus_org_id,
+      profile.user_id, profile.namespace_prefix FROM ${this.table}
+      JOIN profile_contact ON profile_contact.profile_id = profile.id
+      JOIN contact ON contact.id = profile_contact.contact_id
+      WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;`,
+      values: [id, email],
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to fetch Profile(s) with User Id ${id} or Email ${email}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
 }
