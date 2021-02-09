@@ -45,12 +45,11 @@ export const provisionProfileNamespaces = async (
       const profile = await ProfileModel.findById(profileId);
       const cluster = await ClusterModel.findByName(profile.primaryClusterName);
 
-      if (!profile || !cluster) {
+      if (!profile || !cluster || !cluster.id) {
         const errmsg = 'Unable to fetch info for provisioning';
         throw new Error(errmsg);
       }
 
-      // @ts-expect-error
       await NamespaceModel.createProjectSet(profileId, cluster.id, profile.namespacePrefix);
     }
 
