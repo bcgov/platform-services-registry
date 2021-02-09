@@ -144,7 +144,7 @@ Array [
               (
                 SELECT row_to_json(d)
                 from (
-                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  SELECT cluster_namespace.quota_cpu_size AS \\"cpu\\", cluster_namespace.quota_memory_size AS \\"memory\\", cluster_namespace.quota_storage_size AS \\"storage\\"
                   FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
                   WHERE namespace.id = cluster_namespace.namespace_id
                 ) d
@@ -224,7 +224,7 @@ Array [
               (
                 SELECT row_to_json(d)
                 from (
-                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  SELECT cluster_namespace.quota_cpu_size AS \\"cpu\\", cluster_namespace.quota_memory_size AS \\"memory\\", cluster_namespace.quota_storage_size AS \\"storage\\"
                   FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
                   WHERE namespace.id = cluster_namespace.namespace_id
                 ) d
@@ -278,7 +278,7 @@ Array [
               (
                 SELECT row_to_json(d)
                 from (
-                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  SELECT cluster_namespace.quota_cpu_size AS \\"cpu\\", cluster_namespace.quota_memory_size AS \\"memory\\", cluster_namespace.quota_storage_size AS \\"storage\\"
                   FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
                   WHERE namespace.id = cluster_namespace.namespace_id
                 ) d
@@ -313,7 +313,7 @@ Array [
               (
                 SELECT row_to_json(d)
                 from (
-                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  SELECT cluster_namespace.quota_cpu_size AS \\"cpu\\", cluster_namespace.quota_memory_size AS \\"memory\\", cluster_namespace.quota_storage_size AS \\"storage\\"
                   FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
                   WHERE namespace.id = cluster_namespace.namespace_id
                 ) d
@@ -465,15 +465,15 @@ Array [
   Object {
     "clusterId": 1,
     "namespaceId": 149,
-    "quotaCpu": Array [
+    "quotaCpuSize": Array [
       "small",
       "medium",
     ],
-    "quotaMemory": Array [
+    "quotaMemorySize": Array [
       "small",
       "medium",
     ],
-    "quotaStorage": Array [
+    "quotaStorageSize": Array [
       "small",
       "medium",
     ],
@@ -481,15 +481,15 @@ Array [
   Object {
     "clusterId": 1,
     "namespaceId": 150,
-    "quotaCpu": Array [
+    "quotaCpuSize": Array [
       "small",
       "medium",
     ],
-    "quotaMemory": Array [
+    "quotaMemorySize": Array [
       "small",
       "medium",
     ],
-    "quotaStorage": Array [
+    "quotaStorageSize": Array [
       "small",
       "medium",
     ],
@@ -497,15 +497,15 @@ Array [
   Object {
     "clusterId": 1,
     "namespaceId": 151,
-    "quotaCpu": Array [
+    "quotaCpuSize": Array [
       "small",
       "medium",
     ],
-    "quotaMemory": Array [
+    "quotaMemorySize": Array [
       "small",
       "medium",
     ],
-    "quotaStorage": Array [
+    "quotaStorageSize": Array [
       "small",
       "medium",
     ],
@@ -513,15 +513,15 @@ Array [
   Object {
     "clusterId": 1,
     "namespaceId": 152,
-    "quotaCpu": Array [
+    "quotaCpuSize": Array [
       "small",
       "medium",
     ],
-    "quotaMemory": Array [
+    "quotaMemorySize": Array [
       "small",
       "medium",
     ],
-    "quotaStorage": Array [
+    "quotaStorageSize": Array [
       "small",
       "medium",
     ],
@@ -545,7 +545,7 @@ Array [
               (
                 SELECT row_to_json(d)
                 from (
-                  SELECT cluster_namespace.quota_cpu AS \\"cpu\\", cluster_namespace.quota_memory AS \\"memory\\", cluster_namespace.quota_storage AS \\"storage\\"
+                  SELECT cluster_namespace.quota_cpu_size AS \\"cpu\\", cluster_namespace.quota_memory_size AS \\"memory\\", cluster_namespace.quota_storage_size AS \\"storage\\"
                   FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
                   WHERE namespace.id = cluster_namespace.namespace_id
                 ) d

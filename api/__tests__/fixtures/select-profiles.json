@@ -7,7 +7,8 @@
     "criticalSystem": false,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4
+    "userId": 4,
+    "primaryClusterName": "silver"
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "criticalSystem": true,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4
+    "userId": 4,
+    "primaryClusterName": "silver"
   },
   {
     "id": 3,
@@ -26,13 +28,15 @@
     "prioritySystem": false,
     "criticalSystem": false,
     "createdAt": "2020-04-28T00:00:00.000Z",
-    "updatedAt": "2020-04-28T00:00:00.000Z"
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "primaryClusterName": "silver"
   },
   {
     "id": 4,
     "name": "Secure Image",
     "description": "This app is super cool",
     "createdAt": "2020-04-28T00:00:00.000Z",
-    "updatedAt": "2020-04-28T00:00:00.000Z"
+    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "primaryClusterName": "silver"
   }
 ]

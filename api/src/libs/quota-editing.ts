@@ -19,7 +19,7 @@ import DataManager from '../db';
 import { ClusterNamespace, ProjectNamespace, QuotaSize } from '../db/model/namespace';
 import { Request } from '../db/model/request';
 import { AuthenticatedUser } from './authmware';
-import { getDefaultCluster } from './namespace-set';
+import { getDefaultCluster } from './primary-namespace-set';
 import shared from './shared';
 import { validateObjProps } from './utils';
 
@@ -27,7 +27,7 @@ const dm = new DataManager(shared.pgPool);
 const { NamespaceModel, ClusterModel, RequestModel } = dm;
 const whichService = 'quota editing';
 const quotaSizeNames = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
-const spec = ['quotaCpu', 'quotaMemory', 'quotaStorage'];
+const spec = ['quotaCpuSize', 'quotaMemorySize', 'quotaStorageSize'];
 
 export interface QuotaObject {
   cpu: QuotaSize;
@@ -73,15 +73,16 @@ export const mergeRequestedCNToNamespaceSet = async (requestedClusterNamespaces:
       )
 
       // convert from ClusterNamespace to JSON-NamespaceCNObject
-      const { clusterId, namespaceId, provisioned, quotaCpu, quotaMemory, quotaStorage } = requestedClusterNamespace;
+      const { clusterId, namespaceId, provisioned,
+        quotaCpuSize, quotaMemorySize, quotaStorageSize } = requestedClusterNamespace;
       targetNamespace.clusters[num] = {
         clusterId, namespaceId, provisioned,
         // @ts-ignore
         name: cluster.name,
         quotas: {
-          cpu: quotaCpu,
-          memory: quotaMemory,
-          storage: quotaStorage,
+          cpu: quotaCpuSize,
+          memory: quotaMemorySize,
+          storage: quotaStorageSize,
         },
       };
       merged.push(targetNamespace);
@@ -119,20 +120,20 @@ export const getNamespaceSet = async (profileId: string, user: AuthenticatedUser
 export interface QuotaOptionsObject {
   namespaceId: number,
   clusterId: number,
-  quotaCpu: QuotaSize[],
-  quotaMemory: QuotaSize[],
-  quotaStorage: QuotaSize[],
+  quotaCpuSize: QuotaSize[],
+  quotaMemorySize: QuotaSize[],
+  quotaStorageSize: QuotaSize[],
 }
 
 export const getCNQuotaOptions = async (clusterNamespace: ClusterNamespace): Promise<QuotaOptionsObject> => {
-  const { namespaceId, clusterId, provisioned, quotaCpu, quotaMemory, quotaStorage } = clusterNamespace;
+  const { namespaceId, clusterId, provisioned, quotaCpuSize, quotaMemorySize, quotaStorageSize } = clusterNamespace;
 
   const quotaOptionsObj: QuotaOptionsObject = {
     namespaceId,
     clusterId,
-    quotaCpu: new Array(),
-    quotaMemory: new Array(),
-    quotaStorage: new Array(),
+    quotaCpuSize: new Array(),
+    quotaMemorySize: new Array(),
+    quotaStorageSize: new Array(),
   };
 
   if (!provisioned) {
@@ -147,7 +148,7 @@ export const getCNQuotaOptions = async (clusterNamespace: ClusterNamespace): Pro
       return quotaOptionsObj;
     }
 
-    const checkedSpec = { quotaCpu, quotaMemory, quotaStorage };
+    const checkedSpec = { quotaCpuSize, quotaMemorySize, quotaStorageSize };
     for (const i of Object.keys(checkedSpec)) {
       const currentSize: QuotaSize = checkedSpec[i];
       const num: number = quotaSizeNames.indexOf(currentSize);
@@ -253,12 +254,12 @@ export const processProfileNamespacesEditType = async (request: Request): Promis
         const { namespaceId, clusterId, quotas: { cpu, memory, storage } } = NamespaceCN;
         const cn = {
           namespaceId, clusterId,
-          quotaCpu: cpu,
-          quotaMemory: memory,
-          quotaStorage: storage,
+          quotaCpuSize: cpu,
+          quotaMemorySize: memory,
+          quotaStorageSize: storage,
         }
         // @ts-ignore
-        updatePromises.push(NamespaceModel.updateClusterNamespaceQuota(namespace.namespaceId, cn.clusterId, cn));
+        updatePromises.push(NamespaceModel.updateQuotaSize(namespace.namespaceId, cn.clusterId, cn));
       });
     });
 

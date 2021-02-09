@@ -19,6 +19,7 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
+// TODO:(yh) make primary_cluster_name from profile table NOT NULL
 export interface ProjectProfile extends CommonFields {
   name: string;
   description: string;
@@ -41,7 +42,8 @@ export interface ProjectProfile extends CommonFields {
   idmSiteMinder?: boolean;
   idmKeycloak?: boolean;
   idmActiveDir?: boolean;
-  other: string;
+  other?: string;
+  primaryClusterName: string;
 }
 
 export default class ProfileModel extends Model {
@@ -53,6 +55,7 @@ export default class ProfileModel extends Model {
     'prioritySystem',
     'userId',
     'namespacePrefix',
+    'primaryClusterName',
   ];
   pool: Pool;
 
@@ -71,10 +74,9 @@ export default class ProfileModel extends Model {
             payment_bambora, payment_pay_bc, file_transfer, file_storage,
             geo_mapping_web, geo_mapping_location, scheduling_calendar,
             scheduling_appointments, idm_site_minder,
-            idm_keycloak, idm_active_dir,
-            other)
+            idm_keycloak, idm_active_dir, other, primary_cluster_name)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;`,
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) RETURNING *;`,
       values: [
         data.name.trim(),
         data.description,
@@ -98,6 +100,7 @@ export default class ProfileModel extends Model {
         data.idmKeycloak ? data.idmKeycloak : false,
         data.idmActiveDir ? data.idmActiveDir : false,
         data.other,
+        data.primaryClusterName,
       ],
     };
 
@@ -147,7 +150,7 @@ export default class ProfileModel extends Model {
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19
+            idm_active_dir = $18, other = $19, primary_cluster_name = $20
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -176,6 +179,7 @@ export default class ProfileModel extends Model {
         aData.idmKeycloak ? aData.idmKeycloak : false,
         aData.idmActiveDir ? aData.idmActiveDir : false,
         aData.other,
+        aData.primaryClusterName,
       ];
       const results = await this.runQuery(query);
       return results.pop();

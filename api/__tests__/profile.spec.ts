@@ -34,6 +34,9 @@ const userRequest = JSON.parse(fs.readFileSync(p2, 'utf8'));
 const p3 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
 const selectProfilesContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
+const p4 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+const selectDefaultCluster = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
 const client = new Pool().connect();
 
 jest.mock('../src/db/utils', () => ({
@@ -49,11 +52,11 @@ jest.mock('../src/db/utils', () => ({
 }));
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p4 = path.join(__dirname, 'fixtures/provisioning-context.json');
-  const natsContext = JSON.parse(fs.readFileSync(p4, 'utf8'));
+  const p5 = path.join(__dirname, 'fixtures/provisioning-context.json');
+  const natsContext = JSON.parse(fs.readFileSync(p5, 'utf8'));
   const natsSubject = 'edit';
   return {
-    fulfillNamespaceEdit: jest.fn().mockResolvedValue({natsContext, natsSubject}),
+    fulfillNamespaceEdit: jest.fn().mockResolvedValue({ natsContext, natsSubject }),
   };
 });
 
@@ -84,6 +87,7 @@ describe('Profile event handlers', () => {
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
 
+    client.query.mockReturnValueOnce({ rows: selectDefaultCluster });
     client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
 
     // @ts-ignore

@@ -22,7 +22,7 @@ import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { Request } from '../db/model/request';
 import { contextForProvisioning, FulfillmentContextAction } from '../libs/fulfillment';
-import { getDefaultCluster, isNamespaceSetProvisioned } from '../libs/namespace-set';
+import { isProfileProvisioned } from '../libs/primary-namespace-set';
 import shared from '../libs/shared';
 import { replaceForDescription } from '../libs/utils';
 
@@ -31,26 +31,14 @@ const dm = new DataManager(shared.pgPool);
 export const getAllProvisionedProfileIds = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
-  const { ProfileModel, NamespaceModel } = dm;
+  const { ProfileModel } = dm;
 
   const provisionedProfileIds: number[] = [];
   try {
-    const cluster = await getDefaultCluster();
     const profiles: ProjectProfile[] = await ProfileModel.findAll();
 
     for (const profile of profiles) {
-      if (!profile.id) {
-        const errmsg = `Cant retrieve profile ${profile.id}`;
-        throw new Error(errmsg);
-      }
-
-      const namespaces = await NamespaceModel.findForProfile(profile.id);
-      if (!namespaces || !cluster) {
-        const errmsg = `Cant find any namespaces for the given profile ${profile.id}`;
-        throw new Error(errmsg);
-      }
-
-      const result = await isNamespaceSetProvisioned(namespaces, cluster);
+      const result = await isProfileProvisioned(profile);
       if (result && profile.id) {
         provisionedProfileIds.push(profile.id);
       }
@@ -69,24 +57,16 @@ export const getProvisionedProfileBotJson = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
-  const { ProfileModel, NamespaceModel } = dm;
+  const { ProfileModel } = dm;
 
   try {
-    const cluster = await getDefaultCluster();
-
     const profile = await ProfileModel.findById(Number(profileId));
     if (!profile) {
       const errmsg = `Cant find any profile for the given profile ${profileId}`;
       throw new Error(errmsg);
     }
 
-    const namespaces = await NamespaceModel.findForProfile(profile.id);
-    if (!namespaces || !cluster) {
-      const errmsg = `Cant find any namespaces for the given profile ${profile.id}`;
-      throw new Error(errmsg);
-    }
-
-    const result = await isNamespaceSetProvisioned(namespaces, cluster);
+    const result = await isProfileProvisioned(profile);
     if (!result) {
       const errmsg = `This profile ${profileId} is not provisioned`;
       throw new Error(errmsg);
@@ -158,29 +138,17 @@ export const getProfileBotJsonUnderPending = async (
 };
 
 const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[] | Error> => {
-  const { RequestModel, ProfileModel, NamespaceModel } = dm;
+  const { RequestModel, ProfileModel } = dm;
   try {
     // process those profiles that are under pending EDIT
     const requests = await RequestModel.findAll();
     const profileIds = requests.map((request: Request) => request.profileId);
 
     // process those profiles that are under pending CREATE
-    const cluster = await getDefaultCluster();
     const profiles: ProjectProfile[] = await ProfileModel.findAll();
 
     for (const profile of profiles) {
-      if (!profile.id) {
-        const errmsg = `Cant retrieve profile ${profile.id}`;
-        throw new Error(errmsg);
-      }
-
-      const namespaces = await NamespaceModel.findForProfile(profile.id);
-      if (!namespaces || !cluster) {
-        const errmsg = `Cant find any namespaces for the given profile ${profile.id}`;
-        throw new Error(errmsg);
-      }
-
-      const result = await isNamespaceSetProvisioned(namespaces, cluster);
+      const result = await isProfileProvisioned(profile);
       if (!result && profile.id) {
         profileIds.push(profile.id);
       }

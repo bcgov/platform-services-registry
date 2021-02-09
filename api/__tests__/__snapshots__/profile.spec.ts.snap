@@ -10,7 +10,7 @@ Array [
       "values": Array [
         118,
         "description",
-        "{\\"id\\":3,\\"name\\":\\"Mines Digital Services\\",\\"description\\":\\"This is some description\\",\\"prioritySystem\\":false,\\"criticalSystem\\":false,\\"createdAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"updatedAt\\":\\"2020-04-28T00:00:00.000Z\\"}",
+        "{\\"id\\":3,\\"name\\":\\"Mines Digital Services\\",\\"description\\":\\"This is some description\\",\\"prioritySystem\\":false,\\"criticalSystem\\":false,\\"createdAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"updatedAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"primaryClusterName\\":\\"silver\\"}",
         "edit",
         "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"description\\":\\"This is a sample description\\",\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
       ],
@@ -59,6 +59,7 @@ Array [
     "description": null,
     "id": 1,
     "name": "Health Gateway",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4,
@@ -172,6 +173,14 @@ Array [
   Array [
     Object {
       "text": "
+      SELECT * FROM ref_cluster
+        WHERE archived = false;
+      ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
         INSERT INTO profile
           (name, description, bus_org_id, priority_system,
             critical_system, user_id, namespace_prefix,
@@ -179,10 +188,9 @@ Array [
             payment_bambora, payment_pay_bc, file_transfer, file_storage,
             geo_mapping_web, geo_mapping_location, scheduling_calendar,
             scheduling_appointments, idm_site_minder,
-            idm_keycloak, idm_active_dir,
-            other)
+            idm_keycloak, idm_active_dir, other, primary_cluster_name)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING *;",
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) RETURNING *;",
       "values": Array [
         "Health Gateway",
         "Patient prescription history website",
@@ -206,6 +214,7 @@ Array [
         false,
         false,
         "This is a test",
+        "kam",
       ],
     },
   ],
@@ -236,6 +245,7 @@ Object {
   "other": "This is a test",
   "paymentBambora": false,
   "paymentPayBc": false,
+  "primaryClusterName": "silver",
   "prioritySystem": false,
   "schedulingAppointments": false,
   "schedulingCalendar": false,
@@ -289,7 +299,7 @@ Array [
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19
+            idm_active_dir = $18, other = $19, primary_cluster_name = $20
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -312,6 +322,7 @@ Array [
         false,
         false,
         "This is a test",
+        "silver",
       ],
     },
   ],
@@ -342,6 +353,7 @@ Object {
   "other": "This is a test",
   "paymentBambora": false,
   "paymentPayBc": false,
+  "primaryClusterName": "silver",
   "prioritySystem": false,
   "schedulingAppointments": false,
   "schedulingCalendar": false,
@@ -396,7 +408,7 @@ Array [
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19
+            idm_active_dir = $18, other = $19, primary_cluster_name = $20
           WHERE id = 1
           RETURNING *;",
       "values": Array [
@@ -419,6 +431,7 @@ Array [
         false,
         false,
         "This is a test",
+        "silver",
       ],
     },
   ],
@@ -449,6 +462,7 @@ Object {
   "other": "This is a test",
   "paymentBambora": false,
   "paymentPayBc": false,
+  "primaryClusterName": "silver",
   "prioritySystem": false,
   "schedulingAppointments": false,
   "schedulingCalendar": false,
@@ -494,6 +508,7 @@ Object {
   "description": null,
   "id": 1,
   "name": "Health Gateway",
+  "primaryClusterName": "silver",
   "prioritySystem": false,
   "updatedAt": "2020-04-28T00:00:00.000Z",
   "userId": 4,
@@ -537,6 +552,7 @@ Object {
   "description": "This is some description",
   "id": 3,
   "name": "Mines Digital Services",
+  "primaryClusterName": "silver",
   "prioritySystem": false,
   "updatedAt": "2020-04-28T00:00:00.000Z",
 }
@@ -565,6 +581,7 @@ Array [
     "description": null,
     "id": 1,
     "name": "Health Gateway",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4,
@@ -575,6 +592,7 @@ Array [
     "description": "Hello World",
     "id": 2,
     "name": "EPIC",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4,
@@ -585,6 +603,7 @@ Array [
     "description": "This is some description",
     "id": 3,
     "name": "Mines Digital Services",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
@@ -593,6 +612,7 @@ Array [
     "description": "This app is super cool",
     "id": 4,
     "name": "Secure Image",
+    "primaryClusterName": "silver",
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
 ]
@@ -627,6 +647,7 @@ Array [
     "description": null,
     "id": 1,
     "name": "Health Gateway",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4,
@@ -637,6 +658,7 @@ Array [
     "description": "Hello World",
     "id": 2,
     "name": "EPIC",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4,
@@ -647,6 +669,7 @@ Array [
     "description": "This is some description",
     "id": 3,
     "name": "Mines Digital Services",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
@@ -655,6 +678,7 @@ Array [
     "description": "This app is super cool",
     "id": 4,
     "name": "Secure Image",
+    "primaryClusterName": "silver",
     "updatedAt": "2020-04-28T00:00:00.000Z",
   },
 ]

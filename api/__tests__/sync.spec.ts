@@ -23,20 +23,17 @@ import FauxExpress from './src/fauxexpress';
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
 const selectProfile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
-const p1 = path.join(__dirname, 'fixtures/select-profile-namespaces.json');
-const selectProfileNamespaces = JSON.parse(fs.readFileSync(p1, 'utf8'));
-
-const p4 = path.join(__dirname, 'fixtures/select-request.json');
-const selectRequest = JSON.parse(fs.readFileSync(p4, 'utf8'));
+const p1 = path.join(__dirname, 'fixtures/select-request.json');
+const selectRequest = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const client = new Pool().connect();
 
-jest.mock('../src/libs/namespace-set', () => {
+jest.mock('../src/libs/primary-namespace-set', () => {
   const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
   const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
   return {
-    isNamespaceSetProvisioned: jest.fn().mockReturnValue(true),
+    isProfileProvisioned: jest.fn().mockReturnValue(true),
     getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
   };
 });
@@ -67,7 +64,6 @@ describe('Sync event handlers', () => {
   it('All provisioned profile ids are returned', async () => {
     const req = {};
     client.query.mockReturnValueOnce({ rows: selectProfile });
-    client.query.mockReturnValueOnce({ rows: selectProfileNamespaces });
 
     // @ts-ignore
     await getAllProvisionedProfileIds(req, ex.res);
@@ -97,7 +93,6 @@ describe('Sync event handlers', () => {
       },
     };
     client.query.mockReturnValueOnce({ rows: selectProfile });
-    client.query.mockReturnValueOnce({ rows: selectProfileNamespaces });
 
     // @ts-ignore
     await getProvisionedProfileBotJson(req, ex.res);
@@ -124,7 +119,6 @@ describe('Sync event handlers', () => {
     const req = {};
     client.query.mockReturnValueOnce({ rows: selectRequest });
     client.query.mockReturnValueOnce({ rows: selectProfile });
-    client.query.mockReturnValueOnce({ rows: selectProfileNamespaces });
 
     // @ts-ignore
     await getAllProfileIdsUnderPending(req, ex.res);
@@ -148,12 +142,12 @@ describe('Sync event handlers', () => {
   });
 
   it('Bot json object for a queried profile under pending edit / create is returned', async () => {
-    jest.mock('../src/libs/namespace-set', () => {
+    jest.mock('../src/libs/primary-namespace-set', () => {
       const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
       const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
       return {
-        isNamespaceSetProvisioned: jest.fn().mockReturnValue(false),
+        isProfileProvisioned: jest.fn().mockReturnValue(false),
         getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
       };
     });
@@ -163,7 +157,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockReturnValueOnce({ rows: selectRequest });
     client.query.mockReturnValueOnce({ rows: selectProfile });
-    client.query.mockReturnValueOnce({ rows: selectProfileNamespaces });
     client.query.mockReturnValueOnce({ rows: [] });
 
     // @ts-ignore

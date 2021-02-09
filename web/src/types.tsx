@@ -35,15 +35,15 @@ interface ClusterNamespace {
 }
 
 export interface CNQuotas extends ClusterNamespace {
-  quotaCpu: QuotaSizeSet;
-  quotaMemory: QuotaSizeSet;
-  quotaStorage: QuotaSizeSet;
+  quotaCpuSize: QuotaSizeSet;
+  quotaMemorySize: QuotaSizeSet;
+  quotaStorageSize: QuotaSizeSet;
 }
 
 export interface CNQuotaOptions extends ClusterNamespace {
-  quotaCpu: QuotaSizeSet[] | [];
-  quotaMemory: QuotaSizeSet[] | [];
-  quotaStorage: QuotaSizeSet[] | [];
+  quotaCpuSize: QuotaSizeSet[] | [];
+  quotaMemorySize: QuotaSizeSet[] | [];
+  quotaStorageSize: QuotaSizeSet[] | [];
 }
 
 export interface NamespaceCNQuotaObj {

@@ -102,7 +102,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   return (
     <>
       <FormTitle>License plates for the openshift namespaces</FormTitle>
-      <Label m="0" htmlFor="project-quotaCpu">
+      <Label m="0" htmlFor="project-quotaCpuSize">
         {licensePlate}
       </Label>
       <br />

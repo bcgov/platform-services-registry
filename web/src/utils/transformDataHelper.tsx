@@ -204,7 +204,7 @@ export function getCurrentQuotaOptions(
   currentQuotaSize: QuotaSizeSet,
 ): QuotaSizeSet[] | [] | Error {
   try {
-    const array: QuotaSizeSet[] = cnQuotaOptionsList[0].quotaCpu;
+    const array: QuotaSizeSet[] = cnQuotaOptionsList[0].quotaCpuSize;
     const index = array.indexOf(currentQuotaSize);
     if (index === -1) {
       return [];
@@ -227,9 +227,9 @@ export function composeRequestBodyForQuotaEdit(
       return {
         namespaceId,
         clusterId,
-        quotaCpu: requestNextSize,
-        quotaMemory: requestNextSize,
-        quotaStorage: requestNextSize,
+        quotaCpuSize: requestNextSize,
+        quotaMemorySize: requestNextSize,
+        quotaStorageSize: requestNextSize,
       };
     });
   } catch (err) {

@@ -27,6 +27,7 @@ import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { getAuthorization } from '../libs/authorization';
 import { fulfillNamespaceEdit } from '../libs/fulfillment';
+import { getDefaultCluster } from '../libs/primary-namespace-set';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 
@@ -111,12 +112,13 @@ export const createProjectProfile = async (
   const { ProfileModel } = dm;
   const data = { ...body, userId: user.id };
 
-  // User cannot set the namespace prefix. If it exists, this
-  // overwrites it with a place holder value. It will be replaced
+  // User cannot set the namespace prefix OR primary cluster name (current default cluster).
+  // If it exists, this overwrites it with a place holder value. It will be replaced
   // with the actual value further on.
   const rv = validateObjProps(ProfileModel.requiredFields, {
     ...data,
     namespacePrefix: 'placeholder',
+    primaryClusterName: 'placeholder',
   });
 
   if (rv) {
@@ -125,12 +127,16 @@ export const createProjectProfile = async (
 
   try {
     const namespacePrefix = await uniqueNamespacePrefix();
-
     if (!namespacePrefix) {
       throw errorWithCode(500, 'Unable to generate unique namespace prefix');
     }
 
-    const results = await ProfileModel.create({ ...data, namespacePrefix });
+    const defaultCluster = await getDefaultCluster();
+    if (!defaultCluster) {
+      throw errorWithCode(500, 'Unable to set primary cluster id based on default cluster');
+    }
+
+    const results = await ProfileModel.create({ ...data, namespacePrefix, primaryClusterName: defaultCluster.name });
 
     res.status(200).json(results);
   } catch (err) {
@@ -149,7 +155,6 @@ export const updateProjectProfile = async (
   const {
     name,
     description,
-    categoryId,
     busOrgId,
     prioritySystem,
     notificationEmail,
@@ -174,7 +179,6 @@ export const updateProjectProfile = async (
     const aBody = {
       name,
       description,
-      categoryId,
       busOrgId,
       prioritySystem,
       userId: currentProjectDetails.userId,
@@ -194,6 +198,7 @@ export const updateProjectProfile = async (
       idmKeycloak,
       idmActiveDir,
       other,
+      primaryClusterName: currentProjectDetails.primaryClusterName,
     };
 
     const isAuthorized = getAuthorization(profileId, user, currentProjectDetails);
@@ -298,7 +303,7 @@ export const fetchProfileContacts = async (
 };
 
 export const fetchProfileEditRequests = async (
-  { params, user }: { params: any, user: AuthenticatedUser}, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { RequestModel, } = dm;
   const { profileId } = params;

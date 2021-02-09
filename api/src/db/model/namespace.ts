@@ -26,13 +26,15 @@ export const enum QuotaSize {
   Large = 'large',
 };
 
+// TODO:(yh) make quota_cpu_size, quota_memory_size, quota_storage_size NOT NULL
+// and to delete quota_cpu, quota_memory and quota_storage from ref_quota table
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
   clusterId: number;
   provisioned: boolean;
-  quotaCpu?: QuotaSize;
-  quotaMemory?: QuotaSize;
-  quotaStorage?: QuotaSize;
+  quotaCpuSize: QuotaSize;
+  quotaMemorySize: QuotaSize;
+  quotaStorageSize: QuotaSize;
 }
 
 export interface ProjectNamespace extends CommonFields {
@@ -77,11 +79,64 @@ export default class NamespaceModel extends Model {
     }
   }
 
+  async update(namespaceId: number, data: ProjectNamespace): Promise<ProjectNamespace> {
+    const values: any[] = [];
+    const query = {
+      text: `
+        UPDATE ${this.table}
+          SET
+            name = $1, profile_id = $2, cluster_id = $3
+          WHERE id = ${namespaceId}
+          RETURNING *;`,
+      values,
+    };
+
+    try {
+      const record = await this.findById(namespaceId);
+      const aData = { ...record, ...data };
+      query.values = [
+        aData.name,
+        aData.profileId,
+        aData.clusterId,
+      ];
+
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to update namespace ${namespaceId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async delete(namespaceId: number): Promise<ProjectNamespace> {
+    const query = {
+      text: `
+        UPDATE ${this.table}
+          SET
+            archived = true
+          WHERE id = ${namespaceId}
+          RETURNING *;
+      `,
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to archive namespace ${namespaceId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async createProjectSet(profileId: number, clusterId: number, prefix: string,): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         INSERT INTO cluster_namespace
-          (namespace_id, cluster_id, quota_cpu, quota_memory, quota_storage)
+          (namespace_id, cluster_id, quota_cpu_size, quota_memory_size, quota_storage_size)
           VALUES ($1, $2, $3, $3, $3) RETURNING *;`,
       values: [],
     };
@@ -118,7 +173,7 @@ export default class NamespaceModel extends Model {
               (
                 SELECT row_to_json(d)
                 from (
-                  SELECT cluster_namespace.quota_cpu AS "cpu", cluster_namespace.quota_memory AS "memory", cluster_namespace.quota_storage AS "storage"
+                  SELECT cluster_namespace.quota_cpu_size AS "cpu", cluster_namespace.quota_memory_size AS "memory", cluster_namespace.quota_storage_size AS "storage"
                   FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
                   WHERE namespace.id = cluster_namespace.namespace_id
                 ) d
@@ -146,40 +201,13 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateProvisionStatus(namespaceId: number, clusterId: number, provisioned: boolean): Promise<void> {
-    const query = {
-      text: `
-        UPDATE cluster_namespace
-          SET
-            provisioned = $1
-          WHERE namespace_id = $2 AND cluster_id = $3
-        RETURNING *;`,
-      values: [
-        provisioned,
-        namespaceId,
-        clusterId,
-      ],
-    };
-
-    try {
-      const results = await this.runQuery(query);
-
-      return results.pop();
-    } catch (err) {
-      const message = `Unable to update provisioning status for namespace ID ${namespaceId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
   async findForNamespaceAndCluster(namespaceId: number, clusterId: number): Promise<ClusterNamespace> {
     const query = {
       text: `
         SELECT * FROM cluster_namespace
           WHERE namespace_id = $1 AND cluster_id = $2;`,
       values: [
-        namespaceId, clusterId
+        namespaceId, clusterId,
       ],
     };
 
@@ -194,13 +222,38 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateClusterNamespaceQuota(namespaceId: number, clusterId: number, data: ClusterNamespace): Promise<void> {
+  async updateProvisionStatus(namespaceId: number, clusterId: number, provisioned: boolean): Promise<ClusterNamespace> {
+    const query = {
+      text: `
+        UPDATE cluster_namespace
+          SET provisioned = $1
+          WHERE namespace_id = $2 AND cluster_id = $3
+        RETURNING *;`,
+      values: [
+        provisioned,
+        namespaceId,
+        clusterId,
+      ],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to update provisioning status for namespace ${namespaceId} and cluster ${clusterId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async updateQuotaSize(namespaceId: number, clusterId: number, data: ClusterNamespace): Promise<ClusterNamespace> {
     const values: any[] = [];
     const query = {
       text: `
         UPDATE cluster_namespace
           SET
-            quota_cpu = $1, quota_memory = $2, quota_storage = $3
+            quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
           WHERE namespace_id = ${namespaceId} AND cluster_id = ${clusterId}
         RETURNING *;`,
       values,
@@ -210,68 +263,15 @@ export default class NamespaceModel extends Model {
       const record = await this.findForNamespaceAndCluster(namespaceId, clusterId);
       const aData = { ...record, ...data }
       query.values = [
-        aData.quotaCpu,
-        aData.quotaMemory,
-        aData.quotaStorage,
-      ];
-      const results = await this.runQuery(query);
-
-      return results.pop();
-    } catch (err) {
-      const message = `Unable to update quota for namespace ID ${namespaceId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
-  async update(namespaceId: number, data: ProjectNamespace): Promise<ProjectNamespace> {
-    const values: any[] = [];
-    const query = {
-      text: `
-        UPDATE ${this.table}
-          SET
-            name = $1, profile_id = $2, cluster_id = $3
-          WHERE id = ${namespaceId}
-          RETURNING *;`,
-      values,
-    };
-
-    try {
-      const record = await this.findById(namespaceId);
-      const aData = { ...record, ...data };
-      query.values = [
-        aData.name,
-        aData.profileId,
-        aData.clusterId,
+        aData.quotaCpuSize,
+        aData.quotaMemorySize,
+        aData.quotaStorageSize,
       ];
 
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to create namespace`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
-  async delete(namespaceId: number): Promise<ProjectNamespace> {
-    const query = {
-      text: `
-        UPDATE ${this.table}
-          SET
-            archived = true
-          WHERE id = ${namespaceId}
-          RETURNING *;
-      `,
-    };
-
-    try {
-      const results = await this.runQuery(query);
-      return results.pop();
-    } catch (err) {
-      const message = `Unable to archive namespace`;
+      const message = `Unable to update quota for namespace ${namespaceId} and cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
