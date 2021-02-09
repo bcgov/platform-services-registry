@@ -59,6 +59,7 @@ Array [
     "description": null,
     "id": 1,
     "name": "Health Gateway",
+    "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4,
@@ -162,19 +163,19 @@ Array [
   Array [
     Object {
       "text": "
-      SELECT * FROM ref_cluster
-        WHERE archived = false;
-      ",
-    },
-  ],
-  Array [
-    Object {
-      "text": "
         SELECT COUNT(*) FROM profile
           WHERE namespace_prefix = $1;",
       "values": Array [
         "c8c7e6",
       ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM ref_cluster
+        WHERE archived = false;
+      ",
     },
   ],
   Array [

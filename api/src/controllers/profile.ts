@@ -198,7 +198,7 @@ export const updateProjectProfile = async (
       idmKeycloak,
       idmActiveDir,
       other,
-      primaryClusterName: record.primaryClusterName,
+      primaryClusterName: currentProjectDetails.primaryClusterName,
     };
 
     const isAuthorized = getAuthorization(profileId, user, currentProjectDetails);
