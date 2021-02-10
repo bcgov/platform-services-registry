@@ -51,6 +51,18 @@ const schema = {
       message: 'No special characters allowed',
     },
   },
+  profileLicenseplate: {
+    presence: { allowEmpty: false, message: 'Required' },
+    length: {
+      maximum: 40,
+      tooLong: 'Max 40 characters',
+    },
+    format: {
+      pattern: '[A-Za-z0-9-_]+',
+      flags: 'i',
+      message: 'Must only contain alphanumetic characters, hyphens or underscores',
+    },
+  },
   componenentOthers: {
     length: {
       maximum: 512,
@@ -109,6 +121,13 @@ export default function getValidator() {
     }
   };
 
+  const mustBeValidProfileLicenseplate = (value: any) => {
+    const errors = validate({ profileLicenseplate: value }, schema, { fullMessages: false });
+    if (errors && errors.profileLicenseplate) {
+      return errors.profileLicenseplate[0];
+    }
+  };
+
   const mustBeValidName = (value: any) => {
     const errors = validate({ name: value }, schema, { fullMessages: false });
     if (errors && errors.name) {
@@ -148,6 +167,7 @@ export default function getValidator() {
     mustBeValidEmail,
     mustBeValidProfileName,
     mustBeValidProfileDescription,
+    mustBeValidProfileLicenseplate,
     mustBeValidName,
     mustBeValidGithubName,
     mustBeValidComponentOthers,
