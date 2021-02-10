@@ -21,6 +21,7 @@ import CreateFormMetadata from '../components/profileCreate/CreateFormMetadata';
 import CreateFormMigration from '../components/profileCreate/CreateFormMigration';
 import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
+import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
 import CreateFormTC from '../components/profileCreate/CreateFormTC';
 import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
@@ -105,6 +106,9 @@ const ProfileCreate: React.FC = () => {
       </WizardPage>
       <WizardPage>
         <CreateFormTC />
+      </WizardPage>
+      <WizardPage>
+        <CreateFormRequest />
       </WizardPage>
     </Wizard>
   );

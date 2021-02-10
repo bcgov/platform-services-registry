@@ -19,6 +19,7 @@ import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import getValidator from '../../utils/getValidator';
+import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 
 interface MinistryItem {
@@ -38,6 +39,13 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
   return (
     <div>
       <FormTitle>Tell us about your project</FormTitle>
+      <FormSubtitle>
+        If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to <a
+            rel="noopener noreferrer"
+            href="mailto:olena.mitovska@gov.bc.ca"
+            target="_blank"
+          >olena.mitovska@gov.bc.ca</a> to get started.
+      </FormSubtitle>
       <Field name="project-name" validate={validator.mustBeValidProfileName}>
         {({ input, meta }) => (
           <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>

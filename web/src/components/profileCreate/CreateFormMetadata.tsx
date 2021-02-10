@@ -20,15 +20,18 @@ import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA } from '../../constants';
 import getValidator from '../../utils/getValidator';
+import FormSubtitle from '../common/UI/FormSubtitle';
+import FormTitle from '../common/UI/FormTitle';
 
 const CreateFormMetadata: React.FC = () => {
   const validator = getValidator();
 
   return (
     <div>
-      <Label variant="adjacentLabel">
+      <FormTitle>Tell us about your project</FormTitle>
+      <FormSubtitle>
         Please indicate what services you expect to utilize as part of your project?
-      </Label>
+      </FormSubtitle>
       {COMPONENT_METADATA.map((item) => (
         <Flex key={item.inputValue}>
           <Label variant="adjacentLabel">{item.displayName}</Label>

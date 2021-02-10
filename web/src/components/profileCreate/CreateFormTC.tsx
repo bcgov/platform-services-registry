@@ -14,12 +14,12 @@
 // limitations under the License.
 //
 
-import { Checkbox, Input, Label } from '@rebass/forms';
+import { Input, Label } from '@rebass/forms';
 import React, { useState } from 'react';
 import { Field } from 'react-final-form';
-import { Flex, Text } from 'rebass';
+import { Flex } from 'rebass';
 import getValidator from '../../utils/getValidator';
-import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 
 const CreateFormTC: React.FC = () => {
@@ -30,6 +30,9 @@ const CreateFormTC: React.FC = () => {
   return (
     <div>
       <FormTitle>Who is the technical contact for this project?</FormTitle>
+      <FormSubtitle>
+        Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.
+      </FormSubtitle>
 
       <Field name="tc-firstName" validate={validator.mustBeValidName}>
         {({ input, meta }) => (
@@ -91,35 +94,6 @@ const CreateFormTC: React.FC = () => {
           </Flex>
         )}
       </Field>
-
-      <Label>
-        <Checkbox
-          type="checkbox"
-          defaultChecked={boxChecked}
-          onChange={() => {
-            setBoxChecked(!boxChecked);
-          }}
-        />
-        <Text px="20px">
-          By checking this box, i confirm that I have read and understood the roles and
-          responsibilities as described in the{' '}
-          <a
-            rel="noopener noreferrer"
-            href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!"
-            target="_blank"
-          >
-            Onboarding Guide
-          </a>
-          .
-        </Text>
-      </Label>
-
-      {/* @ts-ignore */}
-      {boxChecked ? (
-        <StyledFormButton>Request</StyledFormButton>
-      ) : (
-        <StyledFormDisabledButton>Request</StyledFormDisabledButton>
-      )}
     </div>
   );
 };

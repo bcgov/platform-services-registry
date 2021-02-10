@@ -22,6 +22,7 @@ import { Flex } from 'rebass';
 import Aux from '../../hoc/auxillary';
 import getValidator from '../../utils/getValidator';
 import getDecodedToken from '../../utils/TokenDecoder';
+import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 
 const CreateFormPO: React.FC = () => {
@@ -34,7 +35,9 @@ const CreateFormPO: React.FC = () => {
   return (
     <Aux>
       <FormTitle>Who is the product owner for this project?</FormTitle>
-
+      <FormSubtitle>
+        Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.
+      </FormSubtitle>
       <Field
         name="po-firstName"
         validate={validator.mustBeValidName}

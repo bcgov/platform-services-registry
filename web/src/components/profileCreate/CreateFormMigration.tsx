@@ -14,8 +14,12 @@
 // limitations under the License.
 //
 
+import { Input, Label } from '@rebass/forms';
 import React from 'react';
+import { Field } from 'react-final-form';
+import { Flex } from 'rebass';
 import getValidator from '../../utils/getValidator';
+import { Condition } from '../common/UI/FormControls';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 
@@ -33,9 +37,46 @@ const CreateFormMigration: React.FC = () => {
           <br /> b) have short 2-3 week migration timelines starting from when the namespaces are
           provisioned.
         </blockquote>
-        Please indicate in the project description field if your project meets the two criteria
+        Please indicate if your project meets the two criteria
         above and include the license plate number for the OCP3 project set.
       </FormSubtitle>
+      <Flex pb="20px">
+        <Label m="0" variant="adjacentLabel">
+          Is this app migrating from OCP 3.11?
+        </Label>
+        <Flex flex="1 1 auto" justifyContent="flex-end">
+          <Label m="0" width="initial" px="8px" my="auto">
+            <Field name="project-migratingApplication" component="input" type="checkbox">
+              {({ input }) => (
+                <input
+                  style={{ width: '35px', height: '35px' }}
+                  name={input.name}
+                  type="checkbox"
+                  checked={input.checked}
+                  onChange={input.onChange}
+                />
+              )}
+            </Field>
+          </Label>
+        </Flex>
+      </Flex>
+      <Condition when="project-migratingApplication" is={true}>
+        <Field name="project-migratingLicenseplate" validate={validator.mustBeValidProfileLicenseplate}>
+          {({ input, meta }) => (
+            <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
+              <Label m="0" htmlFor="project-migratingLicenseplate">
+                OCP 3.11 license plate
+              </Label>
+              <Input mt="8px" {...input} id="project-migratingLicenseplate" placeholder="1362av" />
+              {meta.error && meta.touched && (
+                <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
+                  {meta.error}
+                </Label>
+              )}
+            </Flex>
+          )}
+        </Field>
+      </Condition>
     </div>
   );
 };
