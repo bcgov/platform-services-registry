@@ -37,7 +37,7 @@ const StyledDisabledButton = styled.button`
   font-size: 24px;
 `;
 
-export const StyledFormButton: React.FC = (props: any) => {
+export const StyledFormButton: React.FC<IButtonProps> = (props: any) => {
   const { children, ...rest } = props;
   return (
     <StyledButton className="misc-class-m-form-submit-btn" {...rest}>
@@ -46,7 +46,7 @@ export const StyledFormButton: React.FC = (props: any) => {
   );
 };
 
-export const StyledFormDisabledButton: React.FC = (props: any) => {
+export const StyledFormDisabledButton: React.FC<IButtonProps> = (props: any) => {
   const { children, ...rest } = props;
   return (
     <StyledDisabledButton disabled {...rest}>
@@ -58,6 +58,8 @@ export const StyledFormDisabledButton: React.FC = (props: any) => {
 export interface IButtonProps {
   children?: React.ReactNode;
   onClick?: (e: any) => void;
+  style?: any;
+  type?: any;
 }
 
 const styles = {
@@ -70,7 +72,7 @@ const styles = {
   margin: 10,
 };
 
-export const Button: React.SFC<IButtonProps> = (props) => (
+export const Button: React.FC<IButtonProps> = (props) => (
   <button onClick={props.onClick} style={styles} type="button">
     {props.children}
   </button>

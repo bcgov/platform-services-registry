@@ -27,7 +27,7 @@ const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
   const [values, setValues] = useState<Values | undefined>(undefined);
   const activePage = React.Children.toArray(children)[page];
   const isLastPage = page === React.Children.count(children) - 1;
-  console.log(values)
+  
   // next page
   const next = (values: Values) => {
     setPage(Math.min(page + 1, React.Children.count(children)));
@@ -59,13 +59,12 @@ const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
             mt="0px"
             px={['24px', '24px', '70px']}
             width={[1, 1, 2 / 3]}
+            mx="auto"
           >
           {activePage}
           <div className="buttons">
             {page > 0 && (
-              <button type="button" onClick={previous}>
-                « Previous
-              </button>
+              <StyledFormButton type="button" onClick={previous} style={{backgroundColor:'#d3d3d3', color:'#036'}}>Previous</StyledFormButton>
             )}
             {isLastPage ? (
               <StyledFormButton>Request</StyledFormButton>
