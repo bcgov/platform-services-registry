@@ -26,10 +26,11 @@ import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
+import { getAuthorization } from '../libs/authorization';
 import { fulfillEditRequest } from '../libs/fulfillment';
 import { getCurrentQuotaSize, getQuotaOptions } from '../libs/primary-namespace-set';
 import shared from '../libs/shared';
-import { formatNatsContactObject, isNotAuthorized } from '../libs/utils';
+import { formatNatsContactObject } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -54,21 +55,19 @@ export const addContactToProfile = async (
 export const fetchProfileContacts = async (
   { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ContactModel, ProfileModel } = dm;
+  const { ContactModel } = dm;
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(Number(profileId));
+    const projectContacts = await ContactModel.findForProject(Number(profileId));
 
-    const notAuthorized = isNotAuthorized(record, user);
+    const isAuthorized = getAuthorization(profileId, user, undefined, projectContacts);
 
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
-    const results = await ContactModel.findForProject(Number(profileId));
-
-    res.status(200).json(results);
+    res.status(200).json(projectContacts);
   } catch (err) {
     if (err.code) {
       throw err;
@@ -107,16 +106,14 @@ export const fetchProfileQuotaSize = async (
 export const fetchProfileEditRequests = async (
   { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { RequestModel, ProfileModel } = dm;
+  const { RequestModel, } = dm;
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(Number(profileId));
+    const isAuthorized = getAuthorization(profileId, user);
 
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
     const results = await RequestModel.findForProfile(Number(profileId));

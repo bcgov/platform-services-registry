@@ -147,7 +147,7 @@ describe('Project-profile event handlers', () => {
     };
 
     const findAll = ProfileModel.prototype.findAll = jest.fn();
-    const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserId = jest.fn();
+    const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn();
 
     // @ts-ignore
     await fetchAllProjectProfiles(req, ex.res);
@@ -166,7 +166,7 @@ describe('Project-profile event handlers', () => {
       };
 
       const findAll = ProfileModel.prototype.findAll = jest.fn();
-      const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserId = jest.fn();
+      const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn();
 
       // @ts-ignore
       await fetchAllProjectProfiles(req, ex.res);

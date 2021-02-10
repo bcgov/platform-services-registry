@@ -20,9 +20,10 @@ import { USER_ROLES } from '../constants';
 import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
+import { getAuthorization } from '../libs/authorization';
 import { getDefaultCluster } from '../libs/primary-namespace-set';
 import shared from '../libs/shared';
-import { isNotAuthorized, validateObjProps } from '../libs/utils';
+import { validateObjProps } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -58,7 +59,7 @@ export const fetchAllProjectProfiles = async (
     if (user.roles.includes(USER_ROLES.ADMINISTRATOR)) {
       results = await ProfileModel.findAll();
     } else {
-      results = await ProfileModel.findProfilesByUserId(user.id);
+      results = await ProfileModel.findProfilesByUserIdOrEmail(user.id, user.email);
     }
 
     res.status(200).json(results);
@@ -77,15 +78,15 @@ export const fetchProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(Number(profileId));
+    const projectDetails = await ProfileModel.findById(Number(profileId));
 
-    const notAuthorized = isNotAuthorized(record, user);
+    const isAuthorized = getAuthorization(profileId, user, projectDetails);
 
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
-    res.status(200).json(record);
+    res.status(200).json(projectDetails);
   } catch (err) {
     if (err.code) {
       throw err
@@ -167,14 +168,14 @@ export const updateProjectProfile = async (
   } = body;
 
   try {
-    const record = await ProfileModel.findById(profileId);
+    const currentProjectDetails = await ProfileModel.findById(profileId);
     const aBody = {
       name,
       description,
       busOrgId,
       prioritySystem,
-      userId: record.userId,
-      namespacePrefix: record.namespacePrefix,
+      userId: currentProjectDetails.userId,
+      namespacePrefix: currentProjectDetails.namespacePrefix,
       notificationEmail,
       notificationSms,
       notificationMsTeams,
@@ -190,13 +191,13 @@ export const updateProjectProfile = async (
       idmKeycloak,
       idmActiveDir,
       other,
-      primaryClusterName: record.primaryClusterName,
+      primaryClusterName: currentProjectDetails.primaryClusterName,
     };
 
-    const notAuthorized = isNotAuthorized(record, user);
+    const isAuthorized = getAuthorization(profileId, user, currentProjectDetails);
 
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
@@ -227,12 +228,10 @@ export const archiveProjectProfile = async (
   const { profileId } = params;
 
   try {
-    const record = await ProfileModel.findById(profileId);
+    const isAuthorized = getAuthorization(profileId, user);
 
-    const notAuthorized = isNotAuthorized(record, user);
-
-    if (notAuthorized) {
-      throw notAuthorized;
+    if (!(isAuthorized)) {
+      throw isAuthorized;
     }
 
     await ProfileModel.delete(profileId);

@@ -12,6 +12,17 @@ Array [
       ],
     },
   ],
+  Array [
+    Object {
+      "text": "
+        UPDATE profile
+          SET
+            archived = true
+          WHERE id = 9
+          RETURNING *;
+      ",
+    },
+  ],
 ]
 `;
 
@@ -38,6 +49,19 @@ Array [
           WHERE id = 9
           RETURNING *;
       ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        9,
+      ],
     },
   ],
 ]
@@ -177,6 +201,19 @@ Array [
   Array [
     Object {
       "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
@@ -265,6 +302,19 @@ Array [
       "text": "
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
+      "values": Array [
+        1,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
       "values": Array [
         1,
       ],
@@ -366,6 +416,19 @@ Array [
       ],
     },
   ],
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        118,
+      ],
+    },
+  ],
 ]
 `;
 
@@ -392,6 +455,19 @@ Array [
       "text": "
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
+      "values": Array [
+        118,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
       "values": Array [
         118,
       ],
@@ -480,10 +556,13 @@ Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM profile
-          WHERE user_id = $1 AND archived = false;",
+      SELECT DISTINCT(profile.id), profile.* FROM profile
+      JOIN profile_contact ON profile_contact.profile_id = profile.id
+      JOIN contact ON contact.id = profile_contact.contact_id
+      WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;",
       "values": Array [
         4,
+        "jane@example.com",
       ],
     },
   ],

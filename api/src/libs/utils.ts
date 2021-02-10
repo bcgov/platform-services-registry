@@ -18,7 +18,6 @@
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { difference, isEmpty, isUndefined } from 'lodash';
-import { USER_ROLES } from '../constants';
 
 interface NatsContactDetails {
   userId: string,
@@ -51,15 +50,6 @@ export const validateObjProps = (fields: string[], pojo: object): Error | undefi
 
   if (blanks.length !== 0) {
     return errorWithCode(`Required properties can not be empty: ${blanks}`, 400);
-  }
-
-  return;
-}
-
-export const isNotAuthorized = (results: any, user: any): Error | undefined => {
-
-  if (!(user.id === results.userId || user.roles.includes(USER_ROLES.ADMINISTRATOR))) {
-    return errorWithCode('Unauthorized Access', 401);
   }
 
   return;
