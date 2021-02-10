@@ -15,7 +15,7 @@
 //
 
 import { COMPONENT_METADATA, ROLES } from '../constants';
-import { CNQuotaOptions, CNQuotas, Namespace, QuotaSizeSet } from '../types';
+import { Namespace, QuotaSize } from '../types';
 
 export function transformForm(data: any) {
   const profile: any = {};
@@ -186,52 +186,11 @@ export function getLicensePlate(namespaces: Namespace[]): string | Error {
   }
 }
 
-// TODO: update the following functions when we no longer bundle all quota requests in one
-// where one t-shirt size applies to all specs in all four namespaces
-export function getCurrentQuotaSize(namespaces: Namespace[]): QuotaSizeSet | Error {
+export function composeRequestBodyForQuotaEdit(requestedQuotaSize: QuotaSize): any {
   try {
-    return namespaces[0].clusters[0].quotas.cpu;
-  } catch (err) {
-    const msg = 'Unable to get current quota size given namespaces json';
-    throw new Error(`${msg}, reason = ${err.message}`);
-  }
-}
-
-// the given list of quota options from registry api may include the current quota size
-// this function is to remove the current quota size for ui
-export function getCurrentQuotaOptions(
-  cnQuotaOptionsList: CNQuotaOptions[],
-  currentQuotaSize: QuotaSizeSet,
-): QuotaSizeSet[] | [] | Error {
-  try {
-    const array: QuotaSizeSet[] = cnQuotaOptionsList[0].quotaCpuSize;
-    const index = array.indexOf(currentQuotaSize);
-    if (index === -1) {
-      return [];
-    }
-    array.splice(index, 1);
-    return array;
-  } catch (err) {
-    const msg = 'Unable to get current quota options given namespaces json';
-    throw new Error(`${msg}, reason = ${err.message}`);
-  }
-}
-
-export function composeRequestBodyForQuotaEdit(
-  requestNextSize: QuotaSizeSet,
-  cnQuotaOptionsList: CNQuotaOptions[],
-): CNQuotas[] | [] | Error {
-  try {
-    return cnQuotaOptionsList.map((cnQuotaOptions: CNQuotaOptions) => {
-      const { namespaceId, clusterId } = cnQuotaOptions;
-      return {
-        namespaceId,
-        clusterId,
-        quotaCpuSize: requestNextSize,
-        quotaMemorySize: requestNextSize,
-        quotaStorageSize: requestNextSize,
-      };
-    });
+    return {
+      requestedQuotaSize,
+    };
   } catch (err) {
     const msg = 'Unable to compose request body for given namespaces json';
     throw new Error(`${msg}, reason = ${err.message}`);

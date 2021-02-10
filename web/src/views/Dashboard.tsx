@@ -29,7 +29,6 @@ import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
-  getCurrentQuotaSize,
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
@@ -50,25 +49,28 @@ const Dashboard: React.FC = () => {
         // 1. First fetch the list of profiles the user is entitled to see
         const response = await api.getProfile();
 
-        // 2. Fetch contact and namespaces info for each profile
+        // 2. Fetch contact, namespaces, quota-size info for each profile
         const promisesForContact: any = [];
         const promisesForNamespaces: any = [];
+        const promisesForQuotaSize: any = [];
 
         for (const p of response.data) {
           promisesForContact.push(api.getContactsByProfileId(p.id));
           promisesForNamespaces.push(api.getNamespaceByProfileId(p.id));
+          promisesForQuotaSize.push(api.getQuotaSizeByProfileId(p.id));
         }
         const contactResponses: Array<any> = await Promise.all(promisesForContact);
         const namespacesResponses: Array<any> = await Promise.all(promisesForNamespaces);
+        const quotaSizeResponse: Array<any> = await Promise.all(promisesForQuotaSize);
 
-        // 3. Combine contact info, provision status and quota size to existing profile
+        // 3. Combine contact info, provision status, quota-size to existing profile
         for (let i: number = 0; i < response.data.length; i++) {
           response.data[i] = {
             ...response.data[i],
             ...getProfileContacts(contactResponses[i].data),
           };
           response.data[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
-          response.data[i].quotaSize = getCurrentQuotaSize(namespacesResponses[i].data);
+          response.data[i].quotaSize = quotaSizeResponse[i].data;
         }
 
         // 4. Then update dashboard cards with fetched profile info

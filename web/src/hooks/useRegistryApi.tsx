@@ -160,7 +160,15 @@ export default function useRegistryApi() {
     }
   };
 
-  const getCNQuotaOptionsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+  const getQuotaSizeByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get(`profile/${profileId}/quota-size`);
+    }
+  };
+
+  const getQuotaOptionsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
@@ -168,7 +176,7 @@ export default function useRegistryApi() {
     }
   };
 
-  const requestCNQuotasByProfileId = async (
+  const requestQuotaSizeByProfileId = async (
     profileId: string,
     requstedQuotas: any,
   ): Promise<AxiosResponse<any>> => {
@@ -199,10 +207,11 @@ export default function useRegistryApi() {
     createNamespaceByProfileId,
     getContactsByProfileId,
     getNamespaceByProfileId,
+    getQuotaSizeByProfileId,
     getProfileByProfileId,
     getNamespacesByProfileId,
-    getCNQuotaOptionsByProfileId,
-    requestCNQuotasByProfileId,
+    getQuotaOptionsByProfileId,
+    requestQuotaSizeByProfileId,
     getEditRequestStatus,
   };
 }

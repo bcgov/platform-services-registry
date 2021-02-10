@@ -18,7 +18,7 @@ import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import Aux from '../../hoc/auxillary';
 import theme from '../../theme';
-import { QuotaSizeSet } from '../../types';
+import { QuotaSize } from '../../types';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
@@ -27,7 +27,7 @@ interface IQuotaCardProps {
 export interface QuotaDetails {
   licensePlate?: string;
   quotaSize?: string;
-  quotaOptions?: QuotaSizeSet[];
+  quotaOptions?: QuotaSize[];
 }
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {

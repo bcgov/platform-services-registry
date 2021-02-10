@@ -31,12 +31,10 @@ import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
-import { CNQuotaOptions, Namespace } from '../types';
+import { Namespace } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
-  getCurrentQuotaOptions,
-  getCurrentQuotaSize,
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
@@ -50,7 +48,6 @@ const { hasPendingEditRequest } = getProfileStatus();
 export interface BaseData {
   namespacesJson: Namespace[];
   ministryJson: any[];
-  cnQuotaOptionsJson: CNQuotaOptions[];
 }
 
 interface IProfileState {
@@ -77,7 +74,6 @@ const ProfileEdit: React.FC = (props: any) => {
     baseData: {
       namespacesJson: [],
       ministryJson: [],
-      cnQuotaOptionsJson: [],
     },
     isProvisioned: false,
     hasPendingEdit: true,
@@ -97,7 +93,6 @@ const ProfileEdit: React.FC = (props: any) => {
   async function updateProfileState() {
     const namespaces = await api.getNamespacesByProfileId(profileId);
     const ministry = await api.getMinistry();
-    const cnQuotaOptions = await api.getCNQuotaOptionsByProfileId(profileId);
     const hasPendingEdit = await hasPendingEditRequest(api, profileId);
 
     const projectDetails = await api.getProfileByProfileId(profileId);
@@ -109,16 +104,14 @@ const ProfileEdit: React.FC = (props: any) => {
     const contactDetails = await api.getContactsByProfileId(profileId);
     contactDetails.data = { ...getProfileContacts(contactDetails.data) };
 
-    const quotaSize = getCurrentQuotaSize(namespaces.data);
-    // @ts-ignore
-    const quotaOptions = getCurrentQuotaOptions(cnQuotaOptions.data, quotaSize);
+    const quotaOptions = await api.getQuotaOptionsByProfileId(profileId);
+    const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
     setProfileState((profileState0: any) => ({
       ...profileState0,
       baseData: {
         namespacesJson: namespaces.data,
         ministryJson: ministry.data,
-        cnQuotaOptionsJson: cnQuotaOptions.data,
       },
       hasPendingEdit,
       isProvisioned: isProfileProvisioned(namespaces.data),
@@ -126,8 +119,8 @@ const ProfileEdit: React.FC = (props: any) => {
       contactDetails: contactDetails.data,
       quotaDetails: {
         licensePlate: getLicensePlate(namespaces.data),
-        quotaSize,
-        quotaOptions,
+        quotaSize: quotaSize.data,
+        quotaOptions: quotaOptions.data,
       },
     }));
   }
@@ -276,7 +269,6 @@ const ProfileEdit: React.FC = (props: any) => {
               <QuotaCardEdit
                 profileId={profileId}
                 quotaDetails={profileState.quotaDetails}
-                baseData={profileState.baseData}
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
