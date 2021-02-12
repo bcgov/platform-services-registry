@@ -37,8 +37,8 @@ const CreateFormMigration: React.FC = () => {
           <br /> b) have short 2-3 week migration timelines starting from when the namespaces are
           provisioned.
         </blockquote>
-        Please indicate if your project meets the two criteria
-        above and include the license plate number for the OCP3 project set.
+        Please indicate if your project meets the two criteria above and include the license plate
+        number for the OCP3 project set.
       </FormSubtitle>
       <Flex pb="20px">
         <Label m="0" variant="adjacentLabel">
@@ -61,7 +61,10 @@ const CreateFormMigration: React.FC = () => {
         </Flex>
       </Flex>
       <Condition when="project-migratingApplication" is={true}>
-        <Field name="project-migratingLicenseplate" validate={validator.mustBeValidProfileLicenseplate}>
+        <Field
+          name="project-migratingLicenseplate"
+          validate={validator.mustBeValidProfileLicenseplate}
+        >
           {({ input, meta }) => (
             <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
               <Label m="0" htmlFor="project-migratingLicenseplate">

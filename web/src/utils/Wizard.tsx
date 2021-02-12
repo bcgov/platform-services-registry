@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Form } from "react-final-form";
+import React, { useState } from 'react';
+import { Form } from 'react-final-form';
 import { Flex } from 'rebass';
 import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
@@ -19,7 +19,7 @@ type Values = {
   birthYear: Number;
 };
 
-export const WizardPage: React.FC = ({ children }) => <div>{children}</div>; 
+export const WizardPage: React.FC = ({ children }) => <div>{children}</div>;
 
 // 3-steps form
 const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
@@ -27,7 +27,7 @@ const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
   const [values, setValues] = useState<Values | undefined>(undefined);
   const activePage = React.Children.toArray(children)[page];
   const isLastPage = page === React.Children.count(children) - 1;
-  
+
   // next page
   const next = (values: Values) => {
     setPage(Math.min(page + 1, React.Children.count(children)));
@@ -43,40 +43,44 @@ const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
     const isLastPage = page === React.Children.count(children) - 1;
     if (isLastPage) {
       return onSubmit(values);
-    } else {
-      next(values);
     }
+    next(values);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      {({ handleSubmit, values }) => 
+      {({ handleSubmit, values }) => (
         <form onSubmit={handleSubmit}>
-        <Flex flexWrap="wrap" mx={-2}>
-          <ShadowBox
-            maxWidth="750px"
-            p="24px"
-            mt="0px"
-            px={['24px', '24px', '70px']}
-            width={[1, 1, 2 / 3]}
-            mx="auto"
-          >
-          {activePage}
-          <div className="buttons">
-            {page > 0 && (
-              <StyledFormButton type="button" onClick={previous} style={{backgroundColor:'#d3d3d3', color:'#036'}}>Previous</StyledFormButton>
-            )}
-            {isLastPage ? (
-              <StyledFormButton>Request</StyledFormButton>
-            ) : (
-              <StyledFormButton>Next</StyledFormButton>
-            )
-            }
-          </div>
-          </ShadowBox>
+          <Flex flexWrap="wrap" mx={-2}>
+            <ShadowBox
+              maxWidth="750px"
+              p="24px"
+              mt="0px"
+              px={['24px', '24px', '70px']}
+              width={[1, 1, 2 / 3]}
+              mx="auto"
+            >
+              {activePage}
+              <div className="buttons">
+                {page > 0 && (
+                  <StyledFormButton
+                    type="button"
+                    onClick={previous}
+                    style={{ backgroundColor: '#d3d3d3', color: '#036' }}
+                  >
+                    Previous
+                  </StyledFormButton>
+                )}
+                {isLastPage ? (
+                  <StyledFormButton>Request</StyledFormButton>
+                ) : (
+                  <StyledFormButton>Next</StyledFormButton>
+                )}
+              </div>
+            </ShadowBox>
           </Flex>
         </form>
-      }
+      )}
     </Form>
   );
 };

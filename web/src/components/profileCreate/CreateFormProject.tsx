@@ -21,6 +21,7 @@ import { Flex } from 'rebass';
 import getValidator from '../../utils/getValidator';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
+import SelectInput from '../common/UI/SelectInput';
 
 interface MinistryItem {
   name: string;
@@ -33,18 +34,20 @@ interface ICreateFormProjectProps {
 
 const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
   const validator = getValidator();
-
+  // @ts-ignore
+  const required = value => (value ? {undefined} : "Required");
   const { ministry = [] } = props;
 
   return (
     <div>
       <FormTitle>Tell us about your project</FormTitle>
       <FormSubtitle>
-        If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to <a
-            rel="noopener noreferrer"
-            href="mailto:olena.mitovska@gov.bc.ca"
-            target="_blank"
-          >olena.mitovska@gov.bc.ca</a> to get started.
+        If this is your first time on the OpenShift platform you need to book an alignment meeting
+        with the Platform Services team; Reach out to{' '}
+        <a rel="noopener noreferrer" href="mailto:olena.mitovska@gov.bc.ca" target="_blank">
+          olena.mitovska@gov.bc.ca
+        </a>{' '}
+        to get started.
       </FormSubtitle>
       <Field name="project-name" validate={validator.mustBeValidProfileName}>
         {({ input, meta }) => (
@@ -109,18 +112,23 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
                     not seem to expose any API to modify CSS */}
           <Field
             name="project-busOrgId"
-            component="select"
+            component={SelectInput}
             className="misc-class-m-dropdown-select"
+            validate={required}
           >
-            {/* {({ input, meta }) => ( */}
-            <option>Select...</option>
-            {ministry.length > 0 &&
-              ministry.map((s: any) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            {/* )} */}
+                  <option> Select... </option>
+                  {ministry.length > 0 &&
+                  ministry.map((s: any) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                  {meta.error && meta.touched && (
+                    <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
+                  {meta.error}
+                  </Label>
+            )}
+            
           </Field>
         </Flex>
       </Flex>

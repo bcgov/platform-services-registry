@@ -31,7 +31,9 @@ const CreateFormTC: React.FC = () => {
     <div>
       <FormTitle>Who is the technical contact for this project?</FormTitle>
       <FormSubtitle>
-        Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.
+        Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will
+        use this information to contact them with technical questions or notify them about platform
+        events.
       </FormSubtitle>
 
       <Field name="tc-firstName" validate={validator.mustBeValidName}>

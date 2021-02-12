@@ -18,8 +18,8 @@ import React from 'react';
 import { Field } from 'react-final-form';
 
 interface IConditionProps {
-  when:string;
-  is:boolean;
+  when: string;
+  is: boolean;
   children: React.ReactNode;
 }
 
@@ -29,5 +29,5 @@ export const Condition: React.FC<IConditionProps> = (props) => {
     <Field name={when} subscription={{ value: true }}>
       {({ input: { value } }) => (value === is ? children : null)}
     </Field>
-  )
+  );
 };

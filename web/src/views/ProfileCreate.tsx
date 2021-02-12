@@ -88,10 +88,7 @@ const ProfileCreate: React.FC = () => {
     return <Redirect to={ROUTE_PATHS.DASHBOARD} />;
   }
   return (
-    
-    <Wizard
-      onSubmit={onSubmit}
-    >
+    <Wizard onSubmit={onSubmit}>
       <WizardPage>
         <CreateFormProject ministry={ministry} />
       </WizardPage>
