@@ -130,7 +130,8 @@ export const getProfileBotJsonUnderPending = async (
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
-    const message = `Unable to get profile (currently under pending edit / create) bot json for profile ID ${profileId}`;
+    const message = `Unable to get profile (currently under pending edit / create) bot json
+    for profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
