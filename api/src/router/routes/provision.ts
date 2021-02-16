@@ -21,7 +21,7 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { provisionCallbackHandler, provisionProfileNamespaces } from '../../controllers/provision';
-import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../../controllers/sync';
+import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson, migratePendingEditRequests } from '../../controllers/sync';
 
 const router = express.Router();
 
@@ -34,5 +34,7 @@ router.get('/sync/provisioned-profile-ids', asyncMiddleware(getAllProvisionedPro
 router.get('/sync/:profileId/provisioned-profile-bot-json', asyncMiddleware(getProvisionedProfileBotJson));
 router.get('/sync/under-pending-profile-ids', asyncMiddleware(getAllProfileIdsUnderPending));
 router.get('/sync/:profileId/under-pending-profile-bot-json', asyncMiddleware(getProfileBotJsonUnderPending));
+
+router.get('/migrate/under-pending-edit-requests', asyncMiddleware(migratePendingEditRequests));
 
 export default router;
