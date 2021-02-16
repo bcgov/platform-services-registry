@@ -24,9 +24,9 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
 import { RequestEditContacts, RequestEditType } from '../db/model/request';
-import { getCurrentQuotaSize } from '../libs/primary-namespace-set';
 import { replaceForDescription } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
+import { getProfileCurrentQuotaSize } from './profile';
 import shared from './shared';
 
 export interface Context {
@@ -57,7 +57,7 @@ export const contextForProvisioning = async (profileId: number, action: Fulfillm
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
     const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
-    const quotaSize: QuotaSize = await getCurrentQuotaSize(profile);
+    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
     const namespaces = await NamespaceModel.findForProfile(profileId);
 

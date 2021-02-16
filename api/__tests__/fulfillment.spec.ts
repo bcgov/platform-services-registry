@@ -32,9 +32,9 @@ const namespaces = JSON.parse(fs.readFileSync(p3, 'utf8'));
 const p4 = path.join(__dirname, 'fixtures/select-quota.json');
 const quotas = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
-jest.mock('../src/libs/primary-namespace-set', () => {
+jest.mock('../src/libs/profile', () => {
   return {
-    getCurrentQuotaSize: jest.fn().mockResolvedValue('small'),
+    getProfileCurrentQuotaSize: jest.fn().mockResolvedValue('small'),
   };
 });
 

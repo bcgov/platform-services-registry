@@ -26,7 +26,7 @@ import { ProjectProfile } from '../db/model/profile';
 import { Request, RequestEditType } from '../db/model/request';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { applyRequestedQuotaSize, isProfileProvisioned } from '../libs/primary-namespace-set';
+import { applyProfileRequestedQuotaSize, isProfileProvisioned, updateProvisionedProfile } from '../libs/profile';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -92,28 +92,8 @@ export const provisionCallbackHandler = async (
 };
 
 const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<void> => {
-  const { NamespaceModel } = dm;
-
   try {
-    const namespaces = await NamespaceModel.findForProfile(Number(profile.id))
-    if (!namespaces) {
-      throw new Error();
-    }
-
-    const provisioned = true;
-    const promises: any = [];
-
-    namespaces.forEach(namespace => {
-      // @ts-ignore
-      const { namespaceId, clusters } = namespace;
-      clusters?.forEach(cluster => {
-        // @ts-ignore
-        const { clusterId } = cluster;
-        promises.push(NamespaceModel.updateProvisionStatus(namespaceId, clusterId, provisioned));
-      });
-    });
-
-    await Promise.all(promises);
+    await updateProvisionedProfile(profile);
 
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
@@ -211,7 +191,7 @@ const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
     const { quota } = JSON.parse(editObject);
     const profile = await ProfileModel.findById(profileId);
 
-    await applyRequestedQuotaSize(profile, quota);
+    await applyProfileRequestedQuotaSize(profile, quota);
   } catch (err) {
     const message = `Unable to process requestId ${request.id} on bot callback`;
     logger.error(`${message}, err = ${err.message}`);

@@ -21,7 +21,7 @@ import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { getAuthorization } from '../libs/authorization';
-import { getDefaultCluster } from '../libs/primary-namespace-set';
+import { getDefaultCluster } from '../libs/profile';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
 

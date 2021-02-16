@@ -28,7 +28,7 @@ const selectRequest = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const client = new Pool().connect();
 
-jest.mock('../src/libs/primary-namespace-set', () => {
+jest.mock('../src/libs/profile', () => {
   const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
   const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
@@ -139,7 +139,7 @@ describe('Sync event handlers', () => {
   });
 
   it('Bot json object for a queried profile under pending edit / create is returned', async () => {
-    jest.mock('../src/libs/primary-namespace-set', () => {
+    jest.mock('../src/libs/profile', () => {
       const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
       const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 

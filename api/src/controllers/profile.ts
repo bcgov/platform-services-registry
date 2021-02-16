@@ -28,7 +28,7 @@ import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { getAuthorization } from '../libs/authorization';
 import { fulfillEditRequest } from '../libs/fulfillment';
-import { getCurrentQuotaSize, getQuotaOptions } from '../libs/primary-namespace-set';
+import { getProfileCurrentQuotaSize, getProfileQuotaOptions } from '../libs/profile';
 import shared from '../libs/shared';
 import { formatNatsContactObject } from '../libs/utils';
 
@@ -88,7 +88,7 @@ export const fetchProfileQuotaSize = async (
 
   try {
     const profile = await ProfileModel.findById(Number(profileId));
-    const quotaSize: QuotaSize = await getCurrentQuotaSize(profile);
+    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
 
     res.status(200).json(quotaSize);
   } catch (err) {
@@ -247,7 +247,7 @@ export const fetchProfileQuotaOptions = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaOptions: QuotaSize[] = await getQuotaOptions(profile);
+    const quotaOptions: QuotaSize[] = await getProfileQuotaOptions(profile);
 
     res.status(200).json(quotaOptions);
   } catch (err) {
@@ -267,7 +267,7 @@ export const requestProfileQuotaEdit = async (
 
   try {
     const profile = await ProfileModel.findById(profileId);
-    const quotaOptions = await getQuotaOptions(profile);
+    const quotaOptions = await getProfileQuotaOptions(profile);
 
     // 0. Verify if requested quota size is valid
     if (!(requestedQuotaSize && quotaOptions.includes(requestedQuotaSize))) {
