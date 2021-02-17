@@ -51,18 +51,6 @@ const schema = {
       message: 'No special characters allowed',
     },
   },
-  profileLicenseplate: {
-    presence: { allowEmpty: false, message: 'Required' },
-    length: {
-      maximum: 40,
-      tooLong: 'Max 40 characters',
-    },
-    format: {
-      pattern: '[A-Za-z0-9-_]+',
-      flags: 'i',
-      message: 'Must only contain alphanumetic characters, hyphens or underscores',
-    },
-  },
   componenentOthers: {
     length: {
       maximum: 512,
@@ -95,7 +83,11 @@ const schema = {
       maximum: 32,
       tooLong: 'Max 32 characters',
     },
-    format: { pattern: '[A-Za-z0-9-_]+', flags: 'i', message: 'Must be alphabetic' },
+    format: {
+      pattern: '[A-Za-z0-9-_]+',
+      flags: 'i',
+      message: 'Must only contain alphanumetic characters, hyphens or underscores',
+    },
   },
 };
 
@@ -118,13 +110,6 @@ export default function getValidator() {
     const errors = validate({ profileDescription: value }, schema, { fullMessages: false });
     if (errors && errors.profileDescription) {
       return errors.profileDescription[0];
-    }
-  };
-
-  const mustBeValidProfileLicenseplate = (value: any) => {
-    const errors = validate({ profileLicenseplate: value }, schema, { fullMessages: false });
-    if (errors && errors.profileLicenseplate) {
-      return errors.profileLicenseplate[0];
     }
   };
 
@@ -167,7 +152,6 @@ export default function getValidator() {
     mustBeValidEmail,
     mustBeValidProfileName,
     mustBeValidProfileDescription,
-    mustBeValidProfileLicenseplate,
     mustBeValidName,
     mustBeValidGithubName,
     mustBeValidComponentOthers,

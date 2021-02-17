@@ -1,16 +1,16 @@
-import { Label, Select } from '@rebass/forms';
+import { Input, Label } from '@rebass/forms';
 import React from 'react';
 import { FieldRenderProps } from 'react-final-form';
 
 type Props = FieldRenderProps<string, any>;
 
-const SelectInput: React.FC<Props> = ({
+const TextInput: React.FC<Props> = ({
   input,
   meta: { active, error, touched },
   ...rest
 }: Props) => (
   <div className={active ? 'active' : ''}>
-    <Select {...input} {...rest} />
+    <Input {...input} {...rest} />
     {error && touched && (
       <Label as="span" variant="errorLabel">
         {error}
@@ -19,4 +19,4 @@ const SelectInput: React.FC<Props> = ({
   </div>
 );
 
-export default SelectInput;
+export default TextInput;

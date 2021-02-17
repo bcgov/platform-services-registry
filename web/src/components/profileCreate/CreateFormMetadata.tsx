@@ -14,14 +14,16 @@
 // limitations under the License.
 //
 
-import { Input, Label } from '@rebass/forms';
+import { Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { COMPONENT_METADATA } from '../../constants';
 import getValidator from '../../utils/getValidator';
+import CheckboxInput from '../common/UI/CheckboxInput';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
+import TextInput from '../common/UI/TextInput';
 
 const CreateFormMetadata: React.FC = () => {
   const validator = getValidator();
@@ -33,40 +35,27 @@ const CreateFormMetadata: React.FC = () => {
         Please indicate what services you expect to utilize as part of your project?
       </FormSubtitle>
       {COMPONENT_METADATA.map((item) => (
-        <Flex key={item.inputValue}>
-          <Label variant="adjacentLabel">{item.displayName}</Label>
+        <Flex mt={3} key={item.inputValue}>
+          <Label variant="adjacentLabel" m="auto">
+            {item.displayName}
+          </Label>
           <Flex flex="1 1 auto" justifyContent="flex-end">
-            <Label width="initial" px="8px">
-              <Field name={`project-${item.inputValue}`} component="input" type="checkbox">
-                {({ input }) => (
-                  <input
-                    style={{ width: '35px', height: '35px' }}
-                    name={input.name}
-                    type="checkbox"
-                    checked={input.checked}
-                    onChange={input.onChange}
-                  />
-                )}
-              </Field>
-            </Label>
+            <Field<boolean> name={`project-${item.inputValue}`} component={CheckboxInput} />
           </Flex>
         </Flex>
       ))}
-      <Field name="project-other" validate={validator.mustBeValidComponentOthers}>
-        {({ input, meta }) => (
-          <Flex pb="25px" style={{ position: 'relative' }}>
-            <Label htmlFor="project-other">Other:</Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end">
-              <Input {...input} id="project-other" />
-            </Flex>
-            {meta.error && meta.touched && (
-              <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
-                {meta.error}
-              </Label>
-            )}
-          </Flex>
-        )}
-      </Field>
+      <Flex>
+        <Label variant="adjacentLabel" m="auto" htmlFor="project-other">
+          Other:
+        </Label>
+        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-other">
+          <Field<string>
+            name="project-other"
+            component={TextInput}
+            validate={validator.mustBeValidComponentOthers}
+          />
+        </Flex>
+      </Flex>
     </div>
   );
 };
