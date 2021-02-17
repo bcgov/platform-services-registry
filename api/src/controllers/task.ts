@@ -97,7 +97,7 @@ const migrateProfileBotJsonUnderPendingEdit = async (request: Request): Promise<
     };
     // @ts-ignore
     const newRequest = await RequestModel.update(request.id, { natsContext: JSON.stringify(newContext) });
-    logger.info(`\d successfully updated: \d ${request} \d to ${newRequest} \d`);
+    logger.info(`successfully updated: ${JSON.stringify(request)} to ${JSON.stringify(newRequest)}`);
     return;
   } catch (err) {
     const message = `Unable to migrate request ${request.id}`;
