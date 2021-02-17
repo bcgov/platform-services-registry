@@ -201,7 +201,6 @@ export default function useRegistryApi() {
     getNamespacesByProfileId,
     getQuotaSizeByProfileId,
     getProfileByProfileId,
-    getNamespacesByProfileId,
     getQuotaOptionsByProfileId,
     requestQuotaSizeByProfileId,
     getEditRequestStatus,
