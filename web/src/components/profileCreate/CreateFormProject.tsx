@@ -85,10 +85,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
           <Field name="project-busOrgId" component={SelectInput} validate={required}>
-            <option selected disabled>
-              {' '}
-              Select...{' '}
-            </option>
+            <option> Select... </option>
             {ministry.length > 0 &&
               ministry.map((s: any) => (
                 <option key={s.id} value={s.id}>

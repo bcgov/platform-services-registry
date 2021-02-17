@@ -7,727 +7,169 @@ exports[`matches the snapshot 1`] = `
       class="css-hdrfx9"
     >
       <div
-        class="css-5rvgix"
+        class="css-1pslfv9"
       >
         <div>
-          <h1
-            class="css-zi8sy1"
-          >
-            Tell us about your project
-          </h1>
-          <h3
-            class="css-ao0kz4"
-          >
-            As the capacity in the Silver cluster remains to be an issue due to the slow progress of the app migration, the priority will be given to provisioning namespaces for the projects that:
-            <blockquote>
-              <br />
-               a) migrate from OCP3 and
-              <br />
-               b) have short 2-3 week migration timelines starting from when the namespaces are provisioned.
-            </blockquote>
-            Please indicate in the project description field if your project meets the two criteria above and include the license plate number for the OCP3 project set.
-          </h3>
-          <div
-            class="css-j2gbad"
-            style="position: relative;"
-          >
-            <label
-              class="css-1h8msqk"
-              for="project-name"
+          <div>
+            <h1
+              class="css-zi8sy1"
             >
-              Name
-            </label>
-            <input
-              class="css-1f2jrlr"
-              id="project-name"
-              name="project-name"
-              placeholder="Project X"
-              type="text"
-              value=""
-            />
-          </div>
-          <div
-            class="css-j2gbad"
-            style="position: relative;"
-          >
-            <label
-              class="css-1h8msqk"
-              for="project-description"
+              Tell us about your project
+            </h1>
+            <h3
+              class="css-ao0kz4"
             >
-              Description
-            </label>
-            <textarea
-              class="css-1f2jrlr"
-              id="project-description"
-              name="project-description"
-              placeholder="A cutting edge web platform that enables Citizens to ..."
-              rows="5"
-            />
-          </div>
-          <div
-            class="css-1alsiom"
-          >
-            <label
-              class="css-1h8msqk"
-            >
-              Is this a Priority Application?
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-1grp5jk"
-              >
-                <input
-                  name="project-prioritySystem"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-1alsiom"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Ministry Sponsor
-            </label>
-            <div
-              class="css-xtali0"
-              name="project-busOrgId"
-            >
-              <select
-                class="misc-class-m-dropdown-select"
-                name="project-busOrgId"
-              >
-                <option>
-                  Select...
-                </option>
-              </select>
-            </div>
-          </div>
-          <label
-            class="css-knfhfe"
-          >
-            Please indicate what services you expect to utilize as part of your project?
-          </label>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Notification: Email
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-notificationEmail"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Notification: SMS
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-notificationSms"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Notification: MS Teams
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-notificationMsTeams"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Payment processing: Bambora
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-paymentBambora"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Payment processing: PayBC
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-paymentPayBc"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              File Transfer
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-fileTransfer"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              File Storage
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-fileStorage"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Geo Mapping: Web-based
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-geoMappingWeb"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Geo Mapping: Location Services
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-geoMappingLocation"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Scheduling: Calendar
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-schedulingCalendar"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Scheduling: Appointments
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-schedulingAppointments"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Identity Management: SiteMinder
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-idmSiteMinder"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Identity Management: KeyCloak
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-idmKeycloak"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-4cffwv"
-          >
-            <label
-              class="css-knfhfe"
-            >
-              Identity Management: Active Directory
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <label
-                class="css-v4bk2t"
-              >
-                <input
-                  name="project-idmActiveDir"
-                  style="width: 35px; height: 35px;"
-                  type="checkbox"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-1vmgfxl"
-            style="position: relative;"
-          >
-            <label
-              class="css-knfhfe"
-              for="project-other"
-            >
-              Other:
-            </label>
-            <div
-              class="css-xtali0"
-            >
-              <input
-                class="css-4y926w"
-                id="project-other"
-                name="project-other"
-                type="text"
-                value=""
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="css-fpdtzh"
-      >
-        <div
-          class="css-vurnku"
-        >
-          If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to
-           
-          <a
-            href="mailto: olena.mitovska@gov.bc.ca"
-          >
-            olena.mitovska@gov.bc.ca
-          </a>
-           to get started.
-        </div>
-        <div
-          class="css-pmqufv"
-        >
-          If you're new to OpenShift check out our
-           
-          <a
-            href="https://docs.google.com/presentation/d/1UcT0b2YTPki_o0et9ZCLKv8vF19eYakJQitU85TAeD4/edit?usp=sharing"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Getting Started
-          </a>
-           
-          on the DevOps Platform guide. It's full of tones of useful information.
-        </div>
-      </div>
-    </div>
-    <div
-      class="css-16n4rli"
-    >
-      <div
-        class="css-5rvgix"
-      >
-        <h1
-          class="css-zi8sy1"
-        >
-          Who is the product owner for this project?
-        </h1>
-        <div
-          class="css-j2gbad"
-          style="position: relative;"
-        >
-          <label
-            class="css-1h8msqk"
-            for="po-first-name"
-          >
-            First Name
-          </label>
-          <input
-            class="css-1f2jrlr"
-            id="po-first-name"
-            name="po-firstName"
-            type="text"
-            value="Doe"
-          />
-        </div>
-        <div
-          class="css-j2gbad"
-          style="position: relative;"
-        >
-          <label
-            class="css-1h8msqk"
-            for="po-last-name"
-          >
-            Last Name
-          </label>
-          <input
-            class="css-1f2jrlr"
-            id="po-last-name"
-            name="po-lastName"
-            type="text"
-            value="Jane"
-          />
-        </div>
-        <div
-          class="css-j2gbad"
-          style="position: relative;"
-        >
-          <label
-            class="css-1h8msqk"
-            for="po-email"
-          >
-            eMail Address
-          </label>
-          <input
-            class="css-1f2jrlr"
-            id="po-email"
-            name="po-email"
-            type="text"
-            value="test@example.com"
-          />
-        </div>
-        <div
-          class="css-j2gbad"
-          style="position: relative;"
-        >
-          <label
-            class="css-1h8msqk"
-            for="po-github-id"
-          >
-            GitHub ID
-          </label>
-          <input
-            class="css-1f2jrlr"
-            id="po-github-id"
-            name="po-githubId"
-            placeholder="jane1100"
-            type="text"
-            value=""
-          />
-        </div>
-      </div>
-      <div
-        class="css-fpdtzh"
-      >
-        <div
-          class="css-vurnku"
-        >
-          Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.
-        </div>
-        <div
-          class="css-pmqufv"
-        >
-          Although not required, we strongly recommend the requestor be the product owner so that this record appears on their dashboard when logging on to the registry; only the requestor will be able to edit this project in the future.
-        </div>
-      </div>
-    </div>
-    <div
-      class="css-16n4rli"
-    >
-      <div
-        class="css-5rvgix"
-      >
-        <div>
-          <h1
-            class="css-zi8sy1"
-          >
-            Who is the technical contact for this project?
-          </h1>
-          <div
-            class="css-j2gbad"
-            style="position: relative;"
-          >
-            <label
-              class="css-1h8msqk"
-              for="tc-first-name"
-            >
-              First Name
-            </label>
-            <input
-              class="css-1f2jrlr"
-              id="tc-first-name"
-              name="tc-firstName"
-              placeholder="Jane"
-              type="text"
-              value=""
-            />
-          </div>
-          <div
-            class="css-j2gbad"
-            style="position: relative;"
-          >
-            <label
-              class="css-1h8msqk"
-              for="tc-last-name"
-            >
-              Last Name
-            </label>
-            <input
-              class="css-1f2jrlr"
-              id="tc-last-name"
-              name="tc-lastName"
-              placeholder="Doe"
-              type="text"
-              value=""
-            />
-          </div>
-          <div
-            class="css-j2gbad"
-            style="position: relative;"
-          >
-            <label
-              class="css-1h8msqk"
-              for="tc-email"
-            >
-              eMail Address
-            </label>
-            <input
-              class="css-1f2jrlr"
-              id="tc-email"
-              name="tc-email"
-              placeholder="jane.doe@gov.bc.ca"
-              type="text"
-              value=""
-            />
-          </div>
-          <div
-            class="css-j2gbad"
-            style="position: relative;"
-          >
-            <label
-              class="css-1h8msqk"
-              for="tc-github-id"
-            >
-              GitHub ID
-            </label>
-            <input
-              class="css-1f2jrlr"
-              id="tc-github-id"
-              name="tc-githubId"
-              placeholder="jane1100"
-              type="text"
-              value=""
-            />
-          </div>
-          <label
-            class="css-knfhfe"
-          >
-            <div
-              class="css-vurnku"
-            >
-              <input
-                class="css-p19g2b"
-                type="checkbox"
-              />
-              <svg
-                aria-hidden="true"
-                class="css-1orewpb"
-                fill="currentcolor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                />
-              </svg>
-              <svg
-                aria-hidden="true"
-                class="css-6gju6b"
-                fill="currentcolor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-                />
-              </svg>
-            </div>
-            <div
-              class="css-jqhguc"
-            >
-              By checking this box, i confirm that I have read and understood the roles and responsibilities as described in the
+              If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to
                
               <a
-                href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!"
+                href="mailto:olena.mitovska@gov.bc.ca"
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Onboarding Guide
+                olena.mitovska@gov.bc.ca
               </a>
-              .
+               
+              to get started.
+            </h3>
+            <div
+              class="css-l3rx45"
+            >
+              <label
+                class="css-knfhfe"
+                for="project-name"
+              >
+                Name
+              </label>
+              <div
+                class=""
+              >
+                <input
+                  class="css-4y926w"
+                  name="project-name"
+                  placeholder="Project X"
+                  type="text"
+                  value=""
+                />
+              </div>
             </div>
-          </label>
-          <button
-            class="css-s0jrgc"
-            disabled=""
-          >
-            Request
-          </button>
+            <div
+              class="css-l3rx45"
+            >
+              <label
+                class="css-knfhfe"
+                for="project-description"
+              >
+                Description
+              </label>
+              <div
+                class=""
+              >
+                <textarea
+                  class="css-4y926w"
+                  name="project-description"
+                  placeholder="A cutting edge web platform that enables Citizens to ..."
+                  rows="5"
+                />
+              </div>
+            </div>
+            <div
+              class="css-18m6ozg"
+            >
+              <label
+                class="css-toc01s"
+              >
+                Is this a Priority Application?
+              </label>
+              <div
+                class="css-xtali0"
+              >
+                <label
+                  class="css-iph17x"
+                >
+                  <div
+                    class="css-vurnku"
+                  >
+                    <input
+                      class="css-p19g2b"
+                      name="project-prioritySystem"
+                      type="checkbox"
+                    />
+                    <svg
+                      aria-hidden="true"
+                      class="css-1orewpb"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                      />
+                    </svg>
+                    <svg
+                      aria-hidden="true"
+                      class="css-6gju6b"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                      />
+                    </svg>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div
+              class="css-18m6ozg"
+            >
+              <label
+                class="css-toc01s"
+              >
+                Ministry Sponsor
+              </label>
+              <div
+                class="css-xtali0"
+                name="project-busOrgId"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="css-4cffwv"
+                  >
+                    <select
+                      class="css-4y926w"
+                      name="project-busOrgId"
+                    >
+                      <option>
+                         Select... 
+                      </option>
+                    </select>
+                    <svg
+                      class="css-6ibwe0"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7 10l5 5 5-5z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div
-        class="css-fpdtzh"
-      >
         <div
-          class="css-vurnku"
+          class="buttons"
         >
-          Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.
+          <button
+            class="misc-class-m-form-submit-btn css-1cr4ss0"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
