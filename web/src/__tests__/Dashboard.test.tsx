@@ -37,7 +37,7 @@ jest.mock(
         data: mockContacts,
       });
 
-      const getNamespaceByProfileId = jest.fn().mockResolvedValue({
+      const getNamespacesByProfileId = jest.fn().mockResolvedValue({
         data: mockNamespaces,
       });
 
@@ -48,7 +48,7 @@ jest.mock(
       return {
         getProfile,
         getContactsByProfileId,
-        getNamespaceByProfileId,
+        getNamespacesByProfileId,
         getQuotaSizeByProfileId,
       };
     },

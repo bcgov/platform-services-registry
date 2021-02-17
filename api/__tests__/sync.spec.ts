@@ -165,13 +165,13 @@ describe('Sync event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch all ids of profiles under pending edit / create should throw', async () => {
+  it('Bot json object for a queried profile under pending edit / create should throw', async () => {
     const req = {
       params: {},
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(getProfileBotJsonUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
   });

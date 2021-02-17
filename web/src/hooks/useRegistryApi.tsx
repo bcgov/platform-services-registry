@@ -136,14 +136,6 @@ export default function useRegistryApi() {
     }
   };
 
-  const getNamespaceByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
-    if (!axiosInstance.current) {
-      throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}/namespace`);
-    }
-  };
-
   const getProfileByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -206,7 +198,7 @@ export default function useRegistryApi() {
     linkContactToProfileById,
     createNamespaceByProfileId,
     getContactsByProfileId,
-    getNamespaceByProfileId,
+    getNamespacesByProfileId,
     getQuotaSizeByProfileId,
     getProfileByProfileId,
     getNamespacesByProfileId,

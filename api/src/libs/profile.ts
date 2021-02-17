@@ -150,7 +150,7 @@ const getProfileClusters = async (profile: ProjectProfile): Promise<Cluster[]> =
 
     const promises: Promise<Cluster>[] = [];
     // @ts-ignore
-    const { namespaceId, clusters } = namespaces[0];
+    const { clusters } = namespaces[0];
     clusters?.map(cluster => {
       promises.push(ClusterModel.findById(cluster.clusterId));
     });

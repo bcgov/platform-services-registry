@@ -17,8 +17,8 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-// import { RequestEditType } from '../src/db/model/request';
-import { contextForProvisioning, FulfillmentContextAction, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
+import { RequestEditType } from '../src/db/model/request';
+import { contextForProvisioning, fulfillEditRequest, FulfillmentContextAction, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
 
 const p1 = path.join(__dirname, 'fixtures/select-profile.json');
 const profile = JSON.parse(fs.readFileSync(p1, 'utf8'));
@@ -97,36 +97,33 @@ describe('Services', () => {
     await expect(fulfillNamespaceProvisioning(12345)).rejects.toThrow();
   });
 
-  // const requestEditObject = [
-  //   {
-  //     namespaceId: 177,
-  //     name: 'e3d89a-tools',
-  //     cluster: [],
-  //   },
-  //   {
-  //     namespaceId: 178,
-  //     name: 'e3d89a-dev',
-  //     cluster: [],
-  //   },
-  //   {
-  //     namespaceId: 179,
-  //     name: 'e3d89a-test',
-  //     cluster: [],
-  //   },
-  //   {
-  //     namespaceId: 180,
-  //     name: 'e3d89a-prod',
-  //     cluster: [],
-  //   },
-  // ];
-  // const requestEditType = RequestEditType.QuotaSize;
+  it('Provisioned namespaces updated succeeds', async () => {
+    const requestEditObject = {
+      quota: 'small',
+      quotas: {
+        cpu: {
+          requests: 4,
+          limits: 8,
+        },
+        memory: {
+          requests: '16Gi',
+          limits: '32Gi',
+        },
+        storage: {
+          block: '50Gi',
+          file: '50Gi',
+          backup: '25Gi',
+          capacity: '50Gi',
+        },
+      },
+    };
+    const requestEditType = RequestEditType.QuotaSize;
 
-  // it('Provisioned namespaces updating succeeds', async () => {
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: namespaces });
 
-  //   client.query.mockReturnValueOnce({ rows: profile });
-  //   client.query.mockReturnValueOnce({ rows: contacts });
-  //   client.query.mockReturnValueOnce({ rows: namespaces });
-
-  //   await expect(fulfillEditRequest(12345, requestEditType, requestEditObject)).resolves.toBeDefined();
-  // });
+    await expect(fulfillEditRequest(12345, requestEditType, requestEditObject)).resolves.toBeDefined();
+  });
 });

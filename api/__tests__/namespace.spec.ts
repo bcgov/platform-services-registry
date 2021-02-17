@@ -162,12 +162,6 @@ describe('Namespace event handlers', () => {
 
   it('A Namespace is updated', async () => {
     const body = JSON.parse(JSON.stringify(insert));
-    // const aBody = {
-    //   ...body,
-    //   id: 9,
-    //   createdAt: '2020-05-19T20:02:54.561Z',
-    //   updateAt: '2020-05-19T20:02:54.561Z',
-    // };
     const req = {
       params: {
         profileId: 1,

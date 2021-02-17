@@ -53,7 +53,6 @@ describe('Project-profile event handlers', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // jest.resetAllMocks();
 
     ex = new FauxExpress();
   });

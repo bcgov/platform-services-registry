@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
 
         for (const p of response.data) {
           promisesForContact.push(api.getContactsByProfileId(p.id));
-          promisesForNamespaces.push(api.getNamespaceByProfileId(p.id));
+          promisesForNamespaces.push(api.getNamespacesByProfileId(p.id));
           promisesForQuotaSize.push(api.getQuotaSizeByProfileId(p.id));
         }
         const contactResponses: Array<any> = await Promise.all(promisesForContact);
@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
   useInterval(() => {
     const promisesForNamespaces: any = [];
     for (const p of profile) {
-      promisesForNamespaces.push(api.getNamespaceByProfileId(p.id));
+      promisesForNamespaces.push(api.getNamespacesByProfileId(p.id));
     }
 
     Promise.all(promisesForNamespaces).then((namespacesResponses: any) => {
