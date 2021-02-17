@@ -22,7 +22,7 @@ import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { Request } from '../db/model/request';
 import { contextForProvisioning, FulfillmentContextAction } from '../libs/fulfillment';
-import { getProfileCurrentQuotaSize, isProfileProvisioned } from '../libs/profile';
+import { isProfileProvisioned } from '../libs/profile';
 import shared from '../libs/shared';
 import { replaceForDescription } from '../libs/utils';
 
@@ -138,7 +138,7 @@ export const getProfileBotJsonUnderPending = async (
   }
 };
 
-const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[] | Error> => {
+const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[]> => {
   const { RequestModel, ProfileModel } = dm;
   try {
     // process those profiles that are under pending EDIT
@@ -157,87 +157,6 @@ const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[] | E
     return profileIds;
   } catch (err) {
     const message = 'Unable to get a list of profile ids for those that are under pending edit / create';
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
-  }
-};
-
-// TODO:(yh) fix this work-around for pending edit request
-// how edit request data are stored in db should be independent
-// from the bot json structure registry api and bot use for communication
-export const migratePendingEditRequests = async (
-  { params }: { params: any }, res: Response
-): Promise<void> => {
-  const { RequestModel } = dm;
-
-  try {
-    // find all pending edit requests that need migration
-    const requests = await RequestModel.findAll();
-    requests.filter((request: Request) => {
-      if (!request.natsContext) {
-        throw new Error('Unable to get natsContext');
-      }
-      const context = JSON.parse(request?.natsContext);
-      return !context.hasOwnProperty('quota');
-    });
-
-    // process each migration
-    const updatePromises: Promise<void>[] = [];
-    requests.forEach((request: Request) => {
-      updatePromises.push(migrateProfileBotJsonUnderPendingEdit(request));
-    });
-    await Promise.all(updatePromises);
-
-    res.status(204).end();
-  } catch (err) {
-    const message = `Unable to migrate pending edit bot json`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-const migrateProfileBotJsonUnderPendingEdit = async (request: Request): Promise<void> => {
-  const { ProfileModel, QuotaModel, NamespaceModel, RequestModel } = dm;
-
-  try {
-    if (!request.natsContext) {
-      throw new Error('Unable to get natsContext');
-    }
-
-    const obsoleteContext = JSON.parse(request.natsContext);
-
-    let quotaSize;
-    // @ts-expect-error
-    if (request.editType === 'namespaces') {
-      quotaSize = obsoleteContext.namespaces[0].clusters[0].quotas.cpu;
-    } else {
-      const profile = await ProfileModel.findById(request.profileId);
-      quotaSize = await getProfileCurrentQuotaSize(profile);
-    }
-    const quotas = await QuotaModel.findForQuotaSize(quotaSize);
-    const namespaces = await NamespaceModel.findForProfile(request.profileId);
-
-    const { action, type, profileId, displayName, description, technicalContact, productOwner } = obsoleteContext;
-    const newContext = {
-      action,
-      type,
-      profileId,
-      displayName,
-      newDisplayName: 'NULL',
-      description,
-      quota: quotaSize,
-      quotas,
-      namespaces,
-      technicalContact,
-      productOwner,
-    };
-    // @ts-ignore
-    await RequestModel.update(request.id, { natsContext: JSON.stringify(newContext) });
-    return;
-  } catch (err) {
-    const message = `Unable to migrate request ${request.id}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
