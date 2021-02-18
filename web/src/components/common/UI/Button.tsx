@@ -80,5 +80,7 @@ export const Button: React.FC<IButtonProps> = (props) => (
 
 Button.defaultProps = {
   children: null,
-  onClick: () => {},
+  onClick: () => {
+    // this is intentional (required by Sonarcloud)
+  },
 };
