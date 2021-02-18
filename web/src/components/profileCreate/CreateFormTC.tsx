@@ -15,7 +15,7 @@
 //
 
 import { Label } from '@rebass/forms';
-import React, { useState } from 'react';
+import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import Aux from '../../hoc/auxillary';
@@ -26,8 +26,6 @@ import TextInput from '../common/UI/TextInput';
 
 const CreateFormTC: React.FC = () => {
   const validator = getValidator();
-
-  const [boxChecked, setBoxChecked] = useState(false);
 
   return (
     <Aux>

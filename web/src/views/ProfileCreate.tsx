@@ -41,11 +41,6 @@ const ProfileCreate: React.FC = () => {
   const onSubmit = async (formData: any) => {
     const { profile, productOwner, technicalContact } = transformForm(formData);
 
-    // TODO: fix this work-around
-    if (!profile.busOrgId) {
-      alert('You need to select a Ministry Sponsor.');
-      return;
-    }
     setOpenBackdrop(true);
     try {
       // 1. Create the project profile.

@@ -4,34 +4,18 @@ import { Flex } from 'rebass';
 import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 
-type Wizard = {
-  onSubmit: (values: Values) => void;
-};
-
-type Values = {
-  name: String;
-  surname: String;
-  email: String;
-  password: String;
-  city: String;
-  birthDay: Number;
-  birthMonth: Number;
-  birthYear: Number;
-};
-
 export const WizardPage: React.FC = ({ children }) => <div>{children}</div>;
 
-// 3-steps form
-const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
+const Wizard: React.FC<any> = ({ onSubmit, children }) => {
   const [page, setPage] = useState(0);
-  const [values, setValues] = useState<Values | undefined>(undefined);
+  const [values, setValues] = useState<any | undefined>(undefined);
+  const [isLastPage, setLastPage] = useState(false);
   const activePage = React.Children.toArray(children)[page];
-  const isLastPage = page === React.Children.count(children) - 1;
 
   // next page
-  const next = (values: Values) => {
+  const next = (formData: any) => {
     setPage(Math.min(page + 1, React.Children.count(children)));
-    setValues(values);
+    setValues(formData);
   };
 
   // previous page
@@ -39,18 +23,18 @@ const Wizard: React.FC<Wizard> = ({ onSubmit, children }) => {
     setPage(Math.max(page - 1, 0));
   };
 
-  const handleSubmit = (values: Values) => {
-    const isLastPage = page === React.Children.count(children) - 1;
+  const handleSubmit = (formData: any) => {
+    setLastPage(page === React.Children.count(children) - 2);
     if (isLastPage) {
-      return onSubmit(values);
+      return onSubmit(formData);
     }
-    next(values);
+    next(formData);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      {({ handleSubmit, values }) => (
-        <form onSubmit={handleSubmit}>
+      {(props) => (
+        <form onSubmit={props.handleSubmit}>
           <Flex flexWrap="wrap" mx={-2}>
             <ShadowBox
               maxWidth="750px"
