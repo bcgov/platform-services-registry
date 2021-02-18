@@ -19,12 +19,7 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
-
-export const enum QuotaSize {
-  Small = 'small',
-  Medium = 'medium',
-  Large = 'large',
-};
+import { QuotaSize } from './quota';
 
 // TODO:(yh) make quota_cpu_size, quota_memory_size, quota_storage_size NOT NULL
 // and to delete quota_cpu, quota_memory and quota_storage from ref_quota table
@@ -169,15 +164,7 @@ export default class NamespaceModel extends Model {
           (
             SELECT array_to_json(array_agg(row_to_json(x)))
             FROM (
-              SELECT ref_cluster.id AS "clusterId", ref_cluster.name, cluster_namespace.provisioned,
-              (
-                SELECT row_to_json(d)
-                from (
-                  SELECT cluster_namespace.quota_cpu_size AS "cpu", cluster_namespace.quota_memory_size AS "memory", cluster_namespace.quota_storage_size AS "storage"
-                  FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
-                  WHERE namespace.id = cluster_namespace.namespace_id
-                ) d
-              ) AS quotas
+              SELECT ref_cluster.id AS "clusterId", ref_cluster.name, cluster_namespace.provisioned
               FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
               WHERE namespace.id = cluster_namespace.namespace_id
             ) x

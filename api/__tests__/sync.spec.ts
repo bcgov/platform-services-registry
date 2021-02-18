@@ -28,7 +28,7 @@ const selectRequest = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const client = new Pool().connect();
 
-jest.mock('../src/libs/primary-namespace-set', () => {
+jest.mock('../src/libs/profile', () => {
   const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
   const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
@@ -80,7 +80,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getAllProvisionedProfileIds(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
@@ -109,7 +108,6 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getProvisionedProfileBotJson(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
@@ -135,14 +133,13 @@ describe('Sync event handlers', () => {
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
   });
 
   it('Bot json object for a queried profile under pending edit / create is returned', async () => {
-    jest.mock('../src/libs/primary-namespace-set', () => {
+    jest.mock('../src/libs/profile', () => {
       const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
       const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
@@ -168,14 +165,13 @@ describe('Sync event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch all ids of profiles under pending edit / create should throw', async () => {
+  it('Bot json object for a queried profile under pending edit / create should throw', async () => {
     const req = {
       params: {},
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
-    await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(getProfileBotJsonUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
   });

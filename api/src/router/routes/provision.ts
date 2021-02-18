@@ -34,4 +34,5 @@ router.get('/sync/provisioned-profile-ids', asyncMiddleware(getAllProvisionedPro
 router.get('/sync/:profileId/provisioned-profile-bot-json', asyncMiddleware(getProvisionedProfileBotJson));
 router.get('/sync/under-pending-profile-ids', asyncMiddleware(getAllProfileIdsUnderPending));
 router.get('/sync/:profileId/under-pending-profile-bot-json', asyncMiddleware(getProfileBotJsonUnderPending));
+
 export default router;

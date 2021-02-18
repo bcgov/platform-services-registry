@@ -22,9 +22,11 @@ import { ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
+import { Quotas, QuotaSize } from '../db/model/quota';
 import { RequestEditContacts, RequestEditType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
+import { getProfileCurrentQuotaSize } from './profile';
 import shared from './shared';
 
 export interface Context {
@@ -49,14 +51,17 @@ interface NatsObject {
 export const contextForProvisioning = async (profileId: number, action: FulfillmentContextAction): Promise<any> => {
   try {
     const dm = new DataManager(shared.pgPool);
-    const { ProfileModel, ContactModel, NamespaceModel } = dm;
+    const { ProfileModel, ContactModel, NamespaceModel, QuotaModel } = dm;
+
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
     const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
+    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
+    const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
     const namespaces = await NamespaceModel.findForProfile(profileId);
 
-    if (!profile || !tcContact || !poContact || !namespaces) {
+    if (!profile || !tcContact || !poContact || !quotaSize || !quotas || !namespaces) {
       logger.error('Unable to create context for provisioning');
       return; // This is a problem.
     }
@@ -66,7 +71,10 @@ export const contextForProvisioning = async (profileId: number, action: Fulfillm
       type: FulfillmentContextType.Standard,
       profileId: profile.id,
       displayName: profile.name,
+      newDisplayName: 'NULL',
       description: profile.description,
+      quota: quotaSize,
+      quotas,
       namespaces,
       technicalContact: {
         userId: tcContact.githubId,
@@ -146,7 +154,7 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
     }
   });
 
-export const fulfillNamespaceEdit = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
+export const fulfillEditRequest = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
   new Promise(async (resolve, reject) => {
     try {
       const subject = config.get('nats:subject');
@@ -158,12 +166,13 @@ export const fulfillNamespaceEdit = async (profileId: number, requestType: Reque
       }
 
       switch (requestType) {
-        case RequestEditType.Namespaces:
-          context[requestType] = requestEditObject;
+        case RequestEditType.QuotaSize:
+          context.quota = requestEditObject.quota;
+          context.quotas = requestEditObject.quotas;
           break;
         case RequestEditType.Contacts:
           Object.values(RequestEditContacts).forEach(contact => {
-          context[contact] = requestEditObject[contact];
+            context[contact] = requestEditObject[contact];
           });
           break;
         case RequestEditType.Description:
@@ -179,7 +188,7 @@ export const fulfillNamespaceEdit = async (profileId: number, requestType: Reque
         natsContext: context,
       });
 
-      // TODO:(yf) add sending ches message here
+      // TODO:(yh) add sending ches message here
       resolve(natsObject);
     } catch (err) {
       const message = `Unable to update namespaces for profile ${profileId}`;

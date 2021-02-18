@@ -1,7 +1,25 @@
 {
   "profileId": 118,
   "displayName": "Project X",
+  "newDisplayName": "NULL",
   "description": "This is a sample description",
+  "quota": "small",
+  "quotas": {
+    "cpu": {
+      "requests": "4",
+      "limits": "8"
+    },
+    "memory": {
+      "requests": "16Gi",
+      "limits": "32Gi"
+    },
+    "storage": {
+      "block": "50Gi",
+      "file": "50Gi",
+      "backup": "25Gi",
+      "capacity": "50Gi"
+    }
+  },
   "namespaces": [
     {
       "namespaceId": 149,
@@ -10,12 +28,7 @@
         {
           "clusterId": 1,
           "name": "silver",
-          "provisioned": false,
-          "quotas": {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small"
-          }
+          "provisioned": false
         }
       ]
     },
@@ -26,12 +39,7 @@
         {
           "clusterId": 1,
           "name": "silver",
-          "provisioned": false,
-          "quotas": {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small"
-          }
+          "provisioned": false
         }
       ]
     },
@@ -42,12 +50,7 @@
         {
           "clusterId": 1,
           "name": "silver",
-          "provisioned": false,
-          "quotas": {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small"
-          }
+          "provisioned": false
         }
       ]
     },
@@ -58,24 +61,19 @@
         {
           "clusterId": 1,
           "name": "silver",
-          "provisioned": false,
-          "quotas": {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small"
-          }
+          "provisioned": false
         }
       ]
     }
   ],
   "productOwner": {
-      "userId": "jane1100",
-      "provider": "github",
-      "email": "jane.doe@example.com"
+    "userId": "jane1100",
+    "provider": "github",
+    "email": "jane.doe@example.com"
   },
   "technicalContact": {
-      "userId": "john1100",
-      "provider": "github",
-      "email": "john.doe@example.com"
+    "userId": "john1100",
+    "provider": "github",
+    "email": "john.doe@example.com"
   }
 }

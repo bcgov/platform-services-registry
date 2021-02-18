@@ -22,7 +22,7 @@ import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { Request } from '../db/model/request';
 import { contextForProvisioning, FulfillmentContextAction } from '../libs/fulfillment';
-import { isProfileProvisioned } from '../libs/primary-namespace-set';
+import { isProfileProvisioned } from '../libs/profile';
 import shared from '../libs/shared';
 import { replaceForDescription } from '../libs/utils';
 
@@ -108,7 +108,7 @@ export const getProfileBotJsonUnderPending = async (
     const results = await getIdsForProfilesUnderPendingEditOrCreate();
 
     if (Array.isArray(results) && !results.includes(Number(profileId))) {
-      const errmsg = `This profile ${profileId} is not under any pending edit / create request`;
+      const errmsg = `This profile is not under any pending edit / create request`;
       throw new Error(errmsg);
     }
 
@@ -130,14 +130,15 @@ export const getProfileBotJsonUnderPending = async (
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
-    const message = `Unable get profile (currently under pending edit / create) bot json for profile ID ${profileId}`;
+    const message = `Unable to get profile (currently under pending edit / create) bot json
+    for profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
   }
 };
 
-const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[] | Error> => {
+const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[]> => {
   const { RequestModel, ProfileModel } = dm;
   try {
     // process those profiles that are under pending EDIT

@@ -10,13 +10,8 @@ Object {
       "clusters": Array [
         Object {
           "clusterId": 1,
-          "name": "kam",
+          "name": "silver",
           "provisioned": false,
-          "quotas": Object {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small",
-          },
         },
       ],
       "name": "4ea35c-tools",
@@ -26,13 +21,8 @@ Object {
       "clusters": Array [
         Object {
           "clusterId": 1,
-          "name": "kam",
+          "name": "silver",
           "provisioned": false,
-          "quotas": Object {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small",
-          },
         },
       ],
       "name": "4ea35c-test",
@@ -42,13 +32,8 @@ Object {
       "clusters": Array [
         Object {
           "clusterId": 1,
-          "name": "kam",
+          "name": "silver",
           "provisioned": false,
-          "quotas": Object {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small",
-          },
         },
       ],
       "name": "4ea35c-dev",
@@ -58,25 +43,38 @@ Object {
       "clusters": Array [
         Object {
           "clusterId": 1,
-          "name": "kam",
+          "name": "silver",
           "provisioned": false,
-          "quotas": Object {
-            "cpu": "small",
-            "memory": "small",
-            "storage": "small",
-          },
         },
       ],
       "name": "4ea35c-prod",
       "namespaceId": 152,
     },
   ],
+  "newDisplayName": "NULL",
   "productOwner": Object {
     "email": "jane@example.com",
     "provider": "github",
     "userId": "jane1100",
   },
   "profileId": 118,
+  "quota": "small",
+  "quotas": Object {
+    "cpu": Object {
+      "limits": 8,
+      "requests": 4,
+    },
+    "memory": Object {
+      "limits": "32Gi",
+      "requests": "16Gi",
+    },
+    "storage": Object {
+      "backup": "25Gi",
+      "block": "50Gi",
+      "capacity": "50Gi",
+      "file": "50Gi",
+    },
+  },
   "technicalContact": Object {
     "email": "jim@example.com",
     "provider": "github",

@@ -20,6 +20,8 @@ export interface Ministry extends CommonFields {
   name: string;
 }
 
+// TODO:(yh) fix around the ministry id as it's
+// not SERIAL PRIMARY KEY but varchar(4) PRIMARY KEY
 export default class MinistryModel extends Model {
   table: string = 'ref_bus_org';
   requiredFields: string[] = [

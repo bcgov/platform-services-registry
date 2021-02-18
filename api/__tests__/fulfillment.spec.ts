@@ -18,7 +18,7 @@ import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
 import { RequestEditType } from '../src/db/model/request';
-import { contextForProvisioning, FulfillmentContextAction, fulfillNamespaceEdit, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
+import { contextForProvisioning, fulfillEditRequest, FulfillmentContextAction, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
 
 const p1 = path.join(__dirname, 'fixtures/select-profile.json');
 const profile = JSON.parse(fs.readFileSync(p1, 'utf8'));
@@ -28,6 +28,15 @@ const contacts = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 const p3 = path.join(__dirname, 'fixtures/select-profile-namespaces.json');
 const namespaces = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const p4 = path.join(__dirname, 'fixtures/select-quota.json');
+const quotas = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
+jest.mock('../src/libs/profile', () => {
+  return {
+    getProfileCurrentQuotaSize: jest.fn().mockResolvedValue('small'),
+  };
+});
 
 describe('Services', () => {
 
@@ -41,8 +50,8 @@ describe('Services', () => {
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: namespaces });
-
     const result = await contextForProvisioning(12345, FulfillmentContextAction.Create);
 
     expect(result).toBeDefined();
@@ -53,6 +62,7 @@ describe('Services', () => {
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: namespaces });
 
     const result = await contextForProvisioning(12345, FulfillmentContextAction.Create);
@@ -71,6 +81,7 @@ describe('Services', () => {
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: namespaces });
 
     await expect(fulfillNamespaceProvisioning(12345)).resolves.toBeUndefined();
@@ -80,41 +91,39 @@ describe('Services', () => {
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: namespaces });
 
     await expect(fulfillNamespaceProvisioning(12345)).rejects.toThrow();
   });
 
-  const requestEditObject = [
-    {
-      namespaceId: 177,
-      name: 'e3d89a-tools',
-      cluster: [],
-    },
-    {
-      namespaceId: 178,
-      name: 'e3d89a-dev',
-      cluster: [],
-    },
-    {
-      namespaceId: 179,
-      name: 'e3d89a-test',
-      cluster: [],
-    },
-    {
-      namespaceId: 180,
-      name: 'e3d89a-prod',
-      cluster: [],
-    },
-  ];
-  const requestEditType = RequestEditType.Namespaces;
-
-  it('Provisioned namespaces updating succeeds', async () => {
+  it('Provisioned namespaces updated succeeds', async () => {
+    const requestEditObject = {
+      quota: 'small',
+      quotas: {
+        cpu: {
+          requests: 4,
+          limits: 8,
+        },
+        memory: {
+          requests: '16Gi',
+          limits: '32Gi',
+        },
+        storage: {
+          block: '50Gi',
+          file: '50Gi',
+          backup: '25Gi',
+          capacity: '50Gi',
+        },
+      },
+    };
+    const requestEditType = RequestEditType.QuotaSize;
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: namespaces });
 
-    await expect(fulfillNamespaceEdit(12345, requestEditType, requestEditObject)).resolves.toBeDefined();
+    await expect(fulfillEditRequest(12345, requestEditType, requestEditObject)).resolves.toBeDefined();
   });
 });

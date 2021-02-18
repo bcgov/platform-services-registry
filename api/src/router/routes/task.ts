@@ -14,28 +14,15 @@
 // limitations under the License.
 //
 
-import React, { MouseEventHandler } from 'react';
+'use strict';
 
-export type ColorSet = 'contrast' | 'primary';
+import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
+import express from 'express';
+import { migratePendingEditRequests } from '../../controllers/task';
 
-export interface MenuItem {
-  title: string;
-  subTitle: string;
-  href?: string;
-  onClickCB?: MouseEventHandler<React.ReactNode>;
-  handleOnClick?: MouseEventHandler<React.ReactNode>;
-}
+const router = express.Router();
 
-export type QuotaSize = 'small' | 'medium' | 'large';
+// Migration
+router.post('/migrate/under-pending-edit-requests', asyncMiddleware(migratePendingEditRequests));
 
-export interface NamespaceCN {
-  clusterId: string;
-  name: string;
-  provisioned: boolean;
-}
-
-export interface Namespace {
-  namespaceId: string;
-  name: string;
-  clusters: NamespaceCN[];
-}
+export default router;

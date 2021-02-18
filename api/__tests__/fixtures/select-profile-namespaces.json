@@ -5,13 +5,8 @@
     "clusters": [
       {
         "clusterId": 1,
-        "name": "kam",
-        "provisioned": false,
-        "quotas": {
-          "cpu": "small",
-          "memory": "small",
-          "storage": "small"
-        }
+        "name": "silver",
+        "provisioned": false
       }
     ]
   },
@@ -21,13 +16,8 @@
     "clusters": [
       {
         "clusterId": 1,
-        "name": "kam",
-        "provisioned": false,
-        "quotas": {
-          "cpu": "small",
-          "memory": "small",
-          "storage": "small"
-        }
+        "name": "silver",
+        "provisioned": false
       }
     ]
   },
@@ -37,13 +27,8 @@
     "clusters": [
       {
         "clusterId": 1,
-        "name": "kam",
-        "provisioned": false,
-        "quotas": {
-          "cpu": "small",
-          "memory": "small",
-          "storage": "small"
-        }
+        "name": "silver",
+        "provisioned": false
       }
     ]
   },
@@ -53,13 +38,8 @@
     "clusters": [
       {
         "clusterId": 1,
-        "name": "kam",
-        "provisioned": false,
-        "quotas": {
-          "cpu": "small",
-          "memory": "small",
-          "storage": "small"
-        }
+        "name": "silver",
+        "provisioned": false
       }
     ]
   }

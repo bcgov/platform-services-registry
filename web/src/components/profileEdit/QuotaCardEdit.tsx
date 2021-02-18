@@ -22,10 +22,8 @@ import { PROFILE_EDIT_VIEW_NAMES, QUOTA_SIZES, ROUTE_PATHS } from '../../constan
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import theme from '../../theme';
-import { QuotaSizeSet } from '../../types';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { composeRequestBodyForQuotaEdit } from '../../utils/transformDataHelper';
-import { BaseData } from '../../views/ProfileEdit';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import { QuotaDetails } from './QuotaCard';
@@ -33,7 +31,6 @@ import { QuotaDetails } from './QuotaCard';
 interface IQuotaCardEditProps {
   profileId?: string;
   quotaDetails: QuotaDetails;
-  baseData: BaseData;
   handleSubmitRefresh: any;
   isProvisioned: boolean;
   hasPendingEdit: boolean;
@@ -42,7 +39,6 @@ interface IQuotaCardEditProps {
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const {
     quotaDetails: { licensePlate = '', quotaSize = '', quotaOptions = [] },
-    baseData: { cnQuotaOptionsJson },
     profileId,
     handleSubmitRefresh,
     isProvisioned,
@@ -53,7 +49,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const { setOpenBackdrop } = useCommonState();
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
-  const [selectedSize, setSelectedSize] = useState<QuotaSizeSet>('small');
+  const [selectedSize, setSelectedSize] = useState<any>('');
 
   const specs = QUOTA_SIZES.filter((size: any) => size.name === quotaSize).pop();
 
@@ -69,10 +65,10 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       }
 
       // 1. Prepare quota edit request body.
-      const requestBody = composeRequestBodyForQuotaEdit(selectedSize, cnQuotaOptionsJson);
+      const requestBody = composeRequestBodyForQuotaEdit(selectedSize);
 
       // 2. Request the profile quota edit.
-      await api.requestCNQuotasByProfileId(profileId, requestBody);
+      await api.requestQuotaSizeByProfileId(profileId, requestBody);
 
       // 3. All good? Redirect back to overview and tell the user.
       handleSubmitRefresh();
@@ -133,6 +129,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       <select value={selectedSize} onChange={handleChange}>
         <option>Select...</option>
         {/* @ts-ignore */}
+
         {quotaOptions.length !== 0 &&
           quotaOptions.map((opt: any) => (
             <option key={opt} value={opt}>
@@ -140,21 +137,21 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             </option>
           ))}
       </select>
-      {!hasPendingEdit && isProvisioned ? (
+      {!hasPendingEdit && isProvisioned && selectedSize !== '' ? (
         // @ts-ignore
         <StyledFormButton style={{ display: 'block' }} onClick={handleSubmit}>
           Request Quota
         </StyledFormButton>
       ) : (
-        <>
-          {/* @ts-ignore */}
-          <StyledFormDisabledButton style={{ display: 'block' }}>
-            Request Quota
-          </StyledFormDisabledButton>
-          <Label as="span" variant="errorLabel">
-            Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
-          </Label>
-        </>
+        // @ts-ignore
+        <StyledFormDisabledButton style={{ display: 'block' }}>
+          Request Quota
+        </StyledFormDisabledButton>
+      )}
+      {!(!hasPendingEdit && isProvisioned) && (
+        <Label as="span" variant="errorLabel">
+          Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+        </Label>
       )}
     </>
   );

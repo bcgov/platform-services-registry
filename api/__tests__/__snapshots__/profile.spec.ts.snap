@@ -1,7 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Profile event handlers A profile edit request is created 1`] = `
+exports[`Profile event handlers A contact edit request is created 1`] = `
 Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        233,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM contact
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        234,
+      ],
+    },
+  ],
   Array [
     Object {
       "text": "INSERT INTO request
@@ -9,17 +29,17 @@ Array [
             VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
         118,
-        "description",
-        "{\\"id\\":3,\\"name\\":\\"Mines Digital Services\\",\\"description\\":\\"This is some description\\",\\"prioritySystem\\":false,\\"criticalSystem\\":false,\\"createdAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"updatedAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"primaryClusterName\\":\\"silver\\"}",
+        "contacts",
+        "[{\\"roleId\\":1,\\"id\\":233,\\"firstName\\":\\"Jane\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"jane.doe@example.com\\",\\"githubId\\":\\"jane1100\\"},{\\"roleId\\":2,\\"id\\":234,\\"firstName\\":\\"John\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"john.doe@example.com\\",\\"githubId\\":\\"john1100\\"}]",
         "edit",
-        "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"description\\":\\"This is a sample description\\",\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false,\\"quotas\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\"}}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
+        "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a sample description\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":\\"4\\",\\"limits\\":\\"8\\"},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
       ],
     },
   ],
 ]
 `;
 
-exports[`Profile event handlers A profile edit request is created 2`] = `204`;
+exports[`Profile event handlers A contact edit request is created 2`] = `204`;
 
 exports[`Profile event handlers A profiles contacts are returned 1`] = `
 Array [
@@ -67,625 +87,26 @@ Array [
 ]
 `;
 
-exports[`Profile event handlers A project fails to archive 1`] = `
+exports[`Profile event handlers A project-profile edit request is created 1`] = `
 Array [
   Array [
     Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        9,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            archived = true
-          WHERE id = 9
-          RETURNING *;
-      ",
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers A project fails to archive 2`] = `200`;
-
-exports[`Profile event handlers A project is archived 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        9,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            archived = true
-          WHERE id = 9
-          RETURNING *;
-      ",
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        9,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers A project is archived 2`] = `204`;
-
-exports[`Profile event handlers A project is archived 3`] = `undefined`;
-
-exports[`Profile event handlers A project is created 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT COUNT(*) FROM profile
-          WHERE namespace_prefix = $1;",
-      "values": Array [
-        "c8c7e6",
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT COUNT(*) FROM profile
-          WHERE namespace_prefix = $1;",
-      "values": Array [
-        "c8c7e6",
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT COUNT(*) FROM profile
-          WHERE namespace_prefix = $1;",
-      "values": Array [
-        "c8c7e6",
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-      SELECT * FROM ref_cluster
-        WHERE archived = false;
-      ",
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        INSERT INTO profile
-          (name, description, bus_org_id, priority_system,
-            critical_system, user_id, namespace_prefix,
-            notification_email, notification_sms, notification_ms_teams,
-            payment_bambora, payment_pay_bc, file_transfer, file_storage,
-            geo_mapping_web, geo_mapping_location, scheduling_calendar,
-            scheduling_appointments, idm_site_minder,
-            idm_keycloak, idm_active_dir, other, primary_cluster_name)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) RETURNING *;",
-      "values": Array [
-        "Health Gateway",
-        "Patient prescription history website",
-        "HLTH",
-        false,
-        false,
-        1,
-        "c8c7e6",
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        "This is a test",
-        "kam",
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers A project is created 2`] = `200`;
-
-exports[`Profile event handlers A project is created 3`] = `
-Object {
-  "busOrgId": "HLTH",
-  "categoryId": 1,
-  "createdAt": Any<Date>,
-  "criticalSystem": false,
-  "description": "Patient prescription history website",
-  "fileStorage": false,
-  "fileTransfer": false,
-  "geoMappingLocation": false,
-  "geoMappingWeb": false,
-  "id": 9,
-  "idmActiveDir": false,
-  "idmKeyCloak": false,
-  "idmSiteMinder": false,
-  "name": "Health Gateway",
-  "notificationEmail": false,
-  "notificationMsTeams": false,
-  "notificationSms": false,
-  "other": "This is a test",
-  "paymentBambora": false,
-  "paymentPayBc": false,
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "schedulingAppointments": false,
-  "schedulingCalendar": false,
-  "updatedAt": Any<Date>,
-}
-`;
-
-exports[`Profile event handlers A project is updated 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, notification_email = $5, notification_sms = $6,
-            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
-            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
-            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
-            idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19, primary_cluster_name = $20
-          WHERE id = 1
-          RETURNING *;",
-      "values": Array [
-        "Health Gateway",
-        "Patient prescription history website",
-        "HLTH",
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        "This is a test",
-        "silver",
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers A project is updated 2`] = `200`;
-
-exports[`Profile event handlers A project is updated 3`] = `
-Object {
-  "busOrgId": "HLTH",
-  "categoryId": 1,
-  "createdAt": "2020-05-19T20:02:54.561Z",
-  "criticalSystem": false,
-  "description": "Patient prescription history website",
-  "fileStorage": false,
-  "fileTransfer": false,
-  "geoMappingLocation": false,
-  "geoMappingWeb": false,
-  "id": 9,
-  "idmActiveDir": false,
-  "idmKeyCloak": false,
-  "idmSiteMinder": false,
-  "name": "Health Gateway",
-  "notificationEmail": false,
-  "notificationMsTeams": false,
-  "notificationSms": false,
-  "other": "This is a test",
-  "paymentBambora": false,
-  "paymentPayBc": false,
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "schedulingAppointments": false,
-  "schedulingCalendar": false,
-  "updateAt": "2020-05-19T20:02:54.561Z",
-  "userId": 1,
-}
-`;
-
-exports[`Profile event handlers A project is updated with optional metadata 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, notification_email = $5, notification_sms = $6,
-            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
-            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
-            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
-            idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19, primary_cluster_name = $20
-          WHERE id = 1
-          RETURNING *;",
-      "values": Array [
-        "Health Gateway",
-        "Patient prescription history website",
-        "HLTH",
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        "This is a test",
-        "silver",
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers A project is updated with optional metadata 2`] = `200`;
-
-exports[`Profile event handlers A project is updated with optional metadata 3`] = `
-Object {
-  "busOrgId": "HLTH",
-  "categoryId": 1,
-  "createdAt": "2020-05-19T20:02:54.561Z",
-  "criticalSystem": false,
-  "description": "Patient prescription history website",
-  "fileStorage": false,
-  "fileTransfer": true,
-  "geoMappingLocation": false,
-  "geoMappingWeb": false,
-  "id": 9,
-  "idmActiveDir": false,
-  "idmKeyCloak": false,
-  "idmSiteMinder": false,
-  "name": "Health Gateway",
-  "notificationEmail": false,
-  "notificationMsTeams": false,
-  "notificationSms": false,
-  "other": "This is a test",
-  "paymentBambora": false,
-  "paymentPayBc": false,
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "schedulingAppointments": false,
-  "schedulingCalendar": false,
-  "updateAt": "2020-05-19T20:02:54.561Z",
-  "userId": 1,
-}
-`;
-
-exports[`Profile event handlers A single profile is returned 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
+      "text": "INSERT INTO request
+            (profile_id, edit_type, edit_object, nats_subject, nats_context)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
         118,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        118,
+        "description",
+        "{\\"id\\":3,\\"name\\":\\"Mines Digital Services\\",\\"description\\":\\"This is some description\\",\\"prioritySystem\\":false,\\"criticalSystem\\":false,\\"createdAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"updatedAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"primaryClusterName\\":\\"silver\\"}",
+        "edit",
+        "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a sample description\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":\\"4\\",\\"limits\\":\\"8\\"},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
       ],
     },
   ],
 ]
 `;
 
-exports[`Profile event handlers A single profile is returned 2`] = `200`;
-
-exports[`Profile event handlers A single profile is returned 3`] = `
-Object {
-  "createdAt": "2020-04-28T00:00:00.000Z",
-  "criticalSystem": false,
-  "description": null,
-  "id": 1,
-  "name": "Health Gateway",
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "updatedAt": "2020-04-28T00:00:00.000Z",
-  "userId": 4,
-}
-`;
-
-exports[`Profile event handlers A single profile is returned as administrator 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        118,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        118,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers A single profile is returned as administrator 2`] = `200`;
-
-exports[`Profile event handlers A single profile is returned as administrator 3`] = `
-Object {
-  "createdAt": "2020-04-28T00:00:00.000Z",
-  "criticalSystem": false,
-  "description": "This is some description",
-  "id": 3,
-  "name": "Mines Digital Services",
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "updatedAt": "2020-04-28T00:00:00.000Z",
-}
-`;
-
-exports[`Profile event handlers All profiles are returned as administrator 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-      SELECT * FROM profile
-        WHERE archived = false;
-      ",
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers All profiles are returned as administrator 2`] = `200`;
-
-exports[`Profile event handlers All profiles are returned as administrator 3`] = `
-Array [
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": null,
-    "id": 1,
-    "name": "Health Gateway",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": true,
-    "description": "Hello World",
-    "id": 2,
-    "name": "EPIC",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": "This is some description",
-    "id": 3,
-    "name": "Mines Digital Services",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "description": "This app is super cool",
-    "id": 4,
-    "name": "Secure Image",
-    "primaryClusterName": "silver",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-]
-`;
-
-exports[`Profile event handlers All user profiles are returned 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-      SELECT DISTINCT(profile.id), profile.* FROM profile
-      JOIN profile_contact ON profile_contact.profile_id = profile.id
-      JOIN contact ON contact.id = profile_contact.contact_id
-      WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;",
-      "values": Array [
-        4,
-        "jane@example.com",
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers All user profiles are returned 2`] = `200`;
-
-exports[`Profile event handlers All user profiles are returned 3`] = `
-Array [
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": null,
-    "id": 1,
-    "name": "Health Gateway",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": true,
-    "description": "Hello World",
-    "id": 2,
-    "name": "EPIC",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": "This is some description",
-    "id": 3,
-    "name": "Mines Digital Services",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "description": "This app is super cool",
-    "id": 4,
-    "name": "Secure Image",
-    "primaryClusterName": "silver",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-]
-`;
-
-exports[`Profile event handlers Fetch all profiles should throw 1`] = `"Unable fetch all project profiles"`;
-
-exports[`Profile event handlers Fetch all profiles should throw 2`] = `Array []`;
+exports[`Profile event handlers A project-profile edit request is created 2`] = `204`;
 
 exports[`Profile event handlers Fetch single profile contacts should throw 1`] = `"Unable fetch profile contacts with profile ID 1"`;
 
@@ -706,57 +127,3 @@ Array [
   ],
 ]
 `;
-
-exports[`Profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 1"`;
-
-exports[`Profile event handlers Fetch single profile should throw 2`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers Unique profile names are derived 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT COUNT(*) FROM profile
-          WHERE namespace_prefix = $1;",
-      "values": Array [
-        "c8c7e6",
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT COUNT(*) FROM profile
-          WHERE namespace_prefix = $1;",
-      "values": Array [
-        "c8c7e6",
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT COUNT(*) FROM profile
-          WHERE namespace_prefix = $1;",
-      "values": Array [
-        "c8c7e6",
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers Unique profile names are derived 2`] = `"c8c7e6"`;

@@ -20,9 +20,9 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { requestContactEdit } from '../../controllers/contact';
-import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, fetchProfileQuotaOptions, requestProfileQuotaEdit, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProfileContacts, fetchProfileEditRequests, fetchProjectProfile, requestProfileEdit, updateProjectProfile } from '../../controllers/profile';
+import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
+import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize, requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileEdit } from '../../controllers/profile';
+import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
 
 const router = express.Router();
 
@@ -44,14 +44,14 @@ router.delete('/:profileId/namespace/:namespaceId', asyncMiddleware(archiveProfi
 router.get('/:profileId/contacts', asyncMiddleware(fetchProfileContacts));
 router.post('/:profileId/contact/:contactId', asyncMiddleware(addContactToProfile));
 
-// Quota-edit
-router.get('/:profileId/quota-edit', asyncMiddleware(fetchProfileQuotaOptions));
-router.post('/:profileId/quota-edit', asyncMiddleware(requestProfileQuotaEdit));
+// Quota
+router.get('/:profileId/quota-size', asyncMiddleware(fetchProfileQuotaSize));
 
-// Profile / Contact Edit
+// Edit
 router.get('/:profileId/request', asyncMiddleware(fetchProfileEditRequests));
-router.post('/:profileId/profile-edit', asyncMiddleware(requestProfileEdit));
-router.post('/:profileId/contact-edit', asyncMiddleware(requestContactEdit));
-
+router.post('/:profileId/profile-edit', asyncMiddleware(requestProjectProfileEdit));
+router.post('/:profileId/contact-edit', asyncMiddleware(requestProfileContactsEdit));
+router.get('/:profileId/quota-edit', asyncMiddleware(fetchProfileQuotaOptions));
+router.post('/:profileId/quota-edit', asyncMiddleware(requestProfileQuotaEdit))
 
 export default router;
