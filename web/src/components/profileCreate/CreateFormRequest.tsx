@@ -14,12 +14,18 @@
 // limitations under the License.
 //
 
-import React, { useState } from 'react';
+import { Label } from '@rebass/forms';
+import React from 'react';
+import { Field } from 'react-final-form';
+import { Flex, Text } from 'rebass';
+import CheckboxInput from '../common/UI/CheckboxInput';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 
 const CreateFormRequest: React.FC = () => {
-  const [boxChecked, setBoxChecked] = useState(false);
+  // @ts-ignore
+  const required = (value) => (value ? undefined : 'Required');
+
   return (
     <div>
       <FormTitle>All set?</FormTitle>
@@ -32,6 +38,30 @@ const CreateFormRequest: React.FC = () => {
         Also, look out for our Notification emails that will provide you with valuable information
         regarding your project status and details.
       </FormSubtitle>
+      <hr />
+      <Flex mt={3}>
+        <Label m="auto" width={3 / 4}>
+          <Text as="h3" fontSize="16px" my={0} lineHeight="normal">
+            By checking this box, I confirm that I have read and understood the roles and
+            responsibilities as described in the{' '}
+            <a
+              rel="noopener noreferrer"
+              href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!"
+              target="_blank"
+            >
+              Onboarding Guide
+            </a>
+            .
+          </Text>
+        </Label>
+        <Flex flex="1 1 auto" justifyContent="flex-end">
+          <Field<boolean>
+            name="project-acceptUsage"
+            component={CheckboxInput}
+            validate={required}
+          />
+        </Flex>
+      </Flex>
     </div>
   );
 };

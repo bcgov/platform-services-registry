@@ -86,5 +86,8 @@ export default {
       color: '#036',
       backgroundColor: '#fafafa',
     },
+    checkbox: {
+      margin: 'auto',
+    },
   },
 };
