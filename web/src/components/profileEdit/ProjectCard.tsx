@@ -30,13 +30,13 @@ export interface ProjectDetails {
   busOrgId?: string;
   ministryName?: string;
   other?: string;
+  migratingLicenseplate?: string;
 }
 
 const ProjectCard: React.FC<IProjectCardProps> = (props) => {
   const {
-    projectDetails: { name = '', description = '', ministryName = '' },
+    projectDetails: { name = '', description = '', ministryName = '', migratingLicenseplate = '' },
   } = props;
-
   return (
     <Flex flexWrap="wrap">
       <Box width={1 / 2} px={2} mt={3}>
@@ -72,20 +72,23 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
           {ministryName}
         </Text>
       </Box>
-
-      {/* <Box width={1 / 2} px={2} mt={3}>
-                <Text as="h3">
-                    Application Metadata
+      {migratingLicenseplate ? (
+        <Flex width={1}>
+          <Box width={1 / 2} px={2} mt={3}>
+            <Text as="h3">Migrating Application</Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+              This is the license plate of your migrating OCP 3.11 application;
             </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    These are the services you utilize as part of your application;
+          </Box>
+          <Box width={1 / 2} px={2} mt={3}>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              {migratingLicenseplate}
             </Text>
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                    Notification: Email, Payment Processing: Bambora, File Storage;
-            </Text>
-            </Box> */}
+          </Box>
+        </Flex>
+      ) : (
+        <Flex />
+      )}
     </Flex>
   );
 };

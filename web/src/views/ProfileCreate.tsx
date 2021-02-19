@@ -40,7 +40,6 @@ const ProfileCreate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     const { profile, productOwner, technicalContact } = transformForm(formData);
-
     setOpenBackdrop(true);
     try {
       // 1. Create the project profile.
