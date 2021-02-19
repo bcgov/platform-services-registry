@@ -7,7 +7,6 @@ import { ShadowBox } from '../components/common/UI/ShadowContainer';
 export const WizardPage: React.FC = ({ children }) => <div>{children}</div>;
 
 const Wizard: React.FC<any> = ({ onSubmit, children }) => {
-  
   const [values, setValues] = useState<any | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [isLastPage, setLastPage] = useState(false);
