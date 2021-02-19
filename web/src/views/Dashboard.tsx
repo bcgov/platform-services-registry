@@ -15,12 +15,13 @@
 //
 
 import { useKeycloak } from '@react-keycloak/web';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
 import { BackdropForPendingItem } from '../components/common/UI/Backdrop';
 import { Button } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
+import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import useCommonState from '../hooks/useCommonState';
@@ -32,7 +33,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -127,9 +128,53 @@ const Dashboard: React.FC = () => {
     setOpenBackdrop(false);
   };
 
+   /* 
+    - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
+    - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
+  */
+ const columns = useMemo(
+    () => [
+      {
+        // first group - TV Show
+        Header: "Project Details",
+        // First group columns
+        columns: [
+          {
+            Header: "Name",
+            accessor: "name"
+          },
+          {
+            Header: "Ministry",
+            accessor: "busOrgId"
+          }
+        ]
+      },
+      {
+        // Second group - Details
+        Header: "Contact Details",
+        // Second group columns
+        columns: [
+          {
+            Header: "PO",
+            accessor: "POEmail"
+          },
+          {
+            Header: "TC",
+            accessor: "TCEmail"
+          },
+        ]
+      }
+    ],
+    []
+  );
+
   return (
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
+      <div className="App">
+      <Table columns={columns} data={profile} />
+    </div>
+      {/* Project Cards */}
       <Box
         sx={{
           display: 'grid',
