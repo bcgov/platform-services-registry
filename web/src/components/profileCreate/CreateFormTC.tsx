@@ -14,113 +14,64 @@
 // limitations under the License.
 //
 
-import { Checkbox, Input, Label } from '@rebass/forms';
-import React, { useState } from 'react';
+import { Label } from '@rebass/forms';
+import React from 'react';
 import { Field } from 'react-final-form';
-import { Flex, Text } from 'rebass';
+import { Flex } from 'rebass';
+import Aux from '../../hoc/auxillary';
 import getValidator from '../../utils/getValidator';
-import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
+import TextInput from '../common/UI/TextInput';
 
 const CreateFormTC: React.FC = () => {
   const validator = getValidator();
 
-  const [boxChecked, setBoxChecked] = useState(false);
-
   return (
-    <div>
+    <Aux>
       <FormTitle>Who is the technical contact for this project?</FormTitle>
-
-      <Field name="tc-firstName" validate={validator.mustBeValidName}>
-        {({ input, meta }) => (
-          <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
-            <Label m="0" htmlFor="tc-first-name">
-              First Name
-            </Label>
-            <Input mt="8px" {...input} id="tc-first-name" placeholder="Jane" />
-            {meta.error && meta.touched && (
-              <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
-                {meta.error}
-              </Label>
-            )}
-          </Flex>
-        )}
-      </Field>
-      <Field name="tc-lastName" validate={validator.mustBeValidName}>
-        {({ input, meta }) => (
-          <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
-            <Label m="0" htmlFor="tc-last-name">
-              Last Name
-            </Label>
-            <Input mt="8px" {...input} id="tc-last-name" placeholder="Doe" />
-            {meta.error && meta.touched && (
-              <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
-                {meta.error}
-              </Label>
-            )}
-          </Flex>
-        )}
-      </Field>
-      <Field name="tc-email" validate={validator.mustBeValidEmail}>
-        {({ input, meta }) => (
-          <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
-            <Label m="0" htmlFor="tc-email">
-              eMail Address
-            </Label>
-            <Input mt="8px" {...input} id="tc-email" placeholder="jane.doe@gov.bc.ca" />
-            {meta.error && meta.touched && (
-              <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
-                {meta.error}
-              </Label>
-            )}
-          </Flex>
-        )}
-      </Field>
-      <Field name="tc-githubId" validate={validator.mustBeValidGithubName}>
-        {({ input, meta }) => (
-          <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
-            <Label m="0" htmlFor="tc-github-id">
-              GitHub ID
-            </Label>
-            <Input mt="8px" {...input} id="tc-github-id" placeholder="jane1100" />
-            {meta.error && meta.touched && (
-              <Label as="span" style={{ position: 'absolute', bottom: '0' }} variant="errorLabel">
-                {meta.error}
-              </Label>
-            )}
-          </Flex>
-        )}
-      </Field>
-
-      <Label>
-        <Checkbox
-          type="checkbox"
-          defaultChecked={boxChecked}
-          onChange={() => {
-            setBoxChecked(!boxChecked);
-          }}
+      <FormSubtitle>
+        Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will
+        use this information to contact them with technical questions or notify them about platform
+        events.
+      </FormSubtitle>
+      <Flex flexDirection="column">
+        <Label htmlFor="tc-firstName">First Name</Label>
+        <Field<string>
+          name="tc-firstName"
+          component={TextInput}
+          validate={validator.mustBeValidName}
+          placeholder="Jane"
         />
-        <Text px="20px">
-          By checking this box, i confirm that I have read and understood the roles and
-          responsibilities as described in the{' '}
-          <a
-            rel="noopener noreferrer"
-            href="https://developer.gov.bc.ca/Welcome-to-our-Platform-Community!"
-            target="_blank"
-          >
-            Onboarding Guide
-          </a>
-          .
-        </Text>
-      </Label>
-
-      {/* @ts-ignore */}
-      {boxChecked ? (
-        <StyledFormButton>Request</StyledFormButton>
-      ) : (
-        <StyledFormDisabledButton>Request</StyledFormDisabledButton>
-      )}
-    </div>
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="tc-lastName">Last Name</Label>
+        <Field<string>
+          name="tc-lastName"
+          component={TextInput}
+          validate={validator.mustBeValidName}
+          placeholder="Doe"
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="tc-email">Email Address</Label>
+        <Field<string>
+          name="tc-email"
+          component={TextInput}
+          validate={validator.mustBeValidEmail}
+          placeholder="jane.doe@example.com"
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="tc-githubId">GitHub Id</Label>
+        <Field<string>
+          name="tc-githubId"
+          component={TextInput}
+          validate={validator.mustBeValidGithubName}
+          placeholder="jane1100"
+        />
+      </Flex>
+    </Aux>
   );
 };
 

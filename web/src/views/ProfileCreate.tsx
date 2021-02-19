@@ -16,25 +16,19 @@
 
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
-import { Box, Flex, Text } from 'rebass';
-import { ShadowBox } from '../components/common/UI/ShadowContainer';
+import CreateFormMetadata from '../components/profileCreate/CreateFormMetadata';
+import CreateFormMigration from '../components/profileCreate/CreateFormMigration';
 import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
+import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
 import CreateFormTC from '../components/profileCreate/CreateFormTC';
 import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformForm } from '../utils/transformDataHelper';
-
-const txtForPO =
-  'Tell us about the Product Owner (PO). This is typically the business owner of the application; we will use this information to contact them with any non-technical questions.';
-const txtForPO2 =
-  'Although not required, we strongly recommend the requestor be the product owner so that this record appears on their dashboard when logging on to the registry; only the requestor will be able to edit this project in the future.';
-const txtForTC =
-  'Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will use this information to contact them with technical questions or notify them about platform events.';
+import Wizard, { WizardPage } from '../utils/Wizard';
 
 const ProfileCreate: React.FC = () => {
   const api = useRegistryApi();
@@ -46,12 +40,6 @@ const ProfileCreate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     const { profile, productOwner, technicalContact } = transformForm(formData);
-
-    // TODO: fix this work-around
-    if (!profile.busOrgId) {
-      alert('You need to select a Ministry Sponsor.');
-      return;
-    }
     setOpenBackdrop(true);
     try {
       // 1. Create the project profile.
@@ -94,77 +82,26 @@ const ProfileCreate: React.FC = () => {
     return <Redirect to={ROUTE_PATHS.DASHBOARD} />;
   }
   return (
-    <Form
-      onSubmit={onSubmit}
-      validate={(values) => {
-        const errors = {};
-        return errors;
-      }}
-    >
-      {(props) => (
-        <form onSubmit={props.handleSubmit}>
-          <Flex flexWrap="wrap" mx={-2}>
-            <ShadowBox
-              maxWidth="750px"
-              p="24px"
-              mt="0px"
-              px={['24px', '24px', '70px']}
-              width={[1, 1, 2 / 3]}
-            >
-              <CreateFormProject ministry={ministry} />
-            </ShadowBox>
-            <Box p="30px" width={[1, 1, 1 / 3]}>
-              <Text>
-                If this is your first time on the OpenShift platform you need to book an alignment
-                meeting with the Platform Services team; Reach out to{' '}
-                <a href="mailto: olena.mitovska@gov.bc.ca">olena.mitovska@gov.bc.ca</a> to get
-                started.
-              </Text>
-              <Text pt="24px">
-                If you're new to OpenShift check out our{' '}
-                <a
-                  rel="noopener noreferrer"
-                  href="https://docs.google.com/presentation/d/1UcT0b2YTPki_o0et9ZCLKv8vF19eYakJQitU85TAeD4/edit?usp=sharing"
-                  target="_blank"
-                >
-                  Getting Started
-                </a>{' '}
-                on the DevOps Platform guide. It's full of tones of useful information.
-              </Text>
-            </Box>
-          </Flex>
-          <Flex flexWrap="wrap" mx={-2} mt="68px">
-            <ShadowBox
-              maxWidth="750px"
-              p="24px"
-              mt="0px"
-              px={['24px', '24px', '70px']}
-              width={[1, 1, 2 / 3]}
-            >
-              <CreateFormPO />
-            </ShadowBox>
-            <Box p="30px" width={[1, 1, 1 / 3]}>
-              <Text>{txtForPO}</Text>
-              <Text pt="24px">{txtForPO2}</Text>
-            </Box>
-          </Flex>
-          <Flex flexWrap="wrap" mx={-2} mt="68px">
-            <ShadowBox
-              maxWidth="750px"
-              p="24px"
-              mt="0px"
-              px={['24px', '24px', '70px']}
-              width={[1, 1, 2 / 3]}
-            >
-              <CreateFormTC />
-            </ShadowBox>
-            <Box p="30px" width={[1, 1, 1 / 3]}>
-              <Text>{txtForTC}</Text>
-            </Box>
-          </Flex>
-        </form>
-      )}
-    </Form>
+    <Wizard onSubmit={onSubmit}>
+      <WizardPage>
+        <CreateFormProject ministry={ministry} />
+      </WizardPage>
+      <WizardPage>
+        <CreateFormMigration />
+      </WizardPage>
+      <WizardPage>
+        <CreateFormMetadata />
+      </WizardPage>
+      <WizardPage>
+        <CreateFormPO />
+      </WizardPage>
+      <WizardPage>
+        <CreateFormTC />
+      </WizardPage>
+      <WizardPage>
+        <CreateFormRequest />
+      </WizardPage>
+    </Wizard>
   );
 };
 

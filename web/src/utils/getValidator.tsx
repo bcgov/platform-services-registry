@@ -34,7 +34,7 @@ const schema = {
       tooLong: 'Max 40 characters',
     },
     format: {
-      pattern: '^[a-zA-Z][A-Za-z0-9 ]+(?<! )$',
+      pattern: '^[a-zA-Z][A-Za-z0-9 ]+',
       flags: 'i',
       message: 'Must be alphanumetic starting with a letter',
     },
@@ -73,6 +73,21 @@ const schema = {
       tooLong: 'Max 32 characters',
     },
     format: { pattern: '[A-Za-z0-9-]+', flags: 'i', message: 'Invalid Github account format' },
+  },
+  busOrgId: {
+    presence: { allowEmpty: false, message: 'Required' },
+  },
+  migratingLicenseplate: {
+    presence: { allowEmpty: false, message: 'Required' },
+    length: {
+      maximum: 32,
+      tooLong: 'Max 32 characters',
+    },
+    format: {
+      pattern: '[A-Za-z0-9-_]+',
+      flags: 'i',
+      message: 'Must only contain alphanumetic characters, hyphens or underscores',
+    },
   },
 };
 
@@ -119,6 +134,20 @@ export default function getValidator() {
     }
   };
 
+  const mustBeValidBusOrgId = (value: any) => {
+    const errors = validate({ busOrgId: value }, schema, { fullMessages: false });
+    if (errors && errors.componenentOthers) {
+      return errors.componenentOthers[0];
+    }
+  };
+
+  const mustBeValidProfileLicenseplate = (value: any) => {
+    const errors = validate({ migratingLicenseplate: value }, schema, { fullMessages: false });
+    if (errors && errors.migratingLicenseplate) {
+      return errors.migratingLicenseplate[0];
+    }
+  };
+
   return {
     mustBeValidEmail,
     mustBeValidProfileName,
@@ -126,5 +155,7 @@ export default function getValidator() {
     mustBeValidName,
     mustBeValidGithubName,
     mustBeValidComponentOthers,
+    mustBeValidBusOrgId,
+    mustBeValidProfileLicenseplate,
   };
 }

@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { Input, Label, Textarea } from '@rebass/forms';
+import { Label } from '@rebass/forms';
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
@@ -26,7 +26,12 @@ import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { transformForm } from '../../utils/transformDataHelper';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import CheckboxInput from '../common/UI/CheckboxInput';
+import { Condition } from '../common/UI/FormControls';
 import FormTitle from '../common/UI/FormTitle';
+import SelectInput from '../common/UI/SelectInput';
+import TextAreaInput from '../common/UI/TextAreaInput';
+import TextInput from '../common/UI/TextInput';
 import { ProjectDetails } from './ProjectCard';
 
 const validator = getValidator();
@@ -102,99 +107,52 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
       {(formProps) => (
         <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Tell us about your project</FormTitle>
-          <Field
-            name="project-name"
-            validate={validator.mustBeValidProfileName}
-            defaultValue=""
-            initialValue={projectDetails.name}
-          >
-            {({ input, meta }) => (
-              <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
-                <Label m="0" htmlFor="project-name">
-                  Name
-                </Label>
-                <Input mt="8px" {...input} id="project-name" placeholder="Project X" disabled />
-                {meta.error && meta.touched && (
-                  <Label
-                    as="span"
-                    style={{ position: 'absolute', bottom: '0' }}
-                    variant="errorLabel"
-                  >
-                    {meta.error}
-                  </Label>
-                )}
-              </Flex>
-            )}
-          </Field>
-          <Field
-            name="project-description"
-            validate={validator.mustBeValidProfileDescription}
-            defaultValue=""
-            initialValue={projectDetails.description}
-          >
-            {({ input, meta }) => (
-              <Flex flexDirection="column" pb="25px" style={{ position: 'relative' }}>
-                <Label m="0" htmlFor="project-description">
-                  Description
-                </Label>
-                <Textarea
-                  mt="8px"
-                  {...input}
-                  id="project-description"
-                  placeholder="A cutting edge web platform that enables Citizens to ..."
-                  rows={5}
-                />
-                {meta.error && meta.touched && (
-                  <Label
-                    as="span"
-                    style={{ position: 'absolute', bottom: '0' }}
-                    variant="errorLabel"
-                  >
-                    {meta.error}
-                  </Label>
-                )}
-              </Flex>
-            )}
-          </Field>
-          <Flex pb="20px">
-            <Label m="0" variant="adjacentLabel">
+          <Flex flexDirection="column">
+            <Label htmlFor="project-name">Name</Label>
+            <Field<string>
+              name="project-name"
+              component={TextInput}
+              placeholder="Project X"
+              validate={validator.mustBeValidProfileName}
+              defaultValue=""
+              initialValue={projectDetails.name}
+            />
+          </Flex>
+          <Flex flexDirection="column">
+            <Label htmlFor="project-description">Description</Label>
+            <Field
+              name="project-description"
+              component={TextAreaInput}
+              placeholder="A cutting edge web platform that enables Citizens to ..."
+              validate={validator.mustBeValidProfileDescription}
+              rows="5"
+              defaultValue=""
+              initialValue={projectDetails.description}
+            />
+          </Flex>
+          <Flex mt={3}>
+            <Label variant="adjacentLabel" m="auto">
               Is this a Priority Application?
             </Label>
             <Flex flex="1 1 auto" justifyContent="flex-end">
-              <Label m="0" width="initial" px="8px">
-                <Field
-                  name="project-prioritySystem"
-                  component="input"
-                  type="checkbox"
-                  defaultValue=""
-                  initialValue={projectDetails.prioritySystem}
-                >
-                  {({ input }) => (
-                    <input
-                      style={{ width: '35px', height: '35px' }}
-                      name={input.name}
-                      type="checkbox"
-                      value="yes"
-                      checked={input.checked}
-                      onChange={input.onChange}
-                    />
-                  )}
-                </Field>
-              </Label>
+              <Field<boolean>
+                name="project-prioritySystem"
+                component={CheckboxInput}
+                defaultValue={false}
+                initialValue={!!projectDetails.prioritySystem}
+              />
             </Flex>
           </Flex>
-          <Flex pb="20px">
-            <Label variant="adjacentLabel">Ministry Sponsor</Label>
+          <Flex mt={3}>
+            <Label variant="adjacentLabel" m="auto">
+              Ministry Sponsor
+            </Label>
             <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
-              {/* using a className prop as react final form Field does
-                    not seem to expose any API to modify CSS */}
               <Field
                 name="project-busOrgId"
-                component="select"
-                className="misc-class-m-dropdown-select"
+                component={SelectInput}
                 defaultValue={projectDetails.busOrgId}
               >
-                {/* {({ input, meta }) => ( */}
                 <option key={projectDetails.busOrgId} value={projectDetails.busOrgId}>
                   {projectDetails.ministryName}
                 </option>
@@ -204,65 +162,68 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                       {s.name}
                     </option>
                   ))}
-                {/* )} */}
               </Field>
             </Flex>
           </Flex>
+          <Flex mt={3}>
+            <Label variant="adjacentLabel" m="auto">
+              Is this app migrating from OCP 3.11?
+            </Label>
+            <Flex flex="1 1 auto" justifyContent="flex-end">
+              <Field<boolean>
+                name="project-migratingApplication"
+                component={CheckboxInput}
+                initialValue={!!projectDetails.migratingLicenseplate}
+              />
+            </Flex>
+          </Flex>
+          <Condition when="project-migratingApplication" is={true}>
+            <Flex mt={3}>
+              <Label variant="adjacentLabel" m="auto" htmlFor="project-migratingLicenseplate">
+                OCP 3.11 license plate:
+              </Label>
+              <Flex flex="1 1 auto" justifyContent="flex-end" name="project-migratingLicenseplate">
+                <Field<string>
+                  name="project-migratingLicenseplate"
+                  component={TextInput}
+                  validate={validator.mustBeValidProfileLicenseplate}
+                  initialValue={projectDetails.migratingLicenseplate}
+                />
+              </Flex>
+            </Flex>
+          </Condition>
           <Label variant="adjacentLabel">
             Please indicate what services you expect to utilize as part of your project?
           </Label>
           {COMPONENT_METADATA.map((item) => (
-            <Flex key={item.inputValue}>
-              <Label variant="adjacentLabel">{item.displayName}</Label>
+            <Flex mt={3} key={item.inputValue}>
+              <Label variant="adjacentLabel" m="auto">
+                {item.displayName}
+              </Label>
               <Flex flex="1 1 auto" justifyContent="flex-end">
-                <Label width="initial" px="8px">
-                  <Field
-                    name={`project-${item.inputValue}`}
-                    component="input"
-                    type="checkbox"
-                    defaultValue=""
-                    // @ts-ignore
-                    initialValue={projectDetails[item.inputValue]}
-                  >
-                    {({ input }) => (
-                      <input
-                        style={{ width: '35px', height: '35px' }}
-                        name={input.name}
-                        type="checkbox"
-                        value="yes"
-                        checked={input.checked}
-                        onChange={input.onChange}
-                      />
-                    )}
-                  </Field>
-                </Label>
+                <Field<boolean>
+                  name={`project-${item.inputValue}`}
+                  component={CheckboxInput}
+                  // @ts-ignore
+                  initialValue={projectDetails[item.inputValue]}
+                />
               </Flex>
             </Flex>
           ))}
-          <Field
-            name="project-other"
-            validate={validator.mustBeValidComponentOthers}
-            defaultValue=""
-            initialValue={projectDetails.other}
-          >
-            {({ input, meta }) => (
-              <Flex pb="25px" style={{ position: 'relative' }}>
-                <Label htmlFor="project-other">Other:</Label>
-                <Flex flex="1 1 auto" justifyContent="flex-end">
-                  <Input {...input} id="project-other" />
-                </Flex>
-                {meta.error && meta.touched && (
-                  <Label
-                    as="span"
-                    style={{ position: 'absolute', bottom: '0' }}
-                    variant="errorLabel"
-                  >
-                    {meta.error}
-                  </Label>
-                )}
-              </Flex>
-            )}
-          </Field>
+          <Flex>
+            <Label variant="adjacentLabel" m="auto" htmlFor="project-other">
+              Other:
+            </Label>
+            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-other">
+              <Field<string>
+                name="project-other"
+                component={TextInput}
+                validate={validator.mustBeValidComponentOthers}
+                defaultValue=""
+                initialValue={projectDetails.other}
+              />
+            </Flex>
+          </Flex>
           {!hasPendingEdit && isProvisioned ? (
             // @ts-ignore
             <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>

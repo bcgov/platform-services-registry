@@ -84,6 +84,10 @@ export default {
       borderRadius: '5px',
       border: 'solid 1px #036',
       color: '#036',
+      backgroundColor: '#fafafa',
+    },
+    checkbox: {
+      margin: 'auto',
     },
   },
 };

@@ -240,7 +240,7 @@ const ProfileEdit: React.FC = (props: any) => {
         >
           <Icon hover color="contrast" name="goBack" width={1} height={1} />
         </RouterLink>
-        <Text as="h3" color={theme.colors.contrast} mx={2}>
+        <Text as="h3" color={theme.colors.contrast} mx={2} sx={{ textTransform: 'capitalize' }}>
           {viewName}
         </Text>
       </Flex>
