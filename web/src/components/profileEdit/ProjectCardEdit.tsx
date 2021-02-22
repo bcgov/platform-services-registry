@@ -66,7 +66,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
     try {
       // 1. Prepare project edit request body.
       const { profile } = transformForm(formData);
-      console.log(profile);
+
       // 2. Request the profile project edit.
       if (projectDetails.description !== profile.description) {
         await api.requestProfileEdit(projectDetails.id, profile);
@@ -189,7 +189,6 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                   name="project-migratingLicenseplate"
                   component={TextInput}
                   validate={validator.mustBeValidProfileLicenseplate}
-                  defaultValue=""
                   initialValue={projectDetails.migratingLicenseplate}
                 />
               </Flex>
