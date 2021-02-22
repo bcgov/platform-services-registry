@@ -34,9 +34,8 @@ export const contactsForProfile = async (profileId: number): Promise<Contact[]> 
   try {
     const dm = new DataManager(shared.pgPool);
     const { ContactModel } = dm;
-    const contacts: Contact[] = await ContactModel.findForProject(profileId);
 
-    return contacts;
+    return await ContactModel.findForProject(profileId);
   } catch (err) {
     const message = `Unable to fetch contacts for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -50,9 +49,7 @@ export const profileDetails = async (profileId: number): Promise<any> => {
   try {
     const dm = new DataManager(shared.pgPool);
     const { ProfileModel } = dm;
-    const profile: any = await ProfileModel.findById(profileId);
-
-    return profile;
+    return await ProfileModel.findById(profileId);
   } catch (err) {
     const message = `Unable to fetch profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
