@@ -19,7 +19,7 @@ import React from 'react';
 import ProfileCreate from '../views/ProfileCreate';
 
 jest.mock(
-  '../utils/TokenDecoder',
+  '../utils/getDecodedToken',
   () =>
     function getDecodedToken() {
       return {
