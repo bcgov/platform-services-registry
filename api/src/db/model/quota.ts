@@ -70,12 +70,15 @@ export default class QuotaModel extends Model {
     }
 
     async create(): Promise<any> {
+        // this is intentional (required by Sonarcloud)
     }
 
     async update(): Promise<any> {
+        // this is intentional (required by Sonarcloud)
     }
 
     async delete(): Promise<any> {
+        // this is intentional (required by Sonarcloud)
     }
 
     async findForQuotaSize(quotaSize: QuotaSize): Promise<any> {

@@ -12,9 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Created by Jason Leach on 2020-06-2.
-//
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import config from '../config';
@@ -37,11 +34,11 @@ export const enum FulfillmentContextAction {
   Create = 'create',
   Edit = 'edit',
   Sync = 'sync',
-};
+}
 
 const enum FulfillmentContextType {
   Standard = 'standard',
-};
+}
 
 interface NatsObject {
   natsSubject: string,

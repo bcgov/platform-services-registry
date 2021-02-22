@@ -32,7 +32,9 @@ test('renders dropdown menu - incoming query', () => {
       title: 'some title',
       subTitle: 'some sub title',
       href: '/some-path',
-      onClickCB: () => {},
+      onClickCB: () => {
+        // this is intentional (required by Sonarcloud)
+      },
     },
   ];
 

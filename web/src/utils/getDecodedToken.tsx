@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
 // limitations under the License.
 //
 
-import { createContext } from 'react';
+import jwt_decode from 'jwt-decode';
 
-export interface ICommonState {
-  setOpenBackdrop: any;
+interface UserProperties {
+  email: string;
+  family_name: string;
+  given_name: string;
+  name: string;
+  preferred_username: string;
 }
 
-const CommonStateContext = createContext<ICommonState>({
-  setOpenBackdrop: () => {
-    // this is intentional (required by Sonarcloud)
-  },
-});
-
-export default CommonStateContext;
+export default function getDecodedToken(token: string) {
+  return jwt_decode<UserProperties>(token);
+}

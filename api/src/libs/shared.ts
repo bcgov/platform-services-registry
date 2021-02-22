@@ -40,7 +40,7 @@ const gs = Object.getOwnPropertySymbols(global);
 
 const main = async () => {
 
-  if (!(gs.indexOf(chesKey) > -1)) {
+  if (gs.indexOf(chesKey) <= -1) {
     const opts: Options = {
       uri: config.get('ches:ssoTokenURL'),
       grantType: config.get('ches:ssoGrantType'),
@@ -53,7 +53,7 @@ const main = async () => {
     global[chesKey] = ches;
   }
 
-  if (!(gs.indexOf(natsKey) > -1)) {
+  if (gs.indexOf(natsKey) <= -1) {
     const host = `${config.get('nats:host')}:${config.get('nats:port')}`;
     const nc = nats.connect({
       json: true,
@@ -75,7 +75,7 @@ const main = async () => {
     global[natsKey] = nc;
   }
 
-  if (!(gs.indexOf(ssoKey) > -1)) {
+  if (gs.indexOf(ssoKey) <= -1) {
     const params = {
       uri: config.get('sso:tokenUrl'),
       grantType: config.get('sso:grantType'),
@@ -86,7 +86,7 @@ const main = async () => {
     global[ssoKey] = new JWTServiceManager(params);
   }
 
-  if (!(gs.indexOf(pgPoolKey) > -1)) {
+  if (gs.indexOf(pgPoolKey) <= -1) {
     const params = {
       host: config.get('db:host'),
       port: config.get('db:port'),
