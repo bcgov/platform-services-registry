@@ -76,11 +76,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           Is this a Priority Application?
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end">
-          <Field<boolean>
-            name="project-prioritySystem"
-            component={CheckboxInput}
-            type="checkbox"
-          />
+          <Field<boolean> name="project-prioritySystem" component={CheckboxInput} type="checkbox" />
         </Flex>
       </Flex>
       <Flex mt={3}>
