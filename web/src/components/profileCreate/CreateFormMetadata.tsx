@@ -40,7 +40,11 @@ const CreateFormMetadata: React.FC = () => {
             {item.displayName}
           </Label>
           <Flex flex="1 1 auto" justifyContent="flex-end">
-            <Field<boolean> name={`project-${item.inputValue}`} component={CheckboxInput} />
+            <Field<boolean>
+              name={`project-${item.inputValue}`}
+              component={CheckboxInput}
+              type="checkbox"
+            />
           </Flex>
         </Flex>
       ))}
