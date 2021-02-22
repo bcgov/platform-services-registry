@@ -21,7 +21,9 @@ export interface ICommonState {
 }
 
 const CommonStateContext = createContext<ICommonState>({
-  setOpenBackdrop: () => {},
+  setOpenBackdrop: () => {
+    // this is intentional (required by Sonarcloud)
+  },
 });
 
 export default CommonStateContext;
