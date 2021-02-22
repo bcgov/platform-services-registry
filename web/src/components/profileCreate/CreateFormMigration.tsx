@@ -48,7 +48,11 @@ const CreateFormMigration: React.FC = () => {
           Is this app migrating from OCP 3.11?
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end">
-          <Field<boolean> name="project-migratingApplication" component={CheckboxInput} />
+          <Field<boolean>
+            name="project-migratingApplication"
+            component={CheckboxInput}
+            type="checkbox"
+          />
         </Flex>
       </Flex>
       <Condition when="project-migratingApplication" is={true}>

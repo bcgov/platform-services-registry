@@ -59,6 +59,7 @@ const CreateFormRequest: React.FC = () => {
             name="project-acceptUsage"
             component={CheckboxInput}
             validate={required}
+            type="checkbox"
           />
         </Flex>
       </Flex>

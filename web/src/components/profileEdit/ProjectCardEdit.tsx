@@ -140,6 +140,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                 component={CheckboxInput}
                 defaultValue={false}
                 initialValue={!!projectDetails.prioritySystem}
+                type="checkbox"
               />
             </Flex>
           </Flex>
@@ -174,6 +175,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                 name="project-migratingApplication"
                 component={CheckboxInput}
                 initialValue={!!projectDetails.migratingLicenseplate}
+                type="checkbox"
               />
             </Flex>
           </Flex>
@@ -206,6 +208,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                   component={CheckboxInput}
                   // @ts-ignore
                   initialValue={projectDetails[item.inputValue]}
+                  type="checkbox"
                 />
               </Flex>
             </Flex>
