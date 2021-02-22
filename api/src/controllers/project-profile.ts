@@ -165,6 +165,7 @@ export const updateProjectProfile = async (
     idmKeycloak,
     idmActiveDir,
     other,
+    migratingLicenseplate,
   } = body;
 
   try {
@@ -192,6 +193,7 @@ export const updateProjectProfile = async (
       idmActiveDir,
       other,
       primaryClusterName: currentProjectDetails.primaryClusterName,
+      migratingLicenseplate,
     };
 
     const isAuthorized = getAuthorization(profileId, user, currentProjectDetails);
