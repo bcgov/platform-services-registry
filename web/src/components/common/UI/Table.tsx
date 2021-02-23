@@ -1,9 +1,9 @@
 // Table.js
 
 import styled from '@emotion/styled';
-import React from "react";
-import { useHistory } from "react-router-dom";
-import { useSortBy, useTable } from "react-table";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSortBy, useTable } from 'react-table';
 import theme from '../../../theme';
 
 const Styles = styled.div`
@@ -45,8 +45,8 @@ const Styles = styled.div`
       }
     }
   }
-`
-//@ts-ignore
+`;
+// @ts-ignore
 export default function Table({ columns, data }) {
   // Use the useTable Hook to send the columns and data to build the table
   const {
@@ -54,19 +54,20 @@ export default function Table({ columns, data }) {
     getTableBodyProps, // table body props from react-table
     headerGroups, // headerGroups, if your table has groupings
     rows, // rows for the table based on the data passed
-    prepareRow // Prepare the row (this function needs to be called for each row before getting the row props)
-  } = useTable({
-    columns,
-    data
-  },
-  useSortBy
+    prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
   );
-  
+
   const history = useHistory();
   // @ts-ignore
   const handleRowClick = (row) => {
     history.push(`/profile/${row.original.id}/overview`);
-  }  
+  };
 
   /* 
     Render the UI for your table
@@ -74,47 +75,37 @@ export default function Table({ columns, data }) {
   */
   return (
     <Styles>
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}> 
-            {headerGroup.headers.map(column => (
-              <th
-              {...column.getHeaderProps(column.getSortByToggleProps())}
-                className={
-                  column.isSorted
-                    ? column.isSortedDesc
-                      ? "sort-desc"
-                      : "sort-asc"
-                    : ""
-                }
-              >
-                {column.render("Header")}
-                <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {data.length > 0 && rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} >
-              {row.cells.map(cell => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
+      <table {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  className={
+                    column.isSorted ? (column.isSortedDesc ? 'sort-desc' : 'sort-asc') : ''
+                  }
+                >
+                  {column.render('Header')}
+                  <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                </th>
+              ))}
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {data.length > 0 &&
+            rows.map((row, i) => {
+              prepareRow(row);
+              console.log(row.original);
+              return (
+                <tr {...row.getRowProps()} onClick={() => handleRowClick(row)}>
+                  {row.cells.map((cell) => <td {...cell.getCellProps()}>{cell.render('Cell')}</td>)}
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
     </Styles>
   );
 }

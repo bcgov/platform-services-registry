@@ -33,7 +33,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -132,82 +132,85 @@ const Dashboard: React.FC = () => {
   const toggleView = () => {
     setTableView(!tableView);
   };
-   /* 
+  /* 
     - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
     - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
   */
- const columns = useMemo(
+  const columns = useMemo(
     () => [
-          {
-            Header: "Name",
-            accessor: "name"
-          },
-          {
-            Header: "Description",
-            accessor: "description"
-          },
-          {
-            Header: "Ministry",
-            accessor: "busOrgId"
-          },
-          {
-            Header: "Product Owner",
-            accessor: "POEmail"
-          },
-          {
-            Header: "Technical Contact",
-            accessor: "TCEmail"
-          },
-          {
-          Header: "Status",
-          accessor: "namespacePrefix"
-          }
-        ],
-    []
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Description',
+        accessor: 'description',
+      },
+      {
+        Header: 'Ministry',
+        accessor: 'busOrgId',
+      },
+      {
+        Header: 'Product Owner',
+        accessor: 'POEmail',
+      },
+      {
+        Header: 'Technical Contact',
+        accessor: 'TCEmail',
+      },
+      {
+        Header: 'Status',
+        accessor: 'provisioned',
+        // @ts-ignore
+        Cell: ({ cell }) =>
+          // @ts-ignore
+          cell.row.values.provisioned ? 'Provisioned' : 'Pending',
+      },
+    ],
+    [],
   );
 
   return (
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
-      <Button onClick={toggleView}>{tableView ? "Card View" : "Table View"} </Button>
-      
-      {tableView ?
-      <div className="App">
-        <Table columns={columns} data={profile} />
-      </div>
-       :
-      (
+      <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
+
+      {tableView ? (
+        <div className="App">
+          <Table columns={columns} data={profile} />
+        </div>
+      ) : (
         <div>
-      {/* Project Cards */}
-      <Box
-        sx={{
-          display: 'grid',
-          gridGap: 4,
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-        }}
-      >
-        {profile.length > 0 &&
-          profile.map((s: any) => (
-            <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-              <RouterLink
-                to={{ pathname: `/profile/${s.id}/overview` }}
-                style={{ color: theme.colors.black, textDecoration: 'none' }}
-              >
-                {!s.provisioned && <BackdropForPendingItem />}
-                <ProfileCard
-                  title={s.name}
-                  textBody={s.description}
-                  ministry={s.busOrgId}
-                  PO={s.POEmail}
-                  TC={s.TCEmail}
-                  isProvisioned={s.provisioned}
-                />
-              </RouterLink>
-            </ShadowBox>
-          ))}
-      </Box>
-      </div>
-)}
+          {/* Project Cards */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridGap: 4,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+            }}
+          >
+            {profile.length > 0 &&
+              profile.map((s: any) => (
+                <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+                  <RouterLink
+                    to={{ pathname: `/profile/${s.id}/overview` }}
+                    style={{ color: theme.colors.black, textDecoration: 'none' }}
+                  >
+                    {!s.provisioned && <BackdropForPendingItem />}
+                    <ProfileCard
+                      title={s.name}
+                      textBody={s.description}
+                      ministry={s.busOrgId}
+                      PO={s.POEmail}
+                      TC={s.TCEmail}
+                      isProvisioned={s.provisioned}
+                    />
+                  </RouterLink>
+                </ShadowBox>
+              ))}
+          </Box>
+        </div>
+      )}
     </>
   );
 };
