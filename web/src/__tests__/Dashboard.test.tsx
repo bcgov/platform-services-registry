@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
@@ -64,8 +64,17 @@ function renderDashboard() {
   return { ...utils };
 }
 
-test('matches the snapshot', async () => {
+test('<Dashboard / > Table view should render', async () => {
   const { container } = renderDashboard();
+
+  await waitFor(() => expect(container).toMatchSnapshot());
+});
+
+test('<Dashboard / > Card view should render', async () => {
+  const { getByText, container } = renderDashboard();
+
+  const leftClick = { button: 1 };
+  fireEvent.click(getByText('Card View'), leftClick);
 
   await waitFor(() => expect(container).toMatchSnapshot());
 });

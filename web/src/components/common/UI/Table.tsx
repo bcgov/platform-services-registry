@@ -5,6 +5,12 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSortBy, useTable } from 'react-table';
 import theme from '../../../theme';
+import Icon from './Icon';
+
+interface ITableProps {
+  columns: any;
+  data: Object[];
+}
 
 const Styles = styled.div`
   padding: 1rem;
@@ -32,6 +38,8 @@ const Styles = styled.div`
     th {
       background-color: ${theme.colors.bcblue};
       color: ${theme.colors.contrast};
+      text-align: center;
+      min-width: 9em;
     }
     th,
     td {
@@ -46,8 +54,9 @@ const Styles = styled.div`
     }
   }
 `;
-// @ts-ignore
-export default function Table({ columns, data }) {
+
+const Table: React.FC<ITableProps> = (props) => {
+  const { columns, data } = props;
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -78,16 +87,18 @@ export default function Table({ columns, data }) {
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   className={
+                    // eslint-disable-next-line
                     column.isSorted ? (column.isSortedDesc ? 'sort-desc' : 'sort-asc') : ''
                   }
+                  key={column.id}
                 >
                   {column.render('Header')}
-                  <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                  <Icon color="contrast" name="sort" style={{ float: 'right', margin: '2px' }} />
                 </th>
               ))}
             </tr>
@@ -97,10 +108,13 @@ export default function Table({ columns, data }) {
           {data.length > 0 &&
             rows.map((row, i) => {
               prepareRow(row);
-              console.log(row.original);
               return (
-                <tr {...row.getRowProps()} onClick={() => handleRowClick(row)}>
-                  {row.cells.map((cell) => <td {...cell.getCellProps()}>{cell.render('Cell')}</td>)}
+                <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} key={row.id}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()} key={cell.value}>
+                      {cell.render('Cell')}
+                    </td>
+                  ))}
                 </tr>
               );
             })}
@@ -108,4 +122,6 @@ export default function Table({ columns, data }) {
       </table>
     </Styles>
   );
-}
+};
+
+export default Table;
