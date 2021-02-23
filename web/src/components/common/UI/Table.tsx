@@ -1,11 +1,53 @@
 // Table.js
 
+import styled from '@emotion/styled';
 import React from "react";
-import { useTable } from "react-table";
+import { useHistory } from "react-router-dom";
+import { useSortBy, useTable } from "react-table";
+import theme from '../../../theme';
 
+const Styles = styled.div`
+  padding: 1rem;
+
+  table {
+    border-spacing: 0;
+    border: 1px solid black;
+
+    tr {
+      :last-child {
+        td {
+          border-bottom: 0;
+        }
+      }
+
+      :nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      :hover {
+        background-color: #ddd;
+        cursor: pointer;
+      }
+    }
+    th {
+      background-color: ${theme.colors.bcblue};
+      color: ${theme.colors.contrast};
+    }
+    th,
+    td {
+      margin: 0;
+      padding: 0.5rem;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+
+      :last-child {
+        border-right: 0;
+      }
+    }
+  }
+`
 //@ts-ignore
 export default function Table({ columns, data }) {
-  console.log(data)
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -16,19 +58,46 @@ export default function Table({ columns, data }) {
   } = useTable({
     columns,
     data
-  });
+  },
+  useSortBy
+  );
+  
+  const history = useHistory();
+  // @ts-ignore
+  const handleRowClick = (row) => {
+    history.push(`/profile/${row.original.id}/overview`);
+  }  
 
   /* 
     Render the UI for your table
     - react-table doesn't have UI, it's headless. We just need to put the react-table props from the Hooks, and it will do its magic automatically
   */
   return (
+    <Styles>
     <table {...getTableProps()}>
       <thead>
         {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
+          <tr {...headerGroup.getHeaderGroupProps()}> 
             {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              <th
+              {...column.getHeaderProps(column.getSortByToggleProps())}
+                className={
+                  column.isSorted
+                    ? column.isSortedDesc
+                      ? "sort-desc"
+                      : "sort-asc"
+                    : ""
+                }
+              >
+                {column.render("Header")}
+                <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ''}
+                  </span>
+              </th>
             ))}
           </tr>
         ))}
@@ -37,7 +106,7 @@ export default function Table({ columns, data }) {
         {data.length > 0 && rows.map((row, i) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
+            <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} >
               {row.cells.map(cell => {
                 return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
               })}
@@ -46,5 +115,6 @@ export default function Table({ columns, data }) {
         })}
       </tbody>
     </table>
+    </Styles>
   );
 }

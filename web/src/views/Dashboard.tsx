@@ -42,6 +42,7 @@ const Dashboard: React.FC = () => {
   const { setOpenBackdrop } = useCommonState();
 
   const [profile, setProfile] = useState<any>([]);
+  const [tableView, setTableView] = useState(true);
 
   useEffect(() => {
     async function wrap() {
@@ -128,52 +129,55 @@ const Dashboard: React.FC = () => {
     setOpenBackdrop(false);
   };
 
+  const toggleView = () => {
+    setTableView(!tableView);
+  };
    /* 
     - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
     - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
   */
  const columns = useMemo(
     () => [
-      {
-        // first group - TV Show
-        Header: "Project Details",
-        // First group columns
-        columns: [
           {
             Header: "Name",
             accessor: "name"
           },
           {
+            Header: "Description",
+            accessor: "description"
+          },
+          {
             Header: "Ministry",
             accessor: "busOrgId"
-          }
-        ]
-      },
-      {
-        // Second group - Details
-        Header: "Contact Details",
-        // Second group columns
-        columns: [
+          },
           {
-            Header: "PO",
+            Header: "Product Owner",
             accessor: "POEmail"
           },
           {
-            Header: "TC",
+            Header: "Technical Contact",
             accessor: "TCEmail"
           },
-        ]
-      }
-    ],
+          {
+          Header: "Status",
+          accessor: "namespacePrefix"
+          }
+        ],
     []
   );
 
   return (
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
+      <Button onClick={toggleView}>{tableView ? "Card View" : "Table View"} </Button>
+      
+      {tableView ?
       <div className="App">
-      <Table columns={columns} data={profile} />
-    </div>
+        <Table columns={columns} data={profile} />
+      </div>
+       :
+      (
+        <div>
       {/* Project Cards */}
       <Box
         sx={{
@@ -202,6 +206,8 @@ const Dashboard: React.FC = () => {
             </ShadowBox>
           ))}
       </Box>
+      </div>
+)}
     </>
   );
 };
