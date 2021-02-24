@@ -156,23 +156,26 @@ const Table: React.FC<ITableProps> = (props) => {
     <Styles>
       <table {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className={
-                    // eslint-disable-next-line
-                    column.isSorted ? (column.isSortedDesc ? 'sort-desc' : 'sort-asc') : ''
-                  }
-                  key={column.id}
-                >
-                  {column.render('Header')}
-                  <Icon color="contrast" name="sort" style={{ float: 'right', margin: '2px' }} />
-                </th>
-              ))}
-            </tr>
-          ))}
+          {headerGroups.map((headerGroup) => {
+            const { key, ...restHeaderGroupProps } = headerGroup.getHeaderGroupProps();
+            return (
+              <tr key={key} {...restHeaderGroupProps}>
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className={
+                      // eslint-disable-next-line
+                      column.isSorted ? (column.isSortedDesc ? 'sort-desc' : 'sort-asc') : ''
+                    }
+                    key={column.id}
+                  >
+                    {column.render('Header')}
+                    <Icon color="contrast" name="sort" style={{ float: 'right', margin: '2px' }} />
+                  </th>
+                ))}
+              </tr>
+            );
+          })}
         </thead>
         <tbody {...getTableBodyProps()}>
           {data.length > 0 &&
