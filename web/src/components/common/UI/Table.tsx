@@ -20,13 +20,13 @@ const Styles = styled.div`
     border: 1px solid black;
 
     tr {
-      :last-child {
+      :last-of-type {
         td {
           border-bottom: 0;
         }
       }
 
-      :nth-child(even) {
+      :nth-of-type(even) {
         background-color: #f2f2f2;
       }
 
@@ -48,7 +48,7 @@ const Styles = styled.div`
       border-bottom: 1px solid black;
       border-right: 1px solid black;
 
-      :last-child {
+      :last-of-type {
         border-right: 0;
       }
     }
@@ -180,11 +180,14 @@ const Table: React.FC<ITableProps> = (props) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} key={row.id}>
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} key={cell.value}>
-                      {cell.render('Cell')}
-                    </td>
-                  ))}
+                  {row.cells.map((cell) => {
+                    const { key, ...restCellProps } = cell.getCellProps();
+                    return (
+                      <td key={key} {...restCellProps}>
+                        {cell.render('Cell')}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}
