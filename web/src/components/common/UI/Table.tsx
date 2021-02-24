@@ -73,8 +73,8 @@ const Table: React.FC<ITableProps> = (props) => {
   );
 
   const history = useHistory();
-  // @ts-ignore
-  const handleRowClick = (row) => {
+
+  const handleRowClick = (row: any) => {
     history.push(`/profile/${row.original.id}/overview`);
   };
 

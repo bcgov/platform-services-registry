@@ -161,10 +161,7 @@ const Dashboard: React.FC = () => {
       {
         Header: 'Status',
         accessor: 'provisioned',
-        // @ts-ignore
-        Cell: ({ cell }) =>
-          // @ts-ignore
-          cell.row.values.provisioned ? 'Provisioned' : 'Pending',
+        Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
       },
     ],
     [],
