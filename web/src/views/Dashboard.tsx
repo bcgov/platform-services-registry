@@ -173,9 +173,9 @@ const Dashboard: React.FC = () => {
       <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
 
       {tableView ? (
-        <div className="App">
+        <Box style={{ overflow: 'auto' }}>
           <Table columns={columns} data={profile} />
-        </div>
+        </Box>
       ) : (
         <div>
           {/* Project Cards */}

@@ -53,6 +53,76 @@ const Styles = styled.div`
       }
     }
   }
+
+  /* thanks to: https://css-tricks.com/responsive-data-tables/ */
+  @media screen and (max-width: 52em) {
+    /* Force table to not be like tables anymore */
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid black;
+    }
+
+    td {
+      /* Behave like a "row" */
+      border: none !important;
+      position: relative;
+      padding-left: calc(30% + 10px) !important;
+      text-align: left !important;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+    }
+
+    td:before {
+      /* Now like a table header */
+      position: absolute;
+      display: block;
+
+      /* Top/left values mimic padding */
+      left: 1rem;
+      width: 30%;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      text-align: left !important;
+      font-weight: 600;
+    }
+    /*
+	Label the data, hard coded for now.
+  TODO (sb): dynamically link the column heading to these Row titles
+	*/
+    td:nth-of-type(1):before {
+      content: 'Project Name';
+    }
+    td:nth-of-type(2):before {
+      content: 'Description';
+    }
+    td:nth-of-type(3):before {
+      content: 'Ministry';
+    }
+    td:nth-of-type(4):before {
+      content: 'Product Owner';
+    }
+    td:nth-of-type(5):before {
+      content: 'Technical Contact';
+    }
+    td:nth-of-type(6):before {
+      content: 'Status';
+    }
+  }
 `;
 
 const Table: React.FC<ITableProps> = (props) => {
