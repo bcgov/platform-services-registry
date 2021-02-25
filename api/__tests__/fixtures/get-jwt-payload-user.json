@@ -1,0 +1,33 @@
+{
+    "exp": 1613168894,
+    "iat": 1613168594,
+    "auth_time": 1613167530,
+    "jti": "914184a8-c7b4-4c67-8d5c-e0d1a97eced2",
+    "sub": "d4a378a9-7ded-4b18-9c2c-0494464113d3",
+    "typ": "Bearer",
+    "azp": "registry-web",
+    "nonce": "efcc18a6-db6c-48e2-a510-6e09bc90c03f",
+    "session_state": "84fc62ca-4b04-4998-80a0-4f339dddc01e",
+    "acr": "0",
+    "resource_access": {
+        "registry-web": {
+            "roles": [
+                "administrator"
+            ]
+        },
+        "account": {
+            "roles": [
+                "manage-account",
+                "manage-account-links",
+                "view-profile"
+            ]
+        }
+    },
+    "scope": "openid profile email",
+    "email_verified": true,
+    "name": "Jane Doe",
+    "preferred_username": "jane1100@idir",
+    "given_name": "Yuhan",
+    "family_name": "Freeman",
+    "email": "jane@example.com"
+}

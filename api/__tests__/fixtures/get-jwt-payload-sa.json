@@ -1,0 +1,24 @@
+{
+  "exp": 1609495340,
+  "iat": 1609495040,
+  "jti": "30bc1278-53ef-4b7f-9be9-a481255c6318",
+  "aud": "account",
+  "sub": "0a79c81d-e45d-42f2-823d-59098d6a32c8",
+  "typ": "Bearer",
+  "azp": "registry-gitops-ci",
+  "session_state": "c5a53278-b854-4e68-978b-c4a4902b6059",
+  "acr": "1",
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "profile email",
+  "email_verified": false,
+  "clientId": "registry-gitops-ci",
+  "preferred_username": "service-account-registry-gitops-ci'"
+}

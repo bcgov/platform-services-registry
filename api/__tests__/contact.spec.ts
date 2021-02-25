@@ -21,12 +21,15 @@ import { updateContact } from '../src/controllers/contact';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
-const selectContact = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const returnedContact = JSON.parse(fs.readFileSync(p0, 'utf8'))[0];
+
+const p1 = path.join(__dirname, 'fixtures/insert-contact.json');
+const insertContact = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const client = new Pool().connect();
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p2 = path.join(__dirname, 'fixtures/provisioning-context.json');
+  const p2 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
   const natsContext = JSON.parse(fs.readFileSync(p2, 'utf8'));
   const natsSubject = 'edit';
   return {
@@ -44,18 +47,13 @@ describe('Contact event handlers', () => {
   });
 
   it('A contact is updated', async () => {
-    const body = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john@example.com',
-      githubId: 'john1100',
-    };
+    const body = insertContact;
     const req = {
-      params: { contactId: 233 },
+      params: { contactId: 1 },
       body,
     }
 
-    client.query.mockResolvedValue({ rows: [selectContact[0]] });
+    client.query.mockResolvedValue({ rows: [returnedContact] });
 
     // @ts-ignore
     await updateContact(req, ex.res);
@@ -68,14 +66,9 @@ describe('Contact event handlers', () => {
   });
 
   it('A contact fails to update', async () => {
-    const body = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john@example.com',
-      githubId: 'john1100',
-    };
+    const body = insertContact;
     const req = {
-      params: { contactId: 233 },
+      params: { contactId: 1 },
       body,
     }
 

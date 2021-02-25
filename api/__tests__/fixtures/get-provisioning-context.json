@@ -1,8 +1,8 @@
 {
-  "profileId": 118,
+  "profileId": 4,
   "displayName": "Project X",
   "newDisplayName": "NULL",
-  "description": "This is a sample description",
+  "description": "This is a cool project.",
   "quota": "small",
   "quotas": {
     "cpu": {
@@ -22,7 +22,7 @@
   },
   "namespaces": [
     {
-      "namespaceId": 149,
+      "namespaceId": 13,
       "name": "4ea35c-tools",
       "clusters": [
         {
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "namespaceId": 151,
+      "namespaceId": 14,
       "name": "4ea35c-test",
       "clusters": [
         {
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "namespaceId": 150,
+      "namespaceId": 15,
       "name": "4ea35c-dev",
       "clusters": [
         {
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "namespaceId": 152,
+      "namespaceId": 16,
       "name": "4ea35c-prod",
       "clusters": [
         {

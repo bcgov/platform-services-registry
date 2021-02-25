@@ -1,0 +1,109 @@
+[
+  {
+    "id": 2,
+    "profileId": 4,
+    "editType": "contacts",
+    "editObject": [
+      {
+        "id": 1,
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "email": "jane@example.com",
+        "githubId": "janedoe",
+        "roleId": 1
+      },
+      {
+        "id": 2,
+        "firstName": "Jim",
+        "lastName": "Doe",
+        "email": "jim@example.com",
+        "githubId": "jim1100",
+        "roleId": 2
+      }
+    ],
+    "natsSubject": "registry_project_provisioning",
+    "natsContext": {
+      "action": "edit",
+      "type": "standard",
+      "profileId": 4,
+      "displayName": "Project X",
+      "newDisplayName": "NULL",
+      "quota": "small",
+      "quotas": {
+        "cpu": {
+          "requests": "4",
+          "limits": "8"
+        },
+        "memory": {
+          "requests": "16Gi",
+          "limits": "32Gi"
+        },
+        "storage": {
+          "block": "50Gi",
+          "file": "50Gi",
+          "backup": "25Gi",
+          "capacity": "50Gi"
+        }
+      },
+      "namespaces": [
+        {
+          "namespaceId": 13,
+          "name": "4ea35c-tools",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 14,
+          "name": "4ea35c-test",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 15,
+          "name": "4ea35c-dev",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 16,
+          "name": "4ea35c-prod",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        }
+      ],
+      "productOwner": {
+        "userId": "jane1100",
+        "provider": "github",
+        "email": "jane.doe@example.com"
+      },
+      "technicalContact": {
+        "userId": "john1100",
+        "provider": "github",
+        "email": "john.doe@example.com"
+      }
+    },
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "updatedAt": "2020-09-10T18:14:13.304Z"
+  }
+]

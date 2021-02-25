@@ -20,19 +20,20 @@ import { Pool } from 'pg';
 import { fetchProfileContacts, requestProfileContactsEdit, requestProjectProfileEdit } from '../src/controllers/profile';
 import FauxExpress from './src/fauxexpress';
 
-const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
-const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p0 = path.join(__dirname, 'fixtures/insert-profile.json');
+const insertProfile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
-const p1 = path.join(__dirname, 'fixtures/user-template.json');
-const userRequest = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const p1 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
+const selectProfilesContacts = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const p2 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
-const selectProfilesContacts = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const productOwner = JSON.parse(fs.readFileSync(p2, 'utf8'))[0];
+const technicalContact = JSON.parse(fs.readFileSync(p2, 'utf8'))[1];
 
 const client = new Pool().connect();
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p3 = path.join(__dirname, 'fixtures/provisioning-context.json');
+  const p3 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
   const natsContext = JSON.parse(fs.readFileSync(p3, 'utf8'));
   const natsSubject = 'edit';
   return {
@@ -52,10 +53,8 @@ describe('Profile event handlers', () => {
   it('A profiles contacts are returned', async () => {
     const req = {
       params: { profileId: 1 },
-      user: userRequest,
     };
 
-    client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
     client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
 
     // @ts-ignore
@@ -71,7 +70,6 @@ describe('Profile event handlers', () => {
   it('Fetch single profile contacts should throw', async () => {
     const req = {
       params: { profileId: 1 },
-      user: userRequest,
     };
     client.query.mockImplementation(() => { throw new Error() });
 
@@ -84,8 +82,8 @@ describe('Profile event handlers', () => {
 
   it('A project-profile edit request is created', async () => {
     const req = {
-      params: { profileId: 118 },
-      body: selectProfiles[2],
+      params: { profileId: 4 },
+      body: insertProfile,
     }
 
     client.query.mockResolvedValue({ rows: [{ count: '0' }] });
@@ -98,45 +96,22 @@ describe('Profile event handlers', () => {
     expect(ex.res.end).toBeCalled();
   });
 
-
   it('A contact edit request is created', async () => {
-    const body = {
-      productOwner: {
-        roleId: 1,
-        id: 233,
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'jane.doe@example.com',
-        githubId: 'jane1100',
-      },
-      technicalContact: {
-        roleId: 2,
-        id: 234,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        githubId: 'john1100',
+    const req = {
+      params: { profileId: 4 },
+      body: {
+        productOwner,
+        technicalContact,
       },
     };
-    const req = {
-      params: { profileId: 118 },
-      body,
-    }
 
-    client.query.mockResolvedValue({
-      roleId: 1,
-      id: 233,
-      firstName: 'Jane',
-      lastName: 'Doe',
-      email: 'jane.doe@example.com',
-      githubId: 'jane1100',
-    });
+    client.query.mockResolvedValue(productOwner);
 
     client.query.mockResolvedValue({
       productOwner: {
         userId: 'jane1100',
         provider: 'github',
-        email: 'jane.doe@example.ca',
+        email: 'jane.doe@example.com',
       },
       technicalContact: {
         userId: 'john1100',
@@ -158,28 +133,13 @@ describe('Profile event handlers', () => {
   });
 
   it('A contact edit request fails to be created', async () => {
-    const body = {
-      productOwner: {
-        roleId: 1,
-        id: 233,
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'jane.doe@example.com',
-        githubId: 'jane1100',
-      },
-      technicalContact: {
-        roleId: 2,
-        id: 234,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        githubId: 'john1100',
+    const req = {
+      params: { profileId: 4 },
+      body: {
+        productOwner,
+        technicalContact,
       },
     };
-    const req = {
-      params: { profileId: 118 },
-      body,
-    }
 
     client.query.mockResolvedValue({
       productOwner: {

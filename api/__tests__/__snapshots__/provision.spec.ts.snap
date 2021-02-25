@@ -8,7 +8,7 @@ Array [
         SELECT * FROM contact
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        233,
+        1,
       ],
     },
   ],
@@ -18,7 +18,7 @@ Array [
         SELECT * FROM contact
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        234,
+        2,
       ],
     },
   ],
@@ -29,7 +29,7 @@ Array [
           SET
             first_name = $1, last_name = $2, email = $3, github_id = $4,
             role_id = $5
-          WHERE id = 233
+          WHERE id = 1
           RETURNING *;",
       "values": Array [
         "Jane",
@@ -47,7 +47,7 @@ Array [
           SET
             first_name = $1, last_name = $2, email = $3, github_id = $4,
             role_id = $5
-          WHERE id = 234
+          WHERE id = 2
           RETURNING *;",
       "values": Array [
         "Jim",

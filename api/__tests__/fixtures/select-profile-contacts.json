@@ -1,6 +1,6 @@
 [
   {
-    "id": 233,
+    "id": 1,
     "firstName": "Jane",
     "lastName": "Doe",
     "email": "jane@example.com",
@@ -11,7 +11,7 @@
     "updatedAt": "2020-09-10T18:14:13.436Z"
   },
   {
-    "id": 234,
+    "id": 2,
     "firstName": "Jim",
     "lastName": "Doe",
     "email": "jim@example.com",

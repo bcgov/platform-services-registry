@@ -1,11 +1,11 @@
 {
-    "id": 4,
+    "id": 1,
     "keycloakId": "4a4a4a44-4444-4444-4444-a4a44a44a44a",
     "lastSeenAt": {},
     "createdAt": {},
     "updatedAt": {},
     "archived": false,
-    "roles": [],
+    "accessFlags": [],
     "name": "Jane Doe",
     "preferredUsername": "jane1100@github",
     "givenName": "Jane",
