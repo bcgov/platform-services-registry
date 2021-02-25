@@ -25,8 +25,6 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { RequestEditType } from '../db/model/request';
-import { AuthenticatedUser } from '../libs/authmware';
-import { getAuthorization } from '../libs/authorization';
 import { fulfillEditRequest } from '../libs/fulfillment';
 import { getProfileCurrentQuotaSize, getProfileQuotaOptions } from '../libs/profile';
 import shared from '../libs/shared';
@@ -53,19 +51,13 @@ export const addContactToProfile = async (
 };
 
 export const fetchProfileContacts = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { ContactModel } = dm;
   const { profileId } = params;
 
   try {
     const projectContacts = await ContactModel.findForProject(Number(profileId));
-
-    const isAuthorized = getAuthorization(profileId, user, undefined, projectContacts);
-
-    if (!(isAuthorized)) {
-      throw isAuthorized;
-    }
 
     res.status(200).json(projectContacts);
   } catch (err) {
@@ -81,7 +73,7 @@ export const fetchProfileContacts = async (
 };
 
 export const fetchProfileQuotaSize = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -104,18 +96,12 @@ export const fetchProfileQuotaSize = async (
 };
 
 export const fetchProfileEditRequests = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { RequestModel, } = dm;
   const { profileId } = params;
 
   try {
-    const isAuthorized = getAuthorization(profileId, user);
-
-    if (!(isAuthorized)) {
-      throw isAuthorized;
-    }
-
     const results = await RequestModel.findForProfile(Number(profileId));
 
     res.status(200).json(results);
@@ -131,10 +117,9 @@ export const fetchProfileEditRequests = async (
   }
 };
 
-// TODO:(yh) think of a way to run a base method for the following edit async to check
-// 0. if the profile has any existing request
-// 1. if profile id is in valid format
-// 2. user is authorized to operate around this profile
+// TODO:(yh) run a check for the following edit async
+// to see if the profile has any existing request
+// if so, serve forbidden status code
 export const requestProjectProfileEdit = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
@@ -240,7 +225,7 @@ export const requestProfileContactsEdit = async (
 };
 
 export const fetchProfileQuotaOptions = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -259,7 +244,7 @@ export const fetchProfileQuotaOptions = async (
 };
 
 export const requestProfileQuotaEdit = async (
-  { params, user, body }: { params: any, user: AuthenticatedUser, body: any }, res: Response
+  { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   const { RequestModel, ProfileModel, QuotaModel } = dm;
   const { profileId } = params;

@@ -23,35 +23,36 @@ import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
 import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize, requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileEdit } from '../../controllers/profile';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
+import { authorize } from '../../libs/authorization';
 
 const router = express.Router();
 
 // Profiles
 router.post('/', asyncMiddleware(createProjectProfile));
 router.get('/', asyncMiddleware(fetchAllProjectProfiles));
-router.get('/:profileId', asyncMiddleware(fetchProjectProfile));
-router.put('/:profileId', asyncMiddleware(updateProjectProfile));
-router.delete('/:profileId', asyncMiddleware(archiveProjectProfile));
+router.get('/:profileId', authorize(), asyncMiddleware(fetchProjectProfile));
+router.put('/:profileId', authorize(), asyncMiddleware(updateProjectProfile));
+router.delete('/:profileId', authorize(), asyncMiddleware(archiveProjectProfile));
 
 // Namespace
-router.post('/:profileId/namespace', asyncMiddleware(createNamespace));
-router.get('/:profileId/namespace', asyncMiddleware(fetchProfileNamespaces));
-router.get('/:profileId/namespace/:namespaceId', asyncMiddleware(fetchProfileNamespace));
-router.put('/:profileId/namespace/:namespaceId', asyncMiddleware(updateProfileNamespace));
-router.delete('/:profileId/namespace/:namespaceId', asyncMiddleware(archiveProfileNamespace));
+router.post('/:profileId/namespace', authorize(), asyncMiddleware(createNamespace));
+router.get('/:profileId/namespace', authorize(), asyncMiddleware(fetchProfileNamespaces));
+router.get('/:profileId/namespace/:namespaceId', authorize(), asyncMiddleware(fetchProfileNamespace));
+router.put('/:profileId/namespace/:namespaceId', authorize(), asyncMiddleware(updateProfileNamespace));
+router.delete('/:profileId/namespace/:namespaceId', authorize(), asyncMiddleware(archiveProfileNamespace));
 
 // Contacts
-router.get('/:profileId/contacts', asyncMiddleware(fetchProfileContacts));
-router.post('/:profileId/contact/:contactId', asyncMiddleware(addContactToProfile));
+router.get('/:profileId/contacts', authorize(), asyncMiddleware(fetchProfileContacts));
+router.post('/:profileId/contact/:contactId', authorize(), asyncMiddleware(addContactToProfile));
 
 // Quota
-router.get('/:profileId/quota-size', asyncMiddleware(fetchProfileQuotaSize));
+router.get('/:profileId/quota-size', authorize(), asyncMiddleware(fetchProfileQuotaSize));
 
 // Edit
-router.get('/:profileId/request', asyncMiddleware(fetchProfileEditRequests));
-router.post('/:profileId/profile-edit', asyncMiddleware(requestProjectProfileEdit));
-router.post('/:profileId/contact-edit', asyncMiddleware(requestProfileContactsEdit));
-router.get('/:profileId/quota-edit', asyncMiddleware(fetchProfileQuotaOptions));
-router.post('/:profileId/quota-edit', asyncMiddleware(requestProfileQuotaEdit))
+router.get('/:profileId/request', authorize(), asyncMiddleware(fetchProfileEditRequests));
+router.post('/:profileId/profile-edit', authorize(), asyncMiddleware(requestProjectProfileEdit));
+router.post('/:profileId/contact-edit', authorize(), asyncMiddleware(requestProfileContactsEdit));
+router.get('/:profileId/quota-edit', authorize(), asyncMiddleware(fetchProfileQuotaOptions));
+router.post('/:profileId/quota-edit', authorize(), asyncMiddleware(requestProfileQuotaEdit))
 
 export default router;
