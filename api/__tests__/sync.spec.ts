@@ -38,9 +38,6 @@ const selectRequestEditContacts = JSON.parse(fs.readFileSync(p4, 'utf8'));
 const client = new Pool().connect();
 
 jest.mock('../src/libs/profile', () => {
-  const p2 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-  const selectDefaultCluster = JSON.parse(fs.readFileSync(p2, 'utf8'));
-
   return {
     isProfileProvisioned: jest.fn().mockReturnValue(true),
     getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
@@ -48,8 +45,8 @@ jest.mock('../src/libs/profile', () => {
 });
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p3 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
-  const provisioningContext = JSON.parse(fs.readFileSync(p3, 'utf8'));
+  const p5 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
+  const provisioningContext = JSON.parse(fs.readFileSync(p5, 'utf8'));
 
   return {
     contextForProvisioning: jest.fn().mockReturnValue(provisioningContext),
