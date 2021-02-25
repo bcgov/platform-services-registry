@@ -1,6 +1,111 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`matches the snapshot 1`] = `
+exports[`<ProjectCard /> should render with Migration Licenseplate 1`] = `
+<div>
+  <div
+    class="css-z54kij"
+  >
+    <div
+      class="css-19crk1j"
+    >
+      <h3
+        class="css-vurnku"
+      >
+        Project Name
+      </h3>
+      <p
+        class="css-18ja79e"
+      >
+        This is the public name of the application, please avoid acronyms;
+      </p>
+    </div>
+    <div
+      class="css-19crk1j"
+    >
+      <p
+        class="css-1guafq4"
+      >
+        Health Gateway
+      </p>
+    </div>
+    <div
+      class="css-19crk1j"
+    >
+      <h3
+        class="css-vurnku"
+      >
+        Project Description
+      </h3>
+      <p
+        class="css-18ja79e"
+      >
+        This is a brief description of your project;
+      </p>
+    </div>
+    <div
+      class="css-19crk1j"
+    >
+      <p
+        class="css-1guafq4"
+      >
+        This is a test description for health gateway app
+      </p>
+    </div>
+    <div
+      class="css-19crk1j"
+    >
+      <h3
+        class="css-vurnku"
+      >
+        Ministry
+      </h3>
+      <p
+        class="css-18ja79e"
+      >
+        This is the ministry that is responsible for your application;
+      </p>
+    </div>
+    <div
+      class="css-19crk1j"
+    >
+      <p
+        class="css-1guafq4"
+      >
+        Citizen's Services
+      </p>
+    </div>
+    <div
+      class="css-knfhfe"
+    >
+      <div
+        class="css-19crk1j"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          Migrating Application
+        </h3>
+        <p
+          class="css-18ja79e"
+        >
+          This is the license plate of your migrating OCP 3.11 application;
+        </p>
+      </div>
+      <div
+        class="css-19crk1j"
+      >
+        <p
+          class="css-1guafq4"
+        >
+          abcdef
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<ProjectCard /> should render without Migration Licenseplate 1`] = `
 <div>
   <div
     class="css-z54kij"

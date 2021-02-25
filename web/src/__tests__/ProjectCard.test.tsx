@@ -18,7 +18,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import ProjectCard from '../components/profileEdit/ProjectCard';
 
-test('matches the snapshot', () => {
+test('<ProjectCard /> should render without Migration Licenseplate', () => {
   const stubPropTitle = 'Health Gateway';
   const stubPropTextBody = 'This is a test description for health gateway app';
   const stubPropMinistry = "Citizen's Services";
@@ -29,6 +29,26 @@ test('matches the snapshot', () => {
         name: stubPropTitle,
         description: stubPropTextBody,
         ministryName: stubPropMinistry,
+      }}
+    />,
+  );
+
+  expect(container).toMatchSnapshot();
+});
+
+test('<ProjectCard /> should render with Migration Licenseplate', () => {
+  const stubPropTitle = 'Health Gateway';
+  const stubPropTextBody = 'This is a test description for health gateway app';
+  const stubPropMinistry = "Citizen's Services";
+  const stubPropMigrationLicensePlate = 'abcdef';
+
+  const { container } = render(
+    <ProjectCard
+      projectDetails={{
+        name: stubPropTitle,
+        description: stubPropTextBody,
+        ministryName: stubPropMinistry,
+        migratingLicenseplate: stubPropMigrationLicensePlate,
       }}
     />,
   );

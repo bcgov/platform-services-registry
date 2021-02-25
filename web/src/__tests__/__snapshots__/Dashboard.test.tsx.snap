@@ -1,14 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`matches the snapshot 1`] = `
+exports[`<Dashboard / > Card view should render 1`] = `
 <div>
-  <div
-    class="css-6j9z3r"
-  />
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Table View
+     
+  </button>
+  <div>
+    <div
+      class="css-6j9z3r"
+    />
+  </div>
 </div>
 `;
 
-exports[`matches the snapshot 2`] = `
+exports[`<Dashboard / > Card view should render 2`] = `
 <div>
   <button
     style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
@@ -16,151 +25,551 @@ exports[`matches the snapshot 2`] = `
   >
     Download CSV
   </button>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Table View
+     
+  </button>
+  <div>
+    <div
+      class="css-6j9z3r"
+    >
+      <div
+        class="css-1i2ycdn"
+        style="position: relative;"
+      >
+        <a
+          href="/profile/2/overview"
+          style="color: rgb(0, 0, 0); text-decoration: none;"
+        >
+          <div
+            class="css-vlngyz"
+          >
+            <h2
+              class="css-ot5b10"
+            >
+              EPIC
+            </h2>
+            <h2
+              class="css-16ht1ln"
+            >
+              <p>
+                Hello World
+              </p>
+            </h2>
+            <p
+              class="css-xz2idv"
+            />
+            <p
+              class="css-1guafq4"
+            >
+              Project owner:
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              jane@example.com
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              Technical contact:
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              jim@example.com
+            </p>
+          </div>
+        </a>
+      </div>
+      <div
+        class="css-1i2ycdn"
+        style="position: relative;"
+      >
+        <a
+          href="/profile/1/overview"
+          style="color: rgb(0, 0, 0); text-decoration: none;"
+        >
+          <div
+            class="css-vlngyz"
+          >
+            <h2
+              class="css-ot5b10"
+            >
+              Health Gateway
+            </h2>
+            <h2
+              class="css-16ht1ln"
+            />
+            <p
+              class="css-xz2idv"
+            />
+            <p
+              class="css-1guafq4"
+            >
+              Project owner:
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              jane@example.com
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              Technical contact:
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              jim@example.com
+            </p>
+          </div>
+        </a>
+      </div>
+      <div
+        class="css-1i2ycdn"
+        style="position: relative;"
+      >
+        <a
+          href="/profile/3/overview"
+          style="color: rgb(0, 0, 0); text-decoration: none;"
+        >
+          <div
+            class="css-vlngyz"
+          >
+            <h2
+              class="css-ot5b10"
+            >
+              Mines Digital Services
+            </h2>
+            <h2
+              class="css-16ht1ln"
+            >
+              <p>
+                This is some description
+              </p>
+            </h2>
+            <p
+              class="css-xz2idv"
+            />
+            <p
+              class="css-1guafq4"
+            >
+              Project owner:
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              jane@example.com
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              Technical contact:
+            </p>
+            <p
+              class="css-1guafq4"
+            >
+              jim@example.com
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Dashboard / > Table view should render 1`] = `
+<div>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Card View
+     
+  </button>
   <div
-    class="css-6j9z3r"
+    class="css-vurnku"
+    style="overflow: auto;"
   >
     <div
-      class="css-1i2ycdn"
-      style="position: relative;"
+      class="css-kpuxrv"
     >
-      <a
-        href="/profile/2/overview"
-        style="color: rgb(0, 0, 0); text-decoration: none;"
+      <table
+        role="table"
       >
-        <div
-          class="css-vlngyz"
+        <thead>
+          <tr
+            role="row"
+          >
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Name
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Description
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Ministry
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Product Owner
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Technical Contact
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Status
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          role="rowgroup"
+        />
+      </table>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Dashboard / > Table view should render 2`] = `
+<div>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Download CSV
+  </button>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Card View
+     
+  </button>
+  <div
+    class="css-vurnku"
+    style="overflow: auto;"
+  >
+    <div
+      class="css-kpuxrv"
+    >
+      <table
+        role="table"
+      >
+        <thead>
+          <tr
+            role="row"
+          >
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Name
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Description
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Ministry
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Product Owner
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Technical Contact
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Status
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          role="rowgroup"
         >
-          <h2
-            class="css-ot5b10"
+          <tr
+            role="row"
           >
-            EPIC
-          </h2>
-          <h2
-            class="css-16ht1ln"
-          >
-            <p>
+            <td
+              role="cell"
+            >
+              EPIC
+            </td>
+            <td
+              role="cell"
+            >
               Hello World
-            </p>
-          </h2>
-          <p
-            class="css-xz2idv"
-          />
-          <p
-            class="css-1guafq4"
+            </td>
+            <td
+              role="cell"
+            >
+              
+            </td>
+            <td
+              role="cell"
+            >
+              jane@example.com
+            </td>
+            <td
+              role="cell"
+            >
+              jim@example.com
+            </td>
+            <td
+              role="cell"
+            >
+              Provisioned
+            </td>
+          </tr>
+          <tr
+            role="row"
           >
-            Project owner:
-          </p>
-          <p
-            class="css-1guafq4"
+            <td
+              role="cell"
+            >
+              Health Gateway
+            </td>
+            <td
+              role="cell"
+            />
+            <td
+              role="cell"
+            >
+              
+            </td>
+            <td
+              role="cell"
+            >
+              jane@example.com
+            </td>
+            <td
+              role="cell"
+            >
+              jim@example.com
+            </td>
+            <td
+              role="cell"
+            >
+              Provisioned
+            </td>
+          </tr>
+          <tr
+            role="row"
           >
-            jane@example.com
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            Technical contact:
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            jim@example.com
-          </p>
-        </div>
-      </a>
-    </div>
-    <div
-      class="css-1i2ycdn"
-      style="position: relative;"
-    >
-      <a
-        href="/profile/1/overview"
-        style="color: rgb(0, 0, 0); text-decoration: none;"
-      >
-        <div
-          class="css-vlngyz"
-        >
-          <h2
-            class="css-ot5b10"
-          >
-            Health Gateway
-          </h2>
-          <h2
-            class="css-16ht1ln"
-          />
-          <p
-            class="css-xz2idv"
-          />
-          <p
-            class="css-1guafq4"
-          >
-            Project owner:
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            jane@example.com
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            Technical contact:
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            jim@example.com
-          </p>
-        </div>
-      </a>
-    </div>
-    <div
-      class="css-1i2ycdn"
-      style="position: relative;"
-    >
-      <a
-        href="/profile/3/overview"
-        style="color: rgb(0, 0, 0); text-decoration: none;"
-      >
-        <div
-          class="css-vlngyz"
-        >
-          <h2
-            class="css-ot5b10"
-          >
-            Mines Digital Services
-          </h2>
-          <h2
-            class="css-16ht1ln"
-          >
-            <p>
+            <td
+              role="cell"
+            >
+              Mines Digital Services
+            </td>
+            <td
+              role="cell"
+            >
               This is some description
-            </p>
-          </h2>
-          <p
-            class="css-xz2idv"
-          />
-          <p
-            class="css-1guafq4"
-          >
-            Project owner:
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            jane@example.com
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            Technical contact:
-          </p>
-          <p
-            class="css-1guafq4"
-          >
-            jim@example.com
-          </p>
-        </div>
-      </a>
+            </td>
+            <td
+              role="cell"
+            >
+              
+            </td>
+            <td
+              role="cell"
+            >
+              jane@example.com
+            </td>
+            <td
+              role="cell"
+            >
+              jim@example.com
+            </td>
+            <td
+              role="cell"
+            >
+              Provisioned
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

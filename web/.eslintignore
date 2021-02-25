@@ -4,3 +4,4 @@ openshift/*
 src/react-app-env.d.ts  
 src/serviceWorker.ts
 src/setupTests.ts
+src/types/react-table-config.d.ts

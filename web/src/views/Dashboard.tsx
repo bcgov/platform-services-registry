@@ -15,12 +15,13 @@
 //
 
 import { useKeycloak } from '@react-keycloak/web';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
 import { BackdropForPendingItem } from '../components/common/UI/Backdrop';
 import { Button } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
+import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import useCommonState from '../hooks/useCommonState';
@@ -41,6 +42,7 @@ const Dashboard: React.FC = () => {
   const { setOpenBackdrop } = useCommonState();
 
   const [profile, setProfile] = useState<any>([]);
+  const [tableView, setTableView] = useState(true);
 
   useEffect(() => {
     async function wrap() {
@@ -127,36 +129,85 @@ const Dashboard: React.FC = () => {
     setOpenBackdrop(false);
   };
 
+  const toggleView = () => {
+    setTableView(!tableView);
+  };
+  /* 
+    - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
+    - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
+  */
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Description',
+        accessor: 'description',
+      },
+      {
+        Header: 'Ministry',
+        accessor: 'busOrgId',
+      },
+      {
+        Header: 'Product Owner',
+        accessor: 'POEmail',
+      },
+      {
+        Header: 'Technical Contact',
+        accessor: 'TCEmail',
+      },
+      {
+        Header: 'Status',
+        accessor: 'provisioned',
+        Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
+      },
+    ],
+    [],
+  );
+
   return (
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
-      <Box
-        sx={{
-          display: 'grid',
-          gridGap: 4,
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-        }}
-      >
-        {profile.length > 0 &&
-          profile.map((s: any) => (
-            <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-              <RouterLink
-                to={{ pathname: `/profile/${s.id}/overview` }}
-                style={{ color: theme.colors.black, textDecoration: 'none' }}
-              >
-                {!s.provisioned && <BackdropForPendingItem />}
-                <ProfileCard
-                  title={s.name}
-                  textBody={s.description}
-                  ministry={s.busOrgId}
-                  PO={s.POEmail}
-                  TC={s.TCEmail}
-                  isProvisioned={s.provisioned}
-                />
-              </RouterLink>
-            </ShadowBox>
-          ))}
-      </Box>
+      <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
+
+      {tableView ? (
+        <Box style={{ overflow: 'auto' }}>
+          <Table columns={columns} data={profile} />
+        </Box>
+      ) : (
+        <div>
+          {/* Project Cards */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridGap: 4,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+            }}
+          >
+            {profile.length > 0 &&
+              profile.map((s: any) => (
+                <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
+                  <RouterLink
+                    to={{ pathname: `/profile/${s.id}/overview` }}
+                    style={{ color: theme.colors.black, textDecoration: 'none' }}
+                  >
+                    {!s.provisioned && <BackdropForPendingItem />}
+                    <ProfileCard
+                      title={s.name}
+                      textBody={s.description}
+                      ministry={s.busOrgId}
+                      PO={s.POEmail}
+                      TC={s.TCEmail}
+                      isProvisioned={s.provisioned}
+                    />
+                  </RouterLink>
+                </ShadowBox>
+              ))}
+          </Box>
+        </div>
+      )}
     </>
   );
 };
