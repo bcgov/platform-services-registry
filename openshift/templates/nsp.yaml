@@ -1,9 +1,9 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: mobile-signing-service
+  template: platform-registry
 metadata:
-  name: mobile-signing-service
+  name: platform-registry-network-policies
 objects:
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
