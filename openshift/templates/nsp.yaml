@@ -68,6 +68,25 @@ objects:
   - kind: NetworkPolicy
     apiVersion: networking.k8s.io/v1
     metadata:
+      name: allow-flyway-to-patroni
+    spec:
+      # Allow flyway pre-hook pod to run
+      # db migration check on patroni
+      # each time api deployment rolls out
+      podSelector:
+        matchLabels:
+          statefulset: registry-patroni
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  openshift.io/deployer-pod.type: hook-pre
+          ports:
+            - protocol: TCP
+              port: 5432
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
       name: allow-patroni-replication
     spec:
       # Allow the patroni pods to replicate
