@@ -116,6 +116,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               validate={validator.mustBeValidProfileName}
               defaultValue=""
               initialValue={projectDetails.name}
+              disabled
             />
           </Flex>
           <Flex flexDirection="column">
