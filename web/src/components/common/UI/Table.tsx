@@ -1,4 +1,18 @@
-// Table.js
+//
+// Copyright © 2020 Province of British Columbia
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 import styled from '@emotion/styled';
 import React from 'react';
@@ -10,6 +24,7 @@ import Icon from './Icon';
 interface ITableProps {
   columns: any;
   data: Object[];
+  linkedRows?: boolean;
 }
 
 const Styles = styled.div`
@@ -126,7 +141,7 @@ const Styles = styled.div`
 `;
 
 const Table: React.FC<ITableProps> = (props) => {
-  const { columns, data } = props;
+  const { columns, data, linkedRows } = props;
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -182,7 +197,7 @@ const Table: React.FC<ITableProps> = (props) => {
             rows.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} key={row.id}>
+                <tr {...row.getRowProps()} onClick={() => linkedRows && handleRowClick(row)} key={row.id}>
                   {row.cells.map((cell) => {
                     const { key, ...restCellProps } = cell.getCellProps();
                     return (
