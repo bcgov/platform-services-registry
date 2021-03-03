@@ -90,4 +90,4 @@ annotations:
 
   Additional Information on the move from Aporeto NetworkSecurityPolicies to OpenShift / Kubernetes Network Policies including the environment cut-over schedule can be found [here](https://github.com/BCDevOps/developer-experience/issues/902).
 
-  A Quick Start Guide for transitioning from Aporeto Network Security Policies to OpenShift / Kubernetes can be found [here](https://github.com/bcgov/networkpolicy-migration-workshop).
+  A Quick Start Guide for transitioning from Aporeto Network Security Policies to OpenShift / Kubernetes Network Policies can be found [here](https://github.com/bcgov/networkpolicy-migration-workshop).
