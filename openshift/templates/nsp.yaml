@@ -1,9 +1,9 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: mobile-signing-service
+  template: platform-registry
 metadata:
-  name: mobile-signing-service
+  name: platform-registry-network-policies
 objects:
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
@@ -62,6 +62,25 @@ objects:
             - podSelector:
                 matchLabels:
                   role: api
+          ports:
+            - protocol: TCP
+              port: 5432
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-flyway-to-patroni
+    spec:
+      # Allow flyway pre-hook pod to run
+      # db migration check on patroni
+      # each time api deployment rolls out
+      podSelector:
+        matchLabels:
+          statefulset: registry-patroni
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  openshift.io/deployer-pod.type: hook-pre
           ports:
             - protocol: TCP
               port: 5432
