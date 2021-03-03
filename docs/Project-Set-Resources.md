@@ -2,18 +2,18 @@
 
 The Platform Services Registry is used to create profiles for teams. Each profile is a collection of details that desribe a Project Set. At this time, Profiles are limited to OpenShift Project Sets.
 
-> **Note**: As of March 3rd, All resources are prefixed with `platform-services-controlled-` with the Exclusion of Quotas and the ArtifactoryServiceAccount which still has the name `default`. This resource will be updated when the Archiobot (BCGov Artifactory Operator) can support renaming the ArtifactoryServiceAccount without disruptions to tenants.
+> **Note**: As of March 3rd, All resources name are prefixed with `platform-services-controlled-` with the Exclusion of Quotas and the ArtifactoryServiceAccount which still has the name `default`. This resource will be updated when the Archiobot (BCGov Artifactory Operator) can support renaming the ArtifactoryServiceAccount without disruptions to tenants.
 
 ## OpenShift Project Sets
 
 Each OpenShift Project Set comes with a license plate used to identify the Project and four environments (tools, dev, test,prod). THe license plate is combined with each environment to create four OpenShift Namespaces - `<licensePlate>-<environment>`.
 
 For Example: (license plate - `1a2b3c`)
-
-- `1a2b3c-tools`
-- `1a2b3c-dev`
-- `1a2b3c-test`
-- `1a2b3c-prod`
+- **Namespaces:**
+  - `1a2b3c-tools`
+  - `1a2b3c-dev`
+  - `1a2b3c-test`
+  - `1a2b3c-prod`
 
 ### Labels
 
@@ -29,7 +29,9 @@ labels:
   project_type: user
   provisioned-by: argocd
   quota: $QUOTA_TSHIRT_SIZE
-  # The following label is inserted at apply by ArgoCD and is another way to identify resources created through our GitOps Provisioning Pipeline
+  # The following label is inserted at apply by ArgoCD
+  #  and is another way to identify resources created
+  #  through our GitOps Provisioning Pipeline
   devops.gov.bc.ca/argocd-app: $LICENSE_PLATE
 ```
 
@@ -87,3 +89,5 @@ annotations:
   As of March 3rd, the **dev** environment now includes a default-deny NetworkPolicy that blocks all communication within the namespace until additional Network Policies are created to open up the desired communication channels. (Between Pods, Other Namespaces, Ingress from Routes, etc)
 
   Additional Information on the move from Aporeto NetworkSecurityPolicies to OpenShift / Kubernetes Network Policies including the environment cut-over schedule can be found [here](https://github.com/BCDevOps/developer-experience/issues/902).
+
+  A Quick Start Guide for transitioning from Aporeto Network Security Policies to OpenShift / Kubernetes can be found [here](https://github.com/bcgov/networkpolicy-migration-workshop).
