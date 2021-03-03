@@ -1,63 +1,74 @@
-# Copyright 2020 The Province of British Columbia
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 ---
 apiVersion: template.openshift.io/v1
 kind: Template
+labels:
+  template: quickstart-network-security-policy
 metadata:
-  annotations:
-    description: |
-      The Network Security Policies (NSP) for the associated
-      Platform Services image builds mechanics.
-  name: platform-services-image-management
+  name: quickstart-network-security-policy
 objects:
-  - apiVersion: security.devops.gov.bc.ca/v1alpha1
-    kind: ExternalNetwork
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
-      # This metadata field will be what you see with the command
-      # `oc get externalnetwork` or `kubctl get externalnetwork`.
-      name: all-things-external
-      labels:
-        app: platsrv-image-management
+      name: deny-by-default
     spec:
-      # This name will be used internally by Aporeto; it should match
-      # the `name` field in metadata above.
-      description: |
-        specify a custom external network that can be
-        referenced by name.
-      entries:
-        - 0.0.0.0/0
-      servicePorts:
-        - "tcp/80"
-        - "tcp/443"
+      # The default posture for a security first namespace is to
+      # deny all traffic. If not added this rule will be added
+      # by Platform Services during environment cut-over.
+      podSelector: {}
+      ingress: []
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-from-openshift-ingress
+    spec:
+      # This policy allows any pod with a route & service combination
+      # to accept traffic from the OpenShift router pods. This is
+      # required for things outside of OpenShift (like the Internet)
+      # to reach your pods.
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  network.openshift.io/policy-group: ingress
+      podSelector: {}
+      policyTypes:
+        - Ingress
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-same-namespace
+    spec:
+      # Allow all pods within the current namespace to communicate
+      # to one another.
+      podSelector:
+      ingress:
+      - from:
+        - podSelector: {}
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
-      name: builder-to-internet
-      labels:
-        app: platsrv-image-management
+      name: any-to-any
     spec:
       description: |
-        allow the builder pods to communicate with the internet.
+        allow all pods to communicate
       source:
-        - - $namespace=${NAMESPACE}
-          - '@app:k8s:serviceaccountname=builder'
+        - - "$namespace=${NAMESPACE}"
       destination:
-        - - 'ext:name=all-things-external'
+        - - "$namespace=*"
+  - apiVersion: security.devops.gov.bc.ca/v1alpha1
+    kind: NetworkSecurityPolicy
+    metadata:
+      name: any-to-external
+    spec:
+      description: |
+        Allow all pods to talk to external systems
+      source:
+        - - "$namespace=${NAMESPACE}"
+      destination:
+        - - "ext:network=any"
 parameters:
   - name: NAMESPACE
+    displayName: Namespace
     description: |
-      The the name of the namespace the policy is being
-      deployed to.
+      The namespace this policy is being deployed to;
     required: true
