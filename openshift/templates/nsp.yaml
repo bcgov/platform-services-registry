@@ -1,169 +1,147 @@
-# Copyright 2020 The Province of British Columbia
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
----
 apiVersion: template.openshift.io/v1
 kind: Template
+labels:
+  template: platform-registry
 metadata:
-  annotations:
-    description: |
-      The Network Security Policies (NSP) for the associated
-      Platform Services registry application.
-  name: hipster-store-demo
+  name: platform-registry-network-policies
 objects:
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
-      name: api-to-db
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: any-to-any
     spec:
       description: |
-        allow the API to communicate with the database pod.
+        allow all pods to communicate
       source:
-        - - '$namespace=${NAMESPACE}'
-          - 'role=api'
+        - - "$namespace=${NAMESPACE}"
       destination:
-        - - '$namespace=${NAMESPACE}'
-          - '${DB_APO_IDENTIFIER}'
+        - - "$namespace=*"
   - apiVersion: security.devops.gov.bc.ca/v1alpha1
     kind: NetworkSecurityPolicy
     metadata:
-      name: frontend-to-api
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: any-to-external
     spec:
       description: |
-        allow the frontend to communicate with the API pod.
+        Allow all pods to talk to external systems
       source:
-        - - '$namespace=${NAMESPACE}'
-          - 'role=frontend'
+        - - "$namespace=${NAMESPACE}"
       destination:
-        - - '$namespace=${NAMESPACE}'
-          - 'role=api'
-  - apiVersion: security.devops.gov.bc.ca/v1alpha1
-    kind: NetworkSecurityPolicy
+        - - "ext:network=any"
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
-      name: api-to-nats
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: deny-by-default
     spec:
-      description: |
-        allow the API to communicate with the NATS pod. This may not be
-        required if you are using the production environment or, at the
-        verry least, it will require modification.
-      source:
-        - - '$namespace=${NAMESPACE}'
-          - 'role=api'
-      destination:
-        - - '$namespace=${NATS_NAMESPACE}'
-          - '${NATS_APO_IDENTIFIER}'
-  - apiVersion: security.devops.gov.bc.ca/v1alpha1
-    kind: NetworkSecurityPolicy
+      podSelector: {}
+      ingress: []
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
     metadata:
-      name: db-to-db
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: allow-from-openshift-ingress
     spec:
-      description: |
-        allow patroni pods to talk to one another for replication
-        etc.
-      source:
-        - - '$namespace=${NAMESPACE}'
-          - '${DB_APO_IDENTIFIER}'
-      destination:
-        - - '$namespace=${NAMESPACE}'
-          - '${DB_APO_IDENTIFIER}'
-  - apiVersion: security.devops.gov.bc.ca/v1alpha1
-    kind: NetworkSecurityPolicy
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  network.openshift.io/policy-group: ingress
+      podSelector: {}
+      policyTypes:
+        - Ingress
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
-      name: flyway-to-db
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: allow-api-to-patroni
     spec:
-      description: |
-        allow flyway to communicate with the database pod.
-      source:
-        - - '$namespace=${NAMESPACE}'
-          - '${FLYWAY_IDENTIFIER}'
-      destination:
-        - - '$namespace=${NAMESPACE}'
-          - '${DB_APO_IDENTIFIER}'
-  - apiVersion: security.devops.gov.bc.ca/v1alpha1
-    kind: ExternalNetwork
+      # Allow the API to talk to the patroni
+      # database cluster on the given port.
+      podSelector:
+        matchLabels:
+          statefulset: registry-patroni
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: api
+          ports:
+            - protocol: TCP
+              port: 5432
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
-      # This metadata field will be what you see with the command
-      # `oc get externalnetwork` or `kubctl get externalnetwork`.
-      name: all-things-external
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: allow-flyway-to-patroni
     spec:
-      # This name will be used internally by Aporeto; it should match
-      # the `name` field in metadata above.
-      description: |
-        specify a custom external network that can be
-        referenced by name. This allows pods to talk out to the
-        internet as needed.
-      entries:
-        - 0.0.0.0/0
-      servicePorts:
-        - "tcp/80"
-        - "tcp/443"
-  - apiVersion: security.devops.gov.bc.ca/v1alpha1
-    kind: NetworkSecurityPolicy
+      # Allow flyway pre-hook pod to run
+      # db migration check on patroni
+      # each time api deployment rolls out
+      podSelector:
+        matchLabels:
+          statefulset: registry-patroni
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  openshift.io/deployer-pod.type: hook-pre
+          ports:
+            - protocol: TCP
+              port: 5432
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
-      name: api-to-internet
-      labels:
-        app: ${APP_LABEL_NAME}
+      name: allow-patroni-replication
     spec:
-      description: |
-        allow the API pods to communicate with the internet so it can
-        talk to SSO on the OCP3 cluster.
-      source:
-        - - '$namespace=${NAMESPACE}'
-          - 'role=api'
-      destination:
-        - - 'ext:name=all-things-external'
+      # Allow the patroni pods to replicate
+      podSelector:
+        matchLabels:
+          statefulset: registry-patroni
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  statefulset: registry-patroni
+          ports:
+            - protocol: TCP
+              port: 5432
+            - protocol: TCP
+              port: 8008
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-patroni-backup
+    spec:
+      # Allow the backup container to talk to the
+      # patroni database cluster.
+      podSelector:
+        matchLabels:
+          statefulset: registry-patroni
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: db-backup
+          ports:
+            - protocol: TCP
+              port: 5432
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-api-to-nats
+    spec:
+      # Allow the API to talk to NATS. This policy really only
+      # applies to dev and test. No impact in prod.
+      podSelector:
+        matchLabels:
+          role: nats
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: api
+          ports:
+            - protocol: TCP
+              port: 4222
 parameters:
   - name: NAMESPACE
+    displayName: Namespace
     description: |
-      The the name of the namespace the policy is being
-      deployed to.
+      The namespace this policy is being deployed to;
     required: true
-  - name: NATS_NAMESPACE
-    description: |
-      The the name where NATS is located; it can be the same as NAMESPACE
-      or different.
-    required: true
-  - name: NATS_APO_IDENTIFIER
-    description: |
-      The the Aporeto identifier used by Aporeto to identify the NATS
-      service.
-    required: true
-  - name: DB_APO_IDENTIFIER
-    description: |
-      The Aporeto identifier used by Aporeto to identify the DB
-      service.
-    required: true
-  - name: FLYWAY_IDENTIFIER
-    description: |
-      The Aporeto identifier used by Aporeto to identify flyway pod.
-    required: true
-  - displayName: App label name
-    description: |
-      The App label name used for all components of the application. This is useful
-      in dev and test when you want to clear all and have a clean working namespace.
-    name: APP_LABEL_NAME
-    required: true
-    value: platsrv-registry
