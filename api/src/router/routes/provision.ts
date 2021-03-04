@@ -25,16 +25,16 @@ import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBo
 import { AccessFlag, authorize, authorizeByFlag } from '../../libs/authorization';
 
 const router = express.Router();
-const botOnly = AccessFlag.BotCallback;
+const botCallback = AccessFlag.BotCallback;
 
 // Provisioning
 router.post('/:profileId/namespace', authorize(), asyncMiddleware(provisionProfileNamespaces));
-router.put('/namespace', authorizeByFlag(botOnly), asyncMiddleware(provisionCallbackHandler));
+router.put('/namespace', authorizeByFlag(botCallback), asyncMiddleware(provisionCallbackHandler));
 
 // Bot-json-sync
-router.get('/sync/provisioned-profile-ids', authorizeByFlag(botOnly), asyncMiddleware(getAllProvisionedProfileIds));
-router.get('/sync/:profileId/provisioned-profile-bot-json', authorizeByFlag(botOnly), asyncMiddleware(getProvisionedProfileBotJson));
-router.get('/sync/under-pending-profile-ids', authorizeByFlag(botOnly), asyncMiddleware(getAllProfileIdsUnderPending));
-router.get('/sync/:profileId/under-pending-profile-bot-json', authorizeByFlag(botOnly), asyncMiddleware(getProfileBotJsonUnderPending));
+router.get('/sync/provisioned-profile-ids', authorizeByFlag(botCallback), asyncMiddleware(getAllProvisionedProfileIds));
+router.get('/sync/:profileId/provisioned-profile-bot-json', authorizeByFlag(botCallback), asyncMiddleware(getProvisionedProfileBotJson));
+router.get('/sync/under-pending-profile-ids', authorizeByFlag(botCallback), asyncMiddleware(getAllProfileIdsUnderPending));
+router.get('/sync/:profileId/under-pending-profile-bot-json', authorizeByFlag(botCallback), asyncMiddleware(getProfileBotJsonUnderPending));
 
 export default router;
