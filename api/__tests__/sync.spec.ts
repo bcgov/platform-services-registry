@@ -29,15 +29,15 @@ const selectProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 const p2 = path.join(__dirname, 'fixtures/select-requests.json');
 const selectRequests = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
-const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
-
 const p4 = path.join(__dirname, 'fixtures/select-request-edit-contacts.json');
 const selectRequestEditContacts = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 const client = new Pool().connect();
 
 jest.mock('../src/libs/profile', () => {
+  const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+  const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
   return {
     isProfileProvisioned: jest.fn().mockReturnValue(true),
     getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
@@ -148,6 +148,9 @@ describe('Sync event handlers', () => {
 
   it('Bot json object for a queried profile under pending edit / create is returned', async () => {
     jest.mock('../src/libs/profile', () => {
+      const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+      const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
       return {
         isProfileProvisioned: jest.fn().mockReturnValue(false),
         getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
