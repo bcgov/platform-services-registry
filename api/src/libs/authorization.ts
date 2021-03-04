@@ -52,7 +52,8 @@ export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => 
   }
 
   if (jwtPayload.resource_access) {
-    const decodedJwtPayloadAccessObj: DecodedJwtPayloadAccessObj | undefined = jwtPayload.resource_access[WEB_CLIENT_ID];
+    const decodedJwtPayloadAccessObj: DecodedJwtPayloadAccessObj | undefined =
+      jwtPayload.resource_access[WEB_CLIENT_ID];
 
     if (!decodedJwtPayloadAccessObj) {
       return [];
