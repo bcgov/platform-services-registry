@@ -29,8 +29,9 @@ const contacts = JSON.parse(fs.readFileSync(p2, 'utf8'));
 const p3 = path.join(__dirname, 'fixtures/select-profile-namespaces.json');
 const namespaces = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
-const p4 = path.join(__dirname, 'fixtures/select-quota.json');
+const p4 = path.join(__dirname, 'fixtures/select-quota-small.json');
 const quotas = JSON.parse(fs.readFileSync(p4, 'utf8'));
+const spec = quotas[0].jsonBuildObject;
 
 jest.mock('../src/libs/profile', () => {
   return {
@@ -100,22 +101,7 @@ describe('Services', () => {
   it('Provisioned namespaces updated succeeds', async () => {
     const requestEditObject = {
       quota: 'small',
-      quotas: {
-        cpu: {
-          requests: 4,
-          limits: 8,
-        },
-        memory: {
-          requests: '16Gi',
-          limits: '32Gi',
-        },
-        storage: {
-          block: '50Gi',
-          file: '50Gi',
-          backup: '25Gi',
-          capacity: '50Gi',
-        },
-      },
+      quotas: spec,
     };
     const requestEditType = RequestEditType.QuotaSize;
 

@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "profileId": 1,
+    "editType": "quotaSize",
+    "editObject": {
+      "quota": "medium",
+      "quotas": {
+        "cpu": {
+          "requests": "8",
+          "limits": "16"
+        },
+        "memory": {
+          "requests": "32Gi",
+          "limits": "64Gi"
+        },
+        "storage": {
+          "block": "100Gi",
+          "file": "100Gi",
+          "backup": "50Gi",
+          "capacity": "100Gi"
+        }
+      }
+    },
+    "natsSubject": "registry_project_provisioning",
+    "natsContext": "nats_context_stub",
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "updatedAt": "2020-09-10T18:14:13.304Z"
+  },
+  {
+    "id": 2,
+    "profileId": 4,
+    "editType": "contacts",
+    "editObject": [
+      {
+        "id": 1,
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "email": "jane@example.com",
+        "githubId": "janedoe",
+        "roleId": 1
+      },
+      {
+        "id": 2,
+        "firstName": "Jim",
+        "lastName": "Doe",
+        "email": "jim@example.com",
+        "githubId": "jim1100",
+        "roleId": 2
+      }
+    ],
+    "natsSubject": "registry_project_provisioning",
+    "natsContext": "nats_context_stub",
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "updatedAt": "2020-09-10T18:14:13.304Z"
+  }
+]

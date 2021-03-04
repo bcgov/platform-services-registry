@@ -5,20 +5,10 @@ Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        9,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
         UPDATE profile
           SET
             archived = true
-          WHERE id = 9
+          WHERE id = 4
           RETURNING *;
       ",
     },
@@ -33,35 +23,12 @@ Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        9,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
         UPDATE profile
           SET
             archived = true
-          WHERE id = 9
+          WHERE id = 4
           RETURNING *;
       ",
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        9,
-      ],
     },
   ],
 ]
@@ -196,20 +163,7 @@ Array [
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        1,
+        4,
       ],
     },
   ],
@@ -219,7 +173,7 @@ Array [
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        1,
+        4,
       ],
     },
   ],
@@ -235,7 +189,7 @@ Array [
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
             idm_active_dir = $18, other = $19, primary_cluster_name = $20, migrating_licenseplate = $21
-          WHERE id = 1
+          WHERE id = 4
           RETURNING *;",
       "values": Array [
         "Health Gateway",
@@ -278,117 +232,7 @@ Object {
   "fileTransfer": false,
   "geoMappingLocation": false,
   "geoMappingWeb": false,
-  "id": 9,
-  "idmActiveDir": false,
-  "idmKeyCloak": false,
-  "idmSiteMinder": false,
-  "name": "Health Gateway",
-  "notificationEmail": false,
-  "notificationMsTeams": false,
-  "notificationSms": false,
-  "other": "This is a test",
-  "paymentBambora": false,
-  "paymentPayBc": false,
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "schedulingAppointments": false,
-  "schedulingCalendar": false,
-  "updateAt": "2020-05-19T20:02:54.561Z",
-  "userId": 1,
-}
-`;
-
-exports[`Project-profile event handlers A project is updated with optional metadata 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, notification_email = $5, notification_sms = $6,
-            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
-            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
-            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
-            idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19, primary_cluster_name = $20, migrating_licenseplate = $21
-          WHERE id = 1
-          RETURNING *;",
-      "values": Array [
-        "Health Gateway",
-        "Patient prescription history website",
-        "HLTH",
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        "This is a test",
-        "silver",
-        undefined,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers A project is updated with optional metadata 2`] = `200`;
-
-exports[`Project-profile event handlers A project is updated with optional metadata 3`] = `
-Object {
-  "busOrgId": "HLTH",
-  "categoryId": 1,
-  "createdAt": "2020-05-19T20:02:54.561Z",
-  "criticalSystem": false,
-  "description": "Patient prescription history website",
-  "fileStorage": false,
-  "fileTransfer": true,
-  "geoMappingLocation": false,
-  "geoMappingWeb": false,
-  "id": 9,
+  "id": 4,
   "idmActiveDir": false,
   "idmKeyCloak": false,
   "idmSiteMinder": false,
@@ -416,20 +260,7 @@ Array [
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        118,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        118,
+        4,
       ],
     },
   ],
@@ -440,122 +271,22 @@ exports[`Project-profile event handlers A single profile is returned 2`] = `200`
 
 exports[`Project-profile event handlers A single profile is returned 3`] = `
 Object {
-  "createdAt": "2020-04-28T00:00:00.000Z",
+  "archived": false,
+  "busOrgId": "CITZ",
+  "createdAt": "2020-09-10T18:14:13.304Z",
   "criticalSystem": false,
-  "description": null,
-  "id": 1,
-  "name": "Health Gateway",
+  "description": "This is a cool project.",
+  "id": 4,
+  "name": "Project X",
+  "namespacePrefix": "4ea35c",
   "primaryClusterName": "silver",
   "prioritySystem": false,
-  "updatedAt": "2020-04-28T00:00:00.000Z",
-  "userId": 4,
+  "updatedAt": "2020-09-10T18:14:13.304Z",
+  "userId": 1,
 }
 `;
 
-exports[`Project-profile event handlers A single profile is returned as administrator 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        118,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT contact.*
-          FROM contact
-          JOIN profile_contact ON contact.id = profile_contact.contact_id
-            WHERE profile_contact.profile_id = $1;
-      ",
-      "values": Array [
-        118,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers A single profile is returned as administrator 2`] = `200`;
-
-exports[`Project-profile event handlers A single profile is returned as administrator 3`] = `
-Object {
-  "createdAt": "2020-04-28T00:00:00.000Z",
-  "criticalSystem": false,
-  "description": "This is some description",
-  "id": 3,
-  "name": "Mines Digital Services",
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "updatedAt": "2020-04-28T00:00:00.000Z",
-}
-`;
-
-exports[`Project-profile event handlers All profiles are returned as administrator 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-      SELECT * FROM profile
-        WHERE archived = false;
-      ",
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers All profiles are returned as administrator 2`] = `200`;
-
-exports[`Project-profile event handlers All profiles are returned as administrator 3`] = `
-Array [
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": null,
-    "id": 1,
-    "name": "Health Gateway",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": true,
-    "description": "Hello World",
-    "id": 2,
-    "name": "EPIC",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": "This is some description",
-    "id": 3,
-    "name": "Mines Digital Services",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-  Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "description": "This app is super cool",
-    "id": 4,
-    "name": "Secure Image",
-    "primaryClusterName": "silver",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-  },
-]
-`;
-
-exports[`Project-profile event handlers All user profiles are returned 1`] = `
+exports[`Project-profile event handlers All profiles are returned 1`] = `
 Array [
   Array [
     Object {
@@ -565,7 +296,7 @@ Array [
       JOIN contact ON contact.id = profile_contact.contact_id
       WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;",
       "values": Array [
-        4,
+        1,
         "jane@example.com",
       ],
     },
@@ -573,49 +304,65 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers All user profiles are returned 2`] = `200`;
+exports[`Project-profile event handlers All profiles are returned 2`] = `200`;
 
-exports[`Project-profile event handlers All user profiles are returned 3`] = `
+exports[`Project-profile event handlers All profiles are returned 3`] = `
 Array [
   Object {
+    "archived": false,
+    "busOrgId": "CITZ",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "criticalSystem": false,
     "description": null,
     "id": 1,
     "name": "Health Gateway",
+    "namespacePrefix": "elf077",
     "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
+    "userId": 1,
   },
   Object {
+    "archived": false,
+    "busOrgId": "CITZ",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "criticalSystem": true,
     "description": "Hello World",
     "id": 2,
     "name": "EPIC",
+    "namespacePrefix": "101ed4",
     "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
+    "userId": 1,
   },
   Object {
+    "archived": false,
+    "busOrgId": "CITZ",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "criticalSystem": false,
     "description": "This is some description",
     "id": 3,
     "name": "Mines Digital Services",
+    "namespacePrefix": "ae11ea",
     "primaryClusterName": "silver",
     "prioritySystem": false,
     "updatedAt": "2020-04-28T00:00:00.000Z",
+    "userId": 1,
   },
   Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "description": "This app is super cool",
+    "archived": false,
+    "busOrgId": "CITZ",
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "criticalSystem": false,
+    "description": "This is a cool project.",
     "id": 4,
-    "name": "Secure Image",
+    "name": "Project X",
+    "namespacePrefix": "4ea35c",
     "primaryClusterName": "silver",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "prioritySystem": false,
+    "updatedAt": "2020-09-10T18:14:13.304Z",
+    "userId": 1,
   },
 ]
 `;
@@ -624,7 +371,7 @@ exports[`Project-profile event handlers Fetch all profiles should throw 1`] = `"
 
 exports[`Project-profile event handlers Fetch all profiles should throw 2`] = `Array []`;
 
-exports[`Project-profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 1"`;
+exports[`Project-profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 4"`;
 
 exports[`Project-profile event handlers Fetch single profile should throw 2`] = `
 Array [
@@ -634,7 +381,7 @@ Array [
         SELECT * FROM profile
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        1,
+        4,
       ],
     },
   ],

@@ -4,7 +4,8 @@ exports[`Sync event handlers All ids of profiles under pending edit / create are
 
 exports[`Sync event handlers All ids of profiles under pending edit / create are returned 2`] = `
 Array [
-  118,
+  1,
+  4,
 ]
 `;
 
@@ -12,7 +13,10 @@ exports[`Sync event handlers All provisioned profile ids are returned 1`] = `200
 
 exports[`Sync event handlers All provisioned profile ids are returned 2`] = `
 Array [
-  118,
+  1,
+  2,
+  3,
+  4,
 ]
 `;
 
@@ -29,7 +33,7 @@ exports[`Sync event handlers Bot json object for a queried provisioned profile i
 
 exports[`Sync event handlers Bot json object for a queried provisioned profile is returned 2`] = `""`;
 
-exports[`Sync event handlers Bot json object for a queried provisioned profile should throw 1`] = `"Unable get provisioned profile bot json for profile ID 1"`;
+exports[`Sync event handlers Bot json object for a queried provisioned profile should throw 1`] = `"Unable get provisioned profile bot json for profile ID 4"`;
 
 exports[`Sync event handlers Fetch all ids of profiles under pending edit / create should throw 1`] = `"Unable fetch all profile ids that are under pending edit"`;
 

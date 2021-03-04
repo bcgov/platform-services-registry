@@ -13,33 +13,118 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { errorWithCode } from '@bcgov/common-nodejs-utils';
-import { USER_ROLES } from '../constants';
+import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
+import { API_CLIENT_ID, BOT_CLIENT_ID, STATUS_ERROR, USER_ROLES, WEB_CLIENT_ID } from '../constants';
 import DataManager from '../db';
 import shared from '../libs/shared';
 
-const dm = new DataManager(shared.pgPool);
-
-export const getAuthorization = async(profileId: number, user: any, projectDetails?:any, projectContacts?:any): Promise<boolean | Error> => {
-  const { ProfileModel, ContactModel } = dm;
-
-  if (!projectDetails){
-    projectDetails = await ProfileModel.findById(Number(profileId));
-  }
-
-  if (!projectContacts){
-    projectContacts = await ContactModel.findForProject(Number(profileId));
-  }
-
-  const authorizedEmails = projectContacts.map(contact => contact.email);
-
-  if (!(
-    user.id === projectDetails.userId
-    || authorizedEmails.includes(user.email)
-    || user.roles.includes(USER_ROLES.ADMINISTRATOR)
-  )) {
-    return errorWithCode('Unauthorized Access', 401);
-  }
-
-  return true;
+// can be stored in DB if it grows in the future
+export const enum AccessFlag {
+  ProvisionOnTestCluster = 'provision_on_test_clusters',
+  EditAll = 'edit_all',
+  ApproveRequests = 'approve_request',
+  OpTasks = 'operational_tasks',
+  BotCallback = 'bot_callback',
 }
+
+export const AccessFlags = {};
+AccessFlags[USER_ROLES.ADMINISTRATOR] = [
+  AccessFlag.ProvisionOnTestCluster,
+  AccessFlag.EditAll,
+  AccessFlag.ApproveRequests,
+];
+
+AccessFlags[BOT_CLIENT_ID] = [AccessFlag.BotCallback];
+
+AccessFlags[API_CLIENT_ID] = [
+  ...AccessFlags[USER_ROLES.ADMINISTRATOR],
+  ...AccessFlags[BOT_CLIENT_ID],
+  AccessFlag.OpTasks,
+];
+
+interface DecodedJwtPayloadAccessObj {
+  roles: string[];
+}
+
+export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => {
+  if (jwtPayload.clientId) {
+    return AccessFlags[jwtPayload.clientId] ? AccessFlags[jwtPayload.clientId] : [];
+  }
+
+  if (jwtPayload.resource_access) {
+    const decodedJwtPayloadAccessObj: DecodedJwtPayloadAccessObj | undefined = jwtPayload.resource_access[WEB_CLIENT_ID];
+
+    if (!decodedJwtPayloadAccessObj) {
+      return [];
+    }
+    const roles = decodedJwtPayloadAccessObj.roles;
+    const nestedFlags = roles.map(role => AccessFlags[role]);
+
+    // return flattened and de-duplicated flags
+    return nestedFlags.reduce((a, b) => {
+      return b.map((e, i) => { return a[i] instanceof Object ? a[i] : e; });
+    }, []);
+  }
+  throw new Error();
+};
+
+const dm = new DataManager(shared.pgPool);
+const { ProfileModel, ContactModel } = dm;
+const unauthorizedMessage = STATUS_ERROR[401];
+
+// TODO:(yh) sanitize profile id either here or somewhere else
+const authorizeByProfileIdAndUser = async (req): Promise<Error | void> => {
+  const { params: { profileId }, user } = req;
+  if (user.accessFlags.includes(AccessFlag.EditAll)) {
+    return;
+  }
+  const projectDetails = await ProfileModel.findById(Number(profileId));
+  if (user.id === projectDetails.userId) {
+    return;
+  }
+
+  const projectContacts = await ContactModel.findForProject(Number(profileId));
+  const authorizedEmails = projectContacts.map(contact => contact.email);
+  if (authorizedEmails.includes(user.email)) {
+    return;
+  }
+
+  throw new Error(unauthorizedMessage);
+};
+
+export const authorize = (): any[] => {
+  return [
+    (req, res, next) => {
+      authorizeByProfileIdAndUser(req)
+        .catch((err: Error) => {
+          if (err.message === unauthorizedMessage) {
+            next(errorWithCode(STATUS_ERROR[401], 401));
+          } else {
+            logger.error(`Unable to authorize, err = ${err.message}`);
+            next(errorWithCode(STATUS_ERROR[500], 500));
+          }
+        })
+        .then(() => next());
+    },
+  ];
+};
+
+export const authorizeByFlag = (accessFlag: AccessFlag) => {
+  return [
+    (req, res, next) => {
+      const { user } = req;
+      if (!user.accessFlags.includes(accessFlag)) {
+        throw errorWithCode(STATUS_ERROR[401], 401);
+      }
+      next();
+    },
+  ];
+};
+
+// export const authorizeProvisionProfileNamespaces =
+// (user: AuthenticatedUser, cluster: Cluster): Error | undefined => {
+//   if (!(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
+//     throw errorWithCode(STATUS_ERROR[401], 401);
+//   }
+//   return;
+// };

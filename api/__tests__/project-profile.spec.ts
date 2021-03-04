@@ -20,6 +20,7 @@ import path from 'path';
 import { Pool } from 'pg';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/project-profile';
 import ProfileModel from '../src/db/model/profile';
+import { AccessFlag } from '../src/libs/authorization';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -28,11 +29,14 @@ const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
 const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-const p2 = path.join(__dirname, 'fixtures/user-template.json');
-const userRequest = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const p2 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
+const authenticatedUser = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
 const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const p4 = path.join(__dirname, 'fixtures/select-profile.json');
+const selectProfile = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 const client = new Pool().connect();
 
@@ -105,15 +109,13 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-
-  it('All profiles are returned as administrator', async () => {
+  it('All profiles are returned', async () => {
     const req = {
-      user: { roles: ['administrator',] },
+      user: authenticatedUser,
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
-    // @ts-ignore
     await fetchAllProjectProfiles(req, ex.res);
 
     expect(client.query.mock.calls).toMatchSnapshot();
@@ -123,51 +125,29 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('All user profiles are returned', async () => {
+  it('All profiles are returned to an administrator', async () => {
     const req = {
-      user: userRequest,
-    };
-
-    client.query.mockReturnValueOnce({ rows: selectProfiles });
-
-    // @ts-ignore
-    await fetchAllProjectProfiles(req, ex.res);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
-    expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
-    expect(ex.res.status).toBeCalled();
-    expect(ex.res.json).toBeCalled();
-  });
-
-  it('ProfileModel findAll method is called when all profiles are returned to an admin user', async () => {
-    const req = {
-      user: { roles: ['administrator',] },
+      user: { ...authenticatedUser, accessFlags: [AccessFlag.EditAll,] },
     };
 
     const findAll = ProfileModel.prototype.findAll = jest.fn();
     const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn();
 
-    // @ts-ignore
     await fetchAllProjectProfiles(req, ex.res);
 
     expect(findAll).toHaveBeenCalledTimes(1);
     expect(findProfilesByUserId).toHaveBeenCalledTimes(0);
   });
 
-  it('ProfileModel findProfilesByUserId method is called when all profiles are returned to a non-admin user',
+  it('All profiles are returned to non-administrator',
     async () => {
       const req = {
-        user: {
-          roles: [],
-          id: 1,
-        },
+        user: authenticatedUser,
       };
 
       const findAll = ProfileModel.prototype.findAll = jest.fn();
       const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn();
 
-      // @ts-ignore
       await fetchAllProjectProfiles(req, ex.res);
 
       expect(findAll).toHaveBeenCalledTimes(0);
@@ -188,31 +168,10 @@ describe('Project-profile event handlers', () => {
 
   it('A single profile is returned', async () => {
     const req = {
-      params: { profileId: 118 },
-      user: userRequest,
+      params: { profileId: 4 },
     };
-    client.query.mockReturnValueOnce({ rows: [selectProfiles[0]] });
+    client.query.mockReturnValueOnce({ rows: selectProfile });
 
-
-    // @ts-ignore
-    await fetchProjectProfile(req, ex.res);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
-    expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
-    expect(ex.res.status).toBeCalled();
-    expect(ex.res.json).toBeCalled();
-  });
-
-  it('A single profile is returned as administrator', async () => {
-    const req = {
-      params: { profileId: 118 },
-      user: { roles: ['administrator',] },
-    };
-    client.query.mockReturnValueOnce({ rows: [selectProfiles[2]] });
-
-
-    // @ts-ignore
     await fetchProjectProfile(req, ex.res);
 
     expect(client.query.mock.calls).toMatchSnapshot();
@@ -224,11 +183,10 @@ describe('Project-profile event handlers', () => {
 
   it('Fetch single profile should throw', async () => {
     const req = {
-      params: { profileId: 1 },
+      params: { profileId: 4 },
     };
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(fetchProjectProfile(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
@@ -239,52 +197,18 @@ describe('Project-profile event handlers', () => {
     const body = JSON.parse(JSON.stringify(insertProfile));
     const aBody = {
       ...body,
-      id: 9,
+      id: 4,
       createdAt: '2020-05-19T20:02:54.561Z',
       updateAt: '2020-05-19T20:02:54.561Z',
       userId: 1,
     };
     const req = {
-      params: { profileId: 1 },
+      params: { profileId: 4 },
       body,
-      user: {
-        id: 1,
-      },
     }
 
     client.query.mockReturnValue({ rows: [aBody] });
 
-    // @ts-ignore
-    await updateProjectProfile(req, ex.res);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
-    expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
-    expect(ex.res.status).toBeCalled();
-    expect(ex.res.json).toBeCalled();
-  });
-
-  it('A project is updated with optional metadata', async () => {
-    const body = JSON.parse(JSON.stringify(insertProfile));
-    const aBody = {
-      ...body,
-      id: 9,
-      createdAt: '2020-05-19T20:02:54.561Z',
-      updateAt: '2020-05-19T20:02:54.561Z',
-      fileTransfer: true,
-      userId: 1,
-    };
-    const req = {
-      params: { profileId: 1 },
-      body,
-      user: {
-        id: 1,
-      },
-    }
-
-    client.query.mockReturnValue({ rows: [aBody] });
-
-    // @ts-ignore
     await updateProjectProfile(req, ex.res);
 
     expect(client.query.mock.calls).toMatchSnapshot();
@@ -297,48 +221,18 @@ describe('Project-profile event handlers', () => {
   it('A project fails to update', async () => {
     const body = JSON.parse(JSON.stringify(insertProfile));
     const aBody = {
-      id: 9,
+      id: 4,
       ...body,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
     const req = {
-      params: { profileId: 1 },
+      params: { profileId: 4 },
       body: aBody,
-      user: {
-        id: 1,
-      },
     }
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
-    await expect(updateProjectProfile(req, ex.res)).rejects.toThrow();
-
-    expect(ex.res.status).not.toBeCalled();
-    expect(ex.res.json).not.toBeCalled();
-  });
-
-  it('A project fails to update with incorrect user Id', async () => {
-    const body = JSON.parse(JSON.stringify(insertProfile));
-    const aBody = {
-      id: 9,
-      ...body,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      userId: 2,
-    };
-    const req = {
-      params: { profileId: 1 },
-      body: aBody,
-      user: {
-        id: 1,
-      },
-    }
-
-    client.query.mockImplementation(() => { throw new Error() });
-
-    // @ts-ignore
     await expect(updateProjectProfile(req, ex.res)).rejects.toThrow();
 
     expect(ex.res.status).not.toBeCalled();
@@ -347,23 +241,18 @@ describe('Project-profile event handlers', () => {
 
   it('A project is archived', async () => {
     const aBody = {
-      id: 9,
+      id: 4,
       ...insertProfile,
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      userId: 4,
+      userId: 1,
     };
     const req = {
-      params: { profileId: 9 },
-      user: {
-        roles: [],
-        id: 4,
-      },
+      params: { profileId: 4 },
     }
 
     client.query.mockReturnValue({ rows: [aBody] });
 
-    // @ts-ignore
     await archiveProjectProfile(req, ex.res);
 
     expect(client.query.mock.calls).toMatchSnapshot();
@@ -375,12 +264,11 @@ describe('Project-profile event handlers', () => {
 
   it('A project fails to archive', async () => {
     const req = {
-      params: { profileId: 9 },
+      params: { profileId: 4 },
     }
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    // @ts-ignore
     await expect(archiveProjectProfile(req, ex.res)).rejects.toThrow();
 
     expect(client.query.mock.calls).toMatchSnapshot();

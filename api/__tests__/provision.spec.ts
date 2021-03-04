@@ -19,35 +19,25 @@ import path from 'path';
 import { Pool } from 'pg';
 import { processProfileContactsEdit } from '../src/controllers/provision';
 
-const p0 = path.join(__dirname, 'fixtures/select-contact-edit-request.json');
-const selectContactEditRequest = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p0 = path.join(__dirname, 'fixtures/select-request-edit-contacts.json');
+const contactEditRequest = JSON.parse(fs.readFileSync(p0, 'utf8'))[0];
+
+const p1 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
+const productOwner = JSON.parse(fs.readFileSync(p1, 'utf8'))[0];
+const technicalContact = JSON.parse(fs.readFileSync(p1, 'utf8'))[1];
 
 const client = new Pool().connect();
 
 describe('Provision event handlers', () => {
     it('A contact edit request is processed', async () => {
-        const req = selectContactEditRequest;
+        const req = contactEditRequest;
 
         const editedPO = {
-            productOwner: {
-                roleId: 1,
-                id: 233,
-                firstName: 'Jane',
-                lastName: 'Doe',
-                email: 'jane.doe@example.com',
-                githubId: 'janedoe',
-            },
+            productOwner,
         };
 
         const editedTC = {
-            technicalContact: {
-                roleId: 2,
-                id: 234,
-                firstName: 'John',
-                lastName: 'Doe',
-                email: 'john.doe@example.com',
-                githubId: 'john1100',
-            },
+            technicalContact,
         };
 
         client.query.mockResolvedValue({ ...editedPO, ...editedTC });
@@ -58,7 +48,7 @@ describe('Provision event handlers', () => {
         client.query.mockResolvedValueOnce({ rows: [{ editedTC }] });
 
         JSON.parse = jest.fn().mockImplementationOnce(() => {
-            return selectContactEditRequest.editObject;
+            return contactEditRequest.editObject;
         });
 
         await processProfileContactsEdit(req);

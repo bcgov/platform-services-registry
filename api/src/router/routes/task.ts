@@ -18,11 +18,11 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { migratePendingEditRequests } from '../../controllers/task';
+import { AccessFlag, authorizeByFlag } from '../../libs/authorization';
 
 const router = express.Router();
 
 // Migration
-router.post('/migrate/under-pending-edit-requests', asyncMiddleware(migratePendingEditRequests));
+router.get('/migrate', authorizeByFlag(AccessFlag.OpTasks), asyncMiddleware(async (req, res) => res.status(200).end()));
 
 export default router;

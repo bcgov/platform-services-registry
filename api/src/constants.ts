@@ -38,3 +38,9 @@ export const USER_ROLES = {
 };
 
 export const WEB_CLIENT_ID = 'registry-web';
+export const API_CLIENT_ID = 'registry-api';
+export const BOT_CLIENT_ID = 'registry-gitops-ci';
+
+export const STATUS_ERROR = {};
+STATUS_ERROR[401] = 'Unauthorized';
+STATUS_ERROR[500] = 'Internal Server Error';

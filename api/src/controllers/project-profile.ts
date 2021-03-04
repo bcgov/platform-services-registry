@@ -16,11 +16,10 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { USER_ROLES } from '../constants';
 import DataManager from '../db';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
-import { getAuthorization } from '../libs/authorization';
+import { AccessFlag } from '../libs/authorization';
 import { getDefaultCluster } from '../libs/profile';
 import shared from '../libs/shared';
 import { validateObjProps } from '../libs/utils';
@@ -56,7 +55,7 @@ export const fetchAllProjectProfiles = async (
 
   try {
     let results;
-    if (user.roles.includes(USER_ROLES.ADMINISTRATOR)) {
+    if (user.accessFlags.includes(AccessFlag.EditAll)) {
       results = await ProfileModel.findAll();
     } else {
       results = await ProfileModel.findProfilesByUserIdOrEmail(user.id, user.email);
@@ -72,19 +71,13 @@ export const fetchAllProjectProfiles = async (
 };
 
 export const fetchProjectProfile = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
 
   try {
     const projectDetails = await ProfileModel.findById(Number(profileId));
-
-    const isAuthorized = getAuthorization(profileId, user, projectDetails);
-
-    if (!(isAuthorized)) {
-      throw isAuthorized;
-    }
 
     res.status(200).json(projectDetails);
   } catch (err) {
@@ -100,7 +93,7 @@ export const fetchProjectProfile = async (
 };
 
 export const createProjectProfile = async (
-  { body, user }: { body: any, user: any }, res: Response
+  { body, user }: { body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const data = { ...body, userId: user.id };
@@ -141,7 +134,7 @@ export const createProjectProfile = async (
 };
 
 export const updateProjectProfile = async (
-  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+  { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -196,14 +189,7 @@ export const updateProjectProfile = async (
       migratingLicenseplate,
     };
 
-    const isAuthorized = getAuthorization(profileId, user, currentProjectDetails);
-
-    if (!(isAuthorized)) {
-      throw isAuthorized;
-    }
-
     const rv = validateObjProps(ProfileModel.requiredFields, aBody);
-
     if (rv) {
       throw rv;
     }
@@ -224,18 +210,12 @@ export const updateProjectProfile = async (
 };
 
 export const archiveProjectProfile = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
 
   try {
-    const isAuthorized = getAuthorization(profileId, user);
-
-    if (!(isAuthorized)) {
-      throw isAuthorized;
-    }
-
     await ProfileModel.delete(profileId);
 
     res.status(204).end();

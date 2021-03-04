@@ -5,9 +5,12 @@
     "description": null,
     "prioritySystem": false,
     "criticalSystem": false,
+    "busOrgId": "CITZ",
+    "archived": false,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
+    "userId": 1,
+    "namespacePrefix": "elf077",
     "primaryClusterName": "silver"
   },
   {
@@ -16,9 +19,12 @@
     "description": "Hello World",
     "prioritySystem": false,
     "criticalSystem": true,
+    "busOrgId": "CITZ",
+    "archived": false,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
+    "userId": 1,
+    "namespacePrefix": "101ed4",
     "primaryClusterName": "silver"
   },
   {
@@ -27,16 +33,26 @@
     "description": "This is some description",
     "prioritySystem": false,
     "criticalSystem": false,
+    "busOrgId": "CITZ",
+    "archived": false,
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z",
+    "userId": 1,
+    "namespacePrefix": "ae11ea",
     "primaryClusterName": "silver"
   },
   {
     "id": 4,
-    "name": "Secure Image",
-    "description": "This app is super cool",
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
+    "name": "Project X",
+    "description": "This is a cool project.",
+    "criticalSystem": false,
+    "prioritySystem": false,
+    "busOrgId": "CITZ",
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "updatedAt": "2020-09-10T18:14:13.304Z",
+    "userId": 1,
+    "namespacePrefix": "4ea35c",
     "primaryClusterName": "silver"
   }
 ]

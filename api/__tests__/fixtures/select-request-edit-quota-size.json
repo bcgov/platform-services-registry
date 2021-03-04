@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "profileId": 1,
+    "editType": "quotaSize",
+    "editObject": {
+      "quota": "medium",
+      "quotas": {
+        "cpu": {
+          "requests": "8",
+          "limits": "16"
+        },
+        "memory": {
+          "requests": "32Gi",
+          "limits": "64Gi"
+        },
+        "storage": {
+          "block": "100Gi",
+          "file": "100Gi",
+          "backup": "50Gi",
+          "capacity": "100Gi"
+        }
+      }
+    },
+    "natsSubject": "registry_project_provisioning",
+    "natsContext": {
+      "action": "edit",
+      "type": "standard",
+      "profileId": 4,
+      "displayName": "Health Gateway",
+      "newDisplayName": "NULL",
+      "quota": "small",
+      "quotas": {
+        "cpu": {
+          "requests": "4",
+          "limits": "8"
+        },
+        "memory": {
+          "requests": "16Gi",
+          "limits": "32Gi"
+        },
+        "storage": {
+          "block": "50Gi",
+          "file": "50Gi",
+          "backup": "25Gi",
+          "capacity": "50Gi"
+        }
+      },
+      "namespaces": [
+        {
+          "namespaceId": 1,
+          "name": "elf077-tools",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 2,
+          "name": "elf077-test",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 3,
+          "name": "elf077-dev",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        },
+        {
+          "namespaceId": 4,
+          "name": "elf077-prod",
+          "clusters": [
+            {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true
+            }
+          ]
+        }
+      ],
+      "productOwner": {
+        "userId": "jane1100",
+        "provider": "github",
+        "email": "jane.doe@example.com"
+      },
+      "technicalContact": {
+        "userId": "john1100",
+        "provider": "github",
+        "email": "john.doe@example.com"
+      }
+    },
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "updatedAt": "2020-09-10T18:14:13.304Z"
+  }
+]

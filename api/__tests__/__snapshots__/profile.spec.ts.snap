@@ -8,7 +8,7 @@ Array [
         SELECT * FROM contact
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        233,
+        1,
       ],
     },
   ],
@@ -18,7 +18,7 @@ Array [
         SELECT * FROM contact
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        234,
+        2,
       ],
     },
   ],
@@ -28,11 +28,11 @@ Array [
             (profile_id, edit_type, edit_object, nats_subject, nats_context)
             VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
-        118,
+        4,
         "contacts",
-        "[{\\"roleId\\":1,\\"id\\":233,\\"firstName\\":\\"Jane\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"jane.doe@example.com\\",\\"githubId\\":\\"jane1100\\"},{\\"roleId\\":2,\\"id\\":234,\\"firstName\\":\\"John\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"john.doe@example.com\\",\\"githubId\\":\\"john1100\\"}]",
+        "[{\\"id\\":1,\\"firstName\\":\\"Jane\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"jane@example.com\\",\\"githubId\\":\\"jane1100\\",\\"roleId\\":1,\\"archived\\":false,\\"createdAt\\":\\"2020-09-10T18:14:13.436Z\\",\\"updatedAt\\":\\"2020-09-10T18:14:13.436Z\\"},{\\"id\\":2,\\"firstName\\":\\"Jim\\",\\"lastName\\":\\"Doe\\",\\"email\\":\\"jim@example.com\\",\\"githubId\\":\\"jim1100\\",\\"roleId\\":2,\\"archived\\":false,\\"createdAt\\":\\"2020-09-10T18:14:13.436Z\\",\\"updatedAt\\":\\"2020-09-10T18:14:13.436Z\\"}]",
         "edit",
-        "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a sample description\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":\\"4\\",\\"limits\\":\\"8\\"},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
+        "{\\"profileId\\":4,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a cool project.\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":\\"4\\",\\"limits\\":\\"8\\"},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":13,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":14,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":15,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":16,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
       ],
     },
   ],
@@ -56,16 +56,6 @@ Array [
       ],
     },
   ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
 ]
 `;
 
@@ -74,15 +64,26 @@ exports[`Profile event handlers A profiles contacts are returned 2`] = `200`;
 exports[`Profile event handlers A profiles contacts are returned 3`] = `
 Array [
   Object {
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "criticalSystem": false,
-    "description": null,
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "email": "jane@example.com",
+    "firstName": "Jane",
+    "githubId": "jane1100",
     "id": 1,
-    "name": "Health Gateway",
-    "primaryClusterName": "silver",
-    "prioritySystem": false,
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4,
+    "lastName": "Doe",
+    "roleId": 1,
+    "updatedAt": "2020-09-10T18:14:13.436Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.436Z",
+    "email": "jim@example.com",
+    "firstName": "Jim",
+    "githubId": "jim1100",
+    "id": 2,
+    "lastName": "Doe",
+    "roleId": 2,
+    "updatedAt": "2020-09-10T18:14:13.436Z",
   },
 ]
 `;
@@ -95,11 +96,11 @@ Array [
             (profile_id, edit_type, edit_object, nats_subject, nats_context)
             VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
-        118,
+        4,
         "description",
-        "{\\"id\\":3,\\"name\\":\\"Mines Digital Services\\",\\"description\\":\\"This is some description\\",\\"prioritySystem\\":false,\\"criticalSystem\\":false,\\"createdAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"updatedAt\\":\\"2020-04-28T00:00:00.000Z\\",\\"primaryClusterName\\":\\"silver\\"}",
+        "{\\"name\\":\\"Health Gateway\\",\\"description\\":\\"Patient prescription history website\\",\\"categoryId\\":1,\\"busOrgId\\":\\"HLTH\\",\\"criticalSystem\\":false,\\"prioritySystem\\":false,\\"notificationEmail\\":false,\\"notificationSMS\\":false,\\"notificationMSTeams\\":false,\\"paymentBambora\\":false,\\"paymentPayBC\\":false,\\"fileTransfer\\":false,\\"fileStorage\\":false,\\"geoMappingWeb\\":false,\\"geoMappingLocation\\":false,\\"schedulingCalendar\\":false,\\"schedulingAppointments\\":false,\\"idmSiteMinder\\":false,\\"idmKeyCloak\\":false,\\"idmActiveDir\\":false,\\"other\\":\\"This is a test\\",\\"primaryClusterName\\":\\"silver\\"}",
         "edit",
-        "{\\"profileId\\":118,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a sample description\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":\\"4\\",\\"limits\\":\\"8\\"},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":149,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":151,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":150,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":152,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
+        "{\\"profileId\\":4,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a cool project.\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":\\"4\\",\\"limits\\":\\"8\\"},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":13,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":14,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":15,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":16,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane.doe@example.com\\"},\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john.doe@example.com\\"}}",
       ],
     },
   ],

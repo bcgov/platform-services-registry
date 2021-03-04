@@ -15,7 +15,7 @@ Object {
         },
       ],
       "name": "4ea35c-tools",
-      "namespaceId": 149,
+      "namespaceId": 13,
     },
     Object {
       "clusters": Array [
@@ -26,7 +26,7 @@ Object {
         },
       ],
       "name": "4ea35c-test",
-      "namespaceId": 151,
+      "namespaceId": 14,
     },
     Object {
       "clusters": Array [
@@ -37,7 +37,7 @@ Object {
         },
       ],
       "name": "4ea35c-dev",
-      "namespaceId": 150,
+      "namespaceId": 15,
     },
     Object {
       "clusters": Array [
@@ -48,7 +48,7 @@ Object {
         },
       ],
       "name": "4ea35c-prod",
-      "namespaceId": 152,
+      "namespaceId": 16,
     },
   ],
   "newDisplayName": "NULL",
@@ -57,7 +57,7 @@ Object {
     "provider": "github",
     "userId": "jane1100",
   },
-  "profileId": 118,
+  "profileId": 4,
   "quota": "small",
   "quotas": Object {
     "cpu": Object {

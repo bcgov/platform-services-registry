@@ -26,8 +26,8 @@ import { getJwtCertificate, logger } from '@bcgov/common-nodejs-utils';
 import passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import config from '../config';
-import { WEB_CLIENT_ID } from '../constants';
 import DataManager from '../db';
+import { assignUserAccessFlags } from '../libs/authorization';
 import shared from './shared';
 
 export interface AuthenticatedUser {
@@ -38,34 +38,12 @@ export interface AuthenticatedUser {
   preferredUsername: string;
   email: string;
   archived: boolean;
-  roles: string[];
+  accessFlags: string[];
   lastSeenAt: object,
 }
 
-export const isAuthorized = jwtPayload => {
-  return true;
-};
-
-export const getJwtPayloadRoles = (jwtPayload: object): string[] | [] => {
-  try {
-    /* tslint:disable-next-line */
-    return jwtPayload['resource_access'][WEB_CLIENT_ID]['roles'];
-  } catch (err) {
-    return [];
-  }
-};
-
 export const verify = async (req, jwtPayload, done) => {
-
   if (jwtPayload) {
-    if (!isAuthorized(jwtPayload)) {
-      // tslint:disable-next-line:no-shadowed-variable
-      const err = new Error('You do not have the proper role for signing');
-      // err.code = 401;
-
-      return done(err, null);
-    }
-
     try {
       let userProfile;
       const dm = new DataManager(shared.pgPool);
@@ -80,7 +58,7 @@ export const verify = async (req, jwtPayload, done) => {
       }
 
       const user = {
-        roles: getJwtPayloadRoles(jwtPayload),
+        accessFlags: assignUserAccessFlags(jwtPayload),
         name: jwtPayload.name,
         preferredUsername: jwtPayload.preferred_username,
         givenName: jwtPayload.given_name,
