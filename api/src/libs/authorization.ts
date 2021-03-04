@@ -33,8 +33,18 @@ AccessFlags[USER_ROLES.ADMINISTRATOR] = [
   AccessFlag.EditAll,
   AccessFlag.ApproveRequests,
 ];
+
 AccessFlags[BOT_CLIENT_ID] = [AccessFlag.BotCallback];
-AccessFlags[API_CLIENT_ID] = [AccessFlag.EditAll, AccessFlag.OpTasks];
+
+AccessFlags[API_CLIENT_ID] = [
+  ...AccessFlags[USER_ROLES.ADMINISTRATOR],
+  ...AccessFlags[BOT_CLIENT_ID],
+  AccessFlag.OpTasks,
+];
+
+interface DecodedJwtPayloadAccessObj {
+  roles: string[];
+}
 
 export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => {
   if (jwtPayload.clientId) {
@@ -42,7 +52,12 @@ export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => 
   }
 
   if (jwtPayload.resource_access) {
-    const roles = jwtPayload.resource_access[WEB_CLIENT_ID].roles;
+    const decodedJwtPayloadAccessObj: DecodedJwtPayloadAccessObj | undefined = jwtPayload.resource_access[WEB_CLIENT_ID];
+
+    if (!decodedJwtPayloadAccessObj) {
+      return [];
+    }
+    const roles = decodedJwtPayloadAccessObj.roles;
     const nestedFlags = roles.map(role => AccessFlags[role]);
 
     // return flattened and de-duplicated flags
