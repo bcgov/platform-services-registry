@@ -13,18 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Heading } from 'rebass';
-import { useApproveRequestModal, useRejectRequestModal } from '../../hooks/useModal';
+import useCommonState from '../../hooks/useCommonState';
+import { useModal } from '../../hooks/useModal';
+import useRegistryApi from '../../hooks/useRegistryApi';
+import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
-import { ApproveRequestModal } from './ApproveRequestModal';
-import { RejectRequestModal } from './RejectRequestModal';
+import { ReviewRequestModal } from './ReviewRequestModal';
 
 
 const ProjectRequests: React.FC<any> = (props) => {
   const { profileDetails } = props  
+
+  const api = useRegistryApi();
+  const { setOpenBackdrop } = useCommonState();
+
+  const [profileId, setProfileId ] = useState(0);
   
   const requestColumns = useMemo(
     () => [
@@ -55,12 +62,12 @@ const ProjectRequests: React.FC<any> = (props) => {
         accessor: 'id',
         Cell: ({ row: { values } }: any) => (
           <Box>
-            <button value="test" onClick={toggleApproval}>
-            Approve
-          </button>
-          <button value="test" onClick={toggleReject}>
-            Reject
-          </button>
+            <button value={values.id} onClick={() => {
+              setProfileId(values.id);
+              toggle();
+            }}>
+              Review
+            </button>
           </Box>
         )
       },
@@ -68,38 +75,43 @@ const ProjectRequests: React.FC<any> = (props) => {
     [],
   );
 
-  const { isApprovalShown, toggleApproval } = useApproveRequestModal();
-  const { isRejectShown, toggleReject } = useRejectRequestModal();
+  const { isShown, toggle } = useModal();
 
-  const onConfirmApproval = () => toggleApproval();
-  const onCancelApproval = () => toggleApproval();
+  const onApprove = async () => {
+    setOpenBackdrop(true);
+    try {
+      if (!profileId) {
+        throw new Error('Unable to get profile id');
+      }
 
-  const onConfirmReject = () => toggleReject();
-  const onCancelReject = () => toggleReject();
+      // 1. Prepare quota edit request body.
+      const requestBody = {"type": "approval", "comment": "Temp"};
+
+      // 2. Request the profile quota edit.
+      await api.updateProjectRequest(String(profileId), requestBody);
+
+      // 3. All good? Redirect back to overview and tell the user.
+      promptSuccessToastWithText('The project approval was successful');
+    } catch (err) {
+      promptErrToastWithText(err.message);
+      console.log(err);
+    }
+    setOpenBackdrop(false);
+  }
+
+  const onReject = () => toggle();
 
   return (
     <div>
       <Modal
-        isShown={isApprovalShown}
-        hide={toggleApproval}
-        headerText='Confirmation'
+        isShown={isShown}
+        hide={toggle}
+        headerText='Review'
         modalContent={
-          <ApproveRequestModal 
-            onConfirm={onConfirmApproval} 
-            onCancel={onCancelApproval}
-            message='Are you sure you want to approve this project request?'
-          />
-        }
-      />
-      <Modal
-        isShown={isRejectShown}
-        hide={toggleReject}
-        headerText='Reject'
-        modalContent={
-          <RejectRequestModal 
-            onConfirm={onConfirmReject} 
-            onCancel={onCancelReject}
-            message='Are you sure you want to reject this project request?'
+          <ReviewRequestModal 
+            onApprove={onApprove} 
+            onReject={onReject}
+            message='Review the project request details'
           />
         }
       />
@@ -111,14 +123,4 @@ const ProjectRequests: React.FC<any> = (props) => {
   )
 };
 
-export default ProjectRequests;
-
-
-export const approveRequest = (id: any) => {
-  console.log(`Approve ${id}`);
-}
-
-export const rejectRequest = (id: any) => {
-  console.log(`Reject ${id}`);
-}
-  
+export default ProjectRequests;  

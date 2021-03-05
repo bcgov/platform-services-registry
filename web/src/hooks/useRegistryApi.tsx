@@ -202,6 +202,10 @@ export default function useRegistryApi() {
     getAllowedQuotaSizesByProfileId,
     updateQuotaSizeByProfileId,
     getEditRequestStatus,
+<<<<<<< HEAD
     createProjectRequestByProfileId,
+=======
+    updateProjectRequest,
+>>>>>>> dcaea43 (Add Human Action Requests controller, model and route)
   };
 }

@@ -33,15 +33,41 @@ export const ConfirmationButtons = styled.div`
 
 export const Message = styled.div`
 	font-size: 0.9rem;
-	margin-bottom: 10px;
+	margin-bottom: 1em;
 	text-align: center;
 `;
 
 export const YesButton = styled.button`
 	width: 6rem;
+  margin-bottom: 0.5em;
 `;
 
 export const NoButton = styled.button`
-	width: 3rem;
+width: 6rem;
   margin-left: 10px;
+  margin-bottom: 0.5em;
+`;
+
+export const TextArea = styled('textarea')`
+box-sizing: border-box;
+margin: 0;
+min-width: 0;
+display: block;
+width: 100%;
+padding: 8px;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+font-size: inherit;
+line-height: inherit;
+border: 1px solid;
+border-radius: default;
+color: inherit;
+background-color: transparent;
+border-radius: 5px;
+border: solid 1px #036;
+background-color: #fafafa;
+color: #036;
+resize: none;
+margin-bottom: 1em;
 `;
