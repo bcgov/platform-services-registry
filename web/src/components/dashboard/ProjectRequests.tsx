@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Heading } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
@@ -53,7 +53,7 @@ const ProjectRequests: React.FC<any> = (props) => {
         accessor: 'TCEmail',
       },
       {
-        Header: 'Status',
+        Header: 'Request Type',
         accessor: 'provisioned',
         Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
       },
@@ -75,6 +75,25 @@ const ProjectRequests: React.FC<any> = (props) => {
     [],
   );
 
+  useEffect(() => {
+    async function wrap() {
+      setOpenBackdrop(true);
+      try {
+        console.log('entered')
+        // 1. First fetch the list of profiles requiring human action
+        const response = await api.getAllHumanActionRequest();
+        console.log(response)
+        // 2. Filter profileDetails by profiles in response
+        
+      } catch (err) {
+        promptErrToastWithText('Something went wrong');
+        console.log(err);
+      }
+      setOpenBackdrop(false);
+    }
+    wrap();
+  }, []);
+
   const { isShown, toggle } = useModal();
 
   const onApprove = async () => {
@@ -84,11 +103,11 @@ const ProjectRequests: React.FC<any> = (props) => {
         throw new Error('Unable to get profile id');
       }
 
-      // 1. Prepare quota edit request body.
-      const requestBody = {"type": "approval", "comment": "Temp"};
+      // // 1. Prepare quota edit request body.
+      // const requestBody = {"type": "approval", "comment": "Temp"};
 
-      // 2. Request the profile quota edit.
-      await api.updateProjectRequest(String(profileId), requestBody);
+      // // 2. Request the profile quota edit.
+      // await api.updateProjectRequest(String(profileId), requestBody);
 
       // 3. All good? Redirect back to overview and tell the user.
       promptSuccessToastWithText('The project approval was successful');

@@ -185,7 +185,6 @@ export default function useRegistryApi() {
       return axiosInstance.current.post(`profile/${profileId}/request`);
     }
   };
-
   return {
     getMinistry,
     getProfile,
@@ -203,9 +202,13 @@ export default function useRegistryApi() {
     updateQuotaSizeByProfileId,
     getEditRequestStatus,
 <<<<<<< HEAD
+<<<<<<< HEAD
     createProjectRequestByProfileId,
 =======
     updateProjectRequest,
 >>>>>>> dcaea43 (Add Human Action Requests controller, model and route)
+=======
+    getAllHumanActionRequest
+>>>>>>> 38dc8fb (Update Request Table)
   };
 }
