@@ -20,7 +20,7 @@ ADD COLUMN IF NOT EXISTS type request_type,
 ADD COLUMN IF NOT EXISTS context VARCHAR(512),
 ADD COLUMN IF NOT EXISTS requires_human_action BOOLEAN,
 ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true,
-ADD COLUMN IF NOT EXISTS user_email VARCHAR(32);
+ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES user_profile(id);
 
 CREATE TYPE action_type AS ENUM ('comment_only', 'reject', 'approve');
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS human_action (
     request_id       INTEGER REFERENCES request(id) NOT NULL,
     type             action_type NOT NULL,
     comment          VARCHAR(512),
-    user_email       VARCHAR(32) NOT NULL,
+    user_id          INTEGER REFERENCES user_profile(id) NOT NULL,
     archived         BOOLEAN NOT NULL DEFAULT false,
     created_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
     updated_at       timestamp DEFAULT CURRENT_TIMESTAMP(3)
