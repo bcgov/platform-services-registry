@@ -187,6 +187,14 @@ export default function useRegistryApi() {
     }
   };
 
+  const createProfileRequest = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/request`);
+    }
+  };
+
   return {
     getMinistry,
     getProfile,
@@ -204,5 +212,6 @@ export default function useRegistryApi() {
     getQuotaOptionsByProfileId,
     requestQuotaSizeByProfileId,
     getEditRequestStatus,
+    createProfileRequest,
   };
 }
