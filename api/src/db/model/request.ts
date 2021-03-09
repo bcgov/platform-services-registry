@@ -16,6 +16,11 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
+export const enum RequestType {
+    Create = 'create',
+    Edit = 'edit',
+}
+
 export const enum RequestEditType {
     Contacts = 'contacts',
     QuotaSize = 'quotaSize',
@@ -29,16 +34,18 @@ export enum RequestEditContacts {
 
 export interface Request extends CommonFields {
     profileId: number;
-    editType: RequestEditType;
-    editObject: string;
-    natsSubject?: string;
-    natsContext?: string;
+    editType?: RequestEditType;
+    editObject?: string;
+    type: RequestType;
+    requires_human_action: boolean;
+    is_active: boolean;
+    user_id: number;
 }
 
 export default class RequestModel extends Model {
     table: string = 'request';
     requiredFields: string[] = [
-        'profileId', 'editType', 'editObject',
+        'profileId', 'type', 'requires_human_action', 'is_active', 'user_id',
     ];
     pool: Pool;
 
@@ -50,14 +57,16 @@ export default class RequestModel extends Model {
     async create(data: Request): Promise<Request> {
         const query = {
             text: `INSERT INTO ${this.table}
-            (profile_id, edit_type, edit_object, nats_subject, nats_context)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            (profile_id, edit_type, edit_object, type, requires_human_action, is_active, user_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
             values: [
                 data.profileId,
                 data.editType,
                 data.editObject,
-                data.natsSubject,
-                data.natsContext,
+                data.type,
+                data.requires_human_action,
+                data.is_active,
+                data.user_id
             ],
         };
 
@@ -77,7 +86,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `UPDATE ${this.table}
             SET
-            profile_id = $1, edit_type = $2, edit_object = $3, nats_subject = $4, nats_context = $5
+            profile_id = $1, edit_type = $2, edit_object = $3, type = $4, requires_human_action = $5, is_active = $6, user_id = $7
             WHERE id = ${requestId}
             RETURNING *;`,
             values,
@@ -90,8 +99,10 @@ export default class RequestModel extends Model {
                 aData.profileId,
                 aData.editType,
                 aData.editObject,
-                aData.natsSubject,
-                aData.natsContext,
+                aData.type,
+                aData.requires_human_action,
+                aData.is_active,
+                aData.user_id
             ];
 
             const results = await this.runQuery(query);

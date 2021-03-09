@@ -152,9 +152,12 @@ const processProjectProfileEdit = async (request: Request): Promise<void> => {
 
   try {
     const { profileId, editObject } = request;
-    const profile = JSON.parse(editObject);
 
-    await ProfileModel.update(Number(profileId), profile);
+    if (editObject) {
+      const profile = JSON.parse(editObject);
+
+      await ProfileModel.update(Number(profileId), profile);
+    }
   } catch (err) {
     const message = `Unable to process requestId ${request.id} on bot callback`;
     logger.error(`${message}, err = ${err.message}`);
@@ -168,6 +171,8 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
 
   try {
     const { editObject } = request;
+
+    if (editObject) {
     const contacts = JSON.parse(editObject);
 
     const updatePromises: any = [];
@@ -176,6 +181,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
     });
 
     await Promise.all(updatePromises);
+  }
   } catch (err) {
     const message = `Unable to process requestId ${request.id} on bot callback`;
     logger.error(`${message}, err = ${err.message}`);
@@ -188,10 +194,13 @@ const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
   const { ProfileModel } = dm;
   try {
     const { profileId, editObject } = request;
+
+    if (editObject) {
     const { quota } = JSON.parse(editObject);
     const profile = await ProfileModel.findById(profileId);
 
     await applyProfileRequestedQuotaSize(profile, quota);
+    }
   } catch (err) {
     const message = `Unable to process requestId ${request.id} on bot callback`;
     logger.error(`${message}, err = ${err.message}`);

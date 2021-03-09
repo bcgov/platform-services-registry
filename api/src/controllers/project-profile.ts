@@ -52,7 +52,6 @@ export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
 export const fetchAllProjectProfiles = async (
   { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
   const { ProfileModel } = dm;
-
   try {
     let results;
     if (user.accessFlags.includes(AccessFlag.EditAll)) {

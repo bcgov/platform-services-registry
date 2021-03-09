@@ -12,9 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Created by Jason Leach on 2020-04-27.
-//
 
 'use strict';
 
@@ -24,8 +21,8 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
-import { RequestEditType } from '../db/model/request';
-import { fulfillEditRequest } from '../libs/fulfillment';
+import { RequestEditType, RequestType } from '../db/model/request';
+import { AuthenticatedUser } from '../libs/authmware';
 import { getProfileCurrentQuotaSize, getProfileQuotaOptions } from '../libs/profile';
 import shared from '../libs/shared';
 import { formatNatsContactObject } from '../libs/utils';
@@ -117,11 +114,61 @@ export const fetchProfileEditRequests = async (
   }
 };
 
+export const requestProjectProfileCreate = async (
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  const { RequestModel } = dm;
+  const { profileId } = params;
+
+  try {
+    // create Request record for project-profile edit
+    await RequestModel.create({
+      profileId,
+      type: RequestType.Create,
+      requires_human_action: true,
+      is_active: true,
+      user_id: user.id,  
+    });
+
+    res.status(204).end();
+  } catch (err) {
+    const message = `Unable to update profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const requestProjectProfileUpdate = async (
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  const { RequestModel } = dm;
+  const { profileId } = params;
+
+  try {
+    // create Request record for project-profile edit
+    await RequestModel.create({
+      profileId,
+      type: RequestType.Create,
+      requires_human_action: true,
+      is_active: true,
+      user_id: user.id,  
+    });
+
+    res.status(204).end();
+  } catch (err) {
+    const message = `Unable to update profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
 // TODO:(yh) run a check for the following edit async
 // to see if the profile has any existing request
 // if so, serve forbidden status code
 export const requestProjectProfileEdit = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { RequestModel } = dm;
   const { profileId } = params;
@@ -135,15 +182,15 @@ export const requestProjectProfileEdit = async (
       throw new Error(errmsg);
     }
 
-    const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
-
     // create Request record for project-profile edit
     await RequestModel.create({
       profileId,
       editType,
       editObject: JSON.stringify(profile),
-      natsSubject,
-      natsContext: JSON.stringify(natsContext),
+      type: RequestType.Edit,
+      requires_human_action: true,
+      is_active: true,
+      user_id: user.id,  
     });
 
     res.status(204).end();
@@ -156,7 +203,7 @@ export const requestProjectProfileEdit = async (
 };
 
 export const requestProfileContactsEdit = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { RequestModel, ContactModel } = dm;
   const { profileId } = params;
@@ -199,15 +246,15 @@ export const requestProfileContactsEdit = async (
         throw new Error(errmsg);
       }
 
-      const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
-
       // create Request record for contact edit
       await RequestModel.create({
         profileId,
         editType,
         editObject: JSON.stringify(contacts),
-        natsSubject,
-        natsContext: JSON.stringify(natsContext),
+        type: RequestType.Edit,
+        requires_human_action: true,
+        is_active: true,
+        user_id: user.id,  
       });
     } else if (contactNameEdit) {
       const updatePromises: any = [];
@@ -244,7 +291,7 @@ export const fetchProfileQuotaOptions = async (
 };
 
 export const requestProfileQuotaEdit = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { RequestModel, ProfileModel, QuotaModel } = dm;
   const { profileId } = params;
@@ -266,15 +313,16 @@ export const requestProfileQuotaEdit = async (
       quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
     };
     const editType = RequestEditType.QuotaSize;
-    const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
 
     // 2. Save request to track later
     await RequestModel.create({
       profileId,
       editType,
       editObject: JSON.stringify(editObject),
-      natsSubject,
-      natsContext: JSON.stringify(natsContext),
+      type: RequestType.Edit,
+      requires_human_action: true,
+      is_active: true,
+      user_id: user.id,  
     });
 
     res.status(204).end();

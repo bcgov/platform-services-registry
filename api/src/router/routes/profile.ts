@@ -21,7 +21,7 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize, requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileEdit } from '../../controllers/profile';
+import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize, requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileCreate, requestProjectProfileEdit, requestProjectProfileUpdate } from '../../controllers/profile';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
 import { authorize } from '../../libs/authorization';
 
@@ -48,8 +48,10 @@ router.post('/:profileId/contact/:contactId', authorize(), asyncMiddleware(addCo
 // Quota
 router.get('/:profileId/quota-size', authorize(), asyncMiddleware(fetchProfileQuotaSize));
 
-// Edit
+// Request
 router.get('/:profileId/request', authorize(), asyncMiddleware(fetchProfileEditRequests));
+router.post('/:profileId/request', authorize(), asyncMiddleware(requestProjectProfileCreate));
+router.put('/:profileId/request', authorize(), asyncMiddleware(requestProjectProfileUpdate));
 router.post('/:profileId/profile-edit', authorize(), asyncMiddleware(requestProjectProfileEdit));
 router.post('/:profileId/contact-edit', authorize(), asyncMiddleware(requestProfileContactsEdit));
 router.get('/:profileId/quota-edit', authorize(), asyncMiddleware(fetchProfileQuotaOptions));

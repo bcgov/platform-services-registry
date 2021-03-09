@@ -118,10 +118,14 @@ export const getProfileBotJsonUnderPending = async (
     // if the queried profile is under pending edit
     if (requests.length > 0) {
       const request = requests.pop();
+      //TODO UPDATE
+      // @ts-ignore
       if (!request || !request.natsContext) {
         const errmsg = `No nats context retrieved for request ${request?.id}`;
         throw new Error(errmsg);
       }
+      //TODO UPDATE
+      // @ts-ignore
       context = JSON.parse(request.natsContext);
     } else {
       // if the queried profile is under pending create
