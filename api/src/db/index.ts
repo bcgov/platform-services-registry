@@ -16,6 +16,7 @@
 //
 
 import { Pool } from 'pg';
+import BotMessageModel from './model/bot-message';
 import ClusterModel from './model/cluster';
 import ContactModel from './model/contact';
 import MinistryModel from './model/ministry';
@@ -35,6 +36,7 @@ export default class DataManager {
   MinistryModel: MinistryModel;
   RequestModel: RequestModel;
   QuotaModel: QuotaModel;
+  BotMessageModel: BotMessageModel
 
   constructor(pool: Pool) {
     this.pool = pool;
@@ -46,5 +48,6 @@ export default class DataManager {
     this.MinistryModel = new MinistryModel(pool);
     this.RequestModel = new RequestModel(pool);
     this.QuotaModel = new QuotaModel(pool);
+    this.BotMessageModel = new BotMessageModel(pool);
   }
 }
