@@ -118,15 +118,11 @@ export const getProfileBotJsonUnderPending = async (
     // if the queried profile is under pending edit
     if (requests.length > 0) {
       const request = requests.pop();
-      //TODO UPDATE
-      // @ts-ignore
-      if (!request || !request.natsContext) {
-        const errmsg = `No nats context retrieved for request ${request?.id}`;
+      if (!request || !request.editObject) {
+        const errmsg = `No edit object retrieved for request ${request?.id}`;
         throw new Error(errmsg);
       }
-      //TODO UPDATE
-      // @ts-ignore
-      context = JSON.parse(request.natsContext);
+      context = JSON.parse(request.editObject);
     } else {
       // if the queried profile is under pending create
       context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
@@ -146,7 +142,7 @@ const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[]> =>
   const { RequestModel, ProfileModel } = dm;
   try {
     // process those profiles that are under pending EDIT
-    const requests = await RequestModel.findAll();
+    const requests = await RequestModel.findAllActive();
     const profileIds = requests.map((request: Request) => request.profileId);
 
     // process those profiles that are under pending CREATE
