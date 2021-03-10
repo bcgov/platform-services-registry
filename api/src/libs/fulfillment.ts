@@ -26,6 +26,8 @@ import { MessageType, sendProvisioningMessage } from './messaging';
 import { getProfileCurrentQuotaSize } from './profile';
 import shared from './shared';
 
+const dm = new DataManager(shared.pgPool);
+
 export interface Context {
   something: any;
 }
@@ -47,7 +49,6 @@ interface NatsObject {
 
 export const contextForProvisioning = async (profileId: number, action: FulfillmentContextAction): Promise<any> => {
   try {
-    const dm = new DataManager(shared.pgPool);
     const { ProfileModel, ContactModel, NamespaceModel, QuotaModel } = dm;
 
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
@@ -151,18 +152,24 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
     }
   });
 
-export const fulfillEditRequest = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
+export const fulfillEditRequest = async (profileId: number, request: any): Promise<NatsObject> =>
   new Promise(async (resolve, reject) => {
+    const { BotMessageModel } = dm;
     try {
       const subject = config.get('nats:subject');
       const context = await contextForProvisioning(profileId, FulfillmentContextAction.Edit);
+
+      const requestId = request.id
+      const requestType = request.type
+      const requestEditObject = request.editObject
+      const clusterName = context.namespaces[0].clusters[0].name;
 
       if (!context) {
         const errmsg = `No context for ${profileId}`;
         reject(new Error(errmsg));
       }
 
-      switch (requestType) {
+      switch (request.editType) {
         case RequestEditType.QuotaSize:
           context.quota = requestEditObject.quota;
           context.quotas = requestEditObject.quotas;
@@ -180,12 +187,21 @@ export const fulfillEditRequest = async (profileId: number, requestType: Request
           throw new Error(errmsg);
       }
 
+      // create Bot Message record for project-profile edit
+      await BotMessageModel.create({
+        requestId,
+        natsSubject: subject,
+        natsContext: context,
+        clusterName,
+        hasCallback: true,
+      });
+
       const natsObject = await sendNatsMessage(profileId, {
         natsSubject: subject,
         natsContext: context,
       });
 
-      // TODO:(yh) add sending ches message here
+      // TODO:(sb) add sending ches message here
       resolve(natsObject);
     } catch (err) {
       const message = `Unable to update namespaces for profile ${profileId}`;

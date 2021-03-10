@@ -21,10 +21,10 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize, requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileCreate, requestProjectProfileEdit, requestProjectProfileUpdate } from '../../controllers/profile';
+import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize } from '../../controllers/profile';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
+import { requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileCreate, requestProjectProfileEdit, requestProjectProfileUpdate } from '../../controllers/request';
 import { authorize } from '../../libs/authorization';
-
 const router = express.Router();
 
 // Profiles

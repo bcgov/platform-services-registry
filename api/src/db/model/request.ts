@@ -66,7 +66,7 @@ export default class RequestModel extends Model {
                 data.type,
                 data.requires_human_action,
                 data.is_active,
-                data.user_id
+                data.user_id,
             ],
         };
 
@@ -140,7 +140,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                    WHERE profile_id = ${profileId} AND archived = false;
+                    WHERE profile_id = ${profileId} AND is_active = true AND archived = false;
             `,
         };
 
@@ -148,6 +148,45 @@ export default class RequestModel extends Model {
             return await this.runQuery(query);
         } catch (err) {
             const message = `Unable to fetch Request(s) with Profile Id ${profileId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findAllActive(): Promise<Request[]> {
+        const query = {
+            text: `
+                SELECT * FROM ${this.table}
+                    is_active = true AND archived = false;
+            `,
+        };
+
+        try {
+            return await this.runQuery(query);
+        } catch (err) {
+            const message = `Unable to fetch all active Request(s)`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async isComplete(requestId: number): Promise<Request> {
+        const query = {
+            text: `UPDATE ${this.table}
+            SET
+            is_active = false
+            WHERE id = ${requestId}
+            RETURNING *;
+        `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to complete request`;
             logger.error(`${message}, err = ${err.message}`);
 
             throw err;

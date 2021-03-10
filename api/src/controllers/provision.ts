@@ -137,7 +137,7 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
         const errmsg = `Invalid edit type for request ${request.id}`;
         throw new Error(errmsg);
     }
-    await RequestModel.delete(Number(request.id));
+    await RequestModel.isComplete(Number(request.id));
   } catch (err) {
     const message = `Unable to update profile edit for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);
