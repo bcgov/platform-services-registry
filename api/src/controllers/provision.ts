@@ -92,8 +92,22 @@ export const provisionCallbackHandler = async (
 };
 
 const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<void> => {
+  const { RequestModel } = dm;
+
   try {
     await updateProvisionedProfile(profile);
+
+    if (!profile.id) {
+      throw new Error('Cant read the given profileId');
+    }
+
+    const requests = await RequestModel.findForProfile(profile.id);
+    const request = requests.pop();
+    if (!request) {
+      return;
+    }
+
+    await RequestModel.isComplete(Number(request.id));
 
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
