@@ -41,15 +41,15 @@ ON human_action FOR EACH ROW EXECUTE PROCEDURE
 update_changetimestamp_column();
 
 CREATE TABLE IF NOT EXISTS bot_message (
-    id               SERIAL PRIMARY KEY,
-    request_id       INTEGER REFERENCES request(id) NOT NULL,
-    nats_subject     VARCHAR(512) NOT NULL,
-    nats_context     VARCHAR(4096) NOT NULL,
-    cluster_name     VARCHAR(32) REFERENCES ref_cluster(name) NOT NULL,
-    has_callback     BOOLEAN NOT NULL DEFAULT false,
-    archived         BOOLEAN NOT NULL DEFAULT false,
-    created_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at       timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    id                  SERIAL PRIMARY KEY,
+    request_id          INTEGER REFERENCES request(id) NOT NULL,
+    nats_subject        VARCHAR(512) NOT NULL,
+    nats_context        VARCHAR(4096) NOT NULL,
+    cluster_name        VARCHAR(32) REFERENCES ref_cluster(name) NOT NULL,
+    received_callback   BOOLEAN NOT NULL DEFAULT false,
+    archived            BOOLEAN NOT NULL DEFAULT false,
+    created_at          timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at          timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 DROP TRIGGER IF EXISTS update_bot_message_changetimestamp on bot_message;
