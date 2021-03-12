@@ -42,6 +42,14 @@ export interface Request extends CommonFields {
     user_id: number;
 }
 
+export interface BotMessage extends CommonFields {
+    requestId: number;
+    natsSubject: string;
+    natsContext: string;
+    clusterName: string;
+    receivedCallback: boolean;
+}
+
 export default class RequestModel extends Model {
     table: string = 'request';
     requiredFields: string[] = [
@@ -192,4 +200,80 @@ export default class RequestModel extends Model {
             throw err;
         }
     }
+
+    async createBotMessageSet(data: BotMessage): Promise<BotMessage> {
+        const query = {
+            text: `INSERT INTO bot_message
+            (request_id, nats_subject, nats_context, cluster_name, received_callback)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            values: [
+                data.requestId,
+                data.natsSubject,
+                data.natsContext,
+                data.clusterName,
+                data.receivedCallback ? data.receivedCallback : false,
+            ],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to create request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async updateCallbackStatus(botMessageId: number, data: BotMessage): Promise<BotMessage> {
+        const values: any[] = [];
+        const query = {
+            text: `UPDATE bot_message
+            SET
+            request_id = $1, nats_subject = $2, nats_context = $3, cluster_name = $4, received_callback = $5
+            WHERE id = ${botMessageId}
+            RETURNING *;`,
+            values,
+        };
+
+        try {
+            const record = await this.findById(botMessageId);
+            const aData = { ...record, ...data };
+            query.values = [
+                aData.requestId,
+                aData.natsSubject,
+                aData.natsContext,
+                aData.clusterName,
+                aData.receivedCallback ? aData.receivedCallback : false,
+            ];
+
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to update request ID ${botMessageId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findForRequest(requestId: number): Promise<BotMessage[]> {
+        const query = {
+            text: `
+                SELECT * FROM bot_message
+                    WHERE request_id = ${requestId} AND archived = false;
+            `,
+        };
+
+        try {
+            return await this.runQuery(query);
+        } catch (err) {
+            const message = `Unable to fetch Request(s) with Request Id ${requestId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
 }

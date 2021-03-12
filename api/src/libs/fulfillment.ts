@@ -154,7 +154,7 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
 
 export const fulfillEditRequest = async (profileId: number, request: any): Promise<NatsObject> =>
   new Promise(async (resolve, reject) => {
-    const { BotMessageModel } = dm;
+    const { RequestModel } = dm;
     try {
       const subject = config.get('nats:subject');
       const context = await contextForProvisioning(profileId, FulfillmentContextAction.Edit);
@@ -162,7 +162,7 @@ export const fulfillEditRequest = async (profileId: number, request: any): Promi
       const requestId = request.id
       const requestType = request.type
       const requestEditObject = request.editObject
-      const clusterName = context.namespaces[0].clusters[0].name;
+      const clusterNames = context.namespaces[0].clusters;
 
       if (!context) {
         const errmsg = `No context for ${profileId}`;
@@ -187,14 +187,20 @@ export const fulfillEditRequest = async (profileId: number, request: any): Promi
           throw new Error(errmsg);
       }
 
-      // create Bot Message record for project-profile edit
-      await BotMessageModel.create({
-        requestId,
-        natsSubject: subject,
-        natsContext: context,
-        clusterName,
-        hasCallback: true,
-      });
+      const promises: any = [];
+      clusterNames.forEach(cluster => {
+        const clusterName = cluster.name;
+        // create Bot Message record for each cluster project-profile edit
+        promises.push(RequestModel.createBotMessageSet({
+          requestId,
+          natsSubject: subject,
+          natsContext: context,
+          clusterName,
+          receivedCallback: false,
+        }));
+      })
+
+      await Promise.all(promises);
 
       const natsObject = await sendNatsMessage(profileId, {
         natsSubject: subject,
