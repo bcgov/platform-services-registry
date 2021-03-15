@@ -18,6 +18,7 @@ import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
 import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../src/controllers/sync';
+import { isProfileProvisioned } from '../src/libs/profile';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -34,19 +35,9 @@ const selectRequestEditContacts = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 const client = new Pool().connect();
 
-jest.mock('../src/libs/profile', () => {
-  const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-  const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
-
-  return {
-    isProfileProvisioned: jest.fn().mockReturnValue(true),
-    getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
-  };
-});
-
 jest.mock('../src/libs/fulfillment', () => {
-  const p5 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
-  const provisioningContext = JSON.parse(fs.readFileSync(p5, 'utf8'));
+  const p6 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
+  const provisioningContext = JSON.parse(fs.readFileSync(p6, 'utf8'));
 
   return {
     contextForProvisioning: jest.fn().mockReturnValue(provisioningContext),
@@ -58,6 +49,10 @@ jest.mock('../src/libs/utils', () => {
     replaceForDescription: jest.fn().mockReturnValue(''),
   };
 });
+
+jest.mock('../src/libs/profile', () => ({
+  isProfileProvisioned: jest.fn(),
+}));
 
 describe('Sync event handlers', () => {
   let ex;
@@ -71,6 +66,8 @@ describe('Sync event handlers', () => {
     const req = {};
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
+    // @ts-ignore
+    isProfileProvisioned.mockResolvedValue(true);
     // @ts-ignore
     await getAllProvisionedProfileIds(req, ex.res);
 
@@ -100,6 +97,8 @@ describe('Sync event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
 
     // @ts-ignore
+    isProfileProvisioned.mockResolvedValue(true);
+    // @ts-ignore
     await getProvisionedProfileBotJson(req, ex.res);
 
     expect(ex.res.statusCode).toMatchSnapshot();
@@ -127,6 +126,8 @@ describe('Sync event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
     // @ts-ignore
+    isProfileProvisioned.mockResolvedValue(false);
+    // @ts-ignore
     await getAllProfileIdsUnderPending(req, ex.res);
 
     expect(ex.res.statusCode).toMatchSnapshot();
@@ -147,16 +148,6 @@ describe('Sync event handlers', () => {
   });
 
   it('Bot json object for a queried profile under pending edit / create is returned', async () => {
-    jest.mock('../src/libs/profile', () => {
-      const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-      const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
-
-      return {
-        isProfileProvisioned: jest.fn().mockReturnValue(false),
-        getDefaultCluster: jest.fn().mockReturnValue(selectDefaultCluster),
-      };
-    });
-
     const req = {
       params: { profileId: 4 },
     };
@@ -164,6 +155,8 @@ describe('Sync event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
     client.query.mockReturnValueOnce({ rows: [] });
 
+    // @ts-ignore
+    isProfileProvisioned.mockResolvedValue(false);
     // @ts-ignore
     await getProfileBotJsonUnderPending(req, ex.res);
 

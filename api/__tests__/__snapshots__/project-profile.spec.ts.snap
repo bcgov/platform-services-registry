@@ -1,44 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Project-profile event handlers A project fails to archive 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            archived = true
-          WHERE id = 4
-          RETURNING *;
-      ",
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers A project fails to archive 2`] = `200`;
-
-exports[`Project-profile event handlers A project is archived 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        UPDATE profile
-          SET
-            archived = true
-          WHERE id = 4
-          RETURNING *;
-      ",
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers A project is archived 2`] = `204`;
-
-exports[`Project-profile event handlers A project is archived 3`] = `undefined`;
-
-exports[`Project-profile event handlers A project is created 1`] = `
+exports[`Project-profile event handlers A project-profile is created 1`] = `
 Array [
   Array [
     Object {
@@ -116,16 +78,16 @@ Array [
         false,
         "This is a test",
         "silver",
-        undefined,
+        "abc123",
       ],
     },
   ],
 ]
 `;
 
-exports[`Project-profile event handlers A project is created 2`] = `200`;
+exports[`Project-profile event handlers A project-profile is created 2`] = `200`;
 
-exports[`Project-profile event handlers A project is created 3`] = `
+exports[`Project-profile event handlers A project-profile is created 3`] = `
 Object {
   "busOrgId": "HLTH",
   "categoryId": 1,
@@ -140,6 +102,7 @@ Object {
   "idmActiveDir": false,
   "idmKeyCloak": false,
   "idmSiteMinder": false,
+  "migratingLicenseplate": "abc123",
   "name": "Health Gateway",
   "notificationEmail": false,
   "notificationMsTeams": false,
@@ -155,7 +118,7 @@ Object {
 }
 `;
 
-exports[`Project-profile event handlers A project is updated 1`] = `
+exports[`Project-profile event handlers A project-profiles does not allow updating name 1`] = `
 Array [
   Array [
     Object {
@@ -167,92 +130,52 @@ Array [
       ],
     },
   ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
+]
+`;
+
+exports[`Project-profile event handlers A project-profiles does not allow updating name 2`] = `204`;
+
+exports[`Project-profile event handlers A project-profiles does not allow updating name 3`] = `undefined`;
+
+exports[`Project-profile event handlers A project-profiles fails to archive 1`] = `
+Array [
   Array [
     Object {
       "text": "
         UPDATE profile
           SET
-            name = $1, description = $2, bus_org_id = $3,
-            priority_system = $4, notification_email = $5, notification_sms = $6,
-            notification_ms_teams = $7, payment_bambora = $8, payment_pay_bc = $9,
-            file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
-            geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
-            idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19, primary_cluster_name = $20, migrating_licenseplate = $21
+            archived = true
           WHERE id = 4
-          RETURNING *;",
-      "values": Array [
-        "Health Gateway",
-        "Patient prescription history website",
-        "HLTH",
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        "This is a test",
-        "silver",
-        undefined,
-      ],
+          RETURNING *;
+      ",
     },
   ],
 ]
 `;
 
-exports[`Project-profile event handlers A project is updated 2`] = `200`;
+exports[`Project-profile event handlers A project-profiles fails to archive 2`] = `200`;
 
-exports[`Project-profile event handlers A project is updated 3`] = `
-Object {
-  "busOrgId": "HLTH",
-  "categoryId": 1,
-  "createdAt": "2020-05-19T20:02:54.561Z",
-  "criticalSystem": false,
-  "description": "Patient prescription history website",
-  "fileStorage": false,
-  "fileTransfer": false,
-  "geoMappingLocation": false,
-  "geoMappingWeb": false,
-  "id": 4,
-  "idmActiveDir": false,
-  "idmKeyCloak": false,
-  "idmSiteMinder": false,
-  "name": "Health Gateway",
-  "notificationEmail": false,
-  "notificationMsTeams": false,
-  "notificationSms": false,
-  "other": "This is a test",
-  "paymentBambora": false,
-  "paymentPayBc": false,
-  "primaryClusterName": "silver",
-  "prioritySystem": false,
-  "schedulingAppointments": false,
-  "schedulingCalendar": false,
-  "updateAt": "2020-05-19T20:02:54.561Z",
-  "userId": 1,
-}
+exports[`Project-profile event handlers A project-profiles is archived 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        UPDATE profile
+          SET
+            archived = true
+          WHERE id = 4
+          RETURNING *;
+      ",
+    },
+  ],
+]
 `;
 
-exports[`Project-profile event handlers A single profile is returned 1`] = `
+exports[`Project-profile event handlers A project-profiles is archived 2`] = `204`;
+
+exports[`Project-profile event handlers A project-profiles is archived 3`] = `undefined`;
+
+exports[`Project-profile event handlers A single project-profiles is returned 1`] = `
 Array [
   Array [
     Object {
@@ -267,9 +190,9 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers A single profile is returned 2`] = `200`;
+exports[`Project-profile event handlers A single project-profiles is returned 2`] = `200`;
 
-exports[`Project-profile event handlers A single profile is returned 3`] = `
+exports[`Project-profile event handlers A single project-profiles is returned 3`] = `
 Object {
   "archived": false,
   "busOrgId": "CITZ",
@@ -286,7 +209,7 @@ Object {
 }
 `;
 
-exports[`Project-profile event handlers All profiles are returned 1`] = `
+exports[`Project-profile event handlers All project-profiles are returned 1`] = `
 Array [
   Array [
     Object {
@@ -304,9 +227,9 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers All profiles are returned 2`] = `200`;
+exports[`Project-profile event handlers All project-profiles are returned 2`] = `200`;
 
-exports[`Project-profile event handlers All profiles are returned 3`] = `
+exports[`Project-profile event handlers All project-profiles are returned 3`] = `
 Array [
   Object {
     "archived": false,
@@ -315,6 +238,7 @@ Array [
     "criticalSystem": false,
     "description": null,
     "id": 1,
+    "migratingLicenseplate": "abc123",
     "name": "Health Gateway",
     "namespacePrefix": "elf077",
     "primaryClusterName": "silver",
@@ -367,13 +291,13 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers Fetch all profiles should throw 1`] = `"Unable fetch all project profiles"`;
+exports[`Project-profile event handlers Fetch all project-profiles should throw 1`] = `"Unable fetch all project profiles"`;
 
-exports[`Project-profile event handlers Fetch all profiles should throw 2`] = `Array []`;
+exports[`Project-profile event handlers Fetch all project-profiles should throw 2`] = `Array []`;
 
-exports[`Project-profile event handlers Fetch single profile should throw 1`] = `"Unable fetch project profile with ID 4"`;
+exports[`Project-profile event handlers Fetch single project-profiles should throw 1`] = `"Unable fetch project profile with ID 4"`;
 
-exports[`Project-profile event handlers Fetch single profile should throw 2`] = `
+exports[`Project-profile event handlers Fetch single project-profiles should throw 2`] = `
 Array [
   Array [
     Object {
@@ -388,7 +312,26 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers Unique profile names are derived 1`] = `
+exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 2`] = `204`;
+
+exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 3`] = `undefined`;
+
+exports[`Project-profile event handlers Unique project-profiles names are derived 1`] = `
 Array [
   Array [
     Object {
@@ -423,4 +366,23 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers Unique profile names are derived 2`] = `"c8c7e6"`;
+exports[`Project-profile event handlers Unique project-profiles names are derived 2`] = `"c8c7e6"`;
+
+exports[`Project-profile event handlers Update a project-profile with non provisioner-related changes 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Project-profile event handlers Update a project-profile with non provisioner-related changes 2`] = `204`;
+
+exports[`Project-profile event handlers Update a project-profile with non provisioner-related changes 3`] = `undefined`;

@@ -13,15 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-21.
-//
 
 'use strict';
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaOptions, fetchProfileQuotaSize, requestProfileContactsEdit, requestProfileQuotaEdit, requestProjectProfileEdit } from '../../controllers/profile';
+import { addContactToProfile, fetchProfileAllowedQuotaSizes, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaSize, updateProfileContacts, updateProfileQuotaSize } from '../../controllers/profile';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
 import { authorize } from '../../libs/authorization';
 
@@ -31,8 +29,10 @@ const router = express.Router();
 router.post('/', asyncMiddleware(createProjectProfile));
 router.get('/', asyncMiddleware(fetchAllProjectProfiles));
 router.get('/:profileId', authorize(), asyncMiddleware(fetchProjectProfile));
-router.put('/:profileId', authorize(), asyncMiddleware(updateProjectProfile));
 router.delete('/:profileId', authorize(), asyncMiddleware(archiveProjectProfile));
+// may involve provisioner-related changes
+router.put('/:profileId', authorize(), asyncMiddleware(updateProjectProfile));
+
 
 // Namespace
 router.post('/:profileId/namespace', authorize(), asyncMiddleware(createNamespace));
@@ -41,18 +41,22 @@ router.get('/:profileId/namespace/:namespaceId', authorize(), asyncMiddleware(fe
 router.put('/:profileId/namespace/:namespaceId', authorize(), asyncMiddleware(updateProfileNamespace));
 router.delete('/:profileId/namespace/:namespaceId', authorize(), asyncMiddleware(archiveProfileNamespace));
 
+
 // Contacts
 router.get('/:profileId/contacts', authorize(), asyncMiddleware(fetchProfileContacts));
 router.post('/:profileId/contact/:contactId', authorize(), asyncMiddleware(addContactToProfile));
+// may involve provisioner-related changes
+router.post('/:profileId/contacts', authorize(), asyncMiddleware(updateProfileContacts));
+
 
 // Quota
 router.get('/:profileId/quota-size', authorize(), asyncMiddleware(fetchProfileQuotaSize));
+router.get('/:profileId/allowed-quota-sizes', authorize(), asyncMiddleware(fetchProfileAllowedQuotaSizes));
+// must invovle provisioner-related changes
+router.post('/:profileId/quota-size', authorize(), asyncMiddleware(updateProfileQuotaSize));
 
-// Edit
+
+// Request
 router.get('/:profileId/request', authorize(), asyncMiddleware(fetchProfileEditRequests));
-router.post('/:profileId/profile-edit', authorize(), asyncMiddleware(requestProjectProfileEdit));
-router.post('/:profileId/contact-edit', authorize(), asyncMiddleware(requestProfileContactsEdit));
-router.get('/:profileId/quota-edit', authorize(), asyncMiddleware(fetchProfileQuotaOptions));
-router.post('/:profileId/quota-edit', authorize(), asyncMiddleware(requestProfileQuotaEdit))
 
 export default router;

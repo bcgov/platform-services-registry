@@ -74,11 +74,13 @@ const { ProfileModel, ContactModel } = dm;
 const unauthorizedMessage = STATUS_ERROR[401];
 
 // TODO:(yh) sanitize profile id either here or somewhere else
-const authorizeByProfileIdAndUser = async (req): Promise<Error | void> => {
+export const authorizeByProfileIdAndUser = async (req): Promise<Error | void> => {
   const { params: { profileId }, user } = req;
+
   if (user.accessFlags.includes(AccessFlag.EditAll)) {
     return;
   }
+
   const projectDetails = await ProfileModel.findById(Number(profileId));
   if (user.id === projectDetails.userId) {
     return;

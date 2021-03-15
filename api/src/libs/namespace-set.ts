@@ -30,7 +30,6 @@ const { NamespaceModel } = dm;
 export const isNamespaceSetProvisioned = async (profile: ProjectProfile, cluster: Cluster): Promise<boolean> => {
   try {
     const clusterNamespaces = await getNamespaceSet(profile, cluster);
-
     // @ts-ignore
     const flags: boolean[] = clusterNamespaces.map((clusterNamespace: ClusterNamespace): boolean => {
       return clusterNamespace.provisioned;

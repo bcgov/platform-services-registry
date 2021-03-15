@@ -124,7 +124,7 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
     }
 
     switch (request.editType) {
-      case RequestEditType.Description:
+      case RequestEditType.ProjectProfile:
         await processProjectProfileEdit(request);
         break;
       case RequestEditType.Contacts:

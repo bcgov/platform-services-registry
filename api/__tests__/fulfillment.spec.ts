@@ -98,7 +98,7 @@ describe('Services', () => {
     await expect(fulfillNamespaceProvisioning(12345)).rejects.toThrow();
   });
 
-  it('Provisioned namespaces updated succeeds', async () => {
+  it('Profile namespace set edit request succeeds', async () => {
     const requestEditObject = {
       quota: 'small',
       quotas: spec,

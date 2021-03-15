@@ -67,12 +67,8 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
       // 1. Prepare project edit request body.
       const { profile } = transformForm(formData);
 
-      // 2. Request the profile project edit.
-      if (projectDetails.description !== profile.description) {
-        await api.requestProfileEdit(projectDetails.id, profile);
-      } else {
-        await api.updateProfile(projectDetails.id, profile);
-      }
+      // 2. Update the profile project.
+      await api.updateProfile(projectDetails.id, profile);
 
       // 3. All good? Redirect back to overview and tell the user.
       setGoBackToProfileEditable(true);
@@ -232,16 +228,16 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
             // @ts-ignore
             <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
           ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
+              <>
+                {/* @ts-ignore */}
+                <StyledFormDisabledButton style={{ display: 'block' }}>
+                  Request Update
               </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
-              </Label>
-            </>
-          )}
+                <Label as="span" variant="errorLabel">
+                  Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
+                </Label>
+              </>
+            )}
         </form>
       )}
     </Form>

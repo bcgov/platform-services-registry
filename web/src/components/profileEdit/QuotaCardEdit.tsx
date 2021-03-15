@@ -68,7 +68,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       const requestBody = composeRequestBodyForQuotaEdit(selectedSize);
 
       // 2. Request the profile quota edit.
-      await api.requestQuotaSizeByProfileId(profileId, requestBody);
+      await api.updateQuotaSizeByProfileId(profileId, requestBody);
 
       // 3. All good? Redirect back to overview and tell the user.
       handleSubmitRefresh();
@@ -143,11 +143,11 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           Request Quota
         </StyledFormButton>
       ) : (
-        // @ts-ignore
-        <StyledFormDisabledButton style={{ display: 'block' }}>
-          Request Quota
-        </StyledFormDisabledButton>
-      )}
+          // @ts-ignore
+          <StyledFormDisabledButton style={{ display: 'block' }}>
+            Request Quota
+          </StyledFormDisabledButton>
+        )}
       {!(!hasPendingEdit && isProvisioned) && (
         <Label as="span" variant="errorLabel">
           Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request

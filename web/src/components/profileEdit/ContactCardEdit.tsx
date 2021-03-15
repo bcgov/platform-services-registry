@@ -60,7 +60,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       const updatedContacts = { productOwner, technicalContact };
 
       // 2. Request the profile contact edit.
-      await api.requestContactEdit(profileId, updatedContacts);
+      await api.updateContactsByProfileId(profileId, updatedContacts);
 
       // 3. All good? Redirect back to overview and tell the user.
       setGoBackToProfileEditable(true);
@@ -186,16 +186,16 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             // @ts-ignore
             <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
           ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
+              <>
+                {/* @ts-ignore */}
+                <StyledFormDisabledButton style={{ display: 'block' }}>
+                  Request Update
               </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+                <Label as="span" variant="errorLabel">
+                  Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
               </Label>
-            </>
-          )}
+              </>
+            )}
         </form>
       )}
     </Form>

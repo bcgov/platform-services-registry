@@ -10,11 +10,6 @@
     "session_state": "84fc62ca-4b04-4998-80a0-4f339dddc01e",
     "acr": "0",
     "resource_access": {
-        "registry-web": {
-            "roles": [
-                "administrator"
-            ]
-        },
         "account": {
             "roles": [
                 "manage-account",
@@ -27,7 +22,7 @@
     "email_verified": true,
     "name": "Jane Doe",
     "preferred_username": "jane1100@idir",
-    "given_name": "Yuhan",
-    "family_name": "Freeman",
+    "given_name": "Jane",
+    "family_name": "Doe",
     "email": "jane@example.com"
 }

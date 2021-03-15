@@ -172,8 +172,8 @@ export const fulfillEditRequest = async (profileId: number, requestType: Request
             context[contact] = requestEditObject[contact];
           });
           break;
-        case RequestEditType.Description:
-          context[requestType] = requestEditObject;
+        case RequestEditType.ProjectProfile:
+          context.description = requestEditObject.description;
           break;
         default:
           const errmsg = `Invalid edit type for request ${requestType}`;

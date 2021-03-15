@@ -79,17 +79,6 @@ export default function useRegistryApi() {
     }
   };
 
-  const requestProfileEdit = async (
-    profileId: string,
-    profile: any,
-  ): Promise<AxiosResponse<any>> => {
-    if (!axiosInstance.current) {
-      throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post(`profile/${profileId}/profile-edit`, profile);
-    }
-  };
-
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -98,14 +87,14 @@ export default function useRegistryApi() {
     }
   };
 
-  const requestContactEdit = async (
+  const updateContactsByProfileId = async (
     profileId: string,
     requestedContacts: any,
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return axiosInstance.current.post(`profile/${profileId}/contact-edit`, requestedContacts);
+      return axiosInstance.current.post(`profile/${profileId}/contacts`, requestedContacts);
     }
   };
 
@@ -160,22 +149,22 @@ export default function useRegistryApi() {
     }
   };
 
-  const getQuotaOptionsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+  const getAllowedQuotaSizesByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return axiosInstance.current.get(`profile/${profileId}/quota-edit`);
+      return axiosInstance.current.get(`profile/${profileId}/allowed-quota-sizes`);
     }
   };
 
-  const requestQuotaSizeByProfileId = async (
+  const updateQuotaSizeByProfileId = async (
     profileId: string,
     requstedQuotas: any,
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return axiosInstance.current.post(`profile/${profileId}/quota-edit`, requstedQuotas);
+      return axiosInstance.current.post(`profile/${profileId}/quota-size`, requstedQuotas);
     }
   };
 
@@ -192,17 +181,16 @@ export default function useRegistryApi() {
     getProfile,
     createProfile,
     updateProfile,
-    requestProfileEdit,
     createContact,
-    requestContactEdit,
+    updateContactsByProfileId,
     linkContactToProfileById,
     createNamespaceByProfileId,
     getContactsByProfileId,
     getNamespacesByProfileId,
     getQuotaSizeByProfileId,
     getProfileByProfileId,
-    getQuotaOptionsByProfileId,
-    requestQuotaSizeByProfileId,
+    getAllowedQuotaSizesByProfileId,
+    updateQuotaSizeByProfileId,
     getEditRequestStatus,
   };
 }

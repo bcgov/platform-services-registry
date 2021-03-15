@@ -11,7 +11,8 @@
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 1,
     "namespacePrefix": "elf077",
-    "primaryClusterName": "silver"
+    "primaryClusterName": "silver",
+    "migratingLicenseplate": "abc123"
   },
   {
     "id": 2,

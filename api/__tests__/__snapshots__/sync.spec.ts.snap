@@ -6,6 +6,10 @@ exports[`Sync event handlers All ids of profiles under pending edit / create are
 Array [
   1,
   4,
+  1,
+  2,
+  3,
+  4,
 ]
 `;
 

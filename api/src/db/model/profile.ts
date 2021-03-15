@@ -188,7 +188,7 @@ export default class ProfileModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to create project profile`;
+      const message = `Unable to update project profile`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

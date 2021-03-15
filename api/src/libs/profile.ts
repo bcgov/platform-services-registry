@@ -88,27 +88,6 @@ export const getProfileCurrentQuotaSize = async (profile: ProjectProfile): Promi
   }
 };
 
-export const getProfileQuotaOptions = async (profile: ProjectProfile): Promise<QuotaSize[]> => {
-  const quotaSizeNames = Object.values(QuotaSize);
-
-  try {
-    const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
-    const currentSize = await getProfileCurrentQuotaSize(profile);
-    const num: number = quotaSizeNames.indexOf(currentSize);
-
-    // allows +1 size and all the smaller sizes
-    return allQuotaOptions.slice(
-      0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
-        size => size !== currentSize
-      );
-  } catch (err) {
-    const message = `Unable to get quota size for profile ${profile.id}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
-  }
-};
-
 export const applyProfileRequestedQuotaSize = async (profile: ProjectProfile, quotaSize: QuotaSize): Promise<void> => {
   try {
     const clusters = await getProfileClusters(profile);
