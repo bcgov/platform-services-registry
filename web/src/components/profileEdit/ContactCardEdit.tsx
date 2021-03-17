@@ -186,16 +186,16 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             // @ts-ignore
             <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
           ) : (
-              <>
-                {/* @ts-ignore */}
-                <StyledFormDisabledButton style={{ display: 'block' }}>
-                  Request Update
+            <>
+              {/* @ts-ignore */}
+              <StyledFormDisabledButton style={{ display: 'block' }}>
+                Request Update
               </StyledFormDisabledButton>
-                <Label as="span" variant="errorLabel">
-                  Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
+              <Label as="span" variant="errorLabel">
+                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
               </Label>
-              </>
-            )}
+            </>
+          )}
         </form>
       )}
     </Form>
