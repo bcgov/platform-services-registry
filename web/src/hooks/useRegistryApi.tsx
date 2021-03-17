@@ -149,7 +149,9 @@ export default function useRegistryApi() {
     }
   };
 
-  const getAllowedQuotaSizesByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+  const getAllowedQuotaSizesByProfileId = async (
+    profileId: string,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
