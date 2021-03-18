@@ -21,8 +21,6 @@ import { projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 import { QuotaSize } from './quota';
 
-// TODO:(yh) make quota_cpu_size, quota_memory_size, quota_storage_size NOT NULL
-// and to delete quota_cpu, quota_memory and quota_storage from ref_quota table
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
   clusterId: number;
