@@ -23,7 +23,7 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
-import { Request, RequestEditType } from '../db/model/request';
+import { BotMessage, Request, RequestEditType } from '../db/model/request';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import { applyProfileRequestedQuotaSize, isProfileProvisioned, updateProvisionedProfile } from '../libs/profile';
@@ -67,7 +67,7 @@ export const provisionCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const { prefix } = body;
+  const { prefix, clusterName } = body;
 
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
@@ -78,7 +78,7 @@ export const provisionCallbackHandler = async (
 
     const result = await isProfileProvisioned(profile);
     if (result) {
-      await updateProfileEdit(profile);
+      await updateProfileEdit(profile, clusterName);
     } else {
       await updateProvisionedNamespaces(profile);
     }
@@ -123,7 +123,7 @@ const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<voi
   }
 };
 
-const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
+const updateProfileEdit = async (profile: ProjectProfile, clusterName: string): Promise<void> => {
   const { RequestModel } = dm;
 
   try {
@@ -132,29 +132,30 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
     }
 
     const requests = await RequestModel.findForProfile(profile.id);
-    const promises: any = [];
+    const request = requests.pop();
+    if (!request) {
+      return;
+    }
 
-    // TODO: Adjust this for the bot-message as request will only have one option.
-    promises.push(requests.forEach(request => {
-      switch (request.editType) {
-        case RequestEditType.Description:
-          processProjectProfileEdit(request);
-          break;
-        case RequestEditType.Contacts:
-          processProfileContactsEdit(request);
-          break;
-        case RequestEditType.QuotaSize:
-          processProfileQuotaSizeEdit(request);
-          break;
-        default:
-          const errmsg = `Invalid edit type for request ${request.id}`;
-          throw new Error(errmsg);
-      }
 
-      RequestModel.isComplete(Number(request.id));
-    }))
+    const completedBotMessages = await processBotMessage(request, clusterName)
 
-    await Promise.all(promises);
+    switch (request.editType) {
+      case RequestEditType.Description:
+        await processProjectProfileEdit(request);
+        break;
+      case RequestEditType.Contacts:
+        await processProfileContactsEdit(request);
+        break;
+      case RequestEditType.QuotaSize:
+        await processProfileQuotaSizeEdit(request);
+        break;
+      default:
+        const errmsg = `Invalid edit type for request ${request.id}`;
+        throw new Error(errmsg);
+    }
+
+    await RequestModel.isComplete(Number(request.id));
   } catch (err) {
     const message = `Unable to update profile edit for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -162,6 +163,34 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
     throw err;
   }
 };
+
+const processBotMessage = async (request: Request, clusterName: string): Promise<void> => {
+  const { RequestModel } = dm;
+
+  if (!request.id) {
+    return;
+  }
+
+  // Check for active bot_messages
+  const botMessages = await RequestModel.findForRequest(request.id)
+
+
+  const updatePromises: any = [];
+  botMessages.forEach((botMessage: BotMessage) => {
+    switch (botMessage.clusterName) {
+      case clusterName:
+        updatePromises.push(RequestModel.updateCallbackStatus(Number(botMessage.id)));
+        break;
+      default:
+        break;
+    }
+  });
+
+  await Promise.all(updatePromises);
+
+
+
+}
 
 
 const processProjectProfileEdit = async (request: Request): Promise<void> => {
