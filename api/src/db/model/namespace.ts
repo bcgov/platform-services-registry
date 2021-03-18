@@ -22,9 +22,13 @@ import { projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 import { QuotaSize } from './quota';
 
+<<<<<<< HEAD
 // TODO:(yh) make quota_cpu_size, quota_memory_size, quota_storage_size NOT NULL
 // and to delete quota_cpu, quota_memory and quota_storage from ref_quota table
 interface ClusterNamespace extends CommonFields {
+=======
+export interface ClusterNamespace extends CommonFields {
+>>>>>>> e185d52 (db schema update for multi-cluster support)
   namespaceId: number;
   clusterId: number;
   provisioned: boolean;
