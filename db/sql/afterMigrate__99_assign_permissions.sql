@@ -40,3 +40,13 @@ GRANT USAGE ON SEQUENCE request_id_seq
 TO ${username};
 
 GRANT SELECT ON TABLE ref_quota TO ${username};
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE human_action
+TO ${username};
+GRANT USAGE ON SEQUENCE human_action_id_seq
+TO ${username};
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE bot_message
+TO ${username};
+GRANT USAGE ON SEQUENCE bot_message_id_seq
+TO ${username};
