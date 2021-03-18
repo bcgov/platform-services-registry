@@ -132,26 +132,29 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
     }
 
     const requests = await RequestModel.findForProfile(profile.id);
-    const request = requests.pop();
-    if (!request) {
-      return;
-    }
+    const promises: any = [];
 
-    switch (request.editType) {
-      case RequestEditType.Description:
-        await processProjectProfileEdit(request);
-        break;
-      case RequestEditType.Contacts:
-        await processProfileContactsEdit(request);
-        break;
-      case RequestEditType.QuotaSize:
-        await processProfileQuotaSizeEdit(request);
-        break;
-      default:
-        const errmsg = `Invalid edit type for request ${request.id}`;
-        throw new Error(errmsg);
-    }
-    await RequestModel.isComplete(Number(request.id));
+    // TODO: Adjust this for the bot-message as request will only have one option.
+    promises.push(requests.forEach(request => {
+      switch (request.editType) {
+        case RequestEditType.Description:
+          processProjectProfileEdit(request);
+          break;
+        case RequestEditType.Contacts:
+          processProfileContactsEdit(request);
+          break;
+        case RequestEditType.QuotaSize:
+          processProfileQuotaSizeEdit(request);
+          break;
+        default:
+          const errmsg = `Invalid edit type for request ${request.id}`;
+          throw new Error(errmsg);
+      }
+
+      RequestModel.isComplete(Number(request.id));
+    }))
+
+    await Promise.all(promises);
   } catch (err) {
     const message = `Unable to update profile edit for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);

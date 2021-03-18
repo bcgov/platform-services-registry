@@ -94,7 +94,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `UPDATE ${this.table}
             SET
-            profile_id = $1, edit_type = $2, edit_object = $3, type = $4, requires_human_action = $5, is_active = $6, user_id = $7
+            profile_id = $1, edit_type = $2, edit_object = $3, type = $4, requires_human_action = $5,is_active = $6, user_id = $7
             WHERE id = ${requestId}
             RETURNING *;`,
             values,
@@ -226,7 +226,7 @@ export default class RequestModel extends Model {
         }
     }
 
-    async updateCallbackStatus(botMessageId: number, data: BotMessage): Promise<BotMessage> {
+    async updateCallbackStatus(botMessageId: number): Promise<BotMessage> {
         const values: any[] = [];
         const query = {
             text: `UPDATE bot_message
@@ -239,13 +239,13 @@ export default class RequestModel extends Model {
 
         try {
             const record = await this.findById(botMessageId);
-            const aData = { ...record, ...data };
+            const aData = { ...record};
             query.values = [
                 aData.requestId,
                 aData.natsSubject,
                 aData.natsContext,
                 aData.clusterName,
-                aData.receivedCallback ? aData.receivedCallback : false,
+                aData.receivedCallback ? aData.receivedCallback : true,
             ];
 
             const results = await this.runQuery(query);

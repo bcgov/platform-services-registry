@@ -152,24 +152,20 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
     }
   });
 
-export const fulfillEditRequest = async (profileId: number, request: any): Promise<NatsObject> =>
+export const fulfillEditRequest = async (profileId: number, requestId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
   new Promise(async (resolve, reject) => {
     const { RequestModel } = dm;
     try {
       const subject = config.get('nats:subject');
       const context = await contextForProvisioning(profileId, FulfillmentContextAction.Edit);
-
-      const requestId = request.id
-      const requestType = request.type
-      const requestEditObject = request.editObject
-      const clusterNames = context.namespaces[0].clusters;
+      const clusters = context.namespaces[0].clusters;
 
       if (!context) {
         const errmsg = `No context for ${profileId}`;
         reject(new Error(errmsg));
       }
 
-      switch (request.editType) {
+      switch (requestType) {
         case RequestEditType.QuotaSize:
           context.quota = requestEditObject.quota;
           context.quotas = requestEditObject.quotas;
@@ -188,14 +184,13 @@ export const fulfillEditRequest = async (profileId: number, request: any): Promi
       }
 
       const promises: any = [];
-      clusterNames.forEach(cluster => {
-        const clusterName = cluster.name;
+      clusters.forEach(cluster => {
         // create Bot Message record for each cluster project-profile edit
         promises.push(RequestModel.createBotMessageSet({
           requestId,
           natsSubject: subject,
           natsContext: context,
-          clusterName,
+          clusterName: cluster.name,
           receivedCallback: false,
         }));
       })

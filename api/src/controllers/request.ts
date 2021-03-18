@@ -110,8 +110,13 @@ export const requestProjectProfileEdit = async (
       user_id: user.id,
     });
 
+    if (!request.id) {
+      const errmsg = `No request id for ${profileId}`;
+      throw new Error(errmsg);
+    }
+
     if (!requiresHumanAction){
-      await fulfillEditRequest(profileId, request);
+      await fulfillEditRequest(profileId, request.id, editType, editObject);
     }
 
     res.status(204).end();
@@ -179,9 +184,13 @@ export const requestProfileContactsEdit = async (
         user_id: user.id,
       });
 
+      if (!request.id) {
+        const errmsg = `No request id for ${profileId}`;
+        throw new Error(errmsg);
+      }
 
       if (!requiresHumanAction){
-        await fulfillEditRequest(profileId, request);
+        await fulfillEditRequest(profileId, request.id, editType, editObject);
       }
 
     } else if (contactNameEdit) {
@@ -237,8 +246,13 @@ export const requestProfileQuotaEdit = async (
       user_id: user.id,
     });
 
+    if (!request.id) {
+      const errmsg = `No request id for ${profileId}`;
+      throw new Error(errmsg);
+    }
+
     if (!requiresHumanAction){
-      await fulfillEditRequest(profileId, request);
+      await fulfillEditRequest(profileId, request.id, editType, editObject);
     }
 
     res.status(204).end();
