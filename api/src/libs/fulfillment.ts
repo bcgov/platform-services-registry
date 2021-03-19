@@ -20,7 +20,7 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
-import { RequestEditContacts, RequestEditType } from '../db/model/request';
+import { RequestEditType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import { getProfileCurrentQuotaSize } from './profile';
@@ -168,9 +168,8 @@ export const fulfillEditRequest = async (profileId: number, requestType: Request
           context.quotas = requestEditObject.quotas;
           break;
         case RequestEditType.Contacts:
-          Object.values(RequestEditContacts).forEach(contact => {
-            context[contact] = requestEditObject[contact];
-          });
+          context.productOwner = requestEditObject.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
+          context.technicalContact = requestEditObject.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
           break;
         case RequestEditType.ProjectProfile:
           context.description = requestEditObject.description;

@@ -23,11 +23,6 @@ export const enum RequestEditType {
     ProjectProfile = 'description',
 }
 
-export enum RequestEditContacts {
-    ProductOwner = 'productOwner',
-    TechnicalContact = 'technicalContact',
-}
-
 export interface Request extends CommonFields {
     profileId: number;
     editType: RequestEditType;
