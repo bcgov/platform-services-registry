@@ -8,9 +8,14 @@ import FormSubtitle from './FormSubtitle';
 import FormTitle from './FormTitle';
 import TextInput from './TextInput';
 
-export const FormTC = () => {
-    const validator = getValidator();
+interface FormTCProps {
+    count: number;
+}
 
+export const FormTC: React.FC<AddFormTCProps> = (props) => {
+    const { count } = props
+    const validator = getValidator();
+    console.log(count)
     return (
         <Aux>
             <FormTitle>Who is the technical contact for this project?</FormTitle>
@@ -56,6 +61,7 @@ export const FormTC = () => {
                     placeholder="jane1100"
                 />
             </Flex>
+            <Field<number> name='tc-count' component='input' value={count} />
         </Aux>
     )
 };
@@ -64,7 +70,8 @@ interface AddFormTCProps {
     count: number;
 }
 
-export const AddFormTC: React.FC<AddFormTCProps> = ({ count }) => {
+export const AddFormTC: React.FC<AddFormTCProps> = (props: any) => {
+    const { count } = props
     const validator = getValidator();
     const tc_firstName: string = `tc-firstName${count}`;
     const tc_lastName: string = `tc-lastName${count}`;

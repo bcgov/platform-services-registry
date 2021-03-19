@@ -27,18 +27,17 @@ const CreateFormTC: React.FC = () => {
       setTCcount(TCcount + increment);
     }
   }
-  console.log(TCcount)
 
   let tcs = []
   for (let count = 1; count < TCcount + 1; count++) {
     const FormTCKey = `tc${count}`;
-    (count === 1) ? tcs.push(<FormTC key={FormTCKey} />) : tcs.push(<AddFormTC key={FormTCKey} count={count} />);
+    (count === 1) ? tcs.push(<FormTC key={FormTCKey} count={count} />) : tcs.push(<AddFormTC key={FormTCKey} count={count} />);
   }
-  console.log(tcs)
+
   return (
     <Aux>
       { tcs}
-      < div className="buttons" >
+      <div className="buttons">
         {(
           <StyledFormButton
             type="button"
@@ -48,16 +47,14 @@ const CreateFormTC: React.FC = () => {
             Remove TC
           </StyledFormButton>
         )}
-        {
-          (
-            <StyledFormButton
-              type="button"
-              onClick={() => changeTCCount(1)}
-            >
-              Add TC
-            </StyledFormButton>
-          )
-        }
+        {(
+          <StyledFormButton
+            type="button"
+            onClick={() => changeTCCount(1)}
+          >
+            Add TC
+          </StyledFormButton>
+        )}
       </div >
     </Aux >
 
