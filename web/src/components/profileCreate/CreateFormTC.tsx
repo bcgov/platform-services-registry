@@ -14,19 +14,12 @@
 // limitations under the License.
 //
 
-import { Label } from '@rebass/forms';
 import React, { useState } from 'react';
-import { Field } from 'react-final-form';
-import { Flex } from 'rebass';
 import Aux from '../../hoc/auxillary';
-import getValidator from '../../utils/getValidator';
 import { StyledFormButton } from '../common/UI/Button';
-import FormSubtitle from '../common/UI/FormSubtitle';
-import FormTitle from '../common/UI/FormTitle';
-import TextInput from '../common/UI/TextInput';
+import { AddFormTC, FormTC } from '../common/UI/FormTC';
 
 const CreateFormTC: React.FC = () => {
-  const validator = getValidator();
   const [TCcount, setTCcount] = useState(1);
 
   const changeTCCount = (increment: number) => {
@@ -38,64 +31,14 @@ const CreateFormTC: React.FC = () => {
 
   let tcs = []
   for (let count = 1; count < TCcount + 1; count++) {
-    const key: string = `tc${count}`;
-    const tc_firstName: string = `tc-firstName${count}`;
-    const tc_lastName: string = `tc-lastName${count}`;
-    const tc_email: string = `tc-email${count}`;
-    const tc_githubId: string = `tc-githubId${count}`;
-
-    tcs.push(
-      <Aux key={key}>
-        <FormTitle>Who is the technical contact for this project?</FormTitle>
-        <FormSubtitle>
-          Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will
-          use this information to contact them with technical questions or notify them about platform
-          events.
-        </FormSubtitle>
-        <Flex flexDirection="column">
-          <Label htmlFor={tc_firstName}>First Name</Label>
-          <Field<string>
-            name={tc_firstName}
-            component={TextInput}
-            validate={validator.mustBeValidName}
-            placeholder="Jane"
-          />
-        </Flex>
-        <Flex flexDirection="column">
-          <Label htmlFor={tc_lastName}>Last Name</Label>
-          <Field<string>
-            name={tc_lastName}
-            component={TextInput}
-            validate={validator.mustBeValidName}
-            placeholder="Doe"
-          />
-        </Flex>
-        <Flex flexDirection="column">
-          <Label htmlFor={tc_email}>Email Address</Label>
-          <Field<string>
-            name={tc_email}
-            component={TextInput}
-            validate={validator.mustBeValidEmail}
-            placeholder="jane.doe@example.com"
-          />
-        </Flex>
-        <Flex flexDirection="column">
-          <Label htmlFor={tc_githubId}>GitHub Id</Label>
-          <Field<string>
-            name={tc_githubId}
-            component={TextInput}
-            validate={validator.mustBeValidGithubName}
-            placeholder="jane1100"
-          />
-        </Flex>
-      </Aux>
-    );
+    const FormTCKey = `tc${count}`;
+    (count === 1) ? tcs.push(<FormTC key={FormTCKey} />) : tcs.push(<AddFormTC key={FormTCKey} count={count} />);
   }
   console.log(tcs)
   return (
     <Aux>
-      {tcs}
-      <div className="buttons">
+      { tcs}
+      < div className="buttons" >
         {(
           <StyledFormButton
             type="button"
@@ -105,15 +48,17 @@ const CreateFormTC: React.FC = () => {
             Remove TC
           </StyledFormButton>
         )}
-        {(
-          <StyledFormButton
-            type="button"
-            onClick={() => changeTCCount(1)}
-          >
-            Add TC
-          </StyledFormButton>
-        )}
-      </div>
+        {
+          (
+            <StyledFormButton
+              type="button"
+              onClick={() => changeTCCount(1)}
+            >
+              Add TC
+            </StyledFormButton>
+          )
+        }
+      </div >
     </Aux >
 
   );
