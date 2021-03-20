@@ -17,7 +17,9 @@
 import React, { useState } from 'react';
 import Aux from '../../hoc/auxillary';
 import { StyledFormButton } from '../common/UI/Button';
-import { AddFormTC, FormTC } from '../common/UI/FormTC';
+import FormSubtitle from '../common/UI/FormSubtitle';
+import { AddFormTC } from '../common/UI/FormTC';
+import FormTitle from '../common/UI/FormTitle';
 
 const CreateFormTC: React.FC = () => {
   const [TCcount, setTCcount] = useState(1);
@@ -28,15 +30,28 @@ const CreateFormTC: React.FC = () => {
     }
   }
 
-  let tcs = []
-  for (let count = 1; count < TCcount + 1; count++) {
+  let tcs: any = []
+  for (let count = 0; count < TCcount; count++) {
     const FormTCKey = `tc${count}`;
-    (count === 1) ? tcs.push(<FormTC key={FormTCKey} count={count} />) : tcs.push(<AddFormTC key={FormTCKey} count={count} />);
+    tcs.push(<AddFormTC key={FormTCKey} count={count} />);
   }
 
   return (
     <Aux>
+      <FormTitle>Who is the technical contact for this project?</FormTitle>
+      <FormSubtitle>
+        Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will
+        use this information to contact them with technical questions or notify them about platform
+        events. You can list up to 3 Technical Contacts.
+            </FormSubtitle>
+      {/* <FieldArray name="Technical-contacts">
+        {({ fields }) => (
+          fields.map((name, index) =>
+          ( */}
       { tcs}
+      {/* ))
+         )}
+       </FieldArray> */}
       <div className="buttons">
         {(
           <StyledFormButton
