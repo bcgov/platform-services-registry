@@ -29,6 +29,7 @@ const Wizard: React.FC<any> = ({ onSubmit, children }) => {
     if (isLastPage) {
       return onSubmit(values);
     }
+    console.log(formData)
     next(formData);
   };
 
