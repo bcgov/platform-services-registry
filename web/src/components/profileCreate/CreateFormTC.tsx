@@ -15,20 +15,37 @@
 //
 
 import React, { useState } from 'react';
+import { Field } from 'react-final-form';
 import Aux from '../../hoc/auxillary';
+import { AddFormTC } from '../common/UI/AddFormTC';
 import { StyledFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
-import { AddFormTC } from '../common/UI/FormTC';
 import FormTitle from '../common/UI/FormTitle';
+import TCCountInput from '../common/UI/TCCountInput';
 
 const CreateFormTC: React.FC = () => {
   const [TCcount, setTCcount] = useState(1);
+  // const [TCs, setTCs] = useState([] as any)
 
   const changeTCCount = (increment: number) => {
     if (TCcount + increment > 0 && TCcount + increment <= 3) {
       setTCcount(TCcount + increment);
+      // const FormTCKey = `tc${TCcount}`;
+      // increment > 0 ? setTCs([...TCs, <AddFormTC key={FormTCKey} count={TCcount} />]) : setTCs((TCs: any[]) => TCs.pop());
     }
   }
+
+  // const changeTCCount = (increment: number) => {
+  //   if (TCcount + increment > 0 && TCcount + increment <= 3) {
+  //     setTCcount(TCcount + increment);
+  //   }
+  // }
+
+  // let tcs: any = []
+  // for (let count = 0; count < TCcount; count++) {
+  //   const FormTCKey = `tc${count}`;
+  //   tcs.push(<AddFormTC key={FormTCKey} count={count} />);
+  // }
 
   let tcs: any = []
   for (let count = 0; count < TCcount; count++) {
@@ -48,7 +65,7 @@ const CreateFormTC: React.FC = () => {
         {({ fields }) => (
           fields.map((name, index) =>
           ( */}
-      { tcs}
+      {tcs}
       {/* ))
          )}
        </FieldArray> */}
@@ -71,6 +88,12 @@ const CreateFormTC: React.FC = () => {
           </StyledFormButton>
         )}
       </div >
+      <Field
+        name="tc_count"
+        component={TCCountInput}
+        defaultValue={TCcount}
+        type="hidden"
+      />
     </Aux >
 
   );
