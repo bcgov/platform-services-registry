@@ -25,27 +25,13 @@ import TCCountInput from '../common/UI/TCCountInput';
 
 const CreateFormTC: React.FC = () => {
   const [TCcount, setTCcount] = useState(1);
-  // const [TCs, setTCs] = useState([] as any)
+
 
   const changeTCCount = (increment: number) => {
     if (TCcount + increment > 0 && TCcount + increment <= 3) {
       setTCcount(TCcount + increment);
-      // const FormTCKey = `tc${TCcount}`;
-      // increment > 0 ? setTCs([...TCs, <AddFormTC key={FormTCKey} count={TCcount} />]) : setTCs((TCs: any[]) => TCs.pop());
     }
   }
-
-  // const changeTCCount = (increment: number) => {
-  //   if (TCcount + increment > 0 && TCcount + increment <= 3) {
-  //     setTCcount(TCcount + increment);
-  //   }
-  // }
-
-  // let tcs: any = []
-  // for (let count = 0; count < TCcount; count++) {
-  //   const FormTCKey = `tc${count}`;
-  //   tcs.push(<AddFormTC key={FormTCKey} count={count} />);
-  // }
 
   let tcs: any = []
   for (let count = 0; count < TCcount; count++) {
@@ -61,6 +47,7 @@ const CreateFormTC: React.FC = () => {
         use this information to contact them with technical questions or notify them about platform
         events. You can list up to 3 Technical Contacts.
             </FormSubtitle>
+      {/* Possibly use FieldArray to manage FormData as an array? */}
       {/* <FieldArray name="Technical-contacts">
         {({ fields }) => (
           fields.map((name, index) =>
@@ -68,7 +55,7 @@ const CreateFormTC: React.FC = () => {
       {tcs}
       {/* ))
          )}
-       </FieldArray> */}
+      </FieldArray> */}
       <div className="buttons">
         {(
           <StyledFormButton
