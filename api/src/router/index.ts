@@ -26,6 +26,7 @@ import ehlo from './routes/ehlo';
 import ministry from './routes/ministry';
 import profile from './routes/profile';
 import provision from './routes/provision';
+import quota from './routes/quota';
 import task from './routes/task';
 
 const corsOptions = {
@@ -41,6 +42,7 @@ export const router = app => {
   // Any routes following the authentication middleware line below
   // will require authentication.
   app.use('/api/v1/ministry', ministry);
+  app.use('/api/v1/quota', quota);
   app.use(passport.authenticate('jwt', { session: false }));
   app.use('/api/v1/profile', profile);
   app.use('/api/v1/contact', contact);
