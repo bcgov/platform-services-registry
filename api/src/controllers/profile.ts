@@ -22,6 +22,7 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
+import { AuthenticatedUser } from '../libs/authmware';
 import { getProfileCurrentQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { fetchEditRequests, requestContactsEdit, requestQuotaSizeEdit } from '../libs/request';
@@ -70,9 +71,9 @@ export const fetchProfileContacts = async (
 };
 
 export const updateProfileContacts = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ContactModel } = dm;
+  const { ContactModel, RequestModel } = dm;
   const { profileId } = params;
   const { productOwner, technicalContact } = body;
 
@@ -90,14 +91,18 @@ export const updateProfileContacts = async (
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
 
     if (provisionerRelatedChanges) {
-      await requestContactsEdit(Number(profileId), body);
+      await requestContactsEdit(Number(profileId), body, user, provisionerRelatedChanges);
     } else {
+      const request = await requestContactsEdit(Number(profileId), body, user, provisionerRelatedChanges);
+
       const updatePromises: any = [];
       contacts.forEach((contact: Contact) => {
         updatePromises.push(ContactModel.update(Number(contact.id), contact));
       });
 
       await Promise.all(updatePromises);
+
+      await RequestModel.isComplete(Number(request.id));
     }
 
     res.status(204).end();
@@ -153,7 +158,7 @@ export const fetchProfileAllowedQuotaSizes = async (
 };
 
 export const updateProfileQuotaSize = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -163,6 +168,7 @@ export const updateProfileQuotaSize = async (
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
     const allowedQuotaSizes = getAllowedQuotaSizes(quotaSize);
+    const requiresHumanAction = true;
 
     // verify if requested quota size is valid
     if (!(requestedQuotaSize && allowedQuotaSizes.includes(requestedQuotaSize))) {
@@ -170,7 +176,7 @@ export const updateProfileQuotaSize = async (
       throw new Error(errmsg);
     }
 
-    await requestQuotaSizeEdit(Number(profileId), body);
+    await requestQuotaSizeEdit(Number(profileId), body, user, requiresHumanAction);
 
     res.status(204).end();
   } catch (err) {

@@ -18,19 +18,33 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import DataManager from '../db';
-import { Request, RequestEditType } from '../db/model/request';
-import { fulfillEditRequest } from '../libs/fulfillment';
+import { Request, RequestEditType, RequestType } from '../db/model/request';
+import { AuthenticatedUser } from './authmware';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
 const { RequestModel, QuotaModel } = dm;
 
-export const requestProjectProfileEdit = async (profileId: number, body: any): Promise<Request> => {
+export const requestProjectProfileCreate = async (profileId: number, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
     try {
+        const requestType = RequestType.Create;
+
+        return await createRequest(requestType, user.id, requiresHumanAction, profileId);
+    } catch (err) {
+        const message = `Unable to create request for profile ${profileId}`;
+        logger.error(`${message}, err = ${err.message}`);
+
+        throw err;
+    }
+};
+
+export const requestProjectProfileEdit = async (profileId: number, body: any, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
+    try {
+        const requestType = RequestType.Edit;
         const editType = RequestEditType.ProjectProfile;
         const editObject = body;
 
-        return await requestEdit(editType, editObject, profileId);
+        return await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
     } catch (err) {
         const message = `Unable to request project-profile edit for profile ${profileId}`;
         logger.error(`${message}, err = ${err.message}`);
@@ -39,16 +53,17 @@ export const requestProjectProfileEdit = async (profileId: number, body: any): P
     }
 };
 
-export const requestContactsEdit = async (profileId: number, body: any): Promise<Request> => {
+export const requestContactsEdit = async (profileId: number, body: any, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
     if (!profileId) {
         throw new Error('Cant get profile id');
     }
     const { productOwner, technicalContact } = body;
     try {
+        const requestType = RequestType.Edit;
         const editType = RequestEditType.Contacts;
         const editObject = [productOwner, technicalContact];
 
-        return await requestEdit(editType, editObject, profileId);
+        return await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
     } catch (err) {
         const message = `Unable to request contacts edit for profile ${profileId}`;
         logger.error(`${message}, err = ${err.message}`);
@@ -57,17 +72,18 @@ export const requestContactsEdit = async (profileId: number, body: any): Promise
     }
 };
 
-export const requestQuotaSizeEdit = async (profileId: number, body: any): Promise<Request> => {
+export const requestQuotaSizeEdit = async (profileId: number, body: any, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
     const { requestedQuotaSize } = body;
 
     try {
+        const requestType = RequestType.Edit;
         const editType = RequestEditType.QuotaSize;
         const editObject = {
             quota: requestedQuotaSize,
             quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
         };
 
-        return await requestEdit(editType, editObject, profileId);
+        return await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
     } catch (err) {
         const message = `Unable to request quota edit for profile ${profileId}`;
         logger.error(`${message}, err = ${err.message}`);
@@ -87,7 +103,7 @@ export const fetchEditRequests = async (profileId: number): Promise<Request[]> =
     }
 };
 
-const requestEdit = async (editType: RequestEditType, editObject?: any, profileId?: number): Promise<Request> => {
+const createRequest = async (type: RequestType, userId: number, requiresHumanAction: boolean, profileId?: number, editType?: RequestEditType, editObject?: any): Promise<Request> => {
     if (!editObject) {
         throw new Error('Cant generate request edit object');
     }
@@ -100,12 +116,13 @@ const requestEdit = async (editType: RequestEditType, editObject?: any, profileI
         throw new Error('Cant proceed due to existing request');
     }
 
-    const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
     return await RequestModel.create({
         profileId,
         editType,
         editObject: JSON.stringify(editObject),
-        natsSubject,
-        natsContext: JSON.stringify(natsContext),
+        type,
+        requiresHumanAction,
+        isActive: true,
+        userId,
     });
 };

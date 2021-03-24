@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-27.
-//
+
 
 'use strict';
 
@@ -24,15 +23,16 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Request, RequestEditType } from '../db/model/request';
-import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
+import { AuthenticatedUser } from '../libs/authmware';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import { applyProfileRequestedQuotaSize, isProfileProvisioned, updateProvisionedProfile } from '../libs/profile';
+import { requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
 
 export const provisionProfileNamespaces = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
   const { ProfileModel, NamespaceModel, ClusterModel } = dm;
@@ -48,11 +48,16 @@ export const provisionProfileNamespaces = async (
         throw new Error(errmsg);
       }
 
-      // @ts-expect-error
-      await NamespaceModel.createProjectSet(profileId, cluster.id, profile.namespacePrefix);
+      await NamespaceModel.createProjectSet(profileId, Number(cluster.id), profile.namespacePrefix);
+
+      const requiresHumanAction = true;
+      await requestProjectProfileCreate(Number(profile.id), user, requiresHumanAction);
     }
 
-    await fulfillNamespaceProvisioning(profileId);
+
+    logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
+    await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+    logger.info(`CHES message sent for ${profileId}`);
 
     res.status(202).end();
   } catch (err) {
@@ -67,7 +72,7 @@ export const provisionCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const { prefix } = body;
+  const { prefix, clusterName } = body;
 
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
@@ -78,7 +83,7 @@ export const provisionCallbackHandler = async (
 
     const result = await isProfileProvisioned(profile);
     if (result) {
-      await updateProfileEdit(profile);
+      await updateProfileEdit(profile, clusterName);
     } else {
       await updateProvisionedNamespaces(profile);
     }
@@ -92,9 +97,23 @@ export const provisionCallbackHandler = async (
 };
 
 const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<void> => {
+  const { RequestModel } = dm
   try {
     await updateProvisionedProfile(profile);
+    // TODO (yh note): We could perhaps have a util function that checks the query params validation 
+    // (besides the existing one that checks for POST body structure based on Model required types) 
+    // and serve 400 bad request consistently
+    if (!profile.id){
+    throw new Error('Cant read the given profileId');
+    }
 
+    const requests = await RequestModel.findForProfile(profile.id);
+    const request = requests.pop();
+    if (!request) {
+      return;
+    }
+
+    await RequestModel.isComplete(Number(request.id));
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
     logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
@@ -109,12 +128,12 @@ const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<voi
   }
 };
 
-const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
+const updateProfileEdit = async (profile: ProjectProfile, clusterName: string): Promise<void> => {
   const { RequestModel } = dm;
 
   try {
     if (!profile.id) {
-      throw new Error('Cant read the given profileId');
+      throw new Error('Cannot read the given profileId');
     }
 
     const requests = await RequestModel.findForProfile(profile.id);
@@ -122,6 +141,13 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
     if (!request) {
       return;
     }
+
+    console.log(clusterName)
+
+    //const completedBotMessages = await processBotMessage(request, clusterName)
+
+    //TODO: process this logic for each bot_message
+    //console.log(completedBotMessages)
 
     switch (request.editType) {
       case RequestEditType.ProjectProfile:
@@ -137,7 +163,7 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
         const errmsg = `Invalid edit type for request ${request.id}`;
         throw new Error(errmsg);
     }
-    await RequestModel.delete(Number(request.id));
+    await RequestModel.isComplete(Number(request.id));
   } catch (err) {
     const message = `Unable to update profile edit for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -146,12 +172,16 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
   }
 };
 
-
 const processProjectProfileEdit = async (request: Request): Promise<void> => {
   const { ProfileModel } = dm;
 
   try {
     const { profileId, editObject } = request;
+
+    if (!editObject){
+      throw new Error('Cannot read the given editObject');
+    }
+
     const profile = JSON.parse(editObject);
 
     await ProfileModel.update(Number(profileId), profile);
@@ -168,6 +198,11 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
 
   try {
     const { editObject } = request;
+    
+    if (!editObject){
+      throw new Error('Cannot read the given editObject');
+    }
+    
     const contacts = JSON.parse(editObject);
 
     const updatePromises: any = [];
@@ -188,6 +223,11 @@ const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
   const { ProfileModel } = dm;
   try {
     const { profileId, editObject } = request;
+
+    if (!editObject){
+      throw new Error('Cannot read the given editObject');
+    }
+    
     const { quota } = JSON.parse(editObject);
     const profile = await ProfileModel.findById(profileId);
 
@@ -199,3 +239,31 @@ const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
     throw err;
   }
 };
+
+// const processBotMessage = async (request: Request, clusterName: string): Promise<void> => {
+//   const { RequestModel } = dm;
+
+//   if (!request.id) {
+//     return;
+//   }
+
+//   // Check for active bot_messages
+//   const botMessages = await RequestModel.findForRequest(request.id)
+
+
+//   const updatePromises: any = [];
+//   botMessages.forEach((botMessage: BotMessage) => {
+//     switch (botMessage.clusterName) {
+//       case clusterName:
+//         updatePromises.push(RequestModel.updateCallbackStatus(Number(botMessage.id)));
+//         break;
+//       default:
+//         break;
+//     }
+//   });
+
+//   await Promise.all(updatePromises);
+
+
+
+// }

@@ -21,10 +21,15 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
 import { RequestEditContacts, RequestEditType } from '../db/model/request';
+import { fetchBotMessageRequests } from '../libs/bot-message';
 import { replaceForDescription } from '../libs/utils';
+import { createBotMessageSet } from './bot-message';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import { getProfileCurrentQuotaSize } from './profile';
+import { fetchEditRequests } from './request';
 import shared from './shared';
+
+const dm = new DataManager(shared.pgPool);
 
 export interface Context {
   something: any;
@@ -125,18 +130,25 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
 export const fulfillNamespaceProvisioning = async (profileId: number) =>
   new Promise(async (resolve, reject) => {
     try {
-      const subject = config.get('nats:subject');
-      const context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
-
-      if (!context) {
-        const errmsg = `No context for ${profileId}`;
-        reject(new Error(errmsg));
+      const requests = await fetchEditRequests(profileId);
+      const request = requests.pop();
+    
+      if (!request) {
+        return;
       }
 
-      await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
+      await createBotMessageSet(profileId, request);
+      
+      const botMessageSet = fetchBotMessageRequests(profileId)
+      const promises: any = [];
+      botMessageSet.forEach(botMessage => {
+        promises.push(sendNatsMessage(profileId, {
+          natsSubject: botMessage.natsSubject,
+          natsContext: botMessage.natsContext,
+        }));
+      })
+
+      await Promise.all(promises);
 
       logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
       await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
@@ -151,7 +163,7 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
     }
   });
 
-export const fulfillEditRequest = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
+export const fulfillEditRequest = async (profileId: number, requestId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
   new Promise(async (resolve, reject) => {
     try {
       const subject = config.get('nats:subject');

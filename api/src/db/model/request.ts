@@ -16,6 +16,11 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
+export const enum RequestType {
+    Create = 'create',
+    Edit = 'edit',
+}
+
 // TODO: change value 'description' to 'project profile'
 export const enum RequestEditType {
     Contacts = 'contacts',
@@ -30,16 +35,26 @@ export enum RequestEditContacts {
 
 export interface Request extends CommonFields {
     profileId: number;
-    editType: RequestEditType;
-    editObject: string;
-    natsSubject?: string;
-    natsContext?: string;
+    editType?: RequestEditType;
+    editObject?: string;
+    type: RequestType;
+    requiresHumanAction: boolean;
+    isActive: boolean;
+    userId: number;
+}
+
+export interface BotMessage extends CommonFields {
+    requestId: number;
+    natsSubject: string;
+    natsContext: string;
+    clusterName: string;
+    receivedCallback: boolean;
 }
 
 export default class RequestModel extends Model {
     table: string = 'request';
     requiredFields: string[] = [
-        'profileId', 'editType', 'editObject',
+        'profileId', 'type', 'requires_human_action', 'is_active', 'user_id',
     ];
     pool: Pool;
 
@@ -51,14 +66,16 @@ export default class RequestModel extends Model {
     async create(data: Request): Promise<Request> {
         const query = {
             text: `INSERT INTO ${this.table}
-            (profile_id, edit_type, edit_object, nats_subject, nats_context)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            (profile_id, edit_type, edit_object, type, requires_human_action, is_active, user_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
             values: [
                 data.profileId,
                 data.editType,
                 data.editObject,
-                data.natsSubject,
-                data.natsContext,
+                data.type,
+                data.requiresHumanAction,
+                data.isActive,
+                data.userId,
             ],
         };
 
@@ -78,7 +95,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `UPDATE ${this.table}
             SET
-            profile_id = $1, edit_type = $2, edit_object = $3, nats_subject = $4, nats_context = $5
+            profile_id = $1, edit_type = $2, edit_object = $3, type = $4, requires_human_action = $5,is_active = $6, user_id = $7
             WHERE id = ${requestId}
             RETURNING *;`,
             values,
@@ -91,8 +108,10 @@ export default class RequestModel extends Model {
                 aData.profileId,
                 aData.editType,
                 aData.editObject,
-                aData.natsSubject,
-                aData.natsContext,
+                aData.type,
+                aData.requiresHumanAction,
+                aData.isActive,
+                aData.userId,
             ];
 
             const results = await this.runQuery(query);
@@ -130,7 +149,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                    WHERE profile_id = ${profileId} AND archived = false;
+                    WHERE profile_id = ${profileId} AND is_active = true AND archived = false;
             `,
         };
 
@@ -138,6 +157,121 @@ export default class RequestModel extends Model {
             return await this.runQuery(query);
         } catch (err) {
             const message = `Unable to fetch Request(s) with Profile Id ${profileId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findAllActive(): Promise<Request[]> {
+        const query = {
+            text: `
+                SELECT * FROM ${this.table}
+                    is_active = true AND archived = false;
+            `,
+        };
+
+        try {
+            return await this.runQuery(query);
+        } catch (err) {
+            const message = `Unable to fetch all active Request(s)`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async isComplete(requestId: number): Promise<Request> {
+        const query = {
+            text: `UPDATE ${this.table}
+            SET
+            is_active = false
+            WHERE id = ${requestId}
+            RETURNING *;
+        `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to complete request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async createBotMessage(data: BotMessage): Promise<BotMessage> {
+        const query = {
+            text: `INSERT INTO bot_message
+            (request_id, nats_subject, nats_context, cluster_name, received_callback)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            values: [
+                data.requestId,
+                data.natsSubject,
+                data.natsContext,
+                data.clusterName,
+                data.receivedCallback,
+            ],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to create request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+
+    async updateCallbackStatus(botMessageId: number): Promise<BotMessage> {
+        const values: any[] = [];
+        const query = {
+            text: `UPDATE bot_message
+            SET
+            request_id = $1, nats_subject = $2, nats_context = $3, cluster_name = $4, received_callback = $5
+            WHERE id = ${botMessageId}
+            RETURNING *;`,
+            values,
+        };
+
+        try {
+            const record = await this.findById(botMessageId);
+            const aData = { ...record};
+            query.values = [
+                aData.requestId,
+                aData.natsSubject,
+                aData.natsContext,
+                aData.clusterName,
+                aData.receivedCallback ? aData.receivedCallback : true,
+            ];
+
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to update request ID ${botMessageId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findForRequest(requestId: number): Promise<BotMessage[]> {
+        const query = {
+            text: `
+                SELECT * FROM bot_message
+                    WHERE request_id = ${requestId} AND received_callback = false AND archived = false;
+            `,
+        };
+
+        try {
+            return await this.runQuery(query);
+        } catch (err) {
+            const message = `Unable to fetch Request(s) with Request Id ${requestId}`;
             logger.error(`${message}, err = ${err.message}`);
 
             throw err;
