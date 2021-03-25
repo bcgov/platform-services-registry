@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import { Response } from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -21,10 +23,13 @@ import { Pool } from 'pg';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../src/controllers/namespace';
 
 const p0 = path.join(__dirname, 'fixtures/select-namespace.json');
-const select = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const selectNamespace = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/insert-namespace.json');
-const insert = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const insertNamespace = JSON.parse(fs.readFileSync(p1, 'utf8'));
+
+const p2 = path.join(__dirname, 'fixtures/select-project-set-namespaces.json');
+const selectProjectSetNamespaces = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 const client = new Pool().connect();
 
@@ -58,7 +63,7 @@ describe('Namespace event handlers', () => {
 
   it('A Namespace is created', async () => {
     const req = {
-      body: insert,
+      body: insertNamespace,
       params: { profileId: 1 },
     };
 
@@ -68,7 +73,7 @@ describe('Namespace event handlers', () => {
       updatedAt: new Date(),
     };
 
-    client.query.mockReturnValueOnce({ rows: [{ ...insert, ...addon }] });
+    client.query.mockReturnValueOnce({ rows: [{ ...insertNamespace, ...addon }] });
 
     // @ts-ignore
     await createNamespace(req, ex.res);
@@ -86,7 +91,7 @@ describe('Namespace event handlers', () => {
 
   it('A Namespace fails to create', async () => {
     const req = {
-      body: insert,
+      body: insertNamespace,
     };
 
     client.query.mockImplementation(() => { throw new Error() });
@@ -101,9 +106,9 @@ describe('Namespace event handlers', () => {
 
   it('All Namespaces are returned', async () => {
     const req = {
-      params: { profileId: 1 },
+      params: { profileId: 4 },
     };
-    client.query.mockReturnValueOnce({ rows: select });
+    client.query.mockReturnValueOnce({ rows: selectProjectSetNamespaces });
 
     // @ts-ignore
     await fetchProfileNamespaces(req, ex.res);
@@ -131,11 +136,11 @@ describe('Namespace event handlers', () => {
   it('A single Namespace is returned', async () => {
     const req = {
       params: {
-        profileId: 1,
-        namespaceId: 1,
+        profileId: 4,
+        namespaceId: 13,
       },
     };
-    client.query.mockReturnValueOnce({ rows: [select[0]] });
+    client.query.mockReturnValueOnce({ rows: selectNamespace });
 
     // @ts-ignore
     await fetchProfileNamespace(req, ex.res);
@@ -161,7 +166,7 @@ describe('Namespace event handlers', () => {
   });
 
   it('A Namespace is updated', async () => {
-    const body = JSON.parse(JSON.stringify(insert));
+    const body = JSON.parse(JSON.stringify(insertNamespace));
     const req = {
       params: {
         profileId: 1,
@@ -183,7 +188,7 @@ describe('Namespace event handlers', () => {
   });
 
   it('A Namespace fails to update', async () => {
-    const body = JSON.parse(JSON.stringify(insert));
+    const body = JSON.parse(JSON.stringify(insertNamespace));
     const req = {
       params: {
         profileId: 1,
@@ -208,7 +213,7 @@ describe('Namespace event handlers', () => {
       },
     }
 
-    client.query.mockReturnValueOnce({ rows: [{ ...insert, archived: true }] });
+    client.query.mockReturnValueOnce({ rows: [{ ...insertNamespace, archived: true }] });
 
     // @ts-ignore
     await archiveProfileNamespace(req, ex.res);

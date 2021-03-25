@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import { NextFunction } from 'express';
 import fs from 'fs';
 import path from 'path';

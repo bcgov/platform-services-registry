@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import { QuotaSize } from '../src/db/model/quota';
 import { getAllowedQuotaSizes } from '../src/libs/quota';
 

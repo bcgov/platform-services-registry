@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
@@ -23,13 +25,14 @@ import {
   fetchProfileContacts,
   fetchProfileEditRequests,
   fetchProfileQuotaSize,
-  updateProfileContacts,
-  updateProfileQuotaSize
+  updateProfileContacts, updateProfileQuotaSize
 } from '../src/controllers/profile';
 import ContactModel from '../src/db/model/contact';
-import { getProfileCurrentQuotaSize } from '../src/libs/profile';
+import { QuotaSize } from '../src/db/model/quota';
+import RequestModel from '../src/db/model/request';
+import { getQuotaSize } from '../src/libs/profile';
 import { getAllowedQuotaSizes } from '../src/libs/quota';
-import { fetchEditRequests, requestContactsEdit, requestQuotaSizeEdit } from '../src/libs/request';
+import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../src/libs/request';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
@@ -37,14 +40,15 @@ const selectProfile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
 const selectProfilesContacts = JSON.parse(fs.readFileSync(p1, 'utf8'));
-const productOwner = selectProfilesContacts[0];
-const technicalContact = selectProfilesContacts[1];
+
+const p2 = path.join(__dirname, 'fixtures/get-requests.json');
+const requests = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 const client = new Pool().connect();
 
 jest.mock('../src/libs/profile', () => {
   return {
-    getProfileCurrentQuotaSize: jest.fn().mockResolvedValue('small'),
+    getQuotaSize: jest.fn().mockResolvedValue('small'),
   };
 });
 
@@ -55,9 +59,9 @@ jest.mock('../src/libs/quota', () => {
 });
 
 jest.mock('../src/libs/request', () => ({
-  requestContactsEdit: jest.fn(),
-  requestQuotaSizeEdit: jest.fn(),
-  fetchEditRequests: jest.fn(),
+  requestProjectProfileEdit: jest.fn(),
+  requestProfileContactsEdit: jest.fn(),
+  requestProfileQuotaSizeEdit: jest.fn(),
 }));
 
 describe('Profile event handlers', () => {
@@ -137,10 +141,10 @@ describe('Profile event handlers', () => {
       },
       technicalContact: {
         id: 2,
-        firstName: 'JimTEST',
+        firstName: 'JohnTEST',
         lastName: 'DoeTEST',
-        email: 'jim@example.com',
-        githubId: 'jim1100',
+        email: 'john.doe@example.com',
+        githubId: 'john1100',
         roleId: 2,
       }
     };
@@ -149,15 +153,12 @@ describe('Profile event handlers', () => {
       body,
     };
 
-    client.query.mockReturnValueOnce({ rows: [productOwner] });
-    client.query.mockReturnValueOnce({ rows: [technicalContact] });
+    client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
     const update = ContactModel.prototype.update = jest.fn();
 
     await updateProfileContacts(req, ex.res);
     expect(update).toHaveBeenCalledTimes(2);
-    expect(requestContactsEdit).toHaveBeenCalledTimes(0);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(requestProfileContactsEdit).toHaveBeenCalledTimes(0);
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -175,10 +176,10 @@ describe('Profile event handlers', () => {
       },
       technicalContact: {
         id: 2,
-        firstName: 'Jim',
+        firstName: 'John',
         lastName: 'Doe',
-        email: 'jimTEST@example.com',
-        githubId: 'jim1100TEST',
+        email: 'john.doeTEST@example.com',
+        githubId: 'john1100TEST',
         roleId: 2,
       }
     };
@@ -187,15 +188,12 @@ describe('Profile event handlers', () => {
       body,
     };
 
-    client.query.mockReturnValueOnce({ rows: [productOwner] });
-    client.query.mockReturnValueOnce({ rows: [technicalContact] });
+    client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
     const update = ContactModel.prototype.update = jest.fn();
 
     await updateProfileContacts(req, ex.res);
     expect(update).toHaveBeenCalledTimes(0);
-    expect(requestContactsEdit).toHaveBeenCalledTimes(1);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(requestProfileContactsEdit).toHaveBeenCalledTimes(1);
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -219,11 +217,11 @@ describe('Profile event handlers', () => {
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
+    // @ts-ignore
+    getQuotaSize.mockResolvedValue(QuotaSize.Small);
 
     await fetchProfileQuotaSize(req, ex.res);
-    expect(getProfileCurrentQuotaSize).toHaveBeenCalledTimes(1);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(getQuotaSize).toHaveBeenCalledTimes(1);
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -238,8 +236,6 @@ describe('Profile event handlers', () => {
     client.query.mockImplementation(() => { throw new Error() });
 
     await expect(fetchProfileQuotaSize(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
-
-    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
@@ -252,8 +248,6 @@ describe('Profile event handlers', () => {
 
     await fetchProfileAllowedQuotaSizes(req, ex.res);
     expect(getAllowedQuotaSizes).toHaveBeenCalledTimes(1);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -268,14 +262,12 @@ describe('Profile event handlers', () => {
     client.query.mockImplementation(() => { throw new Error() });
 
     await expect(fetchProfileAllowedQuotaSizes(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
-
-    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
   it('Request profile quota size edit successfully', async () => {
     const body = {
-      requestedQuotaSize: 'medium',
+      requestedQuotaSize: QuotaSize.Medium,
     };
     const req = {
       params: { profileId: 4 },
@@ -285,9 +277,8 @@ describe('Profile event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
 
     await updateProfileQuotaSize(req, ex.res);
-    expect(requestQuotaSizeEdit).toHaveBeenCalledTimes(1);
 
-    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(requestProfileQuotaSizeEdit).toHaveBeenCalledTimes(1);
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
@@ -295,7 +286,7 @@ describe('Profile event handlers', () => {
 
   it('Request profile quota size edit should throw due to invalid quota upgrade', async () => {
     const body = {
-      requestedQuotaSize: 'large',
+      requestedQuotaSize: QuotaSize.Large,
     };
     const req = {
       params: { profileId: 4 },
@@ -305,8 +296,7 @@ describe('Profile event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
 
     await expect(updateProfileQuotaSize(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
-    expect(requestQuotaSizeEdit).toHaveBeenCalledTimes(0);
-    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(requestProfileQuotaSizeEdit).toHaveBeenCalledTimes(0);
     expect(ex.responseData).toBeUndefined();
   });
 
@@ -323,7 +313,6 @@ describe('Profile event handlers', () => {
 
     await expect(updateProfileQuotaSize(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
-    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
@@ -332,10 +321,10 @@ describe('Profile event handlers', () => {
       params: { profileId: 4 },
     };
 
-    await fetchProfileEditRequests(req, ex.res);
-    expect(fetchEditRequests).toHaveBeenCalledTimes(1);
+    RequestModel.prototype.findForProfile = jest.fn().mockResolvedValue(requests);
 
-    expect(client.query.mock.calls).toMatchSnapshot();
+    await fetchProfileEditRequests(req, ex.res);
+
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();

@@ -1,23 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Profile event handlers A list of quota options for a given profile is returned 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
+exports[`Profile event handlers A list of quota options for a given profile is returned 1`] = `200`;
 
-exports[`Profile event handlers A list of quota options for a given profile is returned 2`] = `200`;
-
-exports[`Profile event handlers A list of quota options for a given profile is returned 3`] = `
+exports[`Profile event handlers A list of quota options for a given profile is returned 2`] = `
 Array [
   "medium",
 ]
@@ -59,9 +44,9 @@ Array [
   Object {
     "archived": false,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "email": "jim@example.com",
-    "firstName": "Jim",
-    "githubId": "jim1100",
+    "email": "john.doe@example.com",
+    "firstName": "John",
+    "githubId": "john1100",
     "id": 2,
     "lastName": "Doe",
     "roleId": 2,
@@ -70,58 +55,13 @@ Array [
 ]
 `;
 
-exports[`Profile event handlers A profiles quota size is returned 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
+exports[`Profile event handlers A profiles quota size is returned 1`] = `200`;
 
-exports[`Profile event handlers A profiles quota size is returned 2`] = `200`;
+exports[`Profile event handlers A profiles quota size is returned 2`] = `"small"`;
 
-exports[`Profile event handlers A profiles quota size is returned 3`] = `"small"`;
-
-exports[`Profile event handlers Fetch a list of quota options for a given profile should throw 1`] = `"Unable to fetch quota options for profile 4"`;
-
-exports[`Profile event handlers Fetch a list of quota options for a given profile should throw 2`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
+exports[`Profile event handlers Fetch a list of quota options for a given profile should throw 1`] = `"Unable to fetch allowed quota-sizes for profile 4"`;
 
 exports[`Profile event handlers Fetch profiles quota size should throw 1`] = `"Unable fetch profile quota size with profile ID 4"`;
-
-exports[`Profile event handlers Fetch profiles quota size should throw 2`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
 
 exports[`Profile event handlers Fetch single profile contacts should throw 1`] = `"Unable fetch profile contacts with profile ID 1"`;
 
@@ -143,7 +83,7 @@ Array [
 ]
 `;
 
-exports[`Profile event handlers Link a contact to profile should throw 1`] = `"Unable to create contact"`;
+exports[`Profile event handlers Link a contact to profile should throw 1`] = `"Unable to add contact to profile"`;
 
 exports[`Profile event handlers Link a contact to profile should throw 2`] = `
 Array [
@@ -183,119 +123,82 @@ exports[`Profile event handlers Link a contact to profile successfully 2`] = `20
 
 exports[`Profile event handlers Link a contact to profile successfully 3`] = `undefined`;
 
-exports[`Profile event handlers Profile edit requests are returned 1`] = `Array []`;
+exports[`Profile event handlers Profile edit requests are returned 1`] = `200`;
 
-exports[`Profile event handlers Profile edit requests are returned 2`] = `200`;
-
-exports[`Profile event handlers Profile edit requests are returned 3`] = `undefined`;
-
-exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 1`] = `
+exports[`Profile event handlers Profile edit requests are returned 2`] = `
 Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM contact
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "editObject": Object {
+      "quota": "medium",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": "16",
+          "requests": "8",
+        },
+        "memory": Object {
+          "limits": "64Gi",
+          "requests": "32Gi",
+        },
+        "storage": Object {
+          "backup": "50Gi",
+          "block": "100Gi",
+          "capacity": "100Gi",
+          "file": "100Gi",
+        },
+      },
     },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM contact
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        2,
-      ],
-    },
-  ],
+    "editType": "quotaSize",
+    "id": 1,
+    "natsContext": "nats_context_stub",
+    "natsSubject": "registry_project_provisioning",
+    "profileId": 1,
+    "updatedAt": "2020-09-10T18:14:13.304Z",
+  },
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "editObject": Array [
+      Object {
+        "email": "jane@example.com",
+        "firstName": "Jane",
+        "githubId": "janedoe",
+        "id": 1,
+        "lastName": "Doe",
+        "roleId": 1,
+      },
+      Object {
+        "email": "jim@example.com",
+        "firstName": "Jim",
+        "githubId": "jim1100",
+        "id": 2,
+        "lastName": "Doe",
+        "roleId": 2,
+      },
+    ],
+    "editType": "contacts",
+    "id": 2,
+    "natsContext": "nats_context_stub",
+    "natsSubject": "registry_project_provisioning",
+    "profileId": 4,
+    "updatedAt": "2020-09-10T18:14:13.304Z",
+  },
 ]
 `;
 
-exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 2`] = `204`;
+exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 1`] = `204`;
 
-exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 3`] = `undefined`;
+exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 2`] = `undefined`;
 
-exports[`Profile event handlers Request profile quota size edit should throw due to db transaction issue 1`] = `"Unable to request quota size for profile 4"`;
+exports[`Profile event handlers Request profile quota size edit should throw due to db transaction issue 1`] = `"Unable to update quota-size for profile 4"`;
 
-exports[`Profile event handlers Request profile quota size edit should throw due to db transaction issue 2`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
+exports[`Profile event handlers Request profile quota size edit should throw due to invalid quota upgrade 1`] = `"Unable to update quota-size for profile 4"`;
 
-exports[`Profile event handlers Request profile quota size edit should throw due to invalid quota upgrade 1`] = `"Unable to request quota size for profile 4"`;
+exports[`Profile event handlers Request profile quota size edit successfully 1`] = `204`;
 
-exports[`Profile event handlers Request profile quota size edit should throw due to invalid quota upgrade 2`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
+exports[`Profile event handlers Request profile quota size edit successfully 2`] = `undefined`;
 
-exports[`Profile event handlers Request profile quota size edit successfully 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
+exports[`Profile event handlers Update profile contacts with non provisioner-related changes 1`] = `204`;
 
-exports[`Profile event handlers Request profile quota size edit successfully 2`] = `204`;
-
-exports[`Profile event handlers Request profile quota size edit successfully 3`] = `undefined`;
-
-exports[`Profile event handlers Update profile contacts with non provisioner-related changes 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM contact
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM contact
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        2,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers Update profile contacts with non provisioner-related changes 2`] = `204`;
-
-exports[`Profile event handlers Update profile contacts with non provisioner-related changes 3`] = `undefined`;
+exports[`Profile event handlers Update profile contacts with non provisioner-related changes 2`] = `undefined`;

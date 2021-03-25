@@ -14,11 +14,13 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import fs from 'fs';
 import path from 'path';
+import { Pool } from 'pg';
 import ClusterModel from '../src/db/model/cluster';
-import { isNamespaceSetProvisioned } from '../src/libs/namespace-set';
-import { isProfileProvisioned } from '../src/libs/profile';
+import { getProvisionStatus } from '../src/libs/profile';
 
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
 const profile = JSON.parse(fs.readFileSync(p0, 'utf8'))[0];
@@ -26,17 +28,48 @@ const profile = JSON.parse(fs.readFileSync(p0, 'utf8'))[0];
 const p1 = path.join(__dirname, 'fixtures/select-default-cluster.json');
 const selectDefaultCluster = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-jest.mock('../src/libs/namespace-set', () => ({
-  isNamespaceSetProvisioned: jest.fn(),
-}));
+const client = new Pool().connect();
 
 describe('Profile services', () => {
 
-  it('isProfileProvisioned works correctly', async () => {
-    const findByName = ClusterModel.prototype.findByName = jest.fn().mockResolvedValue(selectDefaultCluster);
+  it('getProvisionStatus works correctly', async () => {
+    const findByName = ClusterModel.prototype.findByName = jest.fn().mockResolvedValue(selectDefaultCluster[0]);
 
-    await isProfileProvisioned(profile);
+    const namespaces = [
+      {
+        id: 13,
+        name: "4ea35c-tools",
+        profileId: 4,
+        archived: false,
+        createdAt: "2020-05-06T21:16:42.799Z",
+        updatedAt: "2020-05-06T21:16:42.799Z"
+      },
+      {
+        id: 14,
+        name: "4ea35c-test",
+        profileId: 4,
+        archived: false,
+        createdAt: "2020-05-06T21:16:42.799Z",
+        updatedAt: "2020-05-06T21:16:42.799Z"
+      },
+      {
+        id: 15,
+        name: "4ea35c-test",
+        profileId: 4,
+        archived: false,
+        createdAt: "2020-05-06T21:16:42.799Z",
+        updatedAt: "2020-05-06T21:16:42.799Z"
+      }
+    ];
+
+    client.query.mockResolvedValue({ rows: namespaces });
+    client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
+    client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
+    client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
+    client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
+
+    const result = await getProvisionStatus(profile);
     expect(findByName).toHaveBeenCalledTimes(1);
-    expect(isNamespaceSetProvisioned).toHaveBeenCalledWith(profile, selectDefaultCluster);
+    expect(result).toEqual(true);
   });
 });

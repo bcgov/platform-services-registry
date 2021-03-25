@@ -16,9 +16,9 @@ Array [
   Object {
     "archived": false,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "email": "jim@example.com",
-    "firstName": "Jim",
-    "githubId": "jim1100",
+    "email": "john.doe@example.com",
+    "firstName": "John",
+    "githubId": "john1100",
     "id": 2,
     "lastName": "Doe",
     "roleId": 2,

@@ -7,32 +7,5 @@
     "archived": false,
     "createdAt": "2020-05-06T21:16:42.799Z",
     "updatedAt": "2020-05-06T21:16:42.799Z"
-  },
-  {
-    "id": 14,
-    "name": "4ea35c-test",
-    "profileId": 4,
-    "clusterId": 1,
-    "archived": false,
-    "createdAt": "2020-05-06T21:26:55.514Z",
-    "updatedAt": "2020-05-06T21:26:55.514Z"
-  },
-  {
-    "id": 15,
-    "name": "4ea35c-dev",
-    "profileId": 4,
-    "clusterId": 1,
-    "archived": false,
-    "createdAt": "2020-05-06T21:27:00.744Z",
-    "updatedAt": "2020-05-06T21:27:00.744Z"
-  },
-  {
-    "id": 16,
-    "name": "4ea35c-prod",
-    "profileId": 4,
-    "clusterId": 1,
-    "archived": false,
-    "createdAt": "2020-05-06T21:27:07.148Z",
-    "updatedAt": "2020-05-06T21:27:07.148Z"
   }
 ]

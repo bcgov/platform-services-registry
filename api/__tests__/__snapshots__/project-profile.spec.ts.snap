@@ -35,9 +35,12 @@ Array [
   Array [
     Object {
       "text": "
-      SELECT * FROM ref_cluster
-        WHERE archived = false;
+        SELECT * FROM ref_cluster
+          WHERE is_default = $1 AND archived = false;
       ",
+      "values": Array [
+        true,
+      ],
     },
   ],
   Array [
