@@ -180,10 +180,10 @@ const buildContext = async (
   }
 };
 
-const sendNatsMessage = async (profileId: number, natsObject: NatsMessage): Promise<NatsMessage> => {
+const sendNatsMessage = async (profileId: number, natsMessage: NatsMessage): Promise<NatsMessage> => {
   try {
     const nc = shared.nats;
-    const { natsSubject, natsContext } = natsObject;
+    const { natsSubject, natsContext } = natsMessage;
 
     nc.on('error', () => {
       const errmsg = `NATS error sending order ${profileId} to ${natsSubject}`;
@@ -199,7 +199,7 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsMessage): Prom
       nc.removeAllListeners(['error']);
     });
 
-    return natsObject;
+    return natsMessage;
   } catch (err) {
     const message = `Unable to send nats message for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
