@@ -77,6 +77,23 @@ export abstract class Model {
     }
   }
 
+  async findQuota(): Promise<any[]> {
+    const query = {
+      text: `
+      SELECT * FROM ${this.table};
+      `,
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to fetch all Quota`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async runQuery(query: Query): Promise<any[]> {
     let client;
 

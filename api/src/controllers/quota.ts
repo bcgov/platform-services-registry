@@ -25,8 +25,7 @@ const dm = new DataManager(shared.pgPool);
 export const fetchQuota = async (req: Request, res: Response): Promise<void> => {
     const { QuotaModel } = dm;
     try {
-        const results = await QuotaModel.findAll();
-
+        const results = await QuotaModel.findQuota();
         res.status(200).json(results);
     } catch (err) {
         const message = `Unable fetch quotas`;
