@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-27.
-//
 
 'use strict';
 
@@ -22,7 +20,7 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
 import shared from '../libs/shared';
-import { validateObjProps } from '../libs/utils';
+import { validateRequiredFields } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -33,7 +31,7 @@ export const createNamespace = async (
   const { profileId } = params;
   const aBody = { ...body, profileId };
 
-  const rv = validateObjProps(NamespaceModel.requiredFields, aBody);
+  const rv = validateRequiredFields(NamespaceModel.requiredFields, aBody);
   if (rv) {
     throw rv;
   }
@@ -94,7 +92,7 @@ export const updateProfileNamespace = async (
   const { name, clusterId } = body;
   const aBody = { name, profileId, clusterId };
 
-  const rv = validateObjProps(NamespaceModel.requiredFields, aBody);
+  const rv = validateRequiredFields(NamespaceModel.requiredFields, aBody);
   if (rv) {
     throw rv;
   }

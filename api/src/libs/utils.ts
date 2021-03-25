@@ -17,7 +17,7 @@
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { difference } from 'lodash';
 
-export const validateObjProps = (requiredFields: string[], pojo: object): Error | undefined => {
+export const validateRequiredFields = (requiredFields: string[], pojo: object): Error | undefined => {
   const diff = difference(requiredFields, Object.keys(pojo));
 
   if (diff.length !== 0) {

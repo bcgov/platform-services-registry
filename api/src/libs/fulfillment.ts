@@ -12,6 +12,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+
+'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import config from '../config';
@@ -22,50 +25,135 @@ import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
 import { RequestEditType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
+import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
 import { MessageType, sendProvisioningMessage } from './messaging';
-import { getProfileCurrentQuotaSize } from './profile';
+import { getQuotaSize } from './profile';
 import shared from './shared';
 
-export interface Context {
-  something: any;
-}
+const dm = new DataManager(shared.pgPool);
 
-export const enum FulfillmentContextAction {
-  Create = 'create',
-  Edit = 'edit',
-  Sync = 'sync',
-}
+export const fulfillNamespaceProvisioning = async (profileId: number) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const context = await contextForProvisioning(profileId, false);
+      const subject = config.get('nats:subject');
 
-const enum FulfillmentContextType {
-  Standard = 'standard',
-}
+      await sendNatsMessage(profileId, {
+        natsSubject: subject,
+        natsContext: context,
+      });
 
-interface NatsObject {
-  natsSubject: string,
-  natsContext: any,
-}
+      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
+      await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+      logger.info(`CHES message sent for ${profileId}`);
 
-export const contextForProvisioning = async (profileId: number, action: FulfillmentContextAction): Promise<any> => {
+      resolve();
+    } catch (err) {
+      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  });
+
+export const fulfillEditRequest = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsMessage> =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const context = await contextForEditing(profileId, false, requestEditType, requestEditObject);
+      const subject = config.get('nats:subject');
+
+      const natsMessage = await sendNatsMessage(profileId, {
+        natsSubject: subject,
+        natsContext: context,
+      });
+
+      resolve(natsMessage);
+    } catch (err) {
+      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  });
+
+export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
   try {
-    const dm = new DataManager(shared.pgPool);
-    const { ProfileModel, ContactModel, NamespaceModel, QuotaModel } = dm;
+    const { ProfileModel, ContactModel, QuotaModel } = dm;
 
+    const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Create;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-    const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
-    const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
+    const quotaSize: QuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
-    const namespaces = await NamespaceModel.findForProfile(profileId);
 
-    if (!profile || !tcContact || !poContact || !quotaSize || !quotas || !namespaces) {
-      logger.error('Unable to create context for provisioning');
-      return; // This is a problem.
+    return await buildContext(action, profile, contacts, quotaSize, quotas);
+  } catch (err) {
+    const message = `Unable to create context for provisioning ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+export const contextForEditing = async (profileId: number, isForSync: boolean, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsContext> => {
+  try {
+    const { ProfileModel, ContactModel, QuotaModel } = dm;
+
+    const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Edit;
+    let profile: ProjectProfile;
+    let quotaSize: QuotaSize;
+    let quotas: Quotas;
+    let contacts: Contact[];
+
+    if (requestEditType === RequestEditType.ProjectProfile) {
+      profile = requestEditObject;
+    } else {
+      profile = await ProfileModel.findById(profileId);
     }
 
-    const context = {
+    if (requestEditType === RequestEditType.QuotaSize) {
+      quotaSize = requestEditObject.quota;
+      quotas = requestEditObject.quotas;
+    } else {
+      quotaSize = await getQuotaSize(profile);
+      quotas = await QuotaModel.findForQuotaSize(quotaSize);
+    }
+
+    if (requestEditType === RequestEditType.Contacts) {
+      contacts = requestEditObject;
+    } else {
+      contacts = await ContactModel.findForProject(profileId);
+    }
+
+    return await buildContext(action, profile, contacts, quotaSize, quotas);
+  } catch (err) {
+    const message = `Unable to create context for updating ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+const buildContext = async (
+  action: NatsContextAction, profile: ProjectProfile, contacts: Contact[], quotaSize: QuotaSize, quotas: Quotas
+): Promise<NatsContext> => {
+  const { NamespaceModel } = dm;
+  try {
+    if (!profile.id) {
+      throw new Error('Cant get profile id');
+    }
+    const namespaces = await NamespaceModel.findForProfile(profile.id);
+
+    const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
+    const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
+
+    if (!profile || !tcContact || !poContact || !quotaSize || !quotas || !namespaces) {
+      throw new Error('Missing arguments to build nats context');
+    }
+
+    return {
       action,
-      type: FulfillmentContextType.Standard,
+      type: NatsContextType.Standard,
       profileId: profile.id,
       displayName: profile.name,
       newDisplayName: 'NULL',
@@ -84,17 +172,15 @@ export const contextForProvisioning = async (profileId: number, action: Fulfillm
         email: poContact.email,
       },
     };
-
-    return context;
   } catch (err) {
-    const message = `Unable to build context for profile ${profileId}`;
+    const message = `Unable to build context for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
   }
 };
 
-const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promise<NatsObject> => {
+const sendNatsMessage = async (profileId: number, natsObject: NatsMessage): Promise<NatsMessage> => {
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsObject;
@@ -121,75 +207,3 @@ const sendNatsMessage = async (profileId: number, natsObject: NatsObject): Promi
     throw err;
   }
 };
-
-export const fulfillNamespaceProvisioning = async (profileId: number) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const subject = config.get('nats:subject');
-      const context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
-
-      if (!context) {
-        const errmsg = `No context for ${profileId}`;
-        reject(new Error(errmsg));
-      }
-
-      await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
-
-      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
-      await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
-      logger.info(`CHES message sent for ${profileId}`);
-
-      resolve();
-    } catch (err) {
-      const message = `Unable to provision namespaces for profile ${profileId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  });
-
-export const fulfillEditRequest = async (profileId: number, requestType: RequestEditType, requestEditObject: any): Promise<NatsObject> =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const subject = config.get('nats:subject');
-      const context = await contextForProvisioning(profileId, FulfillmentContextAction.Edit);
-
-      if (!context) {
-        const errmsg = `No context for ${profileId}`;
-        reject(new Error(errmsg));
-      }
-
-      switch (requestType) {
-        case RequestEditType.QuotaSize:
-          context.quota = requestEditObject.quota;
-          context.quotas = requestEditObject.quotas;
-          break;
-        case RequestEditType.Contacts:
-          context.productOwner = requestEditObject.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
-          context.technicalContact = requestEditObject.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
-          break;
-        case RequestEditType.ProjectProfile:
-          context.description = requestEditObject.description;
-          break;
-        default:
-          const errmsg = `Invalid edit type for request ${requestType}`;
-          throw new Error(errmsg);
-      }
-
-      const natsObject = await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
-
-      // TODO:(yh) add sending ches message here
-      resolve(natsObject);
-    } catch (err) {
-      const message = `Unable to update namespaces for profile ${profileId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  });

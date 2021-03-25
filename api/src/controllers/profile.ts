@@ -22,10 +22,12 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
-import { getProfileCurrentQuotaSize } from '../libs/profile';
+import { Request } from '../db/model/request';
+import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
-import { fetchEditRequests, requestContactsEdit, requestQuotaSizeEdit } from '../libs/request';
+import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../libs/request';
 import shared from '../libs/shared';
+import { validateRequiredFields } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -40,7 +42,7 @@ export const addContactToProfile = async (
 
     res.status(204).end();
   } catch (err) {
-    const message = `Unable to create contact`;
+    const message = `Unable to add contact to profile`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -75,29 +77,43 @@ export const updateProfileContacts = async (
   const { ContactModel } = dm;
   const { profileId } = params;
   const { productOwner, technicalContact } = body;
+  const contacts = [productOwner, technicalContact];
+
+  // TODO:(yh) add more data sanity check
+  // check the passed contacts have no dupliates
+  // check contact_id is associated with the queried profile_id
+  // check role_id points to the legit role TC / PO
+  contacts.forEach((contact: Contact): void => {
+    const rv = validateRequiredFields(ContactModel.requiredFields.concat(['id']), contact);
+    if (rv) {
+      throw rv;
+    }
+  });
 
   try {
-    const contacts = [productOwner, technicalContact];
-    const currentPOvalues = await ContactModel.findById(productOwner.id);
-    const currentTCvalues = await ContactModel.findById(technicalContact.id);
+    const currentContacts: Contact[] = await ContactModel.findForProject(Number(profileId));
 
-    const editCompares = [
-      currentPOvalues.githubId !== productOwner.githubId,
-      currentPOvalues.email !== productOwner.email,
-      currentTCvalues.githubId !== technicalContact.githubId,
-      currentTCvalues.email !== technicalContact.email,
-    ];
+    const editCompares: boolean[] = [];
+    contacts.forEach((contact: Contact): void => {
+      const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
+      if (!currentContact) {
+        throw new Error('Cant get current contact');
+      }
+      editCompares.push(currentContact.githubId !== contact.githubId);
+      editCompares.push(currentContact.email !== contact.email);
+    });
+
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
-
     if (provisionerRelatedChanges) {
-      await requestContactsEdit(Number(profileId), body);
+      await requestProfileContactsEdit(Number(profileId), contacts);
     } else {
-      const updatePromises: any = [];
-      contacts.forEach((contact: Contact) => {
-        updatePromises.push(ContactModel.update(Number(contact.id), contact));
+      const contactPromises = contacts.map((contact: Contact) => {
+        if (!contact.id) {
+          throw new Error('Cant get contact id');
+        }
+        return ContactModel.update(contact.id, contact);
       });
-
-      await Promise.all(updatePromises);
+      await Promise.all(contactPromises);
     }
 
     res.status(204).end();
@@ -117,7 +133,7 @@ export const fetchProfileQuotaSize = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(Number(profileId));
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
+    const quotaSize: QuotaSize = await getQuotaSize(profile);
 
     res.status(200).json(quotaSize);
   } catch (err) {
@@ -140,12 +156,12 @@ export const fetchProfileAllowedQuotaSizes = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
-    const results = getAllowedQuotaSizes(quotaSize);
+    const quotaSize: QuotaSize = await getQuotaSize(profile);
+    const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
 
-    res.status(200).json(results);
+    res.status(200).json(allowedQuotaSizes);
   } catch (err) {
-    const message = `Unable to fetch quota options for profile ${profileId}`;
+    const message = `Unable to fetch allowed quota-sizes for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -161,20 +177,19 @@ export const updateProfileQuotaSize = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
-    const allowedQuotaSizes = getAllowedQuotaSizes(quotaSize);
+    const quotaSize: QuotaSize = await getQuotaSize(profile);
+    const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
 
     // verify if requested quota size is valid
     if (!(requestedQuotaSize && allowedQuotaSizes.includes(requestedQuotaSize))) {
-      const errmsg = 'Please provide correct requested quota size in body';
-      throw new Error(errmsg);
+      throw new Error('Please provide correct requested quota size in body');
     }
 
-    await requestQuotaSizeEdit(Number(profileId), body);
+    await requestProfileQuotaSizeEdit(Number(profileId), requestedQuotaSize);
 
     res.status(204).end();
   } catch (err) {
-    const message = `Unable to request quota size for profile ${profileId}`;
+    const message = `Unable to update quota-size for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -184,18 +199,19 @@ export const updateProfileQuotaSize = async (
 export const fetchProfileEditRequests = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
+  const { RequestModel } = dm;
   const { profileId } = params;
 
   try {
-    const results = await fetchEditRequests(profileId);
+    const editRequests: Request[] = await RequestModel.findForProfile(Number(profileId));
 
-    res.status(200).json(results);
+    res.status(200).json(editRequests);
   } catch (err) {
     if (err.code) {
       throw err;
     }
 
-    const message = `Unable fetch requests with profile ID ${profileId}`;
+    const message = `Unable to fetch profile edit requests with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

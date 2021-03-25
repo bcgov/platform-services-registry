@@ -20,7 +20,7 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { provisionCallbackHandler, provisionProfileNamespaces } from '../../controllers/provision';
+import { provisionerCallbackHandler, provisionProfileNamespaces } from '../../controllers/provision';
 import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../../controllers/sync';
 import { AccessFlag, authorize, authorizeByFlag } from '../../libs/authorization';
 
@@ -29,7 +29,7 @@ const botCallback = AccessFlag.BotCallback;
 
 // Provisioning
 router.post('/:profileId/namespace', authorize(), asyncMiddleware(provisionProfileNamespaces));
-router.put('/namespace', authorizeByFlag(botCallback), asyncMiddleware(provisionCallbackHandler));
+router.put('/namespace', authorizeByFlag(botCallback), asyncMiddleware(provisionerCallbackHandler));
 
 // Bot-json-sync
 router.get('/sync/provisioned-profile-ids', authorizeByFlag(botCallback), asyncMiddleware(getAllProvisionedProfileIds));

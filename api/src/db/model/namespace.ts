@@ -1,3 +1,4 @@
+//
 // Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-05-07.
-//
+
+'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
@@ -23,7 +24,7 @@ import { QuotaSize } from './quota';
 
 // TODO:(yh) make quota_cpu_size, quota_memory_size, quota_storage_size NOT NULL
 // and to delete quota_cpu, quota_memory and quota_storage from ref_quota table
-export interface ClusterNamespace extends CommonFields {
+interface ClusterNamespace extends CommonFields {
   namespaceId: number;
   clusterId: number;
   provisioned: boolean;
@@ -35,7 +36,6 @@ export interface ClusterNamespace extends CommonFields {
 export interface ProjectNamespace extends CommonFields {
   name: string;
   profileId: number;
-  clusters?: ClusterNamespace[];
 }
 
 export default class NamespaceModel extends Model {
@@ -156,6 +156,126 @@ export default class NamespaceModel extends Model {
     }
   }
 
+  async getProjectSetProvisionStatus(profileId: number, clusterId: number): Promise<boolean> {
+    const query = {
+      text: `
+        SELECT provisioned FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2;`,
+      values: [],
+    };
+
+    try {
+      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(profileId);
+      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
+      const clResults: ClusterNamespace[][] = await Promise.all(clPromises);
+
+      const clusterNamespaces = clResults.map((cl: ClusterNamespace[]) => cl.pop());
+      const flags: (boolean | undefined)[] = clusterNamespaces.map((cl: (ClusterNamespace | undefined)): boolean | undefined => {
+        return cl ? cl.provisioned : undefined;
+      });
+
+      if (flags.every(f => f === true)) {
+        return true;
+      } else if (flags.every(f => f === false)) {
+        return false;
+      } else {
+        throw new Error(`Need to fix entries as the provisioning status of
+        the project set is not consistent`);
+      }
+    } catch (err) {
+      const message = `Unable to update provisioning status of the project set for profile ${profileId} and cluster ${clusterId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async updateProjectSetProvisionStatus(profileId: number, clusterId: number, provisioned: boolean): Promise<ProjectNamespace[]> {
+    const query = {
+      text: `
+        UPDATE cluster_namespace
+          SET provisioned = $1
+          WHERE namespace_id = $2 AND cluster_id = $3
+        RETURNING *;`,
+      values: [],
+    };
+
+    try {
+      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(profileId);
+      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map(nr => this.runQuery({ ...query, values: [provisioned, nr.id, clusterId] }));
+      await Promise.all(clPromises);
+
+      return nsResults;
+    } catch (err) {
+      const message = `Unable to update provisioning status of the project set for profile ${profileId} and cluster ${clusterId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async getProjectSetQuotaSize(profileId: number, clusterId: number): Promise<QuotaSize> {
+    const query = {
+      text: `
+        SELECT quota_cpu_size, quota_memory_size, quota_storage_size FROM cluster_namespace
+          WHERE namespace_id = $1 AND cluster_id = $2;`,
+      values: [],
+    };
+
+    try {
+      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(profileId);
+      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
+      const clResults: ClusterNamespace[][] = await Promise.all(clPromises);
+
+      const clusterNamespaces: (ClusterNamespace | undefined)[] = clResults.map(cl => cl.pop());
+      const quotaSizes: QuotaSize[] = [];
+      clusterNamespaces.forEach((clusterNamespace: (ClusterNamespace | undefined)): void => {
+        if (!clusterNamespace) {
+          return;
+        }
+        const { quotaCpuSize, quotaMemorySize, quotaStorageSize } = clusterNamespace;
+        quotaSizes.push(quotaCpuSize, quotaMemorySize, quotaStorageSize);
+      })
+
+      const hasSameQuotaSizes: boolean = (quotaSizes.every((val, i, arr) => val === arr[0]));
+      if (hasSameQuotaSizes) {
+        return quotaSizes[0];
+      } else {
+        throw new Error(`Need to fix entries as the quota size of
+        the project set is not consistent`);
+      }
+    } catch (err) {
+      const message = `Unable to get quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async updateProjectSetQuotaSize(profileId: number, clusterId: number, quotaSize: QuotaSize): Promise<ProjectNamespace[]> {
+    const query = {
+      text: `
+        UPDATE cluster_namespace
+          SET quota_cpu_size = $1, quota_memory_size = $1, quota_storage_size = $1
+          WHERE namespace_id = $2 AND cluster_id = $3
+        RETURNING *;`,
+      values: [],
+    };
+
+    try {
+      const nsResults = await this.findNamespacesForProfile(profileId);
+      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [quotaSize, nr.id, clusterId] }));
+      await Promise.all(clPromises);
+
+      return nsResults;
+    } catch (err) {
+      const message = `Unable to update quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
       text: `
@@ -171,7 +291,7 @@ export default class NamespaceModel extends Model {
           ),
           '[]'
         ) AS clusters
-        FROM namespace WHERE namespace.profile_id = $1;
+        FROM ${this.table} WHERE namespace.profile_id = $1;
       `,
       values: [
         profileId,
@@ -188,77 +308,18 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async findForNamespaceAndCluster(namespaceId: number, clusterId: number): Promise<ClusterNamespace> {
+  private async findNamespacesForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
       text: `
-        SELECT * FROM cluster_namespace
-          WHERE namespace_id = $1 AND cluster_id = $2;`,
-      values: [
-        namespaceId, clusterId,
-      ],
+        SELECT * FROM ${this.table}
+          WHERE profile_id = $1 AND archived = false;`,
+      values: [profileId],
     };
 
     try {
-      const results = await this.runQuery(query);
-      return results.pop();
+      return await this.runQuery(query);
     } catch (err) {
-      const message = `Unable to fetch cluster_namespace for namespace ${namespaceId} and cluster ${clusterId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
-  async updateProvisionStatus(namespaceId: number, clusterId: number, provisioned: boolean): Promise<ClusterNamespace> {
-    const query = {
-      text: `
-        UPDATE cluster_namespace
-          SET provisioned = $1
-          WHERE namespace_id = $2 AND cluster_id = $3
-        RETURNING *;`,
-      values: [
-        provisioned,
-        namespaceId,
-        clusterId,
-      ],
-    };
-
-    try {
-      const results = await this.runQuery(query);
-      return results.pop();
-    } catch (err) {
-      const message = `Unable to update provisioning status for namespace ${namespaceId} and cluster ${clusterId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  }
-
-  async updateQuotaSize(namespaceId: number, clusterId: number, data: ClusterNamespace): Promise<ClusterNamespace> {
-    const values: any[] = [];
-    const query = {
-      text: `
-        UPDATE cluster_namespace
-          SET
-            quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
-          WHERE namespace_id = ${namespaceId} AND cluster_id = ${clusterId}
-        RETURNING *;`,
-      values,
-    };
-
-    try {
-      const record = await this.findForNamespaceAndCluster(namespaceId, clusterId);
-      const aData = { ...record, ...data }
-      query.values = [
-        aData.quotaCpuSize,
-        aData.quotaMemorySize,
-        aData.quotaStorageSize,
-      ];
-
-      const results = await this.runQuery(query);
-      return results.pop();
-    } catch (err) {
-      const message = `Unable to update quota for namespace ${namespaceId} and cluster ${clusterId}`;
+      const message = `Unable to find namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

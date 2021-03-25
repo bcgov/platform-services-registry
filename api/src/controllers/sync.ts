@@ -21,8 +21,8 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { Request } from '../db/model/request';
-import { contextForProvisioning, FulfillmentContextAction } from '../libs/fulfillment';
-import { isProfileProvisioned } from '../libs/profile';
+import { contextForEditing, contextForProvisioning } from '../libs/fulfillment';
+import { getProvisionStatus } from '../libs/profile';
 import shared from '../libs/shared';
 import { replaceForDescription } from '../libs/utils';
 
@@ -38,7 +38,7 @@ export const getAllProvisionedProfileIds = async (
     const profiles: ProjectProfile[] = await ProfileModel.findAll();
 
     for (const profile of profiles) {
-      const result = await isProfileProvisioned(profile);
+      const result = await getProvisionStatus(profile);
       if (result && profile.id) {
         provisionedProfileIds.push(profile.id);
       }
@@ -66,13 +66,13 @@ export const getProvisionedProfileBotJson = async (
       throw new Error(errmsg);
     }
 
-    const result = await isProfileProvisioned(profile);
+    const result = await getProvisionStatus(profile);
     if (!result) {
       const errmsg = `This profile ${profileId} is not provisioned`;
       throw new Error(errmsg);
     }
 
-    const context = await contextForProvisioning(profileId, FulfillmentContextAction.Sync);
+    const context = await contextForProvisioning(profileId, true);
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
@@ -118,14 +118,15 @@ export const getProfileBotJsonUnderPending = async (
     // if the queried profile is under pending edit
     if (requests.length > 0) {
       const request = requests.pop();
-      if (!request || !request.natsContext) {
-        const errmsg = `No nats context retrieved for request ${request?.id}`;
+      if (!request) {
+        const errmsg = `Unable to get request`;
         throw new Error(errmsg);
       }
-      context = JSON.parse(request.natsContext);
+
+      context = await contextForEditing(profileId, true, request.editType, request.editObject);
     } else {
       // if the queried profile is under pending create
-      context = await contextForProvisioning(profileId, FulfillmentContextAction.Create);
+      context = await contextForProvisioning(profileId, true);
     }
 
     res.status(200).json(replaceForDescription(context));
@@ -149,7 +150,7 @@ const getIdsForProfilesUnderPendingEditOrCreate = async (): Promise<number[]> =>
     const profiles: ProjectProfile[] = await ProfileModel.findAll();
 
     for (const profile of profiles) {
-      const result = await isProfileProvisioned(profile);
+      const result = await getProvisionStatus(profile);
       if (!result && profile.id) {
         profileIds.push(profile.id);
       }

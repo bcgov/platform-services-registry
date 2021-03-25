@@ -13,20 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-27.
-//
 
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
-import { Request, RequestEditType } from '../db/model/request';
+import { RequestEditType } from '../db/model/request';
 import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { applyProfileRequestedQuotaSize, isProfileProvisioned, updateProvisionedProfile } from '../libs/profile';
+import { getProvisionStatus, updateProvisionStatus } from '../libs/profile';
+import { processProfileContactsEdit, processProfileQuotaSizeEdit, processProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -56,14 +54,14 @@ export const provisionProfileNamespaces = async (
 
     res.status(202).end();
   } catch (err) {
-    const message = `Unable fetch namespace for profile ID ${profileId}`;
+    const message = `Unable to provision namespaces for profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
   }
 };
 
-export const provisionCallbackHandler = async (
+export const provisionerCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
@@ -72,28 +70,28 @@ export const provisionCallbackHandler = async (
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
     if (!profile) {
-      const errmsg = `Cant find any profile for the given prefix ${prefix}`;
-      throw new Error(errmsg);
+      throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
 
-    const result = await isProfileProvisioned(profile);
-    if (result) {
-      await updateProfileEdit(profile);
+    const isProfileProvisioned = await getProvisionStatus(profile);
+
+    if (isProfileProvisioned) {
+      await processProvisionedProfileEditRequest(profile);
     } else {
-      await updateProvisionedNamespaces(profile);
+      await updateProvisionedProfile(profile);
     }
     res.status(202).end();
   } catch (err) {
-    const message = `Unable to update status for profile prefix ${prefix}`;
+    const message = `Unable to handle provisioner callback for profile prefix ${prefix}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
   }
 };
 
-const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<void> => {
+const updateProvisionedProfile = async (profile: ProjectProfile): Promise<void> => {
   try {
-    await updateProvisionedProfile(profile);
+    await updateProvisionStatus(profile, true);
 
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
@@ -102,16 +100,15 @@ const updateProvisionedNamespaces = async (profile: ProjectProfile): Promise<voi
     logger.info(`CHES message sent for ${profile.id}`);
     return;
   } catch (err) {
-    const message = `Unable to update namespace status`;
+    const message = `Unable to update provisioned profile`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
   }
 };
 
-const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
+const processProvisionedProfileEditRequest = async (profile: ProjectProfile): Promise<void> => {
   const { RequestModel } = dm;
-
   try {
     if (!profile.id) {
       throw new Error('Cant read the given profileId');
@@ -134,66 +131,11 @@ const updateProfileEdit = async (profile: ProjectProfile): Promise<void> => {
         await processProfileQuotaSizeEdit(request);
         break;
       default:
-        const errmsg = `Invalid edit type for request ${request.id}`;
-        throw new Error(errmsg);
+        throw new Error(`Invalid edit type for request ${request.id}`);
     }
     await RequestModel.delete(Number(request.id));
   } catch (err) {
-    const message = `Unable to update profile edit for profile ${profile.id}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
-  }
-};
-
-
-const processProjectProfileEdit = async (request: Request): Promise<void> => {
-  const { ProfileModel } = dm;
-
-  try {
-    const { profileId, editObject } = request;
-    const profile = JSON.parse(editObject);
-
-    await ProfileModel.update(Number(profileId), profile);
-  } catch (err) {
-    const message = `Unable to process requestId ${request.id} on bot callback`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
-  }
-};
-
-export const processProfileContactsEdit = async (request: Request): Promise<void> => {
-  const { ContactModel } = dm;
-
-  try {
-    const { editObject } = request;
-    const contacts = JSON.parse(editObject);
-
-    const updatePromises: any = [];
-    contacts.forEach((contact: Contact) => {
-      updatePromises.push(ContactModel.update(Number(contact.id), contact));
-    });
-
-    await Promise.all(updatePromises);
-  } catch (err) {
-    const message = `Unable to process requestId ${request.id} on bot callback`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
-  }
-};
-
-const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
-  const { ProfileModel } = dm;
-  try {
-    const { profileId, editObject } = request;
-    const { quota } = JSON.parse(editObject);
-    const profile = await ProfileModel.findById(profileId);
-
-    await applyProfileRequestedQuotaSize(profile, quota);
-  } catch (err) {
-    const message = `Unable to process requestId ${request.id} on bot callback`;
+    const message = `Unable to process provisioned profile edit request`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
