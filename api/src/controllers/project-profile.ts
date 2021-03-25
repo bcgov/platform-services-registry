@@ -207,11 +207,11 @@ export const updateProjectProfile = async (
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
       await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId });
+      res.status(202).end();
     } else {
       await ProfileModel.update(profileId, aBody);
+      res.status(204).end();
     }
-
-    res.status(204).end();
   } catch (err) {
     if (err.code) {
       throw err;

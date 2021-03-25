@@ -80,7 +80,7 @@ export const provisionerCallbackHandler = async (
     } else {
       await updateProvisionedProfile(profile);
     }
-    res.status(202).end();
+    res.status(204).end();
   } catch (err) {
     const message = `Unable to handle provisioner callback for profile prefix ${prefix}`;
     logger.error(`${message}, err = ${err.message}`);

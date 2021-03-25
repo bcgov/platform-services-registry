@@ -40,7 +40,7 @@ export const addContactToProfile = async (
   try {
     await ProfileModel.addContactToProfile(Number(profileId), Number(contactId));
 
-    res.status(204).end();
+    res.status(201).end();
   } catch (err) {
     const message = `Unable to add contact to profile`;
     logger.error(`${message}, err = ${err.message}`);
@@ -106,6 +106,7 @@ export const updateProfileContacts = async (
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
       await requestProfileContactsEdit(Number(profileId), contacts);
+      res.status(202).end();
     } else {
       const contactPromises = contacts.map((contact: Contact) => {
         if (!contact.id) {
@@ -114,9 +115,8 @@ export const updateProfileContacts = async (
         return ContactModel.update(contact.id, contact);
       });
       await Promise.all(contactPromises);
+      res.status(204).end();
     }
-
-    res.status(204).end();
   } catch (err) {
     const message = `Unable to update contacts with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
