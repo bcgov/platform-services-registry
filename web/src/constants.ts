@@ -130,3 +130,37 @@ export const QUOTA_SIZES = [
     storageNums: [200, 100],
   },
 ];
+
+// async quotaSizes(): Promise<any> {
+//   try {
+//       const api = useRegistryApi();
+//       const quotaResponse = await api.getQuota()
+//       const quota = quotaResponse.data
+
+//       return [
+//           {
+//               name: quota[0].name,
+//               cpuNums: [quota[0].cpuRequests, quota[0].cpuLimits],
+//               memoryNums: [quota[0].memory_requests, quota[0].memory_limits],
+//               storageNums: [quota[0].storage_file, quota[0].storage_backup],
+//           },
+//           {
+//               name: quota[1].name,
+//               cpuNums: [quota[1].cpuRequests, quota[1].cpuLimits],
+//               memoryNums: [quota[1].memory_requests, quota[1].memory_limits],
+//               storageNums: [quota[1].storage_file, quota[1].storage_backup],
+//           },
+//           {
+//               name: quota[2].name,
+//               cpuNums: [quota[2].cpuRequests, quota[2].cpuLimits],
+//               memoryNums: [quota[2].memory_requests, quota[2].memory_limits],
+//               storageNums: [quota[2].storage_file, quota[2].storage_backup],
+//           },
+//       ];
+//   } catch (err) {
+//       const message = `Unable to get quota sizes`;
+//       logger.error(`${message}, err = ${err.message}`);
+
+//       throw err;
+//   }
+// };

@@ -20,11 +20,12 @@
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { fetchQuota } from '../../controllers/quota';
+import { fetchQuota, fetchQuotaSizes } from '../../controllers/quota';
 
 const router = express.Router();
 
 // Quota
 router.get('/', asyncMiddleware(fetchQuota));
+router.get('/sizes', asyncMiddleware(fetchQuotaSizes));
 
 export default router;

@@ -34,3 +34,17 @@ export const fetchQuota = async (req: Request, res: Response): Promise<void> => 
         throw errorWithCode(message, 500);
     }
 };
+
+
+export const fetchQuotaSizes = async (req: Request, res: Response): Promise<void> => {
+    const { QuotaModel } = dm;
+    try {
+        const quotaSizes = await QuotaModel.findQuotaSizes();
+        res.status(200).json(quotaSizes)
+    } catch (err) {
+        const message = `Unable to get quota sizes`;
+        logger.error(`${message}, err = ${err.message}`);
+
+        throw err;
+    }
+};

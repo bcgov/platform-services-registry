@@ -62,6 +62,7 @@ export default function useRegistryApi() {
       return axiosInstance.current.get('quota');
     }
   }
+
   const getProfile = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);

@@ -85,6 +85,56 @@ export default class QuotaModel extends Model {
         // this is intentional (required by Sonarcloud)
     }
 
+    async findQuota(): Promise<any[]> {
+        const query = {
+            text: `
+          SELECT * FROM ${this.table};
+          `,
+        };
+
+        try {
+            return await this.runQuery(query);
+        } catch (err) {
+            const message = `Unable to fetch all Quota`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findQuotaSizes(): Promise<any> {
+        try {
+            const quotaResponse = await this.findQuota()
+            const quota = quotaResponse
+
+            return [
+                {
+                    name: quota[0].name,
+                    cpuNums: [quota[0].cpuRequests, quota[0].cpuLimits],
+                    memoryNums: [quota[0].memory_requests, quota[0].memory_limits],
+                    storageNums: [quota[0].storage_file, quota[0].storage_backup],
+                },
+                {
+                    name: quota[1].name,
+                    cpuNums: [quota[1].cpuRequests, quota[1].cpuLimits],
+                    memoryNums: [quota[1].memory_requests, quota[1].memory_limits],
+                    storageNums: [quota[1].storage_file, quota[1].storage_backup],
+                },
+                {
+                    name: quota[2].name,
+                    cpuNums: [quota[2].cpuRequests, quota[2].cpuLimits],
+                    memoryNums: [quota[2].memory_requests, quota[2].memory_limits],
+                    storageNums: [quota[2].storage_file, quota[2].storage_backup],
+                },
+            ];
+        } catch (err) {
+            const message = `Unable to get quota sizes`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    };
+
     async findForQuotaSize(quotaSize: QuotaSize): Promise<any> {
         const query = {
             text: `
