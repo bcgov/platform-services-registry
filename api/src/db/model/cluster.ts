@@ -29,7 +29,7 @@ export interface Cluster extends CommonFields {
   isDefault: boolean;
 }
 
-export default class CusterModel extends Model {
+export default class ClusterModel extends Model {
   table: string = 'ref_cluster';
   requiredFields: string[] = [
     'name',
