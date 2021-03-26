@@ -330,7 +330,7 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 2`] = `204`;
+exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 2`] = `202`;
 
 exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 3`] = `undefined`;
 
