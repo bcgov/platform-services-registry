@@ -23,6 +23,7 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
+import { AuthenticatedUser } from '../libs/authmware';
 import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../libs/request';
@@ -72,9 +73,9 @@ export const fetchProfileContacts = async (
 };
 
 export const updateProfileContacts = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ContactModel } = dm;
+  const { ContactModel, RequestModel } = dm;
   const { profileId } = params;
   const { productOwner, technicalContact } = body;
   const contacts = [productOwner, technicalContact];
@@ -108,6 +109,8 @@ export const updateProfileContacts = async (
       await requestProfileContactsEdit(Number(profileId), contacts);
       res.status(202).end();
     } else {
+      const request = await requestProfileContactsEdit(Number(profileId), body, user, provisionerRelatedChanges);
+
       const contactPromises = contacts.map((contact: Contact) => {
         if (!contact.id) {
           throw new Error('Cant get contact id');
@@ -116,6 +119,8 @@ export const updateProfileContacts = async (
       });
       await Promise.all(contactPromises);
       res.status(204).end();
+
+      await RequestModel.isComplete(Number(request.id));
     }
   } catch (err) {
     const message = `Unable to update contacts with profile ID ${profileId}`;
@@ -179,13 +184,14 @@ export const updateProfileQuotaSize = async (
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const quotaSize: QuotaSize = await getQuotaSize(profile);
     const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
+    const requiresHumanAction = true;
 
     // verify if requested quota size is valid
     if (!(requestedQuotaSize && allowedQuotaSizes.includes(requestedQuotaSize))) {
       throw new Error('Please provide correct requested quota size in body');
     }
 
-    await requestProfileQuotaSizeEdit(Number(profileId), requestedQuotaSize);
+    await requestProfileQuotaSizeEdit(Number(profileId), requestedQuotaSize, user, requiresHumanAction);
 
     res.status(204).end();
   } catch (err) {

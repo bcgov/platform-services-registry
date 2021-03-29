@@ -91,14 +91,16 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
     }
 };
 
-export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: QuotaSize): Promise<Request> => {
+export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: QuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
     try {
+        const requestType = RequestType.Edit;
+        const editType = RequestEditType.QuotaSize;
         const editObject = {
             quota: requestedQuotaSize,
             quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
         };
 
-        return await requestEdit(RequestEditType.QuotaSize, editObject, profileId);
+        return await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
     } catch (err) {
         const message = `Unable to request quota-size edit for profile ${profileId}`;
         logger.error(`${message}, err = ${err.message}`);
@@ -124,20 +126,21 @@ export const processProfileQuotaSizeEdit = async (request: Request): Promise<voi
     }
 };
 
-const requestEdit = async (editType: RequestEditType, editObject: any, profileId: number): Promise<Request> => {
+const createRequest = async (editType: RequestEditType, editObject: any, profileId: number): Promise<Request> => {
     try {
         const existingRequests = await RequestModel.findForProfile(profileId);
         if (existingRequests.length > 0) {
             throw new Error('Cant proceed as the profile has existing request');
         }
 
-        const { natsContext, natsSubject } = await fulfillEditRequest(profileId, editType, editObject);
         return await RequestModel.create({
             profileId,
             editType,
-            editObject,
-            natsSubject,
-            natsContext,
+            editObject: JSON.stringify(editObject),
+            type,
+            requiresHumanAction,
+            isActive: true,
+            userId,
         });
     } catch (err) {
         const message = `Unable to process request edit`;
