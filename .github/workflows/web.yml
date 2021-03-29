@@ -1,5 +1,6 @@
 name: Test & Build
 on:
+  workflow_dispatch:
   push:
     paths:
       - "web/src/**/*.ts"
@@ -66,12 +67,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, build]
     steps:
-      - name: S2I Build
-        uses: redhat-developer/openshift-actions@v1.1
+
+      # redhat-developer/openshift-actions is being deprecated
+      # GitHub runners, including ubuntu-latest, include the 'oc' tool, so we
+      #   just use oc-login and then run oc commands.
+      # ---------------------------------------------------------------------
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
         with:
-          version: "latest"
-          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
-          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
-          cmd: |
-            'version'
-            'start-build platsrv-registry-web-master-build --follow -n platform-registry-tools'
+          openshift_server_url: ${{ secrets.OpenShiftServerURL }}
+          openshift_token: ${{ secrets.OpenShiftToken }}
+          insecure_skip_tls_verify: true
+          namespace: platform-registry-tools
+
+      # Build the image
+      # Get its build ID
+      # Get the commit ID of that build
+      # Tag the new build with both the commit ID and "test"
+      # ----------------------------------------------------
+      - name: Build the image and tag it with the commit ID and 'test'
+        run: |
+          oc version
+          oc start-build platsrv-registry-web-master-build --follow -n platform-registry-tools
+          export BUILDID="$(oc get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-master-build)"
+          export COMMITID="$(oc get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-master-build-$BUILDID | cut -c1-7)"
+          oc tag -n platform-registry-tools platsrv-registry-web-master-build:latest platsrv-registry-web-master-build:$COMMITID platsrv-registry-web-master-build:test
+
