@@ -1,0 +1,39 @@
+name: Web app to (2) Test
+
+# Tag the dev image for test when a pull request is opened from staging to 
+# a release branch.
+#
+# If the staging branch is updated again while this pull request is still open,
+# do not automatically initiate this action.  Instead, allow the developers to
+# run it manually (by way of the 'on workflow_dispatch')  when testing and 
+# verification in the Dev environment are complete.
+# -----------------------------------------------------------------------------
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'release/**'
+    types: [ opened ]
+
+jobs:
+  tag:
+
+    if: github.head_ref == 'staging'
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_URL }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
+
+      # Tag the 'dev' image with 'test'
+      # -------------------------------
+      - name: Tag image with 'test'
+        run: |
+          oc version
+          oc tag -n platform-registry-tools platsrv-registry-web-master-build:dev platsrv-registry-web-master-build:test
+

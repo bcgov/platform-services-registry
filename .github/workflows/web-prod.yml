@@ -1,0 +1,39 @@
+name: Web app to (3) Prod
+
+# Tag the Test image for Prod when the staging branch is merged into a release
+# branch.
+#
+# Release branches should only be updated by way of the staging branch.
+# ----------------------------------------------------------------------------
+on:
+  push:
+    branches:
+      - 'release/**'
+    paths:
+      - "web/src/**/*.ts"
+      - "web/src/**/*.tsx"
+      - "web/package*.json"
+      - "web/public/**/*"
+      - "web/Caddyfile"
+
+jobs:
+  tag:
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_URL }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
+
+      # Tag the 'test' image with 'prod'
+      # --------------------------------
+      - name: Tag image with 'prod'
+        run: |
+          oc version
+          oc tag -n platform-registry-tools platsrv-registry-web-master-build:test platsrv-registry-web-master-build:prod
+
