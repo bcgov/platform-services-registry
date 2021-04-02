@@ -21,7 +21,7 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
-import { fulfillNamespaceProvisioning } from '../libs/fulfillment';
+import { AuthenticatedUser } from '../libs/authmware';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import { getProvisionStatus, updateProvisionStatus } from '../libs/profile';
 import { processProfileContactsEdit, processProfileQuotaSizeEdit, processProjectProfileEdit } from '../libs/request';
@@ -30,7 +30,7 @@ import shared from '../libs/shared';
 const dm = new DataManager(shared.pgPool);
 
 export const provisionProfileNamespaces = async (
-  { params }: { params: any }, res: Response
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
   const { ProfileModel, NamespaceModel, ClusterModel } = dm;
@@ -46,12 +46,8 @@ export const provisionProfileNamespaces = async (
         throw new Error(errmsg);
       }
 
-      // @ts-expect-error
-      await NamespaceModel.createProjectSet(profileId, cluster.id, profile.namespacePrefix);
+      await NamespaceModel.createProjectSet(profileId, Number(cluster.id), profile.namespacePrefix);
     }
-
-    await fulfillNamespaceProvisioning(profileId);
-
     res.status(202).end();
   } catch (err) {
     const message = `Unable to provision namespaces for profile ID ${profileId}`;
@@ -65,7 +61,7 @@ export const provisionerCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const { prefix } = body;
+  const { prefix, clusterName } = body;
 
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
@@ -73,10 +69,12 @@ export const provisionerCallbackHandler = async (
       throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
 
+    // TODO: Validate clusterName is one of the allowable options
+
     const isProfileProvisioned = await getProvisionStatus(profile);
 
     if (isProfileProvisioned) {
-      await processProvisionedProfileEditRequest(profile);
+      await processProvisionedProfileEditRequest(profile, clusterName);
     } else {
       await updateProvisionedProfile(profile);
     }
@@ -90,9 +88,24 @@ export const provisionerCallbackHandler = async (
 };
 
 const updateProvisionedProfile = async (profile: ProjectProfile): Promise<void> => {
+  const { RequestModel } = dm;
   try {
     await updateProvisionStatus(profile, true);
 
+    // TODO (yh note): We could perhaps have a util function that checks the query params validation
+    // (besides the existing one that checks for POST body structure based on Model required types)
+    // and serve 400 bad request consistently
+    if (!profile.id){
+      throw new Error('Cant read the given profileId');
+      }
+
+    const requests = await RequestModel.findForProfile(profile.id);
+    const request = requests.pop();
+    if (!request) {
+      return;
+    }
+
+    await RequestModel.isComplete(Number(request.id));
     // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
     // be used for emailing.
     logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
@@ -107,7 +120,7 @@ const updateProvisionedProfile = async (profile: ProjectProfile): Promise<void> 
   }
 };
 
-const processProvisionedProfileEditRequest = async (profile: ProjectProfile): Promise<void> => {
+const processProvisionedProfileEditRequest = async (profile: ProjectProfile, clusterName: string): Promise<void> => {
   const { RequestModel } = dm;
   try {
     if (!profile.id) {

@@ -26,6 +26,7 @@ import ehlo from './routes/ehlo';
 import ministry from './routes/ministry';
 import profile from './routes/profile';
 import provision from './routes/provision';
+import request from './routes/request';
 import task from './routes/task';
 
 const corsOptions = {
@@ -45,5 +46,6 @@ export const router = app => {
   app.use('/api/v1/profile', profile);
   app.use('/api/v1/contact', contact);
   app.use('/api/v1/provision', provision);
+  app.use('/api/v1/request', request);
   app.use('/api/v1/task', task);
 };

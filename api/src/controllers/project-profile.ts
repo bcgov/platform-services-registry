@@ -136,9 +136,9 @@ export const createProjectProfile = async (
 
 // TODO: enable updating name when we support display name changes
 export const updateProjectProfile = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ProfileModel } = dm;
+  const { ProfileModel, RequestModel } = dm;
   const { profileId } = params;
 
   const rv = validateRequiredFields(ProfileModel.requiredFields, {
@@ -206,10 +206,14 @@ export const updateProjectProfile = async (
     ];
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId });
+      await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId }, user, provisionerRelatedChanges);
       res.status(202).end();
     } else {
+      const request = await requestProjectProfileEdit(
+        Number(profileId), { ...aBody, id: profileId }, user, provisionerRelatedChanges
+      );
       await ProfileModel.update(profileId, aBody);
+      await RequestModel.isComplete(Number(request.id));
       res.status(204).end();
     }
   } catch (err) {

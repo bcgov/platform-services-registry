@@ -23,58 +23,45 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
-import { RequestEditType } from '../db/model/request';
+import { BotMessage, Request, RequestEditType, RequestType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
+import { createBotMessageSet } from './bot-message';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import { getQuotaSize } from './profile';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
 
-export const fulfillNamespaceProvisioning = async (profileId: number) =>
-  new Promise(async (resolve, reject) => {
+export const fulfillRequest = async (request: Request):
+  Promise<void> => {
     try {
-      const context = await contextForProvisioning(profileId, false);
       const subject = config.get('nats:subject');
+      const context = await generateContext(request);
 
-      await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
+      const botMessageSet = await createBotMessageSet(Number(request.id), subject, context)
 
-      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
-      await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
-      logger.info(`CHES message sent for ${profileId}`);
+      // TODO Pick up here on Tuesday
+      const promises: any = []
+      botMessageSet.forEach((botMessage: BotMessage) => {
+        promises.push(sendNatsMessage(request.profileId, {
+          natsSubject: botMessage.natsSubject,
+          natsContext: botMessage.natsContext,
+        }))
+      })
 
-      resolve();
+      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${request.profileId}`);
+      await sendProvisioningMessage(request.profileId, MessageType.ProvisioningStarted);
+      logger.info(`CHES message sent for ${request.profileId}`);
+
+      await Promise.all(promises);
     } catch (err) {
-      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
+      const message = `Unable to fulfill namespace provisioning for profile ${request.profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
-  });
-
-export const fulfillEditRequest = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsMessage> =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const context = await contextForEditing(profileId, false, requestEditType, requestEditObject);
-      const subject = config.get('nats:subject');
-
-      const natsMessage = await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
-
-      resolve(natsMessage);
-    } catch (err) {
-      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  });
+  };
 
 export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
   try {
@@ -133,6 +120,24 @@ export const contextForEditing = async (profileId: number, isForSync: boolean, r
     throw err;
   }
 };
+
+const generateContext = async (request: Request): Promise<NatsContext> => {
+
+  if (!request.editType){
+    throw new Error(`Invalid edit type for request ${request.id}`)
+  }
+
+  switch (request.type) {
+    case RequestType.Create:
+      let context = await contextForProvisioning(request.profileId, false);
+      return context
+    case RequestType.Edit:
+      context =  await contextForEditing(request.profileId, false, request.editType, request.editObject);
+      return context
+    default:
+      throw new Error(`Invalid type for request ${request.id}`);
+  }
+}
 
 const buildContext = async (
   action: NatsContextAction, profile: ProjectProfile, contacts: Contact[], quotaSize: QuotaSize, quotas: Quotas

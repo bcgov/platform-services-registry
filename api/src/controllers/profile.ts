@@ -26,7 +26,7 @@ import { Request } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
-import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../libs/request';
+import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
 
@@ -106,7 +106,7 @@ export const updateProfileContacts = async (
 
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      await requestProfileContactsEdit(Number(profileId), contacts);
+      await requestProfileContactsEdit(Number(profileId), contacts, user, provisionerRelatedChanges);
       res.status(202).end();
     } else {
       const request = await requestProfileContactsEdit(Number(profileId), body, user, provisionerRelatedChanges);
@@ -118,9 +118,10 @@ export const updateProfileContacts = async (
         return ContactModel.update(contact.id, contact);
       });
       await Promise.all(contactPromises);
-      res.status(204).end();
 
       await RequestModel.isComplete(Number(request.id));
+
+      res.status(204).end();
     }
   } catch (err) {
     const message = `Unable to update contacts with profile ID ${profileId}`;
@@ -174,7 +175,7 @@ export const fetchProfileAllowedQuotaSizes = async (
 };
 
 export const updateProfileQuotaSize = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -218,6 +219,44 @@ export const fetchProfileEditRequests = async (
     }
 
     const message = `Unable to fetch profile edit requests with profile ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const createProjectRequest = async (
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  const { profileId } = params;
+  try {
+    const requiresHumanAction = true;
+    await requestProjectProfileCreate(Number(profileId), user, requiresHumanAction);
+
+    res.status(201).end();
+  } catch (err) {
+    const message = `Unable to add contact to profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchRequestsProjectIds = async (
+  { query }: { query: any }, res: Response
+): Promise<void> => {
+  const { RequestModel } = dm;
+  const { filter } = query;
+
+  try {
+    // Step 1. fetch all requests with matching filter
+    const requests = await RequestModel.findActiveByFilter(filter, true);
+    // Step 2. extract project Ids
+    const projectIds = requests.map(request => request.profileId)
+    // Step 3. return JSON of project Ids
+    res.status(200).json(projectIds);
+  } catch (err) {
+    const message = `Unable to fetch profile IDs for requests`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
