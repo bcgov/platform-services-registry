@@ -109,7 +109,7 @@ Array [
         SELECT * FROM namespace
           WHERE id = $1 AND archived = false;",
       "values": Array [
-        1,
+        13,
       ],
     },
   ],
@@ -150,7 +150,7 @@ Array [
         FROM namespace WHERE namespace.profile_id = $1;
       ",
       "values": Array [
-        1,
+        4,
       ],
     },
   ],
@@ -162,40 +162,48 @@ exports[`Namespace event handlers All Namespaces are returned 2`] = `200`;
 exports[`Namespace event handlers All Namespaces are returned 3`] = `
 Array [
   Object {
-    "archived": false,
-    "clusterId": 1,
-    "createdAt": "2020-05-06T21:16:42.799Z",
-    "id": 13,
+    "clusters": Array [
+      Object {
+        "clusterId": 1,
+        "name": "silver",
+        "provisioned": false,
+      },
+    ],
     "name": "4ea35c-tools",
-    "profileId": 4,
-    "updatedAt": "2020-05-06T21:16:42.799Z",
+    "namespaceId": 13,
   },
   Object {
-    "archived": false,
-    "clusterId": 1,
-    "createdAt": "2020-05-06T21:26:55.514Z",
-    "id": 14,
+    "clusters": Array [
+      Object {
+        "clusterId": 1,
+        "name": "silver",
+        "provisioned": false,
+      },
+    ],
     "name": "4ea35c-test",
-    "profileId": 4,
-    "updatedAt": "2020-05-06T21:26:55.514Z",
+    "namespaceId": 14,
   },
   Object {
-    "archived": false,
-    "clusterId": 1,
-    "createdAt": "2020-05-06T21:27:00.744Z",
-    "id": 15,
+    "clusters": Array [
+      Object {
+        "clusterId": 1,
+        "name": "silver",
+        "provisioned": false,
+      },
+    ],
     "name": "4ea35c-dev",
-    "profileId": 4,
-    "updatedAt": "2020-05-06T21:27:00.744Z",
+    "namespaceId": 15,
   },
   Object {
-    "archived": false,
-    "clusterId": 1,
-    "createdAt": "2020-05-06T21:27:07.148Z",
-    "id": 16,
+    "clusters": Array [
+      Object {
+        "clusterId": 1,
+        "name": "silver",
+        "provisioned": false,
+      },
+    ],
     "name": "4ea35c-prod",
-    "profileId": 4,
-    "updatedAt": "2020-05-06T21:27:07.148Z",
+    "namespaceId": 16,
   },
 ]
 `;

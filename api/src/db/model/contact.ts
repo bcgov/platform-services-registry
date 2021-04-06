@@ -1,3 +1,4 @@
+//
 // Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-22.
-//
+
+'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';

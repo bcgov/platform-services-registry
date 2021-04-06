@@ -76,9 +76,9 @@ Object {
     },
   },
   "technicalContact": Object {
-    "email": "jim@example.com",
+    "email": "john.doe@example.com",
     "provider": "github",
-    "userId": "jim1100",
+    "userId": "john1100",
   },
   "type": "standard",
 }

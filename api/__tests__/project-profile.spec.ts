@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';
@@ -21,6 +23,7 @@ import { Pool } from 'pg';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/project-profile';
 import ProfileModel from '../src/db/model/profile';
 import { AccessFlag } from '../src/libs/authorization';
+import { requestProjectProfileEdit } from '../src/libs/request';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -52,6 +55,10 @@ jest.mock('../src/db/utils', () => ({
   }),
 }));
 
+jest.mock('../src/libs/request', () => ({
+  requestProjectProfileEdit: jest.fn(),
+}));
+
 describe('Project-profile event handlers', () => {
   let ex;
 
@@ -61,7 +68,7 @@ describe('Project-profile event handlers', () => {
     ex = new FauxExpress();
   });
 
-  it('A project is created', async () => {
+  it('A project-profile is created', async () => {
     const req = {
       body: insertProfile,
       user: {
@@ -95,7 +102,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('A project fails to create', async () => {
+  it('A project-profile fails to create', async () => {
     const req = {
       body: insertProfile,
     };
@@ -109,7 +116,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-  it('All profiles are returned', async () => {
+  it('All project-profiles are returned', async () => {
     const req = {
       user: authenticatedUser,
     };
@@ -125,7 +132,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('All profiles are returned to an administrator', async () => {
+  it('All project-profiles are returned to an administrator', async () => {
     const req = {
       user: { ...authenticatedUser, accessFlags: [AccessFlag.EditAll,] },
     };
@@ -139,7 +146,7 @@ describe('Project-profile event handlers', () => {
     expect(findProfilesByUserId).toHaveBeenCalledTimes(0);
   });
 
-  it('All profiles are returned to non-administrator',
+  it('All project-profiles are returned to non-administrator',
     async () => {
       const req = {
         user: authenticatedUser,
@@ -155,7 +162,7 @@ describe('Project-profile event handlers', () => {
       expect(findProfilesByUserId.mock.calls[0][0]).toBe(req.user.id);
     });
 
-  it('Fetch all profiles should throw', async () => {
+  it('Fetch all project-profiles should throw', async () => {
     const req = {};
     client.query.mockImplementation(() => { throw new Error() });
 
@@ -166,7 +173,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A single profile is returned', async () => {
+  it('A single project-profiles is returned', async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -181,7 +188,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch single profile should throw', async () => {
+  it('Fetch single project-profiles should throw', async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -193,36 +200,69 @@ describe('Project-profile event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A project is updated', async () => {
-    const body = JSON.parse(JSON.stringify(insertProfile));
-    const aBody = {
-      ...body,
+  it('Update a project-profile with non provisioner-related changes', async () => {
+    const body = {
       id: 4,
-      createdAt: '2020-05-19T20:02:54.561Z',
-      updateAt: '2020-05-19T20:02:54.561Z',
-      userId: 1,
+      name: "Project X",
+      description: "This is a cool project.",
+      criticalSystem: false,
+      prioritySystem: false,
+      busOrgId: "CITZ",
+      notificationEmail: true,
+      notificationSms: true,
     };
     const req = {
       params: { profileId: 4 },
       body,
-    }
+    };
 
-    client.query.mockReturnValue({ rows: [aBody] });
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+    const update = ProfileModel.prototype.update = jest.fn();
 
     await updateProjectProfile(req, ex.res);
+
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(0);
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
-    expect(ex.res.json).toBeCalled();
   });
 
-  it('A project fails to update', async () => {
-    const body = JSON.parse(JSON.stringify(insertProfile));
+  it('Request project-profile edit with provisioner-related changes', async () => {
+    const body = {
+      id: 4,
+      name: "Project X",
+      description: "This is a cool project with modified description",
+      criticalSystem: false,
+      prioritySystem: false,
+      busOrgId: "CITZ",
+    };
+    const req = {
+      params: { profileId: 4 },
+      body,
+    };
+
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+
+    const update = ProfileModel.prototype.update = jest.fn();
+
+    await updateProjectProfile(req, ex.res);
+
+    expect(update).toHaveBeenCalledTimes(0);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+  });
+
+  it('A project-profiles fails to update', async () => {
     const aBody = {
       id: 4,
-      ...body,
+      ...insertProfile,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -239,7 +279,37 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-  it('A project is archived', async () => {
+  it('A project-profiles does not allow updating name', async () => {
+    const body = {
+      id: 4,
+      name: "Project X ATTEMPTED NAME CHANGE",
+      description: "This is a cool project.",
+      criticalSystem: false,
+      prioritySystem: false,
+      busOrgId: "CITZ",
+      notificationEmail: true,
+      notificationSms: true,
+    };
+    const req = {
+      params: { profileId: 4 },
+      body,
+    };
+
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+    const update = ProfileModel.prototype.update = jest.fn();
+
+    await updateProjectProfile(req, ex.res);
+
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(0);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+  });
+
+  it('A project-profiles is archived', async () => {
     const aBody = {
       id: 4,
       ...insertProfile,
@@ -262,7 +332,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.end).toBeCalled();
   });
 
-  it('A project fails to archive', async () => {
+  it('A project-profiles fails to archive', async () => {
     const req = {
       params: { profileId: 4 },
     }
@@ -278,7 +348,7 @@ describe('Project-profile event handlers', () => {
   });
 
 
-  it('Unique profile names are derived', async () => {
+  it('Unique project-profiles names are derived', async () => {
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });

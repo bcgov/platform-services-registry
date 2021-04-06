@@ -12,10 +12,10 @@
   },
   {
     "id": 2,
-    "firstName": "Jim",
+    "firstName": "John",
     "lastName": "Doe",
-    "email": "jim@example.com",
-    "githubId": "jim1100",
+    "email": "john.doe@example.com",
+    "githubId": "john1100",
     "roleId": 2,
     "archived": false,
     "createdAt": "2020-09-10T18:14:13.436Z",

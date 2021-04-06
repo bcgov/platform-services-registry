@@ -14,28 +14,18 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { updateContact } from '../src/controllers/contact';
+import { createContact } from '../src/controllers/contact';
 import FauxExpress from './src/fauxexpress';
 
-const p0 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
-const returnedContact = JSON.parse(fs.readFileSync(p0, 'utf8'))[0];
-
-const p1 = path.join(__dirname, 'fixtures/insert-contact.json');
-const insertContact = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const p0 = path.join(__dirname, 'fixtures/insert-contact.json');
+const insertContact = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const client = new Pool().connect();
-
-jest.mock('../src/libs/fulfillment', () => {
-  const p2 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
-  const natsContext = JSON.parse(fs.readFileSync(p2, 'utf8'));
-  const natsSubject = 'edit';
-  return {
-    fulfillProfileEdit: jest.fn().mockResolvedValue({ natsContext, natsSubject }),
-  };
-});
 
 describe('Contact event handlers', () => {
   let ex;
@@ -46,17 +36,21 @@ describe('Contact event handlers', () => {
     ex = new FauxExpress();
   });
 
-  it('A contact is updated', async () => {
-    const body = insertContact;
+  it('A contact is created', async () => {
     const req = {
-      params: { contactId: 1 },
-      body,
-    }
+      body: insertContact,
+    };
 
-    client.query.mockResolvedValue({ rows: [returnedContact] });
+    const addon = {
+      id: 2,
+      createdAt: "2020-09-10T18:14:13.304Z",
+      updatedAt: "2020-09-10T18:14:13.304Z",
+    };
+
+    client.query.mockResolvedValue({ rows: [{ ...insertContact, ...addon }] });
 
     // @ts-ignore
-    await updateContact(req, ex.res);
+    await createContact(req, ex.res);
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
@@ -65,18 +59,29 @@ describe('Contact event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('A contact fails to update', async () => {
-    const body = insertContact;
+  it('A contact fails to create due to db transaction error', async () => {
     const req = {
-      params: { contactId: 1 },
-      body,
-    }
+      body: insertContact,
+    };
 
     client.query.mockImplementation(() => { throw new Error() });
 
     // @ts-ignore
-    await expect(updateContact(req, ex.res)).rejects.toThrow();
+    await expect(createContact(req, ex.res)).rejects.toThrow();
+    expect(ex.res.status).not.toBeCalled();
+    expect(ex.res.json).not.toBeCalled();
+  });
 
+
+  it('A contact fails to create due to missing fields in body', async () => {
+    const req = {
+      body: {
+        firstName: "John",
+      },
+    };
+
+    // @ts-ignore
+    await expect(createContact(req, ex.res)).rejects.toThrow();
     expect(ex.res.status).not.toBeCalled();
     expect(ex.res.json).not.toBeCalled();
   });

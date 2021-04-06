@@ -104,7 +104,7 @@ const ProfileEdit: React.FC = (props: any) => {
     const contactDetails = await api.getContactsByProfileId(profileId);
     contactDetails.data = { ...getProfileContacts(contactDetails.data) };
 
-    const quotaOptions = await api.getQuotaOptionsByProfileId(profileId);
+    const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
     const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
     setProfileState((profileState0: any) => ({

@@ -13,39 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-05-14.
-//
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
-import { difference, isEmpty, isUndefined } from 'lodash';
+import { difference } from 'lodash';
 
-interface NatsContactDetails {
-  userId: string,
-  provider: string,
-  email: string,
-}
+export const validateRequiredFields = (requiredFields: string[], pojo: object): Error | undefined => {
+  const diff = difference(requiredFields, Object.keys(pojo));
 
-interface NatsContactObject {
-  contact: NatsContactDetails[];
-}
-
-export const validateObjProps = (fields: string[], pojo: object): Error | undefined => {
-  const diff = difference(fields, Object.keys(pojo));
   if (diff.length !== 0) {
     return errorWithCode(`Missing required properties: ${diff}`, 400);
   }
 
-  const blanks = fields.filter(p => {
-    switch (typeof p) {
-      case 'string':
-        return isEmpty(p);
-      case 'boolean':
-        return isUndefined(p);
-      case 'number':
-        return isNaN(p);
-      default:
-        return false;
-    }
+  // extra check_empty function is needed
+  // because lodash isEmpty seems to produce confusing results
+  // e.g. lodash.isEmpty(true) OR lodash.isEmpty(1) yields true
+  function isEmptyValue(value) {
+    return value === undefined || value === null || value === ''
+      || (typeof value === 'object' && Object.keys(value).length === 0)
+  }
+
+  const blanks = requiredFields.filter((requiredField: string) => {
+    return isEmptyValue(pojo[requiredField]);
   });
 
   if (blanks.length !== 0) {
@@ -66,13 +54,3 @@ export const replaceForDescription = (contextJson: any) => {
   contextJson.description = doubleQuoteReplaced;
   return contextJson;
 };
-
-export const formatNatsContactObject = async (body: any): Promise<NatsContactObject> => {
-  return Object.assign({}, ...Object.keys(body).map(contact => ({
-    [contact]: {
-      userId: body[contact].githubId,
-      provider: 'github',
-      email: body[contact].email,
-    },
-  })));
-}

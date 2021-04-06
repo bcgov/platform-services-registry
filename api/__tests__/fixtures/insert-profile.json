@@ -20,5 +20,6 @@
   "idmKeyCloak": false,
   "idmActiveDir": false,
   "other": "This is a test",
-  "primaryClusterName": "silver"
+  "primaryClusterName": "silver",
+  "migratingLicenseplate": "abc123"
 }

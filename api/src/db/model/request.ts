@@ -19,20 +19,15 @@ import { CommonFields, Model } from './model';
 export const enum RequestEditType {
     Contacts = 'contacts',
     QuotaSize = 'quotaSize',
-    Description = 'description',
-}
-
-export enum RequestEditContacts {
-    ProductOwner = 'productOwner',
-    TechnicalContact = 'technicalContact',
+    ProjectProfile = 'projectProfile',
 }
 
 export interface Request extends CommonFields {
     profileId: number;
     editType: RequestEditType;
-    editObject: string;
+    editObject: any;
     natsSubject?: string;
-    natsContext?: string;
+    natsContext?: any;
 }
 
 export default class RequestModel extends Model {
@@ -55,9 +50,9 @@ export default class RequestModel extends Model {
             values: [
                 data.profileId,
                 data.editType,
-                data.editObject,
+                JSON.stringify(data.editObject),
                 data.natsSubject,
-                data.natsContext,
+                JSON.stringify(data.natsContext),
             ],
         };
 
@@ -89,9 +84,9 @@ export default class RequestModel extends Model {
             query.values = [
                 aData.profileId,
                 aData.editType,
-                aData.editObject,
+                JSON.stringify(aData.editObject),
                 aData.natsSubject,
-                aData.natsContext,
+                JSON.stringify(aData.natsContext),
             ];
 
             const results = await this.runQuery(query);
@@ -134,9 +129,67 @@ export default class RequestModel extends Model {
         };
 
         try {
-            return await this.runQuery(query);
+            const results = await this.runQuery(query);
+            return results.map(result => {
+                return {
+                    ...result,
+                    editObject: JSON.parse(result.editObject),
+                    natsContext: JSON.parse(result.natsContext),
+                }
+            });
         } catch (err) {
             const message = `Unable to fetch Request(s) with Profile Id ${profileId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    // overwrite base model because of JSON conversion
+    async findAll(): Promise<any[]> {
+        const query = {
+            text: `
+          SELECT * FROM ${this.table}
+            WHERE archived = false;
+          `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.map(result => {
+                return {
+                    ...result,
+                    editObject: JSON.parse(result.editObject),
+                    natsContext: JSON.parse(result.natsContext),
+                }
+            });
+        } catch (err) {
+            const message = `Unable to fetch all Requests`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    // overwrite base model because of JSON conversion
+    async findById(id: number): Promise<any> {
+        const query = {
+            text: `
+            SELECT * FROM ${this.table}
+              WHERE id = $1 AND archived = false;`,
+            values: [id],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            const result = results.pop();
+            return {
+                ...result,
+                editObject: JSON.parse(result.editObject),
+                natsContext: JSON.parse(result.natsContext),
+            };
+        } catch (err) {
+            const message = `Unable to fetch Request with ID ${id}`;
             logger.error(`${message}, err = ${err.message}`);
 
             throw err;

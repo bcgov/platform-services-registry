@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';

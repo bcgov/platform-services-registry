@@ -12,6 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 'use strict';
 
@@ -19,7 +20,7 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
 import shared from '../libs/shared';
-import { validateObjProps } from '../libs/utils';
+import { validateRequiredFields } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 const { ContactModel } = dm;
@@ -28,7 +29,7 @@ export const createContact = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
 
-  const rv = validateObjProps(ContactModel.requiredFields, body);
+  const rv = validateRequiredFields(ContactModel.requiredFields, body);
   if (rv) {
     throw rv;
   }
@@ -39,49 +40,6 @@ export const createContact = async (
     res.status(201).json(result);
   } catch (err) {
     const message = `Unable to create contact`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-export const updateContact = async (
-  { params, body }: { params: any, body: any }, res: Response
-): Promise<void> => {
-  const { contactId } = params;
-  const {
-    firstName,
-    lastName,
-    email,
-    githubId,
-  } = body;
-
-  try {
-    const record = await ContactModel.findById(contactId);
-    const aBody = {
-      userId: record.userId,
-      firstName,
-      lastName,
-      email,
-      githubId,
-      roleId: record.roleId,
-    };
-
-    const rv = validateObjProps(ContactModel.requiredFields, aBody);
-
-    if (rv) {
-      throw rv;
-    }
-
-    const results = await ContactModel.update(contactId, aBody);
-
-    res.status(200).json(results);
-  } catch (err) {
-    if (err.code) {
-      throw err
-    }
-
-    const message = `Unable update contact ID ${contactId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

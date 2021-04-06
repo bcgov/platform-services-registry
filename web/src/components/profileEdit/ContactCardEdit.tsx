@@ -60,7 +60,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       const updatedContacts = { productOwner, technicalContact };
 
       // 2. Request the profile contact edit.
-      await api.requestContactEdit(profileId, updatedContacts);
+      await api.updateContactsByProfileId(profileId, updatedContacts);
 
       // 3. All good? Redirect back to overview and tell the user.
       setGoBackToProfileEditable(true);

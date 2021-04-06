@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import mockAxios from 'axios';
 import fs from 'fs';
 import path from 'path';

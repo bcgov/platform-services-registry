@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Province of British Columbia
+// Copyright © 2020 Province of British Columbia
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,18 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-16.
-//
 
 'use strict';
 
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { createContact } from '../../controllers/contact';
+import { QuotaSize } from '../src/db/model/quota';
+import { getAllowedQuotaSizes } from '../src/libs/quota';
 
-const router = express.Router();
+describe('Quota services', () => {
 
-// Contact
-router.post('/', asyncMiddleware(createContact));
-
-export default router;
+  it('getAllowedQuotaSizes works correctly', async () => {
+    expect(getAllowedQuotaSizes(QuotaSize.Small)).toEqual([QuotaSize.Medium]);
+    expect(getAllowedQuotaSizes(QuotaSize.Medium)).toEqual([QuotaSize.Small, QuotaSize.Large]);
+    expect(getAllowedQuotaSizes(QuotaSize.Large)).toEqual([QuotaSize.Small, QuotaSize.Medium]);
+  });
+});

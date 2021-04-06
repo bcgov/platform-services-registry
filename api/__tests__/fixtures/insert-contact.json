@@ -2,5 +2,6 @@
     "firstName": "John",
     "lastName": "Doe",
     "email": "john@example.com",
-    "githubId": "john1100"
+    "githubId": "john1100",
+    "roleId": 2
 }

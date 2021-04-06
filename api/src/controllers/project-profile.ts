@@ -17,12 +17,13 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { ProjectProfile } from '../db/model/profile';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { AccessFlag } from '../libs/authorization';
-import { getDefaultCluster } from '../libs/profile';
+import { requestProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
-import { validateObjProps } from '../libs/utils';
+import { validateRequiredFields } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -82,7 +83,7 @@ export const fetchProjectProfile = async (
     res.status(200).json(projectDetails);
   } catch (err) {
     if (err.code) {
-      throw err
+      throw err;
     }
 
     const message = `Unable fetch project profile with ID ${profileId}`;
@@ -95,13 +96,13 @@ export const fetchProjectProfile = async (
 export const createProjectProfile = async (
   { body, user }: { body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ProfileModel } = dm;
+  const { ProfileModel, ClusterModel } = dm;
   const data = { ...body, userId: user.id };
 
   // User cannot set the namespace prefix OR primary cluster name (current default cluster).
   // If it exists, this overwrites it with a place holder value. It will be replaced
   // with the actual value further on.
-  const rv = validateObjProps(ProfileModel.requiredFields, {
+  const rv = validateRequiredFields(ProfileModel.requiredFields, {
     ...data,
     namespacePrefix: 'placeholder',
     primaryClusterName: 'placeholder',
@@ -117,7 +118,7 @@ export const createProjectProfile = async (
       throw errorWithCode(500, 'Unable to generate unique namespace prefix');
     }
 
-    const defaultCluster = await getDefaultCluster();
+    const defaultCluster = await ClusterModel.findDefault();
     if (!defaultCluster) {
       throw errorWithCode(500, 'Unable to set primary cluster id based on default cluster');
     }
@@ -133,13 +134,24 @@ export const createProjectProfile = async (
   }
 };
 
+// TODO: enable updating name when we support display name changes
 export const updateProjectProfile = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
+
+  const rv = validateRequiredFields(ProfileModel.requiredFields, {
+    ...body,
+    userId: 'placeholder',
+    namespacePrefix: 'placeholder',
+    primaryClusterName: 'placeholder',
+  });
+  if (rv) {
+    throw rv;
+  }
+
   const {
-    name,
     description,
     busOrgId,
     prioritySystem,
@@ -162,14 +174,11 @@ export const updateProjectProfile = async (
   } = body;
 
   try {
-    const currentProjectDetails = await ProfileModel.findById(profileId);
+    const currentProjectProfile: ProjectProfile = await ProfileModel.findById(profileId);
     const aBody = {
-      name,
       description,
       busOrgId,
       prioritySystem,
-      userId: currentProjectDetails.userId,
-      namespacePrefix: currentProjectDetails.namespacePrefix,
       notificationEmail,
       notificationSms,
       notificationMsTeams,
@@ -185,18 +194,24 @@ export const updateProjectProfile = async (
       idmKeycloak,
       idmActiveDir,
       other,
-      primaryClusterName: currentProjectDetails.primaryClusterName,
       migratingLicenseplate,
+      name: currentProjectProfile.name,
+      userId: currentProjectProfile.userId,
+      namespacePrefix: currentProjectProfile.namespacePrefix,
+      primaryClusterName: currentProjectProfile.primaryClusterName,
     };
 
-    const rv = validateObjProps(ProfileModel.requiredFields, aBody);
-    if (rv) {
-      throw rv;
+    const editCompares = [
+      currentProjectProfile.description !== description,
+    ];
+    const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
+    if (provisionerRelatedChanges) {
+      await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId });
+      res.status(202).end();
+    } else {
+      await ProfileModel.update(profileId, aBody);
+      res.status(204).end();
     }
-
-    const results = await ProfileModel.update(profileId, aBody);
-
-    res.status(200).json(results);
   } catch (err) {
     if (err.code) {
       throw err;

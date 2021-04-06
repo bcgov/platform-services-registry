@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+'use strict';
+
 import mockAxios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -25,7 +27,6 @@ const contacts = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const p2 = path.join(__dirname, 'fixtures/post-send-email-resp.json');
 const send = JSON.parse(fs.readFileSync(p2, 'utf8'));
-
 
 describe('Services', () => {
 

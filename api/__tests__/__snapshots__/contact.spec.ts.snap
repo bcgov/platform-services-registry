@@ -1,60 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Contact event handlers A contact is updated 1`] = `
+exports[`Contact event handlers A contact is created 1`] = `
 Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM contact
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM contact
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        1,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-        UPDATE contact
-          SET
-            first_name = $1, last_name = $2, email = $3, github_id = $4,
-            role_id = $5
-          WHERE id = 1
-          RETURNING *;",
+        INSERT INTO contact
+          (first_name, last_name, email, github_id, role_id)
+          VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
         "John",
         "Doe",
         "john@example.com",
         "john1100",
-        1,
+        2,
       ],
     },
   ],
 ]
 `;
 
-exports[`Contact event handlers A contact is updated 2`] = `200`;
+exports[`Contact event handlers A contact is created 2`] = `201`;
 
-exports[`Contact event handlers A contact is updated 3`] = `
+exports[`Contact event handlers A contact is created 3`] = `
 Object {
-  "archived": false,
-  "createdAt": "2020-09-10T18:14:13.436Z",
-  "email": "jane@example.com",
-  "firstName": "Jane",
-  "githubId": "jane1100",
-  "id": 1,
+  "createdAt": "2020-09-10T18:14:13.304Z",
+  "email": "john@example.com",
+  "firstName": "John",
+  "githubId": "john1100",
+  "id": 2,
   "lastName": "Doe",
-  "roleId": 1,
-  "updatedAt": "2020-09-10T18:14:13.436Z",
+  "roleId": 2,
+  "updatedAt": "2020-09-10T18:14:13.304Z",
 }
 `;

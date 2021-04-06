@@ -68,7 +68,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       const requestBody = composeRequestBodyForQuotaEdit(selectedSize);
 
       // 2. Request the profile quota edit.
-      await api.requestQuotaSizeByProfileId(profileId, requestBody);
+      await api.updateQuotaSizeByProfileId(profileId, requestBody);
 
       // 3. All good? Redirect back to overview and tell the user.
       handleSubmitRefresh();
