@@ -143,7 +143,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           Request Quota
         </StyledFormButton>
       ) : (
-      // @ts-ignore
+        // @ts-ignore
         <StyledFormDisabledButton style={{ display: 'block' }}>
           Request Quota
         </StyledFormDisabledButton>

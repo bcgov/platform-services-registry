@@ -14,11 +14,8 @@
 // limitations under the License.
 //
 
-<<<<<<< HEAD
 'use strict';
 
-=======
->>>>>>> 5fc9710 (refactor and modify unit tests)
 import { QuotaSize } from '../src/db/model/quota';
 import { getAllowedQuotaSizes } from '../src/libs/quota';
 

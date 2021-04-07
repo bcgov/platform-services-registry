@@ -22,19 +22,12 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
-<<<<<<< HEAD
 import { Request } from '../db/model/request';
 import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../libs/request';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
-=======
-import { getProfileCurrentQuotaSize } from '../libs/profile';
-import { getAllowedQuotaSizes } from '../libs/quota';
-import { fetchEditRequests, requestContactsEdit, requestQuotaSizeEdit } from '../libs/request';
-import shared from '../libs/shared';
->>>>>>> 5fc9710 (refactor and modify unit tests)
 
 const dm = new DataManager(shared.pgPool);
 
@@ -47,11 +40,7 @@ export const addContactToProfile = async (
   try {
     await ProfileModel.addContactToProfile(Number(profileId), Number(contactId));
 
-<<<<<<< HEAD
     res.status(201).end();
-=======
-    res.status(204).end();
->>>>>>> 5fc9710 (refactor and modify unit tests)
   } catch (err) {
     const message = `Unable to add contact to profile`;
     logger.error(`${message}, err = ${err.message}`);
@@ -88,7 +77,6 @@ export const updateProfileContacts = async (
   const { ContactModel } = dm;
   const { profileId } = params;
   const { productOwner, technicalContact } = body;
-<<<<<<< HEAD
   const contacts = [productOwner, technicalContact];
 
   // TODO:(yh) add more data sanity check
@@ -129,34 +117,6 @@ export const updateProfileContacts = async (
       await Promise.all(contactPromises);
       res.status(204).end();
     }
-=======
-
-  try {
-    const contacts = [productOwner, technicalContact];
-    const currentPOvalues = await ContactModel.findById(productOwner.id);
-    const currentTCvalues = await ContactModel.findById(technicalContact.id);
-
-    const editCompares = [
-      currentPOvalues.githubId !== productOwner.githubId,
-      currentPOvalues.email !== productOwner.email,
-      currentTCvalues.githubId !== technicalContact.githubId,
-      currentTCvalues.email !== technicalContact.email,
-    ];
-    const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
-
-    if (provisionerRelatedChanges) {
-      await requestContactsEdit(Number(profileId), body);
-    } else {
-      const updatePromises: any = [];
-      contacts.forEach((contact: Contact) => {
-        updatePromises.push(ContactModel.update(Number(contact.id), contact));
-      });
-
-      await Promise.all(updatePromises);
-    }
-
-    res.status(204).end();
->>>>>>> 5fc9710 (refactor and modify unit tests)
   } catch (err) {
     const message = `Unable to update contacts with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -173,11 +133,7 @@ export const fetchProfileQuotaSize = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(Number(profileId));
-<<<<<<< HEAD
     const quotaSize: QuotaSize = await getQuotaSize(profile);
-=======
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
->>>>>>> 5fc9710 (refactor and modify unit tests)
 
     res.status(200).json(quotaSize);
   } catch (err) {
@@ -200,21 +156,12 @@ export const fetchProfileAllowedQuotaSizes = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-<<<<<<< HEAD
     const quotaSize: QuotaSize = await getQuotaSize(profile);
     const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
 
     res.status(200).json(allowedQuotaSizes);
   } catch (err) {
     const message = `Unable to fetch allowed quota-sizes for profile ${profileId}`;
-=======
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
-    const results = getAllowedQuotaSizes(quotaSize);
-
-    res.status(200).json(results);
-  } catch (err) {
-    const message = `Unable to fetch quota options for profile ${profileId}`;
->>>>>>> 5fc9710 (refactor and modify unit tests)
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -230,7 +177,6 @@ export const updateProfileQuotaSize = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-<<<<<<< HEAD
     const quotaSize: QuotaSize = await getQuotaSize(profile);
     const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
 
@@ -261,47 +207,11 @@ export const fetchProfileEditRequests = async (
 
     res.status(200).json(editRequests);
   } catch (err) {
-=======
-    const quotaSize: QuotaSize = await getProfileCurrentQuotaSize(profile);
-    const allowedQuotaSizes = getAllowedQuotaSizes(quotaSize);
-
-    // verify if requested quota size is valid
-    if (!(requestedQuotaSize && allowedQuotaSizes.includes(requestedQuotaSize))) {
-      const errmsg = 'Please provide correct requested quota size in body';
-      throw new Error(errmsg);
-    }
-
-    await requestQuotaSizeEdit(Number(profileId), body);
-
-    res.status(204).end();
-  } catch (err) {
-    const message = `Unable to request quota size for profile ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
-
-export const fetchProfileEditRequests = async (
-  { params }: { params: any }, res: Response
-): Promise<void> => {
-  const { profileId } = params;
-
-  try {
-    const results = await fetchEditRequests(profileId);
-
-    res.status(200).json(results);
-  } catch (err) {
->>>>>>> 5fc9710 (refactor and modify unit tests)
     if (err.code) {
       throw err;
     }
 
-<<<<<<< HEAD
     const message = `Unable to fetch profile edit requests with profile ID ${profileId}`;
-=======
-    const message = `Unable fetch requests with profile ID ${profileId}`;
->>>>>>> 5fc9710 (refactor and modify unit tests)
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

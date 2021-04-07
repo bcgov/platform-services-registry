@@ -89,21 +89,7 @@ describe('Services', () => {
     await expect(fulfillNamespaceProvisioning(12345)).resolves.toBeUndefined();
   });
 
-<<<<<<< HEAD
   it('Namespace edit request succeeds', async () => {
-=======
-  it('Namespace provisioning fails', async () => {
-
-    client.query.mockReturnValueOnce({ rows: profile });
-    client.query.mockReturnValueOnce({ rows: [] });
-    client.query.mockReturnValueOnce({ rows: quotas });
-    client.query.mockReturnValueOnce({ rows: namespaces });
-
-    await expect(fulfillNamespaceProvisioning(12345)).rejects.toThrow();
-  });
-
-  it('Profile namespace set edit request succeeds', async () => {
->>>>>>> 5fc9710 (refactor and modify unit tests)
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,

@@ -52,11 +52,7 @@ router.post('/:profileId/contacts', authorize(), asyncMiddleware(updateProfileCo
 // Quota
 router.get('/:profileId/quota-size', authorize(), asyncMiddleware(fetchProfileQuotaSize));
 router.get('/:profileId/allowed-quota-sizes', authorize(), asyncMiddleware(fetchProfileAllowedQuotaSizes));
-<<<<<<< HEAD
 // will involve provisioner-related changes
-=======
-// must invovle provisioner-related changes
->>>>>>> 5fc9710 (refactor and modify unit tests)
 router.post('/:profileId/quota-size', authorize(), asyncMiddleware(updateProfileQuotaSize));
 
 
