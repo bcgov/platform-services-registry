@@ -16,10 +16,20 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
 
+// TODO: change value 'description' to 'project profile'
 export const enum RequestEditType {
     Contacts = 'contacts',
     QuotaSize = 'quotaSize',
+<<<<<<< HEAD
     ProjectProfile = 'projectProfile',
+=======
+    ProjectProfile = 'description',
+}
+
+export enum RequestEditContacts {
+    ProductOwner = 'productOwner',
+    TechnicalContact = 'technicalContact',
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 }
 
 export interface Request extends CommonFields {

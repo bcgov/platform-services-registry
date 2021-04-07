@@ -224,6 +224,8 @@ describe('Project-profile event handlers', () => {
     expect(update).toHaveBeenCalledTimes(1);
     expect(requestProjectProfileEdit).toHaveBeenCalledTimes(0);
 
+<<<<<<< HEAD
+=======
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
@@ -253,12 +255,45 @@ describe('Project-profile event handlers', () => {
     expect(update).toHaveBeenCalledTimes(0);
     expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
 
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
   });
 
+<<<<<<< HEAD
+  it('Request project-profile edit with provisioner-related changes', async () => {
+    const body = {
+      id: 4,
+      name: "Project X",
+      description: "This is a cool project with modified description",
+      criticalSystem: false,
+      prioritySystem: false,
+      busOrgId: "CITZ",
+    };
+    const req = {
+      params: { profileId: 4 },
+      body,
+    };
+
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+
+    const update = ProfileModel.prototype.update = jest.fn();
+
+    await updateProjectProfile(req, ex.res);
+
+    expect(update).toHaveBeenCalledTimes(0);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+  });
+
+=======
+>>>>>>> 5fc9710 (refactor and modify unit tests)
   it('A project-profiles fails to update', async () => {
     const aBody = {
       id: 4,

@@ -88,7 +88,11 @@ export const getQuotaSize = async (profile: ProjectProfile): Promise<QuotaSize> 
   }
 };
 
+<<<<<<< HEAD
 export const updateQuotaSize = async (profile: ProjectProfile, quotaSize: QuotaSize): Promise<void> => {
+=======
+export const applyProfileRequestedQuotaSize = async (profile: ProjectProfile, quotaSize: QuotaSize): Promise<void> => {
+>>>>>>> 5fc9710 (refactor and modify unit tests)
   try {
     const clusters: Cluster[] = await getClusters(profile);
 

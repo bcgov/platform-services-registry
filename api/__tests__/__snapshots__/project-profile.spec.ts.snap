@@ -330,7 +330,11 @@ Array [
 ]
 `;
 
+<<<<<<< HEAD
 exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 2`] = `202`;
+=======
+exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 2`] = `204`;
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 
 exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 3`] = `undefined`;
 

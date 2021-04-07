@@ -21,6 +21,10 @@ import { ProjectProfile } from '../db/model/profile';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { AccessFlag } from '../libs/authorization';
+<<<<<<< HEAD
+=======
+import { getDefaultCluster } from '../libs/profile';
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 import { requestProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
@@ -212,6 +216,21 @@ export const updateProjectProfile = async (
       await ProfileModel.update(profileId, aBody);
       res.status(204).end();
     }
+<<<<<<< HEAD
+=======
+
+    const editCompares = [
+      currentProjectProfile.description !== description,
+    ];
+    const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
+
+    if (provisionerRelatedChanges) {
+      await requestProjectProfileEdit(Number(profileId), aBody);
+    } else {
+      await ProfileModel.update(profileId, aBody);
+    }
+    res.status(204).end();
+>>>>>>> 5fc9710 (refactor and modify unit tests)
   } catch (err) {
     if (err.code) {
       throw err;

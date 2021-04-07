@@ -14,17 +14,26 @@
 // limitations under the License.
 //
 
+<<<<<<< HEAD
 'use strict';
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { replaceForDescription, validateRequiredFields } from '../src/libs/utils';
+=======
+import { errorWithCode } from '@bcgov/common-nodejs-utils';
+import { replaceForDescription, validateObjProps } from '../src/libs/utils';
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 
 jest.mock('@bcgov/common-nodejs-utils', () => ({
   errorWithCode: jest.fn(),
 }));
 
 describe('Utils', () => {
+<<<<<<< HEAD
   it('validateRequiredFields works correctly upon missing field(s)', async () => {
+=======
+  it('validateObjProps works correctly upon missing field(s)', async () => {
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     const requiredFields: string[] = [
       'name',
       'description',
@@ -43,11 +52,19 @@ describe('Utils', () => {
       userId: 4,
     };
 
+<<<<<<< HEAD
     validateRequiredFields(requiredFields, pojo);
     expect(errorWithCode).toHaveBeenCalledWith(`Missing required properties: namespacePrefix,primaryClusterName`, 400);
   });
 
   it('validateRequiredFields works correctly upon empty value in required field(s)', async () => {
+=======
+    validateObjProps(requiredFields, pojo);
+    expect(errorWithCode).toHaveBeenCalledWith(`Missing required properties: namespacePrefix,primaryClusterName`, 400);
+  });
+
+  it('validateObjProps works correctly upon empty value in required field(s)', async () => {
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     const requiredFields: string[] = [
       'firstName',
       'lastName',
@@ -62,7 +79,11 @@ describe('Utils', () => {
       roleId: '',
     };
 
+<<<<<<< HEAD
     validateRequiredFields(requiredFields, pojo);
+=======
+    validateObjProps(requiredFields, pojo);
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     expect(errorWithCode).toHaveBeenCalledWith(`Required properties can not be empty: email,roleId`, 400);
   });
 

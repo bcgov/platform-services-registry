@@ -20,9 +20,13 @@ import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
 import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../src/controllers/sync';
+<<<<<<< HEAD
 import ProfileModel from '../src/db/model/profile';
 import RequestModel from '../src/db/model/request';
 import { getProvisionStatus } from '../src/libs/profile';
+=======
+import { isProfileProvisioned } from '../src/libs/profile';
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
@@ -55,7 +59,11 @@ jest.mock('../src/libs/utils', () => {
 });
 
 jest.mock('../src/libs/profile', () => ({
+<<<<<<< HEAD
   getProvisionStatus: jest.fn(),
+=======
+  isProfileProvisioned: jest.fn(),
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 }));
 
 describe('Sync event handlers', () => {
@@ -71,7 +79,11 @@ describe('Sync event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
     // @ts-ignore
+<<<<<<< HEAD
     getProvisionStatus.mockResolvedValue(true);
+=======
+    isProfileProvisioned.mockResolvedValue(true);
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     // @ts-ignore
     await getAllProvisionedProfileIds(req, ex.res);
 
@@ -101,7 +113,11 @@ describe('Sync event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
 
     // @ts-ignore
+<<<<<<< HEAD
     getProvisionStatus.mockResolvedValue(true);
+=======
+    isProfileProvisioned.mockResolvedValue(true);
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     // @ts-ignore
     await getProvisionedProfileBotJson(req, ex.res);
 
@@ -133,7 +149,11 @@ describe('Sync event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfiles });
 
     // @ts-ignore
+<<<<<<< HEAD
     getProvisionStatus.mockResolvedValue(false);
+=======
+    isProfileProvisioned.mockResolvedValue(false);
+>>>>>>> 5fc9710 (refactor and modify unit tests)
     // @ts-ignore
     await getAllProfileIdsUnderPending(req, ex.res);
 
@@ -154,6 +174,7 @@ describe('Sync event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
+<<<<<<< HEAD
   // it('Bot json object for a queried profile under pending edit / create is returned', async () => {
   //   const req = {
   //     params: { profileId: 4 },
@@ -172,6 +193,26 @@ describe('Sync event handlers', () => {
   //   expect(ex.res.status).toBeCalled();
   //   expect(ex.res.json).toBeCalled();
   // });
+=======
+  it('Bot json object for a queried profile under pending edit / create is returned', async () => {
+    const req = {
+      params: { profileId: 4 },
+    };
+    client.query.mockReturnValueOnce({ rows: selectRequestEditContacts });
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: [] });
+
+    // @ts-ignore
+    isProfileProvisioned.mockResolvedValue(false);
+    // @ts-ignore
+    await getProfileBotJsonUnderPending(req, ex.res);
+
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+>>>>>>> 5fc9710 (refactor and modify unit tests)
 
   it('Bot json object for a queried profile under pending edit / create should throw', async () => {
     const req = {
