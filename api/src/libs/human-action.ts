@@ -31,9 +31,7 @@ export const createHumanAction = async (requestId: number, type: HumanActionType
         throw new Error('Cant proceed as the request has an existing human action record');
     }
 
-    const hasCallback = (type === HumanActionType.Approve)
-
-    return await RequestModel.createHumanAction({requestId, type, comment, userId, hasCallback});
+    return await RequestModel.createHumanAction({requestId, type, comment, userId});
   } catch (err) {
       const message = `Unable to process request edit`;
       logger.error(`${message}, err = ${err.message}`);

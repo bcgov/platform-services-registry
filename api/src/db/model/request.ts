@@ -57,7 +57,6 @@ export interface HumanAction extends CommonFields {
     type: HumanActionType;
     comment: string;
     userId: number;
-    hasCallback: boolean;
 }
 
 export default class RequestModel extends Model {
@@ -375,14 +374,13 @@ export default class RequestModel extends Model {
     async createHumanAction(data: HumanAction): Promise<BotMessage> {
         const query = {
             text: `INSERT INTO human_action
-            (request_id, type, comment, user_id, has_callback)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            (request_id, type, comment, user_id)
+            VALUES ($1, $2, $3, $4) RETURNING *;`,
             values: [
                 data.requestId,
                 data.type,
                 data.comment,
                 data.userId,
-                data.hasCallback,
             ],
         };
 

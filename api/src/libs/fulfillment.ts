@@ -27,7 +27,6 @@ import { BotMessage, Request, RequestEditType, RequestType } from '../db/model/r
 import { replaceForDescription } from '../libs/utils';
 import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
 import { createBotMessageSet } from './bot-message';
-import { MessageType, sendProvisioningMessage } from './messaging';
 import { getQuotaSize } from './profile';
 import shared from './shared';
 
@@ -41,7 +40,6 @@ export const fulfillRequest = async (request: Request):
 
       const botMessageSet = await createBotMessageSet(Number(request.id), subject, context)
 
-      // TODO Pick up here on Tuesday
       const promises: any = []
       botMessageSet.forEach((botMessage: BotMessage) => {
         promises.push(sendNatsMessage(request.profileId, {
@@ -49,10 +47,6 @@ export const fulfillRequest = async (request: Request):
           natsContext: botMessage.natsContext,
         }))
       })
-
-      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${request.profileId}`);
-      await sendProvisioningMessage(request.profileId, MessageType.ProvisioningStarted);
-      logger.info(`CHES message sent for ${request.profileId}`);
 
       await Promise.all(promises);
     } catch (err) {
@@ -148,9 +142,9 @@ const buildContext = async (
       throw new Error('Cant get profile id');
     }
     const namespaces = await NamespaceModel.findForProfile(profile.id);
-
-    const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
-    const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
+    console.log(typeof(contacts))
+    const tcContact = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
+    const poContact = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
 
     if (!profile || !tcContact || !poContact || !quotaSize || !quotas || !namespaces) {
       throw new Error('Missing arguments to build nats context');
