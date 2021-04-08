@@ -49,6 +49,7 @@ export const validateRequiredFields = (requiredFields: string[], pojo: object): 
 // the function BELOW is to address such issue
 // in order to make sure the final manifest yaml file is valid to ocp
 export const replaceForDescription = (contextJson: any) => {
+  console.log("contextJSON: ", contextJson)
   const doubleQuoteReplaced = contextJson.description.replace(/"/g, ' ').replace(/\\/g, '');
 
   contextJson.description = doubleQuoteReplaced;

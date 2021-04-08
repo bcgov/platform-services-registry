@@ -16,7 +16,9 @@
 
 'use strict';
 
+import { logger } from '@bcgov/common-nodejs-utils';
 import DataManager from '../db';
+import { BotMessage } from '../db/model/request';
 import { NatsContext } from '../types';
 import shared from './shared';
 
@@ -29,7 +31,6 @@ export const createBotMessageSet = async ( requestId: number, natsSubject: strin
   }
 
   const clusters = await NamespaceModel.findClustersForProfile(natsContext.profileId);
-
   const promises: any = [];
   clusters.forEach(cluster => {
     // create Bot Message record for each cluster project-profile edit
@@ -37,7 +38,7 @@ export const createBotMessageSet = async ( requestId: number, natsSubject: strin
       requestId,
       natsSubject,
       natsContext,
-      clusterName: cluster,
+      clusterName: cluster.name,
       receivedCallback: false,
     }));
   })
@@ -45,13 +46,13 @@ export const createBotMessageSet = async ( requestId: number, natsSubject: strin
   await Promise.all(promises);
 };
 
-// export const fetchBotMessageRequests = async (requestId: number): Promise<BotMessage[]> => {
-//   try {
-//       return await RequestModel.findForRequest(requestId);
-//   } catch (err) {
-//       const message = `Unable to fetch existing bot message requests for request ${requestId}`;
-//       logger.error(`${message}, err = ${err.message}`);
+export const fetchBotMessageRequests = async (requestId: number): Promise<BotMessage[]> => {
+  try {
+      return await RequestModel.findActiveBotMessagesByRequestId(requestId);
+  } catch (err) {
+      const message = `Unable to fetch existing bot message requests for request ${requestId}`;
+      logger.error(`${message}, err = ${err.message}`);
 
-//       throw err;
-//   }
-// };
+      throw err;
+  }
+};

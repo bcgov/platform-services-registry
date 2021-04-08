@@ -353,7 +353,7 @@ export default class RequestModel extends Model {
         }
     }
 
-    async findActiveBotMessageByRequestId(requestId: number): Promise<BotMessage[]> {
+    async findActiveBotMessagesByRequestId(requestId: number): Promise<BotMessage[]> {
         const query = {
             text: `
                 SELECT * FROM bot_message
