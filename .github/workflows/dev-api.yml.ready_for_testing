@@ -1,0 +1,113 @@
+name: Test & Build
+
+on:
+  #push:
+  #  paths:
+  #    - "api/src/**/*.ts"
+  #    - "api/package*.json"
+  #
+  # Run the workflow manually, instead of on a push to any branch.
+  # The user specifies the name of the build config to use, which should be an
+  #   api build config.
+  # The 'paths' values are specific to the 'push' and 'pull_request' triggers
+  #   and so are no longer needed here.
+  # --------------------------------------------------------------------------
+  workflow_dispatch:
+    inputs:
+      buildConfig:
+        description: 'Enter build config name'
+        required: true
+        default: platsrv-registry-api-dev-build
+
+defaults:
+  run:
+    working-directory: ./api
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests w/ coverage
+        run: npm run test:coverage
+      - name: LINTing
+        run: npm run test:lint
+      - name: OpenAPI Schema
+        run: npm run test:schema
+      - name: Upload coverage report
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.TestReporterID }}
+          CI: "true"
+        run: |
+          curl -Ls https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter format-coverage -t lcov -o codeclimate.json
+          ./cc-test-reporter upload-coverage -i codeclimate.json
+  build:
+    runs-on: ubuntu-latest
+    needs: [test]
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: "true"
+  s2i-build:
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    steps:
+
+      - name: S2I Build
+        uses: redhat-developer/openshift-actions@v1.1
+        with:
+          version: "latest"
+          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
+          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
+          cmd: |
+            'version'
+            'start-build platsrv-registry-api-master-build --follow -n platform-registry-tools'
+
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OpenShiftServerURL }}
+          openshift_token: ${{ secrets.OpenShiftToken }}
+          insecure_skip_tls_verify: true
+          namespace: platform-registry-tools
+
+      # Build the image using the specified build config
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "dev"
+      # ------------------------------------------------
+      - name: Build and tag the image
+        run: |
+          oc version
+          oc start-build ${{ github.event.inputs.buildConfig }} --follow -n platform-registry-tools
+          export BUILDID="$(oc get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
+          export COMMITID="$(oc get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
+          oc tag -n platform-registry-tools ${{ github.event.inputs.buildConfig }}@$IMAGESHA ${{ github.event.inputs.buildConfig }}:$COMMITID ${{ github.event.inputs.buildConfig }}:dev
