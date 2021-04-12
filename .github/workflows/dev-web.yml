@@ -1,4 +1,4 @@
-name: Test & Build
+name: Web app to Dev
 
 on:
   #push:
@@ -103,5 +103,5 @@ jobs:
           export BUILDID="$(oc get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
           export COMMITID="$(oc get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
-          oc tag -n platform-registry-tools ${{ github.event.inputs.buildConfig }}@$IMAGESHA ${{ github.event.inputs.buildConfig }}:$COMMITID ${{ github.event.inputs.buildConfig }}:dev
+          oc tag -n platform-registry-tools ${{ github.event.inputs.buildConfig }}@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
 
