@@ -1,4 +1,4 @@
-name: DB to (1) Dev
+name: DB to Dev
 
 on:
   #push:
