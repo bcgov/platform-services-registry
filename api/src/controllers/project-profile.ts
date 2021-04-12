@@ -21,6 +21,7 @@ import { ProjectProfile } from '../db/model/profile';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { AccessFlag } from '../libs/authorization';
+import { fulfillRequest } from '../libs/fulfillment';
 import { requestProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
@@ -206,11 +207,12 @@ export const updateProjectProfile = async (
     ];
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId }, user, provisionerRelatedChanges);
+      const request = await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId }, user, false);
+      await fulfillRequest(request);
       res.status(202).end();
     } else {
       const request = await requestProjectProfileEdit(
-        Number(profileId), { ...aBody, id: profileId }, user, provisionerRelatedChanges
+        Number(profileId), { ...aBody, id: profileId }, user, false
       );
       await ProfileModel.update(profileId, aBody);
       await RequestModel.isComplete(Number(request.id));

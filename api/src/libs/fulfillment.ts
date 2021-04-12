@@ -24,7 +24,7 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
 import { BotMessage, Request, RequestEditType, RequestType } from '../db/model/request';
-import { replaceForContext } from '../libs/utils';
+import { replaceForDescription } from '../libs/utils';
 import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
 import { createBotMessageSet, fetchBotMessageRequests } from './bot-message';
 import { getQuotaSize } from './profile';
@@ -37,7 +37,6 @@ export const fulfillRequest = async (request: Request):
     try {
       const subject = config.get('nats:subject');
       const context = await generateContext(request);
-
       await createBotMessageSet(Number(request.id), subject, context)
       const botMessageSet = await fetchBotMessageRequests(Number(request.id))
       const promises: any = []
@@ -87,7 +86,7 @@ export const contextForEditing = async (profileId: number, isForSync: boolean, r
     let contacts: Contact[];
 
     if (requestEditType === RequestEditType.ProjectProfile) {
-      profile = requestEditObject;
+      profile = JSON.parse(requestEditObject);
     } else {
       profile = await ProfileModel.findById(profileId);
     }
@@ -101,11 +100,10 @@ export const contextForEditing = async (profileId: number, isForSync: boolean, r
     }
 
     if (requestEditType === RequestEditType.Contacts) {
-      contacts = requestEditObject;
+      contacts = JSON.parse(requestEditObject);
     } else {
       contacts = await ContactModel.findForProject(profileId);
     }
-
     return await buildContext(action, profile, contacts, quotaSize, quotas);
   } catch (err) {
     const message = `Unable to create context for updating ${profileId}`;
@@ -117,18 +115,15 @@ export const contextForEditing = async (profileId: number, isForSync: boolean, r
 
 const generateContext = async (request: Request): Promise<NatsContext> => {
 
-
   switch (request.type) {
     case RequestType.Create:
-      let context = await contextForProvisioning(request.profileId, false);
-      return context
+      return await contextForProvisioning(request.profileId, false);
     case RequestType.Edit:
       if (!request.editType){
         throw new Error(`Invalid edit type for request ${request.id}`)
       }
-      
-      context =  await contextForEditing(request.profileId, false, request.editType, request.editObject);
-      return context
+      console.log("generateContextRequest: ", request)
+      return await contextForEditing(request.profileId, false, request.editType, request.editObject);
     default:
       throw new Error(`Invalid type for request ${request.id}`);
   }
@@ -183,8 +178,6 @@ const sendNatsMessage = async (profileId: number, natsMessage: NatsMessage): Pro
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsMessage;
-    //TODO remove quotes from around keys to find description in object
-    console.log("natsContext: ", natsContext.description)
     nc.on('error', () => {
       const errmsg = `NATS error sending order ${profileId} to ${natsSubject}`;
       throw new Error(errmsg);
@@ -192,7 +185,7 @@ const sendNatsMessage = async (profileId: number, natsMessage: NatsMessage): Pro
 
     logger.info(`Sending NATS message for ${profileId}`);
 
-    nc.publish(natsSubject, replaceForContext(natsContext));
+    nc.publish(natsSubject, replaceForDescription(natsContext));
     logger.info(`NATS Message sent for ${profileId}`);
 
     nc.flush(() => {

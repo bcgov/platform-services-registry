@@ -173,7 +173,7 @@ const createRequest = async (
         return await RequestModel.create({
             profileId,
             editType,
-            editObject: JSON.stringify(editObject),
+            editObject,
             type,
             requiresHumanAction,
             isActive: true,

@@ -333,14 +333,14 @@ export default class RequestModel extends Model {
         };
 
         try {
-            const record = await this.findById(botMessageId);
+            const record = await this.findBotMessageById(botMessageId);
             const aData = { ...record};
             query.values = [
                 aData.requestId,
                 aData.natsSubject,
                 JSON.stringify(aData.natsContext),
                 aData.clusterName,
-                aData.receivedCallback ? aData.receivedCallback : true,
+                aData.receivedCallback = true,
             ];
 
             const results = await this.runQuery(query);
@@ -362,9 +362,39 @@ export default class RequestModel extends Model {
         };
 
         try {
-            return await this.runQuery(query);
+            const results = await this.runQuery(query);
+            return results.map(result => {
+                return {
+                    ...result,
+                    natsContext: JSON.parse(result.natsContext),
+                }
+            });
         } catch (err) {
             const message = `Unable to fetch Request(s) with Request Id ${requestId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    // overwrite base model because of JSON conversion
+    async findBotMessageById(botMessageId: number): Promise<any> {
+        const query = {
+            text: `
+            SELECT * FROM bot_message
+              WHERE id = $1 AND archived = false;`,
+            values: [botMessageId],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            const result = results.pop();
+            return {
+                ...result,
+                editObject: JSON.parse(result.natsContext),
+            };
+        } catch (err) {
+            const message = `Unable to fetch Request with ID ${botMessageId}`;
             logger.error(`${message}, err = ${err.message}`);
 
             throw err;

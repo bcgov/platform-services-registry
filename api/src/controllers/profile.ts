@@ -24,6 +24,7 @@ import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
+import { fulfillRequest } from '../libs/fulfillment';
 import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
@@ -106,10 +107,11 @@ export const updateProfileContacts = async (
 
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      await requestProfileContactsEdit(Number(profileId), contacts, user, provisionerRelatedChanges);
+      const request = await requestProfileContactsEdit(Number(profileId), contacts, user, false);
+      await fulfillRequest(request);
       res.status(202).end();
     } else {
-      const request = await requestProfileContactsEdit(Number(profileId), body, user, provisionerRelatedChanges);
+      const request = await requestProfileContactsEdit(Number(profileId), body, user, false);
 
       const contactPromises = contacts.map((contact: Contact) => {
         if (!contact.id) {

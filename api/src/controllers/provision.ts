@@ -22,6 +22,7 @@ import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
+import { fetchBotMessageRequests } from '../libs/bot-message';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import { getProvisionStatus, updateProvisionStatus } from '../libs/profile';
 import { processProfileContactsEdit, processProfileQuotaSizeEdit, processProjectProfileEdit } from '../libs/request';
@@ -61,7 +62,7 @@ export const provisionerCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const { prefix, clusterName } = body;
+  const { prefix, cluster } = body;
 
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
@@ -74,9 +75,9 @@ export const provisionerCallbackHandler = async (
     const isProfileProvisioned = await getProvisionStatus(profile);
 
     if (isProfileProvisioned) {
-      await processProvisionedProfileEditRequest(profile, clusterName);
+      await processProvisionedProfileEditRequest(profile, cluster);
     } else {
-      await updateProvisionedProfile(profile);
+      await updateProvisionedProfile(profile, cluster);
     }
     res.status(204).end();
   } catch (err) {
@@ -87,30 +88,37 @@ export const provisionerCallbackHandler = async (
   }
 };
 
-const updateProvisionedProfile = async (profile: ProjectProfile): Promise<void> => {
+const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: String): Promise<void> => {
   const { RequestModel } = dm;
   try {
-    await updateProvisionStatus(profile, true);
+    // Must check if all bot_messages are complete before completing.
+    //Step 1. fetch active bot_messages for request
 
-    // TODO (yh note): We could perhaps have a util function that checks the query params validation
-    // (besides the existing one that checks for POST body structure based on Model required types)
-    // and serve 400 bad request consistently
-    if (!profile.id){
-      throw new Error('Cant read the given profileId');
-      }
-
-    const requests = await RequestModel.findForProfile(profile.id);
+    const requests = await RequestModel.findForProfile(Number(profile.id));
     const request = requests.pop();
     if (!request) {
       return;
     }
+    
+    const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-    await RequestModel.isComplete(Number(request.id));
-    // TODO:(jl) This is a catch all endpoint. Needs to be more specific to
-    // be used for emailing.
-    logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
-    await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
-    logger.info(`CHES message sent for ${profile.id}`);
+    if (botMessageSet.length == 1) {
+      await updateProvisionStatus(profile, true);
+  
+      await RequestModel.isComplete(Number(request.id));
+
+      logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
+      await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
+      logger.info(`CHES message sent for ${profile.id}`);
+    }
+
+    const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()
+    if (!botMessage) {
+      const errmsg = `Unable to get bot message with cluster name: ${clusterName}`;
+      throw new Error(errmsg);
+    }
+    await RequestModel.updateCallbackStatus(Number(botMessage.id))
+    
     return;
   } catch (err) {
     const message = `Unable to update provisioned profile`;
@@ -132,21 +140,32 @@ const processProvisionedProfileEditRequest = async (profile: ProjectProfile, clu
     if (!request) {
       return;
     }
+    
+    const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-    switch (request.editType) {
-      case RequestEditType.ProjectProfile:
-        await processProjectProfileEdit(request);
-        break;
-      case RequestEditType.Contacts:
-        await processProfileContactsEdit(request);
-        break;
-      case RequestEditType.QuotaSize:
-        await processProfileQuotaSizeEdit(request);
-        break;
-      default:
-        throw new Error(`Invalid edit type for request ${request.id}`);
+    if (botMessageSet.length == 1) {
+      switch (request.editType) {
+        case RequestEditType.ProjectProfile:
+          await processProjectProfileEdit(request);
+          break;
+        case RequestEditType.Contacts:
+          await processProfileContactsEdit(request);
+          break;
+        case RequestEditType.QuotaSize:
+          await processProfileQuotaSizeEdit(request);
+          break;
+        default:
+          throw new Error(`Invalid edit type for request ${request.id}`);
+      }
+      await RequestModel.delete(Number(request.id));
     }
-    await RequestModel.delete(Number(request.id));
+
+    const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()
+    if (!botMessage) {
+      const errmsg = `Unable to get bot message with cluster name: ${clusterName}`;
+      throw new Error(errmsg);
+    }
+    await RequestModel.updateCallbackStatus(Number(botMessage.id))
   } catch (err) {
     const message = `Unable to process provisioned profile edit request`;
     logger.error(`${message}, err = ${err.message}`);
