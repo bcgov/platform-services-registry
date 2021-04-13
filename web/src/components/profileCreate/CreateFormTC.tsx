@@ -15,13 +15,11 @@
 //
 
 import React, { useState } from 'react';
-import { Field } from 'react-final-form';
 import Aux from '../../hoc/auxillary';
 import { AddFormTC } from '../common/UI/AddFormTC';
 import { StyledFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
-import TCCountInput from '../common/UI/TCCountInput';
 
 const CreateFormTC: React.FC = () => {
   const [TCcount, setTCcount] = useState(1);
@@ -46,16 +44,8 @@ const CreateFormTC: React.FC = () => {
         Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will
         use this information to contact them with technical questions or notify them about platform
         events. You can list up to 3 Technical Contacts.
-            </FormSubtitle>
-      {/* Possibly use FieldArray to manage FormData as an array? */}
-      {/* <FieldArray name="Technical-contacts">
-        {({ fields }) => (
-          fields.map((name, index) =>
-          ( */}
+      </FormSubtitle>
       {tcs}
-      {/* ))
-         )}
-      </FieldArray> */}
       <div className="buttons">
         {(
           <StyledFormButton
@@ -75,12 +65,6 @@ const CreateFormTC: React.FC = () => {
           </StyledFormButton>
         )}
       </div >
-      <Field
-        name="tc_count"
-        component={TCCountInput}
-        defaultValue={TCcount}
-        type="hidden"
-      />
     </Aux >
 
   );
