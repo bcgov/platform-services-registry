@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM docker.io/adoptopenjdk/openjdk11:alpine-jre
 
 RUN apk --no-cache add --update bash openssl
 
