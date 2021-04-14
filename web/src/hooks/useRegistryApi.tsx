@@ -61,7 +61,15 @@ export default function useRegistryApi() {
     } else {
       return axiosInstance.current.get('quota');
     }
-  }
+  };
+
+  const getQuotaSizes = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('quota/sizes');
+    }
+  };
 
   const getProfile = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
@@ -189,6 +197,7 @@ export default function useRegistryApi() {
   return {
     getMinistry,
     getQuota,
+    getQuotaSizes,
     getProfile,
     createProfile,
     updateProfile,
