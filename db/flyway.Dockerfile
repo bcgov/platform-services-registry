@@ -1,18 +1,13 @@
-FROM docker.io/adoptopenjdk/openjdk11:alpine-jre
+FROM registry.access.redhat.com/ubi8/openjdk-11
 
-RUN apk --no-cache add --update bash openssl
-
-# Add the flyway user and step in the directory
-RUN addgroup flyway \
-    && adduser -S -h /flyway -D -G flyway flyway
+RUN mkdir flyway
 WORKDIR /flyway
 
-# Change to the flyway user
-USER flyway
+USER 0
 
 ENV FLYWAY_VERSION 7.5.3
 
-RUN wget https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}.tar.gz \
+RUN curl -sLo ./flyway-commandline-${FLYWAY_VERSION}.tar.gz https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}.tar.gz \
   && tar -xzf flyway-commandline-${FLYWAY_VERSION}.tar.gz \
   && mv flyway-${FLYWAY_VERSION}/* . \
   && rm flyway-commandline-${FLYWAY_VERSION}.tar.gz
@@ -21,3 +16,5 @@ ENV PATH="/flyway:${PATH}"
 COPY sql/*.sql /flyway/sql/
 
 RUN chmod -R 777 .
+
+USER 1001
