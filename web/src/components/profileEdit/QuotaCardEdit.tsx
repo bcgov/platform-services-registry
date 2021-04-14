@@ -15,10 +15,10 @@
 //
 
 import { Label } from '@rebass/forms';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Text } from 'rebass';
-import { PROFILE_EDIT_VIEW_NAMES, QUOTA_SIZES, ROUTE_PATHS } from '../../constants';
+import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import theme from '../../theme';
@@ -50,8 +50,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
   const [selectedSize, setSelectedSize] = useState<any>('');
-
-  const specs = QUOTA_SIZES.filter((size: any) => size.name === quotaSize).pop();
+  const [specs, setSpecs] = useState<any>([]);
 
   const handleChange = (event: any) => {
     setSelectedSize(event.target.value);
@@ -81,6 +80,14 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     setOpenBackdrop(false);
   };
 
+  useEffect(() => {
+    async function getQuotaSizes() {
+      const quotaSizes = await api.getQuotaSizes();
+      setSpecs(quotaSizes.data.filter((size: any) => size.name === quotaSize).pop())
+    }
+    getQuotaSizes();
+  });
+
   if (goBackToProfileEditable && profileId) {
     return (
       <Redirect
@@ -91,6 +98,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       />
     );
   }
+
 
   if (!specs) {
     return null;
