@@ -1,5 +1,8 @@
 name: Web app to Dev
 
+env:
+  GITHUB_CONTEXT: ${{ toJson(github) }}
+
 on:
   #push:
   #  paths:
