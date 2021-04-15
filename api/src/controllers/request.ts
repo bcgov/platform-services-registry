@@ -17,7 +17,7 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { HumanActionType } from '../db/model/request';
+import { HumanActionType, RequestType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
 import { createHumanAction } from '../libs/human-action';
@@ -70,7 +70,9 @@ export const updateRequestHumanAction = async (
       await fulfillRequest(request);
       res.status(204).end();
     } else {
-      await archiveProjectSet(request.profile_id)
+      if ( request.type === RequestType.Create) {
+        await archiveProjectSet(request.profileId)
+      }
       // TODO Email contacts with comment
       await RequestModel.isComplete(requestId);
       res.status(204).end();

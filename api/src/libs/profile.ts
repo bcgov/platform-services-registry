@@ -139,16 +139,17 @@ const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> => {
 
 export const archiveProjectSet = async (profileId: number): Promise<void> => {
   try {
-    // Step 1. Archive profile
-    await ProfileModel.delete(profileId);
-
+    // Step 1. Archive Contacts
+    ContactModel.findForProject(profileId).then(contacts => {
+      contacts.map(contact => ContactModel.delete(Number(contact.id)))
+    })
     // Step 2. Archive Namespace
-    const namespaces = await NamespaceModel.findForProfile(profileId)
-    await namespaces.map(namespace => NamespaceModel.delete(Number(namespace.id)))
-
-    // Step 3. Archive Contacts
-    const contacts = await NamespaceModel.findForProfile(profileId)
-    await contacts.map(contact => ContactModel.delete(Number(contact.id)))
+    NamespaceModel.findForProfile(profileId).then(projectNamespaces => {
+      const namespaces:Array<any> = projectNamespaces
+      namespaces.map(namespace => NamespaceModel.delete(Number(namespace.namespaceId)))
+    })
+    // Step 3. Archive profile
+    await ProfileModel.delete(profileId);
   } catch (err) {
     const message = `Unable to archive project set with profile id ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);

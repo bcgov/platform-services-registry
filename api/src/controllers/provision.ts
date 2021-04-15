@@ -157,7 +157,7 @@ const processProvisionedProfileEditRequest = async (profile: ProjectProfile, clu
         default:
           throw new Error(`Invalid edit type for request ${request.id}`);
       }
-      await RequestModel.delete(Number(request.id));
+      await RequestModel.isComplete(Number(request.id));
     }
 
     const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()
