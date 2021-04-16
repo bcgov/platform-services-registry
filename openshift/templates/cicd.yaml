@@ -66,6 +66,7 @@ objects:
           - create
           - get
           - list
+          - update
       - apiGroups:
           - image.openshift.io
           - ""
