@@ -95,7 +95,7 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
-          oc start-build ${{ github.event.inputs.buildConfig }} --follow -n platform-registry-tools
+          oc -n platform-registry-tools start-build ${{ github.event.inputs.buildConfig }} --follow
           export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"

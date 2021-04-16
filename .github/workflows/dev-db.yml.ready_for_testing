@@ -18,22 +18,15 @@ on:
         required: true
         default: platsrv-registry-flyway-dev-build
 
-defaults:
-  run:
-    working-directory: ./db
+# Is this needed?
+#defaults:
+#  run:
+#    working-directory: ./db
 
 jobs:
   docker-build:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
-        with:
-          openshift_server_url: ${{ secrets.OpenShiftServerURL }}
-          openshift_token: ${{ secrets.OpenShiftToken }}
-          insecure_skip_tls_verify: true
-          namespace: platform-registry-tools
 
       # Build the image using the specified build config
       # Get its build ID
@@ -44,8 +37,9 @@ jobs:
       - name: Build and tag the image
         run: |
           oc version
-          oc start-build ${{ github.event.inputs.buildConfig }} --follow -n platform-registry-tools
-          export BUILDID="$(oc get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
-          export COMMITID="$(oc get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
-          export IMAGESHA="$(oc get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
-          oc tag -n platform-registry-tools ${{ github.event.inputs.buildConfig }}@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:dev
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n platform-registry-tools start-build ${{ github.event.inputs.buildConfig }} --follow
+          export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
+          export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
+          oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:dev

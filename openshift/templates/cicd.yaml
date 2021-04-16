@@ -67,7 +67,6 @@ objects:
           - get
           - list
           - update
-          - delete
       - apiGroups:
           - image.openshift.io
           - ""
