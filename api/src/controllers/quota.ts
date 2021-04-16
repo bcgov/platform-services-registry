@@ -45,6 +45,6 @@ export const fetchQuotaSizes = async (req: Request, res: Response): Promise<void
         const message = `Unable to get quota sizes`;
         logger.error(`${message}, err = ${err.message}`);
 
-        throw err;
+        throw errorWithCode(message, 500);
     }
 };
