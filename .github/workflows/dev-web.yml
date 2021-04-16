@@ -101,4 +101,5 @@ jobs:
       # ------------------------------------------------
       - name: Build and tag the image
         run: |
-          /usr/local/bin/oc version
+          echo "testing..."
+          date
