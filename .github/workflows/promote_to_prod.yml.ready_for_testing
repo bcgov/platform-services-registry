@@ -1,0 +1,50 @@
+name: Promote to Prod
+
+on:
+
+  # Manually trigger the promotion to Prod
+  # --------------------------------------
+  workflow_dispatch:
+
+  # If we want to have promotions to Test and Prod based on pull requests, then
+  # we should decide on some controls for that to avoid accidentally promoting
+  # the Test version to Prod.
+  # ---------------------------------------------------------------------------
+  #push:
+  #  branches:
+  #    - master
+  #  types: [ opened, synchrize, reopened ]
+
+jobs:
+  tag_for_prod:
+    steps:
+
+      - name: Log in to OpenShift
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+
+      - name: Tag the Test DB image for Prod
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-flyway:test platsrv-registry-flyway:prod
+
+      # Do we need to pause while the DB image is updated?
+      # --------------------------------------------------
+      #- name: Wait for DB image to update
+      #  if: ${{ success() }}
+
+      - name: Tag the Test API image for Prod
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-api:test platsrv-registry-api:prod
+
+      # Do we need to pause while the API image is updated?
+      # ---------------------------------------------------
+      #- name: Wait for API image to update
+      #  if: ${{ success() }}
+
+      - name: Tag the Test Web image for Prod
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-web:test platsrv-registry-web:prod
+

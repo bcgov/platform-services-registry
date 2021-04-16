@@ -1,0 +1,50 @@
+name: Promote to Test
+
+on:
+
+  # Manually trigger the promotion to Prod
+  # --------------------------------------
+  workflow_dispatch:
+
+  # We could promote from Dev to Test when a pull request is opened to master.
+  # What kinds of controls would we need around that to avoid accidental
+  # promotions?
+  # --------------------------------------------------------------------------
+  #pull_request:
+  #  branches:
+  #    - main
+  #  types: [ opened, synchrize, reopened ]
+
+jobs:
+  tag_for_test:
+    steps:
+
+      - name: Log in to OpenShift
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+
+      - name: Tag the Dev DB image for Test
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-flyway:dev platsrv-registry-flyway:test
+
+      # Do we need to pause while the DB image is updated?
+      # --------------------------------------------------
+      #- name: Wait for DB image to update
+      #  if: ${{ success() }}
+
+      - name: Tag the Dev API image for Test
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-api:dev platsrv-registry-api:test
+
+      # Do we need to pause while the API image is updated?
+      # ---------------------------------------------------
+      #- name: Wait for API image to update
+      #  if: ${{ success() }}
+
+      - name: Tag the Dev Web image for Test
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-web:dev platsrv-registry-web:test
+
