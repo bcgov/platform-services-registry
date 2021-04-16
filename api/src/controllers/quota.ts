@@ -23,8 +23,8 @@ import shared from '../libs/shared';
 const dm = new DataManager(shared.pgPool);
 
 export const fetchQuota = async (req: Request, res: Response): Promise<void> => {
-    const { QuotaModel } = dm;
     try {
+        const { QuotaModel } = dm;
         const results = await QuotaModel.findQuota();
         res.status(200).json(results);
     } catch (err) {
@@ -37,8 +37,8 @@ export const fetchQuota = async (req: Request, res: Response): Promise<void> => 
 
 
 export const fetchQuotaSizes = async (req: Request, res: Response): Promise<void> => {
-    const { QuotaModel } = dm;
     try {
+        const { QuotaModel } = dm;
         const quotaSizes = await QuotaModel.findQuotaSizes();
         res.status(200).json(quotaSizes)
     } catch (err) {
