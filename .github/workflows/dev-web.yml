@@ -106,3 +106,4 @@ jobs:
         run: |
           echo "testing..."
           date
+          oc version
