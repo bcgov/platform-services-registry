@@ -85,14 +85,6 @@ jobs:
         working-directory: .
     steps:
 
-      #- name: Log in to OpenShift
-      #  uses: redhat-actions/oc-login@v1
-      #  with:
-      #    openshift_server_url: ${{ secrets.OpenShiftServerURL }}
-      #    openshift_token: ${{ secrets.OpenShiftToken }}
-      #    insecure_skip_tls_verify: true
-      #    namespace: platform-registry-tools
-
       # Build the image using the specified build config
       # Get its build ID
       # Get the commit ID of that build
@@ -107,4 +99,4 @@ jobs:
           export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
-          oc -n platform-registry-tools tag ${{ github.event.inputs.buildConfig }}@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
+          oc -n platform-registry-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
