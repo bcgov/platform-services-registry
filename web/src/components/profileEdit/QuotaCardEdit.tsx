@@ -86,6 +86,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       setSpecs(quotaSizes.data.filter((size: any) => size.name === quotaSize).pop())
     }
     getQuotaSizes();
+    // eslint-disable-next-line
   }, []);
 
   if (goBackToProfileEditable && profileId) {
