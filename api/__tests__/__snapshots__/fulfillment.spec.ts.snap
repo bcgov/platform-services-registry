@@ -1,5 +1,89 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Services Contact edit context is created 1`] = `
+Object {
+  "action": "edit",
+  "description": "This is a cool project.",
+  "displayName": "Project X",
+  "namespaces": Array [
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-tools",
+      "namespaceId": 13,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-test",
+      "namespaceId": 14,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-dev",
+      "namespaceId": 15,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-prod",
+      "namespaceId": 16,
+    },
+  ],
+  "newDisplayName": "NULL",
+  "productOwner": Object {
+    "email": "jane@example.com",
+    "provider": "github",
+    "userId": "janedoe",
+  },
+  "profileId": 4,
+  "quota": "small",
+  "quotas": Object {
+    "cpu": Object {
+      "limits": 8,
+      "requests": 4,
+    },
+    "memory": Object {
+      "limits": "32Gi",
+      "requests": "16Gi",
+    },
+    "storage": Object {
+      "backup": "25Gi",
+      "block": "50Gi",
+      "capacity": "50Gi",
+      "file": "50Gi",
+    },
+  },
+  "technicalContact": Object {
+    "email": "jim@example.com",
+    "provider": "github",
+    "userId": "jim1100",
+  },
+  "type": "standard",
+}
+`;
+
 exports[`Services Provisioning context is created 1`] = `
 Object {
   "action": "create",

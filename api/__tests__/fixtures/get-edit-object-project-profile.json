@@ -1,0 +1,28 @@
+[
+{
+  "id": 4,
+  "name": "Project X",
+  "description": "This is a cool edited project.",
+  "criticalSystem": false,
+  "prioritySystem": false,
+  "busOrgId": "CITZ",
+  "userId": 1,
+  "namespacePrefix": "4ea35c",
+  "primaryClusterName": "silver",
+  "notificationEmail":false,
+  "notificationSms":false,
+  "notificationMsTeams":false,
+  "paymentBambora":false,
+  "paymentPayBc":false,
+  "fileTransfer":false,
+  "fileStorage":false,
+  "geoMappingWeb":false,
+  "geoMappingLocation":false,
+  "schedulingCalendar":false,
+  "schedulingAppointments":false,
+  "idmSiteMinder":false,
+  "idmKeycloak":false,
+  "idmActiveDir":false,
+  "other":null
+}
+]

@@ -21,7 +21,7 @@ import path from 'path';
 import { Pool } from 'pg';
 import ContactModel from '../src/db/model/contact';
 import RequestModel from '../src/db/model/request';
-import { fulfillEditRequest } from '../src/libs/fulfillment';
+import { fulfillRequest } from '../src/libs/fulfillment';
 import { processProfileContactsEdit, requestProjectProfileEdit } from '../src/libs/request';
 
 const p0 = path.join(__dirname, 'fixtures/get-requests.json');
@@ -36,10 +36,13 @@ const profile = JSON.parse(fs.readFileSync(p2, 'utf8'))[0];
 const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
 const contactEditRequest = JSON.parse(fs.readFileSync(p3, 'utf8'))[0];
 
+const p4 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
+const authenticatedUser = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
 const client = new Pool().connect();
 
 jest.mock('../src/libs/fulfillment', () => ({
-  fulfillEditRequest: jest.fn(),
+  fulfillRequest: jest.fn(),
 }));
 
 describe('Request services', () => {
@@ -48,7 +51,7 @@ describe('Request services', () => {
     const profileId = 4;
 
     // @ts-ignore
-    fulfillEditRequest.mockResolvedValue({
+    fulfillRequest.mockResolvedValue({
       natsContext,
       natsSubject,
     });
@@ -56,14 +59,14 @@ describe('Request services', () => {
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: ['mockRequest'] });
 
-    const result = await requestProjectProfileEdit(profileId, profile);
+    const result = await requestProjectProfileEdit(profileId, profile, authenticatedUser, false);
     expect(result).toBeDefined();
   });
 
   it('requestProjectProfileEdit fails due to existing request', async () => {
     RequestModel.prototype.findForProfile = jest.fn().mockResolvedValue(requests);
 
-    await expect(requestProjectProfileEdit(4, profile))
+    await expect(requestProjectProfileEdit(4, profile, authenticatedUser, false))
       .rejects
       .toThrow('Cant proceed as the profile has existing request');
   });

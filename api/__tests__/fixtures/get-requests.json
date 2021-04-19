@@ -2,6 +2,10 @@
   {
     "id": 1,
     "profileId": 1,
+    "type": "edit",
+    "requiresHumanAction": true,
+    "isActive": true,
+    "userId": 4,
     "editType": "quotaSize",
     "editObject": {
       "quota": "medium",
@@ -22,8 +26,6 @@
         }
       }
     },
-    "natsSubject": "registry_project_provisioning",
-    "natsContext": "nats_context_stub",
     "archived": false,
     "createdAt": "2020-09-10T18:14:13.304Z",
     "updatedAt": "2020-09-10T18:14:13.304Z"
@@ -31,6 +33,10 @@
   {
     "id": 2,
     "profileId": 4,
+    "type": "edit",
+    "requiresHumanAction": false,
+    "isActive": true,
+    "userId": 4,
     "editType": "contacts",
     "editObject": [
       {
@@ -50,8 +56,6 @@
         "roleId": 2
       }
     ],
-    "natsSubject": "registry_project_provisioning",
-    "natsContext": "nats_context_stub",
     "archived": false,
     "createdAt": "2020-09-10T18:14:13.304Z",
     "updatedAt": "2020-09-10T18:14:13.304Z"
