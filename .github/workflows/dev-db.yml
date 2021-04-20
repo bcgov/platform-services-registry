@@ -1,27 +1,16 @@
 name: DB to Dev
 
 on:
-  #push:
-  #  paths:
-  #    - "db/sql/*.sql"
-  #
-  # Run the workflow manually, instead of on a push to any branch.
+  # Run the workflow manually, instead of on a push.
   # The user specifies the name of the build config to use, which should be a
   #   db build config.
-  # The 'paths' values are specific to the 'push' and 'pull_request' triggers
-  #   and so are no longer needed here.
   # -------------------------------------------------------------------------
   workflow_dispatch:
     inputs:
       buildConfig:
-        description: 'Enter build config name'
+        description: 'Enter build config name:'
         required: true
         default: platsrv-registry-flyway-dev-build
-
-# Is this needed?
-#defaults:
-#  run:
-#    working-directory: ./db
 
 jobs:
   docker-build:

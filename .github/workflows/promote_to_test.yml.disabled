@@ -2,18 +2,16 @@ name: Promote to Test
 
 on:
 
-  # Manually trigger the promotion to Prod
-  # --------------------------------------
-  workflow_dispatch:
+  # Promote to Test when a pull request is merged into master.
+  # If necessary, tags can be used to put more controls around this.
+  # ----------------------------------------------------------------
+  push:
+    branches:
+      - master
 
-  # We could promote from Dev to Test when a pull request is opened to master.
-  # What kinds of controls would we need around that to avoid accidental
-  # promotions?
-  # --------------------------------------------------------------------------
-  #pull_request:
-  #  branches:
-  #    - main
-  #  types: [ opened, synchrize, reopened ]
+  # Optionally trigger the promotion manually
+  # -----------------------------------------
+  workflow_dispatch:
 
 jobs:
   tag_for_test:
@@ -30,8 +28,9 @@ jobs:
 
       # Do we need to pause while the DB image is updated?
       # --------------------------------------------------
-      #- name: Wait for DB image to update
-      #  if: ${{ success() }}
+      - name: Wait for DB image to update
+        if: ${{ success() }}
+        run: sleep 30
 
       - name: Tag the Dev API image for Test
         if: ${{ success() }}
@@ -40,8 +39,9 @@ jobs:
 
       # Do we need to pause while the API image is updated?
       # ---------------------------------------------------
-      #- name: Wait for API image to update
-      #  if: ${{ success() }}
+      - name: Wait for API image to update
+        if: ${{ success() }}
+        run: sleep 30
 
       - name: Tag the Dev Web image for Test
         if: ${{ success() }}

@@ -1,21 +1,14 @@
 name: Build and tag for Dev - API
 
 on:
-  #push:
-  #  paths:
-  #    - "api/src/**/*.ts"
-  #    - "api/package*.json"
-  #
-  # Run the workflow manually, instead of on a push to any branch.
+  # Run the workflow manually, instead of on a push.
   # The user specifies the name of the build config to use, which should be an
-  #   api build config.
-  # The 'paths' values are specific to the 'push' and 'pull_request' triggers
-  #   and so are no longer needed here.
+  #   API build config.
   # --------------------------------------------------------------------------
   workflow_dispatch:
     inputs:
       buildConfig:
-        description: 'Enter build config name'
+        description: 'Enter build config name:'
         required: true
         default: platsrv-registry-api-dev-build
 

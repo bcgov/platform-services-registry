@@ -1,24 +1,14 @@
 name: Web app to Dev
 
 on:
-  #push:
-  #  paths:
-  #    - "web/src/**/*.ts"
-  #    - "web/src/**/*.tsx"
-  #    - "web/package*.json"
-  #    - "web/public/**/*"
-  #    - "web/Caddyfile"
-  #
-  # Run the workflow manually, instead of on a push to any branch.
+  # Run the workflow manually, instead of on a push.
   # The user specifies the name of the build config to use, which should be a
   #   web app build config.
-  # The 'paths' values are specific to the 'push' and 'pull_request' triggers
-  #   and so are no longer needed here.
   # -------------------------------------------------------------------------
   workflow_dispatch:
     inputs:
       buildConfig:
-        description: 'Enter build config name'
+        description: 'Enter build config name:'
         required: true
         default: platsrv-registry-web-dev-build
   
@@ -100,3 +90,4 @@ jobs:
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
           oc -n platform-registry-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
+
