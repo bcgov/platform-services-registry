@@ -1,0 +1,43 @@
+name: Promote to Prod
+
+on:
+
+  # Trigger promotion to Prod when a new release is created
+  # -------------------------------------------------------
+  release:
+    types: [ published ]
+
+  # Optionally trigger the promotion to Prod manually
+  # -------------------------------------------------
+  workflow_dispatch:
+
+jobs:
+  tag_for_prod:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log in to OpenShift
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+
+      - name: Tag the Test DB image for Prod
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-flyway:test platsrv-registry-flyway:prod
+
+      # Perform DB verification and/or wait for DB deployment
+      # -----------------------------------------------------
+
+      - name: Tag the Test API image for Prod
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-api:test platsrv-registry-api:prod
+
+      # Perform API verification and/or wait for API deployment
+      # -------------------------------------------------------
+
+      - name: Tag the Test Web image for Prod
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-web:test platsrv-registry-web:prod
+

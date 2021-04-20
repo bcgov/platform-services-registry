@@ -1,0 +1,45 @@
+name: Promote to Test
+
+on:
+
+  # Promote to Test when a pull request is merged into master.
+  # If necessary, tags can be used to put more controls around this.
+  # ----------------------------------------------------------------
+  push:
+    branches:
+      - master
+
+  # Optionally trigger the promotion manually
+  # -----------------------------------------
+  workflow_dispatch:
+
+jobs:
+  tag_for_test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log in to OpenShift
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+
+      - name: Tag the Dev DB image for Test
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-flyway:dev platsrv-registry-flyway:test
+
+      # Perform DB verification and/or wait for DB deployment
+      # -----------------------------------------------------
+
+      - name: Tag the Dev API image for Test
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-api:dev platsrv-registry-api:test
+
+      # Perform API verification and/or wait for API deployment
+      # -------------------------------------------------------
+
+      - name: Tag the Dev Web image for Test
+        if: ${{ success() }}
+        run: |
+          oc -n platform-registry-tools tag platsrv-registry-web:dev platsrv-registry-web:test
+

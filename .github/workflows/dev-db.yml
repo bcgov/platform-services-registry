@@ -1,0 +1,34 @@
+name: DB to Dev
+
+on:
+  # Run the workflow manually, instead of on a push.
+  # The user specifies the name of the build config to use, which should be a
+  #   db build config.
+  # -------------------------------------------------------------------------
+  workflow_dispatch:
+    inputs:
+      buildConfig:
+        description: 'Enter build config name:'
+        required: true
+        default: platsrv-registry-flyway-dev-build
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Build the image using the specified build config
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "dev"
+      # ------------------------------------------------
+      - name: Build and tag the image
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n platform-registry-tools start-build ${{ github.event.inputs.buildConfig }} --follow
+          export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
+          export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
+          oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:dev

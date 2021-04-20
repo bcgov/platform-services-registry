@@ -1,24 +1,14 @@
 name: Web app to Dev
 
 on:
-  #push:
-  #  paths:
-  #    - "web/src/**/*.ts"
-  #    - "web/src/**/*.tsx"
-  #    - "web/package*.json"
-  #    - "web/public/**/*"
-  #    - "web/Caddyfile"
-  #
-  # Run the workflow manually, instead of on a push to any branch.
+  # Run the workflow manually, instead of on a push.
   # The user specifies the name of the build config to use, which should be a
   #   web app build config.
-  # The 'paths' values are specific to the 'push' and 'pull_request' triggers
-  #   and so are no longer needed here.
   # -------------------------------------------------------------------------
   workflow_dispatch:
     inputs:
       buildConfig:
-        description: 'Enter build config name'
+        description: 'Enter build config name:'
         required: true
         default: platsrv-registry-web-dev-build
   
@@ -80,15 +70,10 @@ jobs:
   s2i-build:
     runs-on: ubuntu-latest
     needs: [test, build]
+    defaults:
+      run:
+        working-directory: .
     steps:
-
-      - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
-        with:
-          openshift_server_url: ${{ secrets.OpenShiftServerURL }}
-          openshift_token: ${{ secrets.OpenShiftToken }}
-          insecure_skip_tls_verify: true
-          namespace: platform-registry-tools
 
       # Build the image using the specified build config
       # Get its build ID
@@ -99,9 +84,10 @@ jobs:
       - name: Build and tag the image
         run: |
           oc version
-          oc start-build ${{ github.event.inputs.buildConfig }} --follow -n platform-registry-tools
-          export BUILDID="$(oc get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
-          export COMMITID="$(oc get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
-          export IMAGESHA="$(oc get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
-          oc tag -n platform-registry-tools ${{ github.event.inputs.buildConfig }}@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n platform-registry-tools start-build ${{ github.event.inputs.buildConfig }} --follow
+          export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
+          export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
+          oc -n platform-registry-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:dev
 
