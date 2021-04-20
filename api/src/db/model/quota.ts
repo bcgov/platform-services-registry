@@ -112,8 +112,8 @@ export default class QuotaModel extends Model {
                     {
                         name: size.id,
                         cpuNums: [size.cpuRequests, size.cpuLimits],
-                        memoryNums: [size.memoryRequests, size.memoryLimits],
-                        storageNums: [size.storageFile, size.storageBackup],
+                        memoryNums: [size.memoryRequests.replace("Gi", "GiB"), size.memoryLimits.replace("Gi", "GiB")],
+                        storageNums: [size.storageFile.replace("Gi", "GiB"), size.storageBackup.replace("Gi", "GiB")],
                     },
                 );
             };
