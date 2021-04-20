@@ -13,6 +13,7 @@ on:
 
 jobs:
   tag_for_prod:
+    runs-on: ubuntu-latest
     steps:
 
       - name: Log in to OpenShift
@@ -24,22 +25,16 @@ jobs:
         run: |
           oc -n platform-registry-tools tag platsrv-registry-flyway:test platsrv-registry-flyway:prod
 
-      # Do we need to pause while the DB image is updated?
-      # --------------------------------------------------
-      - name: Wait for DB image to update
-        if: ${{ success() }}
-        run: sleep 30
+      # Perform DB verification and/or wait for DB deployment
+      # -----------------------------------------------------
 
       - name: Tag the Test API image for Prod
         if: ${{ success() }}
         run: |
           oc -n platform-registry-tools tag platsrv-registry-api:test platsrv-registry-api:prod
 
-      # Do we need to pause while the API image is updated?
-      # ---------------------------------------------------
-      - name: Wait for API image to update
-        if: ${{ success() }}
-        run: sleep 30
+      # Perform API verification and/or wait for API deployment
+      # -------------------------------------------------------
 
       - name: Tag the Test Web image for Prod
         if: ${{ success() }}
