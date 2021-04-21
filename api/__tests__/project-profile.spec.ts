@@ -36,7 +36,7 @@ const p2 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
 const authenticatedUser = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
 const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-const selectDefaultCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
+const selectCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
 const p4 = path.join(__dirname, 'fixtures/select-profile.json');
 const selectProfile = JSON.parse(fs.readFileSync(p4, 'utf8'));
@@ -81,11 +81,10 @@ describe('Project-profile event handlers', () => {
       updatedAt: new Date(),
     };
 
+    client.query.mockReturnValueOnce({ rows: selectCluster });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-
-    client.query.mockReturnValueOnce({ rows: selectDefaultCluster });
     client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
 
     // @ts-ignore

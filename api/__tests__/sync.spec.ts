@@ -26,25 +26,31 @@ import { getProvisionStatus } from '../src/libs/profile';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
-const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const profiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/select-profile.json');
 const selectProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-const p2 = path.join(__dirname, 'fixtures/get-requests.json');
-const requests = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const p2 = path.join(__dirname, 'fixtures/get-request-edit-quota-size.json');
+const requestQuotaSize = JSON.parse(fs.readFileSync(p2, 'utf8'));
 
-// const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
-// const requestEditContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
+const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
+const requestEditContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const requests = [requestQuotaSize[0], requestEditContacts[0]];
 
 const client = new Pool().connect();
 
 jest.mock('../src/libs/fulfillment', () => {
-  const p6 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
-  const provisioningContext = JSON.parse(fs.readFileSync(p6, 'utf8'));
+  const p4 = path.join(__dirname, 'fixtures/get-editing-context.json');
+  const provisioningContext = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
+  const p5 = path.join(__dirname, 'fixtures/get-editing-context.json');
+  const editingContext = JSON.parse(fs.readFileSync(p5, 'utf8'));
 
   return {
     contextForProvisioning: jest.fn().mockReturnValue(provisioningContext),
+    contextForEditing: jest.fn().mockReturnValue(editingContext),
   };
 });
 
@@ -67,8 +73,11 @@ describe('Sync event handlers', () => {
   });
 
   it('All provisioned profile ids are returned', async () => {
-    const req = {};
-    client.query.mockReturnValueOnce({ rows: selectProfiles });
+    const req = {
+      params: {},
+      query: {},
+    };
+    client.query.mockReturnValueOnce({ rows: profiles });
 
     // @ts-ignore
     getProvisionStatus.mockResolvedValue(true);
@@ -84,9 +93,10 @@ describe('Sync event handlers', () => {
   it('Fetch all provisioned profile ids should throw', async () => {
     const req = {
       params: {},
+      query: {},
     };
     client.query.mockImplementation(() => { throw new Error() });
-
+    // @ts-ignore
     await expect(getAllProvisionedProfileIds(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
@@ -125,13 +135,16 @@ describe('Sync event handlers', () => {
   });
 
   it('All ids of profiles under pending edit / create are returned', async () => {
-    const req = {};
+    const req = {
+      params: {},
+      query: {},
+    };
 
     RequestModel.prototype.findAll = jest.fn().mockResolvedValueOnce(requests);
-    ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce(selectProfiles);
+    ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce([]);
 
-    client.query.mockReturnValueOnce({ rows: selectProfiles });
-
+    client.query.mockReturnValueOnce({ rows: [profiles[0]] });
+    client.query.mockReturnValueOnce({ rows: [profiles[3]] });
     // @ts-ignore
     getProvisionStatus.mockResolvedValue(false);
     // @ts-ignore
@@ -146,32 +159,37 @@ describe('Sync event handlers', () => {
   it('Fetch all ids of profiles under pending edit / create should throw', async () => {
     const req = {
       params: {},
+      query: {},
     };
     client.query.mockImplementation(() => { throw new Error() });
-
+    // @ts-ignore
     await expect(getAllProfileIdsUnderPending(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
 
     expect(ex.responseData).toBeUndefined();
   });
 
-  // it('Bot json object for a queried profile under pending edit / create is returned', async () => {
-  //   const req = {
-  //     params: { profileId: 4 },
-  //   };
-  //   RequestModel.prototype.findForProfile = jest.fn().mockResolvedValueOnce(requestEditContacts);
-  //   client.query.mockReturnValueOnce({ rows: selectProfile });
-  //   client.query.mockReturnValueOnce({ rows: [] });
+  it('Bot json object for a queried profile under pending edit / create is returned', async () => {
+    const req = {
+      params: { profileId: 4 },
+    };
+    RequestModel.prototype.findAll = jest.fn().mockResolvedValueOnce(requests);
+    ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce([]);
 
-  //   // @ts-ignore
-  //   getProvisionStatus.mockResolvedValue(true);
-  //   // @ts-ignore
-  //   await getProfileBotJsonUnderPending(req, ex.res);
+    client.query.mockReturnValueOnce({ rows: [profiles[0]] });
+    client.query.mockReturnValueOnce({ rows: [profiles[3]] });
 
-  //   expect(ex.res.statusCode).toMatchSnapshot();
-  //   expect(ex.responseData).toMatchSnapshot();
-  //   expect(ex.res.status).toBeCalled();
-  //   expect(ex.res.json).toBeCalled();
-  // });
+    RequestModel.prototype.findForProfile = jest.fn().mockResolvedValueOnce(requestEditContacts);
+
+    // @ts-ignore
+    getProvisionStatus.mockResolvedValue(true);
+    // @ts-ignore
+    await getProfileBotJsonUnderPending(req, ex.res);
+
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
 
   it('Bot json object for a queried profile under pending edit / create should throw', async () => {
     const req = {

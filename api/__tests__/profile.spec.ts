@@ -41,8 +41,13 @@ const selectProfile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 const p1 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
 const selectProfilesContacts = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
-const p2 = path.join(__dirname, 'fixtures/get-requests.json');
-const requests = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const p2 = path.join(__dirname, 'fixtures/get-request-edit-quota-size.json');
+const requestQuotaSize = JSON.parse(fs.readFileSync(p2, 'utf8'));
+
+const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
+const requestEditContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const requests = [requestQuotaSize[0], requestEditContacts[0]];
 
 const client = new Pool().connect();
 
@@ -143,7 +148,7 @@ describe('Profile event handlers', () => {
         id: 2,
         firstName: 'JohnTEST',
         lastName: 'DoeTEST',
-        email: 'john.doe@example.com',
+        email: 'john@example.com',
         githubId: 'john1100',
         roleId: 2,
       }
@@ -178,7 +183,7 @@ describe('Profile event handlers', () => {
         id: 2,
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doeTEST@example.com',
+        email: 'johnTEST@example.com',
         githubId: 'john1100TEST',
         roleId: 2,
       }
