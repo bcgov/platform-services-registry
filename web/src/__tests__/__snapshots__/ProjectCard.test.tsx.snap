@@ -85,7 +85,7 @@ exports[`<ProjectCard /> should render with Migration Licenseplate 1`] = `
       <p
         class="css-18ja79e"
       >
-        This is the cluster name;
+        This is the cluster this namespace is provisioned in;
       </p>
     </div>
     <div
@@ -211,7 +211,7 @@ exports[`<ProjectCard /> should render without Migration Licenseplate 1`] = `
       <p
         class="css-18ja79e"
       >
-        This is the cluster name;
+        This is the cluster this namespace is provisioned in;
       </p>
     </div>
     <div

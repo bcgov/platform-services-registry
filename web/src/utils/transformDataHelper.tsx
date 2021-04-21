@@ -79,7 +79,7 @@ export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
 
     namespaces.forEach((namespace: any) => {
       const clusterNamespace = namespace.clusters.filter(
-        (c: any) => c.name === primaryClusterName,
+        (cluster: any) => cluster.name === primaryClusterName,
       )[0];
       if (!clusterNamespace.provisioned) {
         throw Error(`${namespace.name} is not provisioned on ${primaryClusterName}`);

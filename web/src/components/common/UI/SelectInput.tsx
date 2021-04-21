@@ -9,7 +9,7 @@ const SelectInput: React.FC<Props> = ({
   meta: { active, error, touched },
   ...rest
 }: Props) => (
-  <div className={active ? 'active' : ''}>
+  <div className={active ? 'active' : ''} style={{ flex: 1 }}>
     <Select {...input} {...rest} />
     {error && touched && (
       <Label as="span" variant="errorLabel">

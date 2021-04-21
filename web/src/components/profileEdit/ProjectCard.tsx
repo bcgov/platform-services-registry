@@ -82,7 +82,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
       <Box width={1 / 2} px={2} mt={3}>
         <Text as="h3">Cluster</Text>
         <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-          This is the cluster name;
+          This is the cluster this namespace is provisioned in;
         </Text>
       </Box>
       <Box width={1 / 2} px={2} mt={3}>

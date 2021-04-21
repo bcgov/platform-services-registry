@@ -134,6 +134,7 @@ exports[`matches the snapshot 1`] = `
               >
                 <div
                   class=""
+                  style="flex: 1;"
                 >
                   <div
                     class="css-4cffwv"
@@ -174,6 +175,7 @@ exports[`matches the snapshot 1`] = `
               >
                 <div
                   class=""
+                  style="flex: 1;"
                 >
                   <div
                     class="css-4cffwv"
