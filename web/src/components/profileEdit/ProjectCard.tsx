@@ -29,13 +29,20 @@ export interface ProjectDetails {
   prioritySystem?: string;
   busOrgId?: string;
   ministryName?: string;
+  primaryClusterName?: string;
   other?: string;
   migratingLicenseplate?: string;
 }
 
 const ProjectCard: React.FC<IProjectCardProps> = (props) => {
   const {
-    projectDetails: { name = '', description = '', ministryName = '', migratingLicenseplate = '' },
+    projectDetails: {
+      name = '',
+      description = '',
+      ministryName = '',
+      migratingLicenseplate = '',
+      primaryClusterName = '',
+    },
   } = props;
   return (
     <Flex flexWrap="wrap">
@@ -70,6 +77,17 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
       <Box width={1 / 2} px={2} mt={3}>
         <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
           {ministryName}
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="h3">Cluster</Text>
+        <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+          This is the cluster name;
+        </Text>
+      </Box>
+      <Box width={1 / 2} px={2} mt={3}>
+        <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+          {primaryClusterName}
         </Text>
       </Box>
       {migratingLicenseplate ? (

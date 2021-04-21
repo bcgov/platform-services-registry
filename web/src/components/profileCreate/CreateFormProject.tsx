@@ -31,15 +31,20 @@ interface MinistryItem {
   code: string;
 }
 
+interface ClusterItem {
+  name: string;
+}
+
 interface ICreateFormProjectProps {
   ministry: Array<MinistryItem>;
+  cluster: Array<ClusterItem>;
 }
 
 const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
   const validator = getValidator();
   // @ts-ignore
   const required = (value) => (value ? undefined : 'Required');
-  const { ministry = [] } = props;
+  const { ministry = [], cluster = [] } = props;
 
   return (
     <div>
@@ -89,6 +94,22 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
             {ministry.length > 0 &&
               ministry.map((s: any) => (
                 <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+          </Field>
+        </Flex>
+      </Flex>
+      <Flex mt={3}>
+        <Label variant="adjacentLabel" m="auto">
+          Cluster Name
+        </Label>
+        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-primaryClusterName">
+          <Field name="project-primaryClusterName" component={SelectInput} validate={required}>
+            <option> Select... </option>
+            {cluster.length > 0 &&
+              cluster.map((s: any) => (
+                <option key={s.name} value={s.name}>
                   {s.name}
                 </option>
               ))}

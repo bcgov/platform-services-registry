@@ -55,6 +55,14 @@ export default function useRegistryApi() {
     }
   };
 
+  const getCluster = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('cluster');
+    }
+  };
+
   const getProfile = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -180,6 +188,7 @@ export default function useRegistryApi() {
 
   return {
     getMinistry,
+    getCluster,
     getProfile,
     createProfile,
     updateProfile,

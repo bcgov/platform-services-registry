@@ -33,7 +33,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -71,7 +71,10 @@ const Dashboard: React.FC = () => {
             ...response.data[i],
             ...getProfileContacts(contactResponses[i].data),
           };
-          response.data[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
+          response.data[i].provisioned = isProfileProvisioned(
+            response.data[i],
+            namespacesResponses[i].data,
+          );
           response.data[i].quotaSize = quotaSizeResponse[i].data;
         }
 
@@ -95,7 +98,7 @@ const Dashboard: React.FC = () => {
 
     Promise.all(promisesForNamespaces).then((namespacesResponses: any) => {
       for (let i: number = 0; i < profile.length; i++) {
-        profile[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
+        profile[i].provisioned = isProfileProvisioned(profile[i], namespacesResponses[i].data);
       }
       setProfile([...profile]);
     });
@@ -149,6 +152,10 @@ const Dashboard: React.FC = () => {
       {
         Header: 'Ministry',
         accessor: 'busOrgId',
+      },
+      {
+        Header: 'Cluster',
+        accessor: 'primaryClusterName',
       },
       {
         Header: 'Product Owner',

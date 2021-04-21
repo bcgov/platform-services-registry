@@ -38,7 +38,7 @@ import {
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
-  isProfileProvisioned,
+  isProfileProvisioned
 } from '../utils/transformDataHelper';
 
 const txtForQuotaEdit =
@@ -114,7 +114,7 @@ const ProfileEdit: React.FC = (props: any) => {
         ministryJson: ministry.data,
       },
       hasPendingEdit,
-      isProvisioned: isProfileProvisioned(namespaces.data),
+      isProvisioned: isProfileProvisioned(projectDetails.data, namespaces.data),
       projectDetails: projectDetails.data,
       contactDetails: contactDetails.data,
       quotaDetails: {
