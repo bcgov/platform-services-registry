@@ -94,13 +94,13 @@ Array [
       8,
     ],
     "memoryNums": Array [
-      "16Gi",
-      "32Gi",
+      "16GiB",
+      "32GiB",
     ],
     "name": "small",
     "storageNums": Array [
-      "50Gi",
-      "25Gi",
+      "50GiB",
+      "25GiB",
     ],
   },
   Object {
@@ -109,13 +109,13 @@ Array [
       16,
     ],
     "memoryNums": Array [
-      "32Gi",
-      "64Gi",
+      "32GiB",
+      "64GiB",
     ],
     "name": "medium",
     "storageNums": Array [
-      "100Gi",
-      "50Gi",
+      "100GiB",
+      "50GiB",
     ],
   },
   Object {
@@ -124,13 +124,13 @@ Array [
       64,
     ],
     "memoryNums": Array [
-      "64Gi",
-      "128Gi",
+      "64GiB",
+      "128GiB",
     ],
     "name": "large",
     "storageNums": Array [
-      "200Gi",
-      "100Gi",
+      "200GiB",
+      "100GiB",
     ],
   },
 ]
