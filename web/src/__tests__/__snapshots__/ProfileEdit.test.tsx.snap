@@ -1,3 +1,80 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<QuotaCardEdit / > Card view should render 1`] = `<div />`;
+
+exports[`<QuotaCardEdit / > Card view should render 2`] = `
+<div>
+  <h1
+    class="css-zi8sy1"
+  >
+    License plates for the openshift namespaces
+  </h1>
+  <label
+    class="css-1h8msqk"
+    for="project-quotaCpuSize"
+  >
+    473f50
+  </label>
+  <br />
+  <p
+    class="css-1guafq4"
+  >
+    MEDIUM
+     size quota for CPU:
+    <br />
+    8
+     cores as request,
+    16
+     cores as limit
+  </p>
+  <br />
+  <p
+    class="css-1guafq4"
+  >
+    MEDIUM
+     size quota for RAM:
+    <br />
+    32GiB
+     as request, 
+    64GiB
+     as limit
+  </p>
+  <br />
+  <p
+    class="css-1guafq4"
+  >
+    MEDIUM
+     size quota for storage: 20 PVC count,
+    <br />
+    100GiB
+     overall storage with 
+    50GiB
+     for backup storage
+  </p>
+  <br />
+  <select>
+    <option>
+      Select...
+    </option>
+    <option
+      value="small"
+    >
+      small
+    </option>
+    <option
+      value="large"
+    >
+      large
+    </option>
+  </select>
+  <button
+    class="css-s0jrgc"
+    disabled=""
+    style="display: block;"
+  >
+    Request Quota
+  </button>
+</div>
+`;
+
 exports[`matches the snapshot 1`] = `<div />`;

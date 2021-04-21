@@ -18,10 +18,13 @@ import { render, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
+import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
+import { QuotaSize } from '../types';
 import ProfileEdit from '../views/ProfileEdit';
 import mockContacts from './fixtures/profile-contacts.json';
 import mockMinistry from './fixtures/profile-ministry.json';
 import mockProfile from './fixtures/profiles.json';
+import mockQuotaSizes from './fixtures/quota-sizes.json';
 
 const browserHistory = createBrowserHistory();
 
@@ -41,7 +44,11 @@ jest.mock(
         data: mockContacts,
       });
 
-      return { getProfileByProfileId, getMinistry, getContactsByProfileId };
+      const getQuotaSizes = jest.fn().mockResolvedValue({
+        data: mockQuotaSizes,
+      });
+
+      return { getProfileByProfileId, getMinistry, getContactsByProfileId, getQuotaSizes };
     },
 );
 
@@ -85,6 +92,39 @@ function renderProfileEdit() {
 
 test('matches the snapshot', async () => {
   const { container } = renderProfileEdit();
+
+  await waitFor(() => expect(container).toMatchSnapshot());
+});
+
+
+function renderQuota() {
+  const profileIdProp: string = "1"
+  const licensePlateProp: string = "473f50"
+  const quotaSizeProp: string = "medium"
+  const quotaOptionsProp: QuotaSize[] = ["small", "large"]
+  const handleSubmitRefreshProp = jest.fn();
+  const isProvisionedProp: boolean = true
+  const hasPendingEditProp: boolean = false
+
+  const utils = render(
+    <QuotaCardEdit
+      profileId={profileIdProp}
+      quotaDetails={{
+        licensePlate: licensePlateProp,
+        quotaSize: quotaSizeProp,
+        quotaOptions: quotaOptionsProp,
+      }}
+      handleSubmitRefresh={handleSubmitRefreshProp}
+      isProvisioned={isProvisionedProp}
+      hasPendingEdit={hasPendingEditProp}
+    />,
+  );
+
+  return { ...utils };
+}
+
+test('<QuotaCardEdit / > Card view should render', async () => {
+  const { container } = renderQuota();
 
   await waitFor(() => expect(container).toMatchSnapshot());
 });
