@@ -10,6 +10,8 @@ DROP COLUMN IF EXISTS quota_cpu,
 DROP COLUMN IF EXISTS quota_memory,
 DROP COLUMN IF EXISTS quota_storage;
 
+UPDATE ref_cluster SET archived = true WHERE name = 'aro';
+
 ALTER TABLE ref_cluster ADD COLUMN IF NOT EXISTS is_prod BOOLEAN NOT NULL DEFAULT true;
 UPDATE ref_cluster SET is_prod = false WHERE name = 'clab' OR name = 'klab';
 
