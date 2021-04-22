@@ -17,16 +17,26 @@
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import DataManager from '../db';
+import { AuthenticatedUser } from '../libs/authmware';
+import { AccessFlag } from '../libs/authorization';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
 
-export const fetchClusters = async (req: Request, res: Response): Promise<void> => {
+export const fetchClusters = async (
+    { user, body }: { user: AuthenticatedUser, body: any }, res: Response
+): Promise<void> => {
     const { ClusterModel } = dm;
+
     try {
-        const results = await ClusterModel.findAll();
+        let results;
+        if (user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster)) {
+            results = await ClusterModel.findAll();
+        } else {
+            results = await ClusterModel.findAllProdReady();
+        }
 
         res.status(200).json(results);
     } catch (err) {
