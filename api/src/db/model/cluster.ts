@@ -121,7 +121,7 @@ export default class ClusterModel extends Model {
   async findAllProdReady(): Promise<Cluster[]> {
     const query = {
       text: `
-        SELECT * FROM ${this.table} WHERE is_prod = $1;
+        SELECT * FROM ${this.table} WHERE is_prod = $1 AND archived = false;
       `,
       values: [
         true,
