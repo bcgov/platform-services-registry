@@ -81,6 +81,7 @@ const ProjectRequests: React.FC<any> = (props) => {
         ),
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -109,6 +110,7 @@ const ProjectRequests: React.FC<any> = (props) => {
       setOpenBackdrop(false);
     }
     wrap();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileDetails]);
 
   const { isShown, toggle } = useModal();

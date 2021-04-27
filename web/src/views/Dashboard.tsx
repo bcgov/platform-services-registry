@@ -34,7 +34,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -85,6 +85,7 @@ const Dashboard: React.FC = () => {
       setOpenBackdrop(false);
     }
     wrap();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keycloak]);
 
   useInterval(() => {
