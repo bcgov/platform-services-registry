@@ -11,6 +11,143 @@ exports[`<Dashboard / > Card view should render 1`] = `
   </button>
   <div>
     <div
+      class="css-vurnku"
+      style="overflow: auto;"
+    >
+      <h2
+        class="css-qjyand"
+      >
+        Project Requests
+      </h2>
+      <div
+        class="css-kpuxrv"
+      >
+        <table
+          role="table"
+        >
+          <thead>
+            <tr
+              role="row"
+            >
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Name
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Ministry
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Product Owner
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Technical Contact
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Request Type
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Response
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            role="rowgroup"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
       class="css-6j9z3r"
     />
   </div>
@@ -32,6 +169,143 @@ exports[`<Dashboard / > Card view should render 2`] = `
     Table View
      
   </button>
+  <div>
+    <div
+      class="css-vurnku"
+      style="overflow: auto;"
+    >
+      <h2
+        class="css-qjyand"
+      >
+        Project Requests
+      </h2>
+      <div
+        class="css-kpuxrv"
+      >
+        <table
+          role="table"
+        >
+          <thead>
+            <tr
+              role="row"
+            >
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Name
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Ministry
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Product Owner
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Technical Contact
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Request Type
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Response
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            role="rowgroup"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
   <div>
     <div
       class="css-6j9z3r"
@@ -193,10 +467,152 @@ exports[`<Dashboard / > Table view should render 1`] = `
     Card View
      
   </button>
+  <div>
+    <div
+      class="css-vurnku"
+      style="overflow: auto;"
+    >
+      <h2
+        class="css-qjyand"
+      >
+        Project Requests
+      </h2>
+      <div
+        class="css-kpuxrv"
+      >
+        <table
+          role="table"
+        >
+          <thead>
+            <tr
+              role="row"
+            >
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Name
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Ministry
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Product Owner
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Technical Contact
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Request Type
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Response
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            role="rowgroup"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
   <div
     class="css-vurnku"
     style="overflow: auto;"
   >
+    <h2
+      class="css-qjyand"
+    >
+      Projects
+    </h2>
     <div
       class="css-kpuxrv"
     >
@@ -341,10 +757,152 @@ exports[`<Dashboard / > Table view should render 2`] = `
     Card View
      
   </button>
+  <div>
+    <div
+      class="css-vurnku"
+      style="overflow: auto;"
+    >
+      <h2
+        class="css-qjyand"
+      >
+        Project Requests
+      </h2>
+      <div
+        class="css-kpuxrv"
+      >
+        <table
+          role="table"
+        >
+          <thead>
+            <tr
+              role="row"
+            >
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Name
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Ministry
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Product Owner
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Technical Contact
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Request Type
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Response
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            role="rowgroup"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
   <div
     class="css-vurnku"
     style="overflow: auto;"
   >
+    <h2
+      class="css-qjyand"
+    >
+      Projects
+    </h2>
     <div
       class="css-kpuxrv"
     >
