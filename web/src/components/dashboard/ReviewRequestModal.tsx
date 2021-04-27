@@ -126,8 +126,8 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
             profileDetails.type === 'create'
               ? upperCaseFirstLetter(profileDetails.quotaSize)
               : `${upperCaseFirstLetter(profileDetails.quotaSize)} => ${upperCaseFirstLetter(
-                profileDetails.editObject.quota,
-              )}`
+                  profileDetails.editObject.quota,
+                )}`
           }
         />
       </Flex>
