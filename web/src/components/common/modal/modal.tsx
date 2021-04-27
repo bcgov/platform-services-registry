@@ -20,7 +20,7 @@ export interface ModalProps {
 
 export const Modal: React.FC<ModalProps> = ({ isShown, hide, modalContent, headerText }) => {
   const onKeyDown = (event: KeyboardEvent) => {
-    if (event.keyCode === 27 && isShown) {
+    if (event.key === 'Escape' && isShown) {
       hide();
     }
   };
