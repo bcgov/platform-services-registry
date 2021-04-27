@@ -8,7 +8,7 @@ import {
   Header,
   HeaderText,
   StyledModal,
-  Wrapper
+  Wrapper,
 } from './modal.style';
 
 export interface ModalProps {
@@ -31,7 +31,7 @@ export const Modal: React.FC<ModalProps> = ({ isShown, hide, modalContent, heade
     return () => {
       document.removeEventListener('keydown', onKeyDown, false);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShown]);
 
   const modal = (
