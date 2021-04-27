@@ -55,9 +55,6 @@ export const updateRequestHumanAction = async (
   const { type, comment } = body;
 
   try {
-    console.log("requestID: ", requestId)
-    console.log("type: ", type)
-    console.log("comment: ", comment)
     // Step 1. fetch Request
     const request = await RequestModel.findById(requestId);
 

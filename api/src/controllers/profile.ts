@@ -253,10 +253,8 @@ export const fetchRequestsProjectIds = async (
   try {
     // Step 1. fetch all requests with matching filter
     const requests = await RequestModel.findActiveByFilter(filter, true);
-    // Step 2. extract project Ids
-    const projectIds = requests.map(request => request.profileId)
-    // Step 3. return JSON of project Ids
-    res.status(200).json(projectIds);
+    // Step 2. return JSON of project Ids
+    res.status(200).json(requests);
   } catch (err) {
     const message = `Unable to fetch profile IDs for requests`;
     logger.error(`${message}, err = ${err.message}`);
