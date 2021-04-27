@@ -34,7 +34,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
           };
           response.data[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
           response.data[i].quotaSize = quotaSizeResponse[i].data;
-        }        
+        }
 
         // 4. Then update dashboard cards with fetched profile info
         setProfile(sortProfileByDatetime(response.data));
@@ -133,7 +133,6 @@ const Dashboard: React.FC = () => {
     setTableView(!tableView);
   };
 
-  
   /* 
     - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
     - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
@@ -169,18 +168,15 @@ const Dashboard: React.FC = () => {
     [],
   );
 
-
-
   return (
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
       <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
-      
-      <ProjectRequests profileDetails={profile}/>
+
+      <ProjectRequests profileDetails={profile} />
 
       {tableView ? (
         <Box style={{ overflow: 'auto' }}>
-
           <Heading>Projects</Heading>
           <Table columns={columns} data={profile} linkedRows={true} />
         </Box>

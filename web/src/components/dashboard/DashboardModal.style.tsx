@@ -17,9 +17,9 @@
 import styled from '@emotion/styled';
 
 export const ApprovalForm = styled.form`
-background-color: #eeeeee;
-border-radius: 5px;
-border: solid 1px #036;
-margin: 10px 0 10px 0;
-padding: 10px;
+  background-color: #eeeeee;
+  border-radius: 5px;
+  border: solid 1px #036;
+  margin: 10px 0 10px 0;
+  padding: 10px;
 `;

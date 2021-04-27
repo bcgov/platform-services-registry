@@ -25,22 +25,25 @@ import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
 import { ReviewRequestModal } from './ReviewRequestModal';
 
-
 const ProjectRequests: React.FC<any> = (props) => {
-  const { profileDetails } = props  
+  const { profileDetails } = props;
 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
 
-  const [profileId, setProfileId ] = useState(0);
+  const [profileId, setProfileId] = useState(0);
   const [requests, setRequests] = useState<any>([]);
-  
+
   const requestColumns = useMemo(
     () => [
       {
         Header: 'Name',
         accessor: 'name',
-        Cell: ({ row: {values} }: any) => (<RouterLink to={{ pathname: `/profile/${values.profileId}/overview` }}>{values.name}</RouterLink>)
+        Cell: ({ row: { values } }: any) => (
+          <RouterLink to={{ pathname: `/profile/${values.profileId}/overview` }}>
+            {values.name}
+          </RouterLink>
+        ),
       },
       {
         Header: 'Ministry',
@@ -57,21 +60,25 @@ const ProjectRequests: React.FC<any> = (props) => {
       {
         Header: 'Request Type',
         accessor: 'type',
-        Cell: ({ row: { values } }: any) => (upperCaseFirstLetter(values.type)),
+        Cell: ({ row: { values } }: any) => upperCaseFirstLetter(values.type),
       },
       {
         Header: 'Response',
         accessor: 'profileId',
         Cell: ({ row: { values } }: any) => (
           <Box>
-            <button value={values.profileId} onClick={() => {
-              setProfileId(values.profileId);
-              toggle();
-            }}>
+            <button
+              type="button"
+              value={values.profileId}
+              onClick={() => {
+                setProfileId(values.profileId);
+                toggle();
+              }}
+            >
               Review
             </button>
           </Box>
-        )
+        ),
       },
     ],
     [],
@@ -82,14 +89,19 @@ const ProjectRequests: React.FC<any> = (props) => {
       setOpenBackdrop(true);
       try {
         // Step 1: GET all active requests requiring human action
-        const humanActionRequests = await api.getHumanActionRequests()
+        const humanActionRequests = await api.getHumanActionRequests();
 
         // Step 2: Filter profiles that have outstanding requests requiring human action
-        const results = profileDetails.filter((profile: any) => humanActionRequests.data.some((request: any) => request.profileId === profile.id));
-        
+        const results = profileDetails.filter((profile: any) =>
+          humanActionRequests.data.some((request: any) => request.profileId === profile.id),
+        );
+
         // Step 3: Combine request details with profile details for review modal
-        const profileRequests = results.map((profile: any) => ({...profile, ...humanActionRequests.data.find((request: any) => request.profileId === profile.id)}));
-        setRequests(profileRequests)
+        const profileRequests = results.map((profile: any) => ({
+          ...profile,
+          ...humanActionRequests.data.find((request: any) => request.profileId === profile.id),
+        }));
+        setRequests(profileRequests);
       } catch (err) {
         promptErrToastWithText('Something went wrong');
         console.log(err);
@@ -100,27 +112,23 @@ const ProjectRequests: React.FC<any> = (props) => {
   }, [profileDetails]);
 
   const { isShown, toggle } = useModal();
-  
+
   return (
     <div>
       <Modal
         isShown={isShown}
         hide={toggle}
-        headerText='Review'
+        headerText="Review"
         modalContent={
-          <ReviewRequestModal 
-            profileId={profileId}
-            profiles={requests}
-            hide={toggle}
-          />
+          <ReviewRequestModal profileId={profileId} profiles={requests} hide={toggle} />
         }
       />
       <Box style={{ overflow: 'auto' }}>
         <Heading>Project Requests</Heading>
-        <Table columns={requestColumns} data={requests}/>
+        <Table columns={requestColumns} data={requests} />
       </Box>
     </div>
-  )
+  );
 };
 
-export default ProjectRequests;  
+export default ProjectRequests;

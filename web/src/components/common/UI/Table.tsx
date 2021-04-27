@@ -197,7 +197,11 @@ const Table: React.FC<ITableProps> = (props) => {
             rows.map((row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} onClick={() => linkedRows && handleRowClick(row)} key={row.id}>
+                <tr
+                  {...row.getRowProps()}
+                  onClick={() => linkedRows && handleRowClick(row)}
+                  key={row.id}
+                >
                   {row.cells.map((cell) => {
                     const { key, ...restCellProps } = cell.getCellProps();
                     return (

@@ -31,20 +31,18 @@ interface ReviewRequestModalProps {
   profiles: any;
   hide: () => void;
 }
-type HumanActionType = "approve" | "reject" | "commentOnly"
+type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
-export const ReviewRequestModal: React.FC<
-ReviewRequestModalProps
-> = props => {
-  const { profileId, profiles, hide } = props
+export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
+  const { profileId, profiles, hide } = props;
 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
-  const profileDetails = profiles.filter( (p: any) => p.profileId === profileId).pop()
+  const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
 
-  const poDetails = `${profileDetails.POName} | ${profileDetails.POEmail}`
-  const tcDetails = `${profileDetails.TCName} | ${profileDetails.TCEmail}`
-  
+  const poDetails = `${profileDetails.POName} | ${profileDetails.POEmail}`;
+  const tcDetails = `${profileDetails.TCName} | ${profileDetails.TCEmail}`;
+
   const onSubmit = async (requestBody: any) => {
     setOpenBackdrop(true);
     try {
@@ -63,10 +61,10 @@ ReviewRequestModalProps
       console.log(err);
     }
     setOpenBackdrop(false);
-  }
+  };
 
-	return (
-		<React.Fragment>
+  return (
+    <>
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
@@ -79,12 +77,7 @@ ReviewRequestModalProps
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
-        <Input
-          name="project-name"
-          placeholder="Project X"
-          disabled
-          value={profileDetails.name}
-        />
+        <Input name="project-name" placeholder="Project X" disabled value={profileDetails.name} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-cluster">Project Cluster</Label>
@@ -129,51 +122,55 @@ ReviewRequestModalProps
           name="project-quota"
           placeholder="Small"
           disabled
-          value={(profileDetails.type === "create") ? upperCaseFirstLetter(profileDetails.quotaSize) : `${upperCaseFirstLetter(profileDetails.quotaSize)} => ${upperCaseFirstLetter(profileDetails.editObject.quota)}`}
+          value={
+            profileDetails.type === 'create'
+              ? upperCaseFirstLetter(profileDetails.quotaSize)
+              : `${upperCaseFirstLetter(profileDetails.quotaSize)} => ${upperCaseFirstLetter(
+                profileDetails.editObject.quota,
+              )}`
+          }
         />
       </Flex>
-      <Form
-        onSubmit={onSubmit}
-      >
-      {(formProps) => (
-        <ApprovalForm onSubmit={formProps.handleSubmit}>
-          <Heading>Admin Review</Heading>
-          <Field name="id" initialValue={profileDetails.id}>
-            {({ input }) => <input type="hidden" {...input} id="id" />}
-          </Field>
-            <Flex flexWrap='wrap'>
-              <Label width={1/2}>
-              <Field<HumanActionType>
-                    name="type"
-                    component={RadioInput}
-                    type="radio"
-                    value="approve"
-                  />
+      <Form onSubmit={onSubmit}>
+        {(formProps) => (
+          <ApprovalForm onSubmit={formProps.handleSubmit}>
+            <Heading>Admin Review</Heading>
+            <Field name="id" initialValue={profileDetails.id}>
+              {({ input }) => <input type="hidden" {...input} id="id" />}
+            </Field>
+            <Flex flexWrap="wrap">
+              <Label width={1 / 2}>
+                <Field<HumanActionType>
+                  name="type"
+                  component={RadioInput}
+                  type="radio"
+                  value="approve"
+                />
                 Approve
               </Label>
-              <Label width={1/2}>
-              <Field<HumanActionType>
-                    name="type"
-                    component={RadioInput}
-                    type="radio"
-                    value="reject"
-                  />
+              <Label width={1 / 2}>
+                <Field<HumanActionType>
+                  name="type"
+                  component={RadioInput}
+                  type="radio"
+                  value="reject"
+                />
                 Reject
               </Label>
             </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="comment">Additional information: </Label>
-            <Field
-              component={TextAreaInput}
-              name="comment"
-              placeholder="Provide feedback to the PO/TC regarding your decision for this project."
-              rows="5"
-            />
-          </Flex>
-          <StyledFormButton style={{ display: 'block' }}>Submit Response</StyledFormButton>
-        </ApprovalForm>
-      )}
-    </Form>
-		</React.Fragment>
-	);
+            <Flex flexDirection="column">
+              <Label htmlFor="comment">Additional information: </Label>
+              <Field
+                component={TextAreaInput}
+                name="comment"
+                placeholder="Provide feedback to the PO/TC regarding your decision for this project."
+                rows="5"
+              />
+            </Flex>
+            <StyledFormButton style={{ display: 'block' }}>Submit Response</StyledFormButton>
+          </ApprovalForm>
+        )}
+      </Form>
+    </>
+  );
 };

@@ -184,17 +184,20 @@ export default function useRegistryApi() {
     } else {
       return axiosInstance.current.post(`profile/${profileId}/request`);
     }
-  };  
-  
+  };
+
   const getHumanActionRequests = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
       return axiosInstance.current.get('profile/profile-ids?filter=requires_human_action');
     }
-  }; 
-  
-  const updateProjectRequest = async (requestId: any, requestBody: any): Promise<AxiosResponse<any>> => {
+  };
+
+  const updateProjectRequest = async (
+    requestId: any,
+    requestBody: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
