@@ -190,7 +190,7 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return axiosInstance.current.get('profile/profile-ids?filter=requires_human_action');
+      return axiosInstance.current.get('request/human-action?filter=requires_human_action');
     }
   };
 
