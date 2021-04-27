@@ -74,18 +74,10 @@ const Dashboard: React.FC = () => {
           };
           response.data[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
           response.data[i].quotaSize = quotaSizeResponse[i].data;
-        }
+        }        
 
         // 4. Then update dashboard cards with fetched profile info
         setProfile(sortProfileByDatetime(response.data));
-        // @ts-ignore
-      //TODO: USE THIS TO EXTRACT non provisioned profiles
-      // Object.entries(obj).reduce((acc, [k, v]) => {
-      //   if (predicate(v)) acc[k] = v;
-      //   return acc;
-      // }, {});
-        const requestProfiles = response.data.filter(provisioned => provisioned = "pending")
-        console.log(requestProfiles)
       } catch (err) {
         promptErrToastWithText('Something went wrong');
         console.log(err);
@@ -93,7 +85,6 @@ const Dashboard: React.FC = () => {
       setOpenBackdrop(false);
     }
     wrap();
-    // eslint-disable-next-line
   }, [keycloak]);
 
   useInterval(() => {

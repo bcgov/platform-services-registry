@@ -196,3 +196,12 @@ export function composeRequestBodyForQuotaEdit(requestedQuotaSize: QuotaSize): a
     throw new Error(`${msg}, reason = ${err.message}`);
   }
 }
+
+export function upperCaseFirstLetter(value: string): any {
+  try {
+    return value[0].toUpperCase() + value.substring(1);
+  } catch (err) {
+    const msg = 'Unable to set first letter to uppercase';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+}

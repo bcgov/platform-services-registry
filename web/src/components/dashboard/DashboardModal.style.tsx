@@ -16,58 +16,10 @@
 
 import styled from '@emotion/styled';
 
-export const Wrapper = styled.div`
-    width 80%;
-    @media(min-width: 768px) {
-    width: 60%;
-    }
-    @media(min-width: 1024px) {
-    width: 40%;
-    }
-`;
-
-export const ConfirmationButtons = styled.div`
-	display: flex;
-	justify-content: center;
-`;
-
-export const Message = styled.div`
-	font-size: 0.9rem;
-	margin-bottom: 1em;
-	text-align: center;
-`;
-
-export const YesButton = styled.button`
-	width: 6rem;
-  margin-bottom: 0.5em;
-`;
-
-export const NoButton = styled.button`
-width: 6rem;
-  margin-left: 10px;
-  margin-bottom: 0.5em;
-`;
-
-export const TextArea = styled('textarea')`
-box-sizing: border-box;
-margin: 0;
-min-width: 0;
-display: block;
-width: 100%;
-padding: 8px;
--webkit-appearance: none;
--moz-appearance: none;
-appearance: none;
-font-size: inherit;
-line-height: inherit;
-border: 1px solid;
-border-radius: default;
-color: inherit;
-background-color: transparent;
+export const ApprovalForm = styled.form`
+background-color: #eeeeee;
 border-radius: 5px;
 border: solid 1px #036;
-background-color: #fafafa;
-color: #036;
-resize: none;
-margin-bottom: 1em;
+margin: 10px 0 10px 0;
+padding: 10px;
 `;

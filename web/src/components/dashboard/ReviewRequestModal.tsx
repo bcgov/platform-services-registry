@@ -13,35 +13,167 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
-import { Label } from '@rebass/forms';
+import { Input, Label, Textarea } from '@rebass/forms';
 import React from 'react';
-import { ConfirmationButtons, NoButton, TextArea, YesButton } from './DashboardModal.style';
+import { Field, Form } from 'react-final-form';
+import { Flex, Heading } from 'rebass';
+import useCommonState from '../../hooks/useCommonState';
+import useRegistryApi from '../../hooks/useRegistryApi';
+import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
+import { upperCaseFirstLetter } from '../../utils/transformDataHelper';
+import { StyledFormButton } from '../common/UI/Button';
+import RadioInput from '../common/UI/RadioInput';
+import TextAreaInput from '../common/UI/TextAreaInput';
+import { ApprovalForm } from './DashboardModal.style';
 
 interface ReviewRequestModalProps {
-	onApprove: () => void;
-	onReject: () => void;
-  message: string;
+  profileId: number;
+  profiles: any;
+  hide: () => void;
 }
+type HumanActionType = "approve" | "reject" | "commentOnly"
 
 export const ReviewRequestModal: React.FC<
 ReviewRequestModalProps
 > = props => {
+  const { profileId, profiles, hide } = props
 
+  const api = useRegistryApi();
+  const { setOpenBackdrop } = useCommonState();
+  const profileDetails = profiles.filter( (p: any) => p.profileId === profileId).pop()
 
+  const poDetails = `${profileDetails.POName} | ${profileDetails.POEmail}`
+  const tcDetails = `${profileDetails.TCName} | ${profileDetails.TCEmail}`
+  
+  const onSubmit = async (requestBody: any) => {
+    setOpenBackdrop(true);
+    try {
+      if (!requestBody.id) {
+        throw new Error('Unable to get request id');
+      }
+
+      // 1. Update project request with admin response.
+      await api.updateProjectRequest(String(requestBody.id), requestBody);
+
+      // 2. All good? Hide modal and tell the user.
+      hide();
+      promptSuccessToastWithText('The project review was successful');
+    } catch (err) {
+      promptErrToastWithText(err.message);
+      console.log(err);
+    }
+    setOpenBackdrop(false);
+  }
 
 	return (
 		<React.Fragment>
-      <Label>{props.message}</Label>
-      <Label htmlFor="project-description">Additional information: </Label>
-        <TextArea
-          name="project-description"
-          rows={5}
+      <Heading>Project Details</Heading>
+      <Flex flexDirection="column">
+        <Label htmlFor="project-type">Type</Label>
+        <Input
+          name="project-type"
+          placeholder="Create"
+          disabled
+          value={upperCaseFirstLetter(profileDetails.type)}
         />
-      <ConfirmationButtons>
-        <YesButton onClick={props.onApprove}>Approve</YesButton>
-        <NoButton onClick={props.onReject}>Reject</NoButton>
-      </ConfirmationButtons>
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="project-name">Project Name</Label>
+        <Input
+          name="project-name"
+          placeholder="Project X"
+          disabled
+          value={profileDetails.name}
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="project-cluster">Project Cluster</Label>
+        <Input
+          name="project-cluster"
+          placeholder="Silver"
+          disabled
+          value={upperCaseFirstLetter(profileDetails.primaryClusterName)}
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="project-description">Description</Label>
+        <Textarea
+          name="project-description"
+          placeholder="A cutting edge web platform that enables Citizens to ..."
+          rows={5}
+          disabled
+          value={profileDetails.description}
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="project-cluster">Product Owner</Label>
+        <Input
+          name="product-owner"
+          placeholder="John Doe | john.doe@example.com"
+          disabled
+          value={poDetails}
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="technical-contact">Technical Contact</Label>
+        <Input
+          name="project-cluster"
+          placeholder="Jane Doe | jane.doe@example.com"
+          disabled
+          value={tcDetails}
+        />
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="project-quota">Project Quota</Label>
+        <Input
+          name="project-quota"
+          placeholder="Small"
+          disabled
+          value={(profileDetails.type === "create") ? upperCaseFirstLetter(profileDetails.quotaSize) : `${upperCaseFirstLetter(profileDetails.quotaSize)} => ${upperCaseFirstLetter(profileDetails.editObject.quota)}`}
+        />
+      </Flex>
+      <Form
+        onSubmit={onSubmit}
+      >
+      {(formProps) => (
+        <ApprovalForm onSubmit={formProps.handleSubmit}>
+          <Heading>Admin Review</Heading>
+          <Field name="id" initialValue={profileDetails.id}>
+            {({ input }) => <input type="hidden" {...input} id="id" />}
+          </Field>
+            <Flex flexWrap='wrap'>
+              <Label width={1/2}>
+              <Field<HumanActionType>
+                    name="type"
+                    component={RadioInput}
+                    type="radio"
+                    value="approve"
+                  />
+                Approve
+              </Label>
+              <Label width={1/2}>
+              <Field<HumanActionType>
+                    name="type"
+                    component={RadioInput}
+                    type="radio"
+                    value="reject"
+                  />
+                Reject
+              </Label>
+            </Flex>
+          <Flex flexDirection="column">
+            <Label htmlFor="comment">Additional information: </Label>
+            <Field
+              component={TextAreaInput}
+              name="comment"
+              placeholder="Provide feedback to the PO/TC regarding your decision for this project."
+              rows="5"
+            />
+          </Flex>
+          <StyledFormButton style={{ display: 'block' }}>Submit Response</StyledFormButton>
+        </ApprovalForm>
+      )}
+    </Form>
 		</React.Fragment>
 	);
 };

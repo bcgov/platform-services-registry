@@ -19,7 +19,8 @@ import { Box, Heading } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import { useModal } from '../../hooks/useModal';
 import useRegistryApi from '../../hooks/useRegistryApi';
-import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
+import { promptErrToastWithText } from '../../utils/promptToastHelper';
+import { upperCaseFirstLetter } from '../../utils/transformDataHelper';
 import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
 import { ReviewRequestModal } from './ReviewRequestModal';
@@ -32,13 +33,14 @@ const ProjectRequests: React.FC<any> = (props) => {
   const { setOpenBackdrop } = useCommonState();
 
   const [profileId, setProfileId ] = useState(0);
+  const [requests, setRequests] = useState<any>([]);
   
   const requestColumns = useMemo(
     () => [
       {
         Header: 'Name',
         accessor: 'name',
-        Cell: ({ row: {values} }: any) => (<RouterLink to={{ pathname: `/profile/${values.id}/overview` }}>{values.name}</RouterLink>)
+        Cell: ({ row: {values} }: any) => (<RouterLink to={{ pathname: `/profile/${values.profileId}/overview` }}>{values.name}</RouterLink>)
       },
       {
         Header: 'Ministry',
@@ -54,16 +56,16 @@ const ProjectRequests: React.FC<any> = (props) => {
       },
       {
         Header: 'Request Type',
-        accessor: 'provisioned',
-        Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
+        accessor: 'type',
+        Cell: ({ row: { values } }: any) => (upperCaseFirstLetter(values.type)),
       },
       {
         Header: 'Response',
-        accessor: 'id',
+        accessor: 'profileId',
         Cell: ({ row: { values } }: any) => (
           <Box>
-            <button value={values.id} onClick={() => {
-              setProfileId(values.id);
+            <button value={values.profileId} onClick={() => {
+              setProfileId(values.profileId);
               toggle();
             }}>
               Review
@@ -79,12 +81,15 @@ const ProjectRequests: React.FC<any> = (props) => {
     async function wrap() {
       setOpenBackdrop(true);
       try {
-        console.log('entered')
-        // 1. First fetch the list of profiles requiring human action
-        const response = await api.getAllHumanActionRequest();
-        console.log(response)
-        // 2. Filter profileDetails by profiles in response
+        // Step 1: GET all active requests requiring human action
+        const humanActionRequests = await api.getHumanActionRequests()
+
+        // Step 2: Filter profiles that have outstanding requests requiring human action
+        const results = profileDetails.filter((profile: any) => humanActionRequests.data.some((request: any) => request.profileId === profile.id));
         
+        // Step 3: Combine request details with profile details for review modal
+        const profileRequests = results.map((profile: any) => ({...profile, ...humanActionRequests.data.find((request: any) => request.profileId === profile.id)}));
+        setRequests(profileRequests)
       } catch (err) {
         promptErrToastWithText('Something went wrong');
         console.log(err);
@@ -92,34 +97,10 @@ const ProjectRequests: React.FC<any> = (props) => {
       setOpenBackdrop(false);
     }
     wrap();
-  }, []);
+  }, [profileDetails]);
 
   const { isShown, toggle } = useModal();
-
-  const onApprove = async () => {
-    setOpenBackdrop(true);
-    try {
-      if (!profileId) {
-        throw new Error('Unable to get profile id');
-      }
-
-      // // 1. Prepare quota edit request body.
-      // const requestBody = {"type": "approval", "comment": "Temp"};
-
-      // // 2. Request the profile quota edit.
-      // await api.updateProjectRequest(String(profileId), requestBody);
-
-      // 3. All good? Redirect back to overview and tell the user.
-      promptSuccessToastWithText('The project approval was successful');
-    } catch (err) {
-      promptErrToastWithText(err.message);
-      console.log(err);
-    }
-    setOpenBackdrop(false);
-  }
-
-  const onReject = () => toggle();
-
+  
   return (
     <div>
       <Modal
@@ -128,15 +109,15 @@ const ProjectRequests: React.FC<any> = (props) => {
         headerText='Review'
         modalContent={
           <ReviewRequestModal 
-            onApprove={onApprove} 
-            onReject={onReject}
-            message='Review the project request details'
+            profileId={profileId}
+            profiles={requests}
+            hide={toggle}
           />
         }
       />
       <Box style={{ overflow: 'auto' }}>
         <Heading>Project Requests</Heading>
-        <Table columns={requestColumns} data={profileDetails}/>
+        <Table columns={requestColumns} data={requests}/>
       </Box>
     </div>
   )

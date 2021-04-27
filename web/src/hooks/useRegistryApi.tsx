@@ -184,6 +184,22 @@ export default function useRegistryApi() {
     } else {
       return axiosInstance.current.post(`profile/${profileId}/request`);
     }
+  };  
+  
+  const getHumanActionRequests = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('profile/profile-ids?filter=requires_human_action');
+    }
+  }; 
+  
+  const updateProjectRequest = async (requestId: any, requestBody: any): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`request/${requestId}/human-action`, requestBody);
+    }
   };
   return {
     getMinistry,
@@ -201,14 +217,8 @@ export default function useRegistryApi() {
     getAllowedQuotaSizesByProfileId,
     updateQuotaSizeByProfileId,
     getEditRequestStatus,
-<<<<<<< HEAD
-<<<<<<< HEAD
     createProjectRequestByProfileId,
-=======
+    getHumanActionRequests,
     updateProjectRequest,
->>>>>>> dcaea43 (Add Human Action Requests controller, model and route)
-=======
-    getAllHumanActionRequest
->>>>>>> 38dc8fb (Update Request Table)
   };
 }
