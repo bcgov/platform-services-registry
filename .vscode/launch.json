@@ -31,24 +31,5 @@
         "program": "${workspaceFolder}/api/node_modules/jest/bin/jest",
       }
     },
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "vuejs: chrome",
-      "url": "http://localhost:8101",
-      "webRoot": "${workspaceFolder}/web/src",
-      "breakOnLoad": true,
-      "sourceMapPathOverrides": {
-        "webpack:///web/src/*": "${webRoot}/*"
-      }
-    },
-    {
-      "type": "firefox",
-      "request": "launch",
-      "name": "vuejs: firefox",
-      "url": "http://localhost:8101",
-      "webRoot": "${workspaceFolder}/web/src",
-      "pathMappings": [{ "url": "webpack:///web/src/", "path": "${webRoot}/" }]
-    }
   ]
 }
