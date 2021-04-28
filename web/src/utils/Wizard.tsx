@@ -21,6 +21,7 @@ const Wizard: React.FC<any> = ({ onSubmit, children }) => {
   // previous page
   const previous = () => {
     setPage(Math.max(page - 1, 0));
+    setLastPage(false);
   };
 
   const handleSubmit = (formData: any) => {
