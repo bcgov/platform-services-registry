@@ -5,8 +5,9 @@ Array [
   Array [
     Object {
       "text": "
-          SELECT * FROM ref_quota;
-          ",
+      SELECT * FROM ref_quota
+        WHERE archived = false;
+      ",
     },
   ],
 ]
@@ -65,8 +66,9 @@ Array [
   Array [
     Object {
       "text": "
-          SELECT * FROM ref_quota;
-          ",
+      SELECT * FROM ref_quota
+        WHERE archived = false;
+      ",
     },
   ],
 ]
@@ -77,8 +79,9 @@ Array [
   Array [
     Object {
       "text": "
-          SELECT * FROM ref_quota;
-          ",
+      SELECT * FROM ref_quota
+        WHERE archived = false;
+      ",
     },
   ],
 ]
@@ -143,8 +146,9 @@ Array [
   Array [
     Object {
       "text": "
-          SELECT * FROM ref_quota;
-          ",
+      SELECT * FROM ref_quota
+        WHERE archived = false;
+      ",
     },
   ],
 ]
