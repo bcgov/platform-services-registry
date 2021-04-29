@@ -25,7 +25,11 @@ import { fetchQuota, fetchQuotaSizes } from '../../controllers/quota';
 const router = express.Router();
 
 // Quota
+// Base route fetches raw data from DB
 router.get('/', asyncMiddleware(fetchQuota));
+
+// sizes route utilizes raw data from DB
+// and transfroms to usable data for the front end
 router.get('/sizes', asyncMiddleware(fetchQuotaSizes));
 
 export default router;
