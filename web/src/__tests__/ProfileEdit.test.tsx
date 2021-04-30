@@ -96,15 +96,14 @@ test('matches the snapshot', async () => {
   await waitFor(() => expect(container).toMatchSnapshot());
 });
 
-
 function renderQuota() {
-  const profileIdProp: string = "1"
-  const licensePlateProp: string = "473f50"
-  const quotaSizeProp: string = "medium"
-  const quotaOptionsProp: QuotaSize[] = ["small", "large"]
+  const profileIdProp: string = '1';
+  const licensePlateProp: string = '473f50';
+  const quotaSizeProp: string = 'medium';
+  const quotaOptionsProp: QuotaSize[] = ['small', 'large'];
   const handleSubmitRefreshProp = jest.fn();
-  const isProvisionedProp: boolean = true
-  const hasPendingEditProp: boolean = false
+  const isProvisionedProp: boolean = true;
+  const hasPendingEditProp: boolean = false;
 
   const utils = render(
     <QuotaCardEdit

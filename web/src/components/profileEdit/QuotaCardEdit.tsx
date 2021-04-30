@@ -83,7 +83,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   useEffect(() => {
     async function getQuotaSizes() {
       const quotaSizes = await api.getQuotaSizes();
-      setSpecs(quotaSizes.data.filter((size: any) => size.name === quotaSize).pop())
+      setSpecs(quotaSizes.data.filter((size: any) => size.name === quotaSize).pop());
     }
     getQuotaSizes();
     // eslint-disable-next-line
