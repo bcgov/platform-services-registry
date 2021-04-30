@@ -82,19 +82,6 @@ export default function useRegistryApi() {
     return axiosInstance.current.put(`profile/${profileId}`, profile);
   };
 
-<<<<<<< HEAD
-=======
-  const requestProfileEdit = async (
-    profileId: string,
-    profile: any,
-  ): Promise<AxiosResponse<any>> => {
-    if (!axiosInstance.current) {
-      throw new Error(errorMsg);
-    }
-    return axiosInstance.current.post(`profile/${profileId}/profile-edit`, profile);
-  };
-
->>>>>>> change if(){throw}..else{return} statements to if(){throw}..return in useRegistryApi
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -108,11 +95,6 @@ export default function useRegistryApi() {
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-<<<<<<< HEAD
-    } else {
-      return axiosInstance.current.post(`profile/${profileId}/contacts`, requestedContacts);
-=======
->>>>>>> change if(){throw}..else{return} statements to if(){throw}..return in useRegistryApi
     }
     return axiosInstance.current.post(`profile/${profileId}/contact-edit`, requestedContacts);
   };
