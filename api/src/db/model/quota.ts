@@ -85,12 +85,29 @@ export default class QuotaModel extends Model {
         // this is intentional (required by Sonarcloud)
     }
 
+    async findQuota(): Promise<any[]> {
+        const query = {
+            text: `
+          SELECT * FROM ${this.table};
+          `,
+        };
+
+        try {
+            return await this.runQuery(query);
+        } catch (err) {
+            const message = `Unable to fetch all Quota`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
     async findQuotaSizes(): Promise<any> {
         try {
-            const quota = await this.findAll()
-            const quotaSizes: any = []
+            const quota = await this.findQuota();
+            const quotaSizes: any = [];
 
-            for (var size of quota) {
+            for (let size of quota) {
                 quotaSizes.push(
                     {
                         name: size.id,
