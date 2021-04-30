@@ -52,13 +52,6 @@ export default function useRegistryApi() {
       throw new Error(errorMsg);
     }
     return axiosInstance.current.get('ministry');
-  }
-
-  const getQuota = async (): Promise<AxiosResponse<any>> => {
-    if (!axiosInstance.current) {
-      throw new Error(errorMsg);
-    }
-    return axiosInstance.current.get('quota');
   };
 
   const getQuotaSizes = async (): Promise<AxiosResponse<any>> => {
@@ -197,7 +190,6 @@ export default function useRegistryApi() {
 
   return {
     getMinistry,
-    getQuota,
     getQuotaSizes,
     getProfile,
     createProfile,
