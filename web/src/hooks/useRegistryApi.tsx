@@ -150,7 +150,7 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }
-    return axiosInstance.current.get(`profile/${profileId}/quota-edit`);
+    return axiosInstance.current.get(`profile/${profileId}/allowed-quota-sizes`);
   };
 
   const updateQuotaSizeByProfileId = async (
@@ -160,7 +160,7 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }
-    return axiosInstance.current.post(`profile/${profileId}/quota-edit`, requstedQuotas);
+    return axiosInstance.current.post(`profile/${profileId}/quota-size`, requstedQuotas);
   };
 
   const getEditRequestStatus = async (profileId: string): Promise<AxiosResponse<any>> => {
