@@ -2,12 +2,22 @@ name: Promote to Test
 
 on:
 
-  # Promote to Test when a pull request is merged into master.
+  # Promote to Test when a pull request is merged into master with changes to
+  # the api, db, or web directories.
   # If necessary, tags can be used to put more controls around this.
   # ----------------------------------------------------------------
   push:
     branches:
       - master
+    paths:
+      - "api/src/**/*.ts"
+      - "api/package*.json"
+      - "db/sql/*.sql"
+      - "web/src/**/*.ts"
+      - "web/src/**/*.tsx"
+      - "web/package*.json"
+      - "web/public/**/*"
+      - "web/Caddyfile"
 
   # Optionally trigger the promotion manually
   # -----------------------------------------
