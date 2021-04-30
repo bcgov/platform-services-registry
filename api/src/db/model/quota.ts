@@ -116,7 +116,7 @@ export default class QuotaModel extends Model {
                         storageNums: [size.storageFile.replace("Gi", "GiB"), size.storageBackup.replace("Gi", "GiB")],
                     },
                 );
-            };
+            }
 
             return quotaSizes;
         } catch (err) {
@@ -125,7 +125,7 @@ export default class QuotaModel extends Model {
 
             throw err;
         }
-    };
+    }
 
     async findForQuotaSize(quotaSize: QuotaSize): Promise<any> {
         const query = {
