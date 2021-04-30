@@ -96,7 +96,7 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }
-    return axiosInstance.current.post(`profile/${profileId}/contact-edit`, requestedContacts);
+    return axiosInstance.current.post(`profile/${profileId}/contacts`, requestedContacts);
   };
 
   const linkContactToProfileById = async (
