@@ -14,16 +14,92 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from 'fs';
+import { camelCase } from 'lodash';
+import path from 'path';
+import { Pool } from 'pg';
+import { fetchQuota, fetchQuotaSizes } from '../src/controllers/quota';
+import FauxExpress from './src/fauxexpress';
 
-import { QuotaSize } from '../src/db/model/quota';
-import { getAllowedQuotaSizes } from '../src/libs/quota';
+const p0 = path.join(__dirname, 'fixtures/select-quota.json');
+const selectQuota = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
-describe('Quota services', () => {
 
-  it('getAllowedQuotaSizes works correctly', async () => {
-    expect(getAllowedQuotaSizes(QuotaSize.Small)).toEqual([QuotaSize.Medium]);
-    expect(getAllowedQuotaSizes(QuotaSize.Medium)).toEqual([QuotaSize.Small, QuotaSize.Large]);
-    expect(getAllowedQuotaSizes(QuotaSize.Large)).toEqual([QuotaSize.Small, QuotaSize.Medium]);
-  });
+const client = new Pool().connect();
+
+jest.mock('../src/db/utils', () => ({
+    generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e6'),
+    transformKeysToCamelCase: jest.fn().mockImplementation(data => {
+        const obj = {};
+        Object.keys(data).forEach(key => {
+            obj[camelCase(key)] = data[key];
+        });
+
+        return obj;
+    }),
+}));
+
+describe('Quota event handlers', () => {
+    let ex;
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        ex = new FauxExpress();
+    });
+
+    describe('fetchQuota', () => {
+        it('All quotas are returned', async () => {
+            const req = {};
+            client.query.mockReturnValueOnce({ rows: selectQuota });
+
+            // @ts-ignore
+            await fetchQuota(req, ex.res);
+
+            expect(client.query.mock.calls).toMatchSnapshot();
+            expect(ex.res.statusCode).toMatchSnapshot();
+            expect(ex.responseData).toMatchSnapshot();
+            expect(ex.res.status).toBeCalledWith(ex.res.statusCode);
+            expect(ex.res.json).toBeCalledWith(ex.responseData);
+        });
+
+        it('Quota query error should throw', async () => {
+            const req = {};
+            client.query.mockImplementation(() => { throw new Error() });
+
+            // @ts-ignore
+            await expect(fetchQuota(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+            expect(client.query.mock.calls).toMatchSnapshot();
+            expect(ex.responseData).toBeUndefined();
+        });
+    });
+
+    describe('fetchQuotaSizes', () => {
+        it('All quota sizes are returned', async () => {
+            const req = {};
+            client.query.mockReturnValueOnce({ rows: selectQuota });
+
+            // @ts-ignore
+            await fetchQuotaSizes(req, ex.res);
+
+            expect(client.query.mock.calls).toMatchSnapshot();
+            expect(ex.res.statusCode).toMatchSnapshot();
+            expect(ex.responseData).toMatchSnapshot();
+            expect(ex.res.status).toBeCalled();
+            expect(ex.res.json).toBeCalled();
+        });
+
+        it('Quota sizes query error should throw', async () => {
+            const req = {};
+
+            client.query.mockImplementation(() => { throw new Error() });
+
+            // @ts-ignore
+            await expect(fetchQuotaSizes(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+
+            expect(client.query.mock.calls).toMatchSnapshot();
+            expect(ex.responseData).toBeUndefined();
+        });
+    });
 });
+

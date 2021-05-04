@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Quota event handlers fetchQuota All quotas are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+          SELECT * FROM ref_quota;
+          ",
+    },
+  ],
+]
+`;
+
+exports[`Quota event handlers fetchQuota All quotas are returned 2`] = `200`;
+
+exports[`Quota event handlers fetchQuota All quotas are returned 3`] = `
+Array [
+  Object {
+    "cpuLimits": 8,
+    "cpuRequests": 4,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "small",
+    "memoryLimits": "32Gi",
+    "memoryRequests": "16Gi",
+    "storageBackup": "25Gi",
+    "storageBlock": "50Gi",
+    "storageCapacity": "50Gi",
+    "storageFile": "50Gi",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+  Object {
+    "cpuLimits": 16,
+    "cpuRequests": 8,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "medium",
+    "memoryLimits": "64Gi",
+    "memoryRequests": "32Gi",
+    "storageBackup": "50Gi",
+    "storageBlock": "100Gi",
+    "storageCapacity": "100Gi",
+    "storageFile": "100Gi",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+  Object {
+    "cpuLimits": 64,
+    "cpuRequests": 32,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "large",
+    "memoryLimits": "128Gi",
+    "memoryRequests": "64Gi",
+    "storageBackup": "100Gi",
+    "storageBlock": "200Gi",
+    "storageCapacity": "200Gi",
+    "storageFile": "200Gi",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+]
+`;
+
+exports[`Quota event handlers fetchQuota Quota query error should throw 1`] = `"Unable fetch quotas"`;
+
+exports[`Quota event handlers fetchQuota Quota query error should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+          SELECT * FROM ref_quota;
+          ",
+    },
+  ],
+]
+`;
+
+exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+          SELECT * FROM ref_quota;
+          ",
+    },
+  ],
+]
+`;
+
+exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 2`] = `200`;
+
+exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 3`] = `
+Array [
+  Object {
+    "cpuNums": Array [
+      4,
+      8,
+    ],
+    "memoryNums": Array [
+      "16GiB",
+      "32GiB",
+    ],
+    "name": "small",
+    "storageNums": Array [
+      "50GiB",
+      "25GiB",
+    ],
+  },
+  Object {
+    "cpuNums": Array [
+      8,
+      16,
+    ],
+    "memoryNums": Array [
+      "32GiB",
+      "64GiB",
+    ],
+    "name": "medium",
+    "storageNums": Array [
+      "100GiB",
+      "50GiB",
+    ],
+  },
+  Object {
+    "cpuNums": Array [
+      32,
+      64,
+    ],
+    "memoryNums": Array [
+      "64GiB",
+      "128GiB",
+    ],
+    "name": "large",
+    "storageNums": Array [
+      "200GiB",
+      "100GiB",
+    ],
+  },
+]
+`;
+
+exports[`Quota event handlers fetchQuotaSizes Quota sizes query error should throw 1`] = `"Unable to get quota sizes"`;
+
+exports[`Quota event handlers fetchQuotaSizes Quota sizes query error should throw 2`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+          SELECT * FROM ref_quota;
+          ",
+    },
+  ],
+]
+`;
