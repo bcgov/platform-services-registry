@@ -1,4 +1,4 @@
-name: DB to Dev
+name: DEV Build and Tag - DB
 
 on:
   # Run the workflow manually, instead of on a push.

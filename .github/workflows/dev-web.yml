@@ -1,4 +1,4 @@
-name: Web app to Dev
+name: DEV Build and Tag - WEB
 
 on:
   # Run the workflow manually, instead of on a push.
