@@ -1,0 +1,41 @@
+[
+    {
+        "id": "small",
+        "cpuRequests": 4,
+        "cpuLimits": 8,
+        "memoryRequests": "16Gi",
+        "memoryLimits": "32Gi",
+        "storageBlock": "50Gi",
+        "storageFile": "50Gi",
+        "storageBackup": "25Gi",
+        "storageCapacity": "50Gi",
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "medium",
+        "cpuRequests": 8,
+        "cpuLimits": 16,
+        "memoryRequests": "32Gi",
+        "memoryLimits": "64Gi",
+        "storageBlock": "100Gi",
+        "storageFile": "100Gi",
+        "storageBackup": "50Gi",
+        "storageCapacity": "100Gi",
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "large",
+        "cpuRequests": 32,
+        "cpuLimits": 64,
+        "memoryRequests": "64Gi",
+        "memoryLimits": "128Gi",
+        "storageBlock": "200Gi",
+        "storageFile": "200Gi",
+        "storageBackup": "100Gi",
+        "storageCapacity": "200Gi",
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    }
+]

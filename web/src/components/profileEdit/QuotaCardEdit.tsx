@@ -15,10 +15,10 @@
 //
 
 import { Label } from '@rebass/forms';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Text } from 'rebass';
-import { PROFILE_EDIT_VIEW_NAMES, QUOTA_SIZES, ROUTE_PATHS } from '../../constants';
+import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import theme from '../../theme';
@@ -50,8 +50,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
   const [selectedSize, setSelectedSize] = useState<any>('');
-
-  const specs = QUOTA_SIZES.filter((size: any) => size.name === quotaSize).pop();
+  const [specs, setSpecs] = useState<any>([]);
 
   const handleChange = (event: any) => {
     setSelectedSize(event.target.value);
@@ -81,6 +80,15 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     setOpenBackdrop(false);
   };
 
+  useEffect(() => {
+    async function getQuotaSizes() {
+      const quotaSizes = await api.getQuotaSizes();
+      setSpecs(quotaSizes.data.filter((size: any) => size.name === quotaSize).pop());
+    }
+    getQuotaSizes();
+    // eslint-disable-next-line
+  }, []);
+
   if (goBackToProfileEditable && profileId) {
     return (
       <Redirect
@@ -92,7 +100,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     );
   }
 
-  if (!specs) {
+  if (specs.length === 0) {
     return null;
   }
   return (
@@ -111,19 +119,13 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {quotaSize.toUpperCase()} size quota for RAM:
         <br />
-        {specs.memoryNums[0]}
-        GBs as request,
-        {specs.memoryNums[1]}
-        GBs as limit
+        {specs.memoryNums[0]} as request, {specs.memoryNums[1]} as limit
       </Text>
       <br />
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {quotaSize.toUpperCase()} size quota for storage: 20 PVC count,
         <br />
-        {specs.storageNums[0]}
-        Gbs overall storage with
-        {specs.storageNums[1]}
-        GBs for backup storage
+        {specs.storageNums[0]} overall storage with {specs.storageNums[1]} for backup storage
       </Text>
       <br />
       <select value={selectedSize} onChange={handleChange}>

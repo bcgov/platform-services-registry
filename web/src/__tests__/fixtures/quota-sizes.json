@@ -1,0 +1,20 @@
+[
+  {
+    "name": "small",
+    "cpuNums": [4, 8],
+    "memoryNums": ["16GiB", "32GiB"],
+    "storageNums": ["50GiB", "25GiB"]
+  },
+  {
+    "name": "medium",
+    "cpuNums": [8, 16],
+    "memoryNums": ["32GiB", "64GiB"],
+    "storageNums": ["100GiB", "50GiB"]
+  },
+  {
+    "name": "large",
+    "cpuNums": [32, 64],
+    "memoryNums": ["64GiB", "128GiB"],
+    "storageNums": ["200GiB", "100GiB"]
+  }
+]

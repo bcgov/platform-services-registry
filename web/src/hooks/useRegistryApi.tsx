@@ -50,41 +50,43 @@ export default function useRegistryApi() {
   const getMinistry = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get('ministry');
     }
+    return axiosInstance.current.get('ministry');
+  };
+
+  const getQuotaSizes = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.get('quota/sizes');
   };
 
   const getProfile = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get('profile');
     }
+    return axiosInstance.current.get('profile');
   };
 
   const createProfile = async (profile: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post('profile', profile);
     }
+    return axiosInstance.current.post('profile', profile);
   };
 
   const updateProfile = async (profileId: string, profile: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.put(`profile/${profileId}`, profile);
     }
+    return axiosInstance.current.put(`profile/${profileId}`, profile);
   };
 
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post('contact', contact);
     }
+    return axiosInstance.current.post('contact', contact);
   };
 
   const updateContactsByProfileId = async (
@@ -93,9 +95,8 @@ export default function useRegistryApi() {
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post(`profile/${profileId}/contacts`, requestedContacts);
     }
+    return axiosInstance.current.post(`profile/${profileId}/contacts`, requestedContacts);
   };
 
   const linkContactToProfileById = async (
@@ -104,49 +105,43 @@ export default function useRegistryApi() {
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post(`profile/${profileId}/contact/${contactId}`);
     }
+    return axiosInstance.current.post(`profile/${profileId}/contact/${contactId}`);
   };
 
   const createNamespaceByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post(`provision/${profileId}/namespace`);
     }
+    return axiosInstance.current.post(`provision/${profileId}/namespace`);
   };
 
   const getContactsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}/contacts`);
     }
+    return axiosInstance.current.get(`profile/${profileId}/contacts`);
   };
 
   const getProfileByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}`);
     }
+    return axiosInstance.current.get(`profile/${profileId}`);
   };
 
   const getNamespacesByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}/namespace`);
     }
+    return axiosInstance.current.get(`profile/${profileId}/namespace`);
   };
 
   const getQuotaSizeByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}/quota-size`);
     }
+    return axiosInstance.current.get(`profile/${profileId}/quota-size`);
   };
 
   const getAllowedQuotaSizesByProfileId = async (
@@ -154,9 +149,8 @@ export default function useRegistryApi() {
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}/allowed-quota-sizes`);
     }
+    return axiosInstance.current.get(`profile/${profileId}/allowed-quota-sizes`);
   };
 
   const updateQuotaSizeByProfileId = async (
@@ -165,21 +159,20 @@ export default function useRegistryApi() {
   ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.post(`profile/${profileId}/quota-size`, requstedQuotas);
     }
+    return axiosInstance.current.post(`profile/${profileId}/quota-size`, requstedQuotas);
   };
 
   const getEditRequestStatus = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
-    } else {
-      return axiosInstance.current.get(`profile/${profileId}/request`);
     }
+    return axiosInstance.current.get(`profile/${profileId}/request`);
   };
 
   return {
     getMinistry,
+    getQuotaSizes,
     getProfile,
     createProfile,
     updateProfile,
