@@ -1,4 +1,4 @@
-name: Build and tag for Dev - API
+name: DEV Build and Tag - API
 
 on:
   # Run the workflow manually, instead of on a push.
