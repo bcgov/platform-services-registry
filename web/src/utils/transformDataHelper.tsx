@@ -201,3 +201,24 @@ export function composeRequestBodyForQuotaEdit(requestedQuotaSize: QuotaSize): a
     throw new Error(`${msg}, reason = ${err.message}`);
   }
 }
+
+export function getClusterDisplayName(clusterName: string, clusters: any[]): string {
+  try {
+    const { displayName } = clusters.filter((cluster: any) => cluster.name === clusterName)[0];
+
+    const isEmptyValue = (value: any) => (
+      value === undefined ||
+        value === null ||
+        value === '' ||
+        (typeof value === 'object' && Object.keys(value).length === 0)
+    );
+    if (isEmptyValue(displayName) || typeof displayName !== 'string') {
+      throw new Error('Empty value');
+    }
+
+    return displayName;
+  } catch (err) {
+    const msg = 'Unable to get cluster display name';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+}
