@@ -50,7 +50,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
           <Box width={1 / 2} px={2} mt={3}>
             <Text as="h3">{namespaceText[0]} Namespace</Text>
             <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-              {`${licensePlate}-${namespaceText[1]} namespace in Silver cluster`}
+              {`${licensePlate}-${namespaceText[1]} namespace`}
             </Text>
           </Box>
           <Box width={1 / 2} px={2} mt={3}>

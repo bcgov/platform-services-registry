@@ -30,6 +30,7 @@ import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
+  getClusterDisplayName,
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
@@ -65,17 +66,29 @@ const Dashboard: React.FC = () => {
         const namespacesResponses: Array<any> = await Promise.all(promisesForNamespaces);
         const quotaSizeResponse: Array<any> = await Promise.all(promisesForQuotaSize);
 
-        // 3. Combine contact info, provision status, quota-size to existing profile
+        // 3. Fetch cluster to get user-friendly cluster display name
+        const clusterResponse = await api.getCluster();
+
+        // 4. Combine contact info, provision status, quota-size to existing profile
+        // and convert cluster name --> display name
         for (let i: number = 0; i < response.data.length; i++) {
           response.data[i] = {
             ...response.data[i],
             ...getProfileContacts(contactResponses[i].data),
           };
-          response.data[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
+          response.data[i].provisioned = isProfileProvisioned(
+            response.data[i],
+            namespacesResponses[i].data,
+          );
           response.data[i].quotaSize = quotaSizeResponse[i].data;
+
+          response.data[i].primaryClusterDisplayName = getClusterDisplayName(
+            response.data[i].primaryClusterName,
+            clusterResponse.data,
+          );
         }
 
-        // 4. Then update dashboard cards with fetched profile info
+        // 5. Then update dashboard cards with fetched profile info
         setProfile(sortProfileByDatetime(response.data));
       } catch (err) {
         promptErrToastWithText('Something went wrong');
@@ -95,7 +108,7 @@ const Dashboard: React.FC = () => {
 
     Promise.all(promisesForNamespaces).then((namespacesResponses: any) => {
       for (let i: number = 0; i < profile.length; i++) {
-        profile[i].provisioned = isProfileProvisioned(namespacesResponses[i].data);
+        profile[i].provisioned = isProfileProvisioned(profile[i], namespacesResponses[i].data);
       }
       setProfile([...profile]);
     });
@@ -149,6 +162,10 @@ const Dashboard: React.FC = () => {
       {
         Header: 'Ministry',
         accessor: 'busOrgId',
+      },
+      {
+        Header: 'Cluster',
+        accessor: 'primaryClusterDisplayName',
       },
       {
         Header: 'Product Owner',

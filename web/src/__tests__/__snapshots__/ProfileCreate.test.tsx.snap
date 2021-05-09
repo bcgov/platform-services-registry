@@ -134,6 +134,7 @@ exports[`matches the snapshot 1`] = `
               >
                 <div
                   class=""
+                  style="flex: 1;"
                 >
                   <div
                     class="css-4cffwv"
@@ -141,6 +142,47 @@ exports[`matches the snapshot 1`] = `
                     <select
                       class="css-4y926w"
                       name="project-busOrgId"
+                    >
+                      <option>
+                         Select... 
+                      </option>
+                    </select>
+                    <svg
+                      class="css-6ibwe0"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7 10l5 5 5-5z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-18m6ozg"
+            >
+              <label
+                class="css-toc01s"
+              >
+                Cluster Name
+              </label>
+              <div
+                class="css-xtali0"
+                name="project-primaryClusterName"
+              >
+                <div
+                  class=""
+                  style="flex: 1;"
+                >
+                  <div
+                    class="css-4cffwv"
+                  >
+                    <select
+                      class="css-4y926w"
+                      name="project-primaryClusterName"
                     >
                       <option>
                          Select... 

@@ -17,6 +17,7 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { Cluster } from '../db/model/cluster';
 import { ProjectProfile } from '../db/model/profile';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -99,7 +100,7 @@ export const createProjectProfile = async (
   const { ProfileModel, ClusterModel } = dm;
   const data = { ...body, userId: user.id };
 
-  // User cannot set the namespace prefix OR primary cluster name (current default cluster).
+  // User cannot set the namespace prefix
   // If it exists, this overwrites it with a place holder value. It will be replaced
   // with the actual value further on.
   const rv = validateRequiredFields(ProfileModel.requiredFields, {
@@ -113,17 +114,29 @@ export const createProjectProfile = async (
   }
 
   try {
+    let cluster: Cluster;
+
+    if (data.primaryClusterName !== undefined) {
+      cluster = await ClusterModel.findByName(data.primaryClusterName);
+      // TODO:(yh) add serving 400, 401 systematically
+      if (!cluster) {
+        throw new Error('Unable to find requested cluster');
+      }
+      if (!(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
+        throw new Error('Unauthorized');
+      }
+    } else {
+      cluster = await ClusterModel.findDefault();
+    }
+
+    data.primaryClusterName = cluster.name;
+
     const namespacePrefix = await uniqueNamespacePrefix();
     if (!namespacePrefix) {
-      throw errorWithCode(500, 'Unable to generate unique namespace prefix');
+      throw new Error('Unable to generate unique namespace prefix');
     }
 
-    const defaultCluster = await ClusterModel.findDefault();
-    if (!defaultCluster) {
-      throw errorWithCode(500, 'Unable to set primary cluster id based on default cluster');
-    }
-
-    const results = await ProfileModel.create({ ...data, namespacePrefix, primaryClusterName: defaultCluster.name });
+    const results = await ProfileModel.create({ ...data, namespacePrefix });
 
     res.status(200).json(results);
   } catch (err) {
