@@ -35,6 +35,7 @@ import { Namespace } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
+  getClusterDisplayName,
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
@@ -93,12 +94,17 @@ const ProfileEdit: React.FC = (props: any) => {
   async function updateProfileState() {
     const namespaces = await api.getNamespacesByProfileId(profileId);
     const ministry = await api.getMinistry();
+    const cluster = await api.getCluster();
     const hasPendingEdit = await hasPendingEditRequest(api, profileId);
 
     const projectDetails = await api.getProfileByProfileId(profileId);
     projectDetails.data = {
       ...projectDetails.data,
       ...getProfileMinistry(ministry.data, projectDetails.data),
+      primaryClusterDisplayName: getClusterDisplayName(
+        projectDetails.data.primaryClusterName,
+        cluster.data,
+      ),
     };
 
     const contactDetails = await api.getContactsByProfileId(profileId);
@@ -114,7 +120,7 @@ const ProfileEdit: React.FC = (props: any) => {
         ministryJson: ministry.data,
       },
       hasPendingEdit,
-      isProvisioned: isProfileProvisioned(namespaces.data),
+      isProvisioned: isProfileProvisioned(projectDetails.data, namespaces.data),
       projectDetails: projectDetails.data,
       contactDetails: contactDetails.data,
       quotaDetails: {

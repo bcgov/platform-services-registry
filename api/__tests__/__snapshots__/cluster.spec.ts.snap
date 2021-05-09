@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project-profile event handlers All clusters are returned 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+      SELECT * FROM ref_cluster
+        WHERE archived = false;
+      ",
+    },
+  ],
+]
+`;
+
+exports[`Project-profile event handlers All clusters are returned 2`] = `200`;
+
+exports[`Project-profile event handlers All clusters are returned 3`] = `
+Array [
+  Object {
+    "archived": false,
+    "createdAt": "2020-09-10T18:14:13.304Z",
+    "description": "Silver cluster",
+    "disasterRecovery": false,
+    "displayName": "Silver Kamloops",
+    "id": 1,
+    "isDefault": true,
+    "isProd": true,
+    "name": "silver",
+    "onPrem": true,
+    "updatedAt": "2020-09-10T18:14:13.304Z",
+  },
+]
+`;
+
+exports[`Project-profile event handlers Fetch all clusters should throw 1`] = `"Unable to fetch clusters"`;
+
+exports[`Project-profile event handlers Fetch all clusters should throw 2`] = `Array []`;

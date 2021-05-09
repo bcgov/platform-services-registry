@@ -60,6 +60,7 @@ export const CSV_PROFILE_ATTRIBUTES = [
   'busOrgId',
   'prioritySystem',
   'migratingLicenseplate',
+  'primaryClusterDisplayName',
   'namespacePrefix',
   'quotaSize',
   'createdAt',

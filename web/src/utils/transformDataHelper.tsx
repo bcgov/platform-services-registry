@@ -73,14 +73,19 @@ export function sortProfileByDatetime(profileData: any): any[] | [] {
 }
 
 // returns true if ALL namespaces under a profile in default cluster are provisioned true
-export function isProfileProvisioned(namespaceSet: any[]): boolean {
+export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
   try {
-    namespaceSet.forEach((namespace: any) => {
-      // TODO: update this when we add other clusters besides default cluster
-      if (!namespace.clusters[0].provisioned) {
-        throw Error(`${namespace.name} is not provisioned yet`);
+    const { primaryClusterName } = profile;
+
+    namespaces.forEach((namespace: any) => {
+      const clusterNamespace = namespace.clusters.filter(
+        (cluster: any) => cluster.name === primaryClusterName,
+      )[0];
+      if (!clusterNamespace.provisioned) {
+        throw Error(`${namespace.name} is not provisioned on ${primaryClusterName}`);
       }
     });
+
     return true;
   } catch (err) {
     return false;
@@ -192,7 +197,28 @@ export function composeRequestBodyForQuotaEdit(requestedQuotaSize: QuotaSize): a
       requestedQuotaSize,
     };
   } catch (err) {
-    const msg = 'Unable to compose request body for given namespaces json';
+    const msg = 'Unable to compose request body';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
+}
+
+export function getClusterDisplayName(clusterName: string, clusters: any[]): string | Error {
+  try {
+    const { displayName } = clusters.filter((cluster: any) => cluster.name === clusterName)[0];
+
+    const isEmptyValue = (value: any) => (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (typeof value === 'object' && Object.keys(value).length === 0)
+    );
+    if (isEmptyValue(displayName) || typeof displayName !== 'string') {
+      throw new Error('Empty value');
+    }
+
+    return displayName;
+  } catch (err) {
+    const msg = 'Unable to get cluster display name';
     throw new Error(`${msg}, reason = ${err.message}`);
   }
 }

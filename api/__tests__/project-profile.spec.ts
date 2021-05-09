@@ -68,7 +68,7 @@ describe('Project-profile event handlers', () => {
     ex = new FauxExpress();
   });
 
-  it('A project-profile is created', async () => {
+  it('A project-profile is created on a given prod-ready cluster', async () => {
     const req = {
       body: insertProfile,
       user: {
@@ -82,6 +82,42 @@ describe('Project-profile event handlers', () => {
     };
 
     client.query.mockReturnValueOnce({ rows: selectCluster });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+    client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
+
+    // @ts-ignore
+    await createProjectProfile(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot({
+      // id: expect.any(Number),
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it('A project-profile is created on a given test cluster', async () => {
+    const req = {
+      body: insertProfile,
+      user: { ...authenticatedUser, accessFlags: [AccessFlag.ProvisionOnTestCluster,] },
+    };
+    const addon = {
+      id: 9,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const testCluster = {
+      name: 'clab',
+      isProd: false
+    };
+
+    client.query.mockReturnValueOnce({ rows: [testCluster] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
     client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
@@ -172,7 +208,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A single project-profiles is returned', async () => {
+  it('A single project-profile is returned', async () => {
     const req = {
       params: { profileId: 4 },
     };

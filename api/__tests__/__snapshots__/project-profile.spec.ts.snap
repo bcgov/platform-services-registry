@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Project-profile event handlers A project-profile is created 1`] = `
+exports[`Project-profile event handlers A project-profile is created on a given prod-ready cluster 1`] = `
 Array [
   Array [
     Object {
@@ -87,9 +87,129 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers A project-profile is created 2`] = `200`;
+exports[`Project-profile event handlers A project-profile is created on a given prod-ready cluster 2`] = `200`;
 
-exports[`Project-profile event handlers A project-profile is created 3`] = `
+exports[`Project-profile event handlers A project-profile is created on a given prod-ready cluster 3`] = `
+Object {
+  "busOrgId": "HLTH",
+  "categoryId": 1,
+  "createdAt": Any<Date>,
+  "criticalSystem": false,
+  "description": "Patient prescription history website",
+  "fileStorage": false,
+  "fileTransfer": false,
+  "geoMappingLocation": false,
+  "geoMappingWeb": false,
+  "id": 9,
+  "idmActiveDir": false,
+  "idmKeyCloak": false,
+  "idmSiteMinder": false,
+  "migratingLicenseplate": "abc123",
+  "name": "Health Gateway",
+  "notificationEmail": false,
+  "notificationMsTeams": false,
+  "notificationSms": false,
+  "other": "This is a test",
+  "paymentBambora": false,
+  "paymentPayBc": false,
+  "primaryClusterName": "silver",
+  "prioritySystem": false,
+  "schedulingAppointments": false,
+  "schedulingCalendar": false,
+  "updatedAt": Any<Date>,
+}
+`;
+
+exports[`Project-profile event handlers A project-profile is created on a given test cluster 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM ref_cluster WHERE name = $1;
+      ",
+      "values": Array [
+        "silver",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e6",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e6",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT COUNT(*) FROM profile
+          WHERE namespace_prefix = $1;",
+      "values": Array [
+        "c8c7e6",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        INSERT INTO profile
+          (name, description, bus_org_id, priority_system,
+            critical_system, user_id, namespace_prefix,
+            notification_email, notification_sms, notification_ms_teams,
+            payment_bambora, payment_pay_bc, file_transfer, file_storage,
+            geo_mapping_web, geo_mapping_location, scheduling_calendar,
+            scheduling_appointments, idm_site_minder,
+            idm_keycloak, idm_active_dir, other, primary_cluster_name,
+            migrating_licenseplate)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING *;",
+      "values": Array [
+        "Health Gateway",
+        "Patient prescription history website",
+        "HLTH",
+        false,
+        false,
+        1,
+        "c8c7e6",
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        "This is a test",
+        "clab",
+        "abc123",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Project-profile event handlers A project-profile is created on a given test cluster 2`] = `200`;
+
+exports[`Project-profile event handlers A project-profile is created on a given test cluster 3`] = `
 Object {
   "busOrgId": "HLTH",
   "categoryId": 1,
@@ -177,7 +297,7 @@ exports[`Project-profile event handlers A project-profiles is archived 2`] = `20
 
 exports[`Project-profile event handlers A project-profiles is archived 3`] = `undefined`;
 
-exports[`Project-profile event handlers A single project-profiles is returned 1`] = `
+exports[`Project-profile event handlers A single project-profile is returned 1`] = `
 Array [
   Array [
     Object {
@@ -192,9 +312,9 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers A single project-profiles is returned 2`] = `200`;
+exports[`Project-profile event handlers A single project-profile is returned 2`] = `200`;
 
-exports[`Project-profile event handlers A single project-profiles is returned 3`] = `
+exports[`Project-profile event handlers A single project-profile is returned 3`] = `
 Object {
   "archived": false,
   "busOrgId": "CITZ",

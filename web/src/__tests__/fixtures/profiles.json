@@ -5,6 +5,7 @@
     "description": null,
     "prioritySystem": false,
     "criticalSystem": false,
+    "primaryClusterName": "silver",
     "createdAt": "2020-04-28T00:00:00.000Z",
     "updatedAt": "2020-04-28T00:00:00.000Z",
     "userId": 4
@@ -15,6 +16,7 @@
     "description": "Hello World",
     "prioritySystem": false,
     "criticalSystem": true,
+    "primaryClusterName": "silver",
     "createdAt": "2020-10-28T03:00:00.000Z",
     "updatedAt": "2020-10-28T03:00:00.000Z",
     "userId": 4
@@ -25,7 +27,9 @@
     "description": "This is some description",
     "prioritySystem": false,
     "criticalSystem": false,
+    "primaryClusterName": "silver",
     "createdAt": "2020-04-18T10:10:00.000Z",
-    "updatedAt": "2020-04-18T10:10:00.000Z"
+    "updatedAt": "2020-04-18T10:10:00.000Z",
+    "userId": 4
   }
 ]

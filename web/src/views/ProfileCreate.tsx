@@ -36,6 +36,7 @@ const ProfileCreate: React.FC = () => {
   const { setOpenBackdrop } = useCommonState();
 
   const [ministry, setMinistry] = useState<any>([]);
+  const [cluster, setCluster] = useState<any>([]);
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
@@ -71,8 +72,10 @@ const ProfileCreate: React.FC = () => {
 
   useEffect(() => {
     async function wrap() {
-      const response = await api.getMinistry();
-      setMinistry(response.data);
+      const ministryResponse = await api.getMinistry();
+      const clusterResponse = await api.getCluster();
+      setMinistry(ministryResponse.data);
+      setCluster(clusterResponse.data);
     }
     wrap();
     // eslint-disable-next-line
@@ -84,7 +87,7 @@ const ProfileCreate: React.FC = () => {
   return (
     <Wizard onSubmit={onSubmit}>
       <WizardPage>
-        <CreateFormProject ministry={ministry} />
+        <CreateFormProject ministry={ministry} cluster={cluster} />
       </WizardPage>
       <WizardPage>
         <CreateFormMigration />
