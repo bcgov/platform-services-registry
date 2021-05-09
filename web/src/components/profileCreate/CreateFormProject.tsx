@@ -110,7 +110,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
             {cluster.length > 0 &&
               cluster.map((s: any) => (
                 <option key={s.name} value={s.name}>
-                  {s.name}
+                  {s.displayName}
                 </option>
               ))}
           </Field>

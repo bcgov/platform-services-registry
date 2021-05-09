@@ -29,7 +29,7 @@ export interface ProjectDetails {
   prioritySystem?: string;
   busOrgId?: string;
   ministryName?: string;
-  primaryClusterName?: string;
+  primaryClusterDisplayName?: string;
   other?: string;
   migratingLicenseplate?: string;
 }
@@ -41,7 +41,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
       description = '',
       ministryName = '',
       migratingLicenseplate = '',
-      primaryClusterName = '',
+      primaryClusterDisplayName = '',
     },
   } = props;
   return (
@@ -87,7 +87,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
       </Box>
       <Box width={1 / 2} px={2} mt={3}>
         <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-          {primaryClusterName}
+          {primaryClusterDisplayName}
         </Text>
       </Box>
       {migratingLicenseplate ? (
