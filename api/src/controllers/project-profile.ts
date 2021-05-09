@@ -1,4 +1,3 @@
-
 //
 // Copyright © 2020 Province of British Columbia
 //
@@ -119,8 +118,12 @@ export const createProjectProfile = async (
 
     if (data.primaryClusterName !== undefined) {
       cluster = await ClusterModel.findByName(data.primaryClusterName);
+      // TODO:(yh) add serving 400, 401 systematically
       if (!cluster) {
         throw new Error('Unable to find requested cluster');
+      }
+      if (!(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
+        throw new Error('Unauthorized');
       }
     } else {
       cluster = await ClusterModel.findDefault();
