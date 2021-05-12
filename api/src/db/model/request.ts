@@ -365,12 +365,8 @@ export default class RequestModel extends Model {
 
         try {
             const results = await this.runQuery(query);
-            return results.map(result => {
-                return {
-                    ...result,
-                    natsContext: JSON.parse(result.natsContext),
-                }
-            });
+            
+            return parseEditObject(results);
         } catch (err) {
             const message = `Unable to fetch Request(s) with Request Id ${requestId}`;
             logger.error(`${message}, err = ${err.message}`);
@@ -445,4 +441,195 @@ export default class RequestModel extends Model {
             throw err;
         }
     }
+
+    async findActiveByFilter(filter: string, value: any): Promise<any> {
+        const query = {
+            text: `
+            SELECT * FROM ${this.table}
+              WHERE ${filter} = $1 AND is_active = true AND archived = false;`,
+            values: [value],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            
+            return parseEditObject(results);
+        } catch (err) {
+            const message = `Unable to fetch Request with filter ${filter} = ${value}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findAllActive(): Promise<Request[]> {
+        const query = {
+            text: `
+                SELECT * FROM ${this.table}
+                    WHERE is_active = true AND archived = false;
+            `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            
+            return parseEditObject(results);
+        } catch (err) {
+            const message = `Unable to fetch all active Request(s)`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async isComplete(requestId: number): Promise<Request> {
+        const query = {
+            text: `UPDATE ${this.table}
+            SET
+            is_active = false
+            WHERE id = ${requestId}
+            RETURNING *;
+        `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to complete request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async createBotMessage(data: BotMessage): Promise<BotMessage> {
+        const query = {
+            text: `INSERT INTO bot_message
+            (request_id, nats_subject, nats_context, cluster_name, received_callback)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            values: [
+                data.requestId,
+                data.natsSubject,
+                JSON.stringify(data.natsContext),
+                data.clusterName,
+                data.receivedCallback,
+            ],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to create request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async updateCallbackStatus(botMessageId: number): Promise<BotMessage> {
+        const values: any[] = [];
+        const query = {
+            text: `UPDATE bot_message
+            SET
+            request_id = $1, nats_subject = $2, nats_context = $3, cluster_name = $4, received_callback = $5
+            WHERE id = ${botMessageId}
+            RETURNING *;`,
+            values,
+        };
+
+        try {
+            const record = await this.findBotMessageById(botMessageId);
+            const aData = { ...record};
+            query.values = [
+                aData.requestId,
+                aData.natsSubject,
+                JSON.stringify(aData.natsContext),
+                aData.clusterName,
+                aData.receivedCallback = true,
+            ];
+
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to update request ID ${botMessageId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async findActiveBotMessagesByRequestId(requestId: number): Promise<BotMessage[]> {
+        const query = {
+            text: `
+                SELECT * FROM bot_message
+                    WHERE request_id = ${requestId} AND received_callback = false AND archived = false;
+            `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.map(result => {
+                return {
+                    ...result,
+                    natsContext: JSON.parse(result.natsContext),
+                }
+            });
+        } catch (err) {
+            const message = `Unable to fetch Request(s) with Request Id ${requestId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    // overwrite base model because of JSON conversion
+    async findBotMessageById(botMessageId: number): Promise<any> {
+        const query = {
+            text: `
+            SELECT * FROM bot_message
+              WHERE id = $1 AND archived = false;`,
+            values: [botMessageId],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            const result = results.pop();
+            return {
+                ...result,
+                editObject: JSON.parse(result.natsContext),
+            };
+        } catch (err) {
+            const message = `Unable to fetch Request with ID ${botMessageId}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
+    async createHumanAction(data: HumanAction): Promise<BotMessage> {
+        const query = {
+            text: `INSERT INTO human_action
+            (request_id, type, comment, user_id)
+            VALUES ($1, $2, $3, $4) RETURNING *;`,
+            values: [
+                data.requestId,
+                data.type,
+                data.comment,
+                data.userId,
+            ],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to create request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
 }
+

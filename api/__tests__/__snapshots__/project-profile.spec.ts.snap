@@ -254,11 +254,20 @@ Array [
   ],
   Array [
     Object {
+<<<<<<< HEAD
       "text": "
                 UPDATE request
                 SET is_active = false
                 WHERE id = 2
                 RETURNING *;",
+=======
+      "text": "UPDATE request
+            SET
+            is_active = false
+            WHERE id = 2
+            RETURNING *;
+        ",
+>>>>>>> b51c596 (Api dashboard approval logic and applicable tests)
     },
   ],
 ]
@@ -513,11 +522,20 @@ Array [
   ],
   Array [
     Object {
+<<<<<<< HEAD
       "text": "
                 UPDATE request
                 SET is_active = false
                 WHERE id = 2
                 RETURNING *;",
+=======
+      "text": "UPDATE request
+            SET
+            is_active = false
+            WHERE id = 2
+            RETURNING *;
+        ",
+>>>>>>> b51c596 (Api dashboard approval logic and applicable tests)
     },
   ],
 ]
