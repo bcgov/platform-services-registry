@@ -54,3 +54,12 @@ export const replaceForDescription = (contextJson: any) => {
   contextJson.description = doubleQuoteReplaced;
   return contextJson;
 };
+
+export const parseEditObject = (results: any) => {
+  return results.map(result => {
+    return {
+        ...result,
+        editObject: JSON.parse(result.editObject),
+    }
+});
+}

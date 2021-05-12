@@ -1,8 +1,362 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Services Provisioning context is created 1`] = `
+exports[`Fulfillment utility Fulfill request succeeds 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        5,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        5,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        5,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT json_build_object(
+                    'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS \\"requests\\", cpu_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = 'small') d),
+                    'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS \\"requests\\", memory_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = 'small') d),
+                    'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS \\"block\\", storage_file AS \\"file\\", storage_backup AS \\"backup\\", storage_capacity AS \\"capacity\\"
+                        FROM ref_quota WHERE id = 'small') d)
+                );
+            ",
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+        SELECT namespace.id AS \\"namespaceId\\", namespace.name,
+        coalesce(
+          (
+            SELECT array_to_json(array_agg(row_to_json(x)))
+            FROM (
+              SELECT ref_cluster.id AS \\"clusterId\\", ref_cluster.name, cluster_namespace.provisioned
+              FROM ref_cluster JOIN cluster_namespace ON ref_cluster.id = cluster_namespace.cluster_id
+              WHERE namespace.id = cluster_namespace.namespace_id
+            ) x
+          ),
+          '[]'
+        ) AS clusters
+        FROM namespace WHERE namespace.profile_id = $1;
+      ",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+      SELECT DISTINCT ref_cluster.name
+        FROM namespace
+        JOIN cluster_namespace ON cluster_namespace.namespace_id = namespace.id
+        JOIN profile ON profile.id = namespace.profile_id
+        JOIN ref_cluster ON  ref_cluster.id = cluster_namespace.cluster_id
+        WHERE profile.id = $1 AND profile.archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "INSERT INTO bot_message
+            (request_id, nats_subject, nats_context, cluster_name, received_callback)
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;",
+      "values": Array [
+        3,
+        "registry_project_provisioning_silver",
+        "{\\"action\\":\\"create\\",\\"type\\":\\"standard\\",\\"profileId\\":4,\\"displayName\\":\\"Project X\\",\\"newDisplayName\\":\\"NULL\\",\\"description\\":\\"This is a cool project.\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\"}},\\"namespaces\\":[{\\"namespaceId\\":13,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":14,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":15,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]},{\\"namespaceId\\":16,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}]}],\\"technicalContact\\":{\\"userId\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\"},\\"productOwner\\":{\\"userId\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\"}}",
+        "silver",
+        false,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Fulfillment utility Provisioning context is created 1`] = `
 Object {
   "action": "create",
+  "description": "This is a cool project.",
+  "displayName": "Project X",
+  "namespaces": Array [
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-tools",
+      "namespaceId": 13,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-test",
+      "namespaceId": 14,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-dev",
+      "namespaceId": 15,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-prod",
+      "namespaceId": 16,
+    },
+  ],
+  "newDisplayName": "NULL",
+  "productOwner": Object {
+    "email": "jane@example.com",
+    "provider": "github",
+    "userId": "jane1100",
+  },
+  "profileId": 4,
+  "quota": "small",
+  "quotas": Object {
+    "cpu": Object {
+      "limits": 8,
+      "requests": 4,
+    },
+    "memory": Object {
+      "limits": "32Gi",
+      "requests": "16Gi",
+    },
+    "storage": Object {
+      "backup": "25Gi",
+      "block": "50Gi",
+      "capacity": "50Gi",
+      "file": "50Gi",
+    },
+  },
+  "technicalContact": Object {
+    "email": "john@example.com",
+    "provider": "github",
+    "userId": "john1100",
+  },
+  "type": "standard",
+}
+`;
+
+exports[`Fulfillment utility creates the contact edit context 1`] = `
+Object {
+  "action": "edit",
+  "description": "This is a cool project.",
+  "displayName": "Project X",
+  "namespaces": Array [
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-tools",
+      "namespaceId": 13,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-test",
+      "namespaceId": 14,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-dev",
+      "namespaceId": 15,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-prod",
+      "namespaceId": 16,
+    },
+  ],
+  "newDisplayName": "NULL",
+  "productOwner": Object {
+    "email": "jane@example.com",
+    "provider": "github",
+    "userId": "janedoe",
+  },
+  "profileId": 4,
+  "quota": "small",
+  "quotas": Object {
+    "cpu": Object {
+      "limits": 8,
+      "requests": 4,
+    },
+    "memory": Object {
+      "limits": "32Gi",
+      "requests": "16Gi",
+    },
+    "storage": Object {
+      "backup": "25Gi",
+      "block": "50Gi",
+      "capacity": "50Gi",
+      "file": "50Gi",
+    },
+  },
+  "technicalContact": Object {
+    "email": "jim@example.com",
+    "provider": "github",
+    "userId": "jim1100",
+  },
+  "type": "standard",
+}
+`;
+
+exports[`Fulfillment utility creates the profile edit context 1`] = `
+Object {
+  "action": "edit",
+  "description": "This is a cool edited project.",
+  "displayName": "Project X",
+  "namespaces": Array [
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-tools",
+      "namespaceId": 13,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-test",
+      "namespaceId": 14,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-dev",
+      "namespaceId": 15,
+    },
+    Object {
+      "clusters": Array [
+        Object {
+          "clusterId": 1,
+          "name": "silver",
+          "provisioned": false,
+        },
+      ],
+      "name": "4ea35c-prod",
+      "namespaceId": 16,
+    },
+  ],
+  "newDisplayName": "NULL",
+  "productOwner": Object {
+    "email": "jane@example.com",
+    "provider": "github",
+    "userId": "jane1100",
+  },
+  "profileId": 4,
+  "quota": "small",
+  "quotas": Object {
+    "cpu": Object {
+      "limits": 8,
+      "requests": 4,
+    },
+    "memory": Object {
+      "limits": "32Gi",
+      "requests": "16Gi",
+    },
+    "storage": Object {
+      "backup": "25Gi",
+      "block": "50Gi",
+      "capacity": "50Gi",
+      "file": "50Gi",
+    },
+  },
+  "technicalContact": Object {
+    "email": "john@example.com",
+    "provider": "github",
+    "userId": "john1100",
+  },
+  "type": "standard",
+}
+`;
+
+exports[`Fulfillment utility creates the quota edit context 1`] = `
+Object {
+  "action": "edit",
   "description": "This is a cool project.",
   "displayName": "Project X",
   "namespaces": Array [

@@ -252,6 +252,16 @@ Array [
       ],
     },
   ],
+  Array [
+    Object {
+      "text": "UPDATE request
+            SET
+            is_active = false
+            WHERE id = 2
+            RETURNING *;
+        ",
+    },
+  ],
 ]
 `;
 
@@ -500,6 +510,16 @@ Array [
       "values": Array [
         4,
       ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "UPDATE request
+            SET
+            is_active = false
+            WHERE id = 2
+            RETURNING *;
+        ",
     },
   ],
 ]

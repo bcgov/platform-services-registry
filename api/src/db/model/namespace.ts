@@ -323,4 +323,26 @@ export default class NamespaceModel extends Model {
       throw err;
     }
   }
+
+  async findClustersForProfile(profileId: number): Promise<any[]> {
+    const query = {
+      text: `
+      SELECT DISTINCT ref_cluster.name
+        FROM namespace
+        JOIN cluster_namespace ON cluster_namespace.namespace_id = namespace.id
+        JOIN profile ON profile.id = namespace.profile_id
+        JOIN ref_cluster ON  ref_cluster.id = cluster_namespace.cluster_id
+        WHERE profile.id = $1 AND profile.archived = false;`,
+      values: [profileId],
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to find namespaces for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
 }

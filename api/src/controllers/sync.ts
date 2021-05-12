@@ -138,6 +138,10 @@ export const getProfileBotJsonUnderPending = async (
         const errmsg = `Unable to get request`;
         throw new Error(errmsg);
       }
+      if (!request.editType){
+        const errmsg = `Unable to get request edit Type`;
+        throw new Error(errmsg);
+      }
 
       context = await contextForEditing(profileId, request.editType, request.editObject);
     } else {

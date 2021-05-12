@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Attach to API (docker)",
-      "preLaunchTask": "gulp-watch-src-changes",
+      "preLaunchTask": "api-watch-src-changes",
       "type": "node",
       "request": "attach",
       "port": 9229,

@@ -177,6 +177,14 @@ export default function useRegistryApi() {
     return axiosInstance.current.get(`profile/${profileId}/request`);
   };
 
+  const createProjectRequestByProfileId = async (profileId: any): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.post(`profile/${profileId}/request`);
+    }
+  };
+
   return {
     getMinistry,
     getQuotaSizes,
@@ -195,5 +203,6 @@ export default function useRegistryApi() {
     getAllowedQuotaSizesByProfileId,
     updateQuotaSizeByProfileId,
     getEditRequestStatus,
+    createProjectRequestByProfileId,
   };
 }

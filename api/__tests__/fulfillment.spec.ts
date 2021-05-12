@@ -20,8 +20,8 @@ import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
 import { QuotaSize } from '../src/db/model/quota';
-import { RequestEditType } from '../src/db/model/request';
-import { contextForProvisioning, fulfillEditRequest, fulfillNamespaceProvisioning } from '../src/libs/fulfillment';
+import RequestModel, { RequestEditType } from '../src/db/model/request';
+import { contextForEditing, contextForProvisioning, fulfillRequest } from '../src/libs/fulfillment';
 
 const p1 = path.join(__dirname, 'fixtures/select-profile.json');
 const profile = JSON.parse(fs.readFileSync(p1, 'utf8'));
@@ -36,18 +36,58 @@ const p4 = path.join(__dirname, 'fixtures/select-quota-small.json');
 const quotas = JSON.parse(fs.readFileSync(p4, 'utf8'));
 const spec = quotas[0].jsonBuildObject;
 
+const p5 = path.join(__dirname, 'fixtures/get-requests.json');
+const requests = JSON.parse(fs.readFileSync(p5, 'utf8'));
+
+const p6 = path.join(__dirname, 'fixtures/get-edit-object-project-profile.json');
+const profileEditObject = fs.readFileSync(p6, 'utf8');
+
+const p7 = path.join(__dirname, 'fixtures/get-edit-object-profile-contacts.json');
+const contactEditObject = fs.readFileSync(p7, 'utf8');
+
+const p9 = path.join(__dirname, 'fixtures/get-bot-message-set.json');
+const botMessageSet = JSON.parse(fs.readFileSync(p9, 'utf8'));
+
 jest.mock('../src/libs/profile', () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue(QuotaSize.Small),
   };
 });
 
-describe('Services', () => {
+jest.mock('../src/libs/utils', () => {
+  return {
+    replaceForDescription: jest.fn().mockReturnValue("nats_stub"),
+  };
+})
+
+describe('Fulfillment utility', () => {
 
   const client = new Pool().connect();
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('Fulfill request succeeds', async () => {   
+    
+    // context for provisioning
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    // buildContext
+    client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    // createBotMessageSet
+    client.query.mockReturnValueOnce({ rows: [{name: 'silver'}] });
+    client.query.mockReturnValueOnce({ rows: botMessageSet });
+    // fetchBotMessageRequests
+    const fetchBotMessageRequests = RequestModel.prototype.findActiveBotMessagesByRequestId = jest.fn().mockResolvedValue(botMessageSet);
+    
+    const result = await fulfillRequest(requests[2]);
+
+    expect(result).toStrictEqual([{natsContext: "nats_context_stub", natsSubject: "registry_project_provisioning"}])
+    expect(fetchBotMessageRequests).toBeCalledTimes(1);
+    expect(client.query.mock.calls).toMatchSnapshot();
   });
 
   it('Provisioning context is created', async () => {
@@ -79,18 +119,34 @@ describe('Services', () => {
     await expect(contextForProvisioning(12345, false)).rejects.toThrow();
   });
 
-  it('Namespace provisioning succeeds', async () => {
-    client.query.mockReturnValueOnce({ rows: profile });
+  it('creates the profile edit context', async () => {
+    const requestEditObject = profileEditObject;
+    const requestEditType = RequestEditType.ProjectProfile;
 
-    client.query.mockReturnValueOnce({ rows: profile });
-    client.query.mockReturnValueOnce({ rows: contacts });
+
     client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    const result = await contextForEditing(12345, false, requestEditType, requestEditObject);
 
-    await expect(fulfillNamespaceProvisioning(12345)).resolves.toBeUndefined();
+    expect(result).toBeDefined();
+    expect(result).toMatchSnapshot();
   });
 
-  it('Namespace edit request succeeds', async () => {
+  it('creates the contact edit context', async () => {
+    const requestEditObject = contactEditObject;
+    const requestEditType = RequestEditType.Contacts;
+
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    const result = await contextForEditing(12345, false, requestEditType, requestEditObject);
+
+    expect(result).toBeDefined();
+    expect(result).toMatchSnapshot();
+  });
+
+  it('creates the quota edit context', async () => {
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,
@@ -98,11 +154,37 @@ describe('Services', () => {
     const requestEditType = RequestEditType.QuotaSize;
     client.query.mockReturnValueOnce({ rows: profile });
 
-    client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
-    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    const result = await contextForEditing(12345, false, requestEditType, requestEditObject);
+
+    expect(result).toBeDefined();
+    expect(result).toMatchSnapshot();
+  });
+
+  it('throws an error if edit context is missing contacts)', async () => {
+    const requestEditObject = {
+      quota: QuotaSize.Small,
+      quotas: spec,
+    };
+    const requestEditType = RequestEditType.QuotaSize;
+
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
-    await expect(fulfillEditRequest(12345, requestEditType, requestEditObject)).resolves.toBeDefined();
+    await expect(contextForEditing(12345, false, requestEditType, requestEditObject)).rejects.toThrow();
+  });
+
+  it('throws an error if edit context query fails', async () => {
+    const requestEditObject = {
+      quota: QuotaSize.Small,
+      quotas: spec,
+    };
+    const requestEditType = RequestEditType.QuotaSize;
+
+    client.query.mockImplementation(() => { throw new Error() });
+
+    await expect(contextForEditing(12345, false, requestEditType, requestEditObject)).rejects.toThrow();
   });
 });

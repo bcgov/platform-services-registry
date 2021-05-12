@@ -1,13 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Profile event handlers A list of quota options for a given profile is returned 1`] = `200`;
-
-exports[`Profile event handlers A list of quota options for a given profile is returned 2`] = `
-Array [
-  "medium",
-]
-`;
-
 exports[`Profile event handlers A profiles contacts are returned 1`] = `
 Array [
   Array [
@@ -54,14 +46,6 @@ Array [
   },
 ]
 `;
-
-exports[`Profile event handlers A profiles quota size is returned 1`] = `200`;
-
-exports[`Profile event handlers A profiles quota size is returned 2`] = `"small"`;
-
-exports[`Profile event handlers Fetch a list of quota options for a given profile should throw 1`] = `"Unable to fetch allowed quota-sizes for profile 4"`;
-
-exports[`Profile event handlers Fetch profiles quota size should throw 1`] = `"Unable fetch profile quota size with profile ID 4"`;
 
 exports[`Profile event handlers Fetch single profile contacts should throw 1`] = `"Unable fetch profile contacts with profile ID 1"`;
 
@@ -345,18 +329,110 @@ Array [
 ]
 `;
 
-exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 1`] = `202`;
-
-exports[`Profile event handlers Request profile contacts edit with provisioner-related changes 2`] = `undefined`;
-
-exports[`Profile event handlers Request profile quota size edit should throw due to db transaction issue 1`] = `"Unable to update quota-size for profile 4"`;
-
-exports[`Profile event handlers Request profile quota size edit should throw due to invalid quota upgrade 1`] = `"Unable to update quota-size for profile 4"`;
-
 exports[`Profile event handlers Request profile quota size edit successfully 1`] = `204`;
 
 exports[`Profile event handlers Request profile quota size edit successfully 2`] = `undefined`;
 
-exports[`Profile event handlers Update profile contacts with non provisioner-related changes 1`] = `204`;
+exports[`Profile event handlers requests profile contacts edit with provisioner-related changes 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
 
-exports[`Profile event handlers Update profile contacts with non provisioner-related changes 2`] = `undefined`;
+exports[`Profile event handlers requests profile contacts edit with provisioner-related changes 2`] = `202`;
+
+exports[`Profile event handlers requests profile contacts edit with provisioner-related changes 3`] = `undefined`;
+
+exports[`Profile event handlers returns a list of quota options for a given profile 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers returns a list of quota options for a given profile 2`] = `200`;
+
+exports[`Profile event handlers returns a list of quota options for a given profile 3`] = `
+Array [
+  "medium",
+]
+`;
+
+exports[`Profile event handlers returns the profiles quota size 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers returns the profiles quota size 2`] = `200`;
+
+exports[`Profile event handlers returns the profiles quota size 3`] = `"small"`;
+
+exports[`Profile event handlers throws an error if profile quota size edit request is invalid 1`] = `"Unable to update quota-size for profile 4"`;
+
+exports[`Profile event handlers throws an error if there is a db transaction issue when requesting profile quota size edit 1`] = `"Unable to update quota-size for profile 4"`;
+
+exports[`Profile event handlers throws an error when fetch profiles quota size has problem 1`] = `"Unable fetch profile quota size with profile ID 4"`;
+
+exports[`Profile event handlers throws an error when fetching a list of quota options for a given profile has a problem 1`] = `"Unable to fetch allowed quota-sizes for profile 4"`;
+
+exports[`Profile event handlers updates profile contacts with non provisioner-related changes 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT contact.*
+          FROM contact
+          JOIN profile_contact ON contact.id = profile_contact.contact_id
+            WHERE profile_contact.profile_id = $1;
+      ",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "UPDATE request
+            SET
+            is_active = false
+            WHERE id = 2
+            RETURNING *;
+        ",
+    },
+  ],
+]
+`;
+
+exports[`Profile event handlers updates profile contacts with non provisioner-related changes 2`] = `204`;
+
+exports[`Profile event handlers updates profile contacts with non provisioner-related changes 3`] = `undefined`;
