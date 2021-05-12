@@ -187,4 +187,16 @@ describe('Fulfillment utility', () => {
 
     await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
   });
+
+  it('throws an error if edit context query fails', async () => {
+    const requestEditObject = {
+      quota: QuotaSize.Small,
+      quotas: spec,
+    };
+    const requestEditType = RequestEditType.QuotaSize;
+
+    client.query.mockImplementation(() => { throw new Error() });
+
+    await expect(contextForEditing(12345, false, requestEditType, requestEditObject)).rejects.toThrow();
+  });
 });
