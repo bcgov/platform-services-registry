@@ -27,7 +27,6 @@ import ministry from './routes/ministry';
 import profile from './routes/profile';
 import provision from './routes/provision';
 import quota from './routes/quota';
-import task from './routes/task';
 
 const corsOptions = {
   origin: config.get('environment') === 'development' ? '*' : config.get('apiUrl'),
@@ -47,5 +46,4 @@ export const router = app => {
   app.use('/api/v1/profile', profile);
   app.use('/api/v1/contact', contact);
   app.use('/api/v1/provision', provision);
-  app.use('/api/v1/task', task);
 };

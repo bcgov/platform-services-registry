@@ -12,18 +12,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+
+'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { API_CLIENT_ID, BOT_CLIENT_ID, STATUS_ERROR, USER_ROLES, WEB_CLIENT_ID } from '../constants';
 import DataManager from '../db';
 import shared from '../libs/shared';
 
-// can be stored in DB if it grows in the future
 export const enum AccessFlag {
   ProvisionOnTestCluster = 'provision_on_test_clusters',
   EditAll = 'edit_all',
   ApproveRequests = 'approve_request',
-  OpTasks = 'operational_tasks',
   BotCallback = 'bot_callback',
 }
 
@@ -39,7 +40,6 @@ AccessFlags[BOT_CLIENT_ID] = [AccessFlag.BotCallback];
 AccessFlags[API_CLIENT_ID] = [
   ...AccessFlags[USER_ROLES.ADMINISTRATOR],
   ...AccessFlags[BOT_CLIENT_ID],
-  AccessFlag.OpTasks,
 ];
 
 interface DecodedJwtPayloadAccessObj {
