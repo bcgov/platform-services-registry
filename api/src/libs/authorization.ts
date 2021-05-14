@@ -69,42 +69,18 @@ export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => 
   throw new Error();
 };
 
-const dm = new DataManager(shared.pgPool);
-const { ProfileModel, ContactModel } = dm;
-const unauthorizedMessage = STATUS_ERROR[401];
-
-// TODO:(yh) sanitize profile id either here or somewhere else
-export const authorizeByProfileIdAndUser = async (req): Promise<Error | void> => {
-  const { params: { profileId }, user } = req;
-
-  if (user.accessFlags.includes(AccessFlag.EditAll)) {
-    return;
-  }
-
-  const projectDetails = await ProfileModel.findById(Number(profileId));
-  if (user.id === projectDetails.userId) {
-    return;
-  }
-
-  const projectContacts = await ContactModel.findForProject(Number(profileId));
-  const authorizedEmails = projectContacts.map(contact => contact.email);
-  if (authorizedEmails.includes(user.email)) {
-    return;
-  }
-
-  throw new Error(unauthorizedMessage);
-};
-
-export const authorize = (): any[] => {
+export const authorize = (asyncFn): any[] => {
   return [
     (req, res, next) => {
-      authorizeByProfileIdAndUser(req)
+      asyncFn(req)
         .catch((err: Error) => {
-          if (err.message === unauthorizedMessage) {
-            next(errorWithCode(STATUS_ERROR[401], 401));
+          if (err.message === STATUS_ERROR[401]) {
+            next(err);
           } else {
-            logger.error(`Unable to authorize, err = ${err.message}`);
-            next(errorWithCode(STATUS_ERROR[500], 500));
+            const message = 'Unable to authorize';
+            logger.error(`${message}, err = ${err.message}`);
+
+            next(errorWithCode(message, 500));
           }
         })
         .then(() => next());
@@ -124,10 +100,38 @@ export const authorizeByFlag = (accessFlag: AccessFlag) => {
   ];
 };
 
-// export const authorizeProvisionProfileNamespaces =
-// (user: AuthenticatedUser, cluster: Cluster): Error | undefined => {
-//   if (!(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
-//     throw errorWithCode(STATUS_ERROR[401], 401);
-//   }
-//   return;
-// };
+const dm = new DataManager(shared.pgPool);
+const { ProfileModel, ContactModel, ClusterModel } = dm;
+
+export const validateRequiredProfile = async (req): Promise<Error | void> => {
+  const { params: { profileId }, user } = req;
+
+  if (user.accessFlags.includes(AccessFlag.EditAll)) {
+    return;
+  }
+
+  const projectDetails = await ProfileModel.findById(Number(profileId));
+  if (user.id === projectDetails.userId) {
+    return;
+  }
+
+  const projectContacts = await ContactModel.findForProject(Number(profileId));
+  const authorizedEmails = projectContacts.map(contact => contact.email);
+  if (authorizedEmails.includes(user.email)) {
+    return;
+  }
+
+  throw errorWithCode(STATUS_ERROR[401], 401);
+};
+
+export const validateRequiredCluster = async (req): Promise<Error | void> => {
+  const { body: { primaryClusterName }, user } = req;
+
+  if (primaryClusterName !== undefined) {
+    const cluster = await ClusterModel.findByName(primaryClusterName);
+
+    if (cluster && !(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
+      throw errorWithCode(STATUS_ERROR[401], 401);
+    }
+  }
+};
