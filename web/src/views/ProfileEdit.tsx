@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
@@ -39,8 +40,13 @@ import {
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
-  isProfileProvisioned,
+  isProfileProvisioned
 } from '../utils/transformDataHelper';
+
+const StyledDiv = styled.div`
+  margin-left: ${theme.spacingIncrements[1]};
+  margin-right: ${theme.spacingIncrements[1]};
+`;
 
 const txtForQuotaEdit =
   "All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).";
@@ -145,7 +151,7 @@ const ProfileEdit: React.FC = (props: any) => {
           setUnauthorizedToAccess(true);
         } else {
           // when api returns 500 or queried profileState entry does not exist
-          promptErrToastWithText(err.message);
+          promptErrToastWithText('Something went wrong');
         }
       }
       setInitialRender(false);
@@ -204,38 +210,40 @@ const ProfileEdit: React.FC = (props: any) => {
 
   if (viewName === PROFILE_EDIT_VIEW_NAMES.OVERVIEW) {
     return (
-      <Box
-        sx={{
-          display: 'grid',
-          gridGap: 4,
-        }}
-      >
-        <ShadowBox p={5} style={{ position: 'relative' }}>
-          <Text as="h1">{profileState.projectDetails.name}</Text>
-          {cards.length > 0 &&
-            cards.map((c: any, index: number) => (
-              <Box key={index}>
-                <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
-                  <Text as="h3" color={theme.colors.contrast} mx={2}>
-                    {c.title}
-                  </Text>
-                  {!profileState.hasPendingEdit && profileState.isProvisioned && (
-                    <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
-                      <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
-                    </RouterLink>
-                  )}
-                </Flex>
-                <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
-                  {c.component}
-                </ShadowBox>
-              </Box>
-            ))}
-        </ShadowBox>
-      </Box>
+      <StyledDiv>
+        <Box
+          sx={{
+            display: 'grid',
+            gridGap: 4,
+          }}
+        >
+          <ShadowBox p={5} style={{ position: 'relative' }}>
+            <Text as="h1">{profileState.projectDetails.name}</Text>
+            {cards.length > 0 &&
+              cards.map((c: any, index: number) => (
+                <Box key={index}>
+                  <Flex p={3} mt={4} bg={theme.colors.bcblue} style={{ position: 'relative' }}>
+                    <Text as="h3" color={theme.colors.contrast} mx={2}>
+                      {c.title}
+                    </Text>
+                    {!profileState.hasPendingEdit && profileState.isProvisioned && (
+                      <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
+                        <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
+                      </RouterLink>
+                    )}
+                  </Flex>
+                  <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
+                    {c.component}
+                  </ShadowBox>
+                </Box>
+              ))}
+          </ShadowBox>
+        </Box>
+      </StyledDiv>
     );
   }
   return (
-    <>
+    <StyledDiv>
       <Flex p={3} mt={4} bg={theme.colors.bcblue}>
         <RouterLink
           className="misc-class-m-dropdown-link"
@@ -288,7 +296,7 @@ const ProfileEdit: React.FC = (props: any) => {
           )}
         </Flex>
       </ShadowBox>
-    </>
+    </StyledDiv>
   );
 };
 

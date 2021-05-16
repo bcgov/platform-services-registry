@@ -128,7 +128,7 @@ Array [
         SELECT * FROM ref_cluster WHERE name = $1;
       ",
       "values": Array [
-        "silver",
+        "clab",
       ],
     },
   ],
