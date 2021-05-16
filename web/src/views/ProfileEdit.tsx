@@ -151,7 +151,7 @@ const ProfileEdit: React.FC = (props: any) => {
           setUnauthorizedToAccess(true);
         } else {
           // when api returns 500 or queried profileState entry does not exist
-          promptErrToastWithText(err.message);
+          promptErrToastWithText('Something went wrong');
         }
       }
       setInitialRender(false);
