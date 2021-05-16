@@ -17,7 +17,6 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
-import { Cluster } from '../db/model/cluster';
 import { ProjectProfile } from '../db/model/profile';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -114,22 +113,15 @@ export const createProjectProfile = async (
   }
 
   try {
-    let cluster: Cluster;
-
     if (data.primaryClusterName !== undefined) {
-      cluster = await ClusterModel.findByName(data.primaryClusterName);
-      // TODO:(yh) add serving 400, 401 systematically
+      const cluster = await ClusterModel.findByName(data.primaryClusterName);
       if (!cluster) {
         throw new Error('Unable to find requested cluster');
       }
-      if (!(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
-        throw new Error('Unauthorized');
-      }
     } else {
-      cluster = await ClusterModel.findDefault();
+      const defaultCluster = await ClusterModel.findDefault();
+      data.primaryClusterName = defaultCluster.name;
     }
-
-    data.primaryClusterName = cluster.name;
 
     const namespacePrefix = await uniqueNamespacePrefix();
     if (!namespacePrefix) {
