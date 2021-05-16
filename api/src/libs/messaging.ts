@@ -68,12 +68,11 @@ export const updateEmailContent = async (buff: string, to: string[], profile: an
       POEmail: to[0],
       TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
       projectName: profile.name,
-      // TODO (sb): Make dynamic when multicluster supported
-      setCluster: 'Silver',
+      setCluster: profile.primaryClusterName,
       licensePlate: `${profile.namespacePrefix}`,
     };
 
-    const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
+    const re = new RegExp(Object.keys(mapObj).join('|'), 'gi');
     emailContent = buff.replace(re, matched => {
       return mapObj[matched];
     });
@@ -104,12 +103,12 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       case MessageType.ProvisioningStarted:
         buff = fs.readFileSync(
           path.join(__dirname, '../../', 'templates/provisioning-request-received.html')
-          ).toString();
+        ).toString();
         break;
       case MessageType.ProvisioningCompleted:
         buff = fs.readFileSync(
           path.join(__dirname, '../../', 'templates/provisioning-request-done.html')
-          ).toString();
+        ).toString();
         break;
       default:
         logger.info('No message type given');
