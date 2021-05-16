@@ -103,7 +103,7 @@ describe('Project-profile event handlers', () => {
 
   it('A project-profile is created on a given test cluster', async () => {
     const req = {
-      body: insertProfile,
+      body: { ...insertProfile, primaryClusterName: 'clab' },
       user: { ...authenticatedUser, accessFlags: [AccessFlag.ProvisionOnTestCluster,] },
     };
     const addon = {
