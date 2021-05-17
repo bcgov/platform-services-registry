@@ -44,7 +44,7 @@ Array [
   Object {
     "archived": false,
     "createdAt": "2020-09-10T18:14:13.436Z",
-    "email": "john.doe@example.com",
+    "email": "john@example.com",
     "firstName": "John",
     "githubId": "john1100",
     "id": 2,
@@ -151,7 +151,86 @@ Array [
     },
     "editType": "quotaSize",
     "id": 1,
-    "natsContext": "nats_context_stub",
+    "natsContext": Object {
+      "action": "edit",
+      "displayName": "Health Gateway",
+      "namespaces": Array [
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "elf077-tools",
+          "namespaceId": 1,
+        },
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "elf077-test",
+          "namespaceId": 2,
+        },
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "elf077-dev",
+          "namespaceId": 3,
+        },
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "elf077-prod",
+          "namespaceId": 4,
+        },
+      ],
+      "newDisplayName": "NULL",
+      "productOwner": Object {
+        "email": "jane@example.com",
+        "provider": "github",
+        "userId": "jane1100",
+      },
+      "profileId": 4,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": "8",
+          "requests": "4",
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+        },
+      },
+      "technicalContact": Object {
+        "email": "john@example.com",
+        "provider": "github",
+        "userId": "john1100",
+      },
+      "type": "standard",
+    },
     "natsSubject": "registry_project_provisioning",
     "profileId": 1,
     "updatedAt": "2020-09-10T18:14:13.304Z",
@@ -163,15 +242,15 @@ Array [
       Object {
         "email": "jane@example.com",
         "firstName": "Jane",
-        "githubId": "janedoe",
+        "githubId": "jane1100test",
         "id": 1,
         "lastName": "Doe",
         "roleId": 1,
       },
       Object {
         "email": "jim@example.com",
-        "firstName": "Jim",
-        "githubId": "jim1100",
+        "firstName": "John",
+        "githubId": "john1100test",
         "id": 2,
         "lastName": "Doe",
         "roleId": 2,
@@ -179,7 +258,86 @@ Array [
     ],
     "editType": "contacts",
     "id": 2,
-    "natsContext": "nats_context_stub",
+    "natsContext": Object {
+      "action": "edit",
+      "displayName": "Project X",
+      "namespaces": Array [
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "4ea35c-tools",
+          "namespaceId": 13,
+        },
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "4ea35c-test",
+          "namespaceId": 14,
+        },
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "4ea35c-dev",
+          "namespaceId": 15,
+        },
+        Object {
+          "clusters": Array [
+            Object {
+              "clusterId": 1,
+              "name": "silver",
+              "provisioned": true,
+            },
+          ],
+          "name": "4ea35c-prod",
+          "namespaceId": 16,
+        },
+      ],
+      "newDisplayName": "NULL",
+      "productOwner": Object {
+        "email": "jane@example.com",
+        "provider": "github",
+        "userId": "jane1100test",
+      },
+      "profileId": 4,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": "8",
+          "requests": "4",
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+        },
+      },
+      "technicalContact": Object {
+        "email": "john@example.com",
+        "provider": "github",
+        "userId": "john1100test",
+      },
+      "type": "standard",
+    },
     "natsSubject": "registry_project_provisioning",
     "profileId": 4,
     "updatedAt": "2020-09-10T18:14:13.304Z",

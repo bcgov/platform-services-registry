@@ -9,15 +9,15 @@
         "firstName": "Jane",
         "lastName": "Doe",
         "email": "jane@example.com",
-        "githubId": "janedoe",
+        "githubId": "jane1100test",
         "roleId": 1
       },
       {
         "id": 2,
-        "firstName": "Jim",
+        "firstName": "John",
         "lastName": "Doe",
         "email": "jim@example.com",
-        "githubId": "jim1100",
+        "githubId": "john1100test",
         "roleId": 2
       }
     ],
@@ -92,14 +92,14 @@
         }
       ],
       "productOwner": {
-        "userId": "jane1100",
+        "userId": "jane1100test",
         "provider": "github",
-        "email": "jane.doe@example.com"
+        "email": "jane@example.com"
       },
       "technicalContact": {
-        "userId": "john1100",
+        "userId": "john1100test",
         "provider": "github",
-        "email": "john.doe@example.com"
+        "email": "john@example.com"
       }
     },
     "archived": false,

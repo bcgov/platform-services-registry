@@ -1,0 +1,79 @@
+{
+    "profileId": 4,
+    "displayName": "Project X",
+    "newDisplayName": "NULL",
+    "description": "This is a cool project.",
+    "quota": "small",
+    "quotas": {
+        "cpu": {
+            "requests": "4",
+            "limits": "8"
+        },
+        "memory": {
+            "requests": "16Gi",
+            "limits": "32Gi"
+        },
+        "storage": {
+            "block": "50Gi",
+            "file": "50Gi",
+            "backup": "25Gi",
+            "capacity": "50Gi"
+        }
+    },
+    "namespaces": [
+        {
+            "namespaceId": 13,
+            "name": "4ea35c-tools",
+            "clusters": [
+                {
+                    "clusterId": 1,
+                    "name": "silver",
+                    "provisioned": false
+                }
+            ]
+        },
+        {
+            "namespaceId": 14,
+            "name": "4ea35c-test",
+            "clusters": [
+                {
+                    "clusterId": 1,
+                    "name": "silver",
+                    "provisioned": false
+                }
+            ]
+        },
+        {
+            "namespaceId": 15,
+            "name": "4ea35c-dev",
+            "clusters": [
+                {
+                    "clusterId": 1,
+                    "name": "silver",
+                    "provisioned": false
+                }
+            ]
+        },
+        {
+            "namespaceId": 16,
+            "name": "4ea35c-prod",
+            "clusters": [
+                {
+                    "clusterId": 1,
+                    "name": "silver",
+                    "provisioned": false
+                }
+            ]
+        }
+    ],
+    "productOwner": {
+        "userId": "jane1100test",
+        "provider": "github",
+        "email": "jane@example.com"
+    },
+    "technicalContact": {
+        "userId": "john1100test",
+        "provider": "github",
+        "email": "john@example.com"
+    }
+}

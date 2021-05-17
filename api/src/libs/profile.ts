@@ -110,7 +110,7 @@ export const updateQuotaSize = async (profile: ProjectProfile, quotaSize: QuotaS
   }
 };
 
-const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> => {
+export const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> => {
   try {
     if (!profile.id) {
       throw new Error('Cant get profile id');

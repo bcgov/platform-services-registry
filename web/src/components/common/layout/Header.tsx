@@ -125,7 +125,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const dirs = [
     {
       title: 'A new Openshift Project Set',
-      subTitle: 'Create 4 Project namespaces in Silver cluster',
+      subTitle: 'Create 4 Project namespaces',
       href: ROUTE_PATHS.PROFILE_CREATE,
       onClickCB: () => {
         // this is intentional (required by Sonarcloud)

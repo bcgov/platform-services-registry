@@ -14,7 +14,7 @@
     "id": 2,
     "firstName": "John",
     "lastName": "Doe",
-    "email": "john.doe@example.com",
+    "email": "john@example.com",
     "githubId": "john1100",
     "roleId": 2,
     "archived": false,

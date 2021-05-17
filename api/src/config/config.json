@@ -12,7 +12,7 @@
   },
   "nats": {
     "port": 4222,
-    "subject": "registry_project_provisioning"
+    "subjectPrefix": "registry_project_provisioning_"
   },
   "db": {
     "port": 5432,
