@@ -36,6 +36,7 @@ export const requestProjectProfileCreate = async (profileId: number, user: Authe
 
         logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
         await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
+        await sendProvisioningMessage(profileId, MessageType.ProvisioningResponse);
         logger.info(`CHES message sent for ${profileId}`);
 
         return request
@@ -135,7 +136,13 @@ export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQu
             quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
         };
 
-        return await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
+        const request = await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
+
+        logger.info(`Sending CHES message Project Edit Notification for ${profileId}`);
+        await sendProvisioningMessage(profileId, MessageType.ProvisioningResponse);
+        logger.info(`CHES message sent for ${profileId}`);
+
+        return request
     } catch (err) {
         const message = `Unable to request quota-size edit for profile ${profileId}`;
         logger.error(`${message}, err = ${err.message}`);

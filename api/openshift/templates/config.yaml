@@ -52,6 +52,9 @@ objects:
             "maxConnections": 100,
             "idleTimeout": 10000,
             "connectionTimeout": 2000
+          },
+          "reviewers": {
+            "emails": "${REVIEWER_EMAILS}"
           }
           "api": {
             "prefix": ""
@@ -70,6 +73,11 @@ parameters:
   displayName: SSO URL
   name: SSO_BASE_URL
   required: true
+- description: |
+    The email addresses of the project request reviewers.
+  displayName: Project Reviewers
+  name: REVIEWER_EMAILS
+  required: true
 - displayName: App label name
   description: |
     The App label name used for all components of the application. This is useful
@@ -77,3 +85,4 @@ parameters:
   name: APP_LABEL_NAME
   required: true
   value: platsrv-registry
+  

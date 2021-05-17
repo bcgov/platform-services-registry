@@ -23,5 +23,8 @@
   },
   "api": {
     "prefix": ""
+  },
+  "reviewers": {
+    "emails": ["shaun.bathgate@gov.bc.ca"]
   }
 }

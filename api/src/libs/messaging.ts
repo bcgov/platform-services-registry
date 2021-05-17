@@ -13,28 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-09-09.
-//
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import fs from 'fs';
 import path from 'path';
+import config from '../config';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
+import { ProjectProfile } from '../db/model/profile';
 import { BodyType, Message, SendReceipt } from '../libs/service';
 import shared from './shared';
 
 export const enum MessageType {
   ProvisioningStarted = 0,
   ProvisioningCompleted,
+  ProvisioningResponse,
 }
 
-export const contactsForProfile = async (profileId: number): Promise<Contact[]> => {
+const dm = new DataManager(shared.pgPool);
+const { ProfileModel, ContactModel, RequestModel} = dm;
 
+const contactsForProfile = async (profileId: number): Promise<Contact[]> => {
   try {
-    const dm = new DataManager(shared.pgPool);
-    const { ContactModel } = dm;
-
     return await ContactModel.findForProject(profileId);
   } catch (err) {
     const message = `Unable to fetch contacts for profile ${profileId}`;
@@ -44,11 +44,8 @@ export const contactsForProfile = async (profileId: number): Promise<Contact[]> 
   }
 }
 
-export const profileDetails = async (profileId: number): Promise<any> => {
-
+const profileDetails = async (profileId: number): Promise<any> => {
   try {
-    const dm = new DataManager(shared.pgPool);
-    const { ProfileModel } = dm;
     return await ProfileModel.findById(profileId);
   } catch (err) {
     const message = `Unable to fetch profile ${profileId}`;
@@ -58,7 +55,18 @@ export const profileDetails = async (profileId: number): Promise<any> => {
   }
 }
 
-export const updateEmailContent = async (buff: string, to: string[], profile: any, contactNames: string[]): Promise<string> => {
+const requestDetails = async (profileId: number): Promise<any> => {
+  try {
+    return await RequestModel.findForProfile(profileId);
+  } catch (err) {
+    const message = `Unable to fetch request for ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    return [];
+  }
+}
+
+const updateEmailContent = async (buff: string, to: string[], profile: ProjectProfile, contactNames: string[], requestType: string): Promise<string> => {
   try {
     let emailContent: string;
 
@@ -68,9 +76,9 @@ export const updateEmailContent = async (buff: string, to: string[], profile: an
       POEmail: to[0],
       TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
       projectName: profile.name,
-      // TODO (sb): Make dynamic when multicluster supported
-      setCluster: 'Silver',
+      setCluster: profile.primaryClusterName,
       licensePlate: `${profile.namespacePrefix}`,
+      requestType: requestType,
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -90,10 +98,17 @@ export const updateEmailContent = async (buff: string, to: string[], profile: an
 export const sendProvisioningMessage = async (profileId: number, messageType: MessageType): Promise<SendReceipt | undefined> => {
 
   try {
+    const reviewerEmails = config.get('reviewers:emails');
     const contacts = await contactsForProfile(profileId);
     const contactNames = contacts.map(c => c.firstName + ' ' + c.lastName);
-    const to = [...new Set(contacts.map(c => c.email))];
+    const to = (MessageType.ProvisioningResponse ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
+
     const profile = await profileDetails(profileId);
+
+    const requests = await requestDetails(profileId);
+    const request = requests.pop()
+    const requestType = ( request.editType ? 'Project Edit': 'New Project')
+
     let buff;
 
     if (to.length === 0) {
@@ -111,6 +126,11 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
           path.join(__dirname, '../../', 'templates/provisioning-request-done.html')
           ).toString();
         break;
+      case MessageType.ProvisioningResponse:
+        buff = fs.readFileSync(
+          path.join(__dirname, '../../', 'templates/provisioning-request-response.html')
+          ).toString();
+        break;
       default:
         logger.info('No message type given');
         return;
@@ -120,7 +140,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await updateEmailContent(buff, to, profile, contactNames);
+    const bodyContent = await updateEmailContent(buff, to, profile, contactNames, requestType);
 
     if (!bodyContent) {
       return;
