@@ -95,12 +95,12 @@
       "productOwner": {
         "userId": "jane1100",
         "provider": "github",
-        "email": "jane.doe@example.com"
+        "email": "jane@example.com"
       },
       "technicalContact": {
         "userId": "john1100",
         "provider": "github",
-        "email": "john.doe@example.com"
+        "email": "john@example.com"
       }
     },
     "archived": false,

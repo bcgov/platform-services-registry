@@ -33,8 +33,8 @@ const StyledMain = styled.main`
   margin-bottom: ${theme.spacingIncrements[1]};
   margin-top: ${theme.navBar.desktopFixedHeight};
   padding-top: ${theme.spacingIncrements[0]};
-  margin-left: ${theme.spacingIncrements[2]};
-  margin-right: ${theme.spacingIncrements[2]};
+  margin-left: ${theme.spacingIncrements[1]};
+  margin-right: ${theme.spacingIncrements[1]};
   @media (max-width: ${theme.breakpoints[1]}) {
     margin-left: ${theme.spacingIncrements[0]};
     margin-right: ${theme.spacingIncrements[0]};

@@ -11,18 +11,18 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License
 //
 
 'use strict';
 
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
-import { AccessFlag, authorizeByFlag } from '../../libs/authorization';
+import { fetchClusters } from '../../controllers/cluster';
 
 const router = express.Router();
 
-// Migration
-router.get('/migrate', authorizeByFlag(AccessFlag.OpTasks), asyncMiddleware(async (req, res) => res.status(200).end()));
+// Cluster
+router.get('/', asyncMiddleware(fetchClusters));
 
 export default router;

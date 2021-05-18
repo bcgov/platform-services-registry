@@ -24,8 +24,8 @@ import RequestModel from '../src/db/model/request';
 import { fulfillEditRequest } from '../src/libs/fulfillment';
 import { processProfileContactsEdit, requestProjectProfileEdit } from '../src/libs/request';
 
-const p0 = path.join(__dirname, 'fixtures/get-requests.json');
-const requests = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p0 = path.join(__dirname, 'fixtures/get-request-edit-quota-size.json');
+const quotaSizeRequest = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
 const natsContext = JSON.parse(fs.readFileSync(p1, 'utf8'));
@@ -35,6 +35,8 @@ const profile = JSON.parse(fs.readFileSync(p2, 'utf8'))[0];
 
 const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
 const contactEditRequest = JSON.parse(fs.readFileSync(p3, 'utf8'))[0];
+
+const requests = [quotaSizeRequest[0], contactEditRequest[0]];
 
 const client = new Pool().connect();
 

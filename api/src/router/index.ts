@@ -21,13 +21,13 @@
 import cors from 'cors';
 import passport from 'passport';
 import config from '../config';
+import cluster from './routes/cluster';
 import contact from './routes/contact';
 import ehlo from './routes/ehlo';
 import ministry from './routes/ministry';
 import profile from './routes/profile';
 import provision from './routes/provision';
 import quota from './routes/quota';
-import task from './routes/task';
 
 const corsOptions = {
   origin: config.get('environment') === 'development' ? '*' : config.get('apiUrl'),
@@ -44,8 +44,8 @@ export const router = app => {
   app.use('/api/v1/ministry', ministry);
   app.use('/api/v1/quota', quota);
   app.use(passport.authenticate('jwt', { session: false }));
+  app.use('/api/v1/cluster', cluster);
   app.use('/api/v1/profile', profile);
   app.use('/api/v1/contact', contact);
   app.use('/api/v1/provision', provision);
-  app.use('/api/v1/task', task);
 };

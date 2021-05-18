@@ -80,6 +80,7 @@ describe('Services', () => {
   });
 
   it('Namespace provisioning succeeds', async () => {
+    client.query.mockReturnValueOnce({ rows: profile });
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
@@ -95,6 +96,7 @@ describe('Services', () => {
       quotas: spec,
     };
     const requestEditType = RequestEditType.QuotaSize;
+    client.query.mockReturnValueOnce({ rows: profile });
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });

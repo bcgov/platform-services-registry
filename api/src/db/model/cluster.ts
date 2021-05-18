@@ -27,6 +27,7 @@ export interface Cluster extends CommonFields {
   onPrem: boolean;
   onHardware: boolean;
   isDefault: boolean;
+  isProd: boolean;
 }
 
 export default class ClusterModel extends Model {
@@ -37,6 +38,7 @@ export default class ClusterModel extends Model {
     'disasterRecovery',
     'onPrem',
     'onHardware',
+    'isProd'
   ];
   pool: Pool;
 
@@ -110,6 +112,26 @@ export default class ClusterModel extends Model {
       return results.pop();
     } catch (err) {
       const message = `Unable to lookup cluster by name ${name}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findAllProdReady(): Promise<Cluster[]> {
+    const query = {
+      text: `
+        SELECT * FROM ${this.table} WHERE is_prod = $1 AND archived = false;
+      `,
+      values: [
+        true,
+      ],
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to find all production ready clusters`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

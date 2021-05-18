@@ -31,12 +31,16 @@ import { getQuotaSize } from './profile';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
+const { ProfileModel, ContactModel, QuotaModel, NamespaceModel } = dm;
 
 export const fulfillNamespaceProvisioning = async (profileId: number) =>
   new Promise(async (resolve, reject) => {
     try {
-      const context = await contextForProvisioning(profileId, false);
-      const subject = config.get('nats:subject');
+      const profile: ProjectProfile = await ProfileModel.findById(profileId);
+      const subjectPrefix: string = config.get('nats:subjectPrefix');
+
+      const subject: string = subjectPrefix.concat(profile.primaryClusterName);
+      const context: NatsContext = await contextForProvisioning(profileId, false);
 
       await sendNatsMessage(profileId, {
         natsSubject: subject,
@@ -59,8 +63,11 @@ export const fulfillNamespaceProvisioning = async (profileId: number) =>
 export const fulfillEditRequest = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsMessage> =>
   new Promise(async (resolve, reject) => {
     try {
-      const context = await contextForEditing(profileId, false, requestEditType, requestEditObject);
-      const subject = config.get('nats:subject');
+      const profile: ProjectProfile = await ProfileModel.findById(profileId);
+      const subjectPrefix: string = config.get('nats:subjectPrefix');
+
+      const subject: string = subjectPrefix.concat(profile.primaryClusterName);
+      const context: NatsContext = await contextForEditing(profileId, false, requestEditType, requestEditObject);
 
       const natsMessage = await sendNatsMessage(profileId, {
         natsSubject: subject,
@@ -78,8 +85,6 @@ export const fulfillEditRequest = async (profileId: number, requestEditType: Req
 
 export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
   try {
-    const { ProfileModel, ContactModel, QuotaModel } = dm;
-
     const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Create;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
@@ -97,8 +102,6 @@ export const contextForProvisioning = async (profileId: number, isForSync: boole
 
 export const contextForEditing = async (profileId: number, isForSync: boolean, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsContext> => {
   try {
-    const { ProfileModel, ContactModel, QuotaModel } = dm;
-
     const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Edit;
     let profile: ProjectProfile;
     let quotaSize: QuotaSize;
@@ -137,7 +140,6 @@ export const contextForEditing = async (profileId: number, isForSync: boolean, r
 const buildContext = async (
   action: NatsContextAction, profile: ProjectProfile, contacts: Contact[], quotaSize: QuotaSize, quotas: Quotas
 ): Promise<NatsContext> => {
-  const { NamespaceModel } = dm;
   try {
     if (!profile.id) {
       throw new Error('Cant get profile id');
@@ -190,10 +192,10 @@ const sendNatsMessage = async (profileId: number, natsMessage: NatsMessage): Pro
       throw new Error(errmsg);
     });
 
-    logger.info(`Sending NATS message for ${profileId}`);
+    logger.info(`Sending NATS message for ${profileId} to ${natsSubject}`);
 
     nc.publish(natsSubject, replaceForDescription(natsContext));
-    logger.info(`NATS Message sent for ${profileId}`);
+    logger.info(`NATS Message sent for ${profileId} to ${natsSubject}`);
 
     nc.flush(() => {
       nc.removeAllListeners(['error']);
