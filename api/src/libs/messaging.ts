@@ -23,11 +23,14 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { BodyType, Message, SendReceipt } from '../libs/service';
 import shared from './shared';
+import { transformContacts } from './utils';
 
 export const enum MessageType {
   ProvisioningStarted = 0,
   ProvisioningCompleted,
-  ProvisioningResponse,
+  EditRequestStarted,
+  EditRequestCompleted,
+  RequestApproval,
 }
 
 const dm = new DataManager(shared.pgPool);
@@ -66,19 +69,25 @@ const requestDetails = async (profileId: number): Promise<any> => {
   }
 }
 
-const updateEmailContent = async (buff: string, to: string[], profile: ProjectProfile, contactNames: string[], requestType: string): Promise<string> => {
+const updateEmailContent = async (buff: string, profile: ProjectProfile, contactDetails: any, request: any): Promise<string> => {
   try {
     let emailContent: string;
 
     const mapObj = {
-      POName: contactNames[0],
-      TCName: contactNames[1],
-      POEmail: to[0],
-      TCEmail: (typeof to[1] === 'undefined') ? to[0] : to[1],
+      POName: contactDetails.POName,
+      TCName: contactDetails.TCName,
+      POEmail: contactDetails.POEmail,
+      TCEmail: contactDetails.TCEmail,
+      POGitHub: contactDetails.POGithubId,
+      TCGitHub: contactDetails.TCGithubId,
       projectName: profile.name,
+      projectDescription : profile.description,
+      projectMinistry: profile.busOrgId,
       setCluster: profile.primaryClusterName,
       licensePlate: `${profile.namespacePrefix}`,
-      requestType: requestType,
+      requestType: ( request.editType ? 'Project Edit': 'New Project'),
+      quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
+      editType: ( request.editType === 'quotaSize' ? 'Quota' : '')
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -98,16 +107,15 @@ const updateEmailContent = async (buff: string, to: string[], profile: ProjectPr
 export const sendProvisioningMessage = async (profileId: number, messageType: MessageType): Promise<SendReceipt | undefined> => {
 
   try {
-    const reviewerEmails = config.get('reviewers:emails');
-    const contacts = await contactsForProfile(profileId);
-    const contactNames = contacts.map(c => c.firstName + ' ' + c.lastName);
-    const to = (MessageType.ProvisioningResponse ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
-
     const profile = await profileDetails(profileId);
 
+    const reviewerEmails = config.get('reviewers:emails');
+    const contacts = await contactsForProfile(profileId);
+    const contactDetails = await transformContacts(contacts) 
+    const to = (MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
+    
     const requests = await requestDetails(profileId);
     const request = requests.pop()
-    const requestType = ( request.editType ? 'Project Edit': 'New Project')
 
     let buff;
 
@@ -126,7 +134,17 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
           path.join(__dirname, '../../', 'templates/provisioning-request-done.html')
           ).toString();
         break;
-      case MessageType.ProvisioningResponse:
+      case MessageType.EditRequestStarted:
+        buff = fs.readFileSync(
+          path.join(__dirname, '../../', 'templates/edit-request-received.html')
+          ).toString();
+        break;
+      case MessageType.EditRequestCompleted:
+        buff = fs.readFileSync(
+          path.join(__dirname, '../../', 'templates/edit-request-done.html')
+          ).toString();
+        break;
+      case MessageType.RequestApproval:
         buff = fs.readFileSync(
           path.join(__dirname, '../../', 'templates/provisioning-request-response.html')
           ).toString();
@@ -140,7 +158,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await updateEmailContent(buff, to, profile, contactNames, requestType);
+    const bodyContent = await updateEmailContent(buff, profile, contactDetails, request);
 
     if (!bodyContent) {
       return;
