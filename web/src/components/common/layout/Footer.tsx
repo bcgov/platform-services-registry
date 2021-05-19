@@ -80,7 +80,7 @@ const Footer = () => (
         <StyledLink href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink href="https://github.com/bcgov/devhub-signing-web">Contact Us</StyledLink>
+        <StyledLink href="https://github.com/bcgov/platform-services-registry/issues">Contact Us</StyledLink>
       </StyledLi>
     </StyledUl>
   </StyledFooter>
