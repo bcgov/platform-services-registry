@@ -99,6 +99,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
 
     const humanAction: HumanAction | undefined = await RequestModel.findHumanActionByRequestId(Number(request.id));
 
+    const humanAction = await RequestModel.findHumanActionByRequestId(Number(request.id));
     let buff;
 
     if (to.length === 0) {
