@@ -19,7 +19,6 @@ import fs from 'fs';
 import path from 'path';
 import config from '../config';
 import DataManager from '../db';
-import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { BodyType, Message, SendReceipt } from '../libs/service';
 import shared from './shared';
@@ -31,45 +30,13 @@ export const enum MessageType {
   EditRequestStarted,
   EditRequestCompleted,
   RequestApproval,
+  RequestRejected
 }
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, RequestModel} = dm;
 
-const contactsForProfile = async (profileId: number): Promise<Contact[]> => {
-  try {
-    return await ContactModel.findForProject(profileId);
-  } catch (err) {
-    const message = `Unable to fetch contacts for profile ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    return [];
-  }
-}
-
-const profileDetails = async (profileId: number): Promise<any> => {
-  try {
-    return await ProfileModel.findById(profileId);
-  } catch (err) {
-    const message = `Unable to fetch profile ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    return [];
-  }
-}
-
-const requestDetails = async (profileId: number): Promise<any> => {
-  try {
-    return await RequestModel.findForProfile(profileId);
-  } catch (err) {
-    const message = `Unable to fetch request for ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    return [];
-  }
-}
-
-const updateEmailContent = async (buff: string, profile: ProjectProfile, contactDetails: any, request: any): Promise<string> => {
+const updateEmailContent = async (buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any): Promise<string> => {
   try {
     let emailContent: string;
 
@@ -87,7 +54,8 @@ const updateEmailContent = async (buff: string, profile: ProjectProfile, contact
       licensePlate: `${profile.namespacePrefix}`,
       requestType: ( request.editType ? 'Project Edit': 'New Project'),
       quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
-      editType: ( request.editType === 'quotaSize' ? 'Quota' : '')
+      editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
+      humanActionComment: (humanAction.comment ? `Additional information: ${humanAction.comment}` : '')
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -107,16 +75,20 @@ const updateEmailContent = async (buff: string, profile: ProjectProfile, contact
 export const sendProvisioningMessage = async (profileId: number, messageType: MessageType): Promise<SendReceipt | undefined> => {
 
   try {
-    const profile = await profileDetails(profileId);
+    const profile = await ProfileModel.findById(profileId);
 
     const reviewerEmails = config.get('reviewers:emails');
-    const contacts = await contactsForProfile(profileId);
+    const contacts = await ContactModel.findForProject(profileId);
     const contactDetails = await transformContacts(contacts) 
     const to = (MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
     
-    const requests = await requestDetails(profileId);
-    const request = requests.pop()
+    const requests = await RequestModel.findForProfile(profileId);
+    const request = requests.pop();
+    if (!request) {
+      return 
+    }
 
+    const humanAction = await RequestModel.findHumanActionByRequestId(Number(request.id));
     let buff;
 
     if (to.length === 0) {
@@ -146,7 +118,12 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
         break;
       case MessageType.RequestApproval:
         buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/provisioning-request-response.html')
+          path.join(__dirname, '../../', 'templates/request-approval.html')
+          ).toString();
+        break;
+      case MessageType.RequestRejected:
+        buff = fs.readFileSync(
+          path.join(__dirname, '../../', 'templates/request-rejected.html')
           ).toString();
         break;
       default:
@@ -158,7 +135,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await updateEmailContent(buff, profile, contactDetails, request);
+    const bodyContent = await updateEmailContent(buff, profile, contactDetails, request, humanAction);
 
     if (!bodyContent) {
       return;
