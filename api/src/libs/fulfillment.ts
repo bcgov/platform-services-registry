@@ -76,7 +76,7 @@ export const fulfillEditRequest = async (profileId: number, requestEditType: Req
 
       resolve(natsMessage);
     } catch (err) {
-      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
+      const message = `Unable to fulfill edit request for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
