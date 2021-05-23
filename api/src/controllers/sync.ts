@@ -19,10 +19,9 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
 import DataManager from '../db';
-import { Cluster } from '../db/model/cluster';
 import { ProjectProfile } from '../db/model/profile';
 import { contextForEditing, contextForProvisioning } from '../libs/fulfillment';
-import { getClusters, getProvisionStatus } from '../libs/profile';
+import { getProvisionStatus } from '../libs/profile';
 import shared from '../libs/shared';
 import { replaceForDescription } from '../libs/utils';
 
@@ -32,13 +31,13 @@ export const getAllProvisionedProfileIds = async (
   req: Request, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const clusterName = req.query['cluster-name'];
+  const clusterName: any = req.query['cluster-name'];
+
+  if (!(clusterName === undefined || typeof clusterName === 'string')) {
+    throw errorWithCode('Unable to determine the provided cluster name', 500);
+  }
 
   try {
-    if (!(clusterName === undefined || typeof clusterName === 'string')) {
-      throw new Error('Unable to determine the provided cluster name');
-    }
-
     let profiles: ProjectProfile[] = await ProfileModel.findAll();
     if (clusterName !== undefined) {
       profiles = await filterProfilesBySelectedClusterName(profiles, clusterName);
@@ -46,7 +45,7 @@ export const getAllProvisionedProfileIds = async (
 
     const provisionedProfileIds: number[] = [];
     for (const profile of profiles) {
-      const isProvisioned = await getProvisionStatus(profile);
+      const isProvisioned: boolean = await getProvisionStatus(profile);
       if (isProvisioned && profile.id) {
         provisionedProfileIds.push(profile.id);
       }
@@ -96,11 +95,11 @@ export const getAllProfileIdsUnderPending = async (
 ): Promise<void> => {
   const clusterName: any = req.query['cluster-name'];
 
-  try {
-    if (!(clusterName === undefined || typeof clusterName === 'string')) {
-      throw new Error('Unable to determine the provided cluster name');
-    }
+  if (!(clusterName === undefined || typeof clusterName === 'string')) {
+    throw errorWithCode('Unable to determine the provided cluster name', 500);
+  }
 
+  try {
     let profiles: ProjectProfile[] = await getProfilesUnderPendingEditOrCreate();
     if (clusterName !== undefined) {
       profiles = await filterProfilesBySelectedClusterName(profiles, clusterName);
@@ -189,16 +188,8 @@ const getProfilesUnderPendingEditOrCreate = async (): Promise<ProjectProfile[]> 
 const filterProfilesBySelectedClusterName = async (profiles: ProjectProfile[], clusterName: string):
   Promise<ProjectProfile[]> => {
   try {
-    const clustersPromises: Promise<Cluster[]>[] =
-      profiles.map((profile: ProjectProfile) => getClusters(profile));
-    const profileClusters: Cluster[][] = await Promise.all(clustersPromises);
-    const profileClusterNames: string[][] = profileClusters.map((
-      clusters: Cluster[]) => clusters.map(c => c.name));
+    return profiles.filter((profile: ProjectProfile) => profile.primaryClusterName === clusterName);
 
-    const filteredProfiles: ProjectProfile[] = profiles.filter((
-      profile: ProjectProfile, index: number) => profileClusterNames[index].includes(clusterName));
-
-    return filteredProfiles;
   } catch (err) {
     const message = 'Unable to filter a list of profiles by selected cluster name';
     logger.error(`${message}, err = ${err.message}`);
