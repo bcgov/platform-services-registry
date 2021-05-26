@@ -34,7 +34,7 @@ export const getAllProvisionedProfileIds = async (
   const clusterName: any = req.query['cluster-name'];
 
   if (!(clusterName === undefined || typeof clusterName === 'string')) {
-    throw errorWithCode('Unable to determine the provided cluster name', 500);
+    throw errorWithCode('Unable to determine the provided cluster name', 400);
   }
 
   try {
@@ -96,7 +96,7 @@ export const getAllProfileIdsUnderPending = async (
   const clusterName: any = req.query['cluster-name'];
 
   if (!(clusterName === undefined || typeof clusterName === 'string')) {
-    throw errorWithCode('Unable to determine the provided cluster name', 500);
+    throw errorWithCode('Unable to determine the provided cluster name', 400);
   }
 
   try {
