@@ -36,6 +36,8 @@ export const transformKeysToCamelCase = data => {
 };
 
 export const generateNamespacePrefix = (len: number = 6): string => {
+  // For DEV/TEST environments, a license plate prefix is necessary to avoid duplication
+  // within ArgoCD. Utilizing the prefix "T" for TEST, and "D" for DEV will avoid this.
   return config.get('api:prefix') + crypto
     .randomBytes(Math.ceil(len / 2))
     .toString('hex')

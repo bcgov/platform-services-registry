@@ -18,8 +18,9 @@ kind: Template
 metadata:
   annotations:
     description: |
-      This configmap is used internally by the API
-      to store user configurable parameters.
+      This configmap is used internally by the API to store user configurable parameters.
+      A prefix is necessary for cluster based license plate to avoid ArgoCD conflicts.
+      For TEST the prefix "T" should be applied, for DEV the prefix "D" should be applied.
   name: ${API_NAME}-config
 objects:
   - apiVersion: v1
