@@ -18,7 +18,8 @@ kind: Template
 metadata:
   annotations:
     description: |
-      This configmap is used internally by the API to store user configurable parameters.
+      This configmap is used internally by the API
+      to store user configurable parameters.
   name: ${API_NAME}-config
 objects:
   - apiVersion: v1
