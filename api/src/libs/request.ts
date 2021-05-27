@@ -47,7 +47,7 @@ export const requestProjectProfileCreate = async (profileId: number, user: Authe
     }
 };
 
-export const requestProjectProfileEdit = async (profileId: number, newProjectProfile: ProjectProfile, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
+export const requestProjectProfileEdit = async (profileId: number, newProjectProfile: ProjectProfile, user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
     try {
         const editObject = newProjectProfile;
         return await createRequest(
@@ -84,7 +84,7 @@ export const processProjectProfileEdit = async (request: Request): Promise<void>
     }
 };
 
-export const requestProfileContactsEdit = async (profileId: number, newContacts: Contact[], user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
+export const requestProfileContactsEdit = async (profileId: number, newContacts: Contact[], user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
     try {
         const editObject = newContacts;
 
@@ -126,7 +126,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
     }
 };
 
-export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: QuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean): Promise<Request> => {
+export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: QuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
     try {
         const requestType = RequestType.Edit;
         const editType = RequestEditType.QuotaSize;

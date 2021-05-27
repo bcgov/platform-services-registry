@@ -20,7 +20,6 @@ import DataManager from '../db';
 import { HumanActionType, RequestType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
-import { createHumanAction } from '../libs/human-action';
 import { archiveProjectSet } from '../libs/profile';
 import shared from '../libs/shared';
 
@@ -57,7 +56,12 @@ export const updateRequestHumanAction = async (
     const request = await RequestModel.findById(requestId);
 
     // Step 2. create human_action record
-    await createHumanAction(request.id, type, comment, user.id)
+    await RequestModel.createHumanAction({
+      requestId: request.id, 
+      type, 
+      comment, 
+      userId: user.id
+    });
 
     // Step 3.a. If approved: fulfillRequest functionality => create bot_message, send NATS message
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;

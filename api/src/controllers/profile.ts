@@ -107,11 +107,11 @@ export const updateProfileContacts = async (
 
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      const request = await requestProfileContactsEdit(Number(profileId), contacts, user, false);
+      const request = await requestProfileContactsEdit(Number(profileId), contacts, user);
       await fulfillRequest(request);
       res.status(202).end();
     } else {
-      const request = await requestProfileContactsEdit(Number(profileId), body, user, false);
+      const request = await requestProfileContactsEdit(Number(profileId), body, user);
 
       const contactPromises = contacts.map((contact: Contact) => {
         if (!contact.id) {
