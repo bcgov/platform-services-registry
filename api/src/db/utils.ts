@@ -18,6 +18,7 @@
 
 import crypto from 'crypto';
 import { camelCase } from 'lodash';
+import config from '../config';
 
 /**
  * Convert the keys of an object from snake notation to camel case
@@ -35,7 +36,7 @@ export const transformKeysToCamelCase = data => {
 };
 
 export const generateNamespacePrefix = (len: number = 6): string => {
-  return crypto
+  return config.get('api:prefix') + crypto
     .randomBytes(Math.ceil(len / 2))
     .toString('hex')
     .slice(0, len);

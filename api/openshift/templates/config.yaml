@@ -53,6 +53,9 @@ objects:
             "idleTimeout": 10000,
             "connectionTimeout": 2000
           }
+          "api": {
+            "prefix": ""
+          }
         }
 parameters:
 - description:
