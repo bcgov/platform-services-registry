@@ -70,12 +70,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
-        <Input
-          name="project-type"
-          placeholder="Create"
-          disabled
-          value={profileDetails.type}
-        />
+        <Input name="project-type" placeholder="Create" disabled value={profileDetails.type} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
@@ -107,7 +102,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           placeholder="John Doe | john.doe@example.com"
           disabled
           value={poDetails}
-          sx={{textTransform: 'none'}}
+          sx={{ textTransform: 'none' }}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -117,7 +112,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           placeholder="Jane Doe | jane.doe@example.com"
           disabled
           value={tcDetails}
-          sx={{textTransform: 'none'}}
+          sx={{ textTransform: 'none' }}
         />
       </Flex>
       <Flex flexDirection="column">
