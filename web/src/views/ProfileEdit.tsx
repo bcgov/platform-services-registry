@@ -40,7 +40,7 @@ import {
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
-  isProfileProvisioned
+  isProfileProvisioned,
 } from '../utils/transformDataHelper';
 
 const StyledDiv = styled.div`
