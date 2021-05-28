@@ -20,7 +20,6 @@ import useCommonState from '../../hooks/useCommonState';
 import { useModal } from '../../hooks/useModal';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText } from '../../utils/promptToastHelper';
-import { upperCaseFirstLetter } from '../../utils/transformDataHelper';
 import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
 import { ReviewRequestModal } from './ReviewRequestModal';
@@ -66,7 +65,7 @@ const ProjectRequests: React.FC<any> = (props) => {
       {
         Header: 'Request Type',
         accessor: 'type',
-        Cell: ({ row: { values } }: any) => upperCaseFirstLetter(values.type),
+        Cell: ({ row: { values } }: any) => values.type,
       },
       {
         Header: 'Response',

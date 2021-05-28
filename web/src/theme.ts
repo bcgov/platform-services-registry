@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+
 export default {
   breakpoints: ['40em', '52em', '64em'],
   colors: {
@@ -79,6 +80,7 @@ export default {
       border: 'solid 1px #036',
       backgroundColor: '#fafafa',
       color: '#036',
+      textTransform: 'capitalize',
     },
     textarea: {
       borderRadius: '5px',

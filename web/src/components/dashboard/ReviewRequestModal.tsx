@@ -21,7 +21,6 @@ import { Flex, Heading } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { upperCaseFirstLetter } from '../../utils/transformDataHelper';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -75,7 +74,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           name="project-type"
           placeholder="Create"
           disabled
-          value={upperCaseFirstLetter(profileDetails.type)}
+          value={profileDetails.type}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -88,7 +87,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           name="project-cluster"
           placeholder="Silver"
           disabled
-          value={upperCaseFirstLetter(profileDetails.primaryClusterName)}
+          value={profileDetails.primaryClusterName}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -108,6 +107,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           placeholder="John Doe | john.doe@example.com"
           disabled
           value={poDetails}
+          sx={{textTransform: 'none'}}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -117,6 +117,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           placeholder="Jane Doe | jane.doe@example.com"
           disabled
           value={tcDetails}
+          sx={{textTransform: 'none'}}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -127,10 +128,8 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           disabled
           value={
             profileDetails.type === 'create'
-              ? upperCaseFirstLetter(profileDetails.quotaSize)
-              : `${upperCaseFirstLetter(profileDetails.quotaSize)} => ${upperCaseFirstLetter(
-                  profileDetails.editObject.quota,
-                )}`
+              ? profileDetails.quotaSize
+              : `${profileDetails.quotaSize} => ${profileDetails.editObject.quota}`
           }
         />
       </Flex>
