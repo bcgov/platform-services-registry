@@ -31,11 +31,12 @@ interface ReviewRequestModalProps {
   profileId: number;
   profiles: any;
   hide: () => void;
+  handleSubmitRefresh: any;
 }
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
-  const { profileId, profiles, hide } = props;
+  const { profileId, profiles, hide, handleSubmitRefresh } = props;
 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
@@ -56,6 +57,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
 
       // 2. All good? Hide modal and tell the user.
       hide();
+      handleSubmitRefresh();
       promptSuccessToastWithText('The project review was successful');
     } catch (err) {
       promptErrToastWithText(err.message);

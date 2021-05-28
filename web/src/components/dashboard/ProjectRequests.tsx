@@ -34,6 +34,12 @@ const ProjectRequests: React.FC<any> = (props) => {
   const [profileId, setProfileId] = useState(0);
   const [requests, setRequests] = useState<any>([]);
 
+  const [submitRefresh, setSubmitRefresh] = useState<any>(0);
+
+  const handleSubmitRefresh = () => {
+    setSubmitRefresh(submitRefresh + 1);
+  };
+
   const requestColumns = useMemo(
     () => [
       {
@@ -111,7 +117,7 @@ const ProjectRequests: React.FC<any> = (props) => {
     }
     wrap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileDetails]);
+  }, [profileDetails, submitRefresh]);
 
   const { isShown, toggle } = useModal();
 
@@ -122,7 +128,12 @@ const ProjectRequests: React.FC<any> = (props) => {
         hide={toggle}
         headerText="Review"
         modalContent={
-          <ReviewRequestModal profileId={profileId} profiles={requests} hide={toggle} />
+          <ReviewRequestModal
+            profileId={profileId}
+            profiles={requests}
+            hide={toggle}
+            handleSubmitRefresh={handleSubmitRefresh}
+          />
         }
       />
       <Box style={{ overflow: 'auto' }}>
