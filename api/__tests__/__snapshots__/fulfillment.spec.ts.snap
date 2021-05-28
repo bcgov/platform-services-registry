@@ -176,6 +176,7 @@ Object {
       "block": "50Gi",
       "capacity": "50Gi",
       "file": "50Gi",
+      "pvcCount": 20,
     },
   },
   "technicalContact": Object {
