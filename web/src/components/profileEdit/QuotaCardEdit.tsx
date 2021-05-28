@@ -123,9 +123,9 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       </Text>
       <br />
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-        {quotaSize.toUpperCase()} size quota for storage: 20 PVC count,
+        {quotaSize.toUpperCase()} size quota for storage: {specs.storageNums[0]} PVC count,
         <br />
-        {specs.storageNums[0]} overall storage with {specs.storageNums[1]} for backup storage
+        {specs.storageNums[1]} overall storage with {specs.storageNums[2]} for backup storage
       </Text>
       <br />
       <select value={selectedSize} onChange={handleChange}>
