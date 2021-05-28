@@ -20,6 +20,7 @@ import path from 'path';
 import config from '../config';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
+import { HumanAction } from '../db/model/request';
 import { BodyType, Message, SendReceipt } from '../libs/service';
 import shared from './shared';
 import { transformContacts } from './utils';
@@ -39,6 +40,14 @@ const { ProfileModel, ContactModel, RequestModel} = dm;
 const updateEmailContent = async (buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any): Promise<string> => {
   try {
     let emailContent: string;
+    
+    let humanActionComment: string;
+
+    if(humanAction !== undefined) {
+      humanActionComment = `Additional information: ${humanAction.comment}`;
+    } else {
+      humanActionComment = '';
+    }
 
     const mapObj = {
       POName: contactDetails.POName,
@@ -55,7 +64,7 @@ const updateEmailContent = async (buff: string, profile: ProjectProfile, contact
       requestType: ( request.editType ? 'Project Edit': 'New Project'),
       quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
       editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
-      humanActionComment: (humanAction.comment ? `Additional information: ${humanAction.comment}` : '')
+      humanActionComment
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -88,7 +97,8 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return 
     }
 
-    const humanAction = await RequestModel.findHumanActionByRequestId(Number(request.id));
+    const humanAction: HumanAction | undefined = await RequestModel.findHumanActionByRequestId(Number(request.id));
+    
     let buff;
 
     if (to.length === 0) {
