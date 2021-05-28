@@ -139,7 +139,7 @@ export const getProfileBotJsonUnderPending = async (
         throw new Error(errmsg);
       }
 
-      context = await contextForEditing(profileId, true, request.editType, request.editObject);
+      context = await contextForEditing(profileId, request.editType, request.editObject);
     } else {
       // if the queried profile is under pending create
       context = await contextForProvisioning(profileId, true);
