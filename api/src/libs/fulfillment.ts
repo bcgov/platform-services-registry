@@ -83,6 +83,7 @@ export const fulfillEditRequest = async (profileId: number, requestEditType: Req
     }
   });
 
+// TODO: modify around isForSync so as to avoid passing bool directly
 export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
   try {
     const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Create;
