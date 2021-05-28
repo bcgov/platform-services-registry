@@ -281,6 +281,27 @@ export default class RequestModel extends Model {
         }
     }
 
+    async receivedHumanAction(requestId: number): Promise<Request> {
+        const query = {
+            text: `UPDATE ${this.table}
+            SET
+            requires_human_action = false
+            WHERE id = ${requestId}
+            RETURNING *;
+        `,
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to complete request`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+
     async createBotMessage(data: BotMessage): Promise<BotMessage> {
         const query = {
             text: `INSERT INTO bot_message

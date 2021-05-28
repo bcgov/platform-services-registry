@@ -67,6 +67,7 @@ export const updateRequestHumanAction = async (
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
+      await RequestModel.receivedHumanAction(requestId);
       res.status(204).end();
     } else {
       if ( request.type === RequestType.Create) {
