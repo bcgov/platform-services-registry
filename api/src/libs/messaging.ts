@@ -41,12 +41,10 @@ const updateEmailContent = async (buff: string, profile: ProjectProfile, contact
   try {
     let emailContent: string;
     
-    let humanActionComment: string;
+    let humanActionComment: string = '';
 
-    if(humanAction !== undefined) {
+    if(typeof humanAction !== undefined) {
       humanActionComment = `Additional information: ${humanAction.comment}`;
-    } else {
-      humanActionComment = '';
     }
 
     const mapObj = {
