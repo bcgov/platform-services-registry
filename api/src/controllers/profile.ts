@@ -79,7 +79,7 @@ export const updateProfileContacts = async (
   const { productOwner, technicalContact } = body;
   const contacts = [productOwner, technicalContact];
 
-  // TODO:(yh) add more data sanity check
+  // TODO: add more data sanity check
   // check the passed contacts have no dupliates
   // check contact_id is associated with the queried profile_id
   // check role_id points to the legit role TC / PO

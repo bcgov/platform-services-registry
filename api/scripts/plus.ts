@@ -11,8 +11,8 @@ import { UserProfile } from '../src/db/model/userprofile';
 
 dotenv.config();
 
+const projectDataFile = './scripts/xxx.json';
 const host = 'registry.developer.gov.bc.ca';
-// const host = 'registry-api-platform-registry-dev.apps.silver.devops.gov.bc.ca'
 const axi = axios.create({
   baseURL: `https://${host}/api/v1`,
   headers: {
@@ -43,7 +43,7 @@ enum ClusterID {
 }
 
 const main = async () => {
-  const data = await fs.readFile('./scripts/capstone.json', 'utf8');
+  const data = await fs.readFile(projectDataFile, 'utf8');
   const record = JSON.parse(data);
   const dm = new DataManager(new Pool(params));
   const { ProfileModel, ContactModel, NamespaceModel,
@@ -64,7 +64,7 @@ const main = async () => {
     }
 
     await NamespaceModel.createProjectSet(profile.id!, ClusterID.Silver, profile.namespacePrefix);
-    await axi.post(`provision/${profile.id!}/namespace`);
+    await axi.post(`provision/${profile.id}/namespace`);
   } catch (err) {
     console.log(err);
   }

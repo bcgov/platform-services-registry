@@ -67,7 +67,7 @@ export const fulfillEditRequest = async (profileId: number, requestEditType: Req
       const subjectPrefix: string = config.get('nats:subjectPrefix');
 
       const subject: string = subjectPrefix.concat(profile.primaryClusterName);
-      const context: NatsContext = await contextForEditing(profileId, false, requestEditType, requestEditObject);
+      const context: NatsContext = await contextForEditing(profileId, requestEditType, requestEditObject);
 
       const natsMessage = await sendNatsMessage(profileId, {
         natsSubject: subject,
@@ -76,13 +76,14 @@ export const fulfillEditRequest = async (profileId: number, requestEditType: Req
 
       resolve(natsMessage);
     } catch (err) {
-      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
+      const message = `Unable to fulfill edit request for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
   });
 
+// TODO: modify around isForSync so as to avoid passing bool directly
 export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
   try {
     const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Create;
@@ -100,9 +101,9 @@ export const contextForProvisioning = async (profileId: number, isForSync: boole
   }
 };
 
-export const contextForEditing = async (profileId: number, isForSync: boolean, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsContext> => {
+export const contextForEditing = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsContext> => {
   try {
-    const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Edit;
+    const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
     let quotaSize: QuotaSize;
     let quotas: Quotas;
