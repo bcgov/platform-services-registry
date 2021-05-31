@@ -1,4 +1,4 @@
-name: Promote to Prod
+name: PROD - promote from Test
 
 on:
 
