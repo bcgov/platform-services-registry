@@ -87,9 +87,10 @@ Array [
   ],
   Array [
     Object {
-      "text": "INSERT INTO bot_message
-            (request_id, nats_subject, nats_context, cluster_name, received_callback)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;",
+      "text": "
+                INSERT INTO bot_message
+                (request_id, nats_subject, nats_context, cluster_name, received_callback)
+                VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
         3,
         "registry_project_provisioning_silver",

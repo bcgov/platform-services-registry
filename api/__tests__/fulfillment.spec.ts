@@ -85,7 +85,7 @@ describe('Fulfillment utility', () => {
     
     const result = await fulfillRequest(requests[2]);
 
-    expect(result).toStrictEqual([{natsContext: "nats_context_stub", natsSubject: "registry_project_provisioning"}])
+    expect(result).toBeUndefined();
     expect(fetchBotMessageRequests).toBeCalledTimes(1);
     expect(client.query.mock.calls).toMatchSnapshot();
   });
