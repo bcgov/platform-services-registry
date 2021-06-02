@@ -127,7 +127,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    const result = await contextForEditing(12345, false, requestEditType, requestEditObject);
+    const result = await contextForEditing(12345, requestEditType, requestEditObject);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
@@ -140,7 +140,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    const result = await contextForEditing(12345, false, requestEditType, requestEditObject);
+    const result = await contextForEditing(12345, requestEditType, requestEditObject);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
@@ -156,7 +156,7 @@ describe('Fulfillment utility', () => {
 
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    const result = await contextForEditing(12345, false, requestEditType, requestEditObject);
+    const result = await contextForEditing(12345, requestEditType, requestEditObject);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
@@ -173,7 +173,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
-    await expect(contextForEditing(12345, false, requestEditType, requestEditObject)).rejects.toThrow();
+    await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
   });
 
   it('throws an error if edit context query fails', async () => {
@@ -185,6 +185,6 @@ describe('Fulfillment utility', () => {
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    await expect(contextForEditing(12345, false, requestEditType, requestEditObject)).rejects.toThrow();
+    await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
   });
 });

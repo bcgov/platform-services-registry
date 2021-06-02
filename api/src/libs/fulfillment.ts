@@ -122,7 +122,7 @@ const generateContext = async (request: Request): Promise<NatsContext> => {
       if (!request.editType){
         throw new Error(`Invalid edit type for request ${request.id}`)
       }
-      return await contextForEditing(request.profileId, false, request.editType, request.editObject);
+      return await contextForEditing(request.profileId, request.editType, request.editObject);
     default:
       throw new Error(`Invalid type for request ${request.id}`);
   }
