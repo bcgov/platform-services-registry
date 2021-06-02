@@ -20,6 +20,7 @@ import DataManager from '../db';
 import { HumanActionType, RequestType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
+import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import { archiveProjectSet } from '../libs/profile';
 import shared from '../libs/shared';
 
@@ -76,7 +77,10 @@ export const updateRequestHumanAction = async (
       await archiveProjectSet(request.profileId)
     }
 
-    // TODO(SB): Email contacts with comment
+    logger.info(`Sending CHES message Project Request Rejected for ${request.profileId}`);
+    await sendProvisioningMessage(request.profileId, MessageType.RequestRejected);
+    logger.info(`CHES message sent for ${request.profileId}`);
+
     await RequestModel.updateCompletionStatus(requestId);
     return res.status(204).end();
   } catch (err) {
