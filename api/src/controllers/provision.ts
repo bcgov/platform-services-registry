@@ -71,13 +71,9 @@ export const provisionerCallbackHandler = async (
       throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
 
-<<<<<<< HEAD
     if (!CLUSTER_NAMES.includes(cluster)) {
       throw new Error(`Unknown cluster name: ${cluster} included in callback response`);
     }
-=======
-    // TODO: Validate clusterName is one of the allowable options
->>>>>>> b51c596 (Api dashboard approval logic and applicable tests)
 
     const isProfileProvisioned = await getProvisionStatus(profile);
 
@@ -109,17 +105,10 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
 
     const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-<<<<<<< HEAD
     if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
       await updateProvisionStatus(profile, true);
 
       await RequestModel.updateCompletionStatus(Number(request.id));
-=======
-    if (botMessageSet.length === 1) {
-      await updateProvisionStatus(profile, true);
-
-      await RequestModel.isComplete(Number(request.id));
->>>>>>> b51c596 (Api dashboard approval logic and applicable tests)
 
       logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
       await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);

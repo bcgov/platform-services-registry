@@ -43,12 +43,6 @@ const updateEmailContent = async (
   try {
     let emailContent: string;
 
-    let humanActionComment: string = '';
-
-    if(typeof humanAction !== undefined) {
-      humanActionComment = `Additional information: ${humanAction.comment}`;
-    }
-
     const mapObj = {
       POName: contactDetails.POName,
       TCName: contactDetails.TCName,
@@ -64,7 +58,7 @@ const updateEmailContent = async (
       requestType: ( request.editType ? 'Project Edit': 'New Project'),
       quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
       editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
-      humanActionComment,
+      humanActionComment: ( typeof humanAction !== 'undefined' ? `Additional information: ${humanAction.comment}` : ''),
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
