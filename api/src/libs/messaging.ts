@@ -31,16 +31,18 @@ export const enum MessageType {
   EditRequestStarted,
   EditRequestCompleted,
   RequestApproval,
-  RequestRejected
+  RequestRejected,
 }
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, RequestModel} = dm;
 
-const updateEmailContent = async (buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any): Promise<string> => {
+const updateEmailContent = async (
+    buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any
+  ): Promise<string> => {
   try {
     let emailContent: string;
-    
+
     let humanActionComment: string = '';
 
     if(typeof humanAction !== undefined) {
@@ -62,7 +64,7 @@ const updateEmailContent = async (buff: string, profile: ProjectProfile, contact
       requestType: ( request.editType ? 'Project Edit': 'New Project'),
       quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
       editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
-      humanActionComment
+      humanActionComment,
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -86,17 +88,17 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
 
     const reviewerEmails = config.get('reviewers:emails');
     const contacts = await ContactModel.findForProject(profileId);
-    const contactDetails = await transformContacts(contacts) 
+    const contactDetails = await transformContacts(contacts)
     const to = (MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
-    
+
     const requests = await RequestModel.findForProfile(profileId);
     const request = requests.pop();
     if (!request) {
-      return 
+      return
     }
 
     const humanAction: HumanAction | undefined = await RequestModel.findHumanActionByRequestId(Number(request.id));
-    
+
     let buff;
 
     if (to.length === 0) {
