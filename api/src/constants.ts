@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-21.
-//
 
 export const ENVIRONMENTS = {
   DEVELOPMENT: 'development',
@@ -44,3 +42,13 @@ export const BOT_CLIENT_ID = 'registry-gitops-ci';
 export const STATUS_ERROR = {};
 STATUS_ERROR[401] = 'Unauthorized';
 STATUS_ERROR[500] = 'Internal Server Error';
+
+export const CLUSTER_NAMES = [
+  'silver',
+  'gold',
+  'golddr',
+  'klab',
+  'clab',
+]
+
+export const GOLD_QUORUM_COUNT = 2;
