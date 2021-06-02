@@ -31,19 +31,16 @@ export const createBotMessageSet = async ( requestId: number, natsSubject: strin
   }
 
   const clusters = await NamespaceModel.findClustersForProfile(natsContext.profileId);
-  const promises: any = [];
-  clusters.forEach(cluster => {
-    // create Bot Message record for each cluster project-profile edit
-    promises.push(RequestModel.createBotMessage({
+
+  for (const cluster of clusters) {
+    await RequestModel.createBotMessage({
       requestId,
       natsSubject,
       natsContext,
       clusterName: cluster.name,
       receivedCallback: false,
-    }));
-  })
-
-  await Promise.all(promises);
+    })
+  }
 };
 
 export const fetchBotMessageRequests = async (requestId: number): Promise<BotMessage[]> => {

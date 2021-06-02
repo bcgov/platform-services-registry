@@ -140,14 +140,19 @@ export const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> =
 export const archiveProjectSet = async (profileId: number): Promise<void> => {
   try {
     // Step 1. Archive Contacts
-    ContactModel.findForProject(profileId).then(contacts => {
-      contacts.forEach(contact => ContactModel.delete(Number(contact.id)))
-    })
+    const contacts = await ContactModel.findForProject(profileId)
+
+    for (const contact of contacts) {
+      await ContactModel.delete(Number(contact.id))
+    }
+
     // Step 2. Archive Namespace
-    NamespaceModel.findForProfile(profileId).then(projectNamespaces => {
-      const namespaces:any[] = projectNamespaces
-      namespaces.forEach(namespace => NamespaceModel.delete(Number(namespace.namespaceId)))
-    })
+    const projectNamespaces = await NamespaceModel.findForProfile(profileId)
+
+    for (const namespace of projectNamespaces) {
+      await NamespaceModel.delete(Number(namespace.id))
+    }
+
     // Step 3. Archive profile
     await ProfileModel.delete(profileId);
   } catch (err) {

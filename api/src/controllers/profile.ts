@@ -107,24 +107,24 @@ export const updateProfileContacts = async (
 
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      const request = await requestProfileContactsEdit(Number(profileId), contacts, user);
-      await fulfillRequest(request);
-      res.status(202).end();
-    } else {
-      const request = await requestProfileContactsEdit(Number(profileId), body, user);
-
-      const contactPromises = contacts.map((contact: Contact) => {
-        if (!contact.id) {
-          throw new Error('Cant get contact id');
-        }
-        return ContactModel.update(contact.id, contact);
-      });
-      await Promise.all(contactPromises);
-
-      await RequestModel.isComplete(Number(request.id));
-
-      res.status(204).end();
+      const editRequest = await requestProfileContactsEdit(Number(profileId), contacts, user);
+      await fulfillRequest(editRequest);
+      return res.status(202).end();
     }
+
+    const request = await requestProfileContactsEdit(Number(profileId), body, user);
+
+    const contactPromises = contacts.map((contact: Contact) => {
+      if (!contact.id) {
+        throw new Error('Cant get contact id');
+      }
+      return ContactModel.update(contact.id, contact);
+    });
+    await Promise.all(contactPromises);
+
+    await RequestModel.updateCompletionStatus(Number(request.id));
+
+    return res.status(204).end();
   } catch (err) {
     const message = `Unable to update contacts with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);

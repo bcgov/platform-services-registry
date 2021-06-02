@@ -23,7 +23,7 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
-import { BotMessage, Request, RequestEditType, RequestType } from '../db/model/request';
+import { Request, RequestEditType, RequestType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
 import { createBotMessageSet, fetchBotMessageRequests } from './bot-message';
@@ -44,15 +44,13 @@ export const fulfillRequest = async (request: Request):
 
       await createBotMessageSet(Number(request.id), subject, context)
       const botMessageSet = await fetchBotMessageRequests(Number(request.id))
-      const promises: any = []
-      botMessageSet.forEach((botMessage: BotMessage) => {
-        promises.push(sendNatsMessage(request.profileId, {
+
+      for (const botMessage of botMessageSet) {
+        await sendNatsMessage(request.profileId, {
           natsSubject: botMessage.natsSubject,
           natsContext: botMessage.natsContext,
-        }))
-      })
-
-      return await Promise.all(promises);
+        })
+      }
     } catch (err) {
       const message = `Unable to fulfill edit request for profile ${request.profileId}`;
       logger.error(`${message}, err = ${err.message}`);

@@ -220,7 +220,7 @@ export const updateProjectProfile = async (
         Number(profileId), { ...aBody, id: profileId }, user, false
       );
       await ProfileModel.update(profileId, aBody);
-      await RequestModel.isComplete(Number(request.id));
+      await RequestModel.updateCompletionStatus(Number(request.id));
       res.status(204).end();
     }
   } catch (err) {

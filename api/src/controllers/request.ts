@@ -32,8 +32,9 @@ export const fetchHumanActionRequests = async (
   const { filter } = query;
 
   try {
+    const filterValue = true;
     // Step 1. fetch all requests with matching filter
-    const requests = await RequestModel.findActiveByFilter(filter, true);
+    const requests = await RequestModel.findActiveByFilter(filter, filterValue);
     // Step 2. return JSON of project Ids
     res.status(200).json(requests);
   } catch (err) {
@@ -57,10 +58,10 @@ export const updateRequestHumanAction = async (
 
     // Step 2. create human_action record
     await RequestModel.createHumanAction({
-      requestId: request.id, 
-      type, 
-      comment, 
-      userId: user.id
+      requestId: request.id,
+      type,
+      comment,
+      userId: user.id,
     });
 
     // Step 3.a. If approved: fulfillRequest functionality => create bot_message, send NATS message
@@ -68,16 +69,16 @@ export const updateRequestHumanAction = async (
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
       await RequestModel.receivedHumanAction(requestId);
-      res.status(204).end();
-    } else {
-      if ( request.type === RequestType.Create) {
-        await archiveProjectSet(request.profileId)
-      }
-      // TODO Email contacts with comment
-      await RequestModel.isComplete(requestId);
-      res.status(204).end();
+      return res.status(204).end();
     }
 
+    if ( request.type === RequestType.Create) {
+      await archiveProjectSet(request.profileId)
+    }
+
+    // TODO(SB): Email contacts with comment
+    await RequestModel.updateCompletionStatus(requestId);
+    return res.status(204).end();
   } catch (err) {
     if (err.code) {
       throw err;

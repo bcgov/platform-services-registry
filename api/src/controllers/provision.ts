@@ -18,6 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import { CLUSTER_NAMES, GOLD_QUORUM_COUNT } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
@@ -70,7 +71,9 @@ export const provisionerCallbackHandler = async (
       throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
 
-    // TODO: Validate clusterName is one of the allowable options
+    if (!CLUSTER_NAMES.includes(cluster)) {
+      throw new Error(`Unknown cluster name: ${cluster} included in callback response`);
+    }
 
     const isProfileProvisioned = await getProvisionStatus(profile);
 
@@ -102,10 +105,10 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
 
     const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-    if (botMessageSet.length === 1) {
+    if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
       await updateProvisionStatus(profile, true);
 
-      await RequestModel.isComplete(Number(request.id));
+      await RequestModel.updateCompletionStatus(Number(request.id));
 
       logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
       await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
@@ -143,7 +146,7 @@ const processProvisionedProfileEditRequest = async (profile: ProjectProfile, clu
 
     const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-    if (botMessageSet.length === 1) {
+    if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
       switch (request.editType) {
         case RequestEditType.ProjectProfile:
           await processProjectProfileEdit(request);
@@ -157,7 +160,7 @@ const processProvisionedProfileEditRequest = async (profile: ProjectProfile, clu
         default:
           throw new Error(`Invalid edit type for request ${request.id}`);
       }
-      await RequestModel.isComplete(Number(request.id));
+      await RequestModel.updateCompletionStatus(Number(request.id));
     }
 
     const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()

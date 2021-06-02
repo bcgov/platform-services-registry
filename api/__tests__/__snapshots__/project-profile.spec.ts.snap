@@ -254,12 +254,11 @@ Array [
   ],
   Array [
     Object {
-      "text": "UPDATE request
-            SET
-            is_active = false
-            WHERE id = 2
-            RETURNING *;
-        ",
+      "text": "
+                UPDATE request
+                SET is_active = false
+                WHERE id = 2
+                RETURNING *;",
     },
   ],
 ]
@@ -514,12 +513,11 @@ Array [
   ],
   Array [
     Object {
-      "text": "UPDATE request
-            SET
-            is_active = false
-            WHERE id = 2
-            RETURNING *;
-        ",
+      "text": "
+                UPDATE request
+                SET is_active = false
+                WHERE id = 2
+                RETURNING *;",
     },
   ],
 ]

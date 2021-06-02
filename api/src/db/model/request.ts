@@ -74,9 +74,10 @@ export default class RequestModel extends Model {
 
     async create(data: Request): Promise<Request> {
         const query = {
-            text: `INSERT INTO ${this.table}
-            (profile_id, edit_type, edit_object, type, requires_human_action, is_active, user_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
+            text: `
+                INSERT INTO ${this.table}
+                (profile_id, edit_type, edit_object, type, requires_human_action, is_active, user_id)
+                VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
             values: [
                 data.profileId,
                 data.editType,
@@ -102,12 +103,12 @@ export default class RequestModel extends Model {
     async update(requestId: number, data: Request): Promise<Request> {
         const values: any[] = [];
         const query = {
-            text: `UPDATE ${this.table}
-            SET
-            profile_id = $1, edit_type = $2, edit_object = $3, type = $4,
-            requires_human_action = $5,is_active = $6, user_id = $7
-            WHERE id = ${requestId}
-            RETURNING *;`,
+            text: `
+                UPDATE ${this.table}
+                SET profile_id = $1, edit_type = $2, edit_object = $3, type = $4,
+                requires_human_action = $5,is_active = $6, user_id = $7
+                WHERE id = $8
+                RETURNING *;`,
             values,
         };
 
@@ -122,6 +123,7 @@ export default class RequestModel extends Model {
                 aData.requiresHumanAction,
                 aData.isActive,
                 aData.userId,
+                requestId
             ];
 
             const results = await this.runQuery(query);
@@ -136,12 +138,11 @@ export default class RequestModel extends Model {
 
     async delete(requestId: number): Promise<Request> {
         const query = {
-            text: `UPDATE ${this.table}
-            SET
-            archived = true
-            WHERE id = ${requestId}
-            RETURNING *;
-        `,
+            text: `
+                UPDATE ${this.table}
+                SET archived = true
+                WHERE id = $1
+                RETURNING *;`,
         };
 
         try {
@@ -159,8 +160,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                WHERE profile_id = ${profileId} AND is_active = true AND archived = false;
-            `,
+                WHERE profile_id = ${profileId} AND is_active = true AND archived = false;`,
         };
 
         try {
@@ -179,9 +179,8 @@ export default class RequestModel extends Model {
     async findAll(): Promise<any[]> {
         const query = {
             text: `
-          SELECT * FROM ${this.table}
-            WHERE archived = false;
-          `,
+                SELECT * FROM ${this.table}
+                WHERE archived = false;`,
         };
 
         try {
@@ -200,8 +199,8 @@ export default class RequestModel extends Model {
     async findById(id: number): Promise<any> {
         const query = {
             text: `
-            SELECT * FROM ${this.table}
-              WHERE id = $1 AND archived = false;`,
+                SELECT * FROM ${this.table}
+                WHERE id = $1 AND archived = false;`,
             values: [id],
         };
 
@@ -223,8 +222,8 @@ export default class RequestModel extends Model {
     async findActiveByFilter(filter: string, value: any): Promise<any> {
         const query = {
             text: `
-            SELECT * FROM ${this.table}
-              WHERE ${filter} = $1 AND is_active = true AND archived = false;`,
+                SELECT * FROM ${this.table}
+                WHERE ${filter} = $1 AND is_active = true AND archived = false;`,
             values: [value],
         };
 
@@ -244,8 +243,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                    WHERE is_active = true AND archived = false;
-            `,
+                WHERE is_active = true AND archived = false;`,
         };
 
         try {
@@ -260,14 +258,13 @@ export default class RequestModel extends Model {
         }
     }
 
-    async isComplete(requestId: number): Promise<Request> {
+    async updateCompletionStatus(requestId: number): Promise<Request> {
         const query = {
-            text: `UPDATE ${this.table}
-            SET
-            is_active = false
-            WHERE id = ${requestId}
-            RETURNING *;
-        `,
+            text: `
+                UPDATE ${this.table}
+                SET is_active = false
+                WHERE id = ${requestId}
+                RETURNING *;`,
         };
 
         try {
@@ -283,12 +280,11 @@ export default class RequestModel extends Model {
 
     async receivedHumanAction(requestId: number): Promise<Request> {
         const query = {
-            text: `UPDATE ${this.table}
-            SET
-            requires_human_action = false
-            WHERE id = ${requestId}
-            RETURNING *;
-        `,
+            text: `
+                UPDATE ${this.table}
+                SET requires_human_action = false
+                WHERE id = ${requestId}
+                RETURNING *;`,
         };
 
         try {
@@ -304,9 +300,10 @@ export default class RequestModel extends Model {
 
     async createBotMessage(data: BotMessage): Promise<BotMessage> {
         const query = {
-            text: `INSERT INTO bot_message
-            (request_id, nats_subject, nats_context, cluster_name, received_callback)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+            text: `
+                INSERT INTO bot_message
+                (request_id, nats_subject, nats_context, cluster_name, received_callback)
+                VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
             values: [
                 data.requestId,
                 data.natsSubject,
@@ -330,11 +327,11 @@ export default class RequestModel extends Model {
     async updateCallbackStatus(botMessageId: number): Promise<BotMessage> {
         const values: any[] = [];
         const query = {
-            text: `UPDATE bot_message
-            SET
-            request_id = $1, nats_subject = $2, nats_context = $3, cluster_name = $4, received_callback = $5
-            WHERE id = ${botMessageId}
-            RETURNING *;`,
+            text: `
+                UPDATE bot_message
+                SET request_id = $1, nats_subject = $2, nats_context = $3, cluster_name = $4, received_callback = $5
+                WHERE id = ${botMessageId}
+                RETURNING *;`,
             values,
         };
 
@@ -363,8 +360,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM bot_message
-                    WHERE request_id = ${requestId} AND received_callback = false AND archived = false;
-            `,
+                WHERE request_id = ${requestId} AND received_callback = false AND archived = false;`,
         };
 
         try {
@@ -387,8 +383,8 @@ export default class RequestModel extends Model {
     async findBotMessageById(botMessageId: number): Promise<any> {
         const query = {
             text: `
-            SELECT * FROM bot_message
-              WHERE id = $1 AND archived = false;`,
+                SELECT * FROM bot_message
+                WHERE id = $1 AND archived = false;`,
             values: [botMessageId],
         };
 
@@ -409,9 +405,10 @@ export default class RequestModel extends Model {
 
     async createHumanAction(data: HumanAction): Promise<BotMessage> {
         const query = {
-            text: `INSERT INTO human_action
-            (request_id, type, comment, user_id)
-            VALUES ($1, $2, $3, $4) RETURNING *;`,
+            text: `
+                INSERT INTO human_action
+                (request_id, type, comment, user_id)
+                VALUES ($1, $2, $3, $4) RETURNING *;`,
             values: [
                 data.requestId,
                 data.type,
