@@ -65,6 +65,7 @@ const CreateFormMigration: React.FC = () => {
               name="project-migratingLicenseplate"
               component={TextInput}
               validate={validator.mustBeValidProfileLicenseplate}
+              sx={{ textTransform: 'none' }}
             />
           </Flex>
         </Flex>

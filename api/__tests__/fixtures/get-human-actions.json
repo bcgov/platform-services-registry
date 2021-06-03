@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "request_id": 1,
+    "type": "approve",
+    "comment": "This request is approved",
+    "user_id": 4
+  },
+  {
+    "id": 2,
+    "request_id": 2,
+    "type": "reject",
+    "comment": "This has been rejected",
+    "user_id": 4
+  }
+]

@@ -16,6 +16,7 @@
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { difference } from 'lodash';
+import { ROLE_IDS } from '../constants';
 
 export const validateRequiredFields = (requiredFields: string[], pojo: object): Error | undefined => {
   const diff = difference(requiredFields, Object.keys(pojo));
@@ -54,3 +55,29 @@ export const replaceForDescription = (contextJson: any) => {
   contextJson.description = doubleQuoteReplaced;
   return contextJson;
 };
+
+export const parseEditObject = (results: any) => {
+  return results.map(result => {
+    return {
+        ...result,
+        editObject: JSON.parse(result.editObject),
+    }
+});
+}
+
+export const transformContacts = (contactSet: any[]) => {
+  const contacts: any = {};
+  contactSet.forEach((contact: any) => {
+    if (contact.roleId === ROLE_IDS.PRODUCT_OWNER) {
+      contacts.POEmail = contact.email;
+      contacts.POName = `${contact.firstName} ${contact.lastName}`;
+      contacts.POGithubId = contact.githubId;
+    }
+    if (contact.roleId === ROLE_IDS.TECHNICAL_CONTACT) {
+      contacts.TCEmail = contact.email;
+      contacts.TCName = `${contact.firstName} ${contact.lastName}`;
+      contacts.TCGithubId = contact.githubId;
+    }
+  });
+  return contacts;
+}

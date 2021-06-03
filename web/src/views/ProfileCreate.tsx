@@ -58,6 +58,9 @@ const ProfileCreate: React.FC = () => {
       // 4. Trigger provisioning
       await api.createNamespaceByProfileId(profileId);
 
+      // 4. Create Project Request
+      await api.createProjectRequestByProfileId(profileId);
+
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
       // 5.All good? Tell the user.

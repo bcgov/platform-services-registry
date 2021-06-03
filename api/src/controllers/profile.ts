@@ -23,9 +23,11 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
+import { AuthenticatedUser } from '../libs/authmware';
+import { fulfillRequest } from '../libs/fulfillment';
 import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
-import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../libs/request';
+import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
 
@@ -72,9 +74,9 @@ export const fetchProfileContacts = async (
 };
 
 export const updateProfileContacts = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
-  const { ContactModel } = dm;
+  const { ContactModel, RequestModel } = dm;
   const { profileId } = params;
   const { productOwner, technicalContact } = body;
   const contacts = [productOwner, technicalContact];
@@ -105,18 +107,24 @@ export const updateProfileContacts = async (
 
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
     if (provisionerRelatedChanges) {
-      await requestProfileContactsEdit(Number(profileId), contacts);
-      res.status(202).end();
-    } else {
-      const contactPromises = contacts.map((contact: Contact) => {
-        if (!contact.id) {
-          throw new Error('Cant get contact id');
-        }
-        return ContactModel.update(contact.id, contact);
-      });
-      await Promise.all(contactPromises);
-      res.status(204).end();
+      const editRequest = await requestProfileContactsEdit(Number(profileId), contacts, user);
+      await fulfillRequest(editRequest);
+      return res.status(202).end();
     }
+
+    const request = await requestProfileContactsEdit(Number(profileId), body, user);
+
+    const contactPromises = contacts.map((contact: Contact) => {
+      if (!contact.id) {
+        throw new Error('Cant get contact id');
+      }
+      return ContactModel.update(contact.id, contact);
+    });
+    await Promise.all(contactPromises);
+
+    await RequestModel.updateCompletionStatus(Number(request.id));
+
+    return res.status(204).end();
   } catch (err) {
     const message = `Unable to update contacts with profile ID ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -169,7 +177,7 @@ export const fetchProfileAllowedQuotaSizes = async (
 };
 
 export const updateProfileQuotaSize = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -179,13 +187,14 @@ export const updateProfileQuotaSize = async (
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const quotaSize: QuotaSize = await getQuotaSize(profile);
     const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
+    const requiresHumanAction = true;
 
     // verify if requested quota size is valid
     if (!(requestedQuotaSize && allowedQuotaSizes.includes(requestedQuotaSize))) {
       throw new Error('Please provide correct requested quota size in body');
     }
 
-    await requestProfileQuotaSizeEdit(Number(profileId), requestedQuotaSize);
+    await requestProfileQuotaSizeEdit(Number(profileId), requestedQuotaSize, user, requiresHumanAction);
 
     res.status(204).end();
   } catch (err) {
@@ -212,6 +221,23 @@ export const fetchProfileEditRequests = async (
     }
 
     const message = `Unable to fetch profile edit requests with profile ID ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const createProjectRequest = async (
+  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+): Promise<void> => {
+  const { profileId } = params;
+  try {
+    const requiresHumanAction = true;
+    await requestProjectProfileCreate(Number(profileId), user, requiresHumanAction);
+
+    res.status(201).end();
+  } catch (err) {
+    const message = `Unable to add contact to profile`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
