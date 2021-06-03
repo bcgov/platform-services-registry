@@ -73,13 +73,13 @@ export const updateRequestHumanAction = async (
       return res.status(204).end();
     }
 
-    if ( request.type === RequestType.Create) {
-      await archiveProjectSet(request.profileId)
-    }
-
     logger.info(`Sending CHES message Project Request Rejected for ${request.profileId}`);
     await sendProvisioningMessage(request.profileId, MessageType.RequestRejected);
     logger.info(`CHES message sent for ${request.profileId}`);
+
+    if ( request.type === RequestType.Create) {
+      await archiveProjectSet(request.profileId)
+    }
 
     await RequestModel.updateCompletionStatus(requestId);
     return res.status(204).end();

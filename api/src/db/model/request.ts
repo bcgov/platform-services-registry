@@ -427,6 +427,7 @@ export default class RequestModel extends Model {
             throw err;
         }
     }
+
     async findHumanActionByRequestId(id: number): Promise<any> {
         const query = {
             text: `

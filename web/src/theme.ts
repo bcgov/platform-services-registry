@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Patrick Simonian 2020-06-25.
-//
 
 export default {
   breakpoints: ['40em', '52em', '64em'],
@@ -35,6 +33,17 @@ export default {
   },
   navBar: {
     desktopFixedHeight: '65px',
+  },
+  heading: {
+    margin: '14px 0 5px 0',
+    fontSize: '24px',
+    fontWeight: 500,
+    fontStretch: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    color: '#036',
+    fontFamily: ['BCSans', 'Noto Sans', 'Verdana', 'Arial', 'sans-serif'],
   },
   forms: {
     label: {
@@ -70,6 +79,7 @@ export default {
       border: 'solid 1px #036',
       backgroundColor: '#fafafa',
       color: '#036',
+      textTransform: 'capitalize',
     },
     textarea: {
       borderRadius: '5px',
