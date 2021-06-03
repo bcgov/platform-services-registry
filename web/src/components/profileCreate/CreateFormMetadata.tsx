@@ -57,6 +57,7 @@ const CreateFormMetadata: React.FC = () => {
             name="project-other"
             component={TextInput}
             validate={validator.mustBeValidComponentOthers}
+            sx={{ textTransform: 'none' }}
           />
         </Flex>
       </Flex>

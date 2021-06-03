@@ -68,6 +68,7 @@ const CreateFormPO: React.FC = () => {
           validate={validator.mustBeValidEmail}
           defaultValue=""
           initialValue={decodedToken.email}
+          sx={{ textTransform: 'none' }}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -77,6 +78,7 @@ const CreateFormPO: React.FC = () => {
           component={TextInput}
           validate={validator.mustBeValidGithubName}
           placeholder="jane1100"
+          sx={{ textTransform: 'none' }}
         />
       </Flex>
     </Aux>

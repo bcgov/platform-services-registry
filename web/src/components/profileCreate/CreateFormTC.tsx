@@ -60,6 +60,7 @@ const CreateFormTC: React.FC = () => {
           component={TextInput}
           validate={validator.mustBeValidEmail}
           placeholder="jane.doe@example.com"
+          sx={{ textTransform: 'none' }}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -69,6 +70,7 @@ const CreateFormTC: React.FC = () => {
           component={TextInput}
           validate={validator.mustBeValidGithubName}
           placeholder="jane1100"
+          sx={{ textTransform: 'none' }}
         />
       </Flex>
     </Aux>
