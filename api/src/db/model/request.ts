@@ -427,5 +427,23 @@ export default class RequestModel extends Model {
             throw err;
         }
     }
-}
 
+    async findHumanActionByRequestId(id: number): Promise<any> {
+        const query = {
+            text: `
+                SELECT * FROM human_action
+                WHERE request_id = $1 AND archived = false;`,
+            values: [id],
+        };
+
+        try {
+            const results = await this.runQuery(query);
+            return results.pop();
+        } catch (err) {
+            const message = `Unable to fetch Request with ID ${id}`;
+            logger.error(`${message}, err = ${err.message}`);
+
+            throw err;
+        }
+    }
+}

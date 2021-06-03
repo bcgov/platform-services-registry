@@ -150,7 +150,8 @@ export const archiveProjectSet = async (profileId: number): Promise<void> => {
     const projectNamespaces = await NamespaceModel.findForProfile(profileId)
 
     for (const namespace of projectNamespaces) {
-      await NamespaceModel.delete(Number(namespace.id))
+      // @ts-ignore
+      await NamespaceModel.delete(Number(namespace.namespaceId))
     }
 
     // Step 3. Archive profile

@@ -20,13 +20,22 @@ import mockAxios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { contactsForProfile, MessageType, sendProvisioningMessage } from '../src/libs/messaging';
+import { MessageType, sendProvisioningMessage } from '../src/libs/messaging';
+
+const p0 = path.join(__dirname, 'fixtures/select-profile.json');
+const profile = JSON.parse(fs.readFileSync(p0, 'utf8'));
 
 const p1 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
 const contacts = JSON.parse(fs.readFileSync(p1, 'utf8'));
 
 const p2 = path.join(__dirname, 'fixtures/post-send-email-resp.json');
 const send = JSON.parse(fs.readFileSync(p2, 'utf8'));
+
+const p3 = path.join(__dirname, 'fixtures/get-request-new-project.json');
+const request = JSON.parse(fs.readFileSync(p3, 'utf8'));
+
+const p4 = path.join(__dirname, 'fixtures/get-human-actions.json');
+const humanAction = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 describe('Services', () => {
 
@@ -36,28 +45,6 @@ describe('Services', () => {
     jest.clearAllMocks();
   });
 
-  it('Contact details are returned', async () => {
-
-    client.query.mockReturnValue({ rows: contacts });
-
-    const result = await contactsForProfile(12345);
-
-    expect(result).toBeDefined();
-    expect(result).toMatchSnapshot();
-    expect(client.query.mock.calls).toMatchSnapshot();
-  });
-
-  it('Contact details not returned', async () => {
-
-    client.query.mockImplementation(() => { throw new Error() });
-
-    const result = await contactsForProfile(12345);
-
-    expect(result).toBeDefined();
-    expect(result).toMatchSnapshot();
-    expect(client.query.mock.calls).toMatchSnapshot();
-  });
-
   it('Provisioning started message is sent', async () => {
     // @ts-ignore
     mockAxios.fn.post.mockImplementationOnce(() =>
@@ -65,9 +52,13 @@ describe('Services', () => {
         data: send,
       })
     );
-    client.query.mockReturnValue({ rows: contacts });
 
-    const result = await sendProvisioningMessage(12345, MessageType.ProvisioningStarted);
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: request });
+    client.query.mockReturnValueOnce({ rows: humanAction });
+
+    const result = await sendProvisioningMessage(4, MessageType.ProvisioningStarted);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
@@ -80,9 +71,12 @@ describe('Services', () => {
         data: send,
       })
     );
-    client.query.mockReturnValue({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: request });
+    client.query.mockReturnValueOnce({ rows: humanAction });
 
-    const result = await sendProvisioningMessage(12345, MessageType.ProvisioningCompleted);
+    const result = await sendProvisioningMessage(4, MessageType.ProvisioningCompleted);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
@@ -95,9 +89,12 @@ describe('Services', () => {
         data: send,
       })
     );
-    client.query.mockReturnValue({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: contacts });
+    client.query.mockReturnValueOnce({ rows: request });
+    client.query.mockReturnValueOnce({ rows: humanAction });
 
-    const result = await sendProvisioningMessage(12345, 555);
+    const result = await sendProvisioningMessage(4, 555);
 
     expect(result).not.toBeDefined();
   });
@@ -111,7 +108,7 @@ describe('Services', () => {
     );
     client.query.mockReturnValue({ rows: [] });
 
-    const result = await sendProvisioningMessage(12345, MessageType.ProvisioningStarted);
+    const result = await sendProvisioningMessage(4, MessageType.ProvisioningStarted);
 
     expect(result).not.toBeDefined();
   });
