@@ -197,6 +197,6 @@ describe('Fulfillment utility', () => {
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    await expect(contextForEditing(12345, false, requestEditType, requestEditObject)).rejects.toThrow();
+    await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
   });
 });
