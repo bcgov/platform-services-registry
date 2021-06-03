@@ -83,8 +83,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     const reviewerEmails = config.get('reviewers:emails');
     const contacts = await ContactModel.findForProject(profileId);
     const contactDetails = await transformContacts(contacts)
-    const to = (MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
-
+    const to = (messageType === MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
     const requests = await RequestModel.findForProfile(profileId);
     const request = requests.pop();
     if (!request) {
