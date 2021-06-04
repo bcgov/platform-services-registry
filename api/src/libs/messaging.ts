@@ -42,6 +42,11 @@ const updateEmailContent = async (
   ): Promise<string> => {
   try {
     let emailContent: string;
+    let humanActionComment: string = '';
+
+    if (humanAction) {
+      humanActionComment = (humanAction.comment !== null ? `Additional information: ${humanAction.comment}` : '');
+    }
 
     const mapObj = {
       POName: contactDetails.POName,
@@ -58,7 +63,7 @@ const updateEmailContent = async (
       requestType: ( request.editType ? 'Project Edit': 'New Project'),
       quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
       editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
-      humanActionComment: ( typeof humanAction !== 'undefined' ? `Additional information: ${humanAction.comment}` : ''),
+      humanActionComment,
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -83,7 +88,9 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     const reviewerEmails = config.get('reviewers:emails');
     const contacts = await ContactModel.findForProject(profileId);
     const contactDetails = await transformContacts(contacts)
-    const to = (messageType === MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]);
+    const to = (
+      messageType === MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]
+      );
     const requests = await RequestModel.findForProfile(profileId);
     const request = requests.pop();
     if (!request) {
