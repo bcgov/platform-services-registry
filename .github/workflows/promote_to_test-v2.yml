@@ -16,6 +16,7 @@ on:
       - "web/package*.json"
       - "web/public/**/*"
       - "web/Caddyfile"
+  workflow_dispatch:
 
 jobs:
 
