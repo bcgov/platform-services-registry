@@ -49,6 +49,9 @@ const requestEditContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
 const requests = [requestQuotaSize[0], requestEditContacts[0]];
 
+const p4 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
+const authenticatedUser = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
 const client = new Pool().connect();
 
 jest.mock('../src/libs/profile', () => {
@@ -65,10 +68,15 @@ jest.mock('../src/libs/quota', () => {
 
 jest.mock('../src/libs/request', () => ({
   requestProjectProfileEdit: jest.fn(),
-  requestProfileContactsEdit: jest.fn(),
+  requestProfileContactsEdit: jest.fn().mockResolvedValue({id: 2}),
   requestProfileQuotaSizeEdit: jest.fn(),
 }));
 
+jest.mock('../src/libs/fulfillment', () => {
+  return {
+    fulfillRequest: jest.fn(),
+  };
+});
 describe('Profile event handlers', () => {
   let ex;
 
@@ -134,7 +142,7 @@ describe('Profile event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('Update profile contacts with non provisioner-related changes', async () => {
+  it('updates profile contacts with non provisioner-related changes', async () => {
     const body = {
       productOwner: {
         id: 1,
@@ -156,20 +164,27 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
-    client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
+    client.query.mockReturnValueOnce({ rows: selectProfilesContacts }); 
+    client.query.mockReturnValueOnce({ rows: [] });   
+
     const update = ContactModel.prototype.update = jest.fn();
 
     await updateProfileContacts(req, ex.res);
+    
     expect(update).toHaveBeenCalledTimes(2);
-    expect(requestProfileContactsEdit).toHaveBeenCalledTimes(0);
+    expect(requestProfileContactsEdit).toHaveBeenCalledTimes(1);
+    expect(ex.res.statusCode).toBe(204);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
   });
 
-  it('Request profile contacts edit with provisioner-related changes', async () => {
+  it('requests profile contacts edit with provisioner-related changes', async () => {
     const body = {
       productOwner: {
         id: 1,
@@ -191,23 +206,29 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
     const update = ContactModel.prototype.update = jest.fn();
 
     await updateProfileContacts(req, ex.res);
+    
     expect(update).toHaveBeenCalledTimes(0);
     expect(requestProfileContactsEdit).toHaveBeenCalledTimes(1);
+    expect(ex.res.statusCode).toBe(202);
+    
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
   });
 
-  it('Update profile contacts should throw', async () => {
+  it('throws an error when updating contact if req body is empty', async () => {
     const req = {
       params: { profileId: 4 },
       body: {},
+      user: authenticatedUser,
     };
 
     await expect(updateProfileContacts(req, ex.res)).rejects.toThrow();
@@ -216,24 +237,25 @@ describe('Profile event handlers', () => {
     expect(ex.res.end).not.toBeCalled();
   });
 
-  it('A profiles quota size is returned', async () => {
+  it('returns the profiles quota size', async () => {
     const req = {
       params: { profileId: 4 },
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
-    // @ts-ignore
-    getQuotaSize.mockResolvedValue(QuotaSize.Small);
 
     await fetchProfileQuotaSize(req, ex.res);
+    
     expect(getQuotaSize).toHaveBeenCalledTimes(1);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch profiles quota size should throw', async () => {
+  it('throws an error when fetch profiles quota size has problem', async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -244,7 +266,7 @@ describe('Profile event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A list of quota options for a given profile is returned', async () => {
+  it('returns a list of quota options for a given profile', async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -252,14 +274,17 @@ describe('Profile event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
 
     await fetchProfileAllowedQuotaSizes(req, ex.res);
+
     expect(getAllowedQuotaSizes).toHaveBeenCalledTimes(1);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch a list of quota options for a given profile should throw', async () => {
+  it('throws an error when fetching a list of quota options for a given profile has a problem', async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -277,6 +302,7 @@ describe('Profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
@@ -289,13 +315,14 @@ describe('Profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
   });
 
-  it('Request profile quota size edit should throw due to invalid quota upgrade', async () => {
+  it('throws an error if profile quota size edit request is invalid', async () => {
     const body = {
       requestedQuotaSize: QuotaSize.Large,
     };
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
@@ -305,13 +332,14 @@ describe('Profile event handlers', () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('Request profile quota size edit should throw due to db transaction issue', async () => {
+  it('throws an error if there is a db transaction issue when requesting profile quota size edit', async () => {
     const body = {
       requestedQuotaSize: 'medium',
     };
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
     client.query.mockImplementation(() => { throw new Error() });

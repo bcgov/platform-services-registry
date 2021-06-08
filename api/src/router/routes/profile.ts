@@ -19,7 +19,7 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, fetchProfileAllowedQuotaSizes, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaSize, updateProfileContacts, updateProfileQuotaSize } from '../../controllers/profile';
+import { addContactToProfile, createProjectRequest, fetchProfileAllowedQuotaSizes, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaSize, updateProfileContacts, updateProfileQuotaSize } from '../../controllers/profile';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
 import { authorize, validateRequiredCluster, validateRequiredProfile } from '../../libs/authorization';
 
@@ -58,5 +58,6 @@ router.post('/:profileId/quota-size', authorize(validateRequiredProfile), asyncM
 
 // Request
 router.get('/:profileId/request', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileEditRequests));
+router.post('/:profileId/request', authorize(validateRequiredProfile), asyncMiddleware(createProjectRequest));
 
 export default router;

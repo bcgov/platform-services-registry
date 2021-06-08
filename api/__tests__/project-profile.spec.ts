@@ -43,6 +43,11 @@ const selectProfile = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 const client = new Pool().connect();
 
+
+jest.mock('../src/libs/request', () => ({
+  requestProjectProfileEdit: jest.fn().mockResolvedValue({id: 2}),
+}));
+
 jest.mock('../src/db/utils', () => ({
   generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e6'),
   transformKeysToCamelCase: jest.fn().mockImplementation(data => {
@@ -55,9 +60,11 @@ jest.mock('../src/db/utils', () => ({
   }),
 }));
 
-jest.mock('../src/libs/request', () => ({
-  requestProjectProfileEdit: jest.fn(),
-}));
+jest.mock('../src/libs/fulfillment', () => {
+  return {
+    fulfillRequest: jest.fn(),
+  };
+});
 
 describe('Project-profile event handlers', () => {
   let ex;
@@ -249,15 +256,20 @@ describe('Project-profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: [] });  
+
+
     const update = ProfileModel.prototype.update = jest.fn();
 
     await updateProjectProfile(req, ex.res);
 
     expect(update).toHaveBeenCalledTimes(1);
-    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(0);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
+    expect(ex.res.statusCode).toBe(204);
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
@@ -277,9 +289,10 @@ describe('Project-profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
-    client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: selectProfile }); 
 
     const update = ProfileModel.prototype.update = jest.fn();
 
@@ -287,6 +300,7 @@ describe('Project-profile event handlers', () => {
 
     expect(update).toHaveBeenCalledTimes(0);
     expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
+    expect(ex.res.statusCode).toBe(202);
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
@@ -304,6 +318,7 @@ describe('Project-profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body: aBody,
+      user: authenticatedUser,
     }
 
     client.query.mockImplementation(() => { throw new Error() });
@@ -328,15 +343,18 @@ describe('Project-profile event handlers', () => {
     const req = {
       params: { profileId: 4 },
       body,
+      user: authenticatedUser,
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: [] });
+
     const update = ProfileModel.prototype.update = jest.fn();
 
     await updateProjectProfile(req, ex.res);
 
     expect(update).toHaveBeenCalledTimes(1);
-    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(0);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();

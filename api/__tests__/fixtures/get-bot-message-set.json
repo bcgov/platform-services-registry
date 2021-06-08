@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "request_id": 1,
+    "natsSubject": "registry_project_provisioning",
+    "natsContext": "nats_context_stub",
+    "cluster_name": "silver",
+    "received_callback": false
+  }
+]

@@ -17,12 +17,13 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box } from 'rebass';
+import { Box, Heading } from 'rebass';
 import { BackdropForPendingItem } from '../components/common/UI/Backdrop';
 import { Button } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
+import ProjectRequests from '../components/dashboard/ProjectRequests';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
@@ -97,7 +98,7 @@ const Dashboard: React.FC = () => {
       setOpenBackdrop(false);
     }
     wrap();
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keycloak]);
 
   useInterval(() => {
@@ -145,6 +146,7 @@ const Dashboard: React.FC = () => {
   const toggleView = () => {
     setTableView(!tableView);
   };
+
   /* 
     - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
     - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
@@ -189,9 +191,12 @@ const Dashboard: React.FC = () => {
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
       <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
 
+      <ProjectRequests profileDetails={profile} />
+
       {tableView ? (
         <Box style={{ overflow: 'auto' }}>
-          <Table columns={columns} data={profile} />
+          <Heading>Projects</Heading>
+          <Table columns={columns} data={profile} linkedRows={true} />
         </Box>
       ) : (
         <div>

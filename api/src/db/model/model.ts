@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-28.
-//
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
@@ -36,9 +34,9 @@ export abstract class Model {
   abstract requiredFields: string[];
   abstract pool: Pool;
 
-  abstract async create(data: any): Promise<any>;
-  abstract async update(profileId: number, data: any): Promise<any>;
-  abstract async delete(profileId: number): Promise<any>;
+  abstract create(data: any): Promise<any>;
+  abstract update(profileId: number, data: any): Promise<any>;
+  abstract delete(profileId: number): Promise<any>;
 
   async findAll(): Promise<any[]> {
     const query = {

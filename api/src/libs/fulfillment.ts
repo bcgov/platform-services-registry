@@ -23,65 +23,41 @@ import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
-import { RequestEditType } from '../db/model/request';
+import { Request, RequestEditType, RequestType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
-import { MessageType, sendProvisioningMessage } from './messaging';
+import { createBotMessageSet, fetchBotMessageRequests } from './bot-message';
 import { getQuotaSize } from './profile';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel } = dm;
 
-export const fulfillNamespaceProvisioning = async (profileId: number) =>
-  new Promise(async (resolve, reject) => {
+export const fulfillRequest = async (request: Request):
+  Promise<any> => {
     try {
-      const profile: ProjectProfile = await ProfileModel.findById(profileId);
+      const profile: ProjectProfile = await ProfileModel.findById(request.profileId);
       const subjectPrefix: string = config.get('nats:subjectPrefix');
 
       const subject: string = subjectPrefix.concat(profile.primaryClusterName);
-      const context: NatsContext = await contextForProvisioning(profileId, false);
+      const context: NatsContext = await generateContext(request);
 
-      await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
+      await createBotMessageSet(Number(request.id), subject, context)
+      const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-      logger.info(`Sending CHES message (${MessageType.ProvisioningStarted}) for ${profileId}`);
-      await sendProvisioningMessage(profileId, MessageType.ProvisioningStarted);
-      logger.info(`CHES message sent for ${profileId}`);
-
-      resolve();
+      for (const botMessage of botMessageSet) {
+        await sendNatsMessage(request.profileId, {
+          natsSubject: botMessage.natsSubject,
+          natsContext: botMessage.natsContext,
+        })
+      }
     } catch (err) {
-      const message = `Unable to fulfill namespace provisioning for profile ${profileId}`;
+      const message = `Unable to fulfill edit request for profile ${request.profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
-  });
-
-export const fulfillEditRequest = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsMessage> =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const profile: ProjectProfile = await ProfileModel.findById(profileId);
-      const subjectPrefix: string = config.get('nats:subjectPrefix');
-
-      const subject: string = subjectPrefix.concat(profile.primaryClusterName);
-      const context: NatsContext = await contextForEditing(profileId, requestEditType, requestEditObject);
-
-      const natsMessage = await sendNatsMessage(profileId, {
-        natsSubject: subject,
-        natsContext: context,
-      });
-
-      resolve(natsMessage);
-    } catch (err) {
-      const message = `Unable to fulfill edit request for profile ${profileId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
-    }
-  });
+  };
 
 // TODO: modify around isForSync so as to avoid passing bool directly
 export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
@@ -110,7 +86,7 @@ export const contextForEditing = async (profileId: number, requestEditType: Requ
     let contacts: Contact[];
 
     if (requestEditType === RequestEditType.ProjectProfile) {
-      profile = requestEditObject;
+      profile = JSON.parse(requestEditObject);
     } else {
       profile = await ProfileModel.findById(profileId);
     }
@@ -124,11 +100,10 @@ export const contextForEditing = async (profileId: number, requestEditType: Requ
     }
 
     if (requestEditType === RequestEditType.Contacts) {
-      contacts = requestEditObject;
+      contacts = JSON.parse(requestEditObject);
     } else {
       contacts = await ContactModel.findForProject(profileId);
     }
-
     return await buildContext(action, profile, contacts, quotaSize, quotas);
   } catch (err) {
     const message = `Unable to create context for updating ${profileId}`;
@@ -138,6 +113,21 @@ export const contextForEditing = async (profileId: number, requestEditType: Requ
   }
 };
 
+const generateContext = async (request: Request): Promise<NatsContext> => {
+
+  switch (request.type) {
+    case RequestType.Create:
+      return await contextForProvisioning(request.profileId, false);
+    case RequestType.Edit:
+      if (!request.editType){
+        throw new Error(`Invalid edit type for request ${request.id}`)
+      }
+      return await contextForEditing(request.profileId, request.editType, request.editObject);
+    default:
+      throw new Error(`Invalid type for request ${request.id}`);
+  }
+}
+
 const buildContext = async (
   action: NatsContextAction, profile: ProjectProfile, contacts: Contact[], quotaSize: QuotaSize, quotas: Quotas
 ): Promise<NatsContext> => {
@@ -146,9 +136,8 @@ const buildContext = async (
       throw new Error('Cant get profile id');
     }
     const namespaces = await NamespaceModel.findForProfile(profile.id);
-
-    const tcContact = contacts.filter(c => c.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
-    const poContact = contacts.filter(c => c.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
+    const tcContact = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
+    const poContact = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
 
     if (!profile || !tcContact || !poContact || !quotaSize || !quotas || !namespaces) {
       throw new Error('Missing arguments to build nats context');
@@ -187,7 +176,6 @@ const sendNatsMessage = async (profileId: number, natsMessage: NatsMessage): Pro
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsMessage;
-
     nc.on('error', () => {
       const errmsg = `NATS error sending order ${profileId} to ${natsSubject}`;
       throw new Error(errmsg);

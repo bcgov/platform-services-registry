@@ -25,7 +25,7 @@ import { QuotaSize } from '../db/model/quota';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
-const { NamespaceModel, ClusterModel } = dm;
+const { NamespaceModel, ClusterModel, ProfileModel, ContactModel } = dm;
 
 export const getProvisionStatus = async (profile: ProjectProfile): Promise<boolean> => {
   try {
@@ -131,6 +131,33 @@ export const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> =
     return await Promise.all(promises);
   } catch (err) {
     const message = 'Unable to get all clusters for the profile';
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+export const archiveProjectSet = async (profileId: number): Promise<void> => {
+  try {
+    // Step 1. Archive Contacts
+    const contacts = await ContactModel.findForProject(profileId)
+
+    for (const contact of contacts) {
+      await ContactModel.delete(Number(contact.id))
+    }
+
+    // Step 2. Archive Namespace
+    const projectNamespaces = await NamespaceModel.findForProfile(profileId)
+
+    for (const namespace of projectNamespaces) {
+      // @ts-ignore
+      await NamespaceModel.delete(Number(namespace.namespaceId))
+    }
+
+    // Step 3. Archive profile
+    await ProfileModel.delete(profileId);
+  } catch (err) {
+    const message = `Unable to archive project set with profile id ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
