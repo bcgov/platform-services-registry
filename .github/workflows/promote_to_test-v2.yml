@@ -65,7 +65,7 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:test
 
   api_test:
-    needs: [db_build]
+    needs: [db_build_if_needed]
     if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
     runs-on: ubuntu-latest
     defaults:
@@ -150,7 +150,7 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:test
 
   web_test:
-    needs: [db]
+    needs: [db_build_if_needed]
     if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
     defaults:
@@ -202,7 +202,7 @@ jobs:
           CI: "true"
 
   web_s2i_build:
-    needs: [check_for_component_changes, web_test, web_build]
+    needs: [web_build]
     if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
     defaults:
