@@ -1,4 +1,4 @@
-name: Promote to Test
+name: TEST - promote from Dev
 
 on:
 
@@ -6,18 +6,18 @@ on:
   # the api, db, or web directories.
   # If necessary, tags can be used to put more controls around this.
   # ----------------------------------------------------------------
-  push:
-    branches:
-      - master
-    paths:
-      - "api/src/**/*.ts"
-      - "api/package*.json"
-      - "db/sql/*.sql"
-      - "web/src/**/*.ts"
-      - "web/src/**/*.tsx"
-      - "web/package*.json"
-      - "web/public/**/*"
-      - "web/Caddyfile"
+  #push:
+  #  branches:
+  #    - master
+  #  paths:
+  #    - "api/src/**/*.ts"
+  #    - "api/package*.json"
+  #    - "db/sql/*.sql"
+  #    - "web/src/**/*.ts"
+  #    - "web/src/**/*.tsx"
+  #    - "web/package*.json"
+  #    - "web/public/**/*"
+  #    - "web/Caddyfile"
 
   # Optionally trigger the promotion manually
   # -----------------------------------------

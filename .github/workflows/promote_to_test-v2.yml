@@ -1,0 +1,227 @@
+name: TEST - build from master
+
+on:
+  # Build for Test when a pull request is merged into master with changes to
+  # certain api, db, or web files.
+  # ------------------------------------------------------------------------
+  push:
+    branches:
+      - master
+    paths:
+      - "api/src/**/*.ts"
+      - "api/package*.json"
+      - "db/sql/*.sql"
+      - "web/src/**/*.ts"
+      - "web/src/**/*.tsx"
+      - "web/package*.json"
+      - "web/public/**/*"
+      - "web/Caddyfile"
+  workflow_dispatch:
+
+jobs:
+
+  # This action (dorny/paths-filter) allows us to selectively run jobs based on
+  # the files that have been updated, as in on.push.paths above.
+  # Saves us from doing unnecessary builds.
+  # ---------------------------------------------------------------------------
+  check_for_component_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      db: ${{ steps.filter.outputs.db }}
+      api: ${{ steps.filter.outputs.api }}
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          db:
+            - 'db/**'
+          api:
+            - 'api/**'
+          web:
+            - 'web/**'
+
+  db_build_if_needed:
+    needs: check_for_component_changes
+    runs-on: ubuntu-latest
+    steps:
+      # Build the DB image from master only if there are DB updates
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "test"
+      # -----------------------------------------------------------
+      - name: Build and tag the image
+        if: ${{ needs.check_for_component_changes.outputs.db == 'true' }}
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n platform-registry-tools start-build platsrv-registry-flyway-master-build --follow
+          export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-flyway-master-build)"
+          export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-flyway-master-build-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-flyway-master-build-$BUILDID)"
+          oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:test
+
+  api_test:
+    needs: [db_build]
+    if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests w/ coverage
+        run: npm run test:coverage
+      - name: LINTing
+        run: npm run test:lint
+      - name: OpenAPI Schema
+        run: npm run test:schema
+      - name: Upload coverage report
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.TestReporterID }}
+          CI: "true"
+        run: |
+          curl -Ls https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter format-coverage -t lcov -o codeclimate.json
+          ./cc-test-reporter upload-coverage -i codeclimate.json
+
+  api_build:
+    needs: [api_test]
+    if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: "true"
+
+  api_s2i-build:
+    needs: [api_build]
+    if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      # Build the image using the master build config
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "test"
+      # ---------------------------------------------
+      - name: Build and tag the image
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n platform-registry-tools start-build platsrv-registry-api-master-build --follow
+          export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-api-master-build)"
+          export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-api-master-build-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-api-master-build-$BUILDID)"
+          oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:test
+
+  web_test:
+    needs: [db]
+    if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests w/ coverage
+        run: npm run test -- --coverage --passWithNoTests
+      - name: LINTing
+        run: npm run lint -- --quiet -f codeframe
+      - name: Prettier
+        run: npm run format -- --check
+
+  web_build:
+    needs: [web_test]
+    if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: "true"
+
+  web_s2i_build:
+    needs: [check_for_component_changes, web_test, web_build]
+    if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      # Build the image using the master build config
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "test"
+      # ---------------------------------------------
+      - name: Build and tag the image
+        run: |
+          oc version
+          oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc -n platform-registry-tools start-build platsrv-registry-web-master-build --follow
+          export BUILDID="$(oc -n platform-registry-tools get -o=jsonpath="{.status.lastVersion}" buildconfig platsrv-registry-web-master-build)"
+          export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-master-build-$BUILDID | cut -c1-7)"
+          export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-master-build-$BUILDID)"
+          oc -n platform-registry-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:test
+
