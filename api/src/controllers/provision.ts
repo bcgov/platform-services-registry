@@ -63,7 +63,7 @@ export const provisionerCallbackHandler = async (
   { body }: { body: any }, res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const { prefix, cluster } = body;
+  const { prefix, clusterName } = body;
 
   try {
     const profile = await ProfileModel.findByPrefix(prefix);
@@ -71,16 +71,16 @@ export const provisionerCallbackHandler = async (
       throw new Error(`Cant find any profile for the given prefix ${prefix}`);
     }
 
-    if (!CLUSTER_NAMES.includes(cluster)) {
-      throw new Error(`Unknown cluster name: ${cluster} included in callback response`);
+    if (!CLUSTER_NAMES.includes(clusterName)) {
+      throw new Error(`Unknown cluster name: ${clusterName} included in callback response`);
     }
 
     const isProfileProvisioned = await getProvisionStatus(profile);
 
     if (isProfileProvisioned) {
-      await processProvisionedProfileEditRequest(profile, cluster);
+      await processProvisionedProfileEditRequest(profile, clusterName);
     } else {
-      await updateProvisionedProfile(profile, cluster);
+      await updateProvisionedProfile(profile, clusterName);
     }
     res.status(204).end();
   } catch (err) {
