@@ -99,5 +99,8 @@ export default {
     checkbox: {
       margin: 'auto',
     },
+    inlineCheckbox: {
+      margin: '14px 0 5px 0',
+    },
   },
 };

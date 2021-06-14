@@ -15,9 +15,11 @@
 //
 
 import styled from '@emotion/styled';
+import { Checkbox, Input, Label } from '@rebass/forms';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSortBy, useTable } from 'react-table';
+import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
+import { Box, Flex, Heading } from 'rebass';
 import theme from '../../../theme';
 import Icon from './Icon';
 
@@ -25,6 +27,7 @@ interface ITableProps {
   columns: any;
   data: Object[];
   linkedRows?: boolean;
+  title: string;
 }
 
 const Styles = styled.div`
@@ -140,8 +143,53 @@ const Styles = styled.div`
   }
 `;
 
+// Define a default UI for filtering
+const GlobalFilter: React.FC<any> = ({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter,
+}:any) => {
+  const count = preGlobalFilteredRows.length
+  const [value, setValue] = React.useState(globalFilter)
+  const onChange = useAsyncDebounce(value => {
+    setGlobalFilter(value || undefined)
+  }, 200)
+
+  return (
+    <Flex flexDirection="row">
+      <Label width={1/3}>Search:{' '}</Label>
+      <Input
+        value={value || ""}
+        onChange={e => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`${count} records...`}
+        width={2/3}
+      />
+    </Flex>
+  )
+}
+
 const Table: React.FC<ITableProps> = (props) => {
-  const { columns, data, linkedRows } = props;
+  const { columns, data, linkedRows, title } = props;
+  
+  const filterTypes = React.useMemo(
+    () => ({
+      text: (rows:any, id:any, filterValue:any) => {
+        return rows.filter((row:any) => {
+          const rowValue = row.values[id]
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true
+        })
+      },
+    }),
+    []
+  )
+
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -149,11 +197,22 @@ const Table: React.FC<ITableProps> = (props) => {
     headerGroups, // headerGroups, if your table has groupings
     rows, // rows for the table based on the data passed
     prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
+    state,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+    allColumns,
+    getToggleHideAllColumnsProps,
   } = useTable(
     {
       columns,
       data,
+      filterTypes,
+      initialState: {
+        hiddenColumns: ['namespacePrefix', 'quotaSize']
+      }
     },
+    useFilters,
+    useGlobalFilter,
     useSortBy,
   );
 
@@ -169,6 +228,36 @@ const Table: React.FC<ITableProps> = (props) => {
   */
   return (
     <Styles>
+      <Flex flexWrap="wrap">
+        <Heading>{title}</Heading>
+        <Box mx='auto' />
+        <Icon
+          hover
+          color="primary"
+          name='menuStack'
+          width={1.4}
+          height={1.4}
+          style={{margin: '14px 0 5px 0'}}
+        />
+        <GlobalFilter
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      </Flex>
+      <div>
+        {allColumns.map(column => (
+          <div key={column.id}>
+            <label>
+              <Flex flexDirection="row">
+                <Checkbox variant="inlineCheckbox" type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                <Label>{column.Header}</Label>
+              </Flex>
+            </label>
+          </div>
+        ))}
+        <br />
+      </div>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => {

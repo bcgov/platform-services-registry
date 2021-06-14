@@ -15,14 +15,14 @@
 //
 
 import { useKeycloak } from '@react-keycloak/web';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Heading } from 'rebass';
+import { Box } from 'rebass';
 import { BackdropForPendingItem } from '../components/common/UI/Backdrop';
 import { Button } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
-import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
+import ProjectDetails from '../components/dashboard/ProjectDetails';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
 import useCommonState from '../hooks/useCommonState';
@@ -36,7 +36,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -155,45 +155,6 @@ const Dashboard: React.FC = () => {
     setTableView(!tableView);
   };
 
-  /* 
-    - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
-    - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
-  */
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Name',
-        accessor: 'name',
-      },
-      {
-        Header: 'Description',
-        accessor: 'description',
-      },
-      {
-        Header: 'Ministry',
-        accessor: 'busOrgId',
-      },
-      {
-        Header: 'Cluster',
-        accessor: 'primaryClusterDisplayName',
-      },
-      {
-        Header: 'Product Owner',
-        accessor: 'POEmail',
-      },
-      {
-        Header: 'Technical Contact',
-        accessor: 'TCEmail',
-      },
-      {
-        Header: 'Status',
-        accessor: 'provisioned',
-        Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
-      },
-    ],
-    [],
-  );
-
   return (
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
@@ -202,10 +163,7 @@ const Dashboard: React.FC = () => {
       {userRoles.includes('administrator') ? <ProjectRequests profileDetails={profile} /> : ''}
 
       {tableView ? (
-        <Box style={{ overflow: 'auto' }}>
-          <Heading>Projects</Heading>
-          <Table columns={columns} data={profile} linkedRows={true} />
-        </Box>
+        <ProjectDetails profileDetails={profile} />
       ) : (
         <div>
           {/* Project Cards */}
