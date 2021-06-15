@@ -22,6 +22,7 @@ interface UserProperties {
   given_name: string;
   name: string;
   preferred_username: string;
+  resource_access: object;
 }
 
 export default function getDecodedToken(token: string) {
