@@ -27,7 +27,7 @@ import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCa
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
 import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
-import { PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
+import { HOME_PAGE_URL, PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
@@ -40,7 +40,7 @@ import {
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
-  isProfileProvisioned,
+  isProfileProvisioned
 } from '../utils/transformDataHelper';
 
 const StyledDiv = styled.div`
@@ -218,7 +218,15 @@ const ProfileEdit: React.FC = (props: any) => {
           }}
         >
           <ShadowBox p={5} style={{ position: 'relative' }}>
-            <Text as="h1">{profileState.projectDetails.name}</Text>
+            <Flex><RouterLink
+            className="misc-class-m-dropdown-link"
+            to={HOME_PAGE_URL}
+          >
+            <Icon hover color="black" name="goBack" width={1.5} height={1.5} style={{margin: 'auto' }} />
+          </RouterLink>
+            <Text as="h1" mx={2}>{profileState.projectDetails.name}</Text>
+            </Flex>
+          
             {cards.length > 0 &&
               cards.map((c: any, index: number) => (
                 <Box key={index}>
@@ -237,6 +245,14 @@ const ProfileEdit: React.FC = (props: any) => {
                   </ShadowBox>
                 </Box>
               ))}
+              <Flex mt={4}>
+              <Text mx={2} sx={{ textTransform: 'capitalize' }}>
+                Requested: Jun 15, 2021
+              </Text>
+              <Text mx={2} sx={{ textTransform: 'capitalize' }}>
+                Provisioned: Jun 16, 2021
+              </Text>
+              </Flex>
           </ShadowBox>
         </Box>
       </StyledDiv>
