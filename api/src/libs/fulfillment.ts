@@ -25,13 +25,13 @@ import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
 import { Request, RequestEditType, RequestType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
-import { NatsContext, NatsContextAction, NatsContextType, NatsMessage } from '../types';
+import { NatsContact, NatsContactRole, NatsContext, NatsContextAction, NatsMessage, NatsProjectNamespace } from '../types';
 import { createBotMessageSet, fetchBotMessageRequests } from './bot-message';
 import { getQuotaSize } from './profile';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
-const { ProfileModel, ContactModel, QuotaModel, NamespaceModel } = dm;
+const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, ClusterModel } = dm;
 
 export const fulfillRequest = async (request: Request):
   Promise<any> => {
@@ -128,41 +128,48 @@ const generateContext = async (request: Request): Promise<NatsContext> => {
   }
 }
 
+const formatNamespaces = (namespace, quota, quotas): NatsProjectNamespace => {
+  return {...namespace, quota, ...quotas}
+}
+
+const formatTechnicalContacts = (contact): NatsContact => {
+  return {
+    user_id: contact.githubId,
+    provider: 'github', // TODO:(JL) Fix as part of #94.
+    email: contact.email,
+    rocketchat_username: null, // TODO:(SB) Update when rocketchat func is implemented
+    role: (contact.roleId === ROLE_IDS.TECHNICAL_CONTACT ? NatsContactRole['Lead'] : NatsContactRole['Owner'])
+  }
+}
+
 const buildContext = async (
-  action: NatsContextAction, profile: ProjectProfile, contacts: Contact[], quotaSize: QuotaSize, quotas: Quotas
+  action: NatsContextAction, profile: ProjectProfile, profileContacts: Contact[], quotaSize: QuotaSize, quotas: Quotas
 ): Promise<NatsContext> => {
   try {
     if (!profile.id) {
       throw new Error('Cant get profile id');
     }
-    const namespaces = await NamespaceModel.findForProfile(profile.id);
-    const tcContact = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT).pop();
-    const poContact = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER).pop();
+    const namespacesDetails = await NamespaceModel.findNamespacesForProfile(profile.id);
+    
+    const namespaces: NatsProjectNamespace[] = namespacesDetails.map(n => formatNamespaces(n, quotaSize, quotas))
 
-    if (!profile || !tcContact || !poContact || !quotaSize || !quotas || !namespaces) {
+    const cluster = await ClusterModel.findByName(profile.primaryClusterName);
+
+    const contacts: NatsContact[] = profileContacts.map(contact => formatTechnicalContacts(contact));
+
+    if (!profile || !namespaces || !cluster.id || contacts.length == 0) {
       throw new Error('Missing arguments to build nats context');
     }
 
     return {
       action,
-      type: NatsContextType.Standard,
-      profileId: profile.id,
-      displayName: profile.name,
-      newDisplayName: 'NULL',
+      profile_id: profile.id,
+      cluster_id: cluster.id,
+      cluster_name: cluster.name, // TODO:(sb) Update to allow GoldDR
+      display_name: profile.name,
       description: profile.description,
-      quota: quotaSize,
-      quotas,
       namespaces,
-      technicalContact: {
-        userId: tcContact.githubId,
-        provider: 'github', // TODO:(JL) Fix as part of #94.
-        email: tcContact.email,
-      },
-      productOwner: {
-        userId: poContact.githubId,
-        provider: 'github', // TODO:(JL) Fix as part of #94.
-        email: poContact.email,
-      },
+      contacts,
     };
   } catch (err) {
     const message = `Unable to build context for profile ${profile.id}`;

@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 
-import { ProjectNamespace } from './db/model/namespace';
 import { Quotas, QuotaSize } from './db/model/quota';
 
 export const enum NatsContextAction {
@@ -23,31 +22,39 @@ export const enum NatsContextAction {
     Sync = 'sync',
 }
 
-export const enum NatsContextType {
-    Standard = 'standard',
+export const enum NatsContactRole {
+    Owner = 'owner',
+    Lead = 'lead',
+    Contact = 'contact',
 }
 
-// the agreed json structure between api and provisioner
-export interface NatsContext {
-    action: NatsContextAction,
-    type: NatsContextType,
-    profileId: number,
-    displayName: string,
-    newDisplayName: string,
-    description: string,
+export interface NatsContact {
+    user_id: string,
+    provider: string,
+    email: string,
+    rocketchat_username: null,
+    role: NatsContactRole,
+}
+
+export interface NatsProjectNamespace {
+    id: number,
+    name: string,
     quota: QuotaSize,
     quotas: Quotas,
-    namespaces: ProjectNamespace[],
-    technicalContact: {
-        userId: string,
-        provider: string,
-        email: string,
-    },
-    productOwner: {
-        userId: string,
-        provider: string,
-        email: string,
-    },
+
+}
+
+// To avoid issues with provisioner, snake case is the preferred
+// pattern for the NatsContext. 
+export interface NatsContext {
+    action: NatsContextAction,
+    profile_id: number,
+    cluster_id: number,
+    cluster_name: string,
+    display_name: string,
+    description: string,
+    namespaces: NatsProjectNamespace[],
+    contacts: NatsContact[];
 }
 
 // TODO: a bit hacky to name data members off the actual tool name
