@@ -277,7 +277,40 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
   });
 
-  it('Request project-profile edit with provisioner-related changes', async () => {
+  it('request project-profile edit with provisioner-related name changes', async () => {
+    const body = {
+      id: 4,
+      name: "Project X ATTEMPTED NAME CHANGE",
+      description: "This is a cool project.",
+      criticalSystem: false,
+      prioritySystem: false,
+      busOrgId: "CITZ",
+      notificationEmail: true,
+      notificationSms: true,
+    };
+    const req = {
+      params: { profileId: 4 },
+      body,
+      user: authenticatedUser,
+    };
+
+    client.query.mockReturnValueOnce({ rows: selectProfile });
+
+    const update = ProfileModel.prototype.update = jest.fn();
+
+    await updateProjectProfile(req, ex.res);
+
+    expect(update).toHaveBeenCalledTimes(0);
+    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
+    expect(ex.res.statusCode).toBe(202);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+  });
+
+  it('request project-profile edit with provisioner-related description changes', async () => {
     const body = {
       id: 4,
       name: "Project X",
@@ -327,39 +360,6 @@ describe('Project-profile event handlers', () => {
 
     expect(ex.res.status).not.toBeCalled();
     expect(ex.res.json).not.toBeCalled();
-  });
-
-  it('A project-profiles does not allow updating name', async () => {
-    const body = {
-      id: 4,
-      name: "Project X ATTEMPTED NAME CHANGE",
-      description: "This is a cool project.",
-      criticalSystem: false,
-      prioritySystem: false,
-      busOrgId: "CITZ",
-      notificationEmail: true,
-      notificationSms: true,
-    };
-    const req = {
-      params: { profileId: 4 },
-      body,
-      user: authenticatedUser,
-    };
-
-    client.query.mockReturnValueOnce({ rows: selectProfile });
-    client.query.mockReturnValueOnce({ rows: [] });
-
-    const update = ProfileModel.prototype.update = jest.fn();
-
-    await updateProjectProfile(req, ex.res);
-
-    expect(update).toHaveBeenCalledTimes(1);
-    expect(requestProjectProfileEdit).toHaveBeenCalledTimes(1);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
-    expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
-    expect(ex.res.status).toBeCalled();
   });
 
   it('A project-profiles is archived', async () => {

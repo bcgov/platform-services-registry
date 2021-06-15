@@ -158,6 +158,7 @@ export const updateProjectProfile = async (
   }
 
   const {
+    name,
     description,
     busOrgId,
     prioritySystem,
@@ -182,6 +183,7 @@ export const updateProjectProfile = async (
   try {
     const currentProjectProfile: ProjectProfile = await ProfileModel.findById(profileId);
     const aBody = {
+      name,
       description,
       busOrgId,
       prioritySystem,
@@ -201,13 +203,13 @@ export const updateProjectProfile = async (
       idmActiveDir,
       other,
       migratingLicenseplate,
-      name: currentProjectProfile.name,
       userId: currentProjectProfile.userId,
       namespacePrefix: currentProjectProfile.namespacePrefix,
       primaryClusterName: currentProjectProfile.primaryClusterName,
     };
 
     const editCompares = [
+      currentProjectProfile.name !== name,
       currentProjectProfile.description !== description,
     ];
     const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
