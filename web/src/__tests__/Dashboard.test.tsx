@@ -26,6 +26,21 @@ import mockProfiles from './fixtures/profiles.json';
 const browserHistory = createBrowserHistory();
 
 jest.mock(
+  '../utils/getDecodedToken',
+  () =>
+    function getDecodedToken() {
+      return {
+        email: 'test@example.com',
+        family_name: 'Jane',
+        given_name: 'Doe',
+        name: 'Jane Doe',
+        preferred_username: 'janedoe@idir',
+        resource_access: { 'registry-web': { roles: ['administrator'] } },
+      };
+    },
+);
+
+jest.mock(
   '../hooks/useRegistryApi',
   () =>
     function useRegistryApi() {
