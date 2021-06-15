@@ -240,34 +240,6 @@ Object {
 }
 `;
 
-exports[`Project-profile event handlers A project-profiles does not allow updating name 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-                UPDATE request
-                SET is_active = false
-                WHERE id = 2
-                RETURNING *;",
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers A project-profiles does not allow updating name 2`] = `204`;
-
-exports[`Project-profile event handlers A project-profiles does not allow updating name 3`] = `undefined`;
-
 exports[`Project-profile event handlers A project-profiles fails to archive 1`] = `
 Array [
   Array [
@@ -443,25 +415,6 @@ Array [
 ]
 `;
 
-exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 2`] = `202`;
-
-exports[`Project-profile event handlers Request project-profile edit with provisioner-related changes 3`] = `undefined`;
-
 exports[`Project-profile event handlers Unique project-profiles names are derived 1`] = `
 Array [
   Array [
@@ -526,3 +479,41 @@ Array [
 exports[`Project-profile event handlers Update a project-profile with non provisioner-related changes 2`] = `204`;
 
 exports[`Project-profile event handlers Update a project-profile with non provisioner-related changes 3`] = `undefined`;
+
+exports[`Project-profile event handlers request project-profile edit with provisioner-related description changes 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Project-profile event handlers request project-profile edit with provisioner-related description changes 2`] = `202`;
+
+exports[`Project-profile event handlers request project-profile edit with provisioner-related description changes 3`] = `undefined`;
+
+exports[`Project-profile event handlers request project-profile edit with provisioner-related name changes 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "
+        SELECT * FROM profile
+          WHERE id = $1 AND archived = false;",
+      "values": Array [
+        4,
+      ],
+    },
+  ],
+]
+`;
+
+exports[`Project-profile event handlers request project-profile edit with provisioner-related name changes 2`] = `202`;
+
+exports[`Project-profile event handlers request project-profile edit with provisioner-related name changes 3`] = `undefined`;
