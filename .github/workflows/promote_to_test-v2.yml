@@ -3,6 +3,7 @@ name: TEST - build from master
 on:
   # Build for Test when a pull request is merged into master with changes to
   # certain api, db, or web files.
+  # If triggered manually, run all steps.
   # ------------------------------------------------------------------------
   push:
     branches:
@@ -54,7 +55,7 @@ jobs:
       # Tag the image with the commit ID and "test"
       # -----------------------------------------------------------
       - name: Build and tag the image
-        if: ${{ needs.check_for_component_changes.outputs.db == 'true' }}
+        if: ${{ needs.check_for_component_changes.outputs.db == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
@@ -65,8 +66,8 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:test
 
   api_test:
-    needs: [db_build]
-    if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
+    needs: [db_build_if_needed]
+    if: ${{ needs.check_for_component_changes.outputs.api == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -96,7 +97,7 @@ jobs:
 
   api_build:
     needs: [api_test]
-    if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
+    if: ${{ needs.check_for_component_changes.outputs.api == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -127,7 +128,7 @@ jobs:
 
   api_s2i-build:
     needs: [api_build]
-    if: ${{ needs.check_for_component_changes.outputs.api == 'true' }}
+    if: ${{ needs.check_for_component_changes.outputs.api == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -150,8 +151,8 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:test
 
   web_test:
-    needs: [db]
-    if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
+    needs: [db_build_if_needed]
+    if: ${{ needs.check_for_component_changes.outputs.web == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -172,7 +173,7 @@ jobs:
 
   web_build:
     needs: [web_test]
-    if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
+    if: ${{ needs.check_for_component_changes.outputs.web == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -202,8 +203,8 @@ jobs:
           CI: "true"
 
   web_s2i_build:
-    needs: [check_for_component_changes, web_test, web_build]
-    if: ${{ needs.check_for_component_changes.outputs.web == 'true' }}
+    needs: [web_build]
+    if: ${{ needs.check_for_component_changes.outputs.web == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
       run:
