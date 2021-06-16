@@ -128,17 +128,17 @@ const generateContext = async (request: Request): Promise<NatsContext> => {
   }
 }
 
-const formatNamespaces = (namespace, quota, quotas): NatsProjectNamespace => {
-  return {...namespace, quota, ...quotas}
+const formatNamespacesForNats = (namespace, quota, quotas): NatsProjectNamespace => {
+  return {...namespace, quota, quotas}
 }
 
-const formatTechnicalContacts = (contact): NatsContact => {
+const formatContactsForNats = (contact): NatsContact => {
   return {
     user_id: contact.githubId,
     provider: 'github', // TODO:(JL) Fix as part of #94.
     email: contact.email,
     rocketchat_username: null, // TODO:(SB) Update when rocketchat func is implemented
-    role: (contact.roleId === ROLE_IDS.TECHNICAL_CONTACT ? NatsContactRole['Lead'] : NatsContactRole['Owner'])
+    role: (contact.roleId === ROLE_IDS.TECHNICAL_CONTACT ? NatsContactRole.Lead : NatsContactRole.Owner),
   }
 }
 
@@ -150,14 +150,14 @@ const buildContext = async (
       throw new Error('Cant get profile id');
     }
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(profile.id);
-    
-    const namespaces: NatsProjectNamespace[] = namespacesDetails.map(n => formatNamespaces(n, quotaSize, quotas))
+
+    const namespaces: NatsProjectNamespace[] = namespacesDetails.map(n => formatNamespacesForNats(n, quotaSize, quotas))
 
     const cluster = await ClusterModel.findByName(profile.primaryClusterName);
 
-    const contacts: NatsContact[] = profileContacts.map(contact => formatTechnicalContacts(contact));
+    const contacts: NatsContact[] = profileContacts.map(contact => formatContactsForNats(contact));
 
-    if (!profile || !namespaces || !cluster.id || contacts.length == 0) {
+    if (!profile || !namespaces || !cluster.id || contacts.length === 0) {
       throw new Error('Missing arguments to build nats context');
     }
 
