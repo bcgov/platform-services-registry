@@ -29,7 +29,6 @@ import { NatsContact, NatsContactRole, NatsContext, NatsContextAction, NatsMessa
 import { createBotMessageSet, fetchBotMessageRequests } from './bot-message';
 import { getQuotaSize } from './profile';
 import shared from './shared';
-
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, ClusterModel } = dm;
 
@@ -129,9 +128,12 @@ const generateContext = async (request: Request): Promise<NatsContext> => {
 }
 
 const formatNamespacesForNats = (namespace, quota, quotas): NatsProjectNamespace => {
-  namespace.namespace_id = namespace.id;
-  delete namespace.id;
-  return {...namespace, quota, quotas};
+  return {
+      namespace_id: namespace.id,
+      name: namespace.name,
+      quota,
+      quotas,
+    };
 }
 
 const formatContactsForNats = (contact): NatsContact => {
@@ -151,9 +153,14 @@ const buildContext = async (
     if (!profile.id) {
       throw new Error('Cant get profile id');
     }
+
+    // TODO:(sb) Find a more robust solution to convert quotas to snake_case
+    // @ts-ignore
+    delete Object.assign(quotas.storage, {pvc_count: quotas.storage.pvcCount }).pvcCount;
+
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(profile.id);
 
-    const namespaces: NatsProjectNamespace[] = namespacesDetails.map(n => formatNamespacesForNats(n, quotaSize, quotas))
+    const namespaces = namespacesDetails.map(n => formatNamespacesForNats(n, quotaSize, quotas))
 
     const cluster = await ClusterModel.findByName(profile.primaryClusterName);
 

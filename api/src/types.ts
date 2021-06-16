@@ -37,7 +37,7 @@ export interface NatsContact {
 }
 
 export interface NatsProjectNamespace {
-    id: number,
+    namespace_id: number,
     name: string,
     quota: QuotaSize,
     quotas: Quotas,

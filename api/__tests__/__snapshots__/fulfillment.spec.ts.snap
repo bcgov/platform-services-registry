@@ -92,7 +92,7 @@ Array [
       "values": Array [
         3,
         "registry_project_provisioning_silver",
-        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":1,\\"cluster_name\\":\\"silver\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"namespaceId\\":13,\\"name\\":\\"4ea35c-tools\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}],\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvcCount\\":20}}},{\\"namespaceId\\":14,\\"name\\":\\"4ea35c-test\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}],\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvcCount\\":20}}},{\\"namespaceId\\":15,\\"name\\":\\"4ea35c-dev\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}],\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvcCount\\":20}}},{\\"namespaceId\\":16,\\"name\\":\\"4ea35c-prod\\",\\"clusters\\":[{\\"clusterId\\":1,\\"name\\":\\"silver\\",\\"provisioned\\":false}],\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvcCount\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
+        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":1,\\"cluster_name\\":\\"silver\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"name\\":\\"4ea35c-tools\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"name\\":\\"4ea35c-test\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"name\\":\\"4ea35c-dev\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"name\\":\\"4ea35c-prod\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
         "silver",
         false,
       ],
@@ -126,15 +126,7 @@ Object {
   "display_name": "Project X",
   "namespaces": Array [
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-tools",
-      "namespaceId": 13,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -151,20 +143,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-test",
-      "namespaceId": 14,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -181,20 +165,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-dev",
-      "namespaceId": 15,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -211,20 +187,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-prod",
-      "namespaceId": 16,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -241,7 +209,7 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
@@ -275,15 +243,7 @@ Object {
   "display_name": "Project X",
   "namespaces": Array [
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-tools",
-      "namespaceId": 13,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -300,20 +260,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-test",
-      "namespaceId": 14,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -330,20 +282,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-dev",
-      "namespaceId": 15,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -360,20 +304,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-prod",
-      "namespaceId": 16,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -390,7 +326,7 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
@@ -424,15 +360,7 @@ Object {
   "display_name": "Project X",
   "namespaces": Array [
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-tools",
-      "namespaceId": 13,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -449,20 +377,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-test",
-      "namespaceId": 14,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -479,20 +399,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-dev",
-      "namespaceId": 15,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -509,20 +421,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-prod",
-      "namespaceId": 16,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -539,7 +443,7 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
@@ -573,15 +477,7 @@ Object {
   "display_name": "Project X",
   "namespaces": Array [
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-tools",
-      "namespaceId": 13,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -598,20 +494,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-test",
-      "namespaceId": 14,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -628,20 +516,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-dev",
-      "namespaceId": 15,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -658,20 +538,12 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
     Object {
-      "clusters": Array [
-        Object {
-          "clusterId": 1,
-          "name": "silver",
-          "provisioned": false,
-        },
-      ],
       "name": "4ea35c-prod",
-      "namespaceId": 16,
       "namespace_id": undefined,
       "quota": "small",
       "quotas": Object {
@@ -688,7 +560,7 @@ Object {
           "block": "50Gi",
           "capacity": "50Gi",
           "file": "50Gi",
-          "pvcCount": 20,
+          "pvc_count": undefined,
         },
       },
     },
