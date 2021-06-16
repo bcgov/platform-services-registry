@@ -129,7 +129,9 @@ const generateContext = async (request: Request): Promise<NatsContext> => {
 }
 
 const formatNamespacesForNats = (namespace, quota, quotas): NatsProjectNamespace => {
-  return {...namespace, quota, quotas}
+  namespace.namespace_id = namespace.id;
+  delete namespace.id;
+  return {...namespace, quota, quotas};
 }
 
 const formatContactsForNats = (contact): NatsContact => {
