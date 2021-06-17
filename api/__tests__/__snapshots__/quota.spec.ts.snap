@@ -27,6 +27,7 @@ Array [
     "storageBlock": "50Gi",
     "storageCapacity": "50Gi",
     "storageFile": "50Gi",
+    "storagePvcCount": 20,
     "updatedAt": "2021-03-17T23:06:05.112Z",
   },
   Object {
@@ -40,6 +41,7 @@ Array [
     "storageBlock": "100Gi",
     "storageCapacity": "100Gi",
     "storageFile": "100Gi",
+    "storagePvcCount": 40,
     "updatedAt": "2021-03-17T23:06:05.112Z",
   },
   Object {
@@ -53,6 +55,7 @@ Array [
     "storageBlock": "200Gi",
     "storageCapacity": "200Gi",
     "storageFile": "200Gi",
+    "storagePvcCount": 60,
     "updatedAt": "2021-03-17T23:06:05.112Z",
   },
 ]
@@ -99,6 +102,7 @@ Array [
     ],
     "name": "small",
     "storageNums": Array [
+      20,
       "50GiB",
       "25GiB",
     ],
@@ -114,6 +118,7 @@ Array [
     ],
     "name": "medium",
     "storageNums": Array [
+      40,
       "100GiB",
       "50GiB",
     ],
@@ -129,6 +134,7 @@ Array [
     ],
     "name": "large",
     "storageNums": Array [
+      60,
       "200GiB",
       "100GiB",
     ],

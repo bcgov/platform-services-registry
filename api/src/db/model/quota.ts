@@ -40,6 +40,7 @@ export interface Quotas {
         file: string;
         backup: string;
         capacity: string;
+        pvcCount: number;
     };
 }
 
@@ -52,6 +53,7 @@ export interface Quota extends CommonFields {
     storageFile: string;
     storageBackup: string;
     storageCapacity: string;
+    storagePvcCount: number;
 }
 
 export default class QuotaModel extends Model {
@@ -65,6 +67,7 @@ export default class QuotaModel extends Model {
         'storage_file',
         'storage_backup',
         'storage_capacity',
+        'storage_pvc_count',
     ];
     pool: Pool;
 
@@ -113,7 +116,7 @@ export default class QuotaModel extends Model {
                         name: size.id,
                         cpuNums: [size.cpuRequests, size.cpuLimits],
                         memoryNums: [size.memoryRequests.replace("Gi", "GiB"), size.memoryLimits.replace("Gi", "GiB")],
-                        storageNums: [size.storageFile.replace("Gi", "GiB"), size.storageBackup.replace("Gi", "GiB")],
+                        storageNums: [size.storagePvcCount, size.storageFile.replace("Gi", "GiB"), size.storageBackup.replace("Gi", "GiB")],
                     },
                 );
             }
@@ -135,7 +138,7 @@ export default class QuotaModel extends Model {
                         FROM ref_quota WHERE id = '${quotaSize}') d),
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
                         FROM ref_quota WHERE id = '${quotaSize}') d),
-                    'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity"
+                    'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
                         FROM ref_quota WHERE id = '${quotaSize}') d)
                 );
             `

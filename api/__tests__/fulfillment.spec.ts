@@ -48,6 +48,9 @@ const contactEditObject = fs.readFileSync(p7, 'utf8');
 const p9 = path.join(__dirname, 'fixtures/get-bot-message-set.json');
 const botMessageSet = JSON.parse(fs.readFileSync(p9, 'utf8'));
 
+const p10 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+const profileCluster = JSON.parse(fs.readFileSync(p10, 'utf8'));
+
 jest.mock('../src/libs/profile', () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue(QuotaSize.Small),
@@ -77,6 +80,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: quotas });
     // buildContext
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: [{id: 1, name: 'silver'}] });
     // createBotMessageSet
     client.query.mockReturnValueOnce({ rows: [{name: 'silver'}] });
     client.query.mockReturnValueOnce({ rows: botMessageSet });
@@ -96,6 +100,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: profileCluster });
     const result = await contextForProvisioning(12345, false);
 
     expect(result).toBeDefined();
@@ -108,6 +113,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: profileCluster });
 
     await expect(contextForProvisioning(12345, false)).rejects.toThrow();
   });
@@ -127,6 +133,8 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: profileCluster });
+
     const result = await contextForEditing(12345, requestEditType, requestEditObject);
 
     expect(result).toBeDefined();
@@ -140,6 +148,8 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: profileCluster });
+
     const result = await contextForEditing(12345, requestEditType, requestEditObject);
 
     expect(result).toBeDefined();
@@ -156,6 +166,8 @@ describe('Fulfillment utility', () => {
 
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: profileCluster });
+
     const result = await contextForEditing(12345, requestEditType, requestEditObject);
 
     expect(result).toBeDefined();
@@ -172,6 +184,7 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: profileCluster });
 
     await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
   });

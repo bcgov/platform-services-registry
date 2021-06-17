@@ -29,6 +29,7 @@ import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
+import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
   getClusterDisplayName,
@@ -45,6 +46,13 @@ const Dashboard: React.FC = () => {
 
   const [profile, setProfile] = useState<any>([]);
   const [tableView, setTableView] = useState(true);
+
+  const decodedToken = getDecodedToken(`${keycloak?.token}`);
+  // @ts-ignore
+  const userRoles = decodedToken.resource_access['registry-web']
+    ? // @ts-ignore
+      decodedToken.resource_access['registry-web'].roles
+    : [];
 
   useEffect(() => {
     async function wrap() {
@@ -191,7 +199,7 @@ const Dashboard: React.FC = () => {
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
       <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
 
-      <ProjectRequests profileDetails={profile} />
+      {userRoles.includes('administrator') ? <ProjectRequests profileDetails={profile} /> : ''}
 
       {tableView ? (
         <Box style={{ overflow: 'auto' }}>

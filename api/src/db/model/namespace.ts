@@ -306,7 +306,7 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  private async findNamespacesForProfile(profileId: number): Promise<ProjectNamespace[]> {
+  async findNamespacesForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         SELECT * FROM ${this.table}
