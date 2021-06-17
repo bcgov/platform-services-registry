@@ -1,0 +1,12 @@
+name: Cypress Testing
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cypress-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cypress testing
+        run: echo "Testing..."
