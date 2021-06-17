@@ -4,7 +4,7 @@ RUN mkdir flyway
 WORKDIR /flyway
 
 USER 0
-microdnf -y install gzip
+RUN microdnf -y install gzip
 
 ENV FLYWAY_VERSION 7.5.3
 
