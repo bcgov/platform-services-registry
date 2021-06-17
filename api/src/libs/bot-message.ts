@@ -30,7 +30,7 @@ export const createBotMessageSet = async ( requestId: number, natsSubject: strin
       throw new Error('Cant get profile id');
   }
 
-  const clusters = await NamespaceModel.findClustersForProfile(natsContext.profileId);
+  const clusters = await NamespaceModel.findClustersForProfile(natsContext.profile_id);
 
   for (const cluster of clusters) {
     await RequestModel.createBotMessage({
