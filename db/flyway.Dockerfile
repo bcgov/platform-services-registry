@@ -1,9 +1,10 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11:1.3-15
+FROM registry.access.redhat.com/ubi8/openjdk-11
 
 RUN mkdir flyway
 WORKDIR /flyway
 
 USER 0
+microdnf -y install gzip
 
 ENV FLYWAY_VERSION 7.5.3
 
@@ -20,4 +21,4 @@ COPY sql/*.sql /flyway/sql/
 
 RUN chmod -R 777 .
 
-USER 1001
+USER jboss
