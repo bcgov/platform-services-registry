@@ -9,6 +9,7 @@
         "storageFile": "50Gi",
         "storageBackup": "25Gi",
         "storageCapacity": "50Gi",
+        "storagePvcCount": 20,
         "createdAt": "2021-03-17T23:06:05.112Z",
         "updatedAt": "2021-03-17T23:06:05.112Z"
     },
@@ -22,6 +23,7 @@
         "storageFile": "100Gi",
         "storageBackup": "50Gi",
         "storageCapacity": "100Gi",
+        "storagePvcCount": 40,
         "createdAt": "2021-03-17T23:06:05.112Z",
         "updatedAt": "2021-03-17T23:06:05.112Z"
     },
@@ -35,6 +37,7 @@
         "storageFile": "200Gi",
         "storageBackup": "100Gi",
         "storageCapacity": "200Gi",
+        "storagePvcCount": 60,
         "createdAt": "2021-03-17T23:06:05.112Z",
         "updatedAt": "2021-03-17T23:06:05.112Z"
     }

@@ -18,7 +18,8 @@
           "block": "100Gi",
           "file": "100Gi",
           "backup": "50Gi",
-          "capacity": "100Gi"
+          "capacity": "100Gi",
+          "pvcCount": "40"
         }
       }
     },
