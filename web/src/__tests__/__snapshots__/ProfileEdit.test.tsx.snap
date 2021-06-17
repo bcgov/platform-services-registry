@@ -44,11 +44,12 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
     class="css-1guafq4"
   >
     MEDIUM
-     size quota for storage: 20 PVC count,
-    <br />
+     size quota for storage: 
     100GiB
-     overall storage with 
+     PVC count,
+    <br />
     50GiB
+     overall storage with 
      for backup storage
   </p>
   <br />
