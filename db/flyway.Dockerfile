@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11
+FROM registry.access.redhat.com/ubi8/openjdk-11:1.3-15
 
 RUN mkdir flyway
 WORKDIR /flyway
