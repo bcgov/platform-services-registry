@@ -3,10 +3,20 @@ name: Cypress Testing
 on:
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ./web
+
 jobs:
   cypress-testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Cypress testing
-        run: echo "Testing..."
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm run build
+          start: npm start
+
