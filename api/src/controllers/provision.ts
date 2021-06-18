@@ -18,7 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { CLUSTER_NAMES, GOLD_QUORUM_COUNT } from '../constants';
+import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, projectSetNames } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
@@ -32,23 +32,34 @@ import shared from '../libs/shared';
 const dm = new DataManager(shared.pgPool);
 
 export const provisionProfileNamespaces = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
+  const clusters = body;
   const { ProfileModel, NamespaceModel, ClusterModel } = dm;
 
   try {
     const existing = await NamespaceModel.findForProfile(profileId);
     if (existing.length === 0) {
       const profile = await ProfileModel.findById(profileId);
-      const cluster = await ClusterModel.findByName(profile.primaryClusterName);
 
-      if (!profile || !cluster) {
+      if (!profile) {
         const errmsg = 'Unable to fetch info for provisioning';
         throw new Error(errmsg);
       }
 
-      await NamespaceModel.createProjectSet(profileId, Number(cluster.id), profile.namespacePrefix);
+      const names = projectSetNames.map(n => `${profile.namespacePrefix}-${n}`);
+      const nsPromises = names.map(name => NamespaceModel.create({
+        name,
+        profileId,
+      }));
+
+      const nsResults = await Promise.all(nsPromises);
+
+      for (const cluster of clusters) {
+        const clusterDetails = await ClusterModel.findByName(cluster);
+        await NamespaceModel.createProjectSet(Number(clusterDetails.id), nsResults);
+      }
     }
     res.status(202).end();
   } catch (err) {

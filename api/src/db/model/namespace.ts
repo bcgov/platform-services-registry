@@ -18,7 +18,6 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
-import { projectSetNames } from '../../constants';
 import { CommonFields, Model } from './model';
 import { QuotaSize } from './quota';
 
@@ -125,7 +124,7 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async createProjectSet(profileId: number, clusterId: number, prefix: string,): Promise<ProjectNamespace[]> {
+  async createProjectSet(clusterId: number, nsResults:any): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         INSERT INTO cluster_namespace
@@ -134,13 +133,6 @@ export default class NamespaceModel extends Model {
       values: [],
     };
     try {
-      const names = projectSetNames.map(n => `${prefix}-${n}`);
-      const nsPromises = names.map(name => this.create({
-        name,
-        profileId,
-      }));
-
-      const nsResults = await Promise.all(nsPromises);
       // default quota size set to QuotaSize.Small
       const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId, QuotaSize.Small] }));
       await Promise.all(clPromises);
