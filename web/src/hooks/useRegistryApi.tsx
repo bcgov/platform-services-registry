@@ -1,4 +1,3 @@
-
 //
 // Copyright © 2020 Province of British Columbia
 //
@@ -117,7 +116,10 @@ export default function useRegistryApi() {
     return axiosInstance.current.post(`profile/${profileId}/contact/${contactId}`);
   };
 
-  const createNamespaceByProfileId = async (profileId: string, clusters: any): Promise<AxiosResponse<any>> => {
+  const createNamespaceByProfileId = async (
+    profileId: string,
+    clusters: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }

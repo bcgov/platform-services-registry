@@ -25,6 +25,7 @@ export function transformForm(data: any) {
   const technicalContact: any = {
     roleId: ROLES.TECHNICAL,
   };
+  const clusters: any = [];
 
   for (const [key, value] of Object.entries(data)) {
     const [prefix, fieldName] = key.split('-');
@@ -37,6 +38,16 @@ export function transformForm(data: any) {
     }
     if (prefix === 'tc') {
       technicalContact[fieldName] = value;
+    }
+    if (fieldName === 'primaryClusterName') {
+      clusters.push(value);
+    }
+    // TODO (sb): Uncomment when GoldDR functionality is available
+    // if (fieldName === 'primaryClusterName' && value === 'gold') {
+    //   clusters.push('golddr')
+    // }
+    if (fieldName === 'clabDR' && value === true) {
+      clusters.push('clab');
     }
   }
 
@@ -60,6 +71,7 @@ export function transformForm(data: any) {
     profile,
     productOwner,
     technicalContact,
+    clusters,
   };
 }
 

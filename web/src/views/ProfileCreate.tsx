@@ -39,13 +39,13 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
-    const { profile, productOwner, technicalContact } = transformForm(formData);
+    const { profile, productOwner, technicalContact, clusters } = transformForm(formData);
     setOpenBackdrop(true);
     try {
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
-      const clusters = ['klab', 'clab']
+
       // 2. Create contacts.
       const po: any = await api.createContact(productOwner);
       const tc: any = await api.createContact(technicalContact);
@@ -53,7 +53,7 @@ const ProfileCreate: React.FC = () => {
       // 3. Link the contacts to the profile.
       await api.linkContactToProfileById(profileId, po.data.id);
       await api.linkContactToProfileById(profileId, tc.data.id);
-      console.log(clusters)
+
       // 4. Trigger provisioning
       await api.createNamespaceByProfileId(profileId, clusters);
 
