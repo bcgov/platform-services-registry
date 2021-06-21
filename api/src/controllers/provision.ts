@@ -49,6 +49,7 @@ export const provisionProfileNamespaces = async (
       }
 
       const names = projectSetNames.map(n => `${profile.namespacePrefix}-${n}`);
+
       const nsPromises = names.map(name => NamespaceModel.create({
         name,
         profileId,

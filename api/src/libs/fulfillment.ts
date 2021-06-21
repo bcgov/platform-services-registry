@@ -20,6 +20,7 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import config from '../config';
 import { ROLE_IDS } from '../constants';
 import DataManager from '../db';
+import { Cluster } from '../db/model/cluster';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { Quotas, QuotaSize } from '../db/model/quota';
@@ -30,18 +31,14 @@ import { createBotMessageSet, fetchBotMessageRequests } from './bot-message';
 import { getQuotaSize } from './profile';
 import shared from './shared';
 const dm = new DataManager(shared.pgPool);
-const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, ClusterModel } = dm;
+const { ProfileModel, ContactModel, QuotaModel, NamespaceModel } = dm;
 
 export const fulfillRequest = async (request: Request):
   Promise<any> => {
     try {
-      const profile: ProjectProfile = await ProfileModel.findById(request.profileId);
       const subjectPrefix: string = config.get('nats:subjectPrefix');
 
-      const subject: string = subjectPrefix.concat(profile.primaryClusterName);
-      const context: NatsContext = await generateContext(request);
-
-      await createBotMessageSet(Number(request.id), subject, context)
+      await createBotMessageSet(request, subjectPrefix)
       const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
       for (const botMessage of botMessageSet) {
@@ -59,7 +56,7 @@ export const fulfillRequest = async (request: Request):
   };
 
 // TODO: modify around isForSync so as to avoid passing bool directly
-export const contextForProvisioning = async (profileId: number, isForSync: boolean): Promise<NatsContext> => {
+export const contextForProvisioning = async (profileId: number, cluster: Cluster, isForSync: boolean = false): Promise<NatsContext> => {
   try {
     const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Create;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
@@ -67,7 +64,7 @@ export const contextForProvisioning = async (profileId: number, isForSync: boole
     const quotaSize: QuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
 
-    return await buildContext(action, profile, contacts, quotaSize, quotas);
+    return await buildContext(action, profile, contacts, quotaSize, quotas, cluster);
   } catch (err) {
     const message = `Unable to create context for provisioning ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -76,7 +73,7 @@ export const contextForProvisioning = async (profileId: number, isForSync: boole
   }
 };
 
-export const contextForEditing = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any): Promise<NatsContext> => {
+export const contextForEditing = async (profileId: number, requestEditType: RequestEditType, requestEditObject: any, cluster: Cluster): Promise<NatsContext> => {
   try {
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
@@ -103,7 +100,7 @@ export const contextForEditing = async (profileId: number, requestEditType: Requ
     } else {
       contacts = await ContactModel.findForProject(profileId);
     }
-    return await buildContext(action, profile, contacts, quotaSize, quotas);
+    return await buildContext(action, profile, contacts, quotaSize, quotas, cluster);
   } catch (err) {
     const message = `Unable to create context for updating ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
@@ -112,16 +109,16 @@ export const contextForEditing = async (profileId: number, requestEditType: Requ
   }
 };
 
-const generateContext = async (request: Request): Promise<NatsContext> => {
+export const generateContext = async (request: Request, cluster: Cluster): Promise<NatsContext> => {
 
   switch (request.type) {
     case RequestType.Create:
-      return await contextForProvisioning(request.profileId, false);
+      return await contextForProvisioning(request.profileId, cluster);
     case RequestType.Edit:
       if (!request.editType){
         throw new Error(`Invalid edit type for request ${request.id}`)
       }
-      return await contextForEditing(request.profileId, request.editType, request.editObject);
+      return await contextForEditing(request.profileId, request.editType, request.editObject, cluster);
     default:
       throw new Error(`Invalid type for request ${request.id}`);
   }
@@ -147,7 +144,7 @@ const formatContactsForNats = (contact): NatsContact => {
 }
 
 const buildContext = async (
-  action: NatsContextAction, profile: ProjectProfile, profileContacts: Contact[], quotaSize: QuotaSize, quotas: Quotas
+  action: NatsContextAction, profile: ProjectProfile, profileContacts: Contact[], quotaSize: QuotaSize, quotas: Quotas, cluster: Cluster
 ): Promise<NatsContext> => {
   try {
     if (!profile.id) {
@@ -162,8 +159,6 @@ const buildContext = async (
 
     const namespaces = namespacesDetails.map(n => formatNamespacesForNats(n, quotaSize, quotas))
 
-    const cluster = await ClusterModel.findByName(profile.primaryClusterName);
-
     const contacts: NatsContact[] = profileContacts.map(contact => formatContactsForNats(contact));
 
     if (!profile || !namespaces || !cluster.id || contacts.length === 0) {
@@ -174,7 +169,7 @@ const buildContext = async (
       action,
       profile_id: profile.id,
       cluster_id: cluster.id,
-      cluster_name: cluster.name, // TODO:(sb) Update to allow GoldDR
+      cluster_name: cluster.name,
       display_name: profile.name,
       description: profile.description,
       namespaces,

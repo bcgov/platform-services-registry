@@ -319,7 +319,7 @@ export default class NamespaceModel extends Model {
   async findClustersForProfile(profileId: number): Promise<any[]> {
     const query = {
       text: `
-      SELECT DISTINCT ref_cluster.name
+      SELECT DISTINCT ref_cluster.name, ref_cluster.id
         FROM namespace
         JOIN cluster_namespace ON cluster_namespace.namespace_id = namespace.id
         JOIN profile ON profile.id = namespace.profile_id
