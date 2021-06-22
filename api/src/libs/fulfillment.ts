@@ -144,7 +144,12 @@ const formatContactsForNats = (contact): NatsContact => {
 }
 
 const buildContext = async (
-  action: NatsContextAction, profile: ProjectProfile, profileContacts: Contact[], quotaSize: QuotaSize, quotas: Quotas, cluster: Cluster
+  action: NatsContextAction,
+  profile: ProjectProfile,
+  profileContacts: Contact[],
+  quotaSize: QuotaSize,
+  quotas: Quotas,
+  cluster: Cluster
 ): Promise<NatsContext> => {
   try {
     if (!profile.id) {

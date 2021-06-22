@@ -26,7 +26,7 @@ const dm = new DataManager(shared.pgPool);
 const { RequestModel, NamespaceModel } = dm;
 
 export const createBotMessageSet = async ( request: Request, subjectPrefix: string ): Promise<any> => {
-  
+
   const clusters = await NamespaceModel.findClustersForProfile(request.profileId);
 
   for (const cluster of clusters) {

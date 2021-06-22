@@ -169,8 +169,8 @@ Array [
         "provisioned": false,
       },
     ],
+    "id": 13,
     "name": "4ea35c-tools",
-    "namespaceId": 13,
   },
   Object {
     "clusters": Array [
@@ -180,8 +180,8 @@ Array [
         "provisioned": false,
       },
     ],
+    "id": 14,
     "name": "4ea35c-test",
-    "namespaceId": 14,
   },
   Object {
     "clusters": Array [
@@ -191,8 +191,8 @@ Array [
         "provisioned": false,
       },
     ],
+    "id": 15,
     "name": "4ea35c-dev",
-    "namespaceId": 15,
   },
   Object {
     "clusters": Array [
@@ -202,8 +202,8 @@ Array [
         "provisioned": false,
       },
     ],
+    "id": 16,
     "name": "4ea35c-prod",
-    "namespaceId": 16,
   },
 ]
 `;
