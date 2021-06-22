@@ -1,0 +1,6 @@
+BEGIN TRANSACTION;
+
+ALTER TABLE profile
+DROP CONSTRAINT profile_name_unique;
+
+END TRANSACTION;
