@@ -20,6 +20,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { Box, Flex, Heading } from 'rebass';
+import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
 import Icon from './Icon';
 
@@ -221,7 +222,21 @@ const Table: React.FC<ITableProps> = (props) => {
   const handleRowClick = (row: any) => {
     history.push(`/profile/${row.original.id}/overview`);
   };
-
+  const StyledDropdown = styled.div`
+  display: block;
+  position: absolute;
+  min-width: 100px;
+  margin-right: 15px;
+  padding: 5px;
+  background-color: ${theme.colors.contrast};
+  border: 1px solid #000;
+  zindex: ${theme.zIndices[2]};
+`;
+  const { isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const handleDDDesktop = () => {
+    setIsComponentVisible(!isComponentVisible);
+  };
+  
   /* 
     Render the UI for your table
     - react-table doesn't have UI, it's headless. We just need to put the react-table props from the Hooks, and it will do its magic automatically
@@ -231,33 +246,40 @@ const Table: React.FC<ITableProps> = (props) => {
       <Flex flexWrap="wrap">
         <Heading>{title}</Heading>
         <Box mx='auto' />
+
+        <Box>
         <Icon
           hover
           color="primary"
           name='menuStack'
           width={1.4}
           height={1.4}
-          style={{margin: '14px 0 5px 0'}}
+          style={{margin: '14px 5px 5px 0', transform: 'rotate(90deg)', zIndex: 5}}
+          onClick={handleDDDesktop}
         />
+        {isComponentVisible && (
+          <StyledDropdown>
+            <div>
+              {allColumns.map(column => (
+                <div key={column.id}>
+                  <label>
+                    <Flex flexDirection="row">
+                      <Checkbox variant="inlineCheckbox" type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                      <Label>{column.Header}</Label>
+                    </Flex>
+                  </label>
+                </div>
+              ))}
+              <br />
+            </div>
+          </StyledDropdown>
+        )}</Box>
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
       </Flex>
-      <div>
-        {allColumns.map(column => (
-          <div key={column.id}>
-            <label>
-              <Flex flexDirection="row">
-                <Checkbox variant="inlineCheckbox" type="checkbox" {...column.getToggleHiddenProps()} />{' '}
-                <Label>{column.Header}</Label>
-              </Flex>
-            </label>
-          </div>
-        ))}
-        <br />
-      </div>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => {
