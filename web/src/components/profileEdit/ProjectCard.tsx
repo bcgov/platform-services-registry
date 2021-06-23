@@ -32,6 +32,7 @@ export interface ProjectDetails {
   primaryClusterDisplayName?: string;
   other?: string;
   migratingLicenseplate?: string;
+  createdAt?: string;
 }
 
 const ProjectCard: React.FC<IProjectCardProps> = (props) => {

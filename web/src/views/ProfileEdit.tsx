@@ -27,7 +27,12 @@ import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCa
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
 import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
-import { HOME_PAGE_URL, PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
+import {
+  HOME_PAGE_URL,
+  PROFILE_EDIT_VIEW_NAMES,
+  RESPONSE_STATUS_CODE,
+  ROUTE_PATHS,
+} from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
@@ -40,7 +45,7 @@ import {
   getLicensePlate,
   getProfileContacts,
   getProfileMinistry,
-  isProfileProvisioned
+  isProfileProvisioned,
 } from '../utils/transformDataHelper';
 
 const StyledDiv = styled.div`
@@ -64,6 +69,7 @@ interface IProfileState {
   projectDetails: ProjectDetails;
   contactDetails: ContactDetails;
   quotaDetails: QuotaDetails;
+  createdAt: string;
 }
 
 const ProfileEdit: React.FC = (props: any) => {
@@ -87,6 +93,7 @@ const ProfileEdit: React.FC = (props: any) => {
     projectDetails: {},
     contactDetails: {},
     quotaDetails: {},
+    createdAt: '',
   });
 
   const [initialRender, setInitialRender] = useState(true);
@@ -119,6 +126,10 @@ const ProfileEdit: React.FC = (props: any) => {
     const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
     const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
+    // TODO (SB): Implement solution to save date project was provisioned
+    // eslint-disable-next-line
+    const [createdAt, _] = projectDetails.data.createdAt.split('T');
+
     setProfileState((profileState0: any) => ({
       ...profileState0,
       baseData: {
@@ -134,6 +145,7 @@ const ProfileEdit: React.FC = (props: any) => {
         quotaSize: quotaSize.data,
         quotaOptions: quotaOptions.data,
       },
+      createdAt,
     }));
   }
 
@@ -218,15 +230,17 @@ const ProfileEdit: React.FC = (props: any) => {
           }}
         >
           <ShadowBox p={5} style={{ position: 'relative' }}>
-            <Flex><RouterLink
-            className="misc-class-m-dropdown-link"
-            to={HOME_PAGE_URL}
-          >
-            <Icon hover color="black" name="goBack" width={1.5} height={1.5} style={{margin: 'auto' }} />
-          </RouterLink>
-            <Text as="h1" mx={2}>{profileState.projectDetails.name}</Text>
+            <Flex>
+              <Box my="auto">
+                <RouterLink className="misc-class-m-dropdown-link" to={HOME_PAGE_URL}>
+                  <Icon hover color="black" name="goBack" width={1.5} height={1.5} />
+                </RouterLink>
+              </Box>
+              <Text as="h1" mx={2}>
+                {profileState.projectDetails.name}
+              </Text>
             </Flex>
-          
+
             {cards.length > 0 &&
               cards.map((c: any, index: number) => (
                 <Box key={index}>
@@ -245,14 +259,18 @@ const ProfileEdit: React.FC = (props: any) => {
                   </ShadowBox>
                 </Box>
               ))}
-              <Flex mt={4}>
-              <Text mx={2} sx={{ textTransform: 'capitalize' }}>
-                Requested: Jun 15, 2021
-              </Text>
-              <Text mx={2} sx={{ textTransform: 'capitalize' }}>
-                Provisioned: Jun 16, 2021
-              </Text>
-              </Flex>
+            <Flex mt={4}>
+              <Box>
+                <Text mx={2} sx={{ textTransform: 'capitalize' }}>
+                  Requested: {profileState.createdAt}
+                </Text>
+              </Box>
+              {/* <Box ml="auto">
+                  <Text mx={2} sx={{ textTransform: 'capitalize' }}>
+                    Provisioned: Jun 16, 2021
+                  </Text>
+                </Box> */}
+            </Flex>
           </ShadowBox>
         </Box>
       </StyledDiv>
