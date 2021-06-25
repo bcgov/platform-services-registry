@@ -86,14 +86,14 @@ jobs:
           path: web/cypress/videos
 
       - name: Save Cypress screenshots on failure
-        if: failure()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress-screenshots
           path: web/cypress/screenshots
 
       - name: Check Cypress test result
-        #if: ${{ failure() }}
+        if: ${{ failure() }}
         env:
           ROCKETCHAT_MESSAGE: "There was an error in the Cypress test(s) for the registry app during the ${{ github.workflow }} workflow.  View the output and download test output files at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
