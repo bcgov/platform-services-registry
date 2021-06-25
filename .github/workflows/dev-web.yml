@@ -41,6 +41,7 @@ jobs:
       #     chmod +x ./cc-test-reporter
       #     ./cc-test-reporter format-coverage -t lcov -o codeclimate.json
       #     ./cc-test-reporter upload-coverage -i codeclimate.json
+
   build:
     runs-on: ubuntu-latest
     needs: [test]
@@ -73,8 +74,13 @@ jobs:
           build: npm i -D cypress
           headless: true
           working-directory: ./web
-      - name: List Cypress video directory
-        run: ls -lR .
+      - name: Save Cypress video on failure
+        #if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-video
+          path: cypress/videos/
+
   s2i-build:
     runs-on: ubuntu-latest
     needs: [test, build]
