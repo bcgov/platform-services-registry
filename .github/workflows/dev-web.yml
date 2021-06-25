@@ -96,7 +96,9 @@ jobs:
         #if: ${{ failure() }}
         env:
           ROCKETCHAT_MESSAGE: "There was an error in the Cypress test(s) for the registry app during the ${{ github.workflow }} workflow.  View the output and download test output files at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        run: curl -X POST -H 'Content-Type: application/json' --data '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"; exit 1
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --data '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
+          exit 1
 
   s2i-build:
     runs-on: ubuntu-latest
