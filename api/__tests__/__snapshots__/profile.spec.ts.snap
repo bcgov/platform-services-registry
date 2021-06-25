@@ -136,6 +136,7 @@ Array [
     },
     "editType": "quotaSize",
     "id": 1,
+    "isActive": true,
     "natsContext": Object {
       "action": "edit",
       "displayName": "Health Gateway",
@@ -218,6 +219,8 @@ Array [
     },
     "natsSubject": "registry_project_provisioning",
     "profileId": 1,
+    "requiresHumanAction": false,
+    "type": "edit",
     "updatedAt": "2020-09-10T18:14:13.304Z",
   },
   Object {
@@ -243,6 +246,7 @@ Array [
     ],
     "editType": "contacts",
     "id": 2,
+    "isActive": true,
     "natsContext": Object {
       "action": "edit",
       "displayName": "Project X",
@@ -326,6 +330,8 @@ Array [
     },
     "natsSubject": "registry_project_provisioning",
     "profileId": 4,
+    "requiresHumanAction": false,
+    "type": "edit",
     "updatedAt": "2020-09-10T18:14:13.304Z",
   },
 ]

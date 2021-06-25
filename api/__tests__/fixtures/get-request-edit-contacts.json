@@ -2,6 +2,9 @@
   {
     "id": 2,
     "profileId": 4,
+    "type": "edit",
+    "requiresHumanAction": false,
+    "isActive": true,
     "editType": "contacts",
     "editObject": [
       {
