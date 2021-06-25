@@ -21,26 +21,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+
       - uses: actions/setup-node@master
         with:
           node-version: "12"
+
       - name: Install dependencies
         run: npm ci
+
       - name: Unit tests w/ coverage
         run: npm run test -- --coverage --passWithNoTests
+
       - name: LINTing
         run: npm run lint -- --quiet -f codeframe
+
       - name: Prettier
         run: npm run format -- --check
-      # - name: Upload coverage report
-      #   env:
-      #     CC_TEST_REPORTER_ID: ${{ secrets.TestReporterID }}
-      #     CI: "true"
-      #   run: |
-      #     curl -Ls https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-      #     chmod +x ./cc-test-reporter
-      #     ./cc-test-reporter format-coverage -t lcov -o codeclimate.json
-      #     ./cc-test-reporter upload-coverage -i codeclimate.json
 
   build:
     runs-on: ubuntu-latest
@@ -50,9 +46,11 @@ jobs:
         node-version: [10.x, 12.x]
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Cache node modules
         uses: actions/cache@v1
         with:
@@ -62,32 +60,41 @@ jobs:
             ${{ runner.OS }}-build-${{ env.cache-name }}-
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
+
       - name: npm install and build
         run: |
           npm ci
           npm run build --if-present
         env:
           CI: "true"
-      - name: Check build output
+
+      - name: Check build result
         if: ${{ failure() }}
         run: echo "Error in build step"; exit 1
-      - name: Cypress test
+
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
           build: npm i -D cypress
           headless: true
           working-directory: ./web
+
       - name: Save Cypress video files
         uses: actions/upload-artifact@v2
         with:
           name: cypress-videos
           path: web/cypress/videos
+
       - name: Save Cypress screenshots on failure
         if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: cypress-screenshots
           path: web/cypress/screenshots
+
+      - name: Check Cypress test result
+        #if: ${{ failure() }}
+        run: echo "There was an error in the Cypress test(s) for the registry app during the ${{ github.workflow }} workflow.  View the output and download test output files at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"; exit
 
   s2i-build:
     runs-on: ubuntu-latest
