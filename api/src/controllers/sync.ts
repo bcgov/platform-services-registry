@@ -20,6 +20,7 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
+import { RequestType } from '../db/model/request';
 import { contextForEditing, contextForProvisioning } from '../libs/fulfillment';
 import { getProvisionStatus } from '../libs/profile';
 import shared from '../libs/shared';
@@ -138,17 +139,21 @@ export const getProfileBotJsonUnderPending = async (
         const errmsg = `Unable to get request`;
         throw new Error(errmsg);
       }
-      if (!request.editType){
-        const errmsg = `Unable to get request edit Type`;
-        throw new Error(errmsg);
-      }
-
-      context = await contextForEditing(profileId, request.editType, request.editObject);
-    } else {
-      // if the queried profile is under pending create
-      context = await contextForProvisioning(profileId, false);
+      switch (request.type) {
+        case RequestType.Create:
+          context = await contextForProvisioning(profileId, false);
+          break;
+        case RequestType.Edit:
+          if (!request.editType){
+            const errmsg = `Unable to get request edit Type`;
+            throw new Error(errmsg);
+          }
+          context = await contextForEditing(profileId, request.editType, request.editObject);
+          break;
+        default:
+          throw new Error(`Invalid type for request ${request.id}`);
+        }
     }
-
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
     const message = `Unable to get profile (currently under pending edit / create) bot json
