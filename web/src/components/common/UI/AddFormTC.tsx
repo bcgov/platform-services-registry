@@ -4,7 +4,6 @@ import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import Aux from '../../../hoc/auxillary';
 import getValidator from '../../../utils/getValidator';
-import FormTitle from './FormTitle';
 import TextInput from './TextInput';
 
 
@@ -22,8 +21,6 @@ export const AddFormTC: React.FC<AddFormTCProps> = (props: any) => {
 
     return (
         <Aux>
-            <br />
-            <FormTitle>Technical Contact {count + 1}</FormTitle>
             <Flex flexDirection="column">
                 <Label htmlFor={tc_firstName}>First Name</Label>
                 <Field<string>

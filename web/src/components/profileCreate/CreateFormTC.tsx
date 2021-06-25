@@ -15,6 +15,7 @@
 //
 
 import React, { useState } from 'react';
+import { Box, Flex } from 'rebass';
 import Aux from '../../hoc/auxillary';
 import { AddFormTC } from '../common/UI/AddFormTC';
 import { StyledFormButton } from '../common/UI/Button';
@@ -26,7 +27,7 @@ const CreateFormTC: React.FC = () => {
 
 
   const changeTCCount = (increment: number) => {
-    if (TCcount + increment > 0 && TCcount + increment <= 3) {
+    if (TCcount + increment > 0 && TCcount + increment <= 2) {
       setTCcount(TCcount + increment);
     }
   }
@@ -34,7 +35,34 @@ const CreateFormTC: React.FC = () => {
   let tcs: any = []
   for (let count = 0; count < TCcount; count++) {
     const FormTCKey = `tc${count}`;
-    tcs.push(<AddFormTC key={FormTCKey} count={count} />);
+    tcs.push(
+      <Flex flexDirection='column'>
+        <Flex flexDirection="row">
+          <FormTitle>Technical Contact {count + 1}</FormTitle>
+          <Box ml='auto' className="buttons">
+            {count === 1 && (
+              <StyledFormButton
+                type="button"
+                onClick={() => changeTCCount(-1)}
+                style={{ backgroundColor: '#d3d3d3', color: '#036', width: '40px', height: '40px' }}
+              >
+                -
+              </StyledFormButton>
+            )}
+            {count === 0 && (
+              <StyledFormButton
+                type="button"
+                onClick={() => changeTCCount(1)}
+                style={{ width: '40px', height: '40px' }}
+              >
+                +
+              </StyledFormButton>
+            )}
+          </Box >
+        </Flex>
+        <AddFormTC key={FormTCKey} count={count} />
+      </Flex>
+    );
   }
 
   return (
@@ -45,26 +73,9 @@ const CreateFormTC: React.FC = () => {
         use this information to contact them with technical questions or notify them about platform
         events. You can list up to 3 Technical Contacts.
       </FormSubtitle>
+      
       {tcs}
-      <div className="buttons">
-        {(
-          <StyledFormButton
-            type="button"
-            onClick={() => changeTCCount(-1)}
-            style={{ backgroundColor: '#d3d3d3', color: '#036' }}
-          >
-            Remove TC
-          </StyledFormButton>
-        )}
-        {(
-          <StyledFormButton
-            type="button"
-            onClick={() => changeTCCount(1)}
-          >
-            Add TC
-          </StyledFormButton>
-        )}
-      </div >
+      
     </Aux >
 
   );
