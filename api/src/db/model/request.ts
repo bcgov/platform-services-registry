@@ -180,7 +180,7 @@ export default class RequestModel extends Model {
         const query = {
             text: `
                 SELECT * FROM ${this.table}
-                WHERE archived = false;`,
+                WHERE is_active = true AND archived = false;`,
         };
 
         try {
