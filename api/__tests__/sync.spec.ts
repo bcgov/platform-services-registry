@@ -140,7 +140,7 @@ describe('Sync event handlers', () => {
       query: {},
     };
 
-    RequestModel.prototype.findAll = jest.fn().mockResolvedValueOnce(requests);
+    RequestModel.prototype.findActiveByFilter = jest.fn().mockResolvedValueOnce(requests);
     ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce([]);
 
     client.query.mockReturnValueOnce({ rows: [profiles[0]] });
@@ -172,7 +172,7 @@ describe('Sync event handlers', () => {
     const req = {
       params: { profileId: 4 },
     };
-    RequestModel.prototype.findAll = jest.fn().mockResolvedValueOnce(requests);
+    RequestModel.prototype.findActiveByFilter = jest.fn().mockResolvedValueOnce(requests);
     ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce([]);
 
     client.query.mockReturnValueOnce({ rows: [profiles[0]] });
