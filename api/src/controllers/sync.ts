@@ -163,7 +163,7 @@ const getProfilesUnderPendingEditOrCreate = async (): Promise<ProjectProfile[]> 
   const { RequestModel, ProfileModel } = dm;
   try {
     // process those profiles that are under pending EDIT
-    const requests = await RequestModel.findActiveByFilter("requires_human_action", false );
+    const requests = await RequestModel.findActiveByFilter('requires_human_action', false );
     const profileUnderRequestPromises: Promise<ProjectProfile>[] =
       requests.map((request) => ProfileModel.findById(request.profileId));
 
