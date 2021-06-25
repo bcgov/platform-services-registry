@@ -68,18 +68,26 @@ jobs:
           npm run build --if-present
         env:
           CI: "true"
+      - name: Check build output
+        if: ${{ failure() }}
+        run: echo "Error in build step"; exit 1
       - name: Cypress test
         uses: cypress-io/github-action@v2
         with:
           build: npm i -D cypress
           headless: true
           working-directory: ./web
-      - name: Save Cypress video on failure
-        #if: failure()
+      - name: Save Cypress video files
         uses: actions/upload-artifact@v2
         with:
-          name: cypress-video
-          path: cypress/videos/
+          name: cypress-videos
+          path: cypress/videos
+      - name: Save Cypress screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
 
   s2i-build:
     runs-on: ubuntu-latest
