@@ -146,7 +146,7 @@ export const getProfileBotJsonUnderPending = async (
       }
       switch (request.type) {
         case RequestType.Create:
-          context = await contextForProvisioning(profileId, clusters[0], false);
+          context = await contextForProvisioning(profileId, clusters[0]);
           break;
         case RequestType.Edit:
           if (!request.editType){
