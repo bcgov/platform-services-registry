@@ -14,68 +14,146 @@
 // limitations under the License.
 //
 
+import { Label } from '@rebass/forms';
 import React, { useState } from 'react';
+import { Field } from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
 import { Box, Flex } from 'rebass';
+import { MAXIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
+import getValidator from '../../utils/getValidator';
 import { AddFormTC } from '../common/UI/AddFormTC';
-import { StyledFormButton } from '../common/UI/Button';
+import { SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
+import TextInput from '../common/UI/TextInput';
 
 const CreateFormTC: React.FC = () => {
   const [TCcount, setTCcount] = useState(1);
+  const validator = getValidator();
 
 
   const changeTCCount = (increment: number) => {
-    if (TCcount + increment > 0 && TCcount + increment <= 2) {
+    if (TCcount + increment > 0 && TCcount + increment <= MAXIMUM_TECHNICAL_LEADS) {
       setTCcount(TCcount + increment);
     }
   }
 
-  let tcs: any = []
+  let addTechnicalLeadCard: any = []
   for (let count = 0; count < TCcount; count++) {
     const FormTCKey = `tc${count}`;
-    tcs.push(
-      <Flex flexDirection='column'>
-        <Flex flexDirection="row">
-          <FormTitle>Technical Contact {count + 1}</FormTitle>
-          <Box ml='auto' className="buttons">
-            {count === 1 && (
-              <StyledFormButton
+    addTechnicalLeadCard.push(
+      <Flex key={FormTCKey} flexDirection='column'>
+        {count === 1 && (
+          <Flex flexDirection="row">
+            <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead {count + 1}</FormTitle>
+            <Box my='auto' ml='auto' className="buttons">
+              <SquareFormButton
                 type="button"
                 onClick={() => changeTCCount(-1)}
-                style={{ backgroundColor: '#d3d3d3', color: '#036', width: '40px', height: '40px' }}
+                inversed
               >
                 -
-              </StyledFormButton>
-            )}
-            {count === 0 && (
-              <StyledFormButton
-                type="button"
-                onClick={() => changeTCCount(1)}
-                style={{ width: '40px', height: '40px' }}
-              >
-                +
-              </StyledFormButton>
-            )}
-          </Box >
-        </Flex>
-        <AddFormTC key={FormTCKey} count={count} />
+              </SquareFormButton>
+            </Box>
+          </Flex>
+        )}
+        <AddFormTC count={count} />
       </Flex>
     );
   }
 
   return (
     <Aux>
-      <FormTitle>Who is the technical contact for this project?</FormTitle>
+      <FormTitle>Who is the technical lead for this project?</FormTitle>
       <FormSubtitle>
-        Tell us about the Technical Contact (TC). This is typically the DevOps specialist; we will
+        Tell us about the Technical Lead (TL). This is typically the DevOps specialist; we will
         use this information to contact them with technical questions or notify them about platform
-        events. You can list up to 3 Technical Contacts.
+        events. You can list up to 2 Technical Leads.
       </FormSubtitle>
-      
-      {tcs}
-      
+      <FieldArray name="technicalContacts">
+          {({ fields }) => (
+            <div>
+              {fields.map((name, index) => (
+                <div key={name}>
+                  <Flex flexDirection="row">
+                    <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead</FormTitle>
+                    <Box my='auto' ml='auto' className="buttons">
+                      <SquareFormButton
+                        type="button"
+                        onClick={() => fields.remove(index)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        X
+                      </SquareFormButton>
+                    </Box >
+                  </Flex>
+                  <Field name={`${name}.role`} initialValue={ROLES.TECHNICAL_LEAD}>
+                    {({ input }) => <input type="hidden" {...input} id={`${name}.role`} />}
+                  </Field>
+                  <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                      <Field<string>
+                          name={`${name}.firstName`}
+                          component={TextInput}
+                          validate={validator.mustBeValidName}
+                          placeholder="Jane"
+                      />
+                  </Flex>
+                  <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                      <Field<string>
+                          name={`${name}.lastName`}
+                          component={TextInput}
+                          validate={validator.mustBeValidName}
+                          placeholder="Doe"
+                      />
+                  </Flex>
+                  <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.email`}>Email Address</Label>
+                      <Field<string>
+                          name={`${name}.email`}
+                          component={TextInput}
+                          validate={validator.mustBeValidEmail}
+                          placeholder="jane.doe@example.com"
+                      />
+                  </Flex>
+                  <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                      <Field<string>
+                          name={`${name}.githubId`}
+                          component={TextInput}
+                          validate={validator.mustBeValidGithubName}
+                          placeholder="jane1100"
+                      />
+                  </Flex>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => fields.push({ firstName: '', lastName: '', email: '', githubId: '' })}
+              >
+                Add Technical Lead
+              </button>
+            </div>
+          )}
+        </FieldArray>
+      {/* <Flex flexDirection='column'>
+        <Flex flexDirection="row">
+          <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead</FormTitle>
+          { TCcount < MAXIMUM_TECHNICAL_LEADS && (
+            <Box my='auto' ml='auto' className="buttons">
+              <SquareFormButton
+                type="button"
+                onClick={() => changeTCCount(1)}
+              >
+                X
+              </SquareFormButton>
+            </Box >
+          )}
+        </Flex>
+      </Flex>
+      {addTechnicalLeadCard} */}
     </Aux >
 
   );

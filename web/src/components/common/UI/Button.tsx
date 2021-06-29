@@ -37,6 +37,17 @@ const StyledDisabledButton = styled.button`
   font-size: 24px;
 `;
 
+const SquareButton = styled.button<IButtonProps>`
+width: 30px;
+height: 30px;
+border-radius: 5px;
+background-color: ${props => 
+  props.inversed ? '#d3d3d3' : '#036'};
+color: ${props => 
+  props.inversed ? '#036' : '#ffffff'};;
+font-size: 18px;
+`;
+
 export const StyledFormButton: React.FC<IButtonProps> = (props: any) => {
   const { children, ...rest } = props;
   return (
@@ -55,11 +66,22 @@ export const StyledFormDisabledButton: React.FC<IButtonProps> = (props: any) => 
   );
 };
 
+export const SquareFormButton: React.FC<IButtonProps> = (props: any) => {
+  const { children, ...rest } = props;
+  return (
+    <SquareButton className="misc-class-m-form-submit-btn" {...rest}>
+      {children}
+    </SquareButton>
+  );
+};
+
 export interface IButtonProps {
   children?: React.ReactNode;
   onClick?: (e: any) => void;
   style?: any;
   type?: any;
+  disabled?: boolean;
+  inversed?: boolean;
 }
 
 const styles = {

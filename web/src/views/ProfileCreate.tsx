@@ -26,7 +26,6 @@ import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
-import { transformForm } from '../utils/transformDataHelper';
 import Wizard, { WizardPage } from '../utils/Wizard';
 
 const ProfileCreate: React.FC = () => {
@@ -39,19 +38,25 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
-    const { profile, productOwner, technicalContact } = transformForm(formData);
+    const { profile, technicalContact } = formData;
     setOpenBackdrop(true);
     try {
+      console.log(formData)
+      console.log("profile: ", profile)
+      console.log("productOwner: ", technicalContact)
+
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
 
+      // TODO loop through technicalContacts object. Determine if PO / TC
+      // TODO if 
       // 2. Create contacts.
-      const po: any = await api.createContact(productOwner);
+      // const po: any = await api.createContact(productOwner);
       const tc: any = await api.createContact(technicalContact);
 
       // 3. Link the contacts to the profile.
-      await api.linkContactToProfileById(profileId, po.data.id);
+      // await api.linkContactToProfileById(profileId, po.data.id);
       await api.linkContactToProfileById(profileId, tc.data.id);
 
       // 4. Trigger provisioning

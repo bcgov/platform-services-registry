@@ -29,11 +29,12 @@ const StyledTitle = styled.h1`
 
 interface ISubFormProps {
   children: React.ReactNode;
+  style?: any;
 }
 
 const FormTitle: React.FC<ISubFormProps> = (props) => {
-  const { children } = props;
-  return <StyledTitle>{children}</StyledTitle>;
+  const { children, ...rest } = props;
+  return <StyledTitle {...rest}>{children}</StyledTitle>;
 };
 
 export default FormTitle;

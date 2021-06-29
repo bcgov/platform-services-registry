@@ -2,10 +2,10 @@ import { Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import { ROLES } from '../../../constants';
 import Aux from '../../../hoc/auxillary';
 import getValidator from '../../../utils/getValidator';
 import TextInput from './TextInput';
-
 
 interface AddFormTCProps {
     count: number;
@@ -14,13 +14,17 @@ interface AddFormTCProps {
 export const AddFormTC: React.FC<AddFormTCProps> = (props: any) => {
     const { count } = props;
     const validator = getValidator();
-    const tc_firstName: string = `tc-firstName-${count}`;
-    const tc_lastName: string = `tc-lastName-${count}`;
-    const tc_email: string = `tc-email-${count}`;
-    const tc_githubId: string = `tc-githubId-${count}`;
+    const tc_role: string = `technicalContact.tl-${count}.role`
+    const tc_firstName: string = `technicalContact.tl-${count}.firstName`;
+    const tc_lastName: string = `technicalContact.tl-${count}.lastName`;
+    const tc_email: string = `technicalContact.tl-${count}.email`;
+    const tc_githubId: string = `technicalContact.tl-${count}.githubId`;
 
     return (
         <Aux>
+            <Field name={tc_role} initialValue={ROLES.TECHNICAL_LEAD}>
+                {({ input }) => <input type="hidden" {...input} id="role" />}
+            </Field>
             <Flex flexDirection="column">
                 <Label htmlFor={tc_firstName}>First Name</Label>
                 <Field<string>
