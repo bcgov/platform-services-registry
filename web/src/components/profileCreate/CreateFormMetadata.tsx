@@ -41,7 +41,7 @@ const CreateFormMetadata: React.FC = () => {
           </Label>
           <Flex flex="1 1 auto" justifyContent="flex-end">
             <Field<boolean>
-              name={`profile.metadata.${item.inputValue}`}
+              name={`profile.${item.inputValue}`}
               component={CheckboxInput}
               defaultValue={false}
               type="checkbox"
@@ -55,7 +55,7 @@ const CreateFormMetadata: React.FC = () => {
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end" name="project-other">
           <Field<string>
-            name="profile.metadata.other"
+            name="profile.other"
             component={TextInput}
             validate={validator.mustBeValidComponentOthers}
             sx={{ textTransform: 'none' }}

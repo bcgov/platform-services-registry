@@ -60,7 +60,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Name</Label>
         <Field<string>
-          name="profile.display_name"
+          name="profile.name"
           component={TextInput}
           placeholder="Project X"
           validate={validator.mustBeValidProfileName}

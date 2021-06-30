@@ -41,8 +41,8 @@ const CreateFormPO: React.FC = () => {
         Tell us about the Product Owner (PO). This is typically the business owner of the
         application; we will use this information to contact them with any non-technical questions.
       </FormSubtitle>
-      <Field name="productOwner.role" initialValue={ROLES.PRODUCT_OWNER}>
-            {({ input }) => <input type="hidden" {...input} id="role" />}
+      <Field name="productOwner.roleId" initialValue={ROLES.PRODUCT_OWNER}>
+            {({ input }) => <input type="hidden" {...input} id="roleId" />}
       </Field>
       <Flex flexDirection="column">
         <Label htmlFor="po-firstName">First Name</Label>

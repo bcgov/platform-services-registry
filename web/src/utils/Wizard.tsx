@@ -33,7 +33,6 @@ const Wizard: React.FC<any> = ({ onSubmit, children }) => {
     next(formData);
   };
 
-
   return (
     <Form 
     onSubmit={handleSubmit}
@@ -41,14 +40,8 @@ const Wizard: React.FC<any> = ({ onSubmit, children }) => {
       ...arrayMutators
     }}
     >
-      {({
-        handleSubmit, 
-        form: {
-          mutators: { push, pop }
-        },
-        form,
-       }) => (
-        <form onSubmit={handleSubmit}>
+      {(props) => (
+        <form onSubmit={props.handleSubmit}>
           <Flex flexWrap="wrap" mx={-2}>
             <ShadowBox
               maxWidth="750px"

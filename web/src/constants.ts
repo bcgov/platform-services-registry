@@ -95,4 +95,5 @@ export const RESPONSE_STATUS_CODE = {
   UNAUTHORIZED: 401,
 };
 
+export const MINIMUM_TECHNICAL_LEADS = 1
 export const MAXIMUM_TECHNICAL_LEADS = 2

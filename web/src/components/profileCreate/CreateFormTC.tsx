@@ -15,53 +15,20 @@
 //
 
 import { Label } from '@rebass/forms';
-import React, { useState } from 'react';
+import React from 'react';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { Box, Flex } from 'rebass';
-import { MAXIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
+import { MAXIMUM_TECHNICAL_LEADS, MINIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
 import getValidator from '../../utils/getValidator';
-import { AddFormTC } from '../common/UI/AddFormTC';
-import { SquareFormButton } from '../common/UI/Button';
+import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 
 const CreateFormTC: React.FC = () => {
-  const [TCcount, setTCcount] = useState(1);
   const validator = getValidator();
-
-
-  const changeTCCount = (increment: number) => {
-    if (TCcount + increment > 0 && TCcount + increment <= MAXIMUM_TECHNICAL_LEADS) {
-      setTCcount(TCcount + increment);
-    }
-  }
-
-  let addTechnicalLeadCard: any = []
-  for (let count = 0; count < TCcount; count++) {
-    const FormTCKey = `tc${count}`;
-    addTechnicalLeadCard.push(
-      <Flex key={FormTCKey} flexDirection='column'>
-        {count === 1 && (
-          <Flex flexDirection="row">
-            <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead {count + 1}</FormTitle>
-            <Box my='auto' ml='auto' className="buttons">
-              <SquareFormButton
-                type="button"
-                onClick={() => changeTCCount(-1)}
-                inversed
-              >
-                -
-              </SquareFormButton>
-            </Box>
-          </Flex>
-        )}
-        <AddFormTC count={count} />
-      </Flex>
-    );
-  }
 
   return (
     <Aux>
@@ -71,25 +38,28 @@ const CreateFormTC: React.FC = () => {
         use this information to contact them with technical questions or notify them about platform
         events. You can list up to 2 Technical Leads.
       </FormSubtitle>
-      <FieldArray name="technicalContacts">
+      <FieldArray name="technicalLeads" initialValue={[{}]}>
           {({ fields }) => (
             <div>
               {fields.map((name, index) => (
                 <div key={name}>
                   <Flex flexDirection="row">
                     <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead</FormTitle>
-                    <Box my='auto' ml='auto' className="buttons">
-                      <SquareFormButton
-                        type="button"
-                        onClick={() => fields.remove(index)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        X
-                      </SquareFormButton>
-                    </Box >
+                    { fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                      <Box my='auto' ml='auto' className="buttons">
+                        <SquareFormButton
+                          type="button"
+                          onClick={() => fields.remove(index)}
+                          style={{ cursor: 'pointer' }}
+                          inversed
+                        >
+                          X
+                        </SquareFormButton>
+                      </Box>
+                    )}
                   </Flex>
-                  <Field name={`${name}.role`} initialValue={ROLES.TECHNICAL_LEAD}>
-                    {({ input }) => <input type="hidden" {...input} id={`${name}.role`} />}
+                  <Field name={`${name}.roleId`} initialValue={ROLES.TECHNICAL_LEAD}>
+                    {({ input }) => <input type="hidden" {...input} id={`${name}.roleId`} />}
                   </Field>
                   <Flex flexDirection="column">
                       <Label htmlFor={`${name}.firstName`}>First Name</Label>
@@ -129,31 +99,17 @@ const CreateFormTC: React.FC = () => {
                   </Flex>
                 </div>
               ))}
-              <button
-                type="button"
-                onClick={() => fields.push({ firstName: '', lastName: '', email: '', githubId: '' })}
-              >
-                Add Technical Lead
-              </button>
+              { fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
+                <Button
+                  type="button"
+                  onClick={() => fields.push({ firstName: '', lastName: '', email: '', githubId: '' })}
+                >
+                  Add Technical Lead
+                </Button>
+              ) : ""}
             </div>
           )}
         </FieldArray>
-      {/* <Flex flexDirection='column'>
-        <Flex flexDirection="row">
-          <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead</FormTitle>
-          { TCcount < MAXIMUM_TECHNICAL_LEADS && (
-            <Box my='auto' ml='auto' className="buttons">
-              <SquareFormButton
-                type="button"
-                onClick={() => changeTCCount(1)}
-              >
-                X
-              </SquareFormButton>
-            </Box >
-          )}
-        </Flex>
-      </Flex>
-      {addTechnicalLeadCard} */}
     </Aux >
 
   );

@@ -38,12 +38,10 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
-    const { profile, technicalContact } = formData;
+    const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
     try {
-      console.log(formData)
-      console.log("profile: ", profile)
-      console.log("productOwner: ", technicalContact)
+      const technicalContacts = [...technicalLeads, productOwner]
 
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
@@ -52,12 +50,13 @@ const ProfileCreate: React.FC = () => {
       // TODO loop through technicalContacts object. Determine if PO / TC
       // TODO if 
       // 2. Create contacts.
-      // const po: any = await api.createContact(productOwner);
-      const tc: any = await api.createContact(technicalContact);
-
       // 3. Link the contacts to the profile.
-      // await api.linkContactToProfileById(profileId, po.data.id);
-      await api.linkContactToProfileById(profileId, tc.data.id);
+      for (const contact of technicalContacts) {
+        console.log(contact)
+        const tc: any = await api.createContact(contact);
+        await api.linkContactToProfileById(profileId, tc.data.id);
+      }
+
 
       // 4. Trigger provisioning
       await api.createNamespaceByProfileId(profileId);
