@@ -42,10 +42,9 @@ export function transformForm(data: any) {
     if (fieldName === 'primaryClusterName') {
       clusters.push(value);
     }
-    // TODO (sb): Uncomment when GoldDR functionality is available
-    // if (fieldName === 'primaryClusterName' && value === 'gold') {
-    //   clusters.push('golddr')
-    // }
+    if (fieldName === 'primaryClusterName' && value === 'gold') {
+      clusters.push('golddr');
+    }
     if (fieldName === 'clabDR' && value === true) {
       clusters.push('clab');
     }
