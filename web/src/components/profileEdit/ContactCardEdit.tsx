@@ -126,6 +126,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               validate={validator.mustBeValidEmail}
               defaultValue=""
               initialValue={contactDetails.POEmail}
+              sx={{ textTransform: 'none' }}
             />
           </Flex>
           <Flex flexDirection="column">
@@ -136,6 +137,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               validate={validator.mustBeValidGithubName}
               defaultValue=""
               initialValue={contactDetails.POGithubId}
+              sx={{ textTransform: 'none' }}
             />
           </Flex>
           <FormTitle>Who is the technical contact for this project?</FormTitle>
@@ -170,6 +172,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               validate={validator.mustBeValidEmail}
               defaultValue=""
               initialValue={contactDetails.TCEmail}
+              sx={{ textTransform: 'none' }}
             />
           </Flex>
           <Flex flexDirection="column">
@@ -180,6 +183,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               validate={validator.mustBeValidGithubName}
               defaultValue=""
               initialValue={contactDetails.TCGithubId}
+              sx={{ textTransform: 'none' }}
             />
           </Flex>
           {!hasPendingEdit && isProvisioned ? (
