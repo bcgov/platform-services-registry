@@ -65,11 +65,12 @@ export const updateRequestHumanAction = async (
       userId: user.id,
     });
 
+    await RequestModel.receivedHumanAction(requestId);
+
     // Step 3.a. If approved: fulfillRequest functionality => create bot_message, send NATS message
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
-      await RequestModel.receivedHumanAction(requestId);
       return res.status(204).end();
     }
 
