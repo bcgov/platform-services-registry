@@ -19,6 +19,7 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
 import Dashboard from '../views/Dashboard';
+import mockCluster from './fixtures/cluster.json';
 import mockContacts from './fixtures/profile-contacts.json';
 import mockNamespaces from './fixtures/profile-namespaces.json';
 import mockProfiles from './fixtures/profiles.json';
@@ -60,11 +61,16 @@ jest.mock(
         data: 'small',
       });
 
+      const getCluster = jest.fn().mockResolvedValue({
+        data: mockCluster,
+      });
+
       return {
         getProfile,
         getContactsByProfileId,
         getNamespacesByProfileId,
         getQuotaSizeByProfileId,
+        getCluster,
       };
     },
 );

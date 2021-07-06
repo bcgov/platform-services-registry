@@ -34,84 +34,89 @@ const CreateFormTC: React.FC = () => {
     <Aux>
       <FormTitle>Who is the technical lead for this project?</FormTitle>
       <FormSubtitle>
-        Tell us about the Technical Lead (TL). This is typically the DevOps specialist; we will
-        use this information to contact them with technical questions or notify them about platform
+        Tell us about the Technical Lead (TL). This is typically the DevOps specialist; we will use
+        this information to contact them with technical questions or notify them about platform
         events. You can list up to 2 Technical Leads.
       </FormSubtitle>
       <FieldArray name="technicalLeads" initialValue={[{}]}>
-          {({ fields }) => (
-            <div>
-              {fields.map((name, index) => (
-                <div key={name}>
-                  <Flex flexDirection="row">
-                    <FormTitle style={{ margin:'14px 0 5px 0' }}>Technical Lead</FormTitle>
-                    { fields.length! > MINIMUM_TECHNICAL_LEADS && (
-                      <Box my='auto' ml='auto' className="buttons">
-                        <SquareFormButton
-                          type="button"
-                          onClick={() => fields.remove(index)}
-                          style={{ cursor: 'pointer' }}
-                          inversed
-                        >
-                          X
-                        </SquareFormButton>
-                      </Box>
-                    )}
-                  </Flex>
-                  <Field name={`${name}.roleId`} initialValue={ROLES.TECHNICAL_LEAD}>
-                    {({ input }) => <input type="hidden" {...input} id={`${name}.roleId`} />}
-                  </Field>
-                  <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                      <Field<string>
-                          name={`${name}.firstName`}
-                          component={TextInput}
-                          validate={validator.mustBeValidName}
-                          placeholder="Jane"
-                      />
-                  </Flex>
-                  <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                      <Field<string>
-                          name={`${name}.lastName`}
-                          component={TextInput}
-                          validate={validator.mustBeValidName}
-                          placeholder="Doe"
-                      />
-                  </Flex>
-                  <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.email`}>Email Address</Label>
-                      <Field<string>
-                          name={`${name}.email`}
-                          component={TextInput}
-                          validate={validator.mustBeValidEmail}
-                          placeholder="jane.doe@example.com"
-                      />
-                  </Flex>
-                  <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                      <Field<string>
-                          name={`${name}.githubId`}
-                          component={TextInput}
-                          validate={validator.mustBeValidGithubName}
-                          placeholder="jane1100"
-                      />
-                  </Flex>
-                </div>
-              ))}
-              { fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
-                <Button
-                  type="button"
-                  onClick={() => fields.push({ firstName: '', lastName: '', email: '', githubId: '' })}
-                >
-                  Add Technical Lead
-                </Button>
-              ) : ""}
-            </div>
-          )}
-        </FieldArray>
-    </Aux >
-
+        {({ fields }) => (
+          <div>
+            {fields.map((name, index) => (
+              <div key={name}>
+                <Flex flexDirection="row">
+                  <FormTitle style={{ margin: '14px 0 5px 0' }}>Technical Lead</FormTitle>
+                  {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                    <Box my="auto" ml="auto" className="buttons">
+                      <SquareFormButton
+                        type="button"
+                        onClick={() => fields.remove(index)}
+                        style={{ cursor: 'pointer' }}
+                        inversed
+                      >
+                        X
+                      </SquareFormButton>
+                    </Box>
+                  )}
+                </Flex>
+                <Field name={`${name}.roleId`} initialValue={ROLES.TECHNICAL_LEAD}>
+                  {({ input }) => <input type="hidden" {...input} id={`${name}.roleId`} />}
+                </Field>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                  <Field<string>
+                    name={`${name}.firstName`}
+                    component={TextInput}
+                    validate={validator.mustBeValidName}
+                    placeholder="Jane"
+                  />
+                </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                  <Field<string>
+                    name={`${name}.lastName`}
+                    component={TextInput}
+                    validate={validator.mustBeValidName}
+                    placeholder="Doe"
+                  />
+                </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.email`}>Email Address</Label>
+                  <Field<string>
+                    name={`${name}.email`}
+                    component={TextInput}
+                    validate={validator.mustBeValidEmail}
+                    placeholder="jane.doe@example.com"
+                    sx={{ textTransform: 'none' }}
+                  />
+                </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                  <Field<string>
+                    name={`${name}.githubId`}
+                    component={TextInput}
+                    validate={validator.mustBeValidGithubName}
+                    placeholder="jane1100"
+                    sx={{ textTransform: 'none' }}
+                  />
+                </Flex>
+              </div>
+            ))}
+            {fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
+              <Button
+                type="button"
+                onClick={() =>
+                  fields.push({ firstName: '', lastName: '', email: '', githubId: '' })
+                }
+              >
+                Add Technical Lead
+              </Button>
+            ) : (
+              ''
+            )}
+          </div>
+        )}
+      </FieldArray>
+    </Aux>
   );
 };
 

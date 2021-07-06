@@ -38,14 +38,12 @@ const StyledDisabledButton = styled.button`
 `;
 
 const SquareButton = styled.button<IButtonProps>`
-width: 30px;
-height: 30px;
-border-radius: 5px;
-background-color: ${props => 
-  props.inversed ? '#d3d3d3' : '#036'};
-color: ${props => 
-  props.inversed ? '#036' : '#ffffff'};;
-font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  background-color: ${(props) => (props.inversed ? '#d3d3d3' : '#036')};
+  color: ${(props) => (props.inversed ? '#036' : '#ffffff')};
+  font-size: 18px;
 `;
 
 export const StyledFormButton: React.FC<IButtonProps> = (props: any) => {

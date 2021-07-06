@@ -17,21 +17,35 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import ContactCard from '../components/profileEdit/ContactCard';
+import { ROLES } from '../constants';
 
 test('matches the snapshot', () => {
-  const stubPropPOName = 'Jane Doe';
+  const stubPropPOId = '1';
+  const stubPropPOFirstName = 'Jane';
+  const stubPropPOLastName = 'Doe';
   const stubPropPOEmail = 'jane@example.com';
-  const stubPropTCName = 'Jim Doe';
-  const stubPropTCEmail = 'jim@example.com';
+  const stubPropPORole = ROLES.PRODUCT_OWNER;
+  const stubPropTLId = '2';
+  const stubPropTLFirstName = 'Jim';
+  const stubPropTLLastName = 'Doe';
+  const stubPropTLEmail = 'jim@example.com';
+  const stubPropTLRole = ROLES.TECHNICAL_LEAD;
 
   const { container } = render(
     <ContactCard
-      contactDetails={{
-        POName: stubPropPOName,
-        POEmail: stubPropPOEmail,
-        TCName: stubPropTCName,
-        TCEmail: stubPropTCEmail,
-      }}
+      contactDetails={[{
+        id: stubPropPOId,
+        firstName: stubPropPOFirstName,
+        lastName: stubPropPOLastName,
+        email: stubPropPOEmail,
+        roleId: stubPropPORole,
+      },{
+        id: stubPropTLId,
+        firstName: stubPropTLFirstName,
+        lastName: stubPropTLLastName,
+        email: stubPropTLEmail,
+        roleId: stubPropTLRole,
+      }]}
     />,
   );
 

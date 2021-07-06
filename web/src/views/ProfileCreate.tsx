@@ -41,24 +41,20 @@ const ProfileCreate: React.FC = () => {
     const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
     try {
-      const technicalContacts = [...technicalLeads, productOwner]
+      const technicalContacts = [...technicalLeads, productOwner];
 
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
 
-      // TODO loop through technicalContacts object. Determine if PO / TC
-      // TODO if 
-      // 2. Create contacts.
-      // 3. Link the contacts to the profile.
+      // 2. Create contacts and link contacts to the profile.
+      /* eslint-disable no-await-in-loop */
       for (const contact of technicalContacts) {
-        console.log(contact)
         const tc: any = await api.createContact(contact);
         await api.linkContactToProfileById(profileId, tc.data.id);
       }
 
-
-      // 4. Trigger provisioning
+      // 3. Trigger provisioning
       await api.createNamespaceByProfileId(profileId);
 
       // 4. Create Project Request

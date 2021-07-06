@@ -34,11 +34,11 @@ const Wizard: React.FC<any> = ({ onSubmit, children }) => {
   };
 
   return (
-    <Form 
-    onSubmit={handleSubmit}
-    mutators={{
-      ...arrayMutators
-    }}
+    <Form
+      onSubmit={handleSubmit}
+      mutators={{
+        ...arrayMutators,
+      }}
     >
       {(props) => (
         <form onSubmit={props.handleSubmit}>

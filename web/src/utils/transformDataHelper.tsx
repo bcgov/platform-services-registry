@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+import { ContactDetails } from '../components/profileEdit/ContactCard';
 import { COMPONENT_METADATA, ROLES } from '../constants';
 import { Namespace, QuotaSize } from '../types';
 
@@ -92,6 +93,11 @@ export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
   }
 }
 
+export function sortContacts(contacts: ContactDetails[]): ContactDetails[] {
+  return contacts.sort((a: ContactDetails, b: ContactDetails) => a.roleId - b.roleId);
+}
+
+// TODO (sb): Remove this transform when updating dashboard JSON fetch
 // returns an object with key-values pairs for PO email and TC email
 export function getProfileContacts(contactSet: any[]): object {
   const contacts: any = {};

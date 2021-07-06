@@ -95,5 +95,8 @@ export const RESPONSE_STATUS_CODE = {
   UNAUTHORIZED: 401,
 };
 
-export const MINIMUM_TECHNICAL_LEADS = 1
-export const MAXIMUM_TECHNICAL_LEADS = 2
+export const MINIMUM_TECHNICAL_LEADS = 1;
+export const MAXIMUM_TECHNICAL_LEADS = 2;
+
+export const PRODUCT_OWNER_SUBTITLE = 'This is typically the business owner of the application;';
+export const TECHNICAL_LEAD_SUBTITLE = 'This is typically the DevOps specialist;';

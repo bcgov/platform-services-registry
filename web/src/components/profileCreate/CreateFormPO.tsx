@@ -42,7 +42,7 @@ const CreateFormPO: React.FC = () => {
         application; we will use this information to contact them with any non-technical questions.
       </FormSubtitle>
       <Field name="productOwner.roleId" initialValue={ROLES.PRODUCT_OWNER}>
-            {({ input }) => <input type="hidden" {...input} id="roleId" />}
+        {({ input }) => <input type="hidden" {...input} id="roleId" />}
       </Field>
       <Flex flexDirection="column">
         <Label htmlFor="po-firstName">First Name</Label>
