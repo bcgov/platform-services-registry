@@ -27,7 +27,7 @@ import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 
-const CreateFormTC: React.FC = () => {
+const CreateFormTL: React.FC = () => {
   const validator = getValidator();
 
   return (
@@ -120,4 +120,4 @@ const CreateFormTC: React.FC = () => {
   );
 };
 
-export default CreateFormTC;
+export default CreateFormTL;

@@ -45,7 +45,7 @@ const CreateFormPO: React.FC = () => {
         {({ input }) => <input type="hidden" {...input} id="roleId" />}
       </Field>
       <Flex flexDirection="column">
-        <Label htmlFor="po-firstName">First Name</Label>
+        <Label htmlFor="productOwner.firstName">First Name</Label>
         <Field<string>
           name="productOwner.firstName"
           component={TextInput}
@@ -55,7 +55,7 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="po-lastName">Last Name</Label>
+        <Label htmlFor="productOwner.lastName">Last Name</Label>
         <Field<string>
           name="productOwner.lastName"
           component={TextInput}
@@ -65,7 +65,7 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="po-email">Email Address</Label>
+        <Label htmlFor="productOwner.email">Email Address</Label>
         <Field<string>
           name="productOwner.email"
           component={TextInput}
@@ -76,7 +76,7 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="po-githubId">GitHub Id</Label>
+        <Label htmlFor="productOwner.githubId">GitHub Id</Label>
         <Field<string>
           name="productOwner.githubId"
           component={TextInput}

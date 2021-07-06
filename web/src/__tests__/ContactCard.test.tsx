@@ -33,19 +33,22 @@ test('matches the snapshot', () => {
 
   const { container } = render(
     <ContactCard
-      contactDetails={[{
-        id: stubPropPOId,
-        firstName: stubPropPOFirstName,
-        lastName: stubPropPOLastName,
-        email: stubPropPOEmail,
-        roleId: stubPropPORole,
-      },{
-        id: stubPropTLId,
-        firstName: stubPropTLFirstName,
-        lastName: stubPropTLLastName,
-        email: stubPropTLEmail,
-        roleId: stubPropTLRole,
-      }]}
+      contactDetails={[
+        {
+          id: stubPropPOId,
+          firstName: stubPropPOFirstName,
+          lastName: stubPropPOLastName,
+          email: stubPropPOEmail,
+          roleId: stubPropPORole,
+        },
+        {
+          id: stubPropTLId,
+          firstName: stubPropTLFirstName,
+          lastName: stubPropTLLastName,
+          email: stubPropTLEmail,
+          roleId: stubPropTLRole,
+        },
+      ]}
     />,
   );
 

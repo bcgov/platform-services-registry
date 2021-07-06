@@ -36,7 +36,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -77,7 +77,6 @@ const Dashboard: React.FC = () => {
 
         // 3. Fetch cluster to get user-friendly cluster display name
         const clusterResponse = await api.getCluster();
-        console.log(clusterResponse)
 
         // 4. Combine contact info, provision status, quota-size to existing profile
         // and convert cluster name --> display name

@@ -1,13 +1,13 @@
 [
   {
-    "archived":false,
-    "disasterRecovery":false,
-    "displayName":"Silver Kamloops",
-    "id":3,
-    "isDefault":true,
-    "isProd":true,
-    "name":"silver",
-    "onHardware":true,
-    "onPrem":true
+    "archived": false,
+    "disasterRecovery": false,
+    "displayName": "Silver Kamloops",
+    "id": 3,
+    "isDefault": true,
+    "isProd": true,
+    "name": "silver",
+    "onHardware": true,
+    "onPrem": true
   }
 ]

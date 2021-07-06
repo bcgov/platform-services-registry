@@ -170,7 +170,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               sx={{ textTransform: 'none' }}
             />
           </Flex>
-          <FormTitle>Who is the technical contact for this project?</FormTitle>
+          <FormTitle>
+            {technicalLeads.length > MINIMUM_TECHNICAL_LEADS
+              ? 'Who are the technical leads for this project?'
+              : 'Who is the technical lead for this project?'}
+          </FormTitle>
           <FieldArray name="technicalLeads" initialValue={technicalLeads}>
             {({ fields }) => (
               <div>
