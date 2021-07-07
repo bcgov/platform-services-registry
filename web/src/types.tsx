@@ -16,7 +16,7 @@
 
 import React, { MouseEventHandler } from 'react';
 
-export type ColorSet = 'contrast' | 'primary';
+export type ColorSet = 'contrast' | 'primary' | 'black';
 
 export interface MenuItem {
   title: string;
