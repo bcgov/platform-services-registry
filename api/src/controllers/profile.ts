@@ -74,13 +74,11 @@ export const fetchProfileContacts = async (
 };
 
 export const updateProfileContacts = async (
-  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+  { params, body, user }: { params: any, body: Contact[], user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ContactModel, RequestModel } = dm;
   const { profileId } = params;
-  const { productOwner, technicalContact } = body;
-  const contacts = [productOwner, technicalContact];
-
+  const contacts = body;
   // TODO: add more data sanity check
   // check the passed contacts have no dupliates
   // check contact_id is associated with the queried profile_id
