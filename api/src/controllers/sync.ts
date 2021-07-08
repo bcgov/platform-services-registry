@@ -176,20 +176,7 @@ const getProfilesUnderPendingEditOrCreate = async (): Promise<ProjectProfile[]> 
     const profileUnderRequestPromises: Promise<ProjectProfile>[] =
       requests.map((request) => ProfileModel.findById(request.profileId));
 
-    const profilesUnderPendingEdit: ProjectProfile[] = await Promise.all(profileUnderRequestPromises);
-
-    // process those profiles that are under pending CREATE
-    const profilesUnderPendingCreate: ProjectProfile[] = [];
-
-    const profiles: ProjectProfile[] = await ProfileModel.findAll();
-    for (const profile of profiles) {
-      const isProvisioned = await getProvisionStatus(profile);
-      if (!isProvisioned) {
-        profilesUnderPendingCreate.push(profile);
-      }
-    }
-
-    return profilesUnderPendingEdit.concat(profilesUnderPendingCreate);
+    return await Promise.all(profileUnderRequestPromises);
   } catch (err) {
     const message = 'Unable to get a list of profiles for those that are under pending edit / create';
     logger.error(`${message}, err = ${err.message}`);
