@@ -14,16 +14,17 @@
 // limitations under the License.
 //
 
+import { ContactDetails } from '../components/profileEdit/ContactCard';
 import { COMPONENT_METADATA, ROLES } from '../constants';
 import { Namespace, QuotaSize } from '../types';
 
 export function transformForm(data: any) {
   const profile: any = {};
   const productOwner: any = {
-    roleId: ROLES.PRODUCTOWNER,
+    roleId: ROLES.PRODUCT_OWNER,
   };
   const technicalContact: any = {
-    roleId: ROLES.TECHNICAL,
+    roleId: ROLES.TECHNICAL_LEAD,
   };
 
   for (const [key, value] of Object.entries(data)) {
@@ -92,11 +93,16 @@ export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
   }
 }
 
+export function sortContacts(contacts: ContactDetails[]): ContactDetails[] {
+  return contacts.sort((a: ContactDetails, b: ContactDetails) => a.roleId - b.roleId);
+}
+
+// TODO (sb): Remove this transform when updating dashboard JSON fetch
 // returns an object with key-values pairs for PO email and TC email
 export function getProfileContacts(contactSet: any[]): object {
   const contacts: any = {};
   contactSet.forEach((contact: any) => {
-    if (contact.roleId === ROLES.PRODUCTOWNER) {
+    if (contact.roleId === ROLES.PRODUCT_OWNER) {
       contacts.POEmail = contact.email;
       contacts.POName = `${contact.firstName} ${contact.lastName}`;
       contacts.POGithubId = contact.githubId;
@@ -104,7 +110,7 @@ export function getProfileContacts(contactSet: any[]): object {
       contacts.POLastName = contact.lastName;
       contacts.POId = contact.id;
     }
-    if (contact.roleId === ROLES.TECHNICAL) {
+    if (contact.roleId === ROLES.TECHNICAL_LEAD) {
       contacts.TCEmail = contact.email;
       contacts.TCName = `${contact.firstName} ${contact.lastName}`;
       contacts.TCGithubId = contact.githubId;

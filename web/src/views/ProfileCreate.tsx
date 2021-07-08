@@ -21,12 +21,11 @@ import CreateFormMetadata from '../components/profileCreate/CreateFormMetadata';
 import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
 import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
-import CreateFormTC from '../components/profileCreate/CreateFormTC';
+import CreateFormTL from '../components/profileCreate/CreateFormTL';
 import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
-import { transformForm } from '../utils/transformDataHelper';
 import Wizard, { WizardPage } from '../utils/Wizard';
 
 const ProfileCreate: React.FC = () => {
@@ -39,22 +38,23 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
-    const { profile, productOwner, technicalContact } = transformForm(formData);
+    const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
     try {
+      const technicalContacts = [...technicalLeads, productOwner];
+
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
 
-      // 2. Create contacts.
-      const po: any = await api.createContact(productOwner);
-      const tc: any = await api.createContact(technicalContact);
+      // 2. Create contacts and link contacts to the profile.
+      /* eslint-disable no-await-in-loop */
+      for (const contact of technicalContacts) {
+        const tc: any = await api.createContact(contact);
+        await api.linkContactToProfileById(profileId, tc.data.id);
+      }
 
-      // 3. Link the contacts to the profile.
-      await api.linkContactToProfileById(profileId, po.data.id);
-      await api.linkContactToProfileById(profileId, tc.data.id);
-
-      // 4. Trigger provisioning
+      // 3. Trigger provisioning
       await api.createNamespaceByProfileId(profileId);
 
       // 4. Create Project Request
@@ -98,7 +98,7 @@ const ProfileCreate: React.FC = () => {
         <CreateFormPO />
       </WizardPage>
       <WizardPage>
-        <CreateFormTC />
+        <CreateFormTL />
       </WizardPage>
       <WizardPage>
         <CreateFormRequest />
