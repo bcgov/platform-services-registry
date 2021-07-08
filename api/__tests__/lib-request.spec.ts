@@ -40,6 +40,9 @@ const requests = [quotaSizeRequest[0], contactEditRequest[0]];
 const p4 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
 const authenticatedUser = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
+const p5 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
+const selectProfilesContacts = JSON.parse(fs.readFileSync(p5, 'utf8'));
+
 const client = new Pool().connect();
 
 jest.mock('../src/libs/fulfillment', () => ({
@@ -74,6 +77,9 @@ describe('Request services', () => {
 
   it('A contact edit request is processed', async () => {
     const contacts = contactEditRequest.editObject;
+
+    client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
+
     const update = ContactModel.prototype.update = jest.fn();
     await processProfileContactsEdit(contactEditRequest);
 

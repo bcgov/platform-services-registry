@@ -29,7 +29,7 @@ export interface ContactDetails {
   lastName?: string;
   email?: string;
   githubId?: string;
-  roleId: number;
+  roleId?: number;
 }
 
 const ContactCard: React.FC<IContactCardProps> = (props) => {
