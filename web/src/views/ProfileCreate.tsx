@@ -26,7 +26,10 @@ import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
+<<<<<<< HEAD
 import { transformClusters } from '../utils/transformDataHelper';
+=======
+>>>>>>> f55674b (Add multiple Technical Leads to project creation process)
 import Wizard, { WizardPage } from '../utils/Wizard';
 
 const ProfileCreate: React.FC = () => {
@@ -43,7 +46,10 @@ const ProfileCreate: React.FC = () => {
     setOpenBackdrop(true);
     try {
       const technicalContacts = [...technicalLeads, productOwner];
+<<<<<<< HEAD
       const clusters = transformClusters(profile);
+=======
+>>>>>>> f55674b (Add multiple Technical Leads to project creation process)
 
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
@@ -56,8 +62,13 @@ const ProfileCreate: React.FC = () => {
         await api.linkContactToProfileById(profileId, tc.data.id);
       }
 
+<<<<<<< HEAD
       // 4. Trigger provisioning
       await api.createNamespaceByProfileId(profileId, clusters);
+=======
+      // 3. Trigger provisioning
+      await api.createNamespaceByProfileId(profileId);
+>>>>>>> f55674b (Add multiple Technical Leads to project creation process)
 
       // 4. Create Project Request
       await api.createProjectRequestByProfileId(profileId);

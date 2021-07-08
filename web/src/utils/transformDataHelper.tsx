@@ -122,9 +122,13 @@ export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
 }
 
 export function sortContacts(contacts: ContactDetails[]): ContactDetails[] {
+<<<<<<< HEAD
   return contacts.sort(
     (a: ContactDetails, b: ContactDetails) => Number(a.roleId) - Number(b.roleId),
   );
+=======
+  return contacts.sort((a: ContactDetails, b: ContactDetails) => a.roleId - b.roleId);
+>>>>>>> f55674b (Add multiple Technical Leads to project creation process)
 }
 
 // TODO (sb): Remove this transform when updating dashboard JSON fetch
