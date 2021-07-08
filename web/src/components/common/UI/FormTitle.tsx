@@ -25,6 +25,7 @@ const StyledTitle = styled.h1`
   line-height: normal;
   letter-spacing: normal;
   color: #036;
+  margin: 14px 0px 5px;
 `;
 
 interface ISubFormProps {
