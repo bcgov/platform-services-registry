@@ -143,8 +143,8 @@ describe('Profile event handlers', () => {
   });
 
   it('updates profile contacts with non provisioner-related changes', async () => {
-    const body = {
-      productOwner: {
+    const body = [
+      {
         id: 1,
         firstName: 'JaneTEST',
         lastName: 'DoeTEST',
@@ -152,7 +152,7 @@ describe('Profile event handlers', () => {
         githubId: 'jane1100',
         roleId: 1,
       },
-      technicalContact: {
+      {
         id: 2,
         firstName: 'JohnTEST',
         lastName: 'DoeTEST',
@@ -160,7 +160,8 @@ describe('Profile event handlers', () => {
         githubId: 'john1100',
         roleId: 2,
       }
-    };
+    ];
+
     const req = {
       params: { profileId: 4 },
       body,
@@ -185,24 +186,24 @@ describe('Profile event handlers', () => {
   });
 
   it('requests profile contacts edit with provisioner-related changes', async () => {
-    const body = {
-      productOwner: {
+    const body = [
+      {
         id: 1,
         firstName: 'Jane',
         lastName: 'Doe',
-        email: 'janeTEST@example.com',
-        githubId: 'jane1100TEST',
+        email: 'jane@example.com',
+        githubId: 'jane1100',
         roleId: 1,
       },
-      technicalContact: {
+      {
         id: 2,
         firstName: 'John',
         lastName: 'Doe',
         email: 'johnTEST@example.com',
-        githubId: 'john1100TEST',
+        githubId: 'john1100',
         roleId: 2,
       }
-    };
+    ];
     const req = {
       params: { profileId: 4 },
       body,
@@ -227,7 +228,7 @@ describe('Profile event handlers', () => {
   it('throws an error when updating contact if req body is empty', async () => {
     const req = {
       params: { profileId: 4 },
-      body: {},
+      body: [],
       user: authenticatedUser,
     };
 

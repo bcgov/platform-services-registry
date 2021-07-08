@@ -20,24 +20,19 @@ import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { Redirect } from 'react-router-dom';
-import { Box, Flex } from 'rebass';
+import { Flex } from 'rebass';
 import {
   MAXIMUM_TECHNICAL_LEADS,
   MINIMUM_TECHNICAL_LEADS,
   PROFILE_EDIT_VIEW_NAMES,
   ROLES,
-  ROUTE_PATHS,
+  ROUTE_PATHS
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import {
-  Button,
-  SquareFormButton,
-  StyledFormButton,
-  StyledFormDisabledButton,
-} from '../common/UI/Button';
+import { Button, StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
@@ -122,16 +117,16 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       {(formProps) => (
         <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
-          <Field name="productOwner.id" initialValue={productOwner.id}>
+          <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
             {({ input }) => <input type="hidden" {...input} id="id" />}
           </Field>
-          <Field name="productOwner.roleId" initialValue={productOwner.roleId}>
+          <Field name="updatedProductOwner.roleId" initialValue={productOwner.roleId}>
             {({ input }) => <input type="hidden" {...input} id="roleId" />}
           </Field>
           <Flex flexDirection="column">
-            <Label htmlFor="productOwner.firstName">First Name</Label>
+            <Label htmlFor="updatedProductOwner.firstName">First Name</Label>
             <Field<string>
-              name="productOwner.firstName"
+              name="updatedProductOwner.firstName"
               component={TextInput}
               validate={validator.mustBeValidName}
               defaultValue=""
@@ -139,9 +134,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="productOwner.lastName">Last Name</Label>
+            <Label htmlFor="updatedProductOwner.lastName">Last Name</Label>
             <Field<string>
-              name="productOwner.lastName"
+              name="updatedProductOwner.lastName"
               component={TextInput}
               validate={validator.mustBeValidName}
               defaultValue=""
@@ -149,9 +144,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="productOwner.email">Email Address</Label>
+            <Label htmlFor="updatedProductOwner.email">Email Address</Label>
             <Field<string>
-              name="productOwner.email"
+              name="updatedProductOwner.email"
               component={TextInput}
               validate={validator.mustBeValidEmail}
               defaultValue=""
@@ -160,9 +155,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="productOwner.githubId">GitHub Id</Label>
+            <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
             <Field<string>
-              name="productOwner.githubId"
+              name="updatedProductOwner.githubId"
               component={TextInput}
               validate={validator.mustBeValidGithubName}
               defaultValue=""
@@ -175,14 +170,15 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               ? 'Who are the technical leads for this project?'
               : 'Who is the technical lead for this project?'}
           </FormTitle>
-          <FieldArray name="technicalLeads" initialValue={technicalLeads}>
+          <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
             {({ fields }) => (
               <div>
                 {fields.map((name, index) => (
                   <div key={name}>
                     <Flex flexDirection="row">
-                      <FormTitle style={{ margin: '14px 0 5px 0' }}>Technical Lead</FormTitle>
-                      {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                      <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
+                      {/* TODO: (SB) implement the ability to delete contacts from edit page */}
+                      {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
                         <Box my="auto" ml="auto" className="buttons">
                           <SquareFormButton
                             type="button"
@@ -193,9 +189,12 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             X
                           </SquareFormButton>
                         </Box>
-                      )}
+                      )} */}
                     </Flex>
                     <Flex flexDirection="column">
+                      <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
+                        {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
+                      </Field>
                       <Label htmlFor={`${name}.firstName`}>First Name</Label>
                       <Field<string>
                         name={`${name}.firstName`}
@@ -240,6 +239,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                     type="button"
                     onClick={() =>
                       fields.push({
+                        id: '',
                         firstName: '',
                         lastName: '',
                         email: '',
