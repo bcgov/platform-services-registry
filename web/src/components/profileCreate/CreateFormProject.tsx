@@ -64,7 +64,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Name</Label>
         <Field<string>
-          name="project-name"
+          name="profile.name"
           component={TextInput}
           placeholder="Project X"
           validate={validator.mustBeValidProfileName}
@@ -73,7 +73,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
       <Flex flexDirection="column">
         <Label htmlFor="project-description">Description</Label>
         <Field
-          name="project-description"
+          name="profile.description"
           component={TextAreaInput}
           placeholder="A cutting edge web platform that enables Citizens to ..."
           validate={validator.mustBeValidProfileDescription}
@@ -85,7 +85,12 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           Is this a Priority Application?
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end">
-          <Field<boolean> name="project-prioritySystem" component={CheckboxInput} type="checkbox" />
+          <Field<boolean>
+            name="profile.prioritySystem"
+            component={CheckboxInput}
+            defaultValue={false}
+            type="checkbox"
+          />
         </Flex>
       </Flex>
       <Flex mt={3}>
@@ -93,7 +98,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           Ministry Sponsor
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
-          <Field name="project-busOrgId" component={SelectInput} validate={required}>
+          <Field name="profile.busOrgId" component={SelectInput} validate={required}>
             <option> Select... </option>
             {ministry.length > 0 &&
               ministry.map((s: any) => (
@@ -109,7 +114,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           Cluster Name
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end" name="project-primaryClusterName">
-          <Field name="project-primaryClusterName" component={SelectInput} validate={required}>
+          <Field name="profile.primaryClusterName" component={SelectInput} validate={required}>
             <option> Select... </option>
             {cluster.length > 0 &&
               cluster.map((s: any) => (
