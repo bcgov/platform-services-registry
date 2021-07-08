@@ -82,7 +82,7 @@ export const getProvisionedProfileBotJson = async (
 
     const clusters = await NamespaceModel.findClustersForProfile(profile.id);
 
-    const context = await contextForProvisioning(profileId, clusters[0], true);
+    const context = await contextForProvisioning(profileId, clusters.pop(), true);
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
@@ -146,7 +146,7 @@ export const getProfileBotJsonUnderPending = async (
       }
       switch (request.type) {
         case RequestType.Create:
-          context = await contextForProvisioning(profileId, clusters[0]);
+          context = await contextForProvisioning(profileId, clusters.pop());
           break;
         case RequestType.Edit:
           if (!request.editType){
@@ -157,7 +157,7 @@ export const getProfileBotJsonUnderPending = async (
             request.editObject = JSON.stringify(request.editObject)
           }
 
-          context = await contextForEditing(profileId, request.editType, request.editObject, clusters[0]);
+          context = await contextForEditing(profileId, request.editType, request.editObject, clusters.pop());
           break;
         default:
           throw new Error(`Invalid type for request ${request.id}`);

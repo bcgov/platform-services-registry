@@ -18,7 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, projectSetNames } from '../constants';
+import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, PROJECT_SET_NAMES } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
@@ -48,7 +48,7 @@ export const provisionProfileNamespaces = async (
         throw new Error(errmsg);
       }
 
-      const names = projectSetNames.map(n => `${profile.namespacePrefix}-${n}`);
+      const names = PROJECT_SET_NAMES.map(n => `${profile.namespacePrefix}-${n}`);
 
       const nsPromises = names.map(name => NamespaceModel.create({
         name,
