@@ -18,16 +18,18 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, PROJECT_SET_NAMES } from '../constants';
+import { CLUSTER_NAMES, GOLD_QUORUM_COUNT } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fetchBotMessageRequests } from '../libs/bot-message';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
+import { createNamespaces } from '../libs/namespace';
 import { getProvisionStatus, updateProvisionStatus } from '../libs/profile';
 import { processProfileContactsEdit, processProfileQuotaSizeEdit, processProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
+import { generateNamespaceNames } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -48,18 +50,13 @@ export const provisionProfileNamespaces = async (
         throw new Error(errmsg);
       }
 
-      const names = PROJECT_SET_NAMES.map(n => `${profile.namespacePrefix}-${n}`);
+      const namespaceNames = await generateNamespaceNames(profile.namespacePrefix);
 
-      const nsPromises = names.map(name => NamespaceModel.create({
-        name,
-        profileId,
-      }));
-
-      const nsResults = await Promise.all(nsPromises);
+      const namespaces = await createNamespaces(namespaceNames, profileId);
 
       for (const cluster of clusters) {
         const clusterDetails = await ClusterModel.findByName(cluster);
-        await NamespaceModel.createProjectSet(Number(clusterDetails.id), nsResults);
+        await NamespaceModel.createProjectSet(Number(clusterDetails.id), namespaces);
       }
     }
     res.status(202).end();
