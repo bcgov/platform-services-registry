@@ -44,6 +44,7 @@ const ProfileCreate: React.FC = () => {
     try {
       const technicalContacts = [...technicalLeads, productOwner];
       const clusters = transformClusters(profile);
+
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
