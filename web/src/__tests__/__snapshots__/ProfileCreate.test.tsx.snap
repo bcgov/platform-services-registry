@@ -45,7 +45,7 @@ exports[`matches the snapshot 1`] = `
               >
                 <input
                   class="css-4y926w"
-                  name="project-name"
+                  name="profile.name"
                   placeholder="Project X"
                   type="text"
                   value=""
@@ -66,7 +66,7 @@ exports[`matches the snapshot 1`] = `
               >
                 <textarea
                   class="css-4y926w"
-                  name="project-description"
+                  name="profile.description"
                   placeholder="A cutting edge web platform that enables Citizens to ..."
                   rows="5"
                 />
@@ -91,7 +91,7 @@ exports[`matches the snapshot 1`] = `
                   >
                     <input
                       class="css-p19g2b"
-                      name="project-prioritySystem"
+                      name="profile.prioritySystem"
                       type="checkbox"
                     />
                     <svg
@@ -141,7 +141,7 @@ exports[`matches the snapshot 1`] = `
                   >
                     <select
                       class="css-4y926w"
-                      name="project-busOrgId"
+                      name="profile.busOrgId"
                     >
                       <option>
                          Select... 
@@ -182,7 +182,7 @@ exports[`matches the snapshot 1`] = `
                   >
                     <select
                       class="css-4y926w"
-                      name="project-primaryClusterName"
+                      name="profile.primaryClusterName"
                     >
                       <option>
                          Select... 

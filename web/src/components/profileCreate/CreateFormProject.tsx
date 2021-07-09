@@ -62,18 +62,18 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         to get started.
       </FormSubtitle>
       <Flex flexDirection="column">
-        <Label htmlFor="project-name">Name</Label>
+        <Label htmlFor="project.name">Name</Label>
         <Field<string>
-          name="project-name"
+          name="profile.name"
           component={TextInput}
           placeholder="Project X"
           validate={validator.mustBeValidProfileName}
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project-description">Description</Label>
+        <Label htmlFor="project.description">Description</Label>
         <Field
-          name="project-description"
+          name="profile.description"
           component={TextAreaInput}
           placeholder="A cutting edge web platform that enables Citizens to ..."
           validate={validator.mustBeValidProfileDescription}
@@ -85,15 +85,20 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           Is this a Priority Application?
         </Label>
         <Flex flex="1 1 auto" justifyContent="flex-end">
-          <Field<boolean> name="project-prioritySystem" component={CheckboxInput} type="checkbox" />
+          <Field<boolean>
+            name="profile.prioritySystem"
+            component={CheckboxInput}
+            defaultValue={false}
+            type="checkbox"
+          />
         </Flex>
       </Flex>
       <Flex mt={3}>
         <Label variant="adjacentLabel" m="auto">
           Ministry Sponsor
         </Label>
-        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
-          <Field name="project-busOrgId" component={SelectInput} validate={required}>
+        <Flex flex="1 1 auto" justifyContent="flex-end" name="project.busOrgId">
+          <Field name="profile.busOrgId" component={SelectInput} validate={required}>
             <option> Select... </option>
             {ministry.length > 0 &&
               ministry.map((s: any) => (
@@ -108,8 +113,8 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         <Label variant="adjacentLabel" m="auto">
           Cluster Name
         </Label>
-        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-primaryClusterName">
-          <Field name="project-primaryClusterName" component={SelectInput} validate={required}>
+        <Flex flex="1 1 auto" justifyContent="flex-end" name="profile.primaryClusterName">
+          <Field name="profile.primaryClusterName" component={SelectInput} validate={required}>
             <option> Select... </option>
             {cluster.length > 0 &&
               cluster.map((s: any) => (
@@ -120,17 +125,17 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           </Field>
         </Flex>
       </Flex>
-      <Condition when="project-primaryClusterName" is="klab">
+      <Condition when="profile.primaryClusterName" is="klab">
         <Flex mt={3}>
           <Label variant="adjacentLabel" m="auto">
             Configure Disaster Recovery?
           </Label>
           <Flex flex="1 1 auto" justifyContent="flex-end">
-            <Field<boolean> name="project-clabDR" component={CheckboxInput} type="checkbox" />
+            <Field<boolean> name="profile.clabDR" component={CheckboxInput} type="checkbox" />
           </Flex>
         </Flex>
       </Condition>
-      <Condition when="project-primaryClusterName" is="gold">
+      <Condition when="profile.primaryClusterName" is="gold">
         <Modal
           isShown={!isShown}
           hide={toggle}

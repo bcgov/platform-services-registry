@@ -1,3 +1,4 @@
+import arrayMutators from 'final-form-arrays';
 import React, { useState } from 'react';
 import { Form } from 'react-final-form';
 import { Flex } from 'rebass';
@@ -33,7 +34,12 @@ const Wizard: React.FC<any> = ({ onSubmit, children }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form
+      onSubmit={handleSubmit}
+      mutators={{
+        ...arrayMutators,
+      }}
+    >
       {(props) => (
         <form onSubmit={props.handleSubmit}>
           <Flex flexWrap="wrap" mx={-2}>

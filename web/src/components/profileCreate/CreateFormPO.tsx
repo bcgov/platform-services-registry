@@ -19,6 +19,7 @@ import { Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import { ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
 import getDecodedToken from '../../utils/getDecodedToken';
 import getValidator from '../../utils/getValidator';
@@ -40,10 +41,13 @@ const CreateFormPO: React.FC = () => {
         Tell us about the Product Owner (PO). This is typically the business owner of the
         application; we will use this information to contact them with any non-technical questions.
       </FormSubtitle>
+      <Field name="productOwner.roleId" initialValue={ROLES.PRODUCT_OWNER}>
+        {({ input }) => <input type="hidden" {...input} id="roleId" />}
+      </Field>
       <Flex flexDirection="column">
-        <Label htmlFor="po-firstName">First Name</Label>
+        <Label htmlFor="productOwner.firstName">First Name</Label>
         <Field<string>
-          name="po-firstName"
+          name="productOwner.firstName"
           component={TextInput}
           validate={validator.mustBeValidName}
           defaultValue=""
@@ -51,9 +55,9 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="po-lastName">Last Name</Label>
+        <Label htmlFor="productOwner.lastName">Last Name</Label>
         <Field<string>
-          name="po-lastName"
+          name="productOwner.lastName"
           component={TextInput}
           validate={validator.mustBeValidName}
           defaultValue=""
@@ -61,9 +65,9 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="po-email">Email Address</Label>
+        <Label htmlFor="productOwner.email">Email Address</Label>
         <Field<string>
-          name="po-email"
+          name="productOwner.email"
           component={TextInput}
           validate={validator.mustBeValidEmail}
           defaultValue=""
@@ -72,9 +76,9 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="po-githubId">GitHub Id</Label>
+        <Label htmlFor="productOwner.githubId">GitHub Id</Label>
         <Field<string>
-          name="po-githubId"
+          name="productOwner.githubId"
           component={TextInput}
           validate={validator.mustBeValidGithubName}
           placeholder="jane1100"
