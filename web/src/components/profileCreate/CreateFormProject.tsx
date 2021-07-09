@@ -62,7 +62,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         to get started.
       </FormSubtitle>
       <Flex flexDirection="column">
-        <Label htmlFor="project-name">Name</Label>
+        <Label htmlFor="project.name">Name</Label>
         <Field<string>
           name="profile.name"
           component={TextInput}
@@ -71,7 +71,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project-description">Description</Label>
+        <Label htmlFor="project.description">Description</Label>
         <Field
           name="profile.description"
           component={TextAreaInput}
@@ -97,7 +97,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         <Label variant="adjacentLabel" m="auto">
           Ministry Sponsor
         </Label>
-        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+        <Flex flex="1 1 auto" justifyContent="flex-end" name="project.busOrgId">
           <Field name="profile.busOrgId" component={SelectInput} validate={required}>
             <option> Select... </option>
             {ministry.length > 0 &&
@@ -113,7 +113,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         <Label variant="adjacentLabel" m="auto">
           Cluster Name
         </Label>
-        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-primaryClusterName">
+        <Flex flex="1 1 auto" justifyContent="flex-end" name="project.primaryClusterName">
           <Field name="profile.primaryClusterName" component={SelectInput} validate={required}>
             <option> Select... </option>
             {cluster.length > 0 &&
@@ -125,17 +125,17 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           </Field>
         </Flex>
       </Flex>
-      <Condition when="project-primaryClusterName" is="klab">
+      <Condition when="project.primaryClusterName" is="klab">
         <Flex mt={3}>
           <Label variant="adjacentLabel" m="auto">
             Configure Disaster Recovery?
           </Label>
           <Flex flex="1 1 auto" justifyContent="flex-end">
-            <Field<boolean> name="project-clabDR" component={CheckboxInput} type="checkbox" />
+            <Field<boolean> name="project.clabDR" component={CheckboxInput} type="checkbox" />
           </Flex>
         </Flex>
       </Condition>
-      <Condition when="project-primaryClusterName" is="gold">
+      <Condition when="project.primaryClusterName" is="gold">
         <Modal
           isShown={!isShown}
           hide={toggle}
