@@ -54,8 +54,26 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
-
   const [goBackToProfileEdit, setGoBackToProfileEditable] = useState<boolean>(false);
+
+  const renderSubmitButton = (pristine: boolean) => {
+    if ((hasPendingEdit && !isProvisioned) || pristine) {
+      return (
+        <>
+          {/* @ts-ignore */}
+          <StyledFormDisabledButton disabled style={{ display: 'block' }}>
+            Request Update
+          </StyledFormDisabledButton>
+          {!pristine && (
+            <Label as="span" variant="errorLabel">
+              Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
+            </Label>
+          )}
+        </>
+      );
+    }
+    return <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>;
+  };
 
   const onSubmit = async (formData: any) => {
     if (!projectDetails.id) {
@@ -91,7 +109,6 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
       />
     );
   }
-
   return (
     <Form
       onSubmit={onSubmit}
@@ -100,145 +117,140 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(formProps) => (
-        <form onSubmit={formProps.handleSubmit}>
-          <FormTitle>Tell us about your project</FormTitle>
-          <Flex flexDirection="column">
-            <Label htmlFor="project-name">Name</Label>
-            <Field<string>
-              name="project-name"
-              component={TextInput}
-              placeholder="Project X"
-              validate={validator.mustBeValidProfileName}
-              defaultValue=""
-              initialValue={projectDetails.name}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="project-description">Description</Label>
-            <Field
-              name="project-description"
-              component={TextAreaInput}
-              placeholder="A cutting edge web platform that enables Citizens to ..."
-              validate={validator.mustBeValidProfileDescription}
-              rows="5"
-              defaultValue=""
-              initialValue={projectDetails.description}
-            />
-          </Flex>
-          <Flex mt={3}>
-            <Label variant="adjacentLabel" m="auto">
-              Is this a Priority Application?
-            </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end">
-              <Field<boolean>
-                name="project-prioritySystem"
-                component={CheckboxInput}
-                defaultValue={false}
-                initialValue={!!projectDetails.prioritySystem}
-                type="checkbox"
+      {({ handleSubmit, dirtyFields, pristine }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <FormTitle>Tell us about your project 111</FormTitle>
+            <Flex flexDirection="column">
+              <Label htmlFor="project-name">Name</Label>
+              <Field<string>
+                name="project-name"
+                component={TextInput}
+                placeholder="Project X"
+                validate={validator.mustBeValidProfileName}
+                defaultValue=""
+                initialValue={projectDetails.name}
               />
             </Flex>
-          </Flex>
-          <Flex mt={3}>
-            <Label variant="adjacentLabel" m="auto">
-              Ministry Sponsor
-            </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+            <Flex flexDirection="column">
+              <Label htmlFor="project-description">Description</Label>
               <Field
-                name="project-busOrgId"
-                component={SelectInput}
-                defaultValue={projectDetails.busOrgId}
-              >
-                <option key={projectDetails.busOrgId} value={projectDetails.busOrgId}>
-                  {projectDetails.ministryName}
-                </option>
-                {ministry.length > 0 &&
-                  ministry.map((s: any) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-              </Field>
-            </Flex>
-          </Flex>
-          <Flex mt={3}>
-            <Label variant="adjacentLabel" m="auto">
-              Is this app migrating from OCP 3.11?
-            </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end">
-              <Field<boolean>
-                name="project-migratingApplication"
-                component={CheckboxInput}
-                initialValue={!!projectDetails.migratingLicenseplate}
-                type="checkbox"
+                name="project-description"
+                component={TextAreaInput}
+                placeholder="A cutting edge web platform that enables Citizens to ..."
+                validate={validator.mustBeValidProfileDescription}
+                rows="5"
+                defaultValue=""
+                initialValue={projectDetails.description}
               />
             </Flex>
-          </Flex>
-          <Condition when="project-migratingApplication" is={true}>
             <Flex mt={3}>
-              <Label variant="adjacentLabel" m="auto" htmlFor="project-migratingLicenseplate">
-                OCP 3.11 license plate:
-              </Label>
-              <Flex flex="1 1 auto" justifyContent="flex-end" name="project-migratingLicenseplate">
-                <Field<string>
-                  name="project-migratingLicenseplate"
-                  component={TextInput}
-                  validate={validator.mustBeValidProfileLicenseplate}
-                  initialValue={projectDetails.migratingLicenseplate}
-                />
-              </Flex>
-            </Flex>
-          </Condition>
-          <Label variant="adjacentLabel">
-            Please indicate what services you expect to utilize as part of your project?
-          </Label>
-          {COMPONENT_METADATA.map((item) => (
-            <Flex mt={3} key={item.inputValue}>
               <Label variant="adjacentLabel" m="auto">
-                {item.displayName}
+                Is this a Priority Application?
               </Label>
               <Flex flex="1 1 auto" justifyContent="flex-end">
                 <Field<boolean>
-                  name={`project-${item.inputValue}`}
+                  name="project-prioritySystem"
                   component={CheckboxInput}
-                  // @ts-ignore
-                  initialValue={projectDetails[item.inputValue]}
+                  defaultValue={false}
+                  initialValue={!!projectDetails.prioritySystem}
                   type="checkbox"
                 />
               </Flex>
             </Flex>
-          ))}
-          <Flex>
-            <Label variant="adjacentLabel" m="auto" htmlFor="project-other">
-              Other:
-            </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-other">
-              <Field<string>
-                name="project-other"
-                component={TextInput}
-                validate={validator.mustBeValidComponentOthers}
-                defaultValue=""
-                initialValue={projectDetails.other}
-              />
-            </Flex>
-          </Flex>
-          {!hasPendingEdit && isProvisioned ? (
-            // @ts-ignore
-            <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
-          ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
-              </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
+            <Flex mt={3}>
+              <Label variant="adjacentLabel" m="auto">
+                Ministry Sponsor
               </Label>
-            </>
-          )}
-        </form>
-      )}
+              <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+                <Field
+                  name="project-busOrgId"
+                  component={SelectInput}
+                  initialValue={projectDetails.busOrgId}
+                  defaultValue={projectDetails.busOrgId}
+                >
+                  <option key={projectDetails.busOrgId} value={projectDetails.busOrgId}>
+                    {projectDetails.ministryName}
+                  </option>
+                  {ministry.length > 0 &&
+                    ministry.map((s: any) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                </Field>
+              </Flex>
+            </Flex>
+            <Flex mt={3}>
+              <Label variant="adjacentLabel" m="auto">
+                Is this app migrating from OCP 3.11?
+              </Label>
+              <Flex flex="1 1 auto" justifyContent="flex-end">
+                <Field<boolean>
+                  name="project-migratingApplication"
+                  component={CheckboxInput}
+                  initialValue={!!projectDetails.migratingLicenseplate}
+                  type="checkbox"
+                />
+              </Flex>
+            </Flex>
+            <Condition when="project-migratingApplication" is={true}>
+              <Flex mt={3}>
+                <Label variant="adjacentLabel" m="auto" htmlFor="project-migratingLicenseplate">
+                  OCP 3.11 license plate:
+                </Label>
+                <Flex
+                  flex="1 1 auto"
+                  justifyContent="flex-end"
+                  name="project-migratingLicenseplate"
+                >
+                  <Field<string>
+                    name="project-migratingLicenseplate"
+                    component={TextInput}
+                    validate={validator.mustBeValidProfileLicenseplate}
+                    initialValue={projectDetails.migratingLicenseplate}
+                  />
+                </Flex>
+              </Flex>
+            </Condition>
+            <Label variant="adjacentLabel">
+              Please indicate what services you expect to utilize as part of your project?
+            </Label>
+            {COMPONENT_METADATA.map((item) => (
+              <Flex mt={3} key={item.inputValue}>
+                <Label variant="adjacentLabel" m="auto">
+                  {item.displayName}
+                </Label>
+                <Flex flex="1 1 auto" justifyContent="flex-end">
+                  <Field<boolean>
+                    name={`project-${item.inputValue}`}
+                    component={CheckboxInput}
+                    // @ts-ignore
+                    initialValue={projectDetails[item.inputValue]}
+                    type="checkbox"
+                  />
+                </Flex>
+              </Flex>
+            ))}
+            <Flex>
+              <Label variant="adjacentLabel" m="auto" htmlFor="project-other">
+                Other:
+              </Label>
+              <Flex flex="1 1 auto" justifyContent="flex-end" name="project-other">
+                <Field<string>
+                  name="project-other"
+                  component={TextInput}
+                  validate={validator.mustBeValidComponentOthers}
+                  defaultValue=""
+                  initialValue={projectDetails.other}
+                />
+              </Flex>
+            </Flex>
+
+            {renderSubmitButton(pristine)}
+          </form>
+        );
+      }}
     </Form>
   );
 };
