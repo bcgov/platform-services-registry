@@ -12,7 +12,7 @@ exports[`matches the snapshot 1`] = `
         <div>
           <div>
             <h1
-              class="css-zi8sy1"
+              class="css-k3emzi"
             >
               Tell us about your project
             </h1>
@@ -36,7 +36,7 @@ exports[`matches the snapshot 1`] = `
             >
               <label
                 class="css-knfhfe"
-                for="project-name"
+                for="project.name"
               >
                 Name
               </label>
@@ -57,7 +57,7 @@ exports[`matches the snapshot 1`] = `
             >
               <label
                 class="css-knfhfe"
-                for="project-description"
+                for="project.description"
               >
                 Description
               </label>
@@ -130,7 +130,7 @@ exports[`matches the snapshot 1`] = `
               </label>
               <div
                 class="css-xtali0"
-                name="project-busOrgId"
+                name="project.busOrgId"
               >
                 <div
                   class=""
@@ -171,7 +171,7 @@ exports[`matches the snapshot 1`] = `
               </label>
               <div
                 class="css-xtali0"
-                name="project-primaryClusterName"
+                name="profile.primaryClusterName"
               >
                 <div
                   class=""
