@@ -140,7 +140,6 @@ export const createProjectProfile = async (
   }
 };
 
-// TODO: enable updating name when we support display name changes
 export const updateProjectProfile = async (
   { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
