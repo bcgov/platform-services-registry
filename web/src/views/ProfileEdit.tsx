@@ -38,9 +38,9 @@ import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
   getClusterDisplayName,
   getLicensePlate,
-  getProfileContacts,
   getProfileMinistry,
   isProfileProvisioned,
+  sortContacts,
 } from '../utils/transformDataHelper';
 
 const StyledDiv = styled.div`
@@ -62,7 +62,7 @@ interface IProfileState {
   isProvisioned: boolean;
   hasPendingEdit: boolean;
   projectDetails: ProjectDetails;
-  contactDetails: ContactDetails;
+  contactDetails: ContactDetails[];
   quotaDetails: QuotaDetails;
 }
 
@@ -85,7 +85,7 @@ const ProfileEdit: React.FC = (props: any) => {
     isProvisioned: false,
     hasPendingEdit: true,
     projectDetails: {},
-    contactDetails: {},
+    contactDetails: [],
     quotaDetails: {},
   });
 
@@ -114,7 +114,6 @@ const ProfileEdit: React.FC = (props: any) => {
     };
 
     const contactDetails = await api.getContactsByProfileId(profileId);
-    contactDetails.data = { ...getProfileContacts(contactDetails.data) };
 
     const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
     const quotaSize = await api.getQuotaSizeByProfileId(profileId);
@@ -128,7 +127,7 @@ const ProfileEdit: React.FC = (props: any) => {
       hasPendingEdit,
       isProvisioned: isProfileProvisioned(projectDetails.data, namespaces.data),
       projectDetails: projectDetails.data,
-      contactDetails: contactDetails.data,
+      contactDetails: sortContacts(contactDetails.data),
       quotaDetails: {
         licensePlate: getLicensePlate(namespaces.data),
         quotaSize: quotaSize.data,

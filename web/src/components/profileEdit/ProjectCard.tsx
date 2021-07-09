@@ -31,7 +31,6 @@ export interface ProjectDetails {
   ministryName?: string;
   primaryClusterDisplayName?: string;
   other?: string;
-  migratingLicenseplate?: string;
 }
 
 const ProjectCard: React.FC<IProjectCardProps> = (props) => {
@@ -40,7 +39,6 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
       name = '',
       description = '',
       ministryName = '',
-      migratingLicenseplate = '',
       primaryClusterDisplayName = '',
     },
   } = props;
@@ -90,23 +88,6 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
           {primaryClusterDisplayName}
         </Text>
       </Box>
-      {migratingLicenseplate ? (
-        <Flex width={1}>
-          <Box width={1 / 2} px={2} mt={3}>
-            <Text as="h3">Migrating Application</Text>
-            <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-              This is the license plate of your migrating OCP 3.11 application;
-            </Text>
-          </Box>
-          <Box width={1 / 2} px={2} mt={3}>
-            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-              {migratingLicenseplate}
-            </Text>
-          </Box>
-        </Flex>
-      ) : (
-        <Flex />
-      )}
     </Flex>
   );
 };

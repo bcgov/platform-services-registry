@@ -95,33 +95,6 @@ exports[`<ProjectCard /> should render with Migration Licenseplate 1`] = `
         class="css-1guafq4"
       />
     </div>
-    <div
-      class="css-knfhfe"
-    >
-      <div
-        class="css-19crk1j"
-      >
-        <h3
-          class="css-vurnku"
-        >
-          Migrating Application
-        </h3>
-        <p
-          class="css-18ja79e"
-        >
-          This is the license plate of your migrating OCP 3.11 application;
-        </p>
-      </div>
-      <div
-        class="css-19crk1j"
-      >
-        <p
-          class="css-1guafq4"
-        >
-          abcdef
-        </p>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -221,9 +194,6 @@ exports[`<ProjectCard /> should render without Migration Licenseplate 1`] = `
         class="css-1guafq4"
       />
     </div>
-    <div
-      class="css-4cffwv"
-    />
   </div>
 </div>
 `;

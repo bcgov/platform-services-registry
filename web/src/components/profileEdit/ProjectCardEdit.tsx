@@ -24,10 +24,8 @@ import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { transformForm } from '../../utils/transformDataHelper';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import CheckboxInput from '../common/UI/CheckboxInput';
-import { Condition } from '../common/UI/FormControls';
 import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -65,7 +63,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
     setOpenBackdrop(true);
     try {
       // 1. Prepare project edit request body.
-      const { profile } = transformForm(formData);
+      const { profile } = formData;
 
       // 2. Update the profile project.
       await api.updateProfile(projectDetails.id, profile);
@@ -104,9 +102,9 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Tell us about your project</FormTitle>
           <Flex flexDirection="column">
-            <Label htmlFor="project-name">Name</Label>
+            <Label htmlFor="profile.name">Name</Label>
             <Field<string>
-              name="project-name"
+              name="profile.name"
               component={TextInput}
               placeholder="Project X"
               validate={validator.mustBeValidProfileName}
@@ -115,9 +113,9 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="project-description">Description</Label>
+            <Label htmlFor="profile.description">Description</Label>
             <Field
-              name="project-description"
+              name="profile.description"
               component={TextAreaInput}
               placeholder="A cutting edge web platform that enables Citizens to ..."
               validate={validator.mustBeValidProfileDescription}
@@ -132,7 +130,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
             </Label>
             <Flex flex="1 1 auto" justifyContent="flex-end">
               <Field<boolean>
-                name="project-prioritySystem"
+                name="profile.prioritySystem"
                 component={CheckboxInput}
                 defaultValue={false}
                 initialValue={!!projectDetails.prioritySystem}
@@ -144,9 +142,9 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
             <Label variant="adjacentLabel" m="auto">
               Ministry Sponsor
             </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-busOrgId">
+            <Flex flex="1 1 auto" justifyContent="flex-end" name="profile.busOrgId">
               <Field
-                name="project-busOrgId"
+                name="profile.busOrgId"
                 component={SelectInput}
                 defaultValue={projectDetails.busOrgId}
               >
@@ -162,34 +160,6 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               </Field>
             </Flex>
           </Flex>
-          <Flex mt={3}>
-            <Label variant="adjacentLabel" m="auto">
-              Is this app migrating from OCP 3.11?
-            </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end">
-              <Field<boolean>
-                name="project-migratingApplication"
-                component={CheckboxInput}
-                initialValue={!!projectDetails.migratingLicenseplate}
-                type="checkbox"
-              />
-            </Flex>
-          </Flex>
-          <Condition when="project-migratingApplication" is={true}>
-            <Flex mt={3}>
-              <Label variant="adjacentLabel" m="auto" htmlFor="project-migratingLicenseplate">
-                OCP 3.11 license plate:
-              </Label>
-              <Flex flex="1 1 auto" justifyContent="flex-end" name="project-migratingLicenseplate">
-                <Field<string>
-                  name="project-migratingLicenseplate"
-                  component={TextInput}
-                  validate={validator.mustBeValidProfileLicenseplate}
-                  initialValue={projectDetails.migratingLicenseplate}
-                />
-              </Flex>
-            </Flex>
-          </Condition>
           <Label variant="adjacentLabel">
             Please indicate what services you expect to utilize as part of your project?
           </Label>
@@ -200,7 +170,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               </Label>
               <Flex flex="1 1 auto" justifyContent="flex-end">
                 <Field<boolean>
-                  name={`project-${item.inputValue}`}
+                  name={`profile.${item.inputValue}`}
                   component={CheckboxInput}
                   // @ts-ignore
                   initialValue={projectDetails[item.inputValue]}
@@ -210,12 +180,12 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
             </Flex>
           ))}
           <Flex>
-            <Label variant="adjacentLabel" m="auto" htmlFor="project-other">
+            <Label variant="adjacentLabel" m="auto" htmlFor="profile.other">
               Other:
             </Label>
-            <Flex flex="1 1 auto" justifyContent="flex-end" name="project-other">
+            <Flex flex="1 1 auto" justifyContent="flex-end" name="profile.other">
               <Field<string>
-                name="project-other"
+                name="profile.other"
                 component={TextInput}
                 validate={validator.mustBeValidComponentOthers}
                 defaultValue=""

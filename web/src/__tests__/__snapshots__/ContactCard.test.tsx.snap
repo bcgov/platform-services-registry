@@ -3,69 +3,77 @@
 exports[`matches the snapshot 1`] = `
 <div>
   <div
-    class="css-z54kij"
+    class="css-l3rx45"
   >
     <div
-      class="css-19crk1j"
+      class="css-z54kij"
     >
-      <h3
-        class="css-vurnku"
+      <div
+        class="css-19crk1j"
       >
-        Product Owner
-      </h3>
-      <p
-        class="css-18ja79e"
+        <h3
+          class="css-vurnku"
+        >
+          Product Owner
+        </h3>
+        <p
+          class="css-18ja79e"
+        >
+          This is typically the business owner of the application;
+        </p>
+      </div>
+      <div
+        class="css-19crk1j"
       >
-        This is typically the business owner of the application;
-      </p>
+        <p
+          class="css-1guafq4"
+        >
+          Jane Doe
+        </p>
+        <p
+          class="css-1guafq4"
+        >
+          jane@example.com
+        </p>
+        <p
+          class="css-1guafq4"
+        />
+      </div>
     </div>
     <div
-      class="css-19crk1j"
+      class="css-z54kij"
     >
-      <p
-        class="css-1guafq4"
+      <div
+        class="css-19crk1j"
       >
-        Jane Doe
-      </p>
-      <p
-        class="css-1guafq4"
+        <h3
+          class="css-vurnku"
+        >
+           Technical Lead
+        </h3>
+        <p
+          class="css-18ja79e"
+        >
+          This is typically the DevOps specialist;
+        </p>
+      </div>
+      <div
+        class="css-19crk1j"
       >
-        jane@example.com
-      </p>
-      <p
-        class="css-1guafq4"
-      />
-    </div>
-    <div
-      class="css-19crk1j"
-    >
-      <h3
-        class="css-vurnku"
-      >
-        Technical Contact
-      </h3>
-      <p
-        class="css-18ja79e"
-      >
-        This is typically the DevOps specialist;
-      </p>
-    </div>
-    <div
-      class="css-19crk1j"
-    >
-      <p
-        class="css-1guafq4"
-      >
-        Jim Doe
-      </p>
-      <p
-        class="css-1guafq4"
-      >
-        jim@example.com
-      </p>
-      <p
-        class="css-1guafq4"
-      />
+        <p
+          class="css-1guafq4"
+        >
+          Jim Doe
+        </p>
+        <p
+          class="css-1guafq4"
+        >
+          jim@example.com
+        </p>
+        <p
+          class="css-1guafq4"
+        />
+      </div>
     </div>
   </div>
 </div>

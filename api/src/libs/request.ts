@@ -106,19 +106,25 @@ export const requestProfileContactsEdit = async (profileId: number, newContacts:
 };
 
 export const processProfileContactsEdit = async (request: Request): Promise<void> => {
-    const { ContactModel } = dm;
+    const { ProfileModel, ContactModel } = dm;
 
     try {
-        const newContacts: Contact[] = request.editObject;
+        const currentContacts: Contact[] = await ContactModel.findForProject(Number(request.profileId));
 
-        const contactPromises = newContacts.map((newContact: Contact) => {
-            if (!newContact.id) {
-                throw new Error('Cant get contact id');
+        const contacts: Contact[] = request.editObject;
+
+        for (const contact of contacts){
+            const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
+            if (currentContact) {
+                await ContactModel.update(Number(contact.id), contact);
+            } else {
+                const newContact = await ContactModel.create(contact);
+                await ProfileModel.addContactToProfile(Number(request.profileId), Number(newContact.id));
             }
-            return ContactModel.update(newContact.id, newContact);
-        });
+        }
 
-        await Promise.all(contactPromises);
+        // TODO(sb): implement functionality to delete a contact if a project goes from 2 TL's -> 1 TL.
+        return;
     } catch (err) {
         const message = `Unable to process profile contacts edit for request ${request.id}`;
         logger.error(`${message}, err = ${err.message}`);
