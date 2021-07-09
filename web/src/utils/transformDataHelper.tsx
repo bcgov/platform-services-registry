@@ -75,6 +75,23 @@ export function transformForm(data: any) {
   };
 }
 
+export function transformClusters(data: any) {
+  const clusters: any = [];
+
+  for (const [key, value] of Object.entries(data)) {
+    if (key === 'primaryClusterName') {
+      clusters.push(value);
+    }
+    if (key === 'primaryClusterName' && value === 'gold') {
+      clusters.push('golddr');
+    }
+    if (key === 'clabDR' && value === true) {
+      clusters.push('clab');
+    }
+  }
+  return clusters;
+}
+
 // sort the list of profiles from the latest to the earliest update_at
 export function sortProfileByDatetime(profileData: any): any[] | [] {
   try {

@@ -26,6 +26,7 @@ import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
+import { transformClusters } from '../utils/transformDataHelper';
 import Wizard, { WizardPage } from '../utils/Wizard';
 
 const ProfileCreate: React.FC = () => {
@@ -38,10 +39,11 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
-    const { profile, technicalLeads, productOwner, clusters } = formData;
+    const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
     try {
       const technicalContacts = [...technicalLeads, productOwner];
+      const clusters = transformClusters(profile);
 
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
