@@ -16,6 +16,7 @@
 
 import { Label } from '@rebass/forms';
 import React, { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
 import { Redirect } from 'react-router-dom';
 import { Text } from 'rebass';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
@@ -36,6 +37,17 @@ interface IQuotaCardEditProps {
   hasPendingEdit: boolean;
 }
 
+const StyledExternalLink = styled.a`
+  color: #003366;
+  font-weight: 600;
+  :visited: {
+    color: #003366;
+  }
+`;
+
+const StyledCheckbox = styled.input`
+  margin: 10px 10px 10px 0;
+`;
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const {
     quotaDetails: { licensePlate = '', quotaSize = '', quotaOptions = [] },
@@ -51,9 +63,16 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
   const [selectedSize, setSelectedSize] = useState<any>('');
   const [specs, setSpecs] = useState<any>([]);
+  const [validateSelection, setValidateSelection] = useState<boolean>(false);
+  const [isReadInstruction, SetIsReadInstruction] = useState<boolean>(false);
 
   const handleChange = (event: any) => {
-    setSelectedSize(event.target.value);
+    if (event.target.value === 'select') {
+      setValidateSelection(false);
+    } else {
+      setValidateSelection(true);
+      setSelectedSize(event.target.value);
+    }
   };
 
   const handleSubmit = async () => {
@@ -128,8 +147,28 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         {specs.storageNums[1]} overall storage with {specs.storageNums[2]} for backup storage
       </Text>
       <br />
+
+      <p>
+        <StyledCheckbox
+          name="isGoing"
+          type="checkbox"
+          onChange={() => {
+            SetIsReadInstruction(!isReadInstruction);
+          }}
+        />
+        Important Information - By check this checkbox, you confirmed that you have read{' '}
+        <StyledExternalLink
+          rel="noreferrer"
+          href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+          target="_blank"
+        >
+          this document
+        </StyledExternalLink>{' '}
+        before submitting your quota increase requirement
+      </p>
+
       <select value={selectedSize} onChange={handleChange}>
-        <option>Select...</option>
+        <option value="select">Select...</option>
         {/* @ts-ignore */}
 
         {quotaOptions.length !== 0 &&
@@ -139,7 +178,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             </option>
           ))}
       </select>
-      {!hasPendingEdit && isProvisioned && selectedSize !== '' ? (
+      {!hasPendingEdit && isProvisioned && validateSelection && isReadInstruction ? (
         // @ts-ignore
         <StyledFormButton style={{ display: 'block' }} onClick={handleSubmit}>
           Request Quota
