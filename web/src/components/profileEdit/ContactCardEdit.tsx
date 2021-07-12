@@ -25,10 +25,10 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { transformForm } from '../../utils/transformDataHelper';
-import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
+import { renderSubmitButton } from './ProjectCardEdit';
 
 const validator = getValidator();
 
@@ -92,8 +92,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(formProps) => (
-        <form onSubmit={formProps.handleSubmit}>
+      {({ handleSubmit, pristine }) => (
+        <form onSubmit={handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
           <Field name="po-id" initialValue={contactDetails.POId}>
             {({ input }) => <input type="hidden" {...input} id="po-Id" />}
@@ -186,20 +186,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               sx={{ textTransform: 'none' }}
             />
           </Flex>
-          {!hasPendingEdit && isProvisioned ? (
-            // @ts-ignore
-            <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
-          ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
-              </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
-              </Label>
-            </>
-          )}
+          {renderSubmitButton(hasPendingEdit, isProvisioned, pristine)}
         </form>
       )}
     </Form>

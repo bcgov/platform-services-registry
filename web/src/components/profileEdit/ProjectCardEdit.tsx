@@ -49,6 +49,33 @@ interface MinistryItem {
   code: string;
 }
 
+export const renderSubmitButton = (hasPendingEdit: any, isProvisioned: any, pristine: boolean) => {
+  if (pristine) {
+    return (
+      <>
+        {/* @ts-ignore */}
+        <StyledFormDisabledButton disabled style={{ display: 'block' }}>
+          Request Update
+        </StyledFormDisabledButton>
+      </>
+    );
+  }
+  if (!hasPendingEdit && isProvisioned) {
+    return <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>;
+  }
+  return (
+    <>
+      {/* @ts-ignore */}
+      <StyledFormDisabledButton disabled style={{ display: 'block' }}>
+        Request Update
+      </StyledFormDisabledButton>
+      <Label as="span" variant="errorLabel">
+        Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
+      </Label>
+    </>
+  );
+};
+
 const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
   const { projectDetails, ministry, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
 
@@ -100,8 +127,8 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(formProps) => (
-        <form onSubmit={formProps.handleSubmit}>
+      {({ handleSubmit, pristine }) => (
+        <form onSubmit={handleSubmit}>
           <FormTitle>Tell us about your project</FormTitle>
           <Flex flexDirection="column">
             <Label htmlFor="project-name">Name</Label>
@@ -148,6 +175,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               <Field
                 name="project-busOrgId"
                 component={SelectInput}
+                initialValue={projectDetails.busOrgId}
                 defaultValue={projectDetails.busOrgId}
               >
                 <option key={projectDetails.busOrgId} value={projectDetails.busOrgId}>
@@ -223,20 +251,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               />
             </Flex>
           </Flex>
-          {!hasPendingEdit && isProvisioned ? (
-            // @ts-ignore
-            <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
-          ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
-              </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
-              </Label>
-            </>
-          )}
+          {renderSubmitButton(hasPendingEdit, isProvisioned, pristine)}
         </form>
       )}
     </Form>
