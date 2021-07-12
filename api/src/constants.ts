@@ -19,7 +19,7 @@ export const ENVIRONMENTS = {
   PRODUCTION: 'production',
 };
 
-export const projectSetNames = [
+export const PROJECT_SET_NAMES = [
   'tools',
   'dev',
   'test',

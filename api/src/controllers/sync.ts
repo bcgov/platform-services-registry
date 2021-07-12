@@ -65,7 +65,7 @@ export const getProvisionedProfileBotJson = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
-  const { ProfileModel } = dm;
+  const { ProfileModel, NamespaceModel } = dm;
 
   try {
     const profile = await ProfileModel.findById(Number(profileId));
@@ -80,7 +80,9 @@ export const getProvisionedProfileBotJson = async (
       throw new Error(errmsg);
     }
 
-    const context = await contextForProvisioning(profileId, true);
+    const clusters = await NamespaceModel.findClustersForProfile(profile.id);
+
+    const context = await contextForProvisioning(profileId, clusters.pop(), true);
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
@@ -119,7 +121,7 @@ export const getProfileBotJsonUnderPending = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
-  const { RequestModel } = dm;
+  const { RequestModel, NamespaceModel } = dm;
 
   try {
     const profiles: ProjectProfile[] = await getProfilesUnderPendingEditOrCreate();
@@ -131,6 +133,9 @@ export const getProfileBotJsonUnderPending = async (
 
     let context;
 
+    // TODO (SB): Make this actually dynamic rather than just taking the first cluster
+    const clusters = await NamespaceModel.findClustersForProfile(profileId);
+
     const requests = await RequestModel.findForProfile(profileId);
     // if the queried profile is under pending edit
     if (requests.length > 0) {
@@ -141,7 +146,7 @@ export const getProfileBotJsonUnderPending = async (
       }
       switch (request.type) {
         case RequestType.Create:
-          context = await contextForProvisioning(profileId, false);
+          context = await contextForProvisioning(profileId, clusters.pop());
           break;
         case RequestType.Edit:
           if (!request.editType){
@@ -152,7 +157,7 @@ export const getProfileBotJsonUnderPending = async (
             request.editObject = JSON.stringify(request.editObject)
           }
 
-          context = await contextForEditing(profileId, request.editType, request.editObject);
+          context = await contextForEditing(profileId, request.editType, request.editObject, clusters.pop());
           break;
         default:
           throw new Error(`Invalid type for request ${request.id}`);

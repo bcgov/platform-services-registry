@@ -116,11 +116,14 @@ export default function useRegistryApi() {
     return axiosInstance.current.post(`profile/${profileId}/contact/${contactId}`);
   };
 
-  const createNamespaceByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+  const createNamespaceByProfileId = async (
+    profileId: string,
+    clusters: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }
-    return axiosInstance.current.post(`provision/${profileId}/namespace`);
+    return axiosInstance.current.post(`provision/${profileId}/namespace`, clusters);
   };
 
   const getContactsByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {

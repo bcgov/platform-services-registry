@@ -25,30 +25,39 @@ import { RequestEditType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fetchBotMessageRequests } from '../libs/bot-message';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
+import { createNamespaces } from '../libs/namespace';
 import { getProvisionStatus, updateProvisionStatus } from '../libs/profile';
 import { processProfileContactsEdit, processProfileQuotaSizeEdit, processProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
+import { generateNamespaceNames } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
 export const provisionProfileNamespaces = async (
-  { params, user }: { params: any, user: AuthenticatedUser }, res: Response
+  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
+  const clusters = body;
   const { ProfileModel, NamespaceModel, ClusterModel } = dm;
 
   try {
     const existing = await NamespaceModel.findForProfile(profileId);
     if (existing.length === 0) {
       const profile = await ProfileModel.findById(profileId);
-      const cluster = await ClusterModel.findByName(profile.primaryClusterName);
 
-      if (!profile || !cluster) {
+      if (!profile) {
         const errmsg = 'Unable to fetch info for provisioning';
         throw new Error(errmsg);
       }
 
-      await NamespaceModel.createProjectSet(profileId, Number(cluster.id), profile.namespacePrefix);
+      const namespaceNames = await generateNamespaceNames(profile.namespacePrefix);
+
+      const namespaces = await createNamespaces(namespaceNames, profileId);
+
+      for (const cluster of clusters) {
+        const clusterDetails = await ClusterModel.findByName(cluster);
+        await NamespaceModel.createProjectSet(Number(clusterDetails.id), namespaces);
+      }
     }
     res.status(202).end();
   } catch (err) {

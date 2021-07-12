@@ -18,25 +18,22 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import DataManager from '../db';
-import { BotMessage } from '../db/model/request';
-import { NatsContext } from '../types';
+import { BotMessage, Request } from '../db/model/request';
+import { generateContext } from './fulfillment';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
 const { RequestModel, NamespaceModel } = dm;
 
-export const createBotMessageSet = async ( requestId: number, natsSubject: string, natsContext: NatsContext ): Promise<any> => {
-  if (!requestId) {
-      throw new Error('Cant get profile id');
-  }
+export const createBotMessageSet = async ( request: Request, subjectPrefix: string ): Promise<any> => {
 
-  const clusters = await NamespaceModel.findClustersForProfile(natsContext.profile_id);
+  const clusters = await NamespaceModel.findClustersForProfile(request.profileId);
 
   for (const cluster of clusters) {
     await RequestModel.createBotMessage({
-      requestId,
-      natsSubject,
-      natsContext,
+      requestId: Number(request.id),
+      natsSubject: subjectPrefix.concat(cluster.name),
+      natsContext: await generateContext(request, cluster),
       clusterName: cluster.name,
       receivedCallback: false,
     })

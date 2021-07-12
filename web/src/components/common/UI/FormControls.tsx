@@ -19,7 +19,7 @@ import { Field } from 'react-final-form';
 
 interface IConditionProps {
   when: string;
-  is: boolean;
+  is: any;
   children: React.ReactNode;
 }
 

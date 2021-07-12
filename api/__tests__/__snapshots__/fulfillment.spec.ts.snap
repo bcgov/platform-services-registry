@@ -1,12 +1,484 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fulfillment utility Fulfill request succeeds 1`] = `
+exports[`Fulfillment utility should create a context for a contact edit 1`] = `
+Object {
+  "action": "edit",
+  "cluster_id": 1,
+  "cluster_name": "silver",
+  "contacts": Array [
+    Object {
+      "email": "jane@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": "janedoe",
+    },
+    Object {
+      "email": "jim@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "lead",
+      "user_id": "jim1100",
+    },
+  ],
+  "description": "This is a cool project.",
+  "display_name": "Project X",
+  "namespaces": Array [
+    Object {
+      "name": "4ea35c-tools",
+      "namespace_id": 13,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-test",
+      "namespace_id": 14,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-dev",
+      "namespace_id": 15,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-prod",
+      "namespace_id": 16,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+  ],
+  "profile_id": 4,
+}
+`;
+
+exports[`Fulfillment utility should create a context for a profile edit 1`] = `
+Object {
+  "action": "edit",
+  "cluster_id": 1,
+  "cluster_name": "silver",
+  "contacts": Array [
+    Object {
+      "email": "jane@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": "jane1100",
+    },
+    Object {
+      "email": "john@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "lead",
+      "user_id": "john1100",
+    },
+  ],
+  "description": "This is a cool edited project.",
+  "display_name": "Project X",
+  "namespaces": Array [
+    Object {
+      "name": "4ea35c-tools",
+      "namespace_id": 13,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-test",
+      "namespace_id": 14,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-dev",
+      "namespace_id": 15,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-prod",
+      "namespace_id": 16,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+  ],
+  "profile_id": 4,
+}
+`;
+
+exports[`Fulfillment utility should create a context for a quota edit 1`] = `
+Object {
+  "action": "edit",
+  "cluster_id": 1,
+  "cluster_name": "silver",
+  "contacts": Array [
+    Object {
+      "email": "jane@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": "jane1100",
+    },
+    Object {
+      "email": "john@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "lead",
+      "user_id": "john1100",
+    },
+  ],
+  "description": "This is a cool project.",
+  "display_name": "Project X",
+  "namespaces": Array [
+    Object {
+      "name": "4ea35c-tools",
+      "namespace_id": 13,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-test",
+      "namespace_id": 14,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-dev",
+      "namespace_id": 15,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-prod",
+      "namespace_id": 16,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+  ],
+  "profile_id": 4,
+}
+`;
+
+exports[`Fulfillment utility should create a context for provisioning 1`] = `
+Object {
+  "action": "create",
+  "cluster_id": 1,
+  "cluster_name": "silver",
+  "contacts": Array [
+    Object {
+      "email": "jane@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": "jane1100",
+    },
+    Object {
+      "email": "john@example.com",
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "lead",
+      "user_id": "john1100",
+    },
+  ],
+  "description": "This is a cool project.",
+  "display_name": "Project X",
+  "namespaces": Array [
+    Object {
+      "name": "4ea35c-tools",
+      "namespace_id": 13,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-test",
+      "namespace_id": 14,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-dev",
+      "namespace_id": 15,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+    Object {
+      "name": "4ea35c-prod",
+      "namespace_id": 16,
+      "quota": "small",
+      "quotas": Object {
+        "cpu": Object {
+          "limits": 8,
+          "requests": 4,
+        },
+        "memory": Object {
+          "limits": "32Gi",
+          "requests": "16Gi",
+        },
+        "storage": Object {
+          "backup": "25Gi",
+          "block": "50Gi",
+          "capacity": "50Gi",
+          "file": "50Gi",
+          "pvc_count": undefined,
+        },
+      },
+    },
+  ],
+  "profile_id": 4,
+}
+`;
+
+exports[`Fulfillment utility should fulfill a request 1`] = `
 Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
+      SELECT DISTINCT ref_cluster.name, ref_cluster.id
+        FROM namespace
+        JOIN cluster_namespace ON cluster_namespace.namespace_id = namespace.id
+        JOIN profile ON profile.id = namespace.profile_id
+        JOIN ref_cluster ON  ref_cluster.id = cluster_namespace.cluster_id
+        WHERE profile.id = $1 AND profile.archived = false;",
       "values": Array [
         5,
       ],
@@ -62,509 +534,17 @@ Array [
   Array [
     Object {
       "text": "
-        SELECT * FROM ref_cluster WHERE name = $1;
-      ",
-      "values": Array [
-        "silver",
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
-      SELECT DISTINCT ref_cluster.name
-        FROM namespace
-        JOIN cluster_namespace ON cluster_namespace.namespace_id = namespace.id
-        JOIN profile ON profile.id = namespace.profile_id
-        JOIN ref_cluster ON  ref_cluster.id = cluster_namespace.cluster_id
-        WHERE profile.id = $1 AND profile.archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-  Array [
-    Object {
-      "text": "
                 INSERT INTO bot_message
                 (request_id, nats_subject, nats_context, cluster_name, received_callback)
                 VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       "values": Array [
         3,
-        "registry_project_provisioning_silver",
-        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":1,\\"cluster_name\\":\\"silver\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"name\\":\\"4ea35c-tools\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"name\\":\\"4ea35c-test\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"name\\":\\"4ea35c-dev\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"name\\":\\"4ea35c-prod\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
-        "silver",
+        "registry_project_provisioning_Project X",
+        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":4,\\"cluster_name\\":\\"Project X\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"namespace_id\\":13,\\"name\\":\\"4ea35c-tools\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":14,\\"name\\":\\"4ea35c-test\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":15,\\"name\\":\\"4ea35c-dev\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":16,\\"name\\":\\"4ea35c-prod\\",\\"quota\\":\\"small\\",\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
+        "Project X",
         false,
       ],
     },
   ],
 ]
-`;
-
-exports[`Fulfillment utility Provisioning context is created 1`] = `
-Object {
-  "action": "create",
-  "cluster_id": 1,
-  "cluster_name": "silver",
-  "contacts": Array [
-    Object {
-      "email": "jane@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "owner",
-      "user_id": "jane1100",
-    },
-    Object {
-      "email": "john@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "lead",
-      "user_id": "john1100",
-    },
-  ],
-  "description": "This is a cool project.",
-  "display_name": "Project X",
-  "namespaces": Array [
-    Object {
-      "name": "4ea35c-tools",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-test",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-dev",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-prod",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-  ],
-  "profile_id": 4,
-}
-`;
-
-exports[`Fulfillment utility creates the contact edit context 1`] = `
-Object {
-  "action": "edit",
-  "cluster_id": 1,
-  "cluster_name": "silver",
-  "contacts": Array [
-    Object {
-      "email": "jane@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "owner",
-      "user_id": "janedoe",
-    },
-    Object {
-      "email": "jim@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "lead",
-      "user_id": "jim1100",
-    },
-  ],
-  "description": "This is a cool project.",
-  "display_name": "Project X",
-  "namespaces": Array [
-    Object {
-      "name": "4ea35c-tools",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-test",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-dev",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-prod",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-  ],
-  "profile_id": 4,
-}
-`;
-
-exports[`Fulfillment utility creates the profile edit context 1`] = `
-Object {
-  "action": "edit",
-  "cluster_id": 1,
-  "cluster_name": "silver",
-  "contacts": Array [
-    Object {
-      "email": "jane@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "owner",
-      "user_id": "jane1100",
-    },
-    Object {
-      "email": "john@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "lead",
-      "user_id": "john1100",
-    },
-  ],
-  "description": "This is a cool edited project.",
-  "display_name": "Project X",
-  "namespaces": Array [
-    Object {
-      "name": "4ea35c-tools",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-test",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-dev",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-prod",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-  ],
-  "profile_id": 4,
-}
-`;
-
-exports[`Fulfillment utility creates the quota edit context 1`] = `
-Object {
-  "action": "edit",
-  "cluster_id": 1,
-  "cluster_name": "silver",
-  "contacts": Array [
-    Object {
-      "email": "jane@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "owner",
-      "user_id": "jane1100",
-    },
-    Object {
-      "email": "john@example.com",
-      "provider": "github",
-      "rocketchat_username": null,
-      "role": "lead",
-      "user_id": "john1100",
-    },
-  ],
-  "description": "This is a cool project.",
-  "display_name": "Project X",
-  "namespaces": Array [
-    Object {
-      "name": "4ea35c-tools",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-test",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-dev",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-prod",
-      "namespace_id": undefined,
-      "quota": "small",
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": undefined,
-        },
-      },
-    },
-  ],
-  "profile_id": 4,
-}
 `;

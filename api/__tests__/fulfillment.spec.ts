@@ -71,7 +71,7 @@ describe('Fulfillment utility', () => {
     jest.clearAllMocks();
   });
 
-  it('Fulfill request succeeds', async () => {   
+  it('should fulfill a request', async () => {   
     
     // context for provisioning
     client.query.mockReturnValueOnce({ rows: profile });
@@ -80,10 +80,8 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: quotas });
     // buildContext
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: [{id: 1, name: 'silver'}] });
     // createBotMessageSet
-    client.query.mockReturnValueOnce({ rows: [{name: 'silver'}] });
-    client.query.mockReturnValueOnce({ rows: botMessageSet });
+    client.query.mockReturnValueOnce({ rows: [{id: 1, name: 'silver'}] });
     // fetchBotMessageRequests
     const fetchBotMessageRequests = RequestModel.prototype.findActiveBotMessagesByRequestId = jest.fn().mockResolvedValue(botMessageSet);
     
@@ -94,38 +92,37 @@ describe('Fulfillment utility', () => {
     expect(client.query.mock.calls).toMatchSnapshot();
   });
 
-  it('Provisioning context is created', async () => {
+  it('should create a context for provisioning', async () => {
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: profileCluster });
-    const result = await contextForProvisioning(12345, false);
+
+    const result = await contextForProvisioning(12345, profileCluster[0], false);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
   });
 
-  it('Provisioning context is not created (no contacts)', async () => {
+  it('should not create a context for provisioning with no contacts', async () => {
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: profileCluster });
 
-    await expect(contextForProvisioning(12345, false)).rejects.toThrow();
+    await expect(contextForProvisioning(12345, profileCluster[0], false)).rejects.toThrow();
   });
 
-  it('Provisioning context is not created (query fails)', async () => {
+  it('should not create a context for provisioning with failing query', async () => {
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    await expect(contextForProvisioning(12345, false)).rejects.toThrow();
+    await expect(contextForProvisioning(12345, profileCluster[0], false)).rejects.toThrow();
   });
 
-  it('creates the profile edit context', async () => {
+  it('should create a context for a profile edit', async () => {
     const requestEditObject = profileEditObject;
     const requestEditType = RequestEditType.ProjectProfile;
 
@@ -133,30 +130,28 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: profileCluster });
 
-    const result = await contextForEditing(12345, requestEditType, requestEditObject);
+    const result = await contextForEditing(12345, requestEditType, requestEditObject, profileCluster[0]);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
   });
 
-  it('creates the contact edit context', async () => {
+  it('should create a context for a contact edit', async () => {
     const requestEditObject = contactEditObject;
     const requestEditType = RequestEditType.Contacts;
 
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: profileCluster });
 
-    const result = await contextForEditing(12345, requestEditType, requestEditObject);
+    const result = await contextForEditing(12345, requestEditType, requestEditObject, profileCluster[0]);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
   });
 
-  it('creates the quota edit context', async () => {
+  it('should create a context for a quota edit', async () => {
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,
@@ -166,15 +161,14 @@ describe('Fulfillment utility', () => {
 
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: profileCluster });
 
-    const result = await contextForEditing(12345, requestEditType, requestEditObject);
+    const result = await contextForEditing(12345, requestEditType, requestEditObject, profileCluster[0]);
 
     expect(result).toBeDefined();
     expect(result).toMatchSnapshot();
   });
 
-  it('throws an error if edit context is missing contacts)', async () => {
+  it('should throw an error if edit context is missing contacts', async () => {
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,
@@ -184,12 +178,11 @@ describe('Fulfillment utility', () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
-    client.query.mockReturnValueOnce({ rows: profileCluster });
 
-    await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
+    await expect(contextForEditing(12345, requestEditType, requestEditObject, profileCluster[0])).rejects.toThrow();
   });
 
-  it('throws an error if edit context query fails', async () => {
+  it('should throw an error if edit context query fails', async () => {
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,
@@ -198,18 +191,6 @@ describe('Fulfillment utility', () => {
 
     client.query.mockImplementation(() => { throw new Error() });
 
-    await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
-  });
-
-  it('throws an error if edit context query fails', async () => {
-    const requestEditObject = {
-      quota: QuotaSize.Small,
-      quotas: spec,
-    };
-    const requestEditType = RequestEditType.QuotaSize;
-
-    client.query.mockImplementation(() => { throw new Error() });
-
-    await expect(contextForEditing(12345, requestEditType, requestEditObject)).rejects.toThrow();
+    await expect(contextForEditing(12345, requestEditType, requestEditObject, profileCluster[0])).rejects.toThrow();
   });
 });
