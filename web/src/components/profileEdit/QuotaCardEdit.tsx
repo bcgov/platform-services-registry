@@ -37,6 +37,10 @@ interface IQuotaCardEditProps {
   hasPendingEdit: boolean;
 }
 
+const StyledParagraph = styled.p`
+  line-height: 25px;
+`;
+
 const StyledExternalLink = styled.a`
   color: #003366;
   font-weight: 600;
@@ -46,7 +50,7 @@ const StyledExternalLink = styled.a`
 `;
 
 const StyledCheckbox = styled.input`
-  margin: 10px 10px 10px 0;
+  margin: 10px 10px 0px 0px;
 `;
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const {
@@ -148,7 +152,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       </Text>
       <br />
 
-      <p>
+      <StyledParagraph>
         <StyledCheckbox
           name="isGoing"
           type="checkbox"
@@ -165,7 +169,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           this document
         </StyledExternalLink>{' '}
         before submitting your quota increase requirement
-      </p>
+      </StyledParagraph>
 
       <select value={selectedSize} onChange={handleChange}>
         <option value="select">Select...</option>
