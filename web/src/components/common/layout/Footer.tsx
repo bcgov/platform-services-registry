@@ -17,6 +17,7 @@
 import styled from '@emotion/styled';
 import React from 'react';
 import theme from '../../../theme';
+import { CREATE_COMMUNITY_ISSUE_URL } from '../../../constants';
 
 const StyledFooter = styled.footer`
   z-index: ${theme.zIndices[1]};
@@ -85,12 +86,8 @@ const Footer = () => (
         </StyledLink>
       </StyledLi>
       <StyledLi>
-        <StyledLink
-          target="_blank"
-          rel="noreferrer"
-          href="https://github.com/bcgov/platform-services-registry/issues/new?&labels=community&template=platform-experience-general-issue.md"
-        >
-          Report a Issue
+        <StyledLink target="_blank" rel="noreferrer" href={CREATE_COMMUNITY_ISSUE_URL}>
+          Report a bug/Request a feature
         </StyledLink>
       </StyledLi>
     </StyledUl>
