@@ -25,7 +25,7 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { transformForm } from '../../utils/transformDataHelper';
-import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import CheckboxInput from '../common/UI/CheckboxInput';
 import { Condition } from '../common/UI/FormControls';
 import FormTitle from '../common/UI/FormTitle';
@@ -48,33 +48,6 @@ interface MinistryItem {
   name: string;
   code: string;
 }
-
-export const renderSubmitButton = (hasPendingEdit: any, isProvisioned: any, pristine: boolean) => {
-  if (pristine) {
-    return (
-      <>
-        {/* @ts-ignore */}
-        <StyledFormDisabledButton disabled style={{ display: 'block' }}>
-          Request Update
-        </StyledFormDisabledButton>
-      </>
-    );
-  }
-  if (!hasPendingEdit && isProvisioned) {
-    return <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>;
-  }
-  return (
-    <>
-      {/* @ts-ignore */}
-      <StyledFormDisabledButton disabled style={{ display: 'block' }}>
-        Request Update
-      </StyledFormDisabledButton>
-      <Label as="span" variant="errorLabel">
-        Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
-      </Label>
-    </>
-  );
-};
 
 const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
   const { projectDetails, ministry, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
@@ -251,7 +224,11 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               />
             </Flex>
           </Flex>
-          {renderSubmitButton(hasPendingEdit, isProvisioned, pristine)}
+          <EditSubmitButton
+            hasPendingEdit={hasPendingEdit}
+            isProvisioned={isProvisioned}
+            pristine={pristine}
+          />
         </form>
       )}
     </Form>

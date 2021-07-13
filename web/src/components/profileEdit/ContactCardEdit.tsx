@@ -28,7 +28,7 @@ import { transformForm } from '../../utils/transformDataHelper';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
-import { renderSubmitButton } from './ProjectCardEdit';
+import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 
 const validator = getValidator();
 
@@ -186,7 +186,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               sx={{ textTransform: 'none' }}
             />
           </Flex>
-          {renderSubmitButton(hasPendingEdit, isProvisioned, pristine)}
+          <EditSubmitButton
+            hasPendingEdit={hasPendingEdit}
+            isProvisioned={isProvisioned}
+            pristine={pristine}
+          />
         </form>
       )}
     </Form>
