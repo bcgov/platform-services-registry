@@ -84,6 +84,15 @@ const Footer = () => (
           Contact Us
         </StyledLink>
       </StyledLi>
+      <StyledLi>
+        <StyledLink
+          target="_blank"
+          rel="noreferrer"
+          href="https://github.com/bcgov/platform-services-registry/issues/new?&labels=community&template=platform-experience-general-issue.md"
+        >
+          Report a Issue
+        </StyledLink>
+      </StyledLi>
     </StyledUl>
   </StyledFooter>
 );
