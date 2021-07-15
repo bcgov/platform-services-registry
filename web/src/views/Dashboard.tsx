@@ -24,7 +24,11 @@ import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
-import { COMPONENT_METADATA, CSV_PROFILE_ATTRIBUTES } from '../constants';
+import {
+  COMPONENT_METADATA,
+  CSV_PROFILE_ATTRIBUTES,
+  CREATE_COMMUNITY_ISSUE_URL,
+} from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
@@ -198,6 +202,13 @@ const Dashboard: React.FC = () => {
     <>
       {profile.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
       <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
+      <Button
+        onClick={() => {
+          window.open(CREATE_COMMUNITY_ISSUE_URL, '_blank');
+        }}
+      >
+        Report a bug/Request a feature
+      </Button>
 
       {userRoles.includes('administrator') ? <ProjectRequests profileDetails={profile} /> : ''}
 
