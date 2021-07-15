@@ -25,7 +25,7 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { transformForm } from '../../utils/transformDataHelper';
-import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import CheckboxInput from '../common/UI/CheckboxInput';
 import { Condition } from '../common/UI/FormControls';
 import FormTitle from '../common/UI/FormTitle';
@@ -100,8 +100,8 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(formProps) => (
-        <form onSubmit={formProps.handleSubmit}>
+      {({ handleSubmit, pristine }) => (
+        <form onSubmit={handleSubmit}>
           <FormTitle>Tell us about your project</FormTitle>
           <Flex flexDirection="column">
             <Label htmlFor="project-name">Name</Label>
@@ -148,6 +148,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               <Field
                 name="project-busOrgId"
                 component={SelectInput}
+                initialValue={projectDetails.busOrgId}
                 defaultValue={projectDetails.busOrgId}
               >
                 <option key={projectDetails.busOrgId} value={projectDetails.busOrgId}>
@@ -223,20 +224,11 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               />
             </Flex>
           </Flex>
-          {!hasPendingEdit && isProvisioned ? (
-            // @ts-ignore
-            <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
-          ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
-              </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request{' '}
-              </Label>
-            </>
-          )}
+          <EditSubmitButton
+            hasPendingEdit={hasPendingEdit}
+            isProvisioned={isProvisioned}
+            pristine={pristine}
+          />
         </form>
       )}
     </Form>
