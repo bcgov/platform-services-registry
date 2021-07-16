@@ -72,6 +72,10 @@ jobs:
         if: ${{ failure() }}
         run: echo "Error in build step"; exit 1
 
+      - name: npm start
+        run: |
+          npm start
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
@@ -86,7 +90,7 @@ jobs:
           path: web/cypress/videos
 
       - name: Save Cypress screenshots on failure
-        if: ${{ failure() }}
+        #if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress-screenshots
