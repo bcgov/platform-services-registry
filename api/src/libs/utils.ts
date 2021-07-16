@@ -16,7 +16,7 @@
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
 import { difference } from 'lodash';
-import { ROLE_IDS } from '../constants';
+import { PROJECT_SET_NAMES, ROLE_IDS } from '../constants';
 
 export const validateRequiredFields = (requiredFields: string[], pojo: object): Error | undefined => {
   const diff = difference(requiredFields, Object.keys(pojo));
@@ -80,4 +80,8 @@ export const transformContacts = (contactSet: any[]) => {
     }
   });
   return contacts;
+}
+
+export const generateNamespaceNames = (namespacePrefix: string) => {
+  return PROJECT_SET_NAMES.map(n => `${namespacePrefix}-${n}`);
 }

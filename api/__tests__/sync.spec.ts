@@ -37,6 +37,9 @@ const requestQuotaSize = JSON.parse(fs.readFileSync(p2, 'utf8'));
 const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
 const requestEditContacts = JSON.parse(fs.readFileSync(p3, 'utf8'));
 
+const p4 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+const selectCluster = JSON.parse(fs.readFileSync(p4, 'utf8'));
+
 const requests = [requestQuotaSize[0], requestEditContacts[0]];
 
 const client = new Pool().connect();
@@ -109,6 +112,7 @@ describe('Sync event handlers', () => {
       },
     };
     client.query.mockReturnValueOnce({ rows: selectProfile });
+    client.query.mockReturnValueOnce({ rows: selectCluster });
 
     // @ts-ignore
     getProvisionStatus.mockResolvedValue(true);
@@ -140,7 +144,7 @@ describe('Sync event handlers', () => {
       query: {},
     };
 
-    RequestModel.prototype.findAll = jest.fn().mockResolvedValueOnce(requests);
+    RequestModel.prototype.findActiveByFilter = jest.fn().mockResolvedValueOnce(requests);
     ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce([]);
 
     client.query.mockReturnValueOnce({ rows: [profiles[0]] });
@@ -172,11 +176,12 @@ describe('Sync event handlers', () => {
     const req = {
       params: { profileId: 4 },
     };
-    RequestModel.prototype.findAll = jest.fn().mockResolvedValueOnce(requests);
+    RequestModel.prototype.findActiveByFilter = jest.fn().mockResolvedValueOnce(requests);
     ProfileModel.prototype.findAll = jest.fn().mockResolvedValueOnce([]);
 
     client.query.mockReturnValueOnce({ rows: [profiles[0]] });
     client.query.mockReturnValueOnce({ rows: [profiles[3]] });
+    client.query.mockReturnValueOnce({ rows: selectCluster });
 
     RequestModel.prototype.findForProfile = jest.fn().mockResolvedValueOnce(requestEditContacts);
 

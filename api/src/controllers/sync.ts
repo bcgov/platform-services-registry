@@ -20,6 +20,7 @@ import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Request, Response } from 'express';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
+import { RequestEditType, RequestType } from '../db/model/request';
 import { contextForEditing, contextForProvisioning } from '../libs/fulfillment';
 import { getProvisionStatus } from '../libs/profile';
 import shared from '../libs/shared';
@@ -64,7 +65,7 @@ export const getProvisionedProfileBotJson = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
-  const { ProfileModel } = dm;
+  const { ProfileModel, NamespaceModel } = dm;
 
   try {
     const profile = await ProfileModel.findById(Number(profileId));
@@ -79,7 +80,9 @@ export const getProvisionedProfileBotJson = async (
       throw new Error(errmsg);
     }
 
-    const context = await contextForProvisioning(profileId, true);
+    const clusters = await NamespaceModel.findClustersForProfile(profile.id);
+
+    const context = await contextForProvisioning(profileId, clusters.pop(), true);
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
@@ -118,7 +121,7 @@ export const getProfileBotJsonUnderPending = async (
   { params }: { params: any }, res: Response
 ): Promise<void> => {
   const { profileId } = params;
-  const { RequestModel } = dm;
+  const { RequestModel, NamespaceModel } = dm;
 
   try {
     const profiles: ProjectProfile[] = await getProfilesUnderPendingEditOrCreate();
@@ -130,6 +133,9 @@ export const getProfileBotJsonUnderPending = async (
 
     let context;
 
+    // TODO (SB): Make this actually dynamic rather than just taking the first cluster
+    const clusters = await NamespaceModel.findClustersForProfile(profileId);
+
     const requests = await RequestModel.findForProfile(profileId);
     // if the queried profile is under pending edit
     if (requests.length > 0) {
@@ -138,17 +144,25 @@ export const getProfileBotJsonUnderPending = async (
         const errmsg = `Unable to get request`;
         throw new Error(errmsg);
       }
-      if (!request.editType){
-        const errmsg = `Unable to get request edit Type`;
-        throw new Error(errmsg);
-      }
+      switch (request.type) {
+        case RequestType.Create:
+          context = await contextForProvisioning(profileId, clusters.pop());
+          break;
+        case RequestType.Edit:
+          if (!request.editType){
+            const errmsg = `Unable to get request edit Type`;
+            throw new Error(errmsg);
+          }
+          if (request.editType === RequestEditType.ProjectProfile) {
+            request.editObject = JSON.stringify(request.editObject)
+          }
 
-      context = await contextForEditing(profileId, request.editType, request.editObject);
-    } else {
-      // if the queried profile is under pending create
-      context = await contextForProvisioning(profileId, false);
+          context = await contextForEditing(profileId, request.editType, request.editObject, clusters.pop());
+          break;
+        default:
+          throw new Error(`Invalid type for request ${request.id}`);
+        }
     }
-
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
     const message = `Unable to get profile (currently under pending edit / create) bot json
@@ -163,24 +177,11 @@ const getProfilesUnderPendingEditOrCreate = async (): Promise<ProjectProfile[]> 
   const { RequestModel, ProfileModel } = dm;
   try {
     // process those profiles that are under pending EDIT
-    const requests = await RequestModel.findAll();
+    const requests = await RequestModel.findActiveByFilter('requires_human_action', false );
     const profileUnderRequestPromises: Promise<ProjectProfile>[] =
       requests.map((request) => ProfileModel.findById(request.profileId));
 
-    const profilesUnderPendingEdit: ProjectProfile[] = await Promise.all(profileUnderRequestPromises);
-
-    // process those profiles that are under pending CREATE
-    const profilesUnderPendingCreate: ProjectProfile[] = [];
-
-    const profiles: ProjectProfile[] = await ProfileModel.findAll();
-    for (const profile of profiles) {
-      const isProvisioned = await getProvisionStatus(profile);
-      if (!isProvisioned) {
-        profilesUnderPendingCreate.push(profile);
-      }
-    }
-
-    return profilesUnderPendingEdit.concat(profilesUnderPendingCreate);
+    return await Promise.all(profileUnderRequestPromises);
   } catch (err) {
     const message = 'Unable to get a list of profiles for those that are under pending edit / create';
     logger.error(`${message}, err = ${err.message}`);

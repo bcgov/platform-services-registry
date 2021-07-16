@@ -39,7 +39,7 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
 
   const onSubmit = async (formData: any) => {
-    const { profile, productOwner, technicalContact } = transformForm(formData);
+    const { profile, productOwner, technicalContact, clusters } = transformForm(formData);
     setOpenBackdrop(true);
     try {
       // 1. Create the project profile.
@@ -55,7 +55,7 @@ const ProfileCreate: React.FC = () => {
       await api.linkContactToProfileById(profileId, tc.data.id);
 
       // 4. Trigger provisioning
-      await api.createNamespaceByProfileId(profileId);
+      await api.createNamespaceByProfileId(profileId, clusters);
 
       // 4. Create Project Request
       await api.createProjectRequestByProfileId(profileId);

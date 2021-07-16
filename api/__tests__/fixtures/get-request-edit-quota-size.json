@@ -2,6 +2,9 @@
   {
     "id": 1,
     "profileId": 1,
+    "type": "edit",
+    "requiresHumanAction": false,
+    "isActive": true,
     "editType": "quotaSize",
     "editObject": {
       "quota": "medium",

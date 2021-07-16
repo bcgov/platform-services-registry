@@ -18,13 +18,17 @@ import { Label } from '@rebass/forms';
 import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import { useModal } from '../../hooks/useModal';
 import getValidator from '../../utils/getValidator';
+import { Modal } from '../common/modal/modal';
 import CheckboxInput from '../common/UI/CheckboxInput';
+import { Condition } from '../common/UI/FormControls';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
 import TextInput from '../common/UI/TextInput';
+import { CreateFormGoldModal } from './CreateFormGoldModal';
 
 interface MinistryItem {
   name: string;
@@ -45,7 +49,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
   // @ts-ignore
   const required = (value) => (value ? undefined : 'Required');
   const { ministry = [], cluster = [] } = props;
-
+  const { isShown, toggle } = useModal();
   return (
     <div>
       <FormTitle>Tell us about your project</FormTitle>
@@ -116,6 +120,24 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           </Field>
         </Flex>
       </Flex>
+      <Condition when="project-primaryClusterName" is="klab">
+        <Flex mt={3}>
+          <Label variant="adjacentLabel" m="auto">
+            Configure Disaster Recovery?
+          </Label>
+          <Flex flex="1 1 auto" justifyContent="flex-end">
+            <Field<boolean> name="project-clabDR" component={CheckboxInput} type="checkbox" />
+          </Flex>
+        </Flex>
+      </Condition>
+      <Condition when="project-primaryClusterName" is="gold">
+        <Modal
+          isShown={!isShown}
+          hide={toggle}
+          headerText="Note"
+          modalContent={<CreateFormGoldModal />}
+        />
+      </Condition>
     </div>
   );
 };
