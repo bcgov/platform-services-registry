@@ -6,6 +6,7 @@
     "@bcgov/bc-sans": "^1.0.1",
     "@bcgov/common-web-utils": "^1.0.6-4",
     "@emotion/core": "^10.0.35",
+    "@emotion/react": "^11.4.0",
     "@emotion/styled": "^10.0.27",
     "@react-keycloak/web": "^2.1.4",
     "@rebass/forms": "^4.0.6",

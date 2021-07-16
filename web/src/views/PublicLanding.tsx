@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 import styled from '@emotion/styled';
+import { keyframes, css } from '@emotion/react';
 import { useKeycloak } from '@react-keycloak/web';
 import queryString from 'querystring';
 import React, { useState } from 'react';
@@ -31,7 +32,7 @@ const StyledHeader = styled.h1`
   }
 `;
 
-const HeaderDescription = styled.h1`
+const HeaderDescription = styled.p`
   padding: 10px;
   font-weight: normal;
 `;
@@ -46,9 +47,11 @@ const StyledSmallHeader = styled.h4`
 
 const HomePageSectionContainer = styled.div`
   padding-bottom: 30px;
-  width: 40vw;
-  @media only screen and (max-width: 768px) {
-    width: 100vw;
+  width: 100vw;
+
+  @media only screen and (min-width: 1080px) {
+    width: 40vw;
+    max-height: 35vh;
   }
   &.lastSection {
     padding-bottom: 0;
@@ -59,9 +62,37 @@ const StyledParagraph = styled.div`
   padding: 15px 0px;
 `;
 
+const bounce = keyframes`
+  from, 20%, 53%, 80%, to {
+    transform: translate3d(0,0,0);
+  }
+
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+
+  90% {
+    transform: translate3d(0,-4px,0);
+  }
+`;
+
+const StyledacknowledgeMessage = styled.p`
+  padding: 15px 0px;
+  ${({ active }: any) =>
+    active &&
+    css`
+      color: red;
+      animation: ${bounce} 1s ease;
+    `}
+`;
+
 const StyledCheckbox = styled.input`
   transform: scale(2);
-  margin: 5px 10px 0px 5px;
+  margin: 5px 15px 0px 5px;
 `;
 
 const StyledListItem = styled.li`
@@ -72,6 +103,12 @@ const StyledList = styled.ul`
   margin-top: 10px;
   padding-left: 15px;
 `;
+
+const StyledWarningMessage = styled.p`
+  color: red;
+  margin: 0;
+`;
+
 const useQuery = () => {
   const location = useLocation();
   return queryString.parse(location.search.replace('?', '')) as any;
@@ -80,7 +117,8 @@ const useQuery = () => {
 export const PublicLanding = () => {
   const { keycloak } = useKeycloak();
   const { redirect } = useQuery();
-  const [isReadInstruction, SetIsReadInstruction] = useState<boolean>(false);
+  const [isAttendedSession, SetIsAttendedSession] = useState<boolean>(false);
+  const [showWarrningMessage, setShowWarrningMessage] = useState<boolean>(false);
 
   if (!keycloak) {
     return null;
@@ -124,19 +162,32 @@ export const PublicLanding = () => {
           (olena.mitovska@gov.bc.ca) to book an onboarding session.
         </StyledParagraph>
 
-        <StyledParagraph>
+        <StyledacknowledgeMessage active={showWarrningMessage}>
           <StyledCheckbox
             name="have attened onboarding session"
             type="checkbox"
             onChange={() => {
-              SetIsReadInstruction(!isReadInstruction);
+              SetIsAttendedSession(!isAttendedSession);
             }}
           />
           I confirm I’ve attended an onboarding session.
-        </StyledParagraph>
-        <StyledButton onClick={() => keycloak.login({ idpHint: 'idir' })}>
+        </StyledacknowledgeMessage>
+        <StyledButton
+          onClick={() => {
+            if (isAttendedSession) {
+              keycloak.login({ idpHint: 'idir' });
+              return;
+            }
+            setShowWarrningMessage(true);
+          }}
+        >
           REGISTER A NEW PROJECT (log in with BC IDIR)
         </StyledButton>
+        {showWarrningMessage && (
+          <StyledWarningMessage>
+            Please confirm above checkbox before continue.
+          </StyledWarningMessage>
+        )}
       </HomePageSectionContainer>
 
       <HomePageSectionContainer className="lastSection">
