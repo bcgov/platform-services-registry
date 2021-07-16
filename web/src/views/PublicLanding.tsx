@@ -19,8 +19,8 @@ import { useKeycloak } from '@react-keycloak/web';
 import queryString from 'querystring';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router';
-import { Redirect } from 'react-router-dom';
-import { HOME_PAGE_URL } from '../constants';
+import { Redirect, useHistory } from 'react-router-dom';
+import { HOME_PAGE_URL, ROUTE_PATHS } from '../constants';
 import { StyledButton } from '../components/common/UI/AuthButton';
 
 const StyledHeader = styled.h1`
@@ -117,6 +117,7 @@ const useQuery = () => {
 export const PublicLanding = () => {
   const { keycloak } = useKeycloak();
   const { redirect } = useQuery();
+  const history = useHistory();
   const [isAttendedSession, SetIsAttendedSession] = useState<boolean>(false);
   const [showWarrningMessage, setShowWarrningMessage] = useState<boolean>(false);
 
@@ -175,6 +176,7 @@ export const PublicLanding = () => {
         <StyledButton
           onClick={() => {
             if (isAttendedSession) {
+              history.push(ROUTE_PATHS.PROFILE_CREATE);
               keycloak.login({ idpHint: 'idir' });
               return;
             }
