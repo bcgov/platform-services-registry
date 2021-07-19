@@ -153,7 +153,7 @@ export const getProfileBotJsonUnderPending = async (
             const errmsg = `Unable to get request edit Type`;
             throw new Error(errmsg);
           }
-          if (request.editType === RequestEditType.ProjectProfile) {
+          if (request.editType === RequestEditType.ProjectProfile || request.editType === RequestEditType.Contacts) {
             request.editObject = JSON.stringify(request.editObject)
           }
 
