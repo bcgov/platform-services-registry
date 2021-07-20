@@ -40,7 +40,7 @@ import {
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -191,8 +191,8 @@ const Dashboard: React.FC = () => {
       },
       {
         Header: 'Status',
-        accessor: 'provisioned',
-        Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
+        accessor: 'projectStatus',
+        // Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
       },
     ],
     [],
