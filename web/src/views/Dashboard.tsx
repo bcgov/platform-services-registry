@@ -30,7 +30,7 @@ import {
   convertSnakeCaseToSentence,
   flatten,
   parseEmails,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 import mockProfiles from '../__tests__/fixtures/profiles.json';
 
