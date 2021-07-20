@@ -32,29 +32,33 @@ const StyledHeader = styled.h1`
   }
 `;
 
-const HeaderDescription = styled.p`
-  padding: 10px;
-  font-weight: normal;
-`;
-
 const StyledSubHeader = styled.h2`
   margin-bottom: 0;
 `;
 
+const StyledExternalLink = styled.a`
+  color: #003366;
+  font-weight: 600;
+  :visited: {
+    color: #003366;
+  }
+`;
 const StyledSmallHeader = styled.h4`
   margin-bottom: 0;
 `;
 
 const HomePageSectionContainer = styled.div`
   padding-bottom: 30px;
-  width: 100vw;
+  width: 90vw;
+
+  @media only screen and (min-width: 680px) {
+    width: 80vw;
+    max-height: 50vh;
+  }
 
   @media only screen and (min-width: 1080px) {
-    width: 40vw;
-    max-height: 35vh;
-  }
-  &.lastSection {
-    padding-bottom: 0;
+    width: 60vw;
+    max-height: 45vh;
   }
 `;
 
@@ -119,7 +123,7 @@ export const PublicLanding = () => {
   const { redirect } = useQuery();
   const history = useHistory();
   const [isAttendedSession, SetIsAttendedSession] = useState<boolean>(false);
-  const [showWarrningMessage, setShowWarrningMessage] = useState<boolean>(false);
+  const [showWarningMessage, setShowWarningMessage] = useState<boolean>(false);
 
   if (!keycloak) {
     return null;
@@ -131,17 +135,12 @@ export const PublicLanding = () => {
 
   return (
     <>
-      <StyledHeader>
-        Welcome
-        <HeaderDescription>
-          to BC Gov's Platforom as a Service( PaaS) Porject Registry
-        </HeaderDescription>
-      </StyledHeader>
+      <StyledHeader>Welcome to BC Gov's Platform as a Service(PaaS) Project Registry</StyledHeader>
       <HomePageSectionContainer>
         <StyledSubHeader>Make changes to an existing project </StyledSubHeader>
         <StyledParagraph>
-          For existing application hosted on Openshift 4 Platform. You can update/change all project
-          details and request project resource quota increases and downgrades (including
+          For existing application's hosted on OpenShift 4 Platform. You can update/change all
+          project details and request project resource quota increases and downgrades (including
           CPU/RAM/Storage.)
         </StyledParagraph>
         <StyledButton onClick={() => keycloak.login({ idpHint: 'idir' })}>Log In</StyledButton>
@@ -150,22 +149,30 @@ export const PublicLanding = () => {
         <StyledSubHeader>Register a new project</StyledSubHeader>
         <StyledParagraph>
           Use this website if you are a Product Owner for a new cloud-native application and are
-          interested in hosting the app on the Openshift 4 Platform. You can learn about the BCGov's
-          PaaS/Openshift 4 Platform Service here.
+          interested in hosting the app on the OpenShift 4 Platform. You can learn about the BCGov's
+          PaaS/OpenShift 4 Platform Service{' '}
+          <StyledExternalLink
+            rel="noopener noreferrer"
+            href="https://developer.gov.bc.ca/topic/featured/Service-Overview-for-BC-Government-Private-Cloud-as-a-ServiceOpenshift-4-Platform"
+            target="_blank"
+          >
+            here
+          </StyledExternalLink>
         </StyledParagraph>
-      </HomePageSectionContainer>
-      <HomePageSectionContainer>
         <StyledSmallHeader>Before you start</StyledSmallHeader>
         <StyledParagraph>
           This website is for teams who've attended an onboarding session with the platform team (if
-          you currently host an application on Openshift, you’ve done this already.) If you haven’t
-          attended an onboarding session, please contact the Platform Director
-          (olena.mitovska@gov.bc.ca) to book an onboarding session.
+          you currently host an application on OpenShift, you’ve done this already.) If you haven’t
+          attended an onboarding session, please contact the Platform Director(
+          <a rel="noopener noreferrer" href="mailto:olena.mitovska@gov.bc.ca" target="_blank">
+            olena.mitovska@gov.bc.ca
+          </a>
+          ) to book an onboarding session.
         </StyledParagraph>
 
-        <StyledacknowledgeMessage active={showWarrningMessage}>
+        <StyledacknowledgeMessage active={showWarningMessage}>
           <StyledCheckbox
-            name="have attened onboarding session"
+            name="attendedOnboardingSession"
             type="checkbox"
             onChange={() => {
               SetIsAttendedSession(!isAttendedSession);
@@ -180,19 +187,19 @@ export const PublicLanding = () => {
               keycloak.login({ idpHint: 'idir' });
               return;
             }
-            setShowWarrningMessage(true);
+            setShowWarningMessage(true);
           }}
         >
           REGISTER A NEW PROJECT (log in with BC IDIR)
         </StyledButton>
-        {showWarrningMessage && (
+        {showWarningMessage && (
           <StyledWarningMessage>
             Please confirm above checkbox before continue.
           </StyledWarningMessage>
         )}
       </HomePageSectionContainer>
 
-      <HomePageSectionContainer className="lastSection">
+      <HomePageSectionContainer>
         <StyledSmallHeader>What you will need </StyledSmallHeader>
         <StyledList>
           <StyledListItem>
