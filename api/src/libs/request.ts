@@ -17,11 +17,13 @@
 'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
+import { PROJECT_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request, RequestEditType, RequestType } from '../db/model/request';
+import { updateProfileStatus } from '../libs/profile';
 import { AuthenticatedUser } from './authmware';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import { updateQuotaSize } from './profile';
@@ -189,6 +191,16 @@ const createRequest = async (
         if (existingRequests.length > 0) {
             throw new Error('Cant proceed as the profile has existing request');
         }
+
+        switch(type) {
+            case RequestType.Create:
+                await updateProfileStatus(Number(profileId), PROJECT_STATUS.PENDING_APPROVAL)
+                break;
+            case RequestType.Edit:
+                await updateProfileStatus(Number(profileId), PROJECT_STATUS.PENDING_EDIT)
+                break;        
+        }
+
         return await RequestModel.create({
             profileId,
             editType,

@@ -18,7 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { CLUSTER_NAMES, GOLD_QUORUM_COUNT } from '../constants';
+import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, PROJECT_STATUS } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
@@ -26,7 +26,7 @@ import { AuthenticatedUser } from '../libs/authmware';
 import { fetchBotMessageRequests } from '../libs/bot-message';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
 import { createNamespaces } from '../libs/namespace';
-import { getProvisionStatus, updateProvisionStatus } from '../libs/profile';
+import { getProvisionStatus, updateProfileStatus, updateProvisionStatus } from '../libs/profile';
 import { processProfileContactsEdit, processProfileQuotaSizeEdit, processProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
 import { generateNamespaceNames } from '../libs/utils';
@@ -91,6 +91,9 @@ export const provisionerCallbackHandler = async (
     } else {
       await updateProvisionedProfile(profile, clusterName);
     }
+
+    await updateProfileStatus(Number(profile.id), PROJECT_STATUS.PROVISIONED);
+
     res.status(204).end();
   } catch (err) {
     const message = `Unable to handle provisioner callback for profile prefix ${prefix}`;
@@ -115,7 +118,7 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
     const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
     if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
-      await updateProvisionStatus(profile, true);
+      await RequestModel.updateCompletionStatus(Number(request.id));
 
       logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
       await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
@@ -123,6 +126,9 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
 
       await RequestModel.updateCompletionStatus(Number(request.id));
     }
+
+    // TODO: this should be cluster specific to account for multi-cluster
+    await updateProvisionStatus(profile, clusterName, true);
 
     const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()
     if (!botMessage) {
