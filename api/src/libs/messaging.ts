@@ -155,7 +155,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       bodyType: BodyType.HTML,
       body: bodyContent,
       to,
-      from: 'Registry <pathfinder@gov.bc.ca>',
+      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${profile.name} OCP 4 Project Set`,
     }
 

@@ -117,11 +117,11 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
     if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
       await updateProvisionStatus(profile, true);
 
-      await RequestModel.updateCompletionStatus(Number(request.id));
-
       logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
       await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
       logger.info(`CHES message sent for ${profile.id}`);
+
+      await RequestModel.updateCompletionStatus(Number(request.id));
     }
 
     const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()
