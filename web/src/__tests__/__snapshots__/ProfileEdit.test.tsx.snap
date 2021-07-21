@@ -5,7 +5,7 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `<div />`;
 exports[`<QuotaCardEdit / > Card view should render 2`] = `
 <div>
   <h1
-    class="css-zi8sy1"
+    class="css-k3emzi"
   >
     License plates for the openshift namespaces
   </h1>
