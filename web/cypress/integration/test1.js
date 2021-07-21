@@ -1,5 +1,6 @@
-describe('Test 1', () => {
+describe('Cypress Test 1', () => {
   it('This is a placeholder test', () => {
-    cy.visit('https://example.cypress.io')
+    cy.visit('http://localhost:3000/dashboard')
+    cy.contains('Login').click()
   })
 })
