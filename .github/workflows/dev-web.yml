@@ -74,7 +74,7 @@ jobs:
 
       - name: npm start
         run: |
-          npm start
+          PORT=3000 npm start
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
