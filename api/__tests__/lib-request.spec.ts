@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { PROJECT_STATUS } from '../src/constants';
+import { PROFILE_STATUS } from '../src/constants';
 import ContactModel from '../src/db/model/contact';
 import RequestModel from '../src/db/model/request';
 import { fulfillRequest } from '../src/libs/fulfillment';
@@ -62,7 +62,7 @@ describe('Request services', () => {
     });
 
     client.query.mockReturnValueOnce({ rows: [] });
-    client.query.mockReturnValueOnce({ rows: [PROJECT_STATUS.PENDING_APPROVAL] })
+    client.query.mockReturnValueOnce({ rows: [PROFILE_STATUS.PENDING_APPROVAL] })
     client.query.mockReturnValueOnce({ rows: ['mockRequest'] });
 
     const result = await requestProjectProfileEdit(profileId, profile, authenticatedUser, false);

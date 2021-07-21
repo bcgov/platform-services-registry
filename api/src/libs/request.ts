@@ -17,7 +17,7 @@
 'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import { PROJECT_STATUS } from '../constants';
+import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -194,10 +194,10 @@ const createRequest = async (
 
         switch(type) {
             case RequestType.Create:
-                await updateProfileStatus(Number(profileId), PROJECT_STATUS.PENDING_APPROVAL)
+                await updateProfileStatus(Number(profileId), PROFILE_STATUS.PENDING_APPROVAL)
                 break;
             case RequestType.Edit:
-                await updateProfileStatus(Number(profileId), PROJECT_STATUS.PENDING_EDIT)
+                await updateProfileStatus(Number(profileId), PROFILE_STATUS.PENDING_EDIT)
                 break;
         }
 

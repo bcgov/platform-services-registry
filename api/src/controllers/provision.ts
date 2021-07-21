@@ -18,7 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, PROJECT_STATUS } from '../constants';
+import { CLUSTER_NAMES, GOLD_QUORUM_COUNT, PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType } from '../db/model/request';
@@ -92,7 +92,7 @@ export const provisionerCallbackHandler = async (
       await updateProvisionedProfile(profile, clusterName);
     }
 
-    await updateProfileStatus(Number(profile.id), PROJECT_STATUS.PROVISIONED);
+    await updateProfileStatus(Number(profile.id), PROFILE_STATUS.PROVISIONED);
 
     res.status(204).end();
   } catch (err) {

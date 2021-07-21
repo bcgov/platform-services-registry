@@ -16,7 +16,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import { PROJECT_STATUS } from '../constants';
+import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { HumanActionType, RequestType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -72,7 +72,7 @@ export const updateRequestHumanAction = async (
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
-      await updateProfileStatus(Number(request.profileId), PROJECT_STATUS.APPROVED);
+      await updateProfileStatus(Number(request.profileId), PROFILE_STATUS.APPROVED);
       return res.status(204).end();
     }
 
@@ -85,7 +85,7 @@ export const updateRequestHumanAction = async (
     }
 
     if ( request.type === RequestType.Edit) {
-      await updateProfileStatus(Number(request.profileId), PROJECT_STATUS.PROVISIONED);
+      await updateProfileStatus(Number(request.profileId), PROFILE_STATUS.PROVISIONED);
     }
 
     await RequestModel.updateCompletionStatus(requestId);

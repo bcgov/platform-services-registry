@@ -18,7 +18,7 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
-import { PROJECT_STATUS } from '../../constants';
+import { PROFILE_STATUS } from '../../constants';
 import { CommonFields, Model } from './model';
 
 export interface ProjectProfile extends CommonFields {
@@ -106,7 +106,7 @@ export default class ProfileModel extends Model {
         data.other,
         data.primaryClusterName,
         data.migratingLicenseplate,
-        data.profileStatus ? data.profileStatus : PROJECT_STATUS.PENDING_APPROVAL,
+        data.profileStatus ? data.profileStatus : PROFILE_STATUS.PENDING_APPROVAL,
       ],
     };
 
@@ -188,7 +188,7 @@ export default class ProfileModel extends Model {
         aData.other,
         aData.primaryClusterName,
         aData.migratingLicenseplate,
-        aData.profileStatus ? data.profileStatus : PROJECT_STATUS.PROVISIONED,
+        aData.profileStatus ? data.profileStatus : PROFILE_STATUS.PROVISIONED,
       ];
       const results = await this.runQuery(query);
       return results.pop();
