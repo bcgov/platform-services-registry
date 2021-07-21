@@ -25,7 +25,9 @@ import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import {
-  COMPONENT_METADATA, CREATE_COMMUNITY_ISSUE_URL, CSV_PROFILE_ATTRIBUTES
+  COMPONENT_METADATA,
+  CREATE_COMMUNITY_ISSUE_URL,
+  CSV_PROFILE_ATTRIBUTES,
 } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
@@ -34,11 +36,12 @@ import theme from '../theme';
 import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
-  convertSnakeCasetoSentence, getClusterDisplayName,
+  convertSnakeCasetoSentence,
+  getClusterDisplayName,
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
@@ -190,7 +193,7 @@ const Dashboard: React.FC = () => {
       {
         Header: 'Status',
         accessor: 'profileStatus',
-        Cell: ({ row: { values } }: any) => (convertSnakeCasetoSentence(values.profileStatus)),
+        Cell: ({ row: { values } }: any) => convertSnakeCasetoSentence(values.profileStatus),
       },
     ],
     [],

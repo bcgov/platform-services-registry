@@ -259,9 +259,17 @@ export function getClusterDisplayName(clusterName: string, clusters: any[]): str
 }
 
 export const convertSnakeCasetoSentence = (text: string) => {
-  return text
-    .toLowerCase()
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.substring(1))
-    .join(' ');
+  try {
+    if (text) {
+      return text
+        .toLowerCase()
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+        .join(' ');
+    }
+    return '';
+  } catch (err) {
+    const msg = 'Unable to convert snake_case to sentence';
+    throw new Error(`${msg}, reason = ${err.message}`);
+  }
 };
