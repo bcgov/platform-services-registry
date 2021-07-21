@@ -25,9 +25,7 @@ import Table from '../components/common/UI/Table';
 import ProfileCard from '../components/dashboard/ProfileCard';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import {
-  COMPONENT_METADATA,
-  CSV_PROFILE_ATTRIBUTES,
-  CREATE_COMMUNITY_ISSUE_URL,
+  COMPONENT_METADATA, CREATE_COMMUNITY_ISSUE_URL, CSV_PROFILE_ATTRIBUTES
 } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
@@ -36,7 +34,7 @@ import theme from '../theme';
 import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
-  getClusterDisplayName,
+  convertSnakeCasetoSentence, getClusterDisplayName,
   getProfileContacts,
   isProfileProvisioned,
   sortProfileByDatetime,
@@ -191,8 +189,8 @@ const Dashboard: React.FC = () => {
       },
       {
         Header: 'Status',
-        accessor: 'projectStatus',
-        // Cell: ({ row: { values } }: any) => (values.provisioned ? 'Provisioned' : 'Pending'),
+        accessor: 'profileStatus',
+        Cell: ({ row: { values } }: any) => (convertSnakeCasetoSentence(values.profileStatus)),
       },
     ],
     [],

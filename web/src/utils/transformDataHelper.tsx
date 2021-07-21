@@ -257,3 +257,11 @@ export function getClusterDisplayName(clusterName: string, clusters: any[]): str
     throw new Error(`${msg}, reason = ${err.message}`);
   }
 }
+
+export const convertSnakeCasetoSentence = (text: string) => {
+  return text
+    .toLowerCase()
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(' ');
+};

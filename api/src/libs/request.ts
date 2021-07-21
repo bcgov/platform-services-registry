@@ -198,7 +198,7 @@ const createRequest = async (
                 break;
             case RequestType.Edit:
                 await updateProfileStatus(Number(profileId), PROJECT_STATUS.PENDING_EDIT)
-                break;        
+                break;
         }
 
         return await RequestModel.create({
