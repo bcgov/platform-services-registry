@@ -18,6 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -25,7 +26,7 @@ import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
-import { getQuotaSize } from '../libs/profile';
+import { getQuotaSize, updateProfileStatus } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
@@ -118,6 +119,7 @@ export const updateProfileContacts = async (
     });
     await Promise.all(contactPromises);
 
+    await updateProfileStatus(Number(profileId), PROFILE_STATUS.PROVISIONED)
     await RequestModel.updateCompletionStatus(Number(request.id));
 
     return res.status(204).end();

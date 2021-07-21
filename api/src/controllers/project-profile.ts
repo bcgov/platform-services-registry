@@ -16,12 +16,14 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { generateNamespacePrefix } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { AccessFlag } from '../libs/authorization';
 import { fulfillRequest } from '../libs/fulfillment';
+import { updateProfileStatus } from '../libs/profile';
 import { requestProjectProfileEdit } from '../libs/request';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
@@ -221,6 +223,7 @@ export const updateProjectProfile = async (
         Number(profileId), { ...aBody, id: profileId }, user, false
       );
       await ProfileModel.update(profileId, aBody);
+      await updateProfileStatus(Number(profileId), PROFILE_STATUS.PROVISIONED)
       await RequestModel.updateCompletionStatus(Number(request.id));
       res.status(204).end();
     }
