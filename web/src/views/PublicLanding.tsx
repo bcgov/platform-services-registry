@@ -14,27 +14,15 @@
 // limitations under the License.
 //
 import styled from '@emotion/styled';
-import { keyframes, css } from '@emotion/react';
 import { useKeycloak } from '@react-keycloak/web';
 import queryString from 'querystring';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router';
 import { Redirect, useHistory } from 'react-router-dom';
+import { Box, Text } from 'rebass';
+import { Label, Checkbox } from '@rebass/forms';
 import { HOME_PAGE_URL, ROUTE_PATHS } from '../constants';
 import { StyledButton } from '../components/common/UI/AuthButton';
-
-const StyledHeader = styled.h1`
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  @media only screen and (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const StyledSubHeader = styled.h2`
-  margin-bottom: 0;
-`;
 
 const StyledExternalLink = styled.a`
   color: #003366;
@@ -42,9 +30,6 @@ const StyledExternalLink = styled.a`
   :visited: {
     color: #003366;
   }
-`;
-const StyledSmallHeader = styled.h4`
-  margin-bottom: 0;
 `;
 
 const HomePageSectionContainer = styled.div`
@@ -62,55 +47,13 @@ const HomePageSectionContainer = styled.div`
   }
 `;
 
-const StyledParagraph = styled.div`
-  padding: 15px 0px;
-`;
-
-const bounce = keyframes`
-  from, 20%, 53%, 80%, to {
-    transform: translate3d(0,0,0);
-  }
-
-  40%, 43% {
-    transform: translate3d(0, -30px, 0);
-  }
-
-  70% {
-    transform: translate3d(0, -15px, 0);
-  }
-
-  90% {
-    transform: translate3d(0,-4px,0);
-  }
-`;
-
-const StyledacknowledgeMessage = styled.p`
-  padding: 15px 0px;
-  ${({ active }: any) =>
-    active &&
-    css`
-      color: red;
-      animation: ${bounce} 1s ease;
-    `}
-`;
-
-const StyledCheckbox = styled.input`
-  transform: scale(2);
-  margin: 5px 15px 0px 5px;
-`;
-
-const StyledListItem = styled.li`
-  line-height: 20px;
+const StyledacknowledgeMessage = styled(Label)`
+  ${({ active }: any) => active && ` color: red;`}
 `;
 
 const StyledList = styled.ul`
   margin-top: 10px;
   padding-left: 15px;
-`;
-
-const StyledWarningMessage = styled.p`
-  color: red;
-  margin: 0;
 `;
 
 const useQuery = () => {
@@ -134,20 +77,31 @@ export const PublicLanding = () => {
   }
 
   return (
-    <>
-      <StyledHeader>Welcome to BC Gov's Platform as a Service(PaaS) Project Registry</StyledHeader>
+    <Box
+      sx={{
+        lineHeight: 2,
+        maxHeight: 100,
+      }}
+    >
+      <Text as="h1" mb={3}>
+        Welcome to BC Gov's Platform as a Service(PaaS) Project Registry
+      </Text>
       <HomePageSectionContainer>
-        <StyledSubHeader>Make changes to an existing project </StyledSubHeader>
-        <StyledParagraph>
+        <Text as="h2" mb={2}>
+          Make changes to an existing project
+        </Text>
+        <Text mb={3}>
           For existing application's hosted on OpenShift 4 Platform. You can update/change all
           project details and request project resource quota increases and downgrades (including
           CPU/RAM/Storage.)
-        </StyledParagraph>
+        </Text>
         <StyledButton onClick={() => keycloak.login({ idpHint: 'idir' })}>Log In</StyledButton>
       </HomePageSectionContainer>
       <HomePageSectionContainer>
-        <StyledSubHeader>Register a new project</StyledSubHeader>
-        <StyledParagraph>
+        <Text as="h2" mb={2}>
+          Register a new project
+        </Text>
+        <Text mb={3}>
           Use this website if you are a Product Owner for a new cloud-native application and are
           interested in hosting the app on the OpenShift 4 Platform. You can learn about the BCGov's
           PaaS/OpenShift 4 Platform Service{' '}
@@ -158,9 +112,11 @@ export const PublicLanding = () => {
           >
             here
           </StyledExternalLink>
-        </StyledParagraph>
-        <StyledSmallHeader>Before you start</StyledSmallHeader>
-        <StyledParagraph>
+        </Text>
+        <Text as="h3" mb={1}>
+          Before you start
+        </Text>
+        <Text>
           This website is for teams who've attended an onboarding session with the platform team (if
           you currently host an application on OpenShift, you’ve done this already.) If you haven’t
           attended an onboarding session, please contact the Platform Director(
@@ -168,17 +124,19 @@ export const PublicLanding = () => {
             olena.mitovska@gov.bc.ca
           </a>
           ) to book an onboarding session.
-        </StyledParagraph>
+        </Text>
 
-        <StyledacknowledgeMessage active={showWarningMessage}>
-          <StyledCheckbox
+        {/* <StyledacknowledgeMessage active={showWarningMessage}> */}
+
+        <StyledacknowledgeMessage pb={2} active={showWarningMessage}>
+          <Checkbox
             name="attendedOnboardingSession"
             type="checkbox"
             onChange={() => {
               SetIsAttendedSession(!isAttendedSession);
             }}
           />
-          I confirm I’ve attended an onboarding session.
+          <Text fontSize={[1, 18]}>I confirm I’ve attended an onboarding session.</Text>
         </StyledacknowledgeMessage>
         <StyledButton
           onClick={() => {
@@ -193,27 +151,29 @@ export const PublicLanding = () => {
           REGISTER A NEW PROJECT (log in with BC IDIR)
         </StyledButton>
         {showWarningMessage && (
-          <StyledWarningMessage>
+          <Text as="p" mt={0} color="red">
             Please confirm above checkbox before continue.
-          </StyledWarningMessage>
+          </Text>
         )}
       </HomePageSectionContainer>
 
       <HomePageSectionContainer>
-        <StyledSmallHeader>What you will need </StyledSmallHeader>
+        <Text as="h3" m={0}>
+          What you will need
+        </Text>
         <StyledList>
-          <StyledListItem>
+          <Text as="li">
             A BC IDIR (you'll be asked to log in with your IDIR to get to the registry)
-          </StyledListItem>
-          <StyledListItem>A descriptive project name (no acronyms)</StyledListItem>
-          <StyledListItem>
+          </Text>
+          <Text as="li">A descriptive project name (no acronyms)</Text>
+          <Text as="li">
             Contact details and Github IDs for a product owner and up to 2 technical leads
-          </StyledListItem>
-          <StyledListItem>
+          </Text>
+          <Text as="li">
             An idea of which common components you will use (see common components list)
-          </StyledListItem>
+          </Text>
         </StyledList>
       </HomePageSectionContainer>
-    </>
+    </Box>
   );
 };
