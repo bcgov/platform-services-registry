@@ -126,8 +126,6 @@ export const PublicLanding = () => {
           ) to book an onboarding session.
         </Text>
 
-        {/* <StyledacknowledgeMessage active={showWarningMessage}> */}
-
         <StyledacknowledgeMessage pb={2} active={showWarningMessage}>
           <Checkbox
             name="attendedOnboardingSession"
