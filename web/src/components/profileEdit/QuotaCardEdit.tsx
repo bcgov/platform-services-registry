@@ -46,7 +46,6 @@ const StyledQuotaEditContainer = styled.div`
   padding: 0px;
   @media only screen and (max-width: 680px) {
     max-width: 90vw;
-    color: red;
   }
 `;
 
@@ -284,12 +283,12 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
               {!hasPendingEdit && isProvisioned ? (
                 // @ts-ignore
                 <StyledFormButton type="submit" style={{ display: 'block' }}>
-                  Request Quota
+                  Request Quota Change
                 </StyledFormButton>
               ) : (
                 // @ts-ignore
                 <StyledFormDisabledButton style={{ display: 'block', margin: '10px auto' }}>
-                  Request Quota
+                  Request Quota Change
                 </StyledFormDisabledButton>
               )}
               {!(!hasPendingEdit && isProvisioned) && (

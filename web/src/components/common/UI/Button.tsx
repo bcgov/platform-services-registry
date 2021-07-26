@@ -25,6 +25,9 @@ const StyledButton = styled.button`
   background-color: #036;
   color: #ffffff;
   font-size: 24px;
+  @media only screen and (max-width: 1200px) {
+    font-size: inherit;
+  }
 `;
 
 const StyledDisabledButton = styled.button`
@@ -35,6 +38,9 @@ const StyledDisabledButton = styled.button`
   background-color: #d3d3d3;
   color: #ffffff;
   font-size: 24px;
+  @media only screen and (max-width: 1200px) {
+    font-size: inherit;
+  }
 `;
 
 export const StyledFormButton: React.FC<IButtonProps> = (props: any) => {
