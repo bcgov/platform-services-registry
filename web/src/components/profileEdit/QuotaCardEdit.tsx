@@ -256,7 +256,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
               flexDirection="column"
               sx={{ borderRadius: ' 10px', alignItems: 'center' }}
             >
-              <FormTitle>Upgrade Quota</FormTitle>
+              <FormTitle>Upgrade/Downgrade Quota</FormTitle>
               <Flex mt={3}>
                 <Label m="auto" width={3 / 4}>
                   <Text as="h3" fontSize="16px" my={0} lineHeight="normal">
