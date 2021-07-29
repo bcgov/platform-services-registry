@@ -28,13 +28,16 @@ export const API = {
       : `${window.location.origin}/api/v1/`,
 };
 
+// TODO: (SB) Update logic to move from numbers to explicit role such as "owner", "lead"
 export const ROLES = {
-  PRODUCTOWNER: 1,
-  TECHNICAL: 2,
+  PRODUCT_OWNER: 1,
+  TECHNICAL_LEAD: 2,
   ADMINISTRATOR: 'administrator',
 };
 
 export const DEFAULT_MINISTRY = 'CITZ';
+export const CREATE_COMMUNITY_ISSUE_URL =
+  'https://github.com/bcgov/platform-services-registry/issues/new?&labels=community&template=platform-experience-general-issue.md';
 
 export const COMPONENT_METADATA = [
   { displayName: 'Notification: Email', inputValue: 'notificationEmail' },
@@ -93,3 +96,9 @@ export const PROFILE_EDIT_VIEW_NAMES = {
 export const RESPONSE_STATUS_CODE = {
   UNAUTHORIZED: 401,
 };
+
+export const MINIMUM_TECHNICAL_LEADS = 1;
+export const MAXIMUM_TECHNICAL_LEADS = 2;
+
+export const PRODUCT_OWNER_SUBTITLE = 'This is typically the business owner of the application;';
+export const TECHNICAL_LEAD_SUBTITLE = 'This is typically the DevOps specialist;';

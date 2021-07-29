@@ -29,7 +29,6 @@ import { getQuotaSize } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
-import { validateRequiredFields } from '../libs/utils';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -74,44 +73,41 @@ export const fetchProfileContacts = async (
 };
 
 export const updateProfileContacts = async (
-  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+  { params, body, user }: { params: any, body: Contact[], user: AuthenticatedUser }, res: Response
 ): Promise<void> => {
   const { ContactModel, RequestModel } = dm;
   const { profileId } = params;
-  const { productOwner, technicalContact } = body;
-  const contacts = [productOwner, technicalContact];
-
-  // TODO: add more data sanity check
+  const contacts = body;
+  // TODO (yhf): add more data sanity check
   // check the passed contacts have no dupliates
   // check contact_id is associated with the queried profile_id
   // check role_id points to the legit role TC / PO
-  contacts.forEach((contact: Contact): void => {
-    const rv = validateRequiredFields(ContactModel.requiredFields.concat(['id']), contact);
-    if (rv) {
-      throw rv;
-    }
-  });
 
   try {
     const currentContacts: Contact[] = await ContactModel.findForProject(Number(profileId));
+    const deletedOrNewContact: boolean = true;
+    const provisionerContactEdit: boolean[] = [];
 
-    const editCompares: boolean[] = [];
+    // 1. Check for provisioner related changes
     contacts.forEach((contact: Contact): void => {
       const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
-      if (!currentContact) {
-        throw new Error('Cant get current contact');
+      if (currentContact) {
+        provisionerContactEdit.push(currentContact.githubId !== contact.githubId);
+        provisionerContactEdit.push(currentContact.email !== contact.email);
+      } else {
+        provisionerContactEdit.push(deletedOrNewContact)
       }
-      editCompares.push(currentContact.githubId !== contact.githubId);
-      editCompares.push(currentContact.email !== contact.email);
     });
 
-    const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
-    if (provisionerRelatedChanges) {
+    // 2. Create request if provisionerRelatedChanges
+    const isProvisionerRelatedChanges = provisionerContactEdit.some(contactEdit => contactEdit);
+    if (isProvisionerRelatedChanges) {
       const editRequest = await requestProfileContactsEdit(Number(profileId), contacts, user);
       await fulfillRequest(editRequest);
       return res.status(202).end();
     }
 
+    // 3. Update DB if changes are trivial (contact name)
     const request = await requestProfileContactsEdit(Number(profileId), body, user);
 
     const contactPromises = contacts.map((contact: Contact) => {

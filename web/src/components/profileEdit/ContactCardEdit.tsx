@@ -14,17 +14,25 @@
 // limitations under the License.
 //
 
-import { Input, Label } from '@rebass/forms';
+import { Label } from '@rebass/forms';
+import arrayMutators from 'final-form-arrays';
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
+import { FieldArray } from 'react-final-form-arrays';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
-import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
+import {
+  MAXIMUM_TECHNICAL_LEADS,
+  MINIMUM_TECHNICAL_LEADS,
+  PROFILE_EDIT_VIEW_NAMES,
+  ROLES,
+  ROUTE_PATHS,
+} from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { transformForm } from '../../utils/transformDataHelper';
+import { Button } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
@@ -34,7 +42,7 @@ const validator = getValidator();
 
 interface IContactCardEditProps {
   profileId?: string;
-  contactDetails: ContactDetails;
+  contactDetails: ContactDetails[];
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
@@ -48,6 +56,18 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
 
+  const productOwner = contactDetails
+    .filter((contact) => contact.roleId === ROLES.PRODUCT_OWNER)
+    .pop();
+
+  if (!productOwner) {
+    throw new Error('Unable to get product owner details');
+  }
+
+  const technicalLeads = contactDetails.filter(
+    (contact) => contact.roleId === ROLES.TECHNICAL_LEAD,
+  );
+
   const onSubmit = async (formData: any) => {
     setOpenBackdrop(true);
     try {
@@ -56,8 +76,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       }
 
       // 1. Prepare contact edit request body.
-      const { productOwner, technicalContact } = transformForm(formData);
-      const updatedContacts = { productOwner, technicalContact };
+      const { updatedProductOwner, updatedTechnicalLeads } = formData;
+      const updatedContacts = [...updatedTechnicalLeads, updatedProductOwner];
 
       // 2. Request the profile contact edit.
       await api.updateContactsByProfileId(profileId, updatedContacts);
@@ -87,6 +107,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   return (
     <Form
       onSubmit={onSubmit}
+      mutators={{
+        ...arrayMutators,
+      }}
       validate={(values) => {
         const errors = {};
         return errors;
@@ -95,97 +118,145 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       {({ handleSubmit, pristine }) => (
         <form onSubmit={handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
-          <Field name="po-id" initialValue={contactDetails.POId}>
-            {({ input }) => <input type="hidden" {...input} id="po-Id" />}
+          <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
+            {({ input }) => <input type="hidden" {...input} id="id" />}
+          </Field>
+          <Field name="updatedProductOwner.roleId" initialValue={productOwner.roleId}>
+            {({ input }) => <input type="hidden" {...input} id="roleId" />}
           </Field>
           <Flex flexDirection="column">
-            <Label htmlFor="po-firstName">First Name</Label>
+            <Label htmlFor="updatedProductOwner.firstName">First Name</Label>
             <Field<string>
-              name="po-firstName"
+              name="updatedProductOwner.firstName"
               component={TextInput}
               validate={validator.mustBeValidName}
               defaultValue=""
-              initialValue={contactDetails.POFirstName}
+              initialValue={productOwner.firstName}
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="po-lastName">Last Name</Label>
+            <Label htmlFor="updatedProductOwner.lastName">Last Name</Label>
             <Field<string>
-              name="po-lastName"
+              name="updatedProductOwner.lastName"
               component={TextInput}
               validate={validator.mustBeValidName}
               defaultValue=""
-              initialValue={contactDetails.POLastName}
+              initialValue={productOwner.lastName}
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="po-email">Email Address</Label>
+            <Label htmlFor="updatedProductOwner.email">Email Address</Label>
             <Field<string>
-              name="po-email"
+              name="updatedProductOwner.email"
               component={TextInput}
               validate={validator.mustBeValidEmail}
               defaultValue=""
-              initialValue={contactDetails.POEmail}
+              initialValue={productOwner.email}
               sx={{ textTransform: 'none' }}
             />
           </Flex>
           <Flex flexDirection="column">
-            <Label htmlFor="po-githubId">GitHub Id</Label>
+            <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
             <Field<string>
-              name="po-githubId"
+              name="updatedProductOwner.githubId"
               component={TextInput}
               validate={validator.mustBeValidGithubName}
               defaultValue=""
-              initialValue={contactDetails.POGithubId}
+              initialValue={productOwner.githubId}
               sx={{ textTransform: 'none' }}
             />
           </Flex>
-          <FormTitle>Who is the technical contact for this project?</FormTitle>
-          <Field name="tc-id" initialValue={contactDetails.TCId}>
-            {({ input }) => <Input type="hidden" {...input} id="tc-Id" />}
-          </Field>
-          <Flex flexDirection="column">
-            <Label htmlFor="tc-firstName">First Name</Label>
-            <Field<string>
-              name="tc-firstName"
-              component={TextInput}
-              validate={validator.mustBeValidName}
-              defaultValue=""
-              initialValue={contactDetails.TCFirstName}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="tc-lastName">Last Name</Label>
-            <Field<string>
-              name="tc-lastName"
-              component={TextInput}
-              validate={validator.mustBeValidName}
-              defaultValue=""
-              initialValue={contactDetails.TCLastName}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="tc-email">Email Address</Label>
-            <Field<string>
-              name="tc-email"
-              component={TextInput}
-              validate={validator.mustBeValidEmail}
-              defaultValue=""
-              initialValue={contactDetails.TCEmail}
-              sx={{ textTransform: 'none' }}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="tc-githubId">GitHub Id</Label>
-            <Field<string>
-              name="tc-githubId"
-              component={TextInput}
-              validate={validator.mustBeValidGithubName}
-              defaultValue=""
-              initialValue={contactDetails.TCGithubId}
-              sx={{ textTransform: 'none' }}
-            />
-          </Flex>
+          <FormTitle>
+            {technicalLeads.length > MINIMUM_TECHNICAL_LEADS
+              ? 'Who are the technical leads for this project?'
+              : 'Who is the technical lead for this project?'}
+          </FormTitle>
+          <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
+            {({ fields }) => (
+              <div>
+                {fields.map((name, index) => (
+                  <div key={name}>
+                    <Flex flexDirection="row">
+                      <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
+                      {/* TODO: (SB) implement the ability to delete contacts from edit page */}
+                      {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                        <Box my="auto" ml="auto" className="buttons">
+                          <SquareFormButton
+                            type="button"
+                            onClick={() => fields.remove(index)}
+                            style={{ cursor: 'pointer' }}
+                            inversed
+                          >
+                            X
+                          </SquareFormButton>
+                        </Box>
+                      )} */}
+                    </Flex>
+                    <Flex flexDirection="column">
+                      <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
+                        {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
+                      </Field>
+                      <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                      <Field<string>
+                        name={`${name}.firstName`}
+                        component={TextInput}
+                        validate={validator.mustBeValidName}
+                        placeholder="Jane"
+                      />
+                    </Flex>
+                    <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                      <Field<string>
+                        name={`${name}.lastName`}
+                        component={TextInput}
+                        validate={validator.mustBeValidName}
+                        placeholder="Doe"
+                      />
+                    </Flex>
+                    <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.email`}>Email Address</Label>
+                      <Field<string>
+                        name={`${name}.email`}
+                        component={TextInput}
+                        validate={validator.mustBeValidEmail}
+                        placeholder="jane.doe@example.com"
+                        sx={{ textTransform: 'none' }}
+                      />
+                    </Flex>
+                    <Flex flexDirection="column">
+                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                      <Field<string>
+                        name={`${name}.githubId`}
+                        component={TextInput}
+                        validate={validator.mustBeValidGithubName}
+                        placeholder="jane1100"
+                        sx={{ textTransform: 'none' }}
+                      />
+                    </Flex>
+                  </div>
+                ))}
+                {fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
+                  <Button
+                    type="button"
+                    onClick={() =>
+                      fields.push({
+                        id: '',
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        githubId: '',
+                        roleId: ROLES.TECHNICAL_LEAD,
+                      })
+                    }
+                  >
+                    Add Technical Lead
+                  </Button>
+                ) : (
+                  ''
+                )}
+              </div>
+            )}
+          </FieldArray>
           <EditSubmitButton
             hasPendingEdit={hasPendingEdit}
             isProvisioned={isProvisioned}
