@@ -25,15 +25,17 @@ const StyledTitle = styled.h1`
   line-height: normal;
   letter-spacing: normal;
   color: #036;
+  margin: 14px 0px 5px;
 `;
 
 interface ISubFormProps {
   children: React.ReactNode;
+  style?: any;
 }
 
 const FormTitle: React.FC<ISubFormProps> = (props) => {
-  const { children } = props;
-  return <StyledTitle>{children}</StyledTitle>;
+  const { children, ...rest } = props;
+  return <StyledTitle {...rest}>{children}</StyledTitle>;
 };
 
 export default FormTitle;
