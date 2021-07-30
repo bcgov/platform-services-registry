@@ -22,7 +22,7 @@ import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
 import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
 import CreateFormTC from '../components/profileCreate/CreateFormTC';
-import { ROUTE_PATHS } from '../constants';
+import { ROUTE_PATHS, DEFAULT_GITHUB_ORGANIZATION } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -40,6 +40,19 @@ const ProfileCreate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     const { profile, productOwner, technicalContact, clusters } = transformForm(formData);
+
+    // May need to change logic here as I remember we have a multi tech lead feature
+    const invitationListToBCGithubOrgRepo = [productOwner.githubId, technicalContact.githubId];
+    const invitationPromiss = invitationListToBCGithubOrgRepo.map((inviteUser) => {
+      const inviteListPayload = {
+        githubId: inviteUser,
+        organizations: DEFAULT_GITHUB_ORGANIZATION,
+      };
+      return api.githubInvite(inviteListPayload);
+    });
+
+    await Promise.all(invitationPromiss);
+
     setOpenBackdrop(true);
     try {
       // 1. Create the project profile.

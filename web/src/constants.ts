@@ -35,6 +35,7 @@ export const ROLES = {
 };
 
 export const DEFAULT_MINISTRY = 'CITZ';
+export const DEFAULT_GITHUB_ORGANIZATION = ['snowinact', 'billy-org-test'];
 
 export const COMPONENT_METADATA = [
   { displayName: 'Notification: Email', inputValue: 'notificationEmail' },
