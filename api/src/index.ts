@@ -28,6 +28,7 @@ import fs from 'fs';
 import path from 'path';
 import { authmware } from './libs/authmware';
 import { router } from './router';
+import init from './libs/githubInvitationInit';
 
 // Config
 
@@ -71,6 +72,20 @@ app.use(flash());
 
 // Authentication middleware
 authmware(app);
+
+
+const initGithubApp =  () => {
+  try {
+    logger.info(`Initializing Github App`)
+     init()
+  } catch (e) {
+    console.error('opps an error ocur while initialization github app',e)
+    logger.info('Failed to initialize, exiting')
+    process.exit(1)
+  }
+}
+// Initializing Github App
+initGithubApp()
 
 // Server API routes
 router(app);

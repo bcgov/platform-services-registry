@@ -26,5 +26,10 @@
   },
   "reviewers": {
     "emails": [""]
-  }
+  },
+  "orgs": [
+    "SnowInAct",
+    "Billy-org-test"
+  ],
+  "primaryOrg": "SnowInAct" 
 }

@@ -1,0 +1,72 @@
+import { logger } from '@bcgov/common-nodejs-utils';
+// import { INVITATION_REQUEST_STATES } from '../constants'
+import { getConfig } from '../config/githubConfig'
+import { getAuthenticatedApps } from './githubInvitationInit'
+// import DataManager from '../db';
+// import shared from '../libs/shared';
+
+// const dm = new DataManager(shared.pgPool);
+// const {  InvitationRequestModel } = dm;
+
+export const inviteUserToOrg = async (userId, org) => {
+ 
+  const installations = await getAuthenticatedApps()
+  const app = installations.apps[org.toLowerCase()]
+  return app.authenticatedRequest('POST /orgs/{org}/invitations', {
+    org,
+    invitee_id: userId,
+  })
+}
+
+export const inviteUserToOrgs = async (userId, orgs, recipient) => {
+  logger.info(`inviteUserToOrg ${userId} ${orgs}`)
+console.log()
+  return orgs.map(async (org) => {
+    try {
+      logger.info(`User ${userId} is being invited to ${org}`)
+      await inviteUserToOrg(userId, org)
+      logger.info(`User ${userId} is to ${org}`)
+    //   await InvitationRequestModel.create({
+    //     organization: org.toLowerCase(),
+    //     recipient,
+    //     apiVersion: 'v1',
+    //     state: INVITATION_REQUEST_STATES.APPROVED,
+    //   })
+    } catch (e) {
+      if (e.status === 422) {
+        logger.info(`User ${userId} is already in org ${org}. Skipping.`)
+        // await InvitationRequestModel.create({
+        //   organization: org.toLowerCase(),
+        //   recipient,
+
+        //   apiVersion: 'v1',
+        //   state: INVITATION_REQUEST_STATES.APPROVED,
+        // })
+      } else {
+        logger.error(`Could not invite ${userId} to org ${org}`)
+        logger.info(JSON.stringify(e))
+        // await InvitationRequestModel.create({
+        //   organization: org.toLowerCase(),
+        //   recipient,
+
+        //   apiVersion: 'v1',
+        //   state: INVITATION_REQUEST_STATES.FAILED,
+        // })
+        throw e
+      }
+    }
+  })
+}
+
+export const getUserByName = async (username) => {
+  logger.info(`getUserByName ${username}`)
+  const installations = await getAuthenticatedApps()
+  const primaryOrg = getConfig().primaryOrg.toLowerCase()
+  
+  const response = await installations.apps[
+      primaryOrg
+    ].authenticatedRequest('GET /users/{username}', {
+        username,
+    })
+  return response.data
+}

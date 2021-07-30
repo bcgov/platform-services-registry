@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	  {
+		"label": "api-watch-src-changes",
+		"command": "npx",
+		"args": [
+		  "gulp",
+		  "watch-src-changes"
+		],
+		"type": "shell",
+		"isBackground": true,
+		"group": "build",
+		"problemMatcher": [
+		  "$tsc"
+		],
+		"presentation": {
+		  "reveal": "always",
+		},
+		"options": {
+		  "cwd": "${workspaceFolder}/"
+		},
+	  }
+	]
+  }
