@@ -52,10 +52,3 @@ export const CLUSTER_NAMES = [
 ]
 
 export const GOLD_QUORUM_COUNT = 2;
-
-export const INVITATION_REQUEST_STATES = {
-  APPROVED: 'APPROVED',
-  DENIED: 'DENIED',
-  PENDING: 'PENDING',
-  FAILED: 'FAILED',
-}

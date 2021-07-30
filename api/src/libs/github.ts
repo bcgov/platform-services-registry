@@ -1,12 +1,7 @@
 import { logger } from '@bcgov/common-nodejs-utils';
-// import { INVITATION_REQUEST_STATES } from '../constants'
 import { getConfig } from '../config/githubConfig'
 import { getAuthenticatedApps } from './githubInvitationInit'
-// import DataManager from '../db';
-// import shared from '../libs/shared';
 
-// const dm = new DataManager(shared.pgPool);
-// const {  InvitationRequestModel } = dm;
 
 export const inviteUserToOrg = async (userId, org) => {
  
@@ -26,32 +21,12 @@ console.log()
       logger.info(`User ${userId} is being invited to ${org}`)
       await inviteUserToOrg(userId, org)
       logger.info(`User ${userId} is to ${org}`)
-    //   await InvitationRequestModel.create({
-    //     organization: org.toLowerCase(),
-    //     recipient,
-    //     apiVersion: 'v1',
-    //     state: INVITATION_REQUEST_STATES.APPROVED,
-    //   })
     } catch (e) {
       if (e.status === 422) {
         logger.info(`User ${userId} is already in org ${org}. Skipping.`)
-        // await InvitationRequestModel.create({
-        //   organization: org.toLowerCase(),
-        //   recipient,
-
-        //   apiVersion: 'v1',
-        //   state: INVITATION_REQUEST_STATES.APPROVED,
-        // })
       } else {
         logger.error(`Could not invite ${userId} to org ${org}`)
         logger.info(JSON.stringify(e))
-        // await InvitationRequestModel.create({
-        //   organization: org.toLowerCase(),
-        //   recipient,
-
-        //   apiVersion: 'v1',
-        //   state: INVITATION_REQUEST_STATES.FAILED,
-        // })
         throw e
       }
     }

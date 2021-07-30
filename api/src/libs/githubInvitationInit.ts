@@ -1,7 +1,6 @@
 import { createAppAuth } from '@octokit/auth'
 import { request } from '@octokit/request'
-import { every, isArray, isObject, isString, intersectionBy} from 'lodash'
-import { getConfig, getGithubPrivateKey } from '../config/githubConfig'
+import { getGithubPrivateKey } from '../config/githubConfig'
 import { logger } from '@bcgov/common-nodejs-utils';
 
 // cached value
@@ -96,19 +95,7 @@ export const getInstallations = async () => {
 
 export const getOrgInstallations = async () => {
   logger.info('getOrgInstallations')
-  const config = getConfig()
 
-  if (
-    !config ||
-    !isObject(config) ||
-    !isArray(config.orgs) ||
-    !every(config.orgs, isString) ||
-    config.orgs.length === 0
-  ) {
-    throw new Error(
-      'Configuration is invalid. config.orgs is invalid or misconfigured'
-    )
-  }
   const installations = await getInstallations()
 
   // lower case installation login names
@@ -122,15 +109,6 @@ export const getOrgInstallations = async () => {
       (i) => i.account.login
     )}`
   )
-
-  const matchedInstallations = intersectionBy(
-    loweredInstallations,
-    config.orgs.map((org) => ({ account: { login: org.toLowerCase() } })),
-    'account.login'
-  ).filter((installation) => installation.target_type === 'Organization')
-  if (matchedInstallations.length === 0) {
-    logger.info(`This github app has no public org installations yet`)
-  }
 
   return installations
 }
