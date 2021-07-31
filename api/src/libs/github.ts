@@ -4,7 +4,6 @@ import { getAuthenticatedApps } from './githubInvitationInit'
 
 
 export const inviteUserToOrg = async (userId, org) => {
- 
   const installations = await getAuthenticatedApps()
   const app = installations.apps[org.toLowerCase()]
   return app.authenticatedRequest('POST /orgs/{org}/invitations', {

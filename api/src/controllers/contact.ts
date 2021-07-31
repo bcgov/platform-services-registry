@@ -58,12 +58,9 @@ export const createContact = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   logger.info('createInvitationRequest')
-
-  const {   user: recipient, organizations } = body
+  
+  const { githubId: recipient, organizations } = body
   // const { user: requester } = req.auth
-
-
-console.log('================================', organizations)
   try {
     logger.info(`user  approved request created for ${recipient}`)
     const { id } = await getUserByName(recipient)
