@@ -22,7 +22,7 @@ import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
 import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
 import CreateFormTL from '../components/profileCreate/CreateFormTL';
-import { ROUTE_PATHS } from '../constants';
+import { ROUTE_PATHS, DEFAULT_GITHUB_ORGANIZATION } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -40,9 +40,13 @@ const ProfileCreate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     const { profile, technicalLeads, productOwner } = formData;
+
+    // May need to change logic here as I remember we have a multi tech lead feature
+
     setOpenBackdrop(true);
     try {
       const technicalContacts = [...technicalLeads, productOwner];
+
       const clusters = transformClusters(profile);
 
       // 1. Create the project profile.
@@ -62,9 +66,20 @@ const ProfileCreate: React.FC = () => {
       // 4. Create Project Request
       await api.createProjectRequestByProfileId(profileId);
 
+      // 5.0 invite technicalCOntact to bcgov repo
+      const invitationPromiss = technicalContacts.map((inviteUser) => {
+        const inviteListPayload = {
+          githubId: inviteUser,
+          organizations: DEFAULT_GITHUB_ORGANIZATION,
+        };
+        return api.githubInvite(inviteListPayload);
+      });
+
+      await Promise.all(invitationPromiss);
+
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
-      // 5.All good? Tell the user.
+      // 6.All good? Tell the user.
       promptSuccessToastWithText('Your namespace request was successful');
     } catch (err) {
       setOpenBackdrop(false);
