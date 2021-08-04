@@ -89,8 +89,6 @@ export const getInstallations = async () => {
     }
     //TODO: maybe throw if there's no installation
     return []
-    // console.log('hiahia what is response',response.data)
-
 }
 
 export const getOrgInstallations = async () => {

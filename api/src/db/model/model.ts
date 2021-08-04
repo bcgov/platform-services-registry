@@ -79,7 +79,7 @@ export abstract class Model {
     let client;
 
     if (this.pool.waitingCount > 0) {
-      // logger.warn(`Database pool has ${this.pool.waitingCount} waiting queries`);
+      logger.warn(`Database pool has ${this.pool.waitingCount} waiting queries`);
     }
 
     try {
