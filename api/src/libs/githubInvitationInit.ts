@@ -24,11 +24,9 @@ export const getNonInstallationApp = () => {
     logger.info('getNonInstallationApp')
   // caches a non installed app
   try{
-
-
   if (!installationApps.nonInstallatedApp) {
     const auth = createAppAuth({
-      appId: 128566,
+      appId: process.env.APP_ID ||  128566,
       privateKey: getGithubPrivateKey(),
       clientId: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
@@ -55,7 +53,7 @@ export const getNonInstallationApp = () => {
 
 const newAuthorizedApp = (installationId) => {
   const app = createAppAuth({
-    appId: 128566,
+    appId: process.env.APP_ID || 128566,
     privateKey: getGithubPrivateKey(),
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
@@ -156,7 +154,7 @@ export const getAuthenticatedApps =  async () => {
  * all errors bubble to top to quit process
  */
 export const init = async () => {
-    logger.info('Checking Authenticated Apps')
+  logger.info('Checking Authenticated Apps')
   await getAuthenticatedApps()
 }
 

@@ -6,7 +6,7 @@ x-env: &defaults
   POSTGRESQL_PORT: 5432
   POSTGRES_PASSWORD:
   APP_DB_NAME:
-  PRIVATE_KEY_PATH: /opt/tmp
+  PRIVATE_KEY_PATH: /opt/app/src/config
   APP_DB_USER:
   APP_DB_PASSWORD:
   FLYWAY_URL: jdbc:postgresql://registry-pg/registry
@@ -23,7 +23,7 @@ x-env: &defaults
   NATS_HOST: nats://registry-nats
   CLIENT_SECRET:
   CLIENT_ID:
-  APP_ID:
+  APP_ID: 128566
 
 # volumes:
 #   pg_data:
@@ -73,8 +73,8 @@ services:
         tmpfs:
           size: 128000000
       - type: bind
-        source: ./github-private-key.pem
-        target: /opt/tmp/github-private-key.pem
+        source: ./api/src/config/github-private-key.pem
+        target: /opt/app/src/config/github-private-key.pem
     ports:
       - 8100:8100
       - 9229:9229

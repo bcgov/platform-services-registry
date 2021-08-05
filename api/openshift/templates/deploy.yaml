@@ -156,6 +156,21 @@ objects:
                     secretKeyRef:
                       key: secret
                       name: ${SSO_SECRET_NAME}
+                - name: GITHUB_APP_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: appID
+                      name: ${GITHUB_APP_SECRET_NAME}
+                - name: GITHUB_CLIENT_SECRET
+                  valueFrom: secret
+                    secretKeyRef:
+                      key: secret
+                      name: ${GITHUB_APP_SECRET_NAME}
+                 - name: GITHUB_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: clientId
+                      name: ${GITHUB_APP_SECRET_NAME}
               resources:
                 limits:
                   cpu: 300m
@@ -167,6 +182,9 @@ objects:
                 - name: config-vol
                   mountPath: /opt/app-root/src/build/config/config.json
                   subPath: config.json
+                - name: github-private-key
+                  mountPath: /var/opt/config/private-key/github-private-key.pem
+                  subPath: github-private-key.pem
             - name: flyway-migration
               command:
                 - cat
@@ -209,6 +227,9 @@ objects:
             - name: config-vol
               configMap:
                 name: ${API_NAME}-config
+            - name: github-private-key
+              secret: 
+                secretName: ${API_NAME}-private-key
 parameters:
   - description:
       The name assigned to all of the objects defined in this template.  You
@@ -248,6 +269,10 @@ parameters:
     displayName: Email Service Secret Name
     name: CHES_SECRET_NAME
     value: registry-ches-creds
+  - description: The github app application ID
+    displayName: Email Service Secret Name
+    name: GITHUB_APP_SECRET_NAME
+    value: github-app-creds
   - description: The base URL for the Common Hosted Email Service API
     displayName: Email Service API URL
     name: CHES_BASEURL
