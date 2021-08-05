@@ -22,7 +22,7 @@ import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
 import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
 import CreateFormTL from '../components/profileCreate/CreateFormTL';
-import { ROUTE_PATHS, DEFAULT_GITHUB_ORGANIZATION } from '../constants';
+import { DEFAULT_GITHUB_ORGANIZATION, ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -40,8 +40,6 @@ const ProfileCreate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     const { profile, technicalLeads, productOwner } = formData;
-
-    // May need to change logic here as I remember we have a multi tech lead feature
 
     setOpenBackdrop(true);
     try {
