@@ -17,12 +17,12 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Heading } from 'rebass';
-import mockProfiles from '../__tests__/fixtures/profiles.json';
 import { Button } from '../components/common/UI/Button';
 import Table from '../components/common/UI/Table';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import { CREATE_COMMUNITY_ISSUE_URL } from '../constants';
 import useCommonState from '../hooks/useCommonState';
+import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
@@ -32,6 +32,7 @@ import {
   parseEmails,
   transformJsonToCsv,
 } from '../utils/transformDataHelper';
+import mockProfiles from '../__tests__/fixtures/profiles.json';
 
 const Dashboard: React.FC = () => {
   const api = useRegistryApi();
@@ -39,7 +40,6 @@ const Dashboard: React.FC = () => {
   const { setOpenBackdrop } = useCommonState();
 
   const [profileDetails, setProfileDetails] = useState<any>([]);
-  const [tableView, setTableView] = useState(true);
 
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   // @ts-ignore
@@ -65,19 +65,19 @@ const Dashboard: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keycloak]);
 
-  // useInterval(() => {
-  //   const promisesForNamespaces: any = [];
-  //   for (const p of profile) {
-  //     promisesForNamespaces.push(api.getNamespacesByProfileId(p.id));
-  //   }
+  useInterval(() => {
+    async function verifyProjects() {
+      const updatedProfiles = await api.getDashboardProjects();
+      const updatedProfileDetailsArray = [...updatedProfiles.data.profiles];
+      const profileChanged =
+        JSON.stringify(updatedProfileDetailsArray) !== JSON.stringify(profileDetails);
 
-  //   Promise.all(promisesForNamespaces).then((namespacesResponses: any) => {
-  //     for (let i: number = 0; i < profile.length; i++) {
-  //       profile[i].provisioned = isProfileProvisioned(profile[i], namespacesResponses[i].data);
-  //     }
-  //     setProfile([...profile]);
-  //   });
-  // }, 1000 * 30);
+      if (profileChanged) {
+        setProfileDetails([...updatedProfileDetailsArray]);
+      }
+    }
+    verifyProjects();
+  }, 1000 * 30);
 
   const downloadCSV = () => {
     setOpenBackdrop(true);
@@ -90,10 +90,6 @@ const Dashboard: React.FC = () => {
       console.log(err);
     }
     setOpenBackdrop(false);
-  };
-
-  const toggleView = () => {
-    setTableView(!tableView);
   };
 
   const columns = useMemo(
@@ -137,7 +133,6 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {profileDetails.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
-      <Button onClick={toggleView}>{tableView ? 'Card View' : 'Table View'} </Button>
       <Button
         onClick={() => {
           window.open(CREATE_COMMUNITY_ISSUE_URL, '_blank');
@@ -152,43 +147,10 @@ const Dashboard: React.FC = () => {
         ''
       )}
 
-      {tableView ? (
-        <Box style={{ overflow: 'auto' }}>
-          <Heading>Projects</Heading>
-          <Table columns={columns} data={profileDetails} linkedRows={true} />
-        </Box>
-      ) : (
-        <div>
-          {/* Project Cards */}
-          {/* <Box
-            sx={{
-              display: 'grid',
-              gridGap: 4,
-              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-            }}
-          >
-            {profile.length > 0 &&
-              profile.map((s: any) => (
-                <ShadowBox p={3} key={s.id} style={{ position: 'relative' }}>
-                  <RouterLink
-                    to={{ pathname: `/profile/${s.id}/overview` }}
-                    style={{ color: theme.colors.black, textDecoration: 'none' }}
-                  >
-                    {!s.provisioned && <BackdropForPendingItem />}
-                    <ProfileCard
-                      title={s.name}
-                      textBody={s.description}
-                      ministry={s.busOrgId}
-                      PO={s.POEmail}
-                      TC={s.TCEmail}
-                      isProvisioned={s.provisioned}
-                    />
-                  </RouterLink>
-                </ShadowBox>
-              ))}
-          </Box> */}
-        </div>
-      )}
+      <Box style={{ overflow: 'auto' }}>
+        <Heading>Projects</Heading>
+        <Table columns={columns} data={profileDetails} linkedRows={true} />
+      </Box>
     </>
   );
 };
