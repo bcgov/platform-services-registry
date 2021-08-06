@@ -44,12 +44,16 @@ jest.mock(
   '../hooks/useRegistryApi',
   () =>
     function useRegistryApi() {
-      const getProfile = jest.fn().mockResolvedValue({
-        data: mockProfiles,
+      const getDashboardProjects = jest.fn().mockResolvedValue({
+        data: { profiles: mockProfiles },
       });
 
       const getContactsByProfileId = jest.fn().mockResolvedValue({
         data: mockContacts,
+      });
+
+      const getHumanActionRequests = jest.fn().mockResolvedValue({
+        data: [],
       });
 
       const getNamespacesByProfileId = jest.fn().mockResolvedValue({
@@ -61,8 +65,9 @@ jest.mock(
       });
 
       return {
-        getProfile,
+        getDashboardProjects,
         getContactsByProfileId,
+        getHumanActionRequests,
         getNamespacesByProfileId,
         getQuotaSizeByProfileId,
       };

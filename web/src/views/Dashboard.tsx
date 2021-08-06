@@ -17,7 +17,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Heading } from 'rebass';
-import mockProfiles from '../../src/__tests__/fixtures/profiles.json';
+import mockProfiles from '../__tests__/fixtures/profiles.json';
 import { Button } from '../components/common/UI/Button';
 import Table from '../components/common/UI/Table';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
@@ -30,7 +30,7 @@ import {
   convertSnakeCaseToSentence,
   flatten,
   parseEmails,
-  transformJsonToCsv
+  transformJsonToCsv,
 } from '../utils/transformDataHelper';
 
 const Dashboard: React.FC = () => {
