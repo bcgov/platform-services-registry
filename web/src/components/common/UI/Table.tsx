@@ -129,12 +129,15 @@ const Styles = styled.div`
       content: 'Ministry';
     }
     td:nth-of-type(4):before {
-      content: 'Product Owner';
+      content: 'Cluster';
     }
     td:nth-of-type(5):before {
-      content: 'Technical Contact';
+      content: 'Product Owner';
     }
     td:nth-of-type(6):before {
+      content: 'Technical Contact';
+    }
+    td:nth-of-type(7):before {
       content: 'Status';
     }
   }
