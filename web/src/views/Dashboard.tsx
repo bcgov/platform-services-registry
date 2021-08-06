@@ -22,7 +22,6 @@ import Table from '../components/common/UI/Table';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import { CREATE_COMMUNITY_ISSUE_URL } from '../constants';
 import useCommonState from '../hooks/useCommonState';
-import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
