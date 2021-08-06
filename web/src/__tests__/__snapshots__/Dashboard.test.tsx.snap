@@ -298,6 +298,7 @@ exports[`<Dashboard / > Table view should render 1`] = `
       </table>
     </div>
   </div>
+  <div />
 </div>
 `;
 
@@ -308,6 +309,502 @@ exports[`<Dashboard / > Table view should render 2`] = `
     type="button"
   >
     Download CSV
+  </button>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Report a bug/Request a feature
+  </button>
+  <div>
+    <div
+      class="css-vurnku"
+      style="overflow: auto;"
+    >
+      <h2
+        class="css-qjyand"
+      >
+        Project Requests
+      </h2>
+      <div
+        class="css-86w783"
+      >
+        <table
+          role="table"
+        >
+          <thead>
+            <tr
+              role="row"
+            >
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Name
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Ministry
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Product Owner
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Technical Lead(s)
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Request Type
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Response
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            role="rowgroup"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
+  <div
+    class="css-vurnku"
+    style="overflow: auto;"
+  >
+    <h2
+      class="css-qjyand"
+    >
+      Projects
+    </h2>
+    <div
+      class="css-86w783"
+    >
+      <table
+        role="table"
+      >
+        <thead>
+          <tr
+            role="row"
+          >
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Name
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Description
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Ministry
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Cluster
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Product Owner
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Technical Lead(s)
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Status
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          role="rowgroup"
+        >
+          <tr
+            role="row"
+          >
+            <td
+              role="cell"
+            >
+              Test Project C
+            </td>
+            <td
+              role="cell"
+            >
+              Lorem ipsum doler
+            </td>
+            <td
+              role="cell"
+            >
+              CITZ
+            </td>
+            <td
+              role="cell"
+            >
+              Gold Kamloops, Gold (DR) Calgary
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jack.dough@example.com"
+                >
+                  jack.dough@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jane.doe@example.com"
+                >
+                  jane.doe@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              Approved
+            </td>
+          </tr>
+          <tr
+            role="row"
+          >
+            <td
+              role="cell"
+            >
+              Test Project B
+            </td>
+            <td
+              role="cell"
+            >
+              Lorem ipsum doler
+            </td>
+            <td
+              role="cell"
+            >
+              EMPR
+            </td>
+            <td
+              role="cell"
+            >
+              Silver Kamloops
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jack.dough@example.com"
+                >
+                  jack.dough@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jane.doe@example.com"
+                >
+                  jane.doe@example.com
+                </a>
+              </div>
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:john.doh@example.com"
+                >
+                  john.doh@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              Pending Edit
+            </td>
+          </tr>
+          <tr
+            role="row"
+          >
+            <td
+              role="cell"
+            >
+              Test Project A
+            </td>
+            <td
+              role="cell"
+            >
+              Lorem ipsum doler
+            </td>
+            <td
+              role="cell"
+            >
+              AEST
+            </td>
+            <td
+              role="cell"
+            >
+              Silver Kamloops
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jack.dough@example.com"
+                >
+                  jack.dough@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jane.doe@example.com"
+                >
+                  jane.doe@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              Pending Approval
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Dashboard / > Table view should render 2`] = `
+<div>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Download CSV
+  </button>
+  <button
+    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
+    type="button"
+  >
+    Card View
+     
   </button>
   <button
     style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
