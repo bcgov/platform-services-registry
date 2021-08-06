@@ -23,7 +23,7 @@ import { CommonFields, Model } from './model';
 export interface ProjectProfile extends CommonFields {
   name: string;
   description: string;
-  busOrgId: number;
+  busOrgId: string;
   userId: number;
   namespacePrefix: string;
   prioritySystem?: boolean;
