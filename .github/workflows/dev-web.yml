@@ -74,8 +74,10 @@ jobs:
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
+        env:
+          CYPRESS_port: 3000
         with:
-          start: PORT=3000 npm start
+          start: npm start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           build: npm i -D cypress
