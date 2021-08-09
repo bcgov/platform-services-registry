@@ -183,7 +183,7 @@ objects:
                   mountPath: /opt/app-root/src/build/config/config.json
                   subPath: config.json
                 - name: github-private-key
-                  mountPath: /var/opt/config/private-key/github-private-key.pem
+                  mountPath: /opt/app-root/src/build/config/github-private-key.pem
                   subPath: github-private-key.pem
             - name: flyway-migration
               command:
