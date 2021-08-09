@@ -26,11 +26,11 @@ import SelectInput from '../common/UI/SelectInput';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
-import theme from '../../theme';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { composeRequestBodyForQuotaEdit } from '../../utils/transformDataHelper';
 import { StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
+import FormSubtitle from '../common/UI/FormSubtitle';
 import { QuotaDetails } from './QuotaCard';
 
 interface IQuotaCardEditProps {
@@ -50,8 +50,7 @@ const StyledQuotaEditContainer = styled.div`
 `;
 
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
-  // @ts-ignore
-  const required = (value) => (value ? undefined : 'Required');
+  const required = (value: string | boolean) => (value ? undefined : 'Required');
 
   const {
     quotaDetails: { licensePlate = '', quotaSize = '', quotaOptions = [] },
@@ -69,7 +68,10 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>([]);
   const [quotaSizes, setQuotaSizes] = useState<any>({});
 
-  const QUOTAINFORMATIONCONSTANTS: any = {
+  const txtForQuotaEdit =
+    "All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).";
+
+  const QUOTA_INFORMATION: any = {
     Quota: {
       title: 'Quota Information',
       options: [
@@ -132,10 +134,12 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const handleSubmit = async (formData: any) => {
     if (formData.selectedSize?.split(' ')[0] === 'Current:') {
       setGoBackToProfileEditable(true);
-      promptSuccessToastWithText('Your quota will remains the same');
+      promptSuccessToastWithText('Your quota will remain the same');
       return;
     }
-    if (formData.selectedSize) setOpenBackdrop(true);
+
+    setOpenBackdrop(true);
+
     try {
       if (!profileId || !quotaSize) {
         throw new Error('Unable to get profile id or quota size');
@@ -188,7 +192,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   return (
     <StyledQuotaEditContainer>
       <FormTitle>License plates for the openshift namespaces</FormTitle>
-
+      <FormSubtitle>{txtForQuotaEdit}</FormSubtitle>
       <br />
 
       <Form
@@ -199,59 +203,55 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         }}
       >
         {(formProps) => {
-          const DisplayQuotaForm = Object.keys(QUOTAINFORMATIONCONSTANTS).map(
-            (element: any, index) => (
-              <Box key={index + QUOTAINFORMATIONCONSTANTS[element].title}>
-                <Text as="h3">{QUOTAINFORMATIONCONSTANTS[element].title}</Text>
-                <Flex flexDirection="column" paddingLeft="4">
-                  {QUOTAINFORMATIONCONSTANTS[element].options.map(
-                    (option: any, optionIndex: any) => (
-                      <Flex marginBottom="2" key={optionIndex + option.displayName}>
-                        <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
-                          {option.displayName}
-                        </Label>
+          const DisplayQuotaForm = Object.keys(QUOTA_INFORMATION).map((element: any, index) => (
+            <Box key={index + QUOTA_INFORMATION[element].title}>
+              <Text as="h3">{QUOTA_INFORMATION[element].title}</Text>
+              <Flex flexDirection="column" paddingLeft="4">
+                {QUOTA_INFORMATION[element].options.map((option: any, optionIndex: any) => (
+                  <Flex marginBottom="2" key={optionIndex + option.displayName}>
+                    <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
+                      {option.displayName}
+                    </Label>
 
-                        <Flex flex="1 1 auto" justifyContent="flex-end" name="project-quota">
-                          {option.name === 'QuotaSize' ? (
-                            // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
-                            <Field
-                              name="selectedSize"
-                              component={SelectInput}
-                              initialValue={`Current: ${option.value}`}
-                              validate={required}
-                            >
-                              <option> Current: {option.value} </option>
-                              {quotaOptions.length !== 0 &&
-                                quotaOptions.map((opt: any) => (
-                                  <option key={opt} value={opt}>
-                                    {opt.toUpperCase()}
-                                  </option>
-                                ))}
-                            </Field>
-                          ) : (
-                            <Label justifyContent="flex-end">
-                              <Text>{option.value}</Text>{' '}
-                              {applyingQuotaSpecs.length !== 0 && element !== 'Quota' && (
-                                <Flex marginLeft="1">
-                                  <Text> to {applyingQuotaSpecs[element][optionIndex]}</Text>
-                                </Flex>
-                              )}
-                            </Label>
+                    <Flex flex="1 1 auto" justifyContent="flex-end" name="project-quota">
+                      {option.name === 'QuotaSize' ? (
+                        // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
+                        <Field
+                          name="selectedSize"
+                          component={SelectInput}
+                          initialValue={`Current: ${option.value}`}
+                          validate={required}
+                        >
+                          <option> Current: {option.value} </option>
+                          {quotaOptions.length !== 0 &&
+                            quotaOptions.map((opt: any) => (
+                              <option key={opt} value={opt}>
+                                {opt.toUpperCase()}
+                              </option>
+                            ))}
+                        </Field>
+                      ) : (
+                        <Label justifyContent="flex-end">
+                          <Text>{option.value}</Text>{' '}
+                          {applyingQuotaSpecs.length !== 0 && element !== 'Quota' && (
+                            <Flex marginLeft="1">
+                              <Text> to {applyingQuotaSpecs[element][optionIndex]}</Text>
+                            </Flex>
                           )}
-                        </Flex>
-                      </Flex>
-                    ),
-                  )}
-                </Flex>
-              </Box>
-            ),
-          );
+                        </Label>
+                      )}
+                    </Flex>
+                  </Flex>
+                ))}
+              </Flex>
+            </Box>
+          ));
 
           const QuotaChangeComponent = (
             <Flex
-              backgroundColor={theme.colors.grey}
-              paddingX={4}
-              paddingY={3}
+              backgroundColor="#eeeeee"
+              px={4}
+              py={3}
               flexDirection="column"
               sx={{ borderRadius: ' 10px', alignItems: 'center' }}
             >
@@ -271,7 +271,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                   </Text>
                 </Label>
                 <Flex flex="1 1 auto" justifyContent="flex-end">
-                  <Field<boolean>
+                  <Field
                     name="project-acceptUsage"
                     component={CheckboxInput}
                     validate={required}
