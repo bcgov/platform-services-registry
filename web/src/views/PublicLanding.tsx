@@ -19,7 +19,7 @@ import queryString from 'querystring';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router';
 import { Redirect, useHistory } from 'react-router-dom';
-import { Box, Text } from 'rebass';
+import { Box, Text, Flex } from 'rebass';
 import { Label, Checkbox } from '@rebass/forms';
 import { HOME_PAGE_URL, ROUTE_PATHS } from '../constants';
 import { StyledButton } from '../components/common/UI/AuthButton';
@@ -29,21 +29,6 @@ const StyledExternalLink = styled.a`
   font-weight: 600;
   :visited: {
     color: #003366;
-  }
-`;
-
-const HomePageSectionContainer = styled.div`
-  padding-bottom: 30px;
-  width: 90vw;
-
-  @media only screen and (min-width: 680px) {
-    width: 80vw;
-    max-height: 50vh;
-  }
-
-  @media only screen and (min-width: 1080px) {
-    width: 60vw;
-    max-height: 45vh;
   }
 `;
 
@@ -77,31 +62,34 @@ export const PublicLanding = () => {
   }
 
   return (
-    <Box
+    <Flex
+      flexDirection="column"
       sx={{
         lineHeight: 2,
         maxHeight: 100,
       }}
     >
-      <Text as="h1" mb={3}>
-        Welcome to BC Gov's Platform as a Service(PaaS) Project Registry
-      </Text>
-      <HomePageSectionContainer>
+      <Box mb={3}>
+        <Text as="h1" mb={3}>
+          Welcome to BC Gov's Platform as a Service(PaaS) Project Registry
+        </Text>
+      </Box>
+      <Box mb={3}>
         <Text as="h2" mb={2}>
           Make changes to an existing project
         </Text>
-        <Text mb={3}>
+        <Text mb={2}>
           For existing application's hosted on OpenShift 4 Platform. You can update/change all
           project details and request project resource quota increases and downgrades (including
           CPU/RAM/Storage.)
         </Text>
-        <StyledButton onClick={() => keycloak.login({ idpHint: 'idir' })}>Log In</StyledButton>
-      </HomePageSectionContainer>
-      <HomePageSectionContainer>
+        <StyledButton onClick={() => keycloak.login({ idpHint: 'idir' })}>Login</StyledButton>
+      </Box>
+      <Box mb={3}>
         <Text as="h2" mb={2}>
           Register a new project
         </Text>
-        <Text mb={3}>
+        <Text mb={2}>
           Use this website if you are a Product Owner for a new cloud-native application and are
           interested in hosting the app on the OpenShift 4 Platform. You can learn about the BCGov's
           PaaS/OpenShift 4 Platform Service{' '}
@@ -113,19 +101,24 @@ export const PublicLanding = () => {
             here
           </StyledExternalLink>
         </Text>
-        <Text as="h3" mb={1}>
+      </Box>
+      <Box mb={3}>
+        <Text as="h3" mb={2}>
           Before you start
         </Text>
-        <Text>
+        <Text mb={2}>
           This website is for teams who've attended an onboarding session with the platform team (if
           you currently host an application on OpenShift, you’ve done this already.) If you haven’t
           attended an onboarding session, please contact the Platform Director(
-          <a rel="noopener noreferrer" href="mailto:olena.mitovska@gov.bc.ca" target="_blank">
+          <StyledExternalLink
+            rel="noopener noreferrer"
+            href="mailto:olena.mitovska@gov.bc.ca"
+            target="_blank"
+          >
             olena.mitovska@gov.bc.ca
-          </a>
+          </StyledExternalLink>
           ) to book an onboarding session.
         </Text>
-
         <StyledacknowledgeMessage pb={2} active={showWarningMessage}>
           <Checkbox
             name="attendedOnboardingSession"
@@ -134,7 +127,9 @@ export const PublicLanding = () => {
               SetIsAttendedSession(!isAttendedSession);
             }}
           />
-          <Text fontSize={[1, 18]}>I confirm I’ve attended an onboarding session.</Text>
+          <Text as="h3" fontSize="16px" my={0} lineHeight="normal" ml={2}>
+            I confirm I’ve attended an onboarding session.
+          </Text>
         </StyledacknowledgeMessage>
         <StyledButton
           onClick={() => {
@@ -149,16 +144,13 @@ export const PublicLanding = () => {
           REGISTER A NEW PROJECT (log in with BC IDIR)
         </StyledButton>
         {showWarningMessage && (
-          <Text as="p" mt={0} color="red">
-            Please confirm above checkbox before continue.
+          <Text as="p" color="red">
+            Please confirm above checkbox before continuing.
           </Text>
         )}
-      </HomePageSectionContainer>
-
-      <HomePageSectionContainer>
-        <Text as="h3" m={0}>
-          What you will need
-        </Text>
+      </Box>
+      <Box mb={3}>
+        <Text as="h3">What you will need</Text>
         <StyledList>
           <Text as="li">
             A BC IDIR (you'll be asked to log in with your IDIR to get to the registry)
@@ -171,7 +163,7 @@ export const PublicLanding = () => {
             An idea of which common components you will use (see common components list)
           </Text>
         </StyledList>
-      </HomePageSectionContainer>
-    </Box>
+      </Box>
+    </Flex>
   );
 };
