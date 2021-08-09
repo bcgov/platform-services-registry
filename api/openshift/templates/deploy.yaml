@@ -171,6 +171,8 @@ objects:
                     secretKeyRef:
                       key: clientId
                       name: ${GITHUB_APP_SECRET_NAME}
+                 - name: PRIVATE_KEY_PATH
+                  value: /var/opt/config/private-key
               resources:
                 limits:
                   cpu: 300m

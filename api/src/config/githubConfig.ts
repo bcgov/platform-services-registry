@@ -4,7 +4,7 @@ import path from 'path'
 
 const getBasePathWithFile = (file) => {
   let filePath
-
+  console.log('hiahia what is this dev test', process.env.PRIVATE_KEY_PATH )
   if (
     (process.env.NODE_ENV === 'production'|| process.env.NODE_ENV === 'development') &&
     process.env.PRIVATE_KEY_PATH &&
