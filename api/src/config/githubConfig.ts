@@ -5,8 +5,8 @@ import path from 'path'
 const getBasePathWithFile = (file) => {
   let filePath
   console.log('hiahia what is this dev test 1', process.env.PRIVATE_KEY_PATH )
-  console.log('hiahia what is this dev test 2', process.env.CLIENT_ID )
-  console.log('hiahia what is this dev test 3', process.env.CLIENT_SECRET)
+  console.log('hiahia what is this dev test 2', process.env.GITHUB_CLIENT_ID )
+  console.log('hiahia what is this dev test 3', process.env.GITHUB_CLIENT_SECRET)
   if (
     (process.env.NODE_ENV === 'production'|| process.env.NODE_ENV === 'development') &&
     process.env.PRIVATE_KEY_PATH &&
