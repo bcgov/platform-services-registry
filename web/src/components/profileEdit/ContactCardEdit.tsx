@@ -32,10 +32,11 @@ import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button, StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import { Button } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
+import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 
 const validator = getValidator();
 
@@ -114,8 +115,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {(formProps) => (
-        <form onSubmit={formProps.handleSubmit}>
+      {({ handleSubmit, pristine }) => (
+        <form onSubmit={handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
           <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
             {({ input }) => <input type="hidden" {...input} id="id" />}
@@ -256,20 +257,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               </div>
             )}
           </FieldArray>
-          {!hasPendingEdit && isProvisioned ? (
-            // @ts-ignore
-            <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
-          ) : (
-            <>
-              {/* @ts-ignore */}
-              <StyledFormDisabledButton style={{ display: 'block' }}>
-                Request Update
-              </StyledFormDisabledButton>
-              <Label as="span" variant="errorLabel">
-                Not available due to a {isProvisioned ? 'Update' : 'Provision'} Request
-              </Label>
-            </>
-          )}
+          <EditSubmitButton
+            hasPendingEdit={hasPendingEdit}
+            isProvisioned={isProvisioned}
+            pristine={pristine}
+          />
         </form>
       )}
     </Form>
