@@ -67,7 +67,7 @@ const ProfileCreate: React.FC = () => {
       // 5.0 invite technicalCOntact to bcgov repo
       const invitationPromiss = technicalContacts.map((inviteUser) => {
         const inviteListPayload = {
-          githubId: inviteUser,
+          githubId: inviteUser.githubId,
           organizations: DEFAULT_GITHUB_ORGANIZATION,
         };
         return api.githubInvite(inviteListPayload);
