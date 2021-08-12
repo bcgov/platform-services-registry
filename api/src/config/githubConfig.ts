@@ -25,7 +25,7 @@ const getBasePathWithFile = (file) => {
  */
 export const getConfig = () => {
   const data = readFileSync(getBasePathWithFile('config.json'))
-  console.log('wtffffff is data in getconfig', data)
+  console.log('wtffffff is data in getconfig', data.toString())
   return JSON.parse(data.toString())
 }
 
