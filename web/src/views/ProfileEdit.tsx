@@ -225,11 +225,9 @@ const ProfileEdit: React.FC = (props: any) => {
                     <Text as="h3" color={theme.colors.contrast} mx={2}>
                       {c.title}
                     </Text>
-                    {!profileState.hasPendingEdit && profileState.isProvisioned && (
-                      <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
-                        <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
-                      </RouterLink>
-                    )}
+                    <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
+                      <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
+                    </RouterLink>
                   </Flex>
                   <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
                     {c.component}
