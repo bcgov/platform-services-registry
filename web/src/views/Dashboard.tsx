@@ -19,6 +19,7 @@ import React, { useEffect, useState } from 'react';
 import ProjectDetails from '../components/dashboard/ProjectDetails';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import useCommonState from '../hooks/useCommonState';
+import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';

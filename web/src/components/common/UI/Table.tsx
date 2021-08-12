@@ -241,7 +241,7 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
           <DropDownListContainer ref={ref}>
             <DropDownList>
               {allColumns.map((column: any) => (
-                <ListItem onClick={() => column.toggleHidden()} key={Math.random()}>
+                <ListItem onClick={() => column.toggleHidden()} key={column.id}>
                   {column.Header}{' '}
                   {column.isVisible && <Icon hover color="primary" name="checkmark" />}
                 </ListItem>
