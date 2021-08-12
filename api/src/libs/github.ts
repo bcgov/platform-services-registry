@@ -14,7 +14,6 @@ export const inviteUserToOrg = async (userId, org) => {
 
 export const inviteUserToOrgs = async (userId, orgs, recipient) => {
   logger.info(`inviteUserToOrg ${userId} ${orgs}`)
-console.log()
   return orgs.map(async (org) => {
     try {
       logger.info(`User ${userId} is being invited to ${org}`)
