@@ -2,25 +2,115 @@
 
 exports[`<Dashboard / > Table view should render 1`] = `
 <div>
-  <button
-    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
-    type="button"
-  >
-    Report a bug/Request a feature
-  </button>
   <div>
     <div
       class="css-vurnku"
       style="overflow: auto;"
     >
-      <h2
-        class="css-qjyand"
-      >
-        Project Requests
-      </h2>
       <div
         class="css-86w783"
       >
+        <div
+          class="css-1nsk4x7"
+        >
+          <h2
+            class="css-qjyand"
+          >
+            Project Requests
+          </h2>
+          <div
+            class="css-1ntkiwo"
+          />
+          <div
+            class="css-0"
+          >
+            <div
+              class="css-0"
+            >
+              <div
+                class="css-1qq5av8"
+              >
+                <div
+                  class="tooltip-container"
+                >
+                  <div
+                    class="tooltip-box"
+                  >
+                    Select Columns
+                    <span
+                      class="tooltip-arrow"
+                    />
+                  </div>
+                  <div>
+                    <svg
+                      fill="#036"
+                      style="margin: 14px 5px 5px; transform: rotate(90deg); cursor: pointer; width: 1.4em; height: 1.4em;"
+                      viewBox="0 0 448 512"
+                    >
+                      <path
+                        d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-1qq5av8"
+          >
+            <div
+              class="tooltip-container"
+            >
+              <div
+                class="tooltip-box"
+              >
+                Search Table
+                <span
+                  class="tooltip-arrow"
+                />
+              </div>
+              <div>
+                <svg
+                  fill="#036"
+                  style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                  viewBox="0 0 50 50"
+                >
+                  <path
+                    d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-1qq5av8"
+          >
+            <div
+              class="tooltip-container"
+            >
+              <div
+                class="tooltip-box"
+              >
+                Download CSV
+                <span
+                  class="tooltip-arrow"
+                />
+              </div>
+              <div>
+                <svg
+                  fill="#036"
+                  style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
         <table
           role="table"
         >
@@ -149,14 +239,110 @@ exports[`<Dashboard / > Table view should render 1`] = `
     class="css-vurnku"
     style="overflow: auto;"
   >
-    <h2
-      class="css-qjyand"
-    >
-      Projects
-    </h2>
     <div
       class="css-86w783"
     >
+      <div
+        class="css-1nsk4x7"
+      >
+        <h2
+          class="css-qjyand"
+        >
+          Projects
+        </h2>
+        <div
+          class="css-1ntkiwo"
+        />
+        <div
+          class="css-0"
+        >
+          <div
+            class="css-0"
+          >
+            <div
+              class="css-1qq5av8"
+            >
+              <div
+                class="tooltip-container"
+              >
+                <div
+                  class="tooltip-box"
+                >
+                  Select Columns
+                  <span
+                    class="tooltip-arrow"
+                  />
+                </div>
+                <div>
+                  <svg
+                    fill="#036"
+                    style="margin: 14px 5px 5px; transform: rotate(90deg); cursor: pointer; width: 1.4em; height: 1.4em;"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1qq5av8"
+        >
+          <div
+            class="tooltip-container"
+          >
+            <div
+              class="tooltip-box"
+            >
+              Search Table
+              <span
+                class="tooltip-arrow"
+              />
+            </div>
+            <div>
+              <svg
+                fill="#036"
+                style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                viewBox="0 0 50 50"
+              >
+                <path
+                  d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1qq5av8"
+        >
+          <div
+            class="tooltip-container"
+          >
+            <div
+              class="tooltip-box"
+            >
+              Download CSV
+              <span
+                class="tooltip-arrow"
+              />
+            </div>
+            <div>
+              <svg
+                fill="#036"
+                style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
       <table
         role="table"
       >
@@ -304,31 +490,115 @@ exports[`<Dashboard / > Table view should render 1`] = `
 
 exports[`<Dashboard / > Table view should render 2`] = `
 <div>
-  <button
-    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
-    type="button"
-  >
-    Download CSV
-  </button>
-  <button
-    style="border: 1px solid #eee; border-radius: 3px; background-color: rgb(255, 255, 255); cursor: pointer; font-size: 15px; padding: 3px 10px; margin: 10px;"
-    type="button"
-  >
-    Report a bug/Request a feature
-  </button>
   <div>
     <div
       class="css-vurnku"
       style="overflow: auto;"
     >
-      <h2
-        class="css-qjyand"
-      >
-        Project Requests
-      </h2>
       <div
         class="css-86w783"
       >
+        <div
+          class="css-1nsk4x7"
+        >
+          <h2
+            class="css-qjyand"
+          >
+            Project Requests
+          </h2>
+          <div
+            class="css-1ntkiwo"
+          />
+          <div
+            class="css-0"
+          >
+            <div
+              class="css-0"
+            >
+              <div
+                class="css-1qq5av8"
+              >
+                <div
+                  class="tooltip-container"
+                >
+                  <div
+                    class="tooltip-box"
+                  >
+                    Select Columns
+                    <span
+                      class="tooltip-arrow"
+                    />
+                  </div>
+                  <div>
+                    <svg
+                      fill="#036"
+                      style="margin: 14px 5px 5px; transform: rotate(90deg); cursor: pointer; width: 1.4em; height: 1.4em;"
+                      viewBox="0 0 448 512"
+                    >
+                      <path
+                        d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-1qq5av8"
+          >
+            <div
+              class="tooltip-container"
+            >
+              <div
+                class="tooltip-box"
+              >
+                Search Table
+                <span
+                  class="tooltip-arrow"
+                />
+              </div>
+              <div>
+                <svg
+                  fill="#036"
+                  style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                  viewBox="0 0 50 50"
+                >
+                  <path
+                    d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-1qq5av8"
+          >
+            <div
+              class="tooltip-container"
+            >
+              <div
+                class="tooltip-box"
+              >
+                Download CSV
+                <span
+                  class="tooltip-arrow"
+                />
+              </div>
+              <div>
+                <svg
+                  fill="#036"
+                  style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
         <table
           role="table"
         >
@@ -457,14 +727,779 @@ exports[`<Dashboard / > Table view should render 2`] = `
     class="css-vurnku"
     style="overflow: auto;"
   >
-    <h2
-      class="css-qjyand"
-    >
-      Projects
-    </h2>
     <div
       class="css-86w783"
     >
+      <div
+        class="css-1nsk4x7"
+      >
+        <h2
+          class="css-qjyand"
+        >
+          Projects
+        </h2>
+        <div
+          class="css-1ntkiwo"
+        />
+        <div
+          class="css-0"
+        >
+          <div
+            class="css-0"
+          >
+            <div
+              class="css-1qq5av8"
+            >
+              <div
+                class="tooltip-container"
+              >
+                <div
+                  class="tooltip-box"
+                >
+                  Select Columns
+                  <span
+                    class="tooltip-arrow"
+                  />
+                </div>
+                <div>
+                  <svg
+                    fill="#036"
+                    style="margin: 14px 5px 5px; transform: rotate(90deg); cursor: pointer; width: 1.4em; height: 1.4em;"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1qq5av8"
+        >
+          <div
+            class="tooltip-container"
+          >
+            <div
+              class="tooltip-box"
+            >
+              Search Table
+              <span
+                class="tooltip-arrow"
+              />
+            </div>
+            <div>
+              <svg
+                fill="#036"
+                style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                viewBox="0 0 50 50"
+              >
+                <path
+                  d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1qq5av8"
+        >
+          <div
+            class="tooltip-container"
+          >
+            <div
+              class="tooltip-box"
+            >
+              Download CSV
+              <span
+                class="tooltip-arrow"
+              />
+            </div>
+            <div>
+              <svg
+                fill="#036"
+                style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table
+        role="table"
+      >
+        <thead>
+          <tr
+            role="row"
+          >
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Name
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Description
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Ministry
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Cluster
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Product Owner
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Technical Lead(s)
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+            <th
+              class=""
+              colspan="1"
+              role="columnheader"
+              style="cursor: pointer;"
+              title="Toggle SortBy"
+            >
+              Status
+              <svg
+                fill="#fff"
+                style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                viewBox="0 0 99.42 122.88"
+              >
+                <path
+                  d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                />
+              </svg>
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          role="rowgroup"
+        >
+          <tr
+            role="row"
+          >
+            <td
+              role="cell"
+            >
+              Test Project C
+            </td>
+            <td
+              role="cell"
+            >
+              Lorem ipsum doler
+            </td>
+            <td
+              role="cell"
+            >
+              CITZ
+            </td>
+            <td
+              role="cell"
+            >
+              Gold Kamloops, Gold (DR) Calgary
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jack.dough@example.com"
+                >
+                  jack.dough@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jane.doe@example.com"
+                >
+                  jane.doe@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              Approved
+            </td>
+          </tr>
+          <tr
+            role="row"
+          >
+            <td
+              role="cell"
+            >
+              Test Project B
+            </td>
+            <td
+              role="cell"
+            >
+              Lorem ipsum doler
+            </td>
+            <td
+              role="cell"
+            >
+              EMPR
+            </td>
+            <td
+              role="cell"
+            >
+              Silver Kamloops
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jack.dough@example.com"
+                >
+                  jack.dough@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jane.doe@example.com"
+                >
+                  jane.doe@example.com
+                </a>
+              </div>
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:john.doh@example.com"
+                >
+                  john.doh@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              Pending Edit
+            </td>
+          </tr>
+          <tr
+            role="row"
+          >
+            <td
+              role="cell"
+            >
+              Test Project A
+            </td>
+            <td
+              role="cell"
+            >
+              Lorem ipsum doler
+            </td>
+            <td
+              role="cell"
+            >
+              AEST
+            </td>
+            <td
+              role="cell"
+            >
+              Silver Kamloops
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jack.dough@example.com"
+                >
+                  jack.dough@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <a
+                  class="css-vurnku"
+                  href="mailto:jane.doe@example.com"
+                >
+                  jane.doe@example.com
+                </a>
+              </div>
+            </td>
+            <td
+              role="cell"
+            >
+              Pending Approval
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Dashboard / > Table view should render 3`] = `
+<div>
+  <div>
+    <div
+      class="css-vurnku"
+      style="overflow: auto;"
+    >
+      <div
+        class="css-86w783"
+      >
+        <div
+          class="css-1nsk4x7"
+        >
+          <h2
+            class="css-qjyand"
+          >
+            Project Requests
+          </h2>
+          <div
+            class="css-1ntkiwo"
+          />
+          <div
+            class="css-0"
+          >
+            <div
+              class="css-0"
+            >
+              <div
+                class="css-1qq5av8"
+              >
+                <div
+                  class="tooltip-container"
+                >
+                  <div
+                    class="tooltip-box"
+                  >
+                    Select Columns
+                    <span
+                      class="tooltip-arrow"
+                    />
+                  </div>
+                  <div>
+                    <svg
+                      fill="#036"
+                      style="margin: 14px 5px 5px; transform: rotate(90deg); cursor: pointer; width: 1.4em; height: 1.4em;"
+                      viewBox="0 0 448 512"
+                    >
+                      <path
+                        d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-1qq5av8"
+          >
+            <div
+              class="tooltip-container"
+            >
+              <div
+                class="tooltip-box"
+              >
+                Search Table
+                <span
+                  class="tooltip-arrow"
+                />
+              </div>
+              <div>
+                <svg
+                  fill="#036"
+                  style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                  viewBox="0 0 50 50"
+                >
+                  <path
+                    d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-1qq5av8"
+          >
+            <div
+              class="tooltip-container"
+            >
+              <div
+                class="tooltip-box"
+              >
+                Download CSV
+                <span
+                  class="tooltip-arrow"
+                />
+              </div>
+              <div>
+                <svg
+                  fill="#036"
+                  style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <table
+          role="table"
+        >
+          <thead>
+            <tr
+              role="row"
+            >
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Name
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Ministry
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Product Owner
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Technical Lead(s)
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Request Type
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+              <th
+                class=""
+                colspan="1"
+                role="columnheader"
+                style="cursor: pointer;"
+                title="Toggle SortBy"
+              >
+                Response
+                <svg
+                  fill="#fff"
+                  style="float: right; margin: 2px; cursor: default; width: 1em; height: 1em;"
+                  viewBox="0 0 99.42 122.88"
+                >
+                  <path
+                    d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z"
+                  />
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            role="rowgroup"
+          />
+        </table>
+      </div>
+    </div>
+  </div>
+  <div
+    class="css-vurnku"
+    style="overflow: auto;"
+  >
+    <div
+      class="css-86w783"
+    >
+      <div
+        class="css-1nsk4x7"
+      >
+        <h2
+          class="css-qjyand"
+        >
+          Projects
+        </h2>
+        <div
+          class="css-1ntkiwo"
+        />
+        <div
+          class="css-0"
+        >
+          <div
+            class="css-0"
+          >
+            <div
+              class="css-1qq5av8"
+            >
+              <div
+                class="tooltip-container"
+              >
+                <div
+                  class="tooltip-box"
+                >
+                  Select Columns
+                  <span
+                    class="tooltip-arrow"
+                  />
+                </div>
+                <div>
+                  <svg
+                    fill="#036"
+                    style="margin: 14px 5px 5px; transform: rotate(90deg); cursor: pointer; width: 1.4em; height: 1.4em;"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1qq5av8"
+        >
+          <div
+            class="tooltip-container"
+          >
+            <div
+              class="tooltip-box"
+            >
+              Search Table
+              <span
+                class="tooltip-arrow"
+              />
+            </div>
+            <div>
+              <svg
+                fill="#036"
+                style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                viewBox="0 0 50 50"
+              >
+                <path
+                  d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-1qq5av8"
+        >
+          <div
+            class="tooltip-container"
+          >
+            <div
+              class="tooltip-box"
+            >
+              Download CSV
+              <span
+                class="tooltip-arrow"
+              />
+            </div>
+            <div>
+              <svg
+                fill="#036"
+                style="margin: 14px 5px 5px; cursor: pointer; width: 1.4em; height: 1.4em;"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
       <table
         role="table"
       >

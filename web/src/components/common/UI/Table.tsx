@@ -15,16 +15,24 @@
 //
 
 import styled from '@emotion/styled';
+import { Input } from '@rebass/forms';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSortBy, useTable } from 'react-table';
+import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
+import { Box, Flex, Heading } from 'rebass';
+import useCommonState from '../../../hooks/useCommonState';
+import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
+import { promptErrToastWithText } from '../../../utils/promptToastHelper';
+import { flatten, transformJsonToCsv } from '../../../utils/transformDataHelper';
 import Icon from './Icon';
+import Tooltip from './Tooltip';
 
 interface ITableProps {
   columns: any;
   data: Object[];
   linkedRows?: boolean;
+  title: string;
 }
 
 const Styles = styled.div`
@@ -143,8 +151,140 @@ const Styles = styled.div`
   }
 `;
 
+// Define a default UI for filtering
+const GlobalFilter: React.FC<any> = ({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter,
+}: any) => {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(globalFilter);
+  const onChange = useAsyncDebounce((filterValue) => {
+    setGlobalFilter(filterValue || undefined);
+  }, 200);
+
+  return (
+    <Flex flexDirection="row">
+      <Input
+        value={value || ''}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`${count} records...`}
+        autoFocus={true}
+      />
+    </Flex>
+  );
+};
+
+// Define a default UI for filtering
+const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const handleOpenColumn = () => {
+    setIsComponentVisible(!isComponentVisible);
+  };
+
+  const DropDownContainer = styled('div')``;
+
+  const DropDownHeader = styled('div')``;
+
+  const DropDownListContainer = styled('div')``;
+
+  const DropDownList = styled('ul')`
+    padding: 0;
+    margin: 0;
+    padding: 0.5em;
+    background: #ffffff;
+    border: 2px solid #e5e5e5;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: absolute;
+    right: 100px;
+    z-index: 5;
+  `;
+
+  const ListItem = styled('li')`
+    list-style: none;
+    margin: 0.5em;
+  `;
+
+  return (
+    <>
+      <DropDownContainer>
+        <DropDownHeader onClick={handleOpenColumn}>
+          <Tooltip text="Select Columns">
+            {isComponentVisible ? (
+              <Icon
+                hover
+                color="primary"
+                name="close"
+                style={{ margin: '14px 5px 5px' }}
+                width={1.4}
+                height={1.4}
+              />
+            ) : (
+              <Icon
+                hover
+                color="primary"
+                name="menuStack"
+                width={1.4}
+                height={1.4}
+                style={{ margin: '14px 5px 5px', transform: 'rotate(90deg)' }}
+              />
+            )}
+          </Tooltip>
+        </DropDownHeader>
+        {isComponentVisible && (
+          <DropDownListContainer ref={ref}>
+            <DropDownList>
+              {allColumns.map((column: any) => (
+                <ListItem onClick={() => column.toggleHidden()} key={Math.random()}>
+                  {column.Header}{' '}
+                  {column.isVisible && <Icon hover color="primary" name="checkmark" />}
+                </ListItem>
+              ))}
+            </DropDownList>
+          </DropDownListContainer>
+        )}
+      </DropDownContainer>
+    </>
+  );
+};
+
 const Table: React.FC<ITableProps> = (props) => {
-  const { columns, data, linkedRows } = props;
+  const { columns, data, linkedRows, title } = props;
+  const { setOpenBackdrop } = useCommonState();
+
+  const downloadCSV = () => {
+    setOpenBackdrop(true);
+    try {
+      const flattened = data.map((profile: any) => flatten(profile));
+      const csv = transformJsonToCsv(flattened);
+      window.open(`data:text/csv;charset=utf-8,${escape(csv)}`);
+    } catch (err) {
+      promptErrToastWithText('Something went wrong');
+      console.log(err);
+    }
+    setOpenBackdrop(false);
+  };
+
+  const filterTypes = React.useMemo(
+    () => ({
+      text: (rows: any, id: any, filterValue: any) => {
+        return rows.filter((row: any) => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      },
+    }),
+    [],
+  );
+
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -152,11 +292,22 @@ const Table: React.FC<ITableProps> = (props) => {
     headerGroups, // headerGroups, if your table has groupings
     rows, // rows for the table based on the data passed
     prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
+    state,
+    preGlobalFilteredRows,
+    setGlobalFilter,
+    allColumns,
+    getToggleHideAllColumnsProps,
   } = useTable(
     {
       columns,
       data,
+      filterTypes,
+      initialState: {
+        hiddenColumns: ['namespacePrefix', 'quotaSize'],
+      },
     },
+    useFilters,
+    useGlobalFilter,
     useSortBy,
   );
 
@@ -166,12 +317,53 @@ const Table: React.FC<ITableProps> = (props) => {
     history.push(`/profile/${row.original.id}/overview`);
   };
 
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const handleOpenSearch = () => {
+    setIsComponentVisible(!isComponentVisible);
+  };
+
   /* 
     Render the UI for your table
     - react-table doesn't have UI, it's headless. We just need to put the react-table props from the Hooks, and it will do its magic automatically
   */
   return (
     <Styles>
+      <Flex flexWrap="wrap" alignContent="center">
+        <Heading>{title}</Heading>
+        <Box mx="auto" />
+        <ColumnFilter allColumns={allColumns} />
+        <Tooltip text="Search Table">
+          <Icon
+            hover
+            color="primary"
+            width={1.4}
+            height={1.4}
+            name="search"
+            onClick={handleOpenSearch}
+            style={{ margin: '14px 5px 5px' }}
+          />
+        </Tooltip>
+        {isComponentVisible && (
+          <Box ref={ref}>
+            <GlobalFilter
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          </Box>
+        )}
+        <Tooltip text="Download CSV">
+          <Icon
+            hover
+            color="primary"
+            width={1.4}
+            height={1.4}
+            name="download"
+            onClick={downloadCSV}
+            style={{ margin: '14px 5px 5px' }}
+          />
+        </Tooltip>
+      </Flex>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => {

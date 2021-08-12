@@ -18,7 +18,18 @@ import React, { CSSProperties, MouseEventHandler } from 'react';
 import theme from '../../../theme';
 import { ColorSet } from '../../../types';
 
-type IconSet = 'user' | 'menuStack' | 'close' | 'goBack' | 'edit' | 'email' | 'github' | 'sort';
+type IconSet =
+  | 'user'
+  | 'menuStack'
+  | 'close'
+  | 'goBack'
+  | 'edit'
+  | 'email'
+  | 'github'
+  | 'sort'
+  | 'search'
+  | 'download'
+  | 'checkmark';
 
 interface IIconProps {
   onClick?: MouseEventHandler<SVGSVGElement>;
@@ -112,6 +123,24 @@ const Icon: React.FC<IIconProps> = (props) => {
       return (
         <BaseIcon viewBox="0 0 99.42 122.88" {...props}>
           <path d="M49.71,0L0,51.7c33.14,0,66.28,0,99.42,0L49.71,0L49.71,0z M49.71,122.88L0,71.18c33.14,0,66.28,0,99.42,0 L49.71,122.88L49.71,122.88z" />
+        </BaseIcon>
+      );
+    case 'search':
+      return (
+        <BaseIcon viewBox="0 0 50 50" {...props}>
+          <path d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z" />
+        </BaseIcon>
+      );
+    case 'download':
+      return (
+        <BaseIcon viewBox="0 0 24 24" {...props}>
+          <path d="M19.355,10.036C18.674,6.595,15.641,4,12,4C9.108,4,6.603,5.639,5.352,8.036C2.343,8.36,0,10.906,0,14c0,3.314,2.686,6,6,6 h13c2.761,0,5-2.239,5-5C24,12.36,21.948,10.221,19.355,10.036z M12,18l-5-5h3V9h4v4h3L12,18z" />
+        </BaseIcon>
+      );
+    case 'checkmark':
+      return (
+        <BaseIcon viewBox="0 0 24 24" {...props}>
+          <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" />
         </BaseIcon>
       );
   }
