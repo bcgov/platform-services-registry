@@ -52,6 +52,7 @@ export const getNonInstallationApp = () => {
 }
 
 const newAuthorizedApp = (installationId) => {
+ 
   const app = createAppAuth({
     appId: process.env.APP_ID || 128566,
     privateKey: getGithubPrivateKey(),
@@ -124,7 +125,7 @@ export const getAuthenticatedApps =  async () => {
       
       
       installations.forEach((installation) => {
- 
+        console.log('hiahiahia installation are: !!!!!!!', installation)
         const name = installation.account.login.toLowerCase()
      
         if (!installationApps.apps[name]) {
