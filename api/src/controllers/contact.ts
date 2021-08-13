@@ -17,7 +17,7 @@
 'use strict';
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import {  Response } from 'express';
+import { Response } from 'express';
 import DataManager from '../db';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';

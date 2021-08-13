@@ -25,21 +25,12 @@ const getBasePathWithFile = (file) => {
  */
 export const getConfig = () => {
   const data = readFileSync(getBasePathWithFile('config.json'))
-  console.log('wtffffff is data in getconfig 111111', data.toString())
   return JSON.parse(data.toString())
 }
 
-/**
- * @returns role mapping configg
- */
-export const getRoleMapping = () => {
-  const data = readFileSync(getBasePathWithFile('role-mappers.json'))
-  return JSON.parse(data.toString())
-}
 
 /** @returns github private key */
 export const getGithubPrivateKey = () => {
   const data = readFileSync(getBasePathWithFile('github-private-key.pem'))
-  console.log('wtffffff is data in getGithubPrivateKey', data.toString())
   return data.toString()
 }

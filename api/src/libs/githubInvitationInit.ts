@@ -22,9 +22,6 @@ const  installationApps = <APPInitailValue>{
  */
 export const getNonInstallationApp = () => {
     logger.info('getNonInstallationApp')
-    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.GITHUB_APP_ID, )
-    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.GITHUB_CLIENT_ID)
-    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.GITHUB_CLIENT_SECRET )
   // caches a non installed app
   try{
   if (!installationApps.nonInstallatedApp) {
@@ -128,7 +125,6 @@ export const getAuthenticatedApps =  async () => {
       
       
       installations.forEach((installation) => {
-        console.log('hiahiahia installation are: !!!!!!!', installation)
         const name = installation.account.login.toLowerCase()
      
         if (!installationApps.apps[name]) {
