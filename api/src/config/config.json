@@ -25,11 +25,13 @@
     "prefix": ""
   },
   "reviewers": {
-    "emails": [""]
+    "emails": [
+      ""
+    ]
   },
   "orgs": [
-    "SnowInAct",
-    "Billy-org-test"
+    "bcgov",
+    "BCDevOps"
   ],
-  "primaryOrg": "SnowInAct" 
+  "primaryOrg": "bcgov"
 }

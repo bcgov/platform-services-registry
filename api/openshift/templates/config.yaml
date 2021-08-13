@@ -60,10 +60,10 @@ objects:
             "prefix": ""
           },
           "orgs": [
-            "SnowInAct",
-            "Billy-org-test"
+            "bcgov",
+            "BCDevOps"
           ],
-          "primaryOrg": "SnowInAct"          
+          "primaryOrg": "bcgov"          
         }
 parameters:
 - description:
