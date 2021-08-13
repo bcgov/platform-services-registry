@@ -22,6 +22,9 @@ const  installationApps = <APPInitailValue>{
  */
 export const getNonInstallationApp = () => {
     logger.info('getNonInstallationApp')
+    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.APP_ID, )
+    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.CLIENT_ID)
+    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.CLIENT_SECRET )
   // caches a non installed app
   try{
   if (!installationApps.nonInstallatedApp) {
@@ -52,9 +55,7 @@ export const getNonInstallationApp = () => {
 }
 
 const newAuthorizedApp = (installationId) => {
-  console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.APP_ID, )
-  console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.CLIENT_ID)
-  console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.CLIENT_SECRET )
+
   const app = createAppAuth({
     appId: process.env.APP_ID || 128566,
     privateKey: getGithubPrivateKey(),
