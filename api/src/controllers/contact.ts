@@ -19,9 +19,9 @@
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
 import DataManager from '../db';
+import { getUserByName, inviteUserToOrgs } from '../libs/github';
 import shared from '../libs/shared';
 import { validateRequiredFields } from '../libs/utils';
-import { getUserByName, inviteUserToOrgs } from '../libs/github'
 
 
 const dm = new DataManager(shared.pgPool);
@@ -54,13 +54,13 @@ export const createContact = async (
  * @param {Express Response} res
  * @returns undefined
  */
- export const inviteToOrg   = async (
+export const inviteToOrg = async (
   { params, body }: { params: any, body: any }, res: Response
 ): Promise<void> => {
   logger.info('createInvitationRequest')
-  
+
   const { githubId: recipient, organizations } = body
-  // const { user: requester } = req.auth
+
   try {
     logger.info(`user  approved request created for ${recipient}`)
     const { id } = await getUserByName(recipient)
@@ -69,19 +69,18 @@ export const createContact = async (
       id,
       organizations,
       recipient
-      )
-      
-      await Promise.all(promises)
+    )
+
+    await Promise.all(promises)
 
     // this is where we could create the invitations for recipient
 
     res.status(201).send({
-      message: `${organizations.length} approved invitation${
-        organizations.length > 1 ? 's' : ''
-      } created`,
+      message: `${organizations.length} approved invitation${organizations.length > 1 ? 's' : ''
+        } created`,
     })
     logger.info('user created invitationRequest')
-   
+
   } catch (e) {
     logger.warn(`user request failed`)
     logger.error(e.message)
@@ -89,5 +88,5 @@ export const createContact = async (
       message: 'Unable to create invitation',
     })
   }
-  
-  }
+
+}
