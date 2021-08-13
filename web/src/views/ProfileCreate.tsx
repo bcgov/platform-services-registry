@@ -64,16 +64,18 @@ const ProfileCreate: React.FC = () => {
       // 4. Create Project Request
       await api.createProjectRequestByProfileId(profileId);
 
-      // 5.0 invite technicalCOntact to bcgov repo
-      const invitationPromiss = technicalContacts.map((inviteUser) => {
-        const inviteListPayload = {
-          githubId: inviteUser.githubId,
-          organizations: DEFAULT_GITHUB_ORGANIZATION,
-        };
-        return api.githubInvite(inviteListPayload);
-      });
+      // 5.0 invite technicalCOntact to bcgov repo, only invite in production environment
+      if (process.env.NODE_ENV === 'production') {
+        const invitationPromiss = technicalContacts.map((inviteUser) => {
+          const inviteListPayload = {
+            githubId: inviteUser.githubId,
+            organizations: DEFAULT_GITHUB_ORGANIZATION,
+          };
+          return api.githubInvite(inviteListPayload);
+        });
 
-      await Promise.all(invitationPromiss);
+        await Promise.all(invitationPromiss);
+      }
 
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
