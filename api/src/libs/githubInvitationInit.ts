@@ -22,17 +22,17 @@ const  installationApps = <APPInitailValue>{
  */
 export const getNonInstallationApp = () => {
     logger.info('getNonInstallationApp')
-    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.APP_ID, )
-    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.CLIENT_ID)
-    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.CLIENT_SECRET )
+    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.GITHUB_APP_ID, )
+    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.GITHUB_CLIENT_ID)
+    console.log('wtffffff is data in newAuthorizedApp !!!!!!!!', process.env.GITHUB_CLIENT_SECRET )
   // caches a non installed app
   try{
   if (!installationApps.nonInstallatedApp) {
     const auth = createAppAuth({
-      appId: process.env.APP_ID ||  128566,
+      appId: process.env.GITHUB_APP_ID ||  131752,
       privateKey: getGithubPrivateKey(),
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
     })
 
     installationApps.nonInstallatedApp = request.defaults({
@@ -57,10 +57,10 @@ export const getNonInstallationApp = () => {
 const newAuthorizedApp = (installationId) => {
 
   const app = createAppAuth({
-    appId: process.env.APP_ID || 128566,
+    appId: process.env.GITHUB_APP_ID || 131752,
     privateKey: getGithubPrivateKey(),
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
     installationId,
   })
 
