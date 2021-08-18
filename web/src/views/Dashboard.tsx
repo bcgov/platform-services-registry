@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
       setOpenBackdrop(true);
       try {
         const dashboardProjects = await api.getDashboardProjects();
-        const profileDetailsArray = [...dashboardProjects.data.profiles];
+        const profileDetailsArray = [...dashboardProjects.data];
         setProfileDetails(profileDetailsArray);
       } catch (err) {
         promptErrToastWithText('Something went wrong');
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
   useInterval(() => {
     async function verifyProjects() {
       const updatedProfiles = await api.getDashboardProjects();
-      const updatedProfileDetailsArray = [...updatedProfiles.data.profiles];
+      const updatedProfileDetailsArray = [...updatedProfiles.data];
       const profileChanged =
         JSON.stringify(updatedProfileDetailsArray) !== JSON.stringify(profileDetails);
 

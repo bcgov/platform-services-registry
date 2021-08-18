@@ -45,7 +45,7 @@ jest.mock(
   () =>
     function useRegistryApi() {
       const getDashboardProjects = jest.fn().mockResolvedValue({
-        data: { profiles: mockProfiles },
+        data: mockProfiles,
       });
 
       const getContactsByProfileId = jest.fn().mockResolvedValue({
