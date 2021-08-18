@@ -57,6 +57,7 @@ const client = new Pool().connect();
 jest.mock('../src/libs/profile', () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue('small'),
+    updateProfileStatus: jest.fn(),
   };
 });
 
@@ -168,8 +169,8 @@ describe('Profile event handlers', () => {
       user: authenticatedUser,
     };
 
-    client.query.mockReturnValueOnce({ rows: selectProfilesContacts }); 
-    client.query.mockReturnValueOnce({ rows: [] });   
+    client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
+    client.query.mockReturnValueOnce({ rows: [] });
 
     const update = ContactModel.prototype.update = jest.fn();
 

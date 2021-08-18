@@ -43,16 +43,27 @@ export const getProvisionStatus = async (profile: ProjectProfile): Promise<boole
   }
 };
 
-export const updateProvisionStatus = async (profile: ProjectProfile, provisionStatus: boolean): Promise<void> => {
+export const updateProvisionStatus = async (profile: ProjectProfile, clusterName: string, provisionStatus: boolean): Promise<void> => {
   try {
-    const primaryCluster: Cluster = await ClusterModel.findByName(profile.primaryClusterName);
-    if (!primaryCluster.id || !profile.id) {
+    const cluster: Cluster = await ClusterModel.findByName(clusterName);
+    if (!cluster.id || !profile.id) {
       throw new Error('Unable to get primary cluster id or profile id');
     }
 
-    await NamespaceModel.updateProjectSetProvisionStatus(profile.id, primaryCluster.id, provisionStatus);
+    await NamespaceModel.updateProjectSetProvisionStatus(profile.id, cluster.id, provisionStatus);
   } catch (err) {
     const message = `Unable to update provisioned profile ${profile.id}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+export const updateProfileStatus = async (profileId: number, profileStatus: string): Promise<void> => {
+  try {
+    await ProfileModel.updateProfileStatus(profileId, profileStatus);
+  } catch (err) {
+    const message = `Unable to update profile ${profileId} status`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;

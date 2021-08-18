@@ -18,6 +18,7 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
+import { PROFILE_STATUS } from '../../constants';
 import { CommonFields, Model } from './model';
 
 export interface ProjectProfile extends CommonFields {
@@ -45,6 +46,7 @@ export interface ProjectProfile extends CommonFields {
   other?: string;
   primaryClusterName: string;
   migratingLicenseplate?: string;
+  profileStatus?: string;
 }
 
 export default class ProfileModel extends Model {
@@ -76,9 +78,9 @@ export default class ProfileModel extends Model {
             geo_mapping_web, geo_mapping_location, scheduling_calendar,
             scheduling_appointments, idm_site_minder,
             idm_keycloak, idm_active_dir, other, primary_cluster_name,
-            migrating_licenseplate)
+            migrating_licenseplate, profile_status)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING *;`,
+            $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING *;`,
       values: [
         data.name.trim(),
         data.description,
@@ -104,6 +106,7 @@ export default class ProfileModel extends Model {
         data.other,
         data.primaryClusterName,
         data.migratingLicenseplate,
+        data.profileStatus ? data.profileStatus : PROFILE_STATUS.PENDING_APPROVAL,
       ],
     };
 
@@ -153,7 +156,8 @@ export default class ProfileModel extends Model {
             file_transfer = $10, file_storage = $11, geo_mapping_web = $12,
             geo_mapping_location = $13, scheduling_calendar = $14, scheduling_appointments = $15,
             idm_site_minder = $16, idm_keycloak = $17,
-            idm_active_dir = $18, other = $19, primary_cluster_name = $20, migrating_licenseplate = $21
+            idm_active_dir = $18, other = $19, primary_cluster_name = $20, migrating_licenseplate = $21,
+            profile_status = $22
           WHERE id = ${profileId}
           RETURNING *;`,
       values,
@@ -184,6 +188,7 @@ export default class ProfileModel extends Model {
         aData.other,
         aData.primaryClusterName,
         aData.migratingLicenseplate,
+        aData.profileStatus ? data.profileStatus : PROFILE_STATUS.PROVISIONED,
       ];
       const results = await this.runQuery(query);
       return results.pop();
@@ -299,6 +304,26 @@ export default class ProfileModel extends Model {
       return await this.runQuery(query);
     } catch (err) {
       const message = `Unable to fetch Profile(s) with User Id ${id} or Email ${email}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async updateProfileStatus(profileId: number, profileStatus: string): Promise<any> {
+    const query = {
+      text: `
+        UPDATE ${this.table}
+          SET profile_status = $1
+          WHERE id = $2
+        RETURNING *;`,
+      values: [profileStatus, profileId],
+    };
+
+    try {
+      return await this.runQuery(query);
+    } catch (err) {
+      const message = `Unable to update Profile ${profileId} status to ${profileStatus}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
