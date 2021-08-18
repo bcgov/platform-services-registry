@@ -21,6 +21,8 @@ import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
 import {
   MAXIMUM_TECHNICAL_LEADS,
   MINIMUM_TECHNICAL_LEADS,
@@ -28,14 +30,16 @@ import {
   ROLES,
   ROUTE_PATHS,
 } from '../../constants';
+import { selectGithubIDAllState } from '../../redux/githubID/githubID.selector';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button } from '../common/UI/Button';
+import { Button, StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
+import GithubUserTypeahead from '../common/UI/GithubIDAutoFill/GithubUserTypeahead';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 
 const validator = getValidator();
@@ -46,10 +50,18 @@ interface IContactCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
+  GithubIDAllState: any;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
-  const { profileId, contactDetails, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
+  const {
+    profileId,
+    contactDetails,
+    handleSubmitRefresh,
+    isProvisioned,
+    hasPendingEdit,
+    GithubIDAllState,
+  } = props;
 
   const { setOpenBackdrop } = useCommonState();
   const api = useRegistryApi();
@@ -111,12 +123,21 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
         ...arrayMutators,
       }}
       validate={(values) => {
-        const errors = {};
+        const errors: any = {};
+        Object.entries(GithubIDAllState).forEach(([key, value]) => {
+          if (
+            GithubIDAllState[key].everFetched === true &&
+            GithubIDAllState[key].notFound === true
+          ) {
+            errors.githubID = 'Github User Not Found';
+          }
+        });
+
         return errors;
       }}
     >
-      {({ handleSubmit, pristine }) => (
-        <form onSubmit={handleSubmit}>
+      {(formProps) => (
+        <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
           <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
             {({ input }) => <input type="hidden" {...input} id="id" />}
@@ -157,13 +178,18 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           </Flex>
           <Flex flexDirection="column">
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
-            <Field<string>
+            {/* <Field<string>
               name="updatedProductOwner.githubId"
               component={TextInput}
               validate={validator.mustBeValidGithubName}
               defaultValue=""
               initialValue={productOwner.githubId}
               sx={{ textTransform: 'none' }}
+            /> */}
+            <GithubUserTypeahead
+              name="updatedProductOwner.githubId"
+              defaultValue=""
+              initialValue={productOwner.githubId}
             />
           </Flex>
           <FormTitle>
@@ -224,14 +250,16 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       />
                     </Flex>
                     <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                      <Field<string>
+                      <Label htmlFor={`${name}.githubId`}>GitHub Id !!!</Label>
+                      {/* {console.log('hiahiahia check in line for github ID', technicalLeads)} */}
+                      {/* <Field<string>
                         name={`${name}.githubId`}
                         component={TextInput}
                         validate={validator.mustBeValidGithubName}
                         placeholder="jane1100"
                         sx={{ textTransform: 'none' }}
-                      />
+                      /> */}
+                      <GithubUserTypeahead name={`${name}.githubId`} />
                     </Flex>
                   </div>
                 ))}
@@ -260,12 +288,16 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           <EditSubmitButton
             hasPendingEdit={hasPendingEdit}
             isProvisioned={isProvisioned}
-            pristine={pristine}
+            pristine={formProps.pristine}
           />
+          <pre>{JSON.stringify(formProps.values, null, 10)}</pre>
         </form>
       )}
     </Form>
   );
 };
+const mapStateToProps = createStructuredSelector({
+  GithubIDAllState: selectGithubIDAllState,
+});
 
-export default ContactCardEdit;
+export default connect(mapStateToProps)(ContactCardEdit);

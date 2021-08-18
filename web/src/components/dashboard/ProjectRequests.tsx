@@ -22,6 +22,7 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText } from '../../utils/promptToastHelper';
 import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
+
 import { ReviewRequestModal } from './ReviewRequestModal';
 
 const ProjectRequests: React.FC<any> = (props) => {
