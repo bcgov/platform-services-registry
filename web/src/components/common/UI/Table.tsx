@@ -173,6 +173,7 @@ const GlobalFilter: React.FC<any> = ({
         }}
         placeholder={`${count} records...`}
         autoFocus={true}
+        sx={{ textTransform: 'none' }}
       />
     </Flex>
   );
@@ -273,8 +274,8 @@ const Table: React.FC<ITableProps> = (props) => {
 
   const filterTypes = React.useMemo(
     () => ({
-      text: (rows: any, id: any, filterValue: any) => {
-        return rows.filter((row: any) => {
+      text: (rowDetails: any, id: any, filterValue: any) => {
+        return rowDetails.filter((row: any) => {
           const rowValue = row.values[id];
           return rowValue !== undefined
             ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
@@ -296,7 +297,6 @@ const Table: React.FC<ITableProps> = (props) => {
     preGlobalFilteredRows,
     setGlobalFilter,
     allColumns,
-    getToggleHideAllColumnsProps,
   } = useTable(
     {
       columns,
