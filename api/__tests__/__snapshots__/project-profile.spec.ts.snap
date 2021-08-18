@@ -319,7 +319,14 @@ Array [
   Array [
     Object {
       "text": "
-      SELECT DISTINCT(profile.id), profile.* FROM profile
+      SELECT 
+        DISTINCT(profile.id),
+        profile.name,
+        profile.description,
+        profile.bus_org_id,
+        profile.namespace_prefix,
+        profile.profile_status  
+      FROM profile 
       JOIN profile_contact ON profile_contact.profile_id = profile.id
       JOIN contact ON contact.id = profile_contact.contact_id
       WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;",

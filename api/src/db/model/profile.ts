@@ -293,7 +293,14 @@ export default class ProfileModel extends Model {
   async findProfilesByUserIdOrEmail(id: number, email: string): Promise<any> {
     const query = {
       text: `
-      SELECT DISTINCT(profile.id), profile.* FROM ${this.table}
+      SELECT 
+        DISTINCT(profile.id),
+        profile.name,
+        profile.description,
+        profile.bus_org_id,
+        profile.namespace_prefix,
+        profile.profile_status  
+      FROM ${this.table} 
       JOIN profile_contact ON profile_contact.profile_id = profile.id
       JOIN contact ON contact.id = profile_contact.contact_id
       WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;`,
@@ -407,16 +414,53 @@ export default class ProfileModel extends Model {
             )
           ) profiles
         FROM profile p
-        LEFT JOIN profile_product_owners ppo ON p.id = ppo.profile_id
-        LEFT JOIN profile_technical_leads ptl ON p.id = ptl.profile_id;    
+        LEFT JOIN profile_product_owners ppo ON p.id = ppo.profile_id 
+        LEFT JOIN profile_technical_leads ptl ON p.id = ptl.profile_id 
+        WHERE p.archived = false;
     `,
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      const { profiles } = results.pop();
+      return profiles;
+    } catch (err) {
+      const message = `Unable to fetch Profile(s) with User Id `;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findProfileMetadata(profileId: number): Promise<any> {
+    const query = {
+      text: `
+        SELECT
+          notification_email, 
+          notification_sms, 
+          notification_ms_teams,
+          payment_bambora,
+          payment_pay_bc,
+          file_transfer,
+          file_storage,
+          geo_mapping_web,
+          geo_mapping_location,
+          scheduling_calendar,
+          scheduling_appointments,
+          idm_site_minder,
+          idm_keycloak,
+          idm_active_dir,
+          other
+        FROM ${this.table}
+        WHERE id = $1 AND archived = false;`,
+      values: [profileId],
     };
 
     try {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to fetch Profile(s) with User Id `;
+      const message = `Unable to fetch Profile Metadata for ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

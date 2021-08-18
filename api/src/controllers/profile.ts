@@ -247,7 +247,7 @@ export const fetchDashboardProjectProfiles = async (
   { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
 
   try {
-    const results = await fetchAllDashboardProjects(user.accessFlags);
+    const results = await fetchAllDashboardProjects(user);
 
     res.status(200).json(results);
   } catch (err) {

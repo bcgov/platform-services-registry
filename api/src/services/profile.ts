@@ -17,6 +17,7 @@
 'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
+import { ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { AccessFlag } from '../libs/authorization';
 import { getClusters, getQuotaSize } from '../libs/profile';
@@ -24,18 +25,16 @@ import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
 
-const { ProfileModel } = dm;
+const { ProfileModel, ContactModel } = dm;
 
-export const fetchAllDashboardProjects = async (accessFlags: any): Promise<any> => {
+export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> => {
   try {
-    let results;
-    if (accessFlags.includes(AccessFlag.EditAll)) {
-      results = await ProfileModel.fetchAllDashboardProjects();
+    let profiles;
+    if (userDetails.accessFlags.includes(AccessFlag.EditAll)) {
+      profiles = await ProfileModel.fetchAllDashboardProjects();
     } else {
-      results = await ProfileModel.fetchAllDashboardProjects();
+      profiles = await ProfileModel.findProfilesByUserIdOrEmail(userDetails.id, userDetails.email);
     }
-
-    const { profiles } = results;
 
     const extractName = ({displayName}) => {
       return displayName;
@@ -43,11 +42,18 @@ export const fetchAllDashboardProjects = async (accessFlags: any): Promise<any> 
 
     for (const profile of profiles) {
       const clusters = await getClusters(profile);
-      profile.clusters = clusters.map(cluster => extractName(cluster))
+      profile.clusters = clusters.map(cluster => extractName(cluster));
       profile.quotaSize = await getQuotaSize(profile);
+
+      if (!userDetails.accessFlags.includes(AccessFlag.EditAll)) {
+        const contacts = await ContactModel.findForProject(Number(profile.id));
+        profile.productOwners = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER);
+        profile.technicalLeads = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT);
+        profile.profileMetadata = await ProfileModel.findProfileMetadata(Number(profile.id));
+      }
     }
 
-    return results;
+    return profiles;
   } catch (err) {
     const message = `Unable to get projects for dashboard`;
     logger.error(`${message}, err = ${err.message}`);
