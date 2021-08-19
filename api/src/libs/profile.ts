@@ -119,7 +119,7 @@ export const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> =
     if (!namespaces) {
       throw new Error('Unable to find namespaces');
     }
-    console.log('test it out !!!!', namespaces.length)
+
     const promises: Promise<Cluster>[] = [];
 
     if (namespaces.length !== 0) {
