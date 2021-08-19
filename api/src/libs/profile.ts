@@ -123,12 +123,14 @@ export const getClusters = async (profile: ProjectProfile): Promise<Cluster[]> =
     const promises: Promise<Cluster>[] = [];
     // clusters field is not natively from NamespaceModel but results from findForProfile
     // @ts-ignore
-    // if( namespaces.length)
-    const { clusters } = namespaces[0];
+    if (namespaces.length) {
 
-    clusters?.map(cluster => {
-      promises.push(ClusterModel.findById(cluster.clusterId));
-    });
+      const { clusters } = namespaces[0];
+
+      clusters?.map(cluster => {
+        promises.push(ClusterModel.findById(cluster.clusterId));
+      });
+    }
 
     return await Promise.all(promises);
   } catch (err) {
