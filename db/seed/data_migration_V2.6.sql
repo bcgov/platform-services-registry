@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 UPDATE profile
 SET profile_status = 
   CASE 
@@ -8,3 +10,5 @@ SET profile_status =
   END
 FROM request r
 WHERE profile.id = r.profile_id AND r.is_active = true;
+
+END TRANSACTION;
