@@ -28,13 +28,12 @@ export interface ClusterNamespace extends CommonFields {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
   quotaStorageSize: QuotaSize;
-
 }
 
 export interface ProjectNamespace extends CommonFields {
   name: string;
   profileId: number;
-  clusters: Array<any>;
+  clusters?: any;
 }
 
 export default class NamespaceModel extends Model {
