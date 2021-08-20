@@ -15,24 +15,14 @@
 //
 
 import { useKeycloak } from '@react-keycloak/web';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Heading } from 'rebass';
-import { Button } from '../components/common/UI/Button';
-import Table from '../components/common/UI/Table';
+import React, { useEffect, useState } from 'react';
+import ProjectDetails from '../components/dashboard/ProjectDetails';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
-import { CREATE_COMMUNITY_ISSUE_URL } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import getDecodedToken from '../utils/getDecodedToken';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import {
-  convertSnakeCaseToSentence,
-  flatten,
-  parseEmails,
-  transformJsonToCsv,
-} from '../utils/transformDataHelper';
-import mockProfiles from '../__tests__/fixtures/profiles.json';
 
 const Dashboard: React.FC = () => {
   const api = useRegistryApi();
@@ -79,78 +69,11 @@ const Dashboard: React.FC = () => {
     verifyProjects();
   }, 1000 * 30);
 
-  const downloadCSV = () => {
-    setOpenBackdrop(true);
-    try {
-      const flattened = mockProfiles.map((profile: any) => flatten(profile));
-      const csv = transformJsonToCsv(flattened);
-      window.open(`data:text/csv;charset=utf-8,${escape(csv)}`);
-    } catch (err) {
-      promptErrToastWithText('Something went wrong');
-      console.log(err);
-    }
-    setOpenBackdrop(false);
-  };
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Name',
-        accessor: 'name',
-      },
-      {
-        Header: 'Description',
-        accessor: 'description',
-      },
-      {
-        Header: 'Ministry',
-        accessor: 'ministry',
-      },
-      {
-        Header: 'Cluster',
-        accessor: 'clusters',
-        Cell: ({ cell: { value } }: any) => value.join(', '),
-      },
-      {
-        Header: 'Product Owner',
-        accessor: 'productOwners',
-        Cell: ({ cell: { value } }: any) => parseEmails(value),
-      },
-      {
-        Header: 'Technical Lead(s)',
-        accessor: 'technicalLeads',
-        Cell: ({ cell: { value } }: any) => parseEmails(value),
-      },
-      {
-        Header: 'Status',
-        accessor: 'profileStatus',
-        Cell: ({ cell: { value } }: any) => convertSnakeCaseToSentence(value),
-      },
-    ],
-    [],
-  );
-
   return (
     <>
-      {profileDetails.length > 0 && <Button onClick={downloadCSV}>Download CSV</Button>}
-      <Button
-        onClick={() => {
-          window.open(CREATE_COMMUNITY_ISSUE_URL, '_blank');
-        }}
-      >
-        Report a bug/Request a feature
-      </Button>
+      {userRoles.includes('administrator') && <ProjectRequests profileDetails={profileDetails} />}
 
-      {userRoles.includes('administrator') ? (
-        <ProjectRequests profileDetails={profileDetails} />
-      ) : (
-        ''
-      )}
-
-      <Box style={{ overflow: 'auto' }}>
-        <Heading>Projects</Heading>
-        <Table columns={columns} data={profileDetails} linkedRows={true} />
-      </Box>
+      <ProjectDetails profileDetails={profileDetails} linkedRows={true} />
     </>
   );
 };
