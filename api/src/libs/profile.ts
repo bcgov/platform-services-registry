@@ -29,12 +29,16 @@ const { NamespaceModel, ClusterModel, ProfileModel, ContactModel } = dm;
 
 export const getProvisionStatus = async (profile: ProjectProfile): Promise<boolean> => {
   try {
-    const primaryCluster: Cluster = await ClusterModel.findByName(profile.primaryClusterName);
-    if (!primaryCluster.id || !profile.id) {
-      throw new Error('Unable to get primary cluster id or profile id');
+    const clusters = await getClusters(profile)
+    for (const cluster of clusters) {
+      const isClusterProvisioned = await NamespaceModel.getProjectSetProvisionStatus(Number(profile.id), Number(cluster.id));
+      
+      if (!isClusterProvisioned){
+        return false;
+      }
     }
 
-    return await NamespaceModel.getProjectSetProvisionStatus(profile.id, primaryCluster.id);
+    return true;
   } catch (err) {
     const message = `Unable to determine if profile ${profile.id} is provisioned`;
     logger.error(`${message}, err = ${err.message}`);
