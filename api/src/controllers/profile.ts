@@ -30,6 +30,7 @@ import { getQuotaSize, updateProfileStatus } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
+import { fetchAllDashboardProjects } from '../services/profile';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -236,6 +237,21 @@ export const createProjectRequest = async (
     res.status(201).end();
   } catch (err) {
     const message = `Unable to add contact to profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchDashboardProjectProfiles = async (
+  { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
+
+  try {
+    const results = await fetchAllDashboardProjects(user);
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = 'Unable fetch all project profiles';
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

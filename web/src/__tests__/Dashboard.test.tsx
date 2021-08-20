@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
@@ -44,12 +44,16 @@ jest.mock(
   '../hooks/useRegistryApi',
   () =>
     function useRegistryApi() {
-      const getProfile = jest.fn().mockResolvedValue({
+      const getDashboardProjects = jest.fn().mockResolvedValue({
         data: mockProfiles,
       });
 
       const getContactsByProfileId = jest.fn().mockResolvedValue({
         data: mockContacts,
+      });
+
+      const getHumanActionRequests = jest.fn().mockResolvedValue({
+        data: [],
       });
 
       const getNamespacesByProfileId = jest.fn().mockResolvedValue({
@@ -61,8 +65,9 @@ jest.mock(
       });
 
       return {
-        getProfile,
+        getDashboardProjects,
         getContactsByProfileId,
+        getHumanActionRequests,
         getNamespacesByProfileId,
         getQuotaSizeByProfileId,
       };
@@ -81,15 +86,6 @@ function renderDashboard() {
 
 test('<Dashboard / > Table view should render', async () => {
   const { container } = renderDashboard();
-
-  await waitFor(() => expect(container).toMatchSnapshot());
-});
-
-test('<Dashboard / > Card view should render', async () => {
-  const { getByText, container } = renderDashboard();
-
-  const leftClick = { button: 1 };
-  fireEvent.click(getByText('Card View'), leftClick);
 
   await waitFor(() => expect(container).toMatchSnapshot());
 });

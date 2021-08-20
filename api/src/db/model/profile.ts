@@ -293,7 +293,14 @@ export default class ProfileModel extends Model {
   async findProfilesByUserIdOrEmail(id: number, email: string): Promise<any> {
     const query = {
       text: `
-      SELECT DISTINCT(profile.id), profile.* FROM ${this.table}
+      SELECT 
+        DISTINCT(profile.id),
+        profile.name,
+        profile.description,
+        profile.bus_org_id,
+        profile.namespace_prefix,
+        profile.profile_status  
+      FROM ${this.table} 
       JOIN profile_contact ON profile_contact.profile_id = profile.id
       JOIN contact ON contact.id = profile_contact.contact_id
       WHERE (profile.user_id = $1 OR contact.email = $2) AND profile.archived = false;`,
@@ -324,6 +331,136 @@ export default class ProfileModel extends Model {
       return await this.runQuery(query);
     } catch (err) {
       const message = `Unable to update Profile ${profileId} status to ${profileStatus}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async fetchAllDashboardProjects(): Promise<any> {
+    const query = {
+      text: `
+        WITH product_owners AS (
+          SELECT 
+            id, 
+            json_build_object(
+                'firstName', c.first_name,
+                'lastName', c.last_name,   
+                'email', c.email,
+                'githubId', c.github_id
+            ) product_owners
+          FROM contact c
+          WHERE c.role_id = 1
+          GROUP BY 1
+        ),
+        profile_product_owners AS (
+            SELECT 
+              profile_id,
+              json_agg(product_owners) filter (where product_owners is not null) profile_product_owners
+            FROM profile_contact pc
+            LEFT JOIN product_owners po ON pc.contact_id = po.id
+            GROUP BY pc.profile_id
+        ),
+        technical_leads AS (
+          SELECT 
+            id, 
+              json_build_object(
+                'firstName', c.first_name,
+                'lastName', c.last_name,   
+                'email', c.email,
+                'githubId', c.github_id
+            ) technical_leads
+          FROM contact c
+          WHERE c.role_id = 2
+          GROUP BY 1
+        ),
+        profile_technical_leads AS (
+            SELECT 
+              profile_id,
+              json_agg(technical_leads) filter (where technical_leads is not null) profile_technical_leads
+            FROM profile_contact pc
+            LEFT JOIN technical_leads tl ON pc.contact_id = tl.id
+            GROUP BY pc.profile_id
+        )
+        SELECT
+          json_agg(
+              json_build_object(
+                'id', p.id,
+                'name', p.name,
+                'description', p.description,
+                'ministry', p.bus_org_id,
+                'namespacePrefix', p.namespace_prefix,
+                'profileStatus', p.profile_status,
+                'profileMetadata', json_build_object(
+                  'notificationEmail', p.notification_email, 
+                  'notificationSMS', p.notification_sms, 
+                  'notificationMSTeams', p.notification_ms_teams,
+                  'paymentBambora', p.payment_bambora,
+                  'paymentPayBC', p.payment_pay_bc,
+                  'fileTransfer', p.file_transfer,
+                  'fileStorage', p.file_storage,
+                  'geoMappingWeb', p.geo_mapping_web,
+                  'geoMappingLocation', p.geo_mapping_location,
+                  'schedulingCalendar', p.scheduling_calendar,
+                  'schedulingAppointments', p.scheduling_appointments,
+                  'identityManagementSiteMinder', p.idm_site_minder,
+                  'identityManagementKeycloak', p.idm_keycloak,
+                  'identityManagementActiveDir', p.idm_active_dir,
+                  'other', p.other
+                ),
+                'productOwners', profile_product_owners,
+                'technicalLeads', profile_technical_leads
+
+            )
+          ) profiles
+        FROM profile p
+        LEFT JOIN profile_product_owners ppo ON p.id = ppo.profile_id 
+        LEFT JOIN profile_technical_leads ptl ON p.id = ptl.profile_id 
+        WHERE p.archived = false;
+    `,
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      const { profiles } = results.pop();
+      return profiles;
+    } catch (err) {
+      const message = `Unable to fetch Profile(s) with User Id `;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findProfileMetadata(profileId: number): Promise<any> {
+    const query = {
+      text: `
+        SELECT
+          notification_email, 
+          notification_sms, 
+          notification_ms_teams,
+          payment_bambora,
+          payment_pay_bc,
+          file_transfer,
+          file_storage,
+          geo_mapping_web,
+          geo_mapping_location,
+          scheduling_calendar,
+          scheduling_appointments,
+          idm_site_minder,
+          idm_keycloak,
+          idm_active_dir,
+          other
+        FROM ${this.table}
+        WHERE id = $1 AND archived = false;`,
+      values: [profileId],
+    };
+
+    try {
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to fetch Profile Metadata for ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
