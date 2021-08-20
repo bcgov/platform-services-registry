@@ -62,7 +62,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         to get started.
       </FormSubtitle>
       <Flex flexDirection="column">
-        <Label htmlFor="project.name">Name</Label>
+        <Label htmlFor="profile.name">Name</Label>
         <Field<string>
           name="profile.name"
           component={TextInput}
@@ -71,7 +71,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project.description">Description</Label>
+        <Label htmlFor="profile.description">Description</Label>
         <Field
           name="profile.description"
           component={TextAreaInput}
@@ -88,7 +88,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           <Field<boolean>
             name="profile.prioritySystem"
             component={CheckboxInput}
-            defaultValue={false}
+            initialValue={false}
             type="checkbox"
           />
         </Flex>
@@ -142,6 +142,33 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           headerText="Note"
           modalContent={<CreateFormGoldModal />}
         />
+        <Flex mt={3}>
+        <Label variant="adjacentLabel" m="auto">
+          Is this Application Migrating from OCP4 Silver Service?
+        </Label>
+        <Flex flex="1 1 auto" justifyContent="flex-end">
+          <Field<boolean>
+            name="profile.migratingApplication"
+            component={CheckboxInput}
+            type="checkbox"
+            initialValue={false}
+          />
+        </Flex>
+      </Flex>
+      <Condition when="profile.migratingApplication" is={true}>
+        <Flex mt={3}>
+          <Label variant="adjacentLabel" m="auto" htmlFor="profile.migratingLicenseplate">
+            OCP 4 Silver license plate:
+          </Label>
+          <Flex flex="1 1 auto" justifyContent="flex-end" name="profile.migratingLicenseplate">
+            <Field<string>
+              name="profile.migratingLicenseplate"
+              component={TextInput}
+              validate={validator.mustBeValidProfileLicenseplate}
+            />
+          </Flex>
+        </Flex>
+      </Condition>
       </Condition>
     </div>
   );
