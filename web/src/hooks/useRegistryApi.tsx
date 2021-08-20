@@ -75,6 +75,13 @@ export default function useRegistryApi() {
     return axiosInstance.current.get('profile');
   };
 
+  const getDashboardProjects = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.get('profile/dashboard-projects');
+  };
+
   const createProfile = async (profile: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -212,6 +219,7 @@ export default function useRegistryApi() {
     getQuotaSizes,
     getCluster,
     getProfile,
+    getDashboardProjects,
     createProfile,
     updateProfile,
     createContact,

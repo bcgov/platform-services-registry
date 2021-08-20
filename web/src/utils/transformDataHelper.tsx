@@ -14,66 +14,11 @@
 // limitations under the License.
 //
 
+import React from 'react';
+import { Box, Link } from 'rebass';
 import { ContactDetails } from '../components/profileEdit/ContactCard';
-import { COMPONENT_METADATA, ROLES } from '../constants';
+import { CSV_PROFILE_ATTRIBUTES } from '../constants';
 import { Namespace, QuotaSize } from '../types';
-
-export function transformForm(data: any) {
-  const profile: any = {};
-  const productOwner: any = {
-    roleId: ROLES.PRODUCT_OWNER,
-  };
-  const technicalContact: any = {
-    roleId: ROLES.TECHNICAL_LEAD,
-  };
-  const clusters: any = [];
-
-  for (const [key, value] of Object.entries(data)) {
-    const [prefix, fieldName] = key.split('-');
-
-    if (prefix === 'project') {
-      profile[fieldName] = value;
-    }
-    if (prefix === 'po') {
-      productOwner[fieldName] = value;
-    }
-    if (prefix === 'tc') {
-      technicalContact[fieldName] = value;
-    }
-    if (fieldName === 'primaryClusterName') {
-      clusters.push(value);
-    }
-    if (fieldName === 'primaryClusterName' && value === 'gold') {
-      clusters.push('golddr');
-    }
-    if (fieldName === 'clabDR' && value === true) {
-      clusters.push('clab');
-    }
-  }
-
-  if (typeof profile.prioritySystem !== 'undefined') {
-    profile.prioritySystem = !!profile.prioritySystem;
-  } else {
-    profile.prioritySystem = false;
-  }
-
-  COMPONENT_METADATA.forEach((item) => {
-    const checkboxValue: string = item.inputValue;
-
-    if (typeof profile[checkboxValue] !== 'undefined') {
-      profile[checkboxValue] = !!profile[checkboxValue];
-    } else {
-      profile[checkboxValue] = false;
-    }
-  });
-
-  return {
-    profile,
-    productOwner,
-    technicalContact,
-    clusters,
-  };
-}
 
 export function transformClusters(data: any) {
   const clusters: any = [];
@@ -92,15 +37,7 @@ export function transformClusters(data: any) {
   return clusters;
 }
 
-// sort the list of profiles from the latest to the earliest update_at
-export function sortProfileByDatetime(profileData: any): any[] | [] {
-  try {
-    return profileData.sort((a: any, b: any) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
-  } catch (err) {
-    return profileData;
-  }
-}
-
+// TODO (sb): Delete when Project Edit pages no longer rely on provisioned flag but use status
 // returns true if ALL namespaces under a profile in default cluster are provisioned true
 export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
   try {
@@ -125,87 +62,6 @@ export function sortContacts(contacts: ContactDetails[]): ContactDetails[] {
   return contacts.sort(
     (a: ContactDetails, b: ContactDetails) => Number(a.roleId) - Number(b.roleId),
   );
-}
-
-// TODO (sb): Remove this transform when updating dashboard JSON fetch
-// returns an object with key-values pairs for PO email and TC email
-export function getProfileContacts(contactSet: any[]): object {
-  const contacts: any = {};
-  contactSet.forEach((contact: any) => {
-    if (contact.roleId === ROLES.PRODUCT_OWNER) {
-      contacts.POEmail = contact.email;
-      contacts.POName = `${contact.firstName} ${contact.lastName}`;
-      contacts.POGithubId = contact.githubId;
-      contacts.POFirstName = contact.firstName;
-      contacts.POLastName = contact.lastName;
-      contacts.POId = contact.id;
-    }
-    if (contact.roleId === ROLES.TECHNICAL_LEAD) {
-      contacts.TCEmail = contact.email;
-      contacts.TCName = `${contact.firstName} ${contact.lastName}`;
-      contacts.TCGithubId = contact.githubId;
-      contacts.TCFirstName = contact.firstName;
-      contacts.TCLastName = contact.lastName;
-      contacts.TCId = contact.id;
-    }
-  });
-  return contacts;
-}
-
-// convert datetime string from YYYY-MM-DDTHH:MM:SSZ to DD-MM-YYYY HH:MM
-function convertDatetime(ISODatetimeString: string): string {
-  const splitted = ISODatetimeString.split('T');
-  const HHMM = splitted[1].replace(/\..+/, '').split(':');
-  HHMM.pop();
-  return `${splitted[0].split('-').reverse().join('-')} ${HHMM.join(':')}`;
-}
-
-export function transformJsonToCsv(objArray: any) {
-  const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-
-  array.forEach((item: any) => {
-    item.createdAt = convertDatetime(item.createdAt);
-    item.updatedAt = convertDatetime(item.updatedAt);
-  });
-
-  let str = '';
-  let line = '';
-
-  // eslint-disable-next-line
-  for (const index in array[0]) {
-    line += `${index},`;
-  }
-
-  line = line.slice(0, -1);
-  str += `${line}\r\n`;
-
-  function sanitizeStringForCsv(desc: any) {
-    let itemDesc;
-    if (typeof desc !== 'string') {
-      return desc;
-    }
-    if (desc) {
-      itemDesc = desc.replace(/(\r\n|\n|\r|\s+|\t|&nbsp;)/gm, ' ');
-      itemDesc = itemDesc.replace(/"/g, '""');
-      itemDesc = itemDesc.replace(/ +(?= )/g, '');
-    } else {
-      itemDesc = '';
-    }
-    return itemDesc;
-  }
-
-  for (let i = 0; i < array.length; i++) {
-    line = '';
-    // eslint-disable-next-line
-    for (const index in array[i]) {
-      // eslint-disable-next-line
-      line += '"' + sanitizeStringForCsv(array[i][index]) + '"' + ',';
-    }
-
-    line = line.slice(0, -1);
-    str += `${line}\r\n`;
-  }
-  return str;
 }
 
 export function getProfileMinistry(ministrySet: any[], projectDetails: any): object {
@@ -258,7 +114,7 @@ export function getClusterDisplayName(clusterName: string, clusters: any[]): str
   }
 }
 
-export const convertSnakeCasetoSentence = (text: string) => {
+export const convertSnakeCaseToSentence = (text: string) => {
   try {
     if (text) {
       return text
@@ -272,4 +128,72 @@ export const convertSnakeCasetoSentence = (text: string) => {
     const msg = 'Unable to convert snake_case to sentence';
     throw new Error(`${msg}, reason = ${err.message}`);
   }
+};
+
+// Work with CSV File
+
+const sanitizeStringForCsv = (projectDetail: any) => {
+  let sanitizedProjectString;
+  if (typeof projectDetail !== 'string') {
+    return projectDetail;
+  }
+  if (projectDetail) {
+    sanitizedProjectString = projectDetail.replace(/(\r\n|\n|\r|\s+|\t|&nbsp;)/gm, ' ');
+    sanitizedProjectString = sanitizedProjectString.replace(/"/g, '""');
+    sanitizedProjectString = sanitizedProjectString.replace(/ +(?= )/g, '');
+  } else {
+    sanitizedProjectString = '';
+  }
+  return `"${sanitizedProjectString}"`;
+};
+
+export function transformJsonToCsv(objArray: any) {
+  const csv = [
+    CSV_PROFILE_ATTRIBUTES.join(','), // header row first
+    ...objArray.map((row: any) =>
+      CSV_PROFILE_ATTRIBUTES.map((fieldName) => sanitizeStringForCsv(row[fieldName])).join(','),
+    ),
+  ].join('\r\n');
+  return csv;
+}
+
+const traverseAndFlatten = (currentNode: any, target: any, flattenedKey: string | undefined) => {
+  for (const key in currentNode) {
+    if (Object.prototype.hasOwnProperty.call(currentNode, key)) {
+      let newKey;
+      if (typeof flattenedKey === 'undefined') {
+        newKey = key;
+      } else {
+        newKey = `${flattenedKey}.${key}`;
+      }
+
+      const value = currentNode[key];
+      if (typeof value === 'object') {
+        traverseAndFlatten(value, target, newKey);
+      } else {
+        target[newKey] = value;
+      }
+    }
+  }
+};
+
+export const flatten = (obj: Object) => {
+  const flattenedObject = {};
+  const flattenedKey = undefined;
+  traverseAndFlatten(obj, flattenedObject, flattenedKey);
+  return flattenedObject;
+};
+
+export const parseEmails = (contacts: any) => {
+  return (
+    <>
+      {contacts.map((contact: any) => {
+        return (
+          <Box key={contact.email}>
+            <Link href={`mailto:${contact.email}`}>{contact.email}</Link>
+          </Box>
+        );
+      })}
+    </>
+  );
 };

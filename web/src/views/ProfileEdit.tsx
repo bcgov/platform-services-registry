@@ -27,7 +27,12 @@ import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCa
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
 import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
-import { PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
+import {
+  HOME_PAGE_URL,
+  PROFILE_EDIT_VIEW_NAMES,
+  RESPONSE_STATUS_CODE,
+  ROUTE_PATHS,
+} from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
@@ -217,7 +222,16 @@ const ProfileEdit: React.FC = (props: any) => {
           }}
         >
           <ShadowBox p={5} style={{ position: 'relative' }}>
-            <Text as="h1">{profileState.projectDetails.name}</Text>
+            <Flex>
+              <Box my="auto">
+                <RouterLink className="misc-class-m-dropdown-link" to={HOME_PAGE_URL}>
+                  <Icon hover color="black" name="goBack" width={1.5} height={1.5} />
+                </RouterLink>
+              </Box>
+              <Text as="h1" mx={2}>
+                {profileState.projectDetails.name}
+              </Text>
+            </Flex>
             {cards.length > 0 &&
               cards.map((c: any, index: number) => (
                 <Box key={index}>
