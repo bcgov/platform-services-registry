@@ -1,6 +1,9 @@
 BEGIN TRANSACTION;
 
 UPDATE profile
+SET profile_status = 'provisioned'::status_type;
+
+UPDATE profile
 SET profile_status = 
   CASE 
     WHEN r.requires_human_action = true THEN 'pending_approval'::status_type
