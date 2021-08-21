@@ -20,7 +20,6 @@ const Wizard: React.FC<any> = ({ onSubmit, children, GithubIDAllState }) => {
 
   // next page
   const next = (formData: any) => {
-    console.log('hiahai', formData);
     setPage(Math.min(page + 1, React.Children.count(children)));
     setValues(formData);
   };

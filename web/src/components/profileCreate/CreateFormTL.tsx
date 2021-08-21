@@ -92,13 +92,6 @@ const CreateFormTL: React.FC = () => {
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                  {/* <Field<string>
-                    name={`${name}.githubId`}
-                    component={TextInput}
-                    validate={validator.mustBeValidGithubName}
-                    placeholder="jane1100"
-                    sx={{ textTransform: 'none' }}
-                  /> */}
                   <GithubUserValidation name={`${name}.githubId`} defaultValue="" />
                 </Flex>
               </div>

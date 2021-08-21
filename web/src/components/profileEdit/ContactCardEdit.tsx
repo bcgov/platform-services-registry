@@ -182,14 +182,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           </Flex>
           <Flex flexDirection="column">
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
-            {/* <Field<string>
-              name="updatedProductOwner.githubId"
-              component={TextInput}
-              validate={validator.mustBeValidGithubName}
-              defaultValue=""
-              initialValue={productOwner.githubId}
-              sx={{ textTransform: 'none' }}
-            /> */}
             <GithubUserValidation
               name="updatedProductOwner.githubId"
               defaultValue=""
@@ -254,15 +246,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       />
                     </Flex>
                     <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.githubId`}>GitHub Id !!!</Label>
-                      {/* {console.log('hiahiahia check in line for github ID', technicalLeads)} */}
-                      {/* <Field<string>
-                        name={`${name}.githubId`}
-                        component={TextInput}
-                        validate={validator.mustBeValidGithubName}
-                        placeholder="jane1100"
-                        sx={{ textTransform: 'none' }}
-                      /> */}
+                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
                       <GithubUserValidation name={`${name}.githubId`} />
                     </Flex>
                   </div>

@@ -78,12 +78,6 @@ const CreateFormPO: React.FC = () => {
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="productOwner.githubId">GitHub Id</Label>
-        {/* <Field<string>
-          name="productOwner.githubId"
-          component={TextInput}
-          validate={validator.mustBeValidGithubName}
-          placeholder="jane1100"
-        /> */}
         <GithubUserValidation name="productOwner.githubId" defaultValue="" />
       </Flex>
     </Aux>
