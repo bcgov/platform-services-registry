@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { Box, Text, Flex, Image } from 'rebass';
-import { string } from 'prop-types';
 import TextInput from '../TextInput';
 import {
-  selectCurrentUserInput,
   selectGithubIDAllState,
-  selectIsGithubInfoLoading,
-  selectIsGithubUserNotFound,
+  selectFirstUpdatedTechnicalLeads,
+  selectSecondUpdatedTechnicalLeads,
+  selecUpdatedProductOwner,
 } from '../../../../redux/githubID/githubID.selector';
 import { githubUserKeywordInput } from '../../../../redux/githubID/githubID.action';
 
@@ -46,46 +45,42 @@ const User: React.FC<GithubUserInterface> = (props) => {
   );
 };
 
-const AdaptedTypeahead: React.FC<any> = (props) => {
+const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
   const {
     input,
-    GithubIDAllState,
+    githubIDAllState,
     reduxReference,
     githubUserKeywordInputDispatch,
     ...rest
   } = props;
 
-  // console.log('check if I can find a name', reduxReference);
+  // TODO(Billy): For some reason, except for product owner, other two github id state is not been store in persistStore
 
   useEffect(() => {
-    // console.log('in most child reduxReference', reduxReference);
-    // console.log('in most child GithubIDAllState', GithubIDAllState);
-    // console.log('in most child GithubIDAllState', GithubIDAllState[reduxReference].inputKeyword);
-    if (input.value !== GithubIDAllState[reduxReference].inputKeyword) {
+    if (input.value !== githubIDAllState[reduxReference].inputKeyword) {
       githubUserKeywordInputDispatch(reduxReference, input.value);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
-
-  // const debouncedChangeHandler = useCallback(debounce(changeHandler, 300), []);
 
   return (
     <>
       <TextInput id="my-typeahead-id" {...input} {...rest} />
-      {GithubIDAllState[reduxReference].isLoading && (
+      {githubIDAllState[reduxReference].isLoading && (
         <Text as="h4" mt={2}>
           Loading...
         </Text>
       )}
-      {GithubIDAllState[reduxReference].notFound && (
+      {githubIDAllState[reduxReference].notFound && (
         <Text as="h4" mt={2}>
           User was not found! :(
         </Text>
       )}
-      {GithubIDAllState[reduxReference].githubUser && (
+      {githubIDAllState[reduxReference].githubUser && (
         <User
-          name={GithubIDAllState[reduxReference].githubUser.name}
-          id={GithubIDAllState[reduxReference].githubUser.id}
-          avatar={GithubIDAllState[reduxReference].githubUser.avatar_url}
+          name={githubIDAllState[reduxReference].githubUser.name}
+          id={githubIDAllState[reduxReference].githubUser.id}
+          avatar={githubIDAllState[reduxReference].githubUser.avatar_url}
         />
       )}
     </>
@@ -98,10 +93,10 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 const mapStateToProps = createStructuredSelector({
-  GithubIDAllState: selectGithubIDAllState,
-  isLoading: selectIsGithubInfoLoading,
-  inputKeyword: selectCurrentUserInput,
-  notFound: selectIsGithubUserNotFound,
+  githubIDAllState: selectGithubIDAllState,
+  firstUpdatedTechnicalLeads: selectFirstUpdatedTechnicalLeads,
+  secondUpdatedTechnicalLeads: selectSecondUpdatedTechnicalLeads,
+  updatedProductOwner: selecUpdatedProductOwner,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdaptedTypeahead);
+export default connect(mapStateToProps, mapDispatchToProps)(AdaptedGithubUserDisplay);

@@ -10,8 +10,8 @@ export const userExist = (reduxReference: string) => ({
   reduxReference,
 });
 
-export const storeUser = (payload: any, reduxReference: string) => ({
-  type: GithubIDActionTypes.GITHUB_USER_RESPONSE,
+export const storeUser = (reduxReference: string, payload: any) => ({
+  type: GithubIDActionTypes.GITHUB_USER_STORE_USER,
   payload,
   reduxReference,
 });
@@ -34,7 +34,7 @@ export const searchGithubUsers = (query: string, reduxReference: string) => (dis
       if (response.ok) {
         dispatch(userExist(reduxReference));
         const data = await response.json();
-        dispatch(storeUser(data, reduxReference));
+        dispatch(storeUser(reduxReference, data));
       } else {
         dispatch(noSuchUser(reduxReference));
       }

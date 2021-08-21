@@ -18,10 +18,11 @@ import { css, Global } from '@emotion/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import theme from './theme';
-import { store } from './redux/store';
+import { store, persistor } from './redux/store';
 import typography from './typography';
 
 ReactDOM.render(
@@ -61,7 +62,9 @@ ReactDOM.render(
           }
         `}
       />
-      <App />,
+      <PersistGate persistor={persistor}>
+        <App />,
+      </PersistGate>
     </React.StrictMode>
   </Provider>,
   document.getElementById('root'),

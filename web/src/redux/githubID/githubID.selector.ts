@@ -19,19 +19,4 @@ export const selecUpdatedProductOwner = createSelector(
   (githubID) => githubID.updatedProductOwner,
 );
 
-export const selectCurrentUserInput = createSelector(
-  [selectGithubID],
-  (githubID) => githubID.inputKeyword,
-);
-
-export const selectIsGithubInfoLoading = createSelector(
-  [selectGithubID],
-  (githubId) => githubId.isLoading,
-);
-
-export const selectIsGithubUserNotFound = createSelector(
-  [selectGithubID],
-  (githubId) => githubId.notFound,
-);
-
 export default selectGithubID;

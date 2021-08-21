@@ -26,7 +26,7 @@ import getValidator from '../../utils/getValidator';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
-// import GithubUserTypeahead from '../common/UI/GithubIDAutoFill/GithubUserTypeahead';
+import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 
 const CreateFormPO: React.FC = () => {
   const validator = getValidator();
@@ -78,15 +78,14 @@ const CreateFormPO: React.FC = () => {
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="productOwner.githubId">GitHub Id</Label>
-        <Field<string>
+        {/* <Field<string>
           name="productOwner.githubId"
           component={TextInput}
           validate={validator.mustBeValidGithubName}
           placeholder="jane1100"
-          sx={{ textTransform: 'none' }}
-        />
+        /> */}
+        <GithubUserValidation name="productOwner.githubId" defaultValue="" />
       </Flex>
-      {/* <GithubUserTypeahead name="user1" /> */}
     </Aux>
   );
 };

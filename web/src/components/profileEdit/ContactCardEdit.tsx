@@ -16,6 +16,7 @@
 
 import { Label } from '@rebass/forms';
 import arrayMutators from 'final-form-arrays';
+import { FORM_ERROR } from 'final-form';
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
@@ -23,6 +24,7 @@ import { Redirect } from 'react-router-dom';
 import { Flex } from 'rebass';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
+import { selectGithubIDAllState } from '../../redux/githubID/githubID.selector';
 import {
   MAXIMUM_TECHNICAL_LEADS,
   MINIMUM_TECHNICAL_LEADS,
@@ -30,16 +32,15 @@ import {
   ROLES,
   ROUTE_PATHS,
 } from '../../constants';
-import { selectGithubIDAllState } from '../../redux/githubID/githubID.selector';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button, StyledFormButton, StyledFormDisabledButton } from '../common/UI/Button';
+import { Button } from '../common/UI/Button';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
-import GithubUserTypeahead from '../common/UI/GithubIDAutoFill/GithubUserTypeahead';
+import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 
 const validator = getValidator();
@@ -81,6 +82,17 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   );
 
   const onSubmit = async (formData: any) => {
+    let onSubmitErrorMessage;
+    Object.entries(GithubIDAllState).forEach(([key, value]) => {
+      if (GithubIDAllState[key].everFetched === true && GithubIDAllState[key].notFound === true) {
+        onSubmitErrorMessage = 'Github User Not Found';
+      }
+      if (GithubIDAllState[key].inputKeyword && GithubIDAllState[key].everFetched === false) {
+        onSubmitErrorMessage = 'Loading Github User infomation';
+      }
+    });
+    if (onSubmitErrorMessage) return { [FORM_ERROR]: onSubmitErrorMessage };
+
     setOpenBackdrop(true);
     try {
       if (!profileId) {
@@ -124,14 +136,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       }}
       validate={(values) => {
         const errors: any = {};
-        Object.entries(GithubIDAllState).forEach(([key, value]) => {
-          if (
-            GithubIDAllState[key].everFetched === true &&
-            GithubIDAllState[key].notFound === true
-          ) {
-            errors.githubID = 'Github User Not Found';
-          }
-        });
 
         return errors;
       }}
@@ -186,7 +190,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               initialValue={productOwner.githubId}
               sx={{ textTransform: 'none' }}
             /> */}
-            <GithubUserTypeahead
+            <GithubUserValidation
               name="updatedProductOwner.githubId"
               defaultValue=""
               initialValue={productOwner.githubId}
@@ -259,7 +263,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                         placeholder="jane1100"
                         sx={{ textTransform: 'none' }}
                       /> */}
-                      <GithubUserTypeahead name={`${name}.githubId`} />
+                      <GithubUserValidation name={`${name}.githubId`} />
                     </Flex>
                   </div>
                 ))}
@@ -285,7 +289,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               </div>
             )}
           </FieldArray>
+
           <EditSubmitButton
+            submitError={formProps.submitError}
             hasPendingEdit={hasPendingEdit}
             isProvisioned={isProvisioned}
             pristine={formProps.pristine}

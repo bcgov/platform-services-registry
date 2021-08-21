@@ -20,21 +20,21 @@ import GithubIDActionTypes from './user.types';
 
 const INITIAL_STATE: any = {
   updatedProductOwner: {
-    user: null,
+    githubUser: null,
     inputKeyword: null,
     isLoading: false,
     everFetched: false,
     notFound: false,
   },
   FirstUpdatedTechnicalLeads: {
-    user: null,
+    githubUser: null,
     inputKeyword: null,
     isLoading: false,
     everFetched: false,
     notFound: false,
   },
   SecondUpdatedTechnicalLeads: {
-    user: null,
+    githubUser: null,
     inputKeyword: null,
     isLoading: false,
     everFetched: false,
@@ -44,42 +44,48 @@ const INITIAL_STATE: any = {
 
 const githubIDReducer = (state = INITIAL_STATE, action: any) => {
   const GithubReduxKey = action.reduxReference;
-  const NewState = state;
   switch (action.type) {
     case GithubIDActionTypes.GITHUB_USERS_REQUEST:
-      NewState[GithubReduxKey] = {
-        ...NewState[GithubReduxKey],
-        isLoading: true,
-        everFetched: false,
+      return {
+        ...state,
+        [GithubReduxKey]: {
+          ...state[GithubReduxKey],
+          isLoading: true,
+          everFetched: false,
+        },
       };
-      return NewState;
 
     case GithubIDActionTypes.GITHUB_USER_EXIST:
-      NewState[GithubReduxKey] = {
-        ...NewState[GithubReduxKey],
-        isLoading: false,
-        everFetched: true,
-        notFound: false,
+      return {
+        ...state,
+        [GithubReduxKey]: {
+          ...state[GithubReduxKey],
+          isLoading: true,
+          everFetched: true,
+          notFound: false,
+        },
       };
 
-      return NewState;
-
-    case GithubIDActionTypes.GITHUB_USER_RESPONSE:
-      NewState[GithubReduxKey] = {
-        ...NewState[GithubReduxKey],
-        user: action.payload,
+    case GithubIDActionTypes.GITHUB_USER_STORE_USER:
+      return {
+        ...state,
+        [GithubReduxKey]: {
+          ...state[GithubReduxKey],
+          githubUser: action.payload,
+          isLoading: false,
+        },
       };
-      return NewState;
-
     case GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST:
-      NewState[GithubReduxKey] = {
-        ...NewState[GithubReduxKey],
-        user: null,
-        isLoading: false,
-        everFetched: true,
-        notFound: true,
+      return {
+        ...state,
+        [GithubReduxKey]: {
+          ...state[GithubReduxKey],
+          githubUser: null,
+          isLoading: false,
+          everFetched: true,
+          notFound: true,
+        },
       };
-      return NewState;
 
     case GithubIDActionTypes.GITHUB_USERS_INPUT:
       return {

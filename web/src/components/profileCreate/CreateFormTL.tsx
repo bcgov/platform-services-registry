@@ -26,6 +26,7 @@ import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
+import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 
 const CreateFormTL: React.FC = () => {
   const validator = getValidator();
@@ -91,13 +92,14 @@ const CreateFormTL: React.FC = () => {
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                  <Field<string>
+                  {/* <Field<string>
                     name={`${name}.githubId`}
                     component={TextInput}
                     validate={validator.mustBeValidGithubName}
                     placeholder="jane1100"
                     sx={{ textTransform: 'none' }}
-                  />
+                  /> */}
+                  <GithubUserValidation name={`${name}.githubId`} defaultValue="" />
                 </Flex>
               </div>
             ))}

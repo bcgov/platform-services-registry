@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { connect } from 'react-redux';
-import { Field, useField } from 'react-final-form';
+import { Field } from 'react-final-form';
 import { createStructuredSelector } from 'reselect';
 import { selectGithubIDAllState } from '../../../../redux/githubID/githubID.selector';
-import AdaptedTypeahead from './AdaptedTypeahead';
-// import useKeyword from './useKeyword';
+import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 import { searchGithubUsers } from '../../../../redux/githubID/githubID.action';
 import getValidator from '../../../../utils/getValidator';
 
 const validator = getValidator();
-interface GithubIDInboxProps {
-  name: string;
-  // defaultValue: string;
-  // initialValue: string | undefined;
-  // inputKeyword: string;
-  // fetchUserStartAsync: any;
-}
 
-const GithubUserTypeahead: React.FC<any> = (props) => {
+const GithubUserValidation: React.FC<any> = (props) => {
   const { name, initialValue, defaultValue, githubIDAllState, fetchUserStartAsync } = props;
 
   const getGithubIDKey = (reduxReference: string) => {
@@ -33,25 +25,27 @@ const GithubUserTypeahead: React.FC<any> = (props) => {
     }
     return GithubReduxKey;
   };
+
   const reduxReference = getGithubIDKey(name);
-  const { inputKeyword } = githubIDAllState[reduxReference];
+  const { inputKeyword, githubUser } = githubIDAllState[reduxReference];
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (inputKeyword.length !== 0) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // first condition: prevent first time render trigger api call because we already use peresis store.
+      // Second condition: only send api request if input change
+      if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0) {
         fetchUserStartAsync(inputKeyword, reduxReference);
       }
-      // Send Axios request here
     }, 1500);
 
     return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputKeyword]);
 
   return (
     <Field<string>
       name={name}
-      component={AdaptedTypeahead}
+      component={AdaptedGithubUserDisplay}
       placeholder="Write a github username"
       initialValue={initialValue}
       defaultValue={defaultValue}
@@ -64,8 +58,6 @@ const GithubUserTypeahead: React.FC<any> = (props) => {
 
 const mapStateToProps = createStructuredSelector({
   githubIDAllState: selectGithubIDAllState,
-  // notFound: selectIsGithubUserNotFound,
-  // inputKeyword: selectCurrentUserInput,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -73,4 +65,4 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(searchGithubUsers(query, reduxReference)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(GithubUserTypeahead);
+export default connect(mapStateToProps, mapDispatchToProps)(GithubUserValidation);
