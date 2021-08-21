@@ -28,6 +28,7 @@ export interface Cluster extends CommonFields {
   onHardware: boolean;
   isDefault: boolean;
   isProd: boolean;
+  displayName: string;
 }
 
 export default class ClusterModel extends Model {

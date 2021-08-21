@@ -16,12 +16,13 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { HumanActionType, RequestType } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
 import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { archiveProjectSet } from '../libs/profile';
+import { archiveProjectSet, updateProfileStatus } from '../libs/profile';
 import shared from '../libs/shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -71,6 +72,7 @@ export const updateRequestHumanAction = async (
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
+      await updateProfileStatus(Number(request.profileId), PROFILE_STATUS.APPROVED);
       return res.status(204).end();
     }
 
@@ -82,7 +84,12 @@ export const updateRequestHumanAction = async (
       await archiveProjectSet(request.profileId)
     }
 
+    if ( request.type === RequestType.Edit) {
+      await updateProfileStatus(Number(request.profileId), PROFILE_STATUS.PROVISIONED);
+    }
+
     await RequestModel.updateCompletionStatus(requestId);
+
     return res.status(204).end();
   } catch (err) {
     if (err.code) {

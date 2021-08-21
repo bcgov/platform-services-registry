@@ -19,7 +19,7 @@
 import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
 import express from 'express';
 import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, createProjectRequest, fetchProfileAllowedQuotaSizes, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaSize, updateProfileContacts, updateProfileQuotaSize } from '../../controllers/profile';
+import { addContactToProfile, createProjectRequest, fetchDashboardProjectProfiles, fetchProfileAllowedQuotaSizes, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaSize, updateProfileContacts, updateProfileQuotaSize } from '../../controllers/profile';
 import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
 import { authorize, validateRequiredCluster, validateRequiredProfile } from '../../libs/authorization';
 
@@ -28,6 +28,7 @@ const router = express.Router();
 // Profiles
 router.post('/', authorize(validateRequiredCluster), asyncMiddleware(createProjectProfile));
 router.get('/', asyncMiddleware(fetchAllProjectProfiles));
+router.get('/dashboard-projects', asyncMiddleware(fetchDashboardProjectProfiles))
 router.get('/:profileId', authorize(validateRequiredProfile), asyncMiddleware(fetchProjectProfile));
 router.delete('/:profileId', authorize(validateRequiredProfile), asyncMiddleware(archiveProjectProfile));
 // may involve provisioner-related changes

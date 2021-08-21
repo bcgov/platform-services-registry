@@ -15,11 +15,12 @@
 //
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Heading } from 'rebass';
+import { Box } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import { useModal } from '../../hooks/useModal';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText } from '../../utils/promptToastHelper';
+import { parseEmails } from '../../utils/transformDataHelper';
 import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
 import { ReviewRequestModal } from './ReviewRequestModal';
@@ -52,20 +53,21 @@ const ProjectRequests: React.FC<any> = (props) => {
       },
       {
         Header: 'Ministry',
-        accessor: 'busOrgId',
+        accessor: 'ministry',
       },
       {
         Header: 'Product Owner',
-        accessor: 'POEmail',
+        accessor: 'productOwners',
+        Cell: ({ cell: { value } }: any) => parseEmails(value),
       },
       {
-        Header: 'Technical Contact',
-        accessor: 'TCEmail',
+        Header: 'Technical Lead(s)',
+        accessor: 'technicalLeads',
+        Cell: ({ cell: { value } }: any) => parseEmails(value),
       },
       {
         Header: 'Request Type',
         accessor: 'type',
-        Cell: ({ row: { values } }: any) => values.type,
       },
       {
         Header: 'Response',
@@ -137,8 +139,7 @@ const ProjectRequests: React.FC<any> = (props) => {
         }
       />
       <Box style={{ overflow: 'auto' }}>
-        <Heading>Project Requests</Heading>
-        <Table columns={requestColumns} data={requests} />
+        <Table columns={requestColumns} data={requests} title="Project Requests" />
       </Box>
     </div>
   );

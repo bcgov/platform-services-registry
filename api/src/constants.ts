@@ -52,3 +52,10 @@ export const CLUSTER_NAMES = [
 ]
 
 export const GOLD_QUORUM_COUNT = 2;
+
+export const PROFILE_STATUS = {
+  PENDING_APPROVAL: 'pending_approval',
+  APPROVED: 'approved', 
+  PENDING_EDIT: 'pending_edit', 
+  PROVISIONED: 'provisioned'
+}

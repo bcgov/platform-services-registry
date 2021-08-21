@@ -43,6 +43,11 @@ const selectProfile = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
 const client = new Pool().connect();
 
+jest.mock('../src/libs/profile', () => {
+  return {
+    updateProfileStatus: jest.fn(),
+  };
+});
 
 jest.mock('../src/libs/request', () => ({
   requestProjectProfileEdit: jest.fn().mockResolvedValue({id: 2}),
@@ -260,8 +265,7 @@ describe('Project-profile event handlers', () => {
     };
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
-    client.query.mockReturnValueOnce({ rows: [] });  
-
+    client.query.mockReturnValueOnce({ rows: [] });
 
     const update = ProfileModel.prototype.update = jest.fn();
 
