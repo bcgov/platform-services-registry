@@ -36,7 +36,7 @@ exports[`matches the snapshot 1`] = `
             >
               <label
                 class="css-knfhfe"
-                for="project.name"
+                for="profile.name"
               >
                 Name
               </label>
@@ -57,7 +57,7 @@ exports[`matches the snapshot 1`] = `
             >
               <label
                 class="css-knfhfe"
-                for="project.description"
+                for="profile.description"
               >
                 Description
               </label>
