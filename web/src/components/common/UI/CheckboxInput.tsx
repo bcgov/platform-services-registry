@@ -1,4 +1,5 @@
 import { Checkbox, Label } from '@rebass/forms';
+import { Box } from 'rebass';
 import React from 'react';
 import { FieldRenderProps } from 'react-final-form';
 
@@ -8,14 +9,16 @@ const CheckboxInput: React.FC<Props> = ({
   input: { value, type, ...input },
   meta: { error, touched },
 }: Props) => (
-  <Label my="auto" p={2} justifyContent="flex-end">
-    <Checkbox type="checkbox" checked={!!value} {...input} />
+  <Box>
+    <Label m="auto" px={2} justifyContent="flex-end">
+      <Checkbox type="checkbox" checked={!!value} {...input} />
+    </Label>
     {error && touched && (
-      <Label as="span" variant="errorLabel">
+      <Label as="span" variant="errorLabel" sx={{ padding: 0, margin: 0 }}>
         {error}
       </Label>
     )}
-  </Label>
+  </Box>
 );
 
 export default CheckboxInput;
