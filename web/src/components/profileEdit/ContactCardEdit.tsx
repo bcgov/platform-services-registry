@@ -280,7 +280,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             isProvisioned={isProvisioned}
             pristine={formProps.pristine}
           />
-          <pre>{JSON.stringify(formProps.values, null, 10)}</pre>
         </form>
       )}
     </Form>
