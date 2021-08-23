@@ -37,6 +37,9 @@ const request = JSON.parse(fs.readFileSync(p3, 'utf8'));
 const p4 = path.join(__dirname, 'fixtures/get-human-actions.json');
 const humanAction = JSON.parse(fs.readFileSync(p4, 'utf8'));
 
+const p5 = path.join(__dirname, 'fixtures/select-default-cluster.json');
+const clusters = JSON.parse(fs.readFileSync(p5, 'utf8'));
+
 describe('Services', () => {
 
   const client = new Pool().connect();
@@ -57,6 +60,7 @@ describe('Services', () => {
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: request });
     client.query.mockReturnValueOnce({ rows: humanAction });
+    client.query.mockReturnValueOnce({ rows: clusters });
 
     const result = await sendProvisioningMessage(4, MessageType.ProvisioningStarted);
 
@@ -75,6 +79,7 @@ describe('Services', () => {
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: request });
     client.query.mockReturnValueOnce({ rows: humanAction });
+    client.query.mockReturnValueOnce({ rows: clusters });
 
     const result = await sendProvisioningMessage(4, MessageType.ProvisioningCompleted);
 
@@ -93,6 +98,7 @@ describe('Services', () => {
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: request });
     client.query.mockReturnValueOnce({ rows: humanAction });
+    client.query.mockReturnValueOnce({ rows: clusters });
 
     const result = await sendProvisioningMessage(4, 555);
 

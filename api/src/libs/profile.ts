@@ -31,8 +31,11 @@ export const getProvisionStatus = async (profile: ProjectProfile): Promise<boole
   try {
     const clusters = await getClusters(profile)
     for (const cluster of clusters) {
-      const isClusterProvisioned = await NamespaceModel.getProjectSetProvisionStatus(Number(profile.id), Number(cluster.id));
-      
+      const isClusterProvisioned = await NamespaceModel.getProjectSetProvisionStatus(
+        Number(profile.id),
+        Number(cluster.id)
+      );
+
       if (!isClusterProvisioned){
         return false;
       }

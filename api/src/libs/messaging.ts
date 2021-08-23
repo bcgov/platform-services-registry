@@ -40,7 +40,12 @@ const { ProfileModel, ContactModel, RequestModel} = dm;
 
 const consoleButton = (clusterName: string) => {
   return `
-    <tr style="margin: 10px; display: block;">                                      
+    <tr
+      style="
+        margin: 10px;
+        display: block;
+      "
+    >
       <td
         align="center"
         bgcolor="#ff6f6f"
@@ -51,7 +56,7 @@ const consoleButton = (clusterName: string) => {
           border-radius: 5px;
           cursor: auto;
           padding: 10px 25px;
-          margin-right: 5px;
+          display: block;
         "
         valign="middle"
       >

@@ -17,7 +17,7 @@
 'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import { ROLE_IDS } from '../constants';
+import { GOLD_QUORUM_COUNT, ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { AccessFlag } from '../libs/authorization';
 import { getClusters, getQuotaSize } from '../libs/profile';
@@ -40,9 +40,17 @@ export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> 
       return displayName;
     }
 
+    const extractGoldDR = (clusters) => {
+      if (clusters.length === GOLD_QUORUM_COUNT) {
+        return clusters.filter(cluster => cluster.name === 'gold')
+      }
+      return clusters
+    }
+
     for (const profile of profiles) {
       const clusters = await getClusters(profile);
-      profile.clusters = clusters.map(cluster => extractName(cluster));
+      profile.clusters = extractGoldDR(clusters).map(cluster => extractName(cluster));
+
       profile.quotaSize = await getQuotaSize(profile);
 
       if (!userDetails.accessFlags.includes(AccessFlag.EditAll)) {
