@@ -42,7 +42,7 @@ export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> 
 
     const extractGoldDR = (clusters) => {
       if (clusters.length === GOLD_QUORUM_COUNT) {
-        return clusters.filter(cluster => cluster.name === 'gold')
+        return clusters.filter(cluster => cluster.name !== 'golddr')
       }
       return clusters
     }
