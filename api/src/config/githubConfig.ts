@@ -4,7 +4,6 @@ import path from 'path'
 
 const getBasePathWithFile = (file) => {
   let filePath
-  
   if (
     (process.env.NODE_ENV === 'production') &&
     process.env.PRIVATE_KEY_PATH &&
@@ -18,7 +17,7 @@ const getBasePathWithFile = (file) => {
   }
   logger.info(`Loading ${file} from ${filePath}`)
   return filePath
-} 
+}
 /**
  * returns the config file, opting to use a wrapper funciton over direct import to allow for
  * testability. File mocks can only be static :/

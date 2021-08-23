@@ -8,13 +8,13 @@ import { BC_ORGNAZTION_GIT_APP_ID } from '../constants'
 type APPInitialValue = {
   initialized: number | null,
   apps: object,
-  nonInstallatedApp: Function | null,
+  nonInstallatedApp: ((request: string) => any) | null,
 }
 
-const  installationApps = <APPInitialValue>{
+const installationApps: APPInitialValue = {
   initialized: null,
   apps: {},
-  nonInstallatedApp: null
+  nonInstallatedApp: null,
 }
 
 /**
@@ -22,34 +22,33 @@ const  installationApps = <APPInitialValue>{
  * @returns a non installed github app
  */
 export const getNonInstallationApp = () => {
-    logger.info('getNonInstallationApp')
-
+  logger.info('getNonInstallationApp');
 
   // caches a non installed app
-  try{
+
+  try {
     if (!installationApps.nonInstallatedApp) {
       const auth = createAppAuth({
-        appId: process.env.GITHUB_APP_ID ||  BC_ORGNAZTION_GIT_APP_ID,
+        appId: process.env.GITHUB_APP_ID || BC_ORGNAZTION_GIT_APP_ID,
         privateKey: getGithubPrivateKey(),
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      })
-
-    installationApps.nonInstallatedApp = request.defaults({
-      request: {
-        hook: auth.hook,
-      },
-      mediaType: {
-        previews: ['machine-man'],
-      },
-    })
+      });
+      installationApps.nonInstallatedApp = request.defaults({
+        request: {
+          hook: auth.hook,
+        },
+        mediaType: {
+          previews: ['machine-man'],
+        },
+      });
+    }
+  } catch (err) {
+    logger.error(err);
   }
- } catch(e){
-    logger.error('I catch an error', e);
-  }
+  return installationApps.nonInstallatedApp;
+};
 
-  return installationApps.nonInstallatedApp
-}
 
 const newAuthorizedApp = (installationId) => {
 
@@ -80,12 +79,12 @@ export const getInstallations = async () => {
     logger.info('getInstallations')
 
     const nonInstallationRequest = getNonInstallationApp()
-    
+
     if(nonInstallationRequest !== null){
       const response = await nonInstallationRequest('GET /app/installations')
       return response.data
     }
-    //TODO(BILLY LI): maybe throw if there's no installation
+    // TODO(BILLY LI): maybe throw if there's no installation
     return []
 }
 
@@ -119,30 +118,22 @@ export const getAuthenticatedApps =  async () => {
     if (!installationApps.initialized) {
       logger.info('Initializing Authenticated Apps')
       installationApps.initialized = Date.now()
-      
+
       const installations = await getOrgInstallations()
-      
-      
+
       installations.forEach((installation) => {
         const name = installation.account.login.toLowerCase()
-     
         if (!installationApps.apps[name]) {
-          logger.info(
-            `newAuthorizedApp created for ${name} installation: ${installation.id}`
-            )
-            installationApps.apps[name] = newAuthorizedApp(installation.id)
+          logger.info(`newAuthorizedApp created for ${name} installation: ${installation.id}`)
+          installationApps.apps[name] = newAuthorizedApp(installation.id)
           }
         })
       } else {
-        logger.info(
-          `Installation Apps returned: ${Object.keys(installationApps.apps)}`
-          )
-          logger.info(
-            `Authenticated Apps were cached, reusing the ones initialized on ${installationApps.initialized}`
-            )
+        logger.info(`Installation Apps returned: ${Object.keys(installationApps.apps)}`)
+        logger.info(`Authenticated Apps were cached, reusing the ones initialized on ${installationApps.initialized}`)
           }
-        } catch(e){
-         console.error(e)
+        } catch(err){
+          logger.info(err)
         }
 
   return installationApps

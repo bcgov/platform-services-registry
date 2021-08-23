@@ -35,7 +35,7 @@ export const getUserByName = async (username) => {
   logger.info(`getUserByName ${username}`)
   const installations = await getAuthenticatedApps()
   const primaryOrg = getConfig().primaryOrg.toLowerCase()
-  
+
   const response = await installations.apps[
       primaryOrg
     ].authenticatedRequest('GET /users/{username}', {
