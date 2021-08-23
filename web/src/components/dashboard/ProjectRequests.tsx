@@ -73,8 +73,7 @@ const ProjectRequests: React.FC<any> = (props) => {
         Header: 'Response',
         accessor: 'profileId',
         Cell: ({ row: { values } }: any) => (
-          <
-          >
+          <Box>
             <button
               type="button"
               value={values.profileId}
