@@ -24,8 +24,9 @@ import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import CheckboxInput from '../common/UI/CheckboxInput';
+import { EditSubmitButton } from '../common/UI/EditSubmitButton';
+import { Condition } from '../common/UI/FormControls';
 import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -161,6 +162,38 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               </Field>
             </Flex>
           </Flex>
+          {projectDetails.primaryClusterName === 'gold' && (
+            <Flex mt={3}>
+              <Label variant="adjacentLabel" m="auto">
+                Is this Application Migrating from OCP4 Silver Service?
+              </Label>
+              <Flex flex="1 1 auto" justifyContent="flex-end">
+                <Field<boolean>
+                  name="profile.migratingApplication"
+                  component={CheckboxInput}
+                  type="checkbox"
+                  initialValue={!!projectDetails.migratingLicenseplate}
+                  defaultValue={false}
+                />
+              </Flex>
+            </Flex>
+          )}
+          <Condition when="profile.migratingApplication" is={true}>
+            <Flex mt={3}>
+              <Label variant="adjacentLabel" m="auto" htmlFor="profile.migratingLicenseplate">
+                OCP 4 Silver license plate:
+              </Label>
+              <Flex flex="1 1 auto" justifyContent="flex-end" name="profile.migratingLicenseplate">
+                <Field<string>
+                  name="profile.migratingLicenseplate"
+                  component={TextInput}
+                  validate={validator.mustBeValidProfileLicenseplate}
+                  initialValue={projectDetails.migratingLicenseplate}
+                  defaultValue={projectDetails.migratingLicenseplate}
+                />
+              </Flex>
+            </Flex>
+          </Condition>
           <Label variant="adjacentLabel">
             Please indicate what services you expect to utilize as part of your project?
           </Label>

@@ -88,11 +88,10 @@ export const provisionerCallbackHandler = async (
 
     if (isProfileProvisioned) {
       await processProvisionedProfileEditRequest(profile, clusterName);
+      await updateProfileStatus(Number(profile.id), PROFILE_STATUS.PROVISIONED);
     } else {
       await updateProvisionedProfile(profile, clusterName);
     }
-
-    await updateProfileStatus(Number(profile.id), PROFILE_STATUS.PROVISIONED);
 
     res.status(204).end();
   } catch (err) {
@@ -117,17 +116,6 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
 
     const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-    if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
-      await RequestModel.updateCompletionStatus(Number(request.id));
-
-      logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
-      await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
-      logger.info(`CHES message sent for ${profile.id}`);
-
-      await RequestModel.updateCompletionStatus(Number(request.id));
-    }
-
-    // TODO: this should be cluster specific to account for multi-cluster
     await updateProvisionStatus(profile, clusterName, true);
 
     const botMessage = botMessageSet.filter(message => message.clusterName === clusterName).pop()
@@ -135,6 +123,16 @@ const updateProvisionedProfile = async (profile: ProjectProfile, clusterName: st
       const errmsg = `Unable to get bot message with cluster name: ${clusterName}`;
       throw new Error(errmsg);
     }
+
+    if (botMessageSet.length !== GOLD_QUORUM_COUNT) {
+      logger.info(`Sending CHES message (${MessageType.ProvisioningCompleted}) for ${profile.id}`);
+      await sendProvisioningMessage(Number(profile.id), MessageType.ProvisioningCompleted);
+      logger.info(`CHES message sent for ${profile.id}`);
+
+      await RequestModel.updateCompletionStatus(Number(request.id));
+      await updateProfileStatus(Number(profile.id), PROFILE_STATUS.PROVISIONED);
+    }
+
     await RequestModel.updateCallbackStatus(Number(botMessage.id))
 
     return;

@@ -43,8 +43,8 @@ const CreateFormMetadata: React.FC = () => {
             <Field<boolean>
               name={`profile.${item.inputValue}`}
               component={CheckboxInput}
-              defaultValue={false}
               type="checkbox"
+              initialValue={false}
             />
           </Flex>
         </Flex>

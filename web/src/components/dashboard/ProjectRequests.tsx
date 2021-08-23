@@ -53,7 +53,7 @@ const ProjectRequests: React.FC<any> = (props) => {
       },
       {
         Header: 'Ministry',
-        accessor: 'ministry',
+        accessor: 'busOrgId',
       },
       {
         Header: 'Product Owner',

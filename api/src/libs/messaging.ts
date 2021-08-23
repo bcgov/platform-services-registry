@@ -22,6 +22,7 @@ import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { HumanAction } from '../db/model/request';
 import { BodyType, Message, SendReceipt } from '../libs/service';
+import { getClusters } from './profile';
 import shared from './shared';
 import { transformContacts } from './utils';
 
@@ -37,8 +38,54 @@ export const enum MessageType {
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, RequestModel} = dm;
 
+const consoleButton = (clusterName: string) => {
+  return `
+    <tr
+      style="
+        margin: 10px;
+        display: block;
+      "
+    >
+      <td
+        align="center"
+        bgcolor="#ff6f6f"
+        role="presentation"
+        style="
+          background-color: #fcba19;
+          border: none;
+          border-radius: 5px;
+          cursor: auto;
+          padding: 10px 25px;
+          display: block;
+        "
+        valign="middle"
+      >
+        <a
+          href="https://console.apps.${clusterName}.devops.gov.bc.ca/"
+          style="
+            background: #fcba19;
+            color: #ffffff;
+            font-family: Oxygen,
+              Helvetica neue, sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 21px;
+            margin: 0;
+            text-decoration: none;
+            text-transform: none;
+          "
+          rel="noopener"
+          target="_blank"
+        >
+          Login to ${clusterName} console
+        </a>
+      </td>
+    </tr>
+    `
+}
+
 const updateEmailContent = async (
-    buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any
+    buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any, clusters: any
   ): Promise<string> => {
   try {
     let emailContent: string;
@@ -58,12 +105,13 @@ const updateEmailContent = async (
       projectName: profile.name,
       projectDescription : profile.description,
       projectMinistry: profile.busOrgId,
-      setCluster: profile.primaryClusterName,
+      setCluster: clusters.map(cluster => cluster.displayName).toString(),
       licensePlate: `${profile.namespacePrefix}`,
       requestType: ( request.editType ? 'Project Edit': 'New Project'),
       quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
       editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
       humanActionComment,
+      consoleButtons: clusters.map(cluster => consoleButton(cluster.name)).toString(),
     };
 
     const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
@@ -98,6 +146,8 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
     }
 
     const humanAction: HumanAction | undefined = await RequestModel.findHumanActionByRequestId(Number(request.id));
+
+    const clusters = await getClusters(profile);
 
     let buff;
 
@@ -145,7 +195,7 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await updateEmailContent(buff, profile, contactDetails, request, humanAction);
+    const bodyContent = await updateEmailContent(buff, profile, contactDetails, request, humanAction, clusters);
 
     if (!bodyContent) {
       return;
