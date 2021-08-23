@@ -2,15 +2,16 @@ import { createAppAuth } from '@octokit/auth'
 import { request } from '@octokit/request'
 import { getGithubPrivateKey } from '../config/githubConfig'
 import { logger } from '@bcgov/common-nodejs-utils';
+import { BC_ORGNAZTION_GIT_APP_ID } from '../constants'
 
 // cached value
-type APPInitailValue = {
+type APPInitialValue = {
   initialized: number | null,
   apps: object,
   nonInstallatedApp: Function | null,
 }
 
-const  installationApps = <APPInitailValue>{
+const  installationApps = <APPInitialValue>{
   initialized: null,
   apps: {},
   nonInstallatedApp: null
@@ -22,15 +23,17 @@ const  installationApps = <APPInitailValue>{
  */
 export const getNonInstallationApp = () => {
     logger.info('getNonInstallationApp')
+
+
   // caches a non installed app
   try{
-  if (!installationApps.nonInstallatedApp) {
-    const auth = createAppAuth({
-      appId: process.env.GITHUB_APP_ID ||  131752,
-      privateKey: getGithubPrivateKey(),
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    })
+    if (!installationApps.nonInstallatedApp) {
+      const auth = createAppAuth({
+        appId: process.env.GITHUB_APP_ID ||  BC_ORGNAZTION_GIT_APP_ID,
+        privateKey: getGithubPrivateKey(),
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      })
 
     installationApps.nonInstallatedApp = request.defaults({
       request: {
@@ -43,10 +46,7 @@ export const getNonInstallationApp = () => {
   }
  } catch(e){
     logger.error('I catch an error', e);
-    
-
   }
-
 
   return installationApps.nonInstallatedApp
 }
@@ -54,7 +54,7 @@ export const getNonInstallationApp = () => {
 const newAuthorizedApp = (installationId) => {
 
   const app = createAppAuth({
-    appId: process.env.GITHUB_APP_ID || 131752,
+    appId: process.env.GITHUB_APP_ID || BC_ORGNAZTION_GIT_APP_ID,
     privateKey: getGithubPrivateKey(),
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -80,13 +80,12 @@ export const getInstallations = async () => {
     logger.info('getInstallations')
 
     const nonInstallationRequest = getNonInstallationApp()
-   
     
     if(nonInstallationRequest !== null){
       const response = await nonInstallationRequest('GET /app/installations')
       return response.data
     }
-    //TODO: maybe throw if there's no installation
+    //TODO(BILLY LI): maybe throw if there's no installation
     return []
 }
 

@@ -73,7 +73,6 @@ app.use(flash());
 // Authentication middleware
 authmware(app);
 
-
 const initGithubApp =  () => {
   try {
     logger.info(`Initializing Github App`)

@@ -52,3 +52,5 @@ export const CLUSTER_NAMES = [
 ]
 
 export const GOLD_QUORUM_COUNT = 2;
+
+export const BC_ORGNAZTION_GIT_APP_ID = 131752;

@@ -50,9 +50,10 @@ export const createContact = async (
 
 /**
  * POST /requests
+ * require body will have githubID and orgnization name that we need to invite them to
  * @param {Express Request} req
  * @param {Express Response} res
- * @returns undefined
+ * @returns will return 201 success code if request success, otherwise, will return 500 if there's any error.
  */
 export const inviteToOrg = async (
   { params, body }: { params: any, body: any }, res: Response
@@ -62,7 +63,7 @@ export const inviteToOrg = async (
   const { githubId: recipient, organizations } = body
 
   try {
-    logger.info(`user  approved request created for ${recipient}`)
+    logger.info(`user approved, request created for ${recipient}`)
     const { id } = await getUserByName(recipient)
 
     const promises = await inviteUserToOrgs(
@@ -72,8 +73,6 @@ export const inviteToOrg = async (
     )
 
     await Promise.all(promises)
-
-    // this is where we could create the invitations for recipient
 
     res.status(201).send({
       message: `${organizations.length} approved invitation${organizations.length > 1 ? 's' : ''
@@ -88,5 +87,4 @@ export const inviteToOrg = async (
       message: 'Unable to create invitation',
     })
   }
-
 }

@@ -64,7 +64,7 @@ const ProfileCreate: React.FC = () => {
       // 4. Create Project Request
       await api.createProjectRequestByProfileId(profileId);
 
-      // 5.0 invite technicalCOntact to bcgov repo, only invite in production environment
+      // 5. Invite technicalCOntact to bcgov repo, only invite in production environment
       if (process.env.NODE_ENV === 'production') {
         const invitationPromiss = technicalContacts.map((inviteUser) => {
           const inviteListPayload = {
@@ -79,7 +79,7 @@ const ProfileCreate: React.FC = () => {
 
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
-      // 6.All good? Tell the user.
+      // 6. All good? Tell the user.
       promptSuccessToastWithText('Your namespace request was successful');
     } catch (err) {
       setOpenBackdrop(false);
