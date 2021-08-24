@@ -36,8 +36,8 @@ export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> 
       profiles = await ProfileModel.findProfilesByUserIdOrEmail(userDetails.id, userDetails.email);
     }
     console.log('hiahiahia !!!!!!!!!!!!!', process.env)
-    
-    const extractName = ({displayName}) => {
+
+    const extractName = ({ displayName }) => {
       return displayName;
     }
 
@@ -48,19 +48,17 @@ export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> 
       return clusters
     }
 
-    if(profiles){
-      for (const profile of profiles) {
-        const clusters = await getClusters(profile);
-        profile.clusters = extractGoldDR(clusters).map(cluster => extractName(cluster));
-        
-        profile.quotaSize = await getQuotaSize(profile);
-        
-        if (!userDetails.accessFlags.includes(AccessFlag.EditAll)) {
-          const contacts = await ContactModel.findForProject(Number(profile.id));
-          profile.productOwners = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER);
-          profile.technicalLeads = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT);
-          profile.profileMetadata = await ProfileModel.findProfileMetadata(Number(profile.id));
-        }
+    for (const profile of profiles) {
+      const clusters = await getClusters(profile);
+      profile.clusters = extractGoldDR(clusters).map(cluster => extractName(cluster));
+
+      profile.quotaSize = await getQuotaSize(profile);
+
+      if (!userDetails.accessFlags.includes(AccessFlag.EditAll)) {
+        const contacts = await ContactModel.findForProject(Number(profile.id));
+        profile.productOwners = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER);
+        profile.technicalLeads = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT);
+        profile.profileMetadata = await ProfileModel.findProfileMetadata(Number(profile.id));
       }
     }
 

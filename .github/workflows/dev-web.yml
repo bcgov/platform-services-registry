@@ -72,13 +72,12 @@ jobs:
         if: ${{ failure() }}
         run: echo "Error in build step"; exit 1
 
-      - name: npm start
-        run: |
-          PORT=3000 npm start
-
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 30
           build: npm i -D cypress
           headless: true
           working-directory: ./web

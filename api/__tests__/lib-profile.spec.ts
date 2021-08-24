@@ -19,7 +19,6 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import ClusterModel from '../src/db/model/cluster';
 import { getProvisionStatus } from '../src/libs/profile';
 
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
@@ -33,7 +32,6 @@ const client = new Pool().connect();
 describe('Profile services', () => {
 
   it('getProvisionStatus works correctly', async () => {
-    const findByName = ClusterModel.prototype.findByName = jest.fn().mockResolvedValue(selectDefaultCluster[0]);
 
     const namespaces = [
       {
@@ -63,13 +61,13 @@ describe('Profile services', () => {
     ];
 
     client.query.mockResolvedValue({ rows: namespaces });
+    client.query.mockResolvedValue({ rows: selectDefaultCluster[0] });
     client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
     client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
     client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
     client.query.mockResolvedValue({ rows: [{ provisioned: true }] });
 
     const result = await getProvisionStatus(profile);
-    expect(findByName).toHaveBeenCalledTimes(1);
     expect(result).toEqual(true);
   });
 });

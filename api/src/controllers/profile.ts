@@ -18,6 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
+import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
@@ -25,10 +26,11 @@ import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
-import { getQuotaSize } from '../libs/profile';
+import { getQuotaSize, updateProfileStatus } from '../libs/profile';
 import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
+import { fetchAllDashboardProjects } from '../services/profile';
 
 const dm = new DataManager(shared.pgPool);
 
@@ -118,6 +120,7 @@ export const updateProfileContacts = async (
     });
     await Promise.all(contactPromises);
 
+    await updateProfileStatus(Number(profileId), PROFILE_STATUS.PROVISIONED)
     await RequestModel.updateCompletionStatus(Number(request.id));
 
     return res.status(204).end();
@@ -234,6 +237,21 @@ export const createProjectRequest = async (
     res.status(201).end();
   } catch (err) {
     const message = `Unable to add contact to profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const fetchDashboardProjectProfiles = async (
+  { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
+
+  try {
+    const results = await fetchAllDashboardProjects(user);
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = 'Unable fetch all project profiles';
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

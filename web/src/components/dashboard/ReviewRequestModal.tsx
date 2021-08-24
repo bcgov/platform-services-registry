@@ -41,8 +41,11 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
 
-  const poDetails = `${profileDetails.POName} | ${profileDetails.POEmail}`;
-  const tcDetails = `${profileDetails.TCName} | ${profileDetails.TCEmail}`;
+  const parseContacts = (contactDetails: any) => {
+    return contactDetails.map(
+      (contact: any) => ` ${contact.firstName} ${contact.lastName} | ${contact.email}`,
+    );
+  };
 
   const onSubmit = async (requestBody: any) => {
     setOpenBackdrop(true);
@@ -82,7 +85,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           name="project-cluster"
           placeholder="Silver"
           disabled
-          value={profileDetails.primaryClusterName}
+          value={profileDetails.clusters.join(', ')}
         />
       </Flex>
       <Flex flexDirection="column">
@@ -96,22 +99,22 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project-cluster">Product Owner</Label>
+        <Label htmlFor="product-owner">Product Owner</Label>
         <Input
           name="product-owner"
           placeholder="John Doe | john.doe@example.com"
           disabled
-          value={poDetails}
+          value={parseContacts(profileDetails.productOwners)}
           sx={{ textTransform: 'none' }}
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="technical-contact">Technical Contact</Label>
+        <Label htmlFor="technical-lead">Technical Leads</Label>
         <Input
-          name="project-cluster"
+          name="technical-lead"
           placeholder="Jane Doe | jane.doe@example.com"
           disabled
-          value={tcDetails}
+          value={parseContacts(profileDetails.technicalLeads)}
           sx={{ textTransform: 'none' }}
         />
       </Flex>

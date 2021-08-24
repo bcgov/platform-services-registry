@@ -27,7 +27,12 @@ import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCa
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
 import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
-import { PROFILE_EDIT_VIEW_NAMES, RESPONSE_STATUS_CODE, ROUTE_PATHS } from '../constants';
+import {
+  HOME_PAGE_URL,
+  PROFILE_EDIT_VIEW_NAMES,
+  RESPONSE_STATUS_CODE,
+  ROUTE_PATHS,
+} from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
@@ -48,8 +53,6 @@ const StyledDiv = styled.div`
   margin-right: ${theme.spacingIncrements[1]};
 `;
 
-const txtForQuotaEdit =
-  "All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).";
 const { hasPendingEditRequest } = getProfileStatus();
 
 export interface BaseData {
@@ -217,7 +220,16 @@ const ProfileEdit: React.FC = (props: any) => {
           }}
         >
           <ShadowBox p={5} style={{ position: 'relative' }}>
-            <Text as="h1">{profileState.projectDetails.name}</Text>
+            <Flex>
+              <Box my="auto">
+                <RouterLink className="misc-class-m-dropdown-link" to={HOME_PAGE_URL}>
+                  <Icon hover color="black" name="goBack" width={1.5} height={1.5} />
+                </RouterLink>
+              </Box>
+              <Text as="h1" mx={2}>
+                {profileState.projectDetails.name}
+              </Text>
+            </Flex>
             {cards.length > 0 &&
               cards.map((c: any, index: number) => (
                 <Box key={index}>
@@ -225,11 +237,9 @@ const ProfileEdit: React.FC = (props: any) => {
                     <Text as="h3" color={theme.colors.contrast} mx={2}>
                       {c.title}
                     </Text>
-                    {!profileState.hasPendingEdit && profileState.isProvisioned && (
-                      <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
-                        <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
-                      </RouterLink>
-                    )}
+                    <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
+                      <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
+                    </RouterLink>
                   </Flex>
                   <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
                     {c.component}
@@ -288,11 +298,6 @@ const ProfileEdit: React.FC = (props: any) => {
               />
             )}
           </ShadowBox>
-          {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && (
-            <Box p="30px" width={[1, 1, 1 / 3]}>
-              <Text>{txtForQuotaEdit}</Text>
-            </Box>
-          )}
         </Flex>
       </ShadowBox>
     </StyledDiv>

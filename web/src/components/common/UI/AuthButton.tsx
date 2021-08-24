@@ -25,7 +25,7 @@ export interface IButtonProps {
   onClick?: (e: any) => void;
 }
 
-const StyledButton = styled.button`
+export const StyledButton = styled.button`
   padding: 8px 16px;
   border: none;
   background-color: #fcba19;
