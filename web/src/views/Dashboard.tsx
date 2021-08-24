@@ -43,7 +43,12 @@ const Dashboard: React.FC = () => {
       setOpenBackdrop(true);
       try {
         const dashboardProjects = await api.getDashboardProjects();
-        const profileDetailsArray = [...dashboardProjects.data];
+        let profileDetailsArray: any;
+        if (dashboardProjects.data) {
+          profileDetailsArray = [...dashboardProjects.data];
+        } else {
+          profileDetailsArray = [];
+        }
         setProfileDetails(profileDetailsArray);
       } catch (err) {
         promptErrToastWithText('Something went wrong');
