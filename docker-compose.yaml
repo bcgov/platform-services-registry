@@ -21,9 +21,10 @@ x-env: &defaults
   CHES_SSO_CLIENT_ID:
   CHES_SSO_CLIENT_SECRET:
   NATS_HOST: nats://registry-nats
-  CLIENT_SECRET:
-  CLIENT_ID:
-  APP_ID: 128566
+  GITHUB_CLIENT_SECRET:
+  GITHUB_CLIENT_ID:
+  GITHUB_APP_ID: 
+  DEFAULT_GITHUB_ORGANIZATION:
 
 # volumes:
 #   pg_data:
