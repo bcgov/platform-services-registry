@@ -65,7 +65,7 @@ export const inviteToOrg = async (
 
   try {
     logger.info(`user approved, request created for ${recipient}`)
-    const organizations = process.env.DEFAULT_GITHUB_ORGANIZATION?.split(' ') || DEFAULT_GITHUB_ORGANIZATION
+    const organizations = process.env.GITHUB_ORGANIZATION?.split(' ') || DEFAULT_GITHUB_ORGANIZATION
     const { id } = await getUserByName(recipient)
 
     const promises = await inviteUserToOrgs(
