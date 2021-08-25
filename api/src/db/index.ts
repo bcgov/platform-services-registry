@@ -12,28 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-28.
-//
 
-import { Pool } from 'pg';
-import ClusterModel from './model/cluster';
-import ContactModel from './model/contact';
-import MinistryModel from './model/ministry';
-import NamespaceModel from './model/namespace';
-import ProfileModel from './model/profile';
-import QuotaModel from './model/quota';
-import RequestModel from './model/request';
-import UserProfileModel from './model/userprofile';
+import { Pool } from "pg";
+import ClusterModel from "./model/cluster";
+import ContactModel from "./model/contact";
+import MinistryModel from "./model/ministry";
+import NamespaceModel from "./model/namespace";
+import ProfileModel from "./model/profile";
+import QuotaModel from "./model/quota";
+import RequestModel from "./model/request";
+import UserProfileModel from "./model/userprofile";
 
 export default class DataManager {
   pool: Pool;
+
   ProfileModel: ProfileModel;
+
   NamespaceModel: NamespaceModel;
+
   ContactModel: ContactModel;
+
   UserProfileModel: UserProfileModel;
+
   ClusterModel: ClusterModel;
+
   MinistryModel: MinistryModel;
+
   RequestModel: RequestModel;
+
   QuotaModel: QuotaModel;
 
   constructor(pool: Pool) {

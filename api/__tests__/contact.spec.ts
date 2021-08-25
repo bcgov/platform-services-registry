@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { createContact } from '../src/controllers/contact';
+import createContact from '../src/controllers/contact';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/insert-contact.json');

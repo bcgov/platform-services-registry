@@ -14,21 +14,19 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
-import DataManager from '../db';
-import shared from '../libs/shared';
-import { validateRequiredFields } from '../libs/utils';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Response } from "express";
+import DataManager from "../db";
+import shared from "../libs/shared";
+import { validateRequiredFields } from "../libs/utils";
 
 const dm = new DataManager(shared.pgPool);
 const { ContactModel } = dm;
 
-export const createContact = async (
-  { params, body }: { params: any, body: any }, res: Response
+const createContact = async (
+  { body }: { body: any },
+  res: Response
 ): Promise<void> => {
-
   const rv = validateRequiredFields(ContactModel.requiredFields, body);
   if (rv) {
     throw rv;
@@ -39,9 +37,11 @@ export const createContact = async (
 
     res.status(201).json(result);
   } catch (err) {
-    const message = `Unable to create contact`;
+    const message = "Unable to create contact";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
   }
 };
+
+export default createContact;

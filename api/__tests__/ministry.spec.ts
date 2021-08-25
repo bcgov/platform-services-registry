@@ -20,7 +20,7 @@ import fs from 'fs';
 import { camelCase } from 'lodash';
 import path from 'path';
 import { Pool } from 'pg';
-import { fetchMinistrySponsors } from '../src/controllers/ministry';
+import fetchMinistrySponsors from '../src/controllers/ministry';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-ministry-sponsors.json');

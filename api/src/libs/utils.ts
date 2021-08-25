@@ -14,11 +14,14 @@
 // limitations under the License.
 //
 
-import { errorWithCode } from '@bcgov/common-nodejs-utils';
-import { difference } from 'lodash';
-import { PROJECT_SET_NAMES, ROLE_IDS } from '../constants';
+import { errorWithCode } from "@bcgov/common-nodejs-utils";
+import { difference } from "lodash";
+import { PROJECT_SET_NAMES, ROLE_IDS } from "../constants";
 
-export const validateRequiredFields = (requiredFields: string[], pojo: object): Error | undefined => {
+export const validateRequiredFields = (
+  requiredFields: string[],
+  pojo: object
+): Error | undefined => {
   const diff = difference(requiredFields, Object.keys(pojo));
 
   if (diff.length !== 0) {
@@ -29,20 +32,27 @@ export const validateRequiredFields = (requiredFields: string[], pojo: object): 
   // because lodash isEmpty seems to produce confusing results
   // e.g. lodash.isEmpty(true) OR lodash.isEmpty(1) yields true
   function isEmptyValue(value) {
-    return value === undefined || value === null || value === ''
-      || (typeof value === 'object' && Object.keys(value).length === 0)
+    return (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      (typeof value === "object" && Object.keys(value).length === 0)
+    );
   }
 
-  const blanks = requiredFields.filter((requiredField: string) => {
-    return isEmptyValue(pojo[requiredField]);
-  });
+  const blanks = requiredFields.filter((requiredField: string) =>
+    isEmptyValue(pojo[requiredField])
+  );
 
   if (blanks.length !== 0) {
-    return errorWithCode(`Required properties can not be empty: ${blanks}`, 400);
+    return errorWithCode(
+      `Required properties can not be empty: ${blanks}`,
+      400
+    );
   }
 
   return;
-}
+};
 
 // when we pass the nats/json message through nats / sync endpoints
 // there is an inconsistent double quote issue in profile description
@@ -50,20 +60,20 @@ export const validateRequiredFields = (requiredFields: string[], pojo: object): 
 // the function BELOW is to address such issue
 // in order to make sure the final manifest yaml file is valid to ocp
 export const replaceForDescription = (contextJson: any) => {
-  const doubleQuoteReplaced = contextJson.description.replace(/"/g, ' ').replace(/\\/g, '');
+  const updatedContextJson = contextJson;
+  const doubleQuoteReplaced = contextJson.description
+    .replace(/"/g, " ")
+    .replace(/\\/g, "");
 
-  contextJson.description = doubleQuoteReplaced;
-  return contextJson;
+  updatedContextJson.description = doubleQuoteReplaced;
+  return updatedContextJson;
 };
 
-export const parseEditObject = (results: any) => {
-  return results.map(result => {
-    return {
-        ...result,
-        editObject: JSON.parse(result.editObject),
-    }
-});
-}
+export const parseEditObject = (results: any) =>
+  results.map((result) => ({
+    ...result,
+    editObject: JSON.parse(result.editObject),
+  }));
 
 export const transformContacts = (contactSet: any[]) => {
   const contacts: any = {};
@@ -80,8 +90,7 @@ export const transformContacts = (contactSet: any[]) => {
     }
   });
   return contacts;
-}
+};
 
-export const generateNamespaceNames = (namespacePrefix: string) => {
-  return PROJECT_SET_NAMES.map(n => `${namespacePrefix}-${n}`);
-}
+export const generateNamespaceNames = (namespacePrefix: string) =>
+  PROJECT_SET_NAMES.map((n) => `${namespacePrefix}-${n}`);

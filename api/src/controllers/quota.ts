@@ -12,39 +12,43 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
-import DataManager from '../db';
-import shared from '../libs/shared';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Request, Response } from "express";
+import DataManager from "../db";
+import shared from "../libs/shared";
 
 const dm = new DataManager(shared.pgPool);
 
-export const fetchQuota = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { QuotaModel } = dm;
-        const results = await QuotaModel.findQuota();
-        res.status(200).json(results);
-    } catch (err) {
-        const message = `Unable fetch quotas`;
-        logger.error(`${message}, err = ${err.message}`);
+export const fetchQuota = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { QuotaModel } = dm;
+    const results = await QuotaModel.findQuota();
+    res.status(200).json(results);
+  } catch (err) {
+    const message = "Unable fetch quotas";
+    logger.error(`${message}, err = ${err.message}`);
 
-        throw errorWithCode(message, 500);
-    }
+    throw errorWithCode(message, 500);
+  }
 };
 
+export const fetchQuotaSizes = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { QuotaModel } = dm;
+    const quotaSizes = await QuotaModel.findQuotaSizes();
+    res.status(200).json(quotaSizes);
+  } catch (err) {
+    const message = "Unable to get quota sizes";
+    logger.error(`${message}, err = ${err.message}`);
 
-export const fetchQuotaSizes = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { QuotaModel } = dm;
-        const quotaSizes = await QuotaModel.findQuotaSizes();
-        res.status(200).json(quotaSizes);
-    } catch (err) {
-        const message = `Unable to get quota sizes`;
-        logger.error(`${message}, err = ${err.message}`);
-
-        throw errorWithCode(message, 500);
-    }
+    throw errorWithCode(message, 500);
+  }
 };

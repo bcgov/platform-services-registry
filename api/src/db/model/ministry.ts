@@ -11,10 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { CommonFields, Model } from './model';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { CommonFields, Model } from "./model";
 
 export interface Ministry extends CommonFields {
   name: string;
@@ -23,10 +24,10 @@ export interface Ministry extends CommonFields {
 // TODO: fix around the ministry id as it's
 // not SERIAL PRIMARY KEY but varchar(4) PRIMARY KEY
 export default class MinistryModel extends Model {
-  table: string = 'ref_bus_org';
-  requiredFields: string[] = [
-    'name',
-  ];
+  table: string = "ref_bus_org";
+
+  requiredFields: string[] = ["name"];
+
   pool: Pool;
 
   constructor(pool: any) {
@@ -40,16 +41,14 @@ export default class MinistryModel extends Model {
             INSERT INTO ${this.table}
               (name)
               VALUES ($1) RETURNING *;`,
-      values: [
-        data.name,
-      ],
+      values: [data.name],
     };
 
     try {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to create ministry`;
+      const message = "Unable to create ministry";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
@@ -71,9 +70,7 @@ export default class MinistryModel extends Model {
     try {
       const record = await this.findById(ministryId);
       const aData = { ...record, ...data };
-      query.values = [
-        aData.name,
-      ];
+      query.values = [aData.name];
 
       const results = await this.runQuery(query);
       return results.pop();
@@ -100,7 +97,7 @@ export default class MinistryModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to archive ministry`;
+      const message = "Unable to archive ministry";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

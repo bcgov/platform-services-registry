@@ -14,47 +14,54 @@
 // limitations under the License.
 //
 
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
-import { PROFILE_STATUS } from '../constants';
-import DataManager from '../db';
-import { ProjectProfile } from '../db/model/profile';
-import { generateNamespacePrefix } from '../db/utils';
-import { AuthenticatedUser } from '../libs/authmware';
-import { AccessFlag } from '../libs/authorization';
-import { fulfillRequest } from '../libs/fulfillment';
-import { updateProfileStatus } from '../libs/profile';
-import { requestProjectProfileEdit } from '../libs/request';
-import shared from '../libs/shared';
-import { validateRequiredFields } from '../libs/utils';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Response } from "express";
+import { PROFILE_STATUS } from "../constants";
+import DataManager from "../db";
+import { ProjectProfile } from "../db/model/profile";
+import { generateNamespacePrefix } from "../db/utils";
+import { AuthenticatedUser } from "../libs/authmware";
+import { AccessFlag } from "../libs/authorization";
+import { fulfillRequest } from "../libs/fulfillment";
+import { updateProfileStatus } from "../libs/profile";
+import { requestProjectProfileEdit } from "../libs/request";
+import shared from "../libs/shared";
+import { validateRequiredFields } from "../libs/utils";
 
 const dm = new DataManager(shared.pgPool);
 
 export const uniqueNamespacePrefix = async (): Promise<string | undefined> => {
   const { ProfileModel } = dm;
   const attempts = 3;
-  const candidates = Array.from({ length: attempts }, () => generateNamespacePrefix())
-  const promises = candidates.map(c => ProfileModel.isNamespacePrefixUnique(c));
+  const candidates = Array.from({ length: attempts }, () =>
+    generateNamespacePrefix()
+  );
+  const promises = candidates.map((c) =>
+    ProfileModel.isNamespacePrefixUnique(c)
+  );
 
   try {
     const results = await Promise.all(promises);
-    const values = results.map((cur, idx) => {
-      if (cur) {
-        return candidates[idx];
-      }
-
-      return;
-    }).filter(v => typeof v !== 'undefined');
+    const values = results
+      .map((cur, idx) => {
+        if (cur) {
+          return candidates[idx];
+        }
+        return;
+      })
+      .filter((v) => typeof v !== "undefined");
 
     return values.pop();
   } catch (err) {
     logger.error(err.message);
-    return;
+    throw err;
   }
-}
+};
 
 export const fetchAllProjectProfiles = async (
-  { user }: { user: AuthenticatedUser }, res: Response): Promise<void> => {
+  { user }: { user: AuthenticatedUser },
+  res: Response
+): Promise<void> => {
   const { ProfileModel } = dm;
 
   try {
@@ -62,12 +69,15 @@ export const fetchAllProjectProfiles = async (
     if (user.accessFlags.includes(AccessFlag.EditAll)) {
       results = await ProfileModel.findAll();
     } else {
-      results = await ProfileModel.findProfilesByUserIdOrEmail(user.id, user.email);
+      results = await ProfileModel.findProfilesByUserIdOrEmail(
+        user.id,
+        user.email
+      );
     }
 
     res.status(200).json(results);
   } catch (err) {
-    const message = 'Unable fetch all project profiles';
+    const message = "Unable fetch all project profiles";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -75,7 +85,8 @@ export const fetchAllProjectProfiles = async (
 };
 
 export const fetchProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -97,7 +108,8 @@ export const fetchProjectProfile = async (
 };
 
 export const createProjectProfile = async (
-  { body, user }: { body: any, user: AuthenticatedUser }, res: Response
+  { body, user }: { body: any; user: AuthenticatedUser },
+  res: Response
 ): Promise<void> => {
   const { ProfileModel, ClusterModel } = dm;
   const data = { ...body, userId: user.id };
@@ -107,8 +119,8 @@ export const createProjectProfile = async (
   // with the actual value further on.
   const rv = validateRequiredFields(ProfileModel.requiredFields, {
     ...data,
-    namespacePrefix: 'placeholder',
-    primaryClusterName: 'placeholder',
+    namespacePrefix: "placeholder",
+    primaryClusterName: "placeholder",
   });
 
   if (rv) {
@@ -119,7 +131,7 @@ export const createProjectProfile = async (
     if (data.primaryClusterName !== undefined) {
       const cluster = await ClusterModel.findByName(data.primaryClusterName);
       if (!cluster) {
-        throw new Error('Unable to find requested cluster');
+        throw new Error("Unable to find requested cluster");
       }
     } else {
       const defaultCluster = await ClusterModel.findDefault();
@@ -128,14 +140,14 @@ export const createProjectProfile = async (
 
     const namespacePrefix = await uniqueNamespacePrefix();
     if (!namespacePrefix) {
-      throw new Error('Unable to generate unique namespace prefix');
+      throw new Error("Unable to generate unique namespace prefix");
     }
 
     const results = await ProfileModel.create({ ...data, namespacePrefix });
 
     res.status(200).json(results);
   } catch (err) {
-    const message = 'Unable create new project profile';
+    const message = "Unable create new project profile";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -143,16 +155,17 @@ export const createProjectProfile = async (
 };
 
 export const updateProjectProfile = async (
-  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+  { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
+  res: Response
 ): Promise<void> => {
   const { ProfileModel, RequestModel } = dm;
   const { profileId } = params;
 
   const rv = validateRequiredFields(ProfileModel.requiredFields, {
     ...body,
-    userId: 'placeholder',
-    namespacePrefix: 'placeholder',
-    primaryClusterName: 'placeholder',
+    userId: "placeholder",
+    namespacePrefix: "placeholder",
+    primaryClusterName: "placeholder",
   });
   if (rv) {
     throw rv;
@@ -182,7 +195,9 @@ export const updateProjectProfile = async (
   } = body;
 
   try {
-    const currentProjectProfile: ProjectProfile = await ProfileModel.findById(profileId);
+    const currentProjectProfile: ProjectProfile = await ProfileModel.findById(
+      profileId
+    );
     const aBody = {
       name,
       description,
@@ -213,17 +228,27 @@ export const updateProjectProfile = async (
       currentProjectProfile.name !== name,
       currentProjectProfile.description !== description,
     ];
-    const provisionerRelatedChanges = editCompares.some(editCompare => editCompare);
+    const provisionerRelatedChanges = editCompares.some(
+      (editCompare) => editCompare
+    );
     if (provisionerRelatedChanges) {
-      const request = await requestProjectProfileEdit(Number(profileId), { ...aBody, id: profileId }, user, false);
+      const request = await requestProjectProfileEdit(
+        Number(profileId),
+        { ...aBody, id: profileId },
+        user,
+        false
+      );
       await fulfillRequest(request);
       res.status(202).end();
     } else {
       const request = await requestProjectProfileEdit(
-        Number(profileId), { ...aBody, id: profileId }, user, false
+        Number(profileId),
+        { ...aBody, id: profileId },
+        user,
+        false
       );
       await ProfileModel.update(profileId, aBody);
-      await updateProfileStatus(Number(profileId), PROFILE_STATUS.PROVISIONED)
+      await updateProfileStatus(Number(profileId), PROFILE_STATUS.PROVISIONED);
       await RequestModel.updateCompletionStatus(Number(request.id));
       res.status(204).end();
     }
@@ -240,7 +265,8 @@ export const updateProjectProfile = async (
 };
 
 export const archiveProjectProfile = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
@@ -254,7 +280,7 @@ export const archiveProjectProfile = async (
       throw err;
     }
 
-    const message = 'Unable to archive project profile';
+    const message = "Unable to archive project profile";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

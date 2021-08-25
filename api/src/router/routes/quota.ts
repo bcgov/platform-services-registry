@@ -13,24 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-15.
-//
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { fetchQuota, fetchQuotaSizes } from '../../controllers/quota';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import { fetchQuota, fetchQuotaSizes } from "../../controllers/quota";
 
 const router = express.Router();
 
 // Quota
 // Fetches raw quota specifications from DB
 // This endpoint is not being utilized by the front end; implemented for future use
-router.get('/', asyncMiddleware(fetchQuota));
+router.get("/", asyncMiddleware(fetchQuota));
 
 // Utilizes raw data from DB
 // and transfroms to usable data for the front end
-router.get('/sizes', asyncMiddleware(fetchQuotaSizes));
+router.get("/sizes", asyncMiddleware(fetchQuotaSizes));
 
 export default router;

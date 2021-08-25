@@ -14,18 +14,22 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { API_CLIENT_ID, BOT_CLIENT_ID, STATUS_ERROR, USER_ROLES, WEB_CLIENT_ID } from '../constants';
-import DataManager from '../db';
-import shared from '../libs/shared';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import {
+  API_CLIENT_ID,
+  BOT_CLIENT_ID,
+  STATUS_ERROR,
+  USER_ROLES,
+  WEB_CLIENT_ID,
+} from "../constants";
+import DataManager from "../db";
+import shared from "./shared";
 
 export const enum AccessFlag {
-  ProvisionOnTestCluster = 'provision_on_test_clusters',
-  EditAll = 'edit_all',
-  ApproveRequests = 'approve_request',
-  BotCallback = 'bot_callback',
+  ProvisionOnTestCluster = "provision_on_test_clusters",
+  EditAll = "edit_all",
+  ApproveRequests = "approve_request",
+  BotCallback = "bot_callback",
 }
 
 export const AccessFlags = {};
@@ -46,9 +50,13 @@ interface DecodedJwtPayloadAccessObj {
   roles: string[];
 }
 
-export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => {
+export const assignUserAccessFlags = (
+  jwtPayload: any
+): AccessFlag[] | Error => {
   if (jwtPayload.clientId) {
-    return AccessFlags[jwtPayload.clientId] ? AccessFlags[jwtPayload.clientId] : [];
+    return AccessFlags[jwtPayload.clientId]
+      ? AccessFlags[jwtPayload.clientId]
+      : [];
   }
 
   if (jwtPayload.resource_access) {
@@ -58,53 +66,53 @@ export const assignUserAccessFlags = (jwtPayload: any): AccessFlag[] | Error => 
     if (!decodedJwtPayloadAccessObj) {
       return [];
     }
-    const roles = decodedJwtPayloadAccessObj.roles;
-    const nestedFlags = roles.map(role => AccessFlags[role]);
+    const { roles } = decodedJwtPayloadAccessObj;
+    const nestedFlags = roles.map((role) => AccessFlags[role]);
 
     // return flattened and de-duplicated flags
-    return nestedFlags.reduce((a, b) => {
-      return b.map((e, i) => { return a[i] instanceof Object ? a[i] : e; });
-    }, []);
+    return nestedFlags.reduce(
+      (a, b) => b.map((e, i) => (a[i] instanceof Object ? a[i] : e)),
+      []
+    );
   }
   throw new Error();
 };
 
-export const authorize = (asyncFn): any[] => {
-  return [
-    (req, res, next) => {
-      asyncFn(req)
-        .catch((err: Error) => {
-          if (err.message === STATUS_ERROR[401]) {
-            next(err);
-          } else {
-            const message = 'Unable to authorize';
-            logger.error(`${message}, err = ${err.message}`);
+export const authorize = (asyncFn): any[] => [
+  (req, res, next) => {
+    asyncFn(req)
+      .catch((err: Error) => {
+        if (err.message === STATUS_ERROR[401]) {
+          next(err);
+        } else {
+          const message = "Unable to authorize";
+          logger.error(`${message}, err = ${err.message}`);
 
-            next(errorWithCode(message, 500));
-          }
-        })
-        .then(() => next());
-    },
-  ];
-};
+          next(errorWithCode(message, 500));
+        }
+      })
+      .then(() => next());
+  },
+];
 
-export const authorizeByFlag = (accessFlag: AccessFlag) => {
-  return [
-    (req, res, next) => {
-      const { user } = req;
-      if (!user.accessFlags.includes(accessFlag)) {
-        throw errorWithCode(STATUS_ERROR[401], 401);
-      }
-      next();
-    },
-  ];
-};
+export const authorizeByFlag = (accessFlag: AccessFlag) => [
+  (req, res, next) => {
+    const { user } = req;
+    if (!user.accessFlags.includes(accessFlag)) {
+      throw errorWithCode(STATUS_ERROR[401], 401);
+    }
+    next();
+  },
+];
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, ClusterModel } = dm;
 
 export const validateRequiredProfile = async (req): Promise<Error | void> => {
-  const { params: { profileId }, user } = req;
+  const {
+    params: { profileId },
+    user,
+  } = req;
 
   if (user.accessFlags.includes(AccessFlag.EditAll)) {
     return;
@@ -116,7 +124,7 @@ export const validateRequiredProfile = async (req): Promise<Error | void> => {
   }
 
   const projectContacts = await ContactModel.findForProject(Number(profileId));
-  const authorizedEmails = projectContacts.map(contact => contact.email);
+  const authorizedEmails = projectContacts.map((contact) => contact.email);
   if (authorizedEmails.includes(user.email)) {
     return;
   }
@@ -125,12 +133,21 @@ export const validateRequiredProfile = async (req): Promise<Error | void> => {
 };
 
 export const validateRequiredCluster = async (req): Promise<Error | void> => {
-  const { body: { primaryClusterName }, user } = req;
+  const {
+    body: { primaryClusterName },
+    user,
+  } = req;
 
   if (primaryClusterName !== undefined) {
     const cluster = await ClusterModel.findByName(primaryClusterName);
 
-    if (cluster && !(cluster.isProd || user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster))) {
+    if (
+      cluster &&
+      !(
+        cluster.isProd ||
+        user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster)
+      )
+    ) {
       throw errorWithCode(STATUS_ERROR[401], 401);
     }
   }

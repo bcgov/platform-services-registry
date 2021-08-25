@@ -13,16 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-04-21.
-//
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
 
 const router = express.Router();
 
-router.get('/', asyncMiddleware(async (req, res) => res.status(200).end()));
+router.get(
+  "/",
+  asyncMiddleware(async (req, res) => res.status(200).end())
+);
 
 export default router;

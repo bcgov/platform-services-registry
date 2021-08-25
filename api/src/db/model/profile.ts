@@ -14,12 +14,10 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { PROFILE_STATUS } from '../../constants';
-import { CommonFields, Model } from './model';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { PROFILE_STATUS } from "../../constants";
+import { CommonFields, Model } from "./model";
 
 export interface ProjectProfile extends CommonFields {
   name: string;
@@ -50,16 +48,18 @@ export interface ProjectProfile extends CommonFields {
 }
 
 export default class ProfileModel extends Model {
-  table: string = 'profile';
+  table: string = "profile";
+
   requiredFields: string[] = [
-    'name',
-    'description',
-    'busOrgId',
-    'prioritySystem',
-    'userId',
-    'namespacePrefix',
-    'primaryClusterName',
+    "name",
+    "description",
+    "busOrgId",
+    "prioritySystem",
+    "userId",
+    "namespacePrefix",
+    "primaryClusterName",
   ];
+
   pool: Pool;
 
   constructor(pool: any) {
@@ -106,7 +106,9 @@ export default class ProfileModel extends Model {
         data.other,
         data.primaryClusterName,
         data.migratingLicenseplate,
-        data.profileStatus ? data.profileStatus : PROFILE_STATUS.PENDING_APPROVAL,
+        data.profileStatus
+          ? data.profileStatus
+          : PROFILE_STATUS.PENDING_APPROVAL,
       ],
     };
 
@@ -114,7 +116,7 @@ export default class ProfileModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to create project profile`;
+      const message = "Unable to create project profile";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
@@ -127,9 +129,7 @@ export default class ProfileModel extends Model {
         SELECT * FROM ${this.table}
           WHERE namespace_prefix = $1;
       `,
-      values: [
-        prefix,
-      ],
+      values: [prefix],
     };
 
     try {
@@ -193,7 +193,7 @@ export default class ProfileModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to update project profile`;
+      const message = "Unable to update project profile";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
@@ -215,16 +215,19 @@ export default class ProfileModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to archive project profile`;
+      const message = "Unable to archive project profile";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
   }
 
-  async addContactToProfile(profileId: number, contactId: number): Promise<void> {
+  async addContactToProfile(
+    profileId: number,
+    contactId: number
+  ): Promise<void> {
     const values: any[] = [];
-    const table = 'profile_contact';
+    const table = "profile_contact";
     const query = {
       text: `
         INSERT INTO ${table}
@@ -234,10 +237,7 @@ export default class ProfileModel extends Model {
     };
 
     try {
-      query.values = [
-        profileId,
-        contactId,
-      ];
+      query.values = [profileId, contactId];
 
       const results = await this.runQuery(query);
 
@@ -255,15 +255,13 @@ export default class ProfileModel extends Model {
       text: `
         SELECT COUNT(*) FROM ${this.table}
           WHERE namespace_prefix = $1;`,
-      values: [
-        prefix,
-      ],
+      values: [prefix],
     };
 
     try {
       const results = await this.runQuery(query);
 
-      return Number(results.pop().count) === 0 ? true : false;
+      return Number(results.pop().count) === 0;
     } catch (err) {
       const message = `Unable to lookup namespace prefix ${prefix}`;
       logger.error(`${message}, err = ${err.message}`);
@@ -317,7 +315,10 @@ export default class ProfileModel extends Model {
     }
   }
 
-  async updateProfileStatus(profileId: number, profileStatus: string): Promise<any> {
+  async updateProfileStatus(
+    profileId: number,
+    profileStatus: string
+  ): Promise<any> {
     const query = {
       text: `
         UPDATE ${this.table}
@@ -425,7 +426,7 @@ export default class ProfileModel extends Model {
       const { profiles } = results.pop();
       return profiles;
     } catch (err) {
-      const message = `Unable to fetch Profile(s) with User Id `;
+      const message = "Unable to fetch Profile(s) with User Id ";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

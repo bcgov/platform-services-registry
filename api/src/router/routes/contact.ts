@@ -13,18 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-06-16.
-//
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { createContact } from '../../controllers/contact';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import createContact from "../../controllers/contact";
 
 const router = express.Router();
 
 // Contact
-router.post('/', asyncMiddleware(createContact));
+router.post("/", asyncMiddleware(createContact));
 
 export default router;

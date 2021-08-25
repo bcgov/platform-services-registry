@@ -12,12 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2020-07-13.
-//
 
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { CommonFields, Model } from './model';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { CommonFields, Model } from "./model";
 
 export interface UserProfile extends CommonFields {
   keycloakId: number;
@@ -25,10 +23,10 @@ export interface UserProfile extends CommonFields {
 }
 
 export default class UserProfileModel extends Model {
-  public table: string = 'user_profile';
-  requiredFields: string[] = [
-    'keycloakId',
-  ];
+  public table: string = "user_profile";
+
+  requiredFields: string[] = ["keycloakId"];
+
   pool: Pool;
 
   constructor(pool: any) {
@@ -42,15 +40,13 @@ export default class UserProfileModel extends Model {
         INSERT INTO ${this.table}
           (keycloak_id)
           VALUES ($1) RETURNING *;`,
-      values: [
-        data.keycloakId,
-      ],
+      values: [data.keycloakId],
     };
 
     try {
       return (await this.runQuery(query)).pop();
     } catch (err) {
-      const message = 'Unable to create UserProfile';
+      const message = "Unable to create UserProfile";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
@@ -63,9 +59,7 @@ export default class UserProfileModel extends Model {
         SELECT * FROM ${this.table}
           WHERE keycloak_id = $1;
       `,
-      values: [
-        keycloakId,
-      ],
+      values: [keycloakId],
     };
 
     try {
@@ -93,10 +87,7 @@ export default class UserProfileModel extends Model {
     try {
       const record = await this.findById(userProfileId);
       const aData = { ...record, ...data };
-      query.values = [
-        aData.lastSeenAt,
-        userProfileId,
-      ];
+      query.values = [aData.lastSeenAt, userProfileId];
 
       return (await this.runQuery(query)).pop();
     } catch (err) {
@@ -116,16 +107,14 @@ export default class UserProfileModel extends Model {
           WHERE id = $1
           RETURNING *;
       `,
-      values: [
-        userProfileId,
-      ],
+      values: [userProfileId],
     };
 
     try {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to archive UserProfile`;
+      const message = "Unable to archive UserProfile";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

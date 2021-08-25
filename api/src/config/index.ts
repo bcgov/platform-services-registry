@@ -15,21 +15,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2018-01-10.
-//
 
 /* eslint-env es6 */
 
-'use strict';
+import dotenv from "dotenv";
+import nconf from "nconf";
+import path from "path";
 
-import dotenv from 'dotenv';
-import nconf from 'nconf';
-import path from 'path';
+const env = process.env.NODE_ENV || "development";
+const fileName = "config.json";
 
-const env = process.env.NODE_ENV || 'development';
-const fileName = 'config.json';
-
-if (env === 'development') {
+if (env === "development") {
   dotenv.config();
 }
 

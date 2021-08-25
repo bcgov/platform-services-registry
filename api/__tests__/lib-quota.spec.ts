@@ -17,7 +17,7 @@
 'use strict';
 
 import { QuotaSize } from '../src/db/model/quota';
-import { getAllowedQuotaSizes } from '../src/libs/quota';
+import getAllowedQuotaSizes from '../src/libs/quota';
 
 describe('Quota services', () => {
 

@@ -14,11 +14,9 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { CommonFields, Model } from './model';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { CommonFields, Model } from "./model";
 
 export interface Contact extends CommonFields {
   firstName: string;
@@ -29,13 +27,10 @@ export interface Contact extends CommonFields {
 }
 
 export default class ContactModel extends Model {
-  table: string = 'contact';
-  requiredFields: string[] = [
-    'firstName',
-    'lastName',
-    'email',
-    'roleId',
-  ];
+  table: string = "contact";
+
+  requiredFields: string[] = ["firstName", "lastName", "email", "roleId"];
+
   pool: Pool;
 
   constructor(pool: any) {
@@ -62,7 +57,7 @@ export default class ContactModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to create contact`;
+      const message = "Unable to create contact";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
@@ -77,9 +72,7 @@ export default class ContactModel extends Model {
           JOIN profile_contact ON contact.id = profile_contact.contact_id
             WHERE profile_contact.profile_id = $1;
       `,
-      values: [
-        profileId,
-      ],
+      values: [profileId],
     };
 
     try {
@@ -141,7 +134,7 @@ export default class ContactModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to archive contact`;
+      const message = "Unable to archive contact";
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

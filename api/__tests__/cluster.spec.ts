@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
-import { fetchClusters } from '../src/controllers/cluster';
+import fetchClusters from '../src/controllers/cluster';
 import ClusterModel from '../src/db/model/cluster';
 import { AccessFlag } from '../src/libs/authorization';
 import FauxExpress from './src/fauxexpress';

@@ -14,58 +14,67 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import { GOLD_QUORUM_COUNT, ROLE_IDS } from '../constants';
-import DataManager from '../db';
-import { AccessFlag } from '../libs/authorization';
-import { getClusters, getQuotaSize } from '../libs/profile';
-import shared from '../libs/shared';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { GOLD_QUORUM_COUNT, ROLE_IDS } from "../constants";
+import DataManager from "../db";
+import { AccessFlag } from "../libs/authorization";
+import { getClusters, getQuotaSize } from "../libs/profile";
+import shared from "../libs/shared";
 
 const dm = new DataManager(shared.pgPool);
 
 const { ProfileModel, ContactModel } = dm;
 
-export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> => {
+const fetchAllDashboardProjects = async (userDetails: any): Promise<any> => {
   try {
     let profiles;
     if (userDetails.accessFlags.includes(AccessFlag.EditAll)) {
       profiles = await ProfileModel.fetchAllDashboardProjects();
     } else {
-      profiles = await ProfileModel.findProfilesByUserIdOrEmail(userDetails.id, userDetails.email);
+      profiles = await ProfileModel.findProfilesByUserIdOrEmail(
+        userDetails.id,
+        userDetails.email
+      );
     }
 
-    const extractName = ({displayName}) => {
-      return displayName;
-    }
+    const extractName = ({ displayName }) => displayName;
 
     const extractGoldDR = (clusters) => {
       if (clusters.length === GOLD_QUORUM_COUNT) {
-        return clusters.filter(cluster => cluster.name !== 'golddr')
+        return clusters.filter((cluster) => cluster.name !== "golddr");
       }
-      return clusters
-    }
+      return clusters;
+    };
 
     for (const profile of profiles) {
       const clusters = await getClusters(profile);
-      profile.clusters = extractGoldDR(clusters).map(cluster => extractName(cluster));
+      profile.clusters = extractGoldDR(clusters).map((cluster) =>
+        extractName(cluster)
+      );
 
       profile.quotaSize = await getQuotaSize(profile);
 
       if (!userDetails.accessFlags.includes(AccessFlag.EditAll)) {
         const contacts = await ContactModel.findForProject(Number(profile.id));
-        profile.productOwners = contacts.filter(contact => contact.roleId === ROLE_IDS.PRODUCT_OWNER);
-        profile.technicalLeads = contacts.filter(contact => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT);
-        profile.profileMetadata = await ProfileModel.findProfileMetadata(Number(profile.id));
+        profile.productOwners = contacts.filter(
+          (contact) => contact.roleId === ROLE_IDS.PRODUCT_OWNER
+        );
+        profile.technicalLeads = contacts.filter(
+          (contact) => contact.roleId === ROLE_IDS.TECHNICAL_CONTACT
+        );
+        profile.profileMetadata = await ProfileModel.findProfileMetadata(
+          Number(profile.id)
+        );
       }
     }
 
     return profiles;
   } catch (err) {
-    const message = `Unable to get projects for dashboard`;
+    const message = "Unable to get projects for dashboard";
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;
   }
 };
+
+export default fetchAllDashboardProjects;

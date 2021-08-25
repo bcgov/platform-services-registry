@@ -31,7 +31,7 @@ import ContactModel from '../src/db/model/contact';
 import { QuotaSize } from '../src/db/model/quota';
 import RequestModel from '../src/db/model/request';
 import { getQuotaSize } from '../src/libs/profile';
-import { getAllowedQuotaSizes } from '../src/libs/quota';
+import getAllowedQuotaSizes from '../src/libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../src/libs/request';
 import FauxExpress from './src/fauxexpress';
 
