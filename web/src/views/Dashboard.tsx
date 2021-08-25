@@ -37,8 +37,7 @@ const Dashboard: React.FC = () => {
     ? // @ts-ignore
       decodedToken.resource_access['registry-web'].roles
     : [];
-  console.log('I am herer!!!!', process.env);
-  console.log('I am herer!!!!', process.env.DEFAULT_GITHUB_ORGANIZATION);
+
   useEffect(() => {
     async function wrap() {
       setOpenBackdrop(true);
