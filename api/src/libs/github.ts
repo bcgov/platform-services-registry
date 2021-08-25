@@ -19,7 +19,7 @@ export const inviteUserToOrgs = async (userId, orgs) => {
       logger.info(`User ${userId} is being invited to ${org}`)
       await inviteUserToOrg(userId, org)
       logger.info(`User ${userId} is to ${org}`)
-    } catch (err:any) {
+    } catch (err) {
       if (err.status === 422) {
         logger.info(`User ${userId} is already in org ${org}. Skipping.`)
       } else {
