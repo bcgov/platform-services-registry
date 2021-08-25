@@ -49,7 +49,6 @@ export const getNonInstallationApp = () => {
   return installationApps.nonInstallatedApp;
 };
 
-
 const newAuthorizedApp = (installationId) => {
 
   const app = createAppAuth({
