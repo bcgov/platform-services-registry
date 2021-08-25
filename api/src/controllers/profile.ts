@@ -199,9 +199,6 @@ export const fetchProfileAllowedQuotaSizes = async (
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const quotaSize: QuotaSize = await getQuotaSize(profile);
     const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
-    console.log(profile);
-    console.log(quotaSize);
-    console.log(allowedQuotaSizes);
     res.status(200).json(allowedQuotaSizes);
   } catch (err) {
     const message = `Unable to fetch allowed quota-sizes for profile ${profileId}`;

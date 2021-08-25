@@ -61,11 +61,10 @@ jest.mock('../src/libs/profile', () => {
   };
 });
 
-jest.mock('../src/libs/quota', () => {
-  return {
-    getAllowedQuotaSizes: jest.fn().mockReturnValue(['medium']),
-  };
-});
+jest.mock('../src/libs/quota', () => 
+    jest.fn().mockReturnValue(['medium']),
+
+);
 
 jest.mock('../src/libs/request', () => ({
   requestProjectProfileEdit: jest.fn(),
