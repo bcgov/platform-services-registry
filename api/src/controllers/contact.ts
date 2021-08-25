@@ -41,7 +41,7 @@ export const createContact = async (
     const result = await ContactModel.create(body);
 
     res.status(201).json(result);
-  } catch (err) {
+  } catch (err:any) {
     const message = `Unable to create contact`;
     logger.error(`${message}, err = ${err.message}`);
 
@@ -81,9 +81,9 @@ export const inviteToOrg = async (
     })
     logger.info('user created invitationRequest')
 
-  } catch (e) {
+  } catch (err:any) {
     logger.warn(`user request failed`)
-    logger.error(e.message)
+    logger.error(err.message)
     res.status(500).send({
       message: 'Unable to create invitation',
     })

@@ -22,7 +22,7 @@ import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
 import CreateFormRequest from '../components/profileCreate/CreateFormRequest';
 import CreateFormTL from '../components/profileCreate/CreateFormTL';
-import { DEFAULT_GITHUB_ORGANIZATION, ROUTE_PATHS } from '../constants';
+import { ROUTE_PATHS } from '../constants';
 import useCommonState from '../hooks/useCommonState';
 import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
@@ -65,17 +65,14 @@ const ProfileCreate: React.FC = () => {
       await api.createProjectRequestByProfileId(profileId);
 
       // 5. Invite technicalCOntact to bcgov repo, only invite in production environment
-      if (process.env.NODE_ENV === 'production') {
-        const invitationPromiss = technicalContacts.map((inviteUser) => {
-          const inviteListPayload = {
-            githubId: inviteUser.githubId,
-            organizations: DEFAULT_GITHUB_ORGANIZATION,
-          };
-          return api.githubInvite(inviteListPayload);
-        });
+      const invitationPromiss = technicalContacts.map((inviteUser) => {
+        const inviteListPayload = {
+          githubId: inviteUser.githubId,
+        };
+        return api.githubInvite(inviteListPayload);
+      });
 
-        await Promise.all(invitationPromiss);
-      }
+      await Promise.all(invitationPromiss);
 
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
