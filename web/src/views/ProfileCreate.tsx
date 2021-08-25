@@ -40,11 +40,9 @@ const ProfileCreate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     const { profile, technicalLeads, productOwner } = formData;
-
     setOpenBackdrop(true);
     try {
       const technicalContacts = [...technicalLeads, productOwner];
-
       const clusters = transformClusters(profile);
 
       // 1. Create the project profile.
