@@ -61,3 +61,5 @@ export const PROFILE_STATUS = {
   PENDING_EDIT: 'pending_edit',
   PROVISIONED: 'provisioned'
 }
+
+export const DEFAULT_GITHUB_ORGANIZATION = ["bcgov", "BCDevOps"]

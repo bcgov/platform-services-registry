@@ -21,6 +21,7 @@ import { Response } from 'express';
 import DataManager from '../db';
 import { getUserByName, inviteUserToOrgs } from '../libs/github';
 import shared from '../libs/shared';
+import { DEFAULT_GITHUB_ORGANIZATION } from '../constants';
 import { validateRequiredFields } from '../libs/utils';
 
 
@@ -60,16 +61,16 @@ export const inviteToOrg = async (
 ): Promise<void> => {
   logger.info('createInvitationRequest')
 
-  const { githubId: recipient, organizations } = body
+  const { githubId: recipient } = body
 
   try {
     logger.info(`user approved, request created for ${recipient}`)
+    const organizations = process.env.DEFAULT_GITHUB_ORGANIZATION?.split(' ') || DEFAULT_GITHUB_ORGANIZATION
     const { id } = await getUserByName(recipient)
 
     const promises = await inviteUserToOrgs(
       id,
-      organizations,
-      recipient
+      organizations
     )
 
     await Promise.all(promises)

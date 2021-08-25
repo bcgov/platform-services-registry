@@ -5,7 +5,6 @@ import path from 'path'
 const getBasePathWithFile = (file) => {
   let filePath
   if (
-    (process.env.NODE_ENV === 'production') &&
     process.env.PRIVATE_KEY_PATH &&
     file === 'github-private-key.pem'
   ) {

@@ -35,7 +35,6 @@ export const fetchAllDashboardProjects = async (userDetails: any): Promise<any> 
     } else {
       profiles = await ProfileModel.findProfilesByUserIdOrEmail(userDetails.id, userDetails.email);
     }
-    console.log('hiahiahia !!!!!!!!!!!!!', process.env)
 
     const extractName = ({ displayName }) => {
       return displayName;

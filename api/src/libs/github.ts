@@ -1,6 +1,6 @@
 import { logger } from '@bcgov/common-nodejs-utils';
-import { getConfig } from '../config/githubConfig'
-import { getAuthenticatedApps } from './githubInvitationInit'
+import { getConfig } from '../config/githubConfig';
+import { getAuthenticatedApps } from './githubInvitationInit';
 
 
 export const inviteUserToOrg = async (userId, org) => {
@@ -12,7 +12,7 @@ export const inviteUserToOrg = async (userId, org) => {
   })
 }
 
-export const inviteUserToOrgs = async (userId, orgs, recipient) => {
+export const inviteUserToOrgs = async (userId, orgs) => {
   logger.info(`inviteUserToOrg ${userId} ${orgs}`)
   return orgs.map(async (org) => {
     try {
@@ -37,9 +37,9 @@ export const getUserByName = async (username) => {
   const primaryOrg = getConfig().primaryOrg.toLowerCase()
 
   const response = await installations.apps[
-      primaryOrg
-    ].authenticatedRequest('GET /users/{username}', {
-        username,
-    })
+    primaryOrg
+  ].authenticatedRequest('GET /users/{username}', {
+    username,
+  })
   return response.data
 }
