@@ -161,7 +161,7 @@ const buildContext = async (
       // @ts-ignore
       delete Object.assign(quotas.storage, {pvc_count: quotas.storage.pvcCount }).pvcCount;
     }
-    
+
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(profile.id);
 
     const namespaces = namespacesDetails.map(n => formatNamespacesForNats(n, quotaSize, quotas))
