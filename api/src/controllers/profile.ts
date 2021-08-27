@@ -31,6 +31,7 @@ import { getAllowedQuotaSizes } from '../libs/quota';
 import { requestProfileContactsEdit, requestProfileQuotaSizeEdit, requestProjectProfileCreate } from '../libs/request';
 import shared from '../libs/shared';
 import { fetchAllDashboardProjects } from '../services/profile';
+import { comparerContact } from '../db/utils'
 
 const dm = new DataManager(shared.pgPool);
 
@@ -89,18 +90,21 @@ export const updateProfileContacts = async (
     const currentContacts: Contact[] = await ContactModel.findForProject(Number(profileId));
     const deletedOrNewContact: boolean = true;
     const provisionerContactEdit: boolean[] = [];
+    const removeExistingContact = currentContacts.filter(comparerContact(contacts));
+    const addNewContact = contacts.filter(comparerContact(currentContacts));
+    const AddOrRemoveContact = removeExistingContact.concat(addNewContact);
 
+    if(AddOrRemoveContact.length !== 0){
+      provisionerContactEdit.push(deletedOrNewContact)
+    }
     // 1. Check for provisioner related changes
     contacts.forEach((contact: Contact): void => {
       const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
       if (currentContact) {
         provisionerContactEdit.push(currentContact.githubId !== contact.githubId);
         provisionerContactEdit.push(currentContact.email !== contact.email);
-      } else {
-        provisionerContactEdit.push(deletedOrNewContact)
       }
     });
-
     // 2. Create request if provisionerRelatedChanges
     const isProvisionerRelatedChanges = provisionerContactEdit.some(contactEdit => contactEdit);
     if (isProvisionerRelatedChanges) {

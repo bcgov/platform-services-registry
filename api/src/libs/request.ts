@@ -28,6 +28,7 @@ import { AuthenticatedUser } from './authmware';
 import { MessageType, sendProvisioningMessage } from './messaging';
 import { updateQuotaSize } from './profile';
 import shared from './shared';
+import { comparerContact } from '../db/utils'
 
 const dm = new DataManager(shared.pgPool);
 const { RequestModel, QuotaModel } = dm;
@@ -107,6 +108,26 @@ export const requestProfileContactsEdit = async (profileId: number, newContacts:
     }
 };
 
+export const requestProfileContactRemove = async (profileId: number, newContacts: Contact[], user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
+    try {
+        const editObject = newContacts;
+
+        return await createRequest(
+            RequestType.Edit,
+            user.id,
+            requiresHumanAction,
+            profileId,
+            RequestEditType.Contacts,
+            editObject
+        );
+    } catch (err) {
+        const message = `Unable to request contacts edit for profile ${profileId}`;
+        logger.error(`${message}, err = ${err.message}`);
+
+        throw err;
+    }
+};
+
 export const processProfileContactsEdit = async (request: Request): Promise<void> => {
     const { ProfileModel, ContactModel } = dm;
 
@@ -125,7 +146,14 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
             }
         }
 
-        // TODO(sb): implement functionality to delete a contact if a project goes from 2 TL's -> 1 TL.
+        // functionality to delete a contact if a project goes from 2 TL's -> 1 TL.
+        const removeExistingContact = currentContacts.filter(comparerContact(contacts));
+        //remove contact
+      if(removeExistingContact[0]) {
+        const removeExistingContactID = removeExistingContact[0].id;
+        await ProfileModel.removeContactFromProfile(Number(request.profileId), Number(removeExistingContactID))
+        await ContactModel.delete(Number(removeExistingContactID))
+      }
         return;
     } catch (err) {
         const message = `Unable to process profile contacts edit for request ${request.id}`;

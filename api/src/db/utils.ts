@@ -43,3 +43,9 @@ export const generateNamespacePrefix = (len: number = 6): string => {
     .toString('hex')
     .slice(0, len);
 };
+
+export const comparerContact = (otherArray) =>{
+  return (current) => {
+    return otherArray.filter((other) =>(other.id === current.id)).length === 0
+  }
+}

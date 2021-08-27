@@ -249,6 +249,29 @@ export default class ProfileModel extends Model {
       throw err;
     }
   }
+  
+  async removeContactFromProfile(profileId: number, contactId: number): Promise<void> {
+    const values: any[] = [];
+    const table = 'profile_contact';
+    const query = {
+      text: `DELETE FROM ${table} WHERE contact_id = $1 AND profile_id = $2 RETURNING *;`,
+      values,
+    };
+
+    try {
+      query.values = [
+        contactId,
+        profileId,
+      ];
+      const results = await this.runQuery(query);
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to remove contact ${contactId} from contact profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
 
   async isNamespacePrefixUnique(prefix: string): Promise<boolean> {
     const query = {
