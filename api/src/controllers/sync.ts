@@ -22,7 +22,7 @@ import DataManager from '../db';
 import { ProjectProfile } from '../db/model/profile';
 import { RequestEditType, RequestType } from '../db/model/request';
 import { contextForEditing, contextForProvisioning } from '../libs/fulfillment';
-import { getProvisionStatus } from '../libs/profile';
+import { getClusters, getProvisionStatus } from '../libs/profile';
 import shared from '../libs/shared';
 import { replaceForDescription } from '../libs/utils';
 
@@ -190,10 +190,23 @@ const getProfilesUnderPendingEditOrCreate = async (): Promise<ProjectProfile[]> 
   }
 };
 
+const extractName = ({name}) => {
+  return name;
+}
+
 const filterProfilesBySelectedClusterName = async (profiles: ProjectProfile[], clusterName: string):
   Promise<ProjectProfile[]> => {
   try {
-    return profiles.filter((profile: ProjectProfile) => profile.primaryClusterName === clusterName);
+    const clusterProfiles: ProjectProfile[] = [];
+    for (const profile of profiles) {
+      const clusters = await getClusters(profile);
+      const profileClusterNames = clusters.map(cluster => extractName(cluster));
+
+      if (profileClusterNames.includes(clusterName)){
+        clusterProfiles.push(profile);
+      }
+    }
+    return clusterProfiles;
 
   } catch (err) {
     const message = 'Unable to filter a list of profiles by selected cluster name';
