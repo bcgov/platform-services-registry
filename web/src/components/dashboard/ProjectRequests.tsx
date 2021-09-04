@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
@@ -33,6 +33,7 @@ const ProjectRequests: React.FC<any> = (props) => {
 
   const [profileId, setProfileId] = useState(0);
   const [requests, setRequests] = useState<any>([]);
+  const [data, setData] = useState([]);
 
   const [submitRefresh, setSubmitRefresh] = useState<any>(0);
 
@@ -122,6 +123,22 @@ const ProjectRequests: React.FC<any> = (props) => {
 
   const { isShown, toggle } = useModal();
 
+  const handleSort = useCallback(
+    (sortBy) => {
+      // Doing multisort
+      const sorted = requests.slice();
+      sorted.sort((a: any, b: any) => {
+        for (let i = 0; i < sortBy.length; ++i) {
+          if (a[sortBy[i].id] > b[sortBy[i].id]) return sortBy[i].desc ? -1 : 1;
+          if (a[sortBy[i].id] < b[sortBy[i].id]) return sortBy[i].desc ? 1 : -1;
+        }
+        return 0;
+      });
+      setData(sorted.slice(0, 10));
+    },
+    [requests],
+  );
+
   return (
     <div>
       <Modal
@@ -138,7 +155,7 @@ const ProjectRequests: React.FC<any> = (props) => {
         }
       />
       <Box style={{ overflow: 'auto' }}>
-        <Table columns={requestColumns} data={requests} title="Project Requests" />
+        <Table columns={requestColumns} data={data} title="Project Requests" onSort={handleSort} />
       </Box>
     </div>
   );
