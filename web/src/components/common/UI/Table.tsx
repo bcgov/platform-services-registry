@@ -16,7 +16,7 @@
 
 import styled from '@emotion/styled';
 import { Input } from '@rebass/forms';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { Box, Flex, Heading } from 'rebass';
@@ -285,7 +285,31 @@ const Table: React.FC<ITableProps> = (props) => {
     }),
     [],
   );
-
+  const ourGlobalFilterFunction = useCallback((rows: any, ids: any, query: string) => {
+    const caseInsenstiveSearchKeyWord = query.toLocaleLowerCase();
+    return rows.filter((row: any) => {
+      return (
+        row.values.busOrgId?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+        row.values.name?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+        row.values.description?.toLowerCase().includes(caseInsenstiveSearchKeyWord) || // ProjectDetail Table doesn't have description field
+        row.values.clusters?.find((a: string) =>
+          a.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
+        ) ||
+        row.values.productOwners?.find(
+          (a: any) =>
+            a.firstName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+            a.lastName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+            a.email.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
+        ) ||
+        row.values.technicalLeads?.find(
+          (a: any) =>
+            a.firstName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+            a.lastName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+            a.email.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
+        )
+      );
+    });
+  }, []);
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -302,6 +326,7 @@ const Table: React.FC<ITableProps> = (props) => {
       columns,
       data,
       filterTypes,
+      globalFilter: ourGlobalFilterFunction,
       initialState: {
         hiddenColumns: ['namespacePrefix', 'quotaSize'],
       },
