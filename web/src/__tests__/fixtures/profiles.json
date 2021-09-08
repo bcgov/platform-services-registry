@@ -1,35 +1,137 @@
 [
   {
-    "id": 1,
-    "name": "Health Gateway",
-    "description": null,
-    "prioritySystem": false,
-    "criticalSystem": false,
-    "primaryClusterName": "silver",
-    "createdAt": "2020-04-28T00:00:00.000Z",
-    "updatedAt": "2020-04-28T00:00:00.000Z",
-    "userId": 4
+    "id": 3,
+    "name": "Test Project C",
+    "description": "Lorem ipsum doler",
+    "ministry": "CITZ",
+    "namespacePrefix": "7f04fa",
+    "profileStatus": "approved",
+    "profileMetadata": {
+      "notificationEmail": false,
+      "notificationSMS": false,
+      "notificationMSTeams": false,
+      "paymentBambora": false,
+      "paymentPayBC": true,
+      "fileTransfer": false,
+      "fileStorage": false,
+      "geoMappingWeb": false,
+      "geoMappingLocation": false,
+      "schedulingCalendar": true,
+      "schedulingAppointments": false,
+      "identityManagementSiteMinder": false,
+      "identityManagementKeycloak": false,
+      "identityManagementActiveDir": true,
+      "other": null
+    },
+    "productOwners": [
+      {
+        "firstName": "Jack",
+        "lastName": "Dough",
+        "email": "jack.dough@example.com",
+        "githubId": "jackdough"
+      }
+    ],
+    "technicalLeads": [
+      {
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "email": "jane.doe@example.com",
+        "githubId": "jane1100"
+      }
+    ],
+    "clusters": ["Gold Kamloops", "Gold (DR) Calgary"],
+    "quotaSize": "small"
   },
   {
     "id": 2,
-    "name": "EPIC",
-    "description": "Hello World",
-    "prioritySystem": false,
-    "criticalSystem": true,
-    "primaryClusterName": "silver",
-    "createdAt": "2020-10-28T03:00:00.000Z",
-    "updatedAt": "2020-10-28T03:00:00.000Z",
-    "userId": 4
+    "name": "Test Project B",
+    "description": "Lorem ipsum doler",
+    "ministry": "EMPR",
+    "namespacePrefix": "3f4d4b",
+    "profileStatus": "pending_edit",
+    "profileMetadata": {
+      "notificationEmail": false,
+      "notificationSMS": false,
+      "notificationMSTeams": false,
+      "paymentBambora": false,
+      "paymentPayBC": false,
+      "fileTransfer": false,
+      "fileStorage": false,
+      "geoMappingWeb": false,
+      "geoMappingLocation": false,
+      "schedulingCalendar": false,
+      "schedulingAppointments": false,
+      "identityManagementSiteMinder": false,
+      "identityManagementKeycloak": false,
+      "identityManagementActiveDir": false,
+      "other": null
+    },
+    "productOwners": [
+      {
+        "firstName": "Jack",
+        "lastName": "Dough",
+        "email": "jack.dough@example.com",
+        "githubId": "jackdough"
+      }
+    ],
+    "technicalLeads": [
+      {
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "email": "jane.doe@example.com",
+        "githubId": "jane1100"
+      },
+      {
+        "firstName": "John",
+        "lastName": "Doh",
+        "email": "john.doh@example.com",
+        "githubId": "john1100"
+      }
+    ],
+    "clusters": ["Silver Kamloops"],
+    "quotaSize": "small"
   },
   {
-    "id": 3,
-    "name": "Mines Digital Services",
-    "description": "This is some description",
-    "prioritySystem": false,
-    "criticalSystem": false,
-    "primaryClusterName": "silver",
-    "createdAt": "2020-04-18T10:10:00.000Z",
-    "updatedAt": "2020-04-18T10:10:00.000Z",
-    "userId": 4
+    "id": 1,
+    "name": "Test Project A",
+    "description": "Lorem ipsum doler",
+    "ministry": "AEST",
+    "namespacePrefix": "6f47f6",
+    "profileStatus": "pending_approval",
+    "profileMetadata": {
+      "notificationEmail": true,
+      "notificationSMS": false,
+      "notificationMSTeams": false,
+      "paymentBambora": true,
+      "paymentPayBC": false,
+      "fileTransfer": false,
+      "fileStorage": false,
+      "geoMappingWeb": false,
+      "geoMappingLocation": false,
+      "schedulingCalendar": false,
+      "schedulingAppointments": false,
+      "identityManagementSiteMinder": false,
+      "identityManagementKeycloak": false,
+      "identityManagementActiveDir": false,
+      "other": null
+    },
+    "productOwners": [
+      {
+        "firstName": "Jack",
+        "lastName": "Dough",
+        "email": "jack.dough@example.com",
+        "githubId": "jackdough"
+      }
+    ],
+    "technicalLeads": [
+      {
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "email": "jane.doe@example.com",
+        "githubId": "jane1100"
+      }
+    ],
+    "clusters": ["Silver Kamloops"],
+    "quotaSize": "small"
   }
 ]
