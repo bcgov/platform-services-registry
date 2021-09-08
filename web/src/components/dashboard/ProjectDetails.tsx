@@ -14,13 +14,15 @@
 // limitations under the License.
 //
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box } from 'rebass';
 import { convertSnakeCaseToSentence, parseEmails } from '../../utils/transformDataHelper';
 import Table from '../common/UI/Table';
+import { useHandleSort } from '../../hooks/useHandleSort';
 
 const ProjectDetails: React.FC<any> = (props) => {
   const { profileDetails } = props;
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -71,7 +73,13 @@ const ProjectDetails: React.FC<any> = (props) => {
   return (
     <>
       <Box style={{ overflow: 'auto' }}>
-        <Table columns={columns} data={profileDetails} linkedRows={true} title="Projects" />
+        <Table
+          columns={columns}
+          data={data}
+          linkedRows={true}
+          title="Projects"
+          onSort={useHandleSort(setData, profileDetails).ourHandleSort}
+        />
       </Box>
     </>
   );
