@@ -14,10 +14,11 @@
 // limitations under the License.
 //
 
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box } from 'rebass';
 import { convertSnakeCaseToSentence, parseEmails } from '../../utils/transformDataHelper';
 import Table from '../common/UI/Table';
+import { useHandleSort } from '../../hooks/useHandleSort';
 
 const ProjectDetails: React.FC<any> = (props) => {
   const { profileDetails } = props;
@@ -69,22 +70,6 @@ const ProjectDetails: React.FC<any> = (props) => {
     [],
   );
 
-  const handleSort = useCallback(
-    (sortBy) => {
-      // Doing multisort
-      const sorted = profileDetails.slice();
-      sorted.sort((a: any, b: any) => {
-        for (let i = 0; i < sortBy.length; ++i) {
-          if (a[sortBy[i].id] > b[sortBy[i].id]) return sortBy[i].desc ? -1 : 1;
-          if (a[sortBy[i].id] < b[sortBy[i].id]) return sortBy[i].desc ? 1 : -1;
-        }
-        return 0;
-      });
-      setData(sorted.slice(0, 10));
-    },
-    [profileDetails],
-  );
-
   return (
     <>
       <Box style={{ overflow: 'auto' }}>
@@ -93,7 +78,7 @@ const ProjectDetails: React.FC<any> = (props) => {
           data={data}
           linkedRows={true}
           title="Projects"
-          onSort={handleSort}
+          onSort={useHandleSort(setData, profileDetails).ourHandleSort}
         />
       </Box>
     </>
