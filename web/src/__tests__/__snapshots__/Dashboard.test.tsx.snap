@@ -235,6 +235,7 @@ exports[`<Dashboard / > Table view should render 1`] = `
       </div>
     </div>
   </div>
+  asdf
   <div
     class="css-vurnku"
     style="overflow: auto;"
@@ -722,6 +723,7 @@ exports[`<Dashboard / > Table view should render 2`] = `
       </div>
     </div>
   </div>
+  asdf
   <div
     class="css-vurnku"
     style="overflow: auto;"
@@ -1391,6 +1393,7 @@ exports[`<Dashboard / > Table view should render 3`] = `
       </div>
     </div>
   </div>
+  asdf
   <div
     class="css-vurnku"
     style="overflow: auto;"

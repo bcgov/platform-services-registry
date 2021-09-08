@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
   // @ts-ignore
   const userRoles = decodedToken.resource_access['registry-web']
     ? // @ts-ignore
-      decodedToken.resource_access['registry-web'].roles
+    decodedToken.resource_access['registry-web'].roles
     : [];
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {userRoles.includes('administrator') && <ProjectRequests profileDetails={profileDetails} />}
-
+      asdf
       <ProjectDetails profileDetails={profileDetails} linkedRows={true} />
     </>
   );
