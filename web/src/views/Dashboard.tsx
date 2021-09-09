@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       {userRoles.includes('administrator') && <ProjectRequests profileDetails={profileDetails} />}
-      asdf
+
       <ProjectDetails profileDetails={profileDetails} linkedRows={true} />
     </>
   );
