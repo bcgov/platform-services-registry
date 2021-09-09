@@ -1,0 +1,803 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<QuotaCardEdit / > Card view should render 1`] = `
+<div>
+  <div
+    class="css-1ymxwr3"
+  >
+    <h1
+      class="css-k3emzi"
+    >
+      License plates for the openshift namespaces
+    </h1>
+    <h3
+      class="css-ao0kz4"
+    >
+      All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).
+    </h3>
+    <br />
+    <form>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          Quota Information
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota size
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <div
+                class=""
+                style="flex: 1;"
+              >
+                <div
+                  class="css-4cffwv"
+                >
+                  <select
+                    class="css-4y926w"
+                    name="selectedSize"
+                  >
+                    <option>
+                       Current: MEDIUM 
+                    </option>
+                    <option
+                      value="small"
+                    >
+                      SMALL
+                    </option>
+                    <option
+                      value="large"
+                    >
+                      LARGE
+                    </option>
+                  </select>
+                  <svg
+                    class="css-6ibwe0"
+                    fill="currentcolor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7 10l5 5 5-5z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              LicensePlate
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  473f50
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          CPU
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Request
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Limit
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          RAM
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Request
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Limit
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          Storage
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              PVC Count
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Overall Storage
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Backup Storage
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-17pvsr"
+      >
+        <h1
+          class="css-k3emzi"
+        >
+          Upgrade/Downgrade Quota
+        </h1>
+        <div
+          class="css-18m6ozg"
+        >
+          <label
+            class="css-v3m57q"
+          >
+            <h3
+              class="css-ystn37"
+            >
+              Important Information - By check this checkbox, you confirmed that you have read
+               
+              <a
+                href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                this document
+              </a>
+               
+              before submitting your quota increase requirement
+            </h3>
+          </label>
+          <div
+            class="css-xtali0"
+          >
+            <div
+              class="css-vurnku"
+            >
+              <label
+                class="css-qqz2al"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  <input
+                    class="css-p19g2b"
+                    name="project-acceptUsage"
+                    type="checkbox"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="css-1orewpb"
+                    fill="currentcolor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                    />
+                  </svg>
+                  <svg
+                    aria-hidden="true"
+                    class="css-6gju6b"
+                    fill="currentcolor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <button
+          class="misc-class-m-form-submit-btn css-1l289k6"
+          style="display: block;"
+          type="submit"
+        >
+          Request Quota Change
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+`;
+
+exports[`<QuotaCardEdit / > Card view should render 2`] = `
+<div>
+  <div
+    class="css-1ymxwr3"
+  >
+    <h1
+      class="css-k3emzi"
+    >
+      License plates for the openshift namespaces
+    </h1>
+    <h3
+      class="css-ao0kz4"
+    >
+      All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).
+    </h3>
+    <br />
+    <form>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          Quota Information
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota size
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <div
+                class=""
+                style="flex: 1;"
+              >
+                <div
+                  class="css-4cffwv"
+                >
+                  <select
+                    class="css-4y926w"
+                    name="selectedSize"
+                  >
+                    <option>
+                       Current: MEDIUM 
+                    </option>
+                    <option
+                      value="small"
+                    >
+                      SMALL
+                    </option>
+                    <option
+                      value="large"
+                    >
+                      LARGE
+                    </option>
+                  </select>
+                  <svg
+                    class="css-6ibwe0"
+                    fill="currentcolor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7 10l5 5 5-5z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              LicensePlate
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  473f50
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          CPU
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Request
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  8
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Limit
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  16
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          RAM
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Request
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  32GiB
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Limit
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  64GiB
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-vurnku"
+      >
+        <h3
+          class="css-vurnku"
+        >
+          Storage
+        </h3>
+        <div
+          class="css-1g9coqg"
+        >
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              PVC Count
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  100GiB
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Overall Storage
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  50GiB
+                </div>
+                 
+              </label>
+            </div>
+          </div>
+          <div
+            class="css-qdj3yo"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Backup Storage
+            </label>
+            <div
+              class="css-xtali0"
+              name="project-quota"
+            >
+              <label
+                class="css-4hpp4k"
+              >
+                <div
+                  class="css-vurnku"
+                />
+                 
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-17pvsr"
+      >
+        <h1
+          class="css-k3emzi"
+        >
+          Upgrade/Downgrade Quota
+        </h1>
+        <div
+          class="css-18m6ozg"
+        >
+          <label
+            class="css-v3m57q"
+          >
+            <h3
+              class="css-ystn37"
+            >
+              Important Information - By check this checkbox, you confirmed that you have read
+               
+              <a
+                href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                this document
+              </a>
+               
+              before submitting your quota increase requirement
+            </h3>
+          </label>
+          <div
+            class="css-xtali0"
+          >
+            <div
+              class="css-vurnku"
+            >
+              <label
+                class="css-qqz2al"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  <input
+                    class="css-p19g2b"
+                    name="project-acceptUsage"
+                    type="checkbox"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="css-1orewpb"
+                    fill="currentcolor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                    />
+                  </svg>
+                  <svg
+                    aria-hidden="true"
+                    class="css-6gju6b"
+                    fill="currentcolor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <button
+          class="misc-class-m-form-submit-btn css-1l289k6"
+          style="display: block;"
+          type="submit"
+        >
+          Request Quota Change
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+`;
+
+exports[`matches the snapshot 1`] = `<div />`;

@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches the snapshot 1`] = `
+<div>
+  <form>
+    <div
+      class="css-hdrfx9"
+    >
+      <div
+        class="css-1pslfv9"
+      >
+        <div>
+          <div>
+            <h1
+              class="css-k3emzi"
+            >
+              Tell us about your project
+            </h1>
+            <h3
+              class="css-ao0kz4"
+            >
+              If this is your first time on the OpenShift platform you need to book an alignment meeting with the Platform Services team; Reach out to
+               
+              <a
+                href="mailto:olena.mitovska@gov.bc.ca"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                olena.mitovska@gov.bc.ca
+              </a>
+               
+              to get started.
+            </h3>
+            <div
+              class="css-l3rx45"
+            >
+              <label
+                class="css-knfhfe"
+                for="profile.name"
+              >
+                Name
+              </label>
+              <div
+                class=""
+              >
+                <input
+                  class="css-4y926w"
+                  name="profile.name"
+                  placeholder="Project X"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div
+              class="css-l3rx45"
+            >
+              <label
+                class="css-knfhfe"
+                for="profile.description"
+              >
+                Description
+              </label>
+              <div
+                class=""
+              >
+                <textarea
+                  class="css-4y926w"
+                  name="profile.description"
+                  placeholder="A cutting edge web platform that enables Citizens to ..."
+                  rows="5"
+                />
+              </div>
+            </div>
+            <div
+              class="css-18m6ozg"
+            >
+              <label
+                class="css-toc01s"
+              >
+                Is this a Priority Application?
+              </label>
+              <div
+                class="css-xtali0"
+              >
+                <div
+                  class="css-vurnku"
+                >
+                  <label
+                    class="css-qqz2al"
+                  >
+                    <div
+                      class="css-vurnku"
+                    >
+                      <input
+                        class="css-p19g2b"
+                        name="profile.prioritySystem"
+                        type="checkbox"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        class="css-1orewpb"
+                        fill="currentcolor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                        />
+                      </svg>
+                      <svg
+                        aria-hidden="true"
+                        class="css-6gju6b"
+                        fill="currentcolor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                        />
+                      </svg>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-18m6ozg"
+            >
+              <label
+                class="css-toc01s"
+              >
+                Ministry Sponsor
+              </label>
+              <div
+                class="css-xtali0"
+                name="project.busOrgId"
+              >
+                <div
+                  class=""
+                  style="flex: 1;"
+                >
+                  <div
+                    class="css-4cffwv"
+                  >
+                    <select
+                      class="css-4y926w"
+                      name="profile.busOrgId"
+                    >
+                      <option>
+                         Select... 
+                      </option>
+                    </select>
+                    <svg
+                      class="css-6ibwe0"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7 10l5 5 5-5z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-18m6ozg"
+            >
+              <label
+                class="css-toc01s"
+              >
+                Cluster Name
+              </label>
+              <div
+                class="css-xtali0"
+                name="profile.primaryClusterName"
+              >
+                <div
+                  class=""
+                  style="flex: 1;"
+                >
+                  <div
+                    class="css-4cffwv"
+                  >
+                    <select
+                      class="css-4y926w"
+                      name="profile.primaryClusterName"
+                    >
+                      <option>
+                         Select... 
+                      </option>
+                    </select>
+                    <svg
+                      class="css-6ibwe0"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7 10l5 5 5-5z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="buttons"
+        >
+          <button
+            class="misc-class-m-form-submit-btn css-1l289k6"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+`;
