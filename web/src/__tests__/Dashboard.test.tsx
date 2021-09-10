@@ -74,18 +74,6 @@ jest.mock(
     },
 );
 
-// jest.mock('../hooks/useHandleSort', () => ({
-//   useHandleSort: (a: any, b: any) => {
-//     const ourHandleSort = () => {
-//       a(mockProfiles);
-//     };
-
-//     return {
-//       ourHandleSort,
-//     };
-//   },
-// }));
-
 function renderDashboard() {
   const utils = render(
     <Router history={browserHistory}>
