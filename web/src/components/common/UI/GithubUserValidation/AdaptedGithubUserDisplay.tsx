@@ -24,8 +24,7 @@ const User: React.FC<GithubUserInterface> = (props) => {
     <Flex flexDirection="row" justifyContent="space-evenly">
       <Box
         sx={{
-          width: '10%',
-          maxWidth: '100px',
+          width: ' clamp(30px, 60px, 100px);',
           pt: 2,
         }}
       >
@@ -46,19 +45,13 @@ const User: React.FC<GithubUserInterface> = (props) => {
 };
 
 const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
-  const {
-    input,
-    githubIDAllState,
-    reduxReference,
-    githubUserKeywordInputDispatch,
-    ...rest
-  } = props;
+  const { input, githubIDAllState, persona, githubUserKeywordInputDispatch, ...rest } = props;
 
   // TODO(Billy): For some reason, except for product owner, other two github id state is not been store in persistStore
 
   useEffect(() => {
-    if (input.value !== githubIDAllState[reduxReference].inputKeyword) {
-      githubUserKeywordInputDispatch(reduxReference, input.value);
+    if (input.value !== githubIDAllState[persona].inputKeyword) {
+      githubUserKeywordInputDispatch(persona, input.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
@@ -66,21 +59,21 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
   return (
     <>
       <TextInput id="my-typeahead-id" {...input} {...rest} />
-      {githubIDAllState[reduxReference].isLoading && (
+      {githubIDAllState[persona].isLoading && (
         <Text as="h4" mt={2}>
           Loading...
         </Text>
       )}
-      {githubIDAllState[reduxReference].notFound && (
+      {githubIDAllState[persona].notFound && (
         <Text as="h4" mt={2}>
           User was not found! :(
         </Text>
       )}
-      {githubIDAllState[reduxReference].githubUser && (
+      {githubIDAllState[persona].githubUser && (
         <User
-          name={githubIDAllState[reduxReference].githubUser.name}
-          id={githubIDAllState[reduxReference].githubUser.id}
-          avatar={githubIDAllState[reduxReference].githubUser.avatar_url}
+          name={githubIDAllState[persona].githubUser.name}
+          id={githubIDAllState[persona].githubUser.id}
+          avatar={githubIDAllState[persona].githubUser.avatar_url}
         />
       )}
     </>
@@ -88,8 +81,8 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  githubUserKeywordInputDispatch: (reduxReference: Array<string>, inputKeyworkd: string) =>
-    dispatch(githubUserKeywordInput(reduxReference, inputKeyworkd)),
+  githubUserKeywordInputDispatch: (persona: Array<string>, inputKeyworkd: string) =>
+    dispatch(githubUserKeywordInput(persona, inputKeyworkd)),
 });
 
 const mapStateToProps = createStructuredSelector({

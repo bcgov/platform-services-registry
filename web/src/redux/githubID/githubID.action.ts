@@ -1,46 +1,50 @@
-import GithubIDActionTypes from './user.types';
+import GithubIDActionTypes from './githubID.types';
+import { Dispatch } from 'redux'
+import { ActionType } from 'typesafe-actions';
 
-export const requestGithubUsers = (reduxReference: string) => ({
+export type GithubIDAction = ActionType<typeof requestGithubUsers>;
+
+export const requestGithubUsers = (persona: string) => ({
   type: GithubIDActionTypes.GITHUB_USERS_REQUEST,
-  reduxReference,
+  persona,
 });
 
-export const userExist = (reduxReference: string) => ({
+export const userExist = (persona: string) => ({
   type: GithubIDActionTypes.GITHUB_USER_EXIST,
-  reduxReference,
+  persona,
 });
 
-export const storeUser = (reduxReference: string, payload: any) => ({
+export const storeUser = (persona: string, payload: object) => ({
   type: GithubIDActionTypes.GITHUB_USER_STORE_USER,
   payload,
-  reduxReference,
+  persona,
 });
 
-export const githubUserKeywordInput = (reduxReference: Array<string>, payload: any) => ({
+export const githubUserKeywordInput = (persona: Array<string>, payload: string) => ({
   type: GithubIDActionTypes.GITHUB_USERS_INPUT,
   payload,
-  reduxReference,
+  persona,
 });
 
-export const noSuchUser = (reduxReference: string) => ({
+export const noSuchUser = (persona: string) => ({
   type: GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST,
-  reduxReference,
+  persona,
 });
 
-export const searchGithubUsers = (query: string, reduxReference: string) => (dispatch: any) => {
-  dispatch(requestGithubUsers(reduxReference));
+export const searchGithubUsers = (query: string, persona: string) => (dispatch: Dispatch<GithubIDAction>) => {
+  dispatch(requestGithubUsers(persona));
   fetch(`https://api.github.com/users/${query}`)
     .then(async (response) => {
       if (response.ok) {
-        dispatch(userExist(reduxReference));
+        dispatch(userExist(persona));
         const data = await response.json();
-        dispatch(storeUser(reduxReference, data));
+        dispatch(storeUser(persona, data));
       } else {
-        dispatch(noSuchUser(reduxReference));
+        dispatch(noSuchUser(persona));
       }
     })
     .catch((err) => {
-      dispatch(noSuchUser(reduxReference));
+      dispatch(noSuchUser(persona));
       throw new Error('Error happened during fetching Github data!');
     });
 };

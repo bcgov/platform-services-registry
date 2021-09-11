@@ -13,28 +13,28 @@ const validator = getValidator();
 const GithubUserValidation: React.FC<any> = (props) => {
   const { name, initialValue, defaultValue, githubIDAllState, fetchUserStartAsync } = props;
 
-  const getGithubIDKey = (reduxReference: string) => {
-    const reduxReferenceHandler = reduxReference.split(/[^A-Za-z0-9]/);
-    let GithubReduxKey = 'updatedProductOwner';
-    if (reduxReferenceHandler[0].includes('TechnicalLeads')) {
-      if (reduxReferenceHandler[1] === '0') {
-        GithubReduxKey = 'FirstUpdatedTechnicalLeads';
+  const getPersona = (inputName: string) => {
+    const personaHandler = inputName.split(/[^A-Za-z0-9]/);
+    let persona = 'updatedProductOwner';
+    if (personaHandler[0].includes('TechnicalLeads')) {
+      if (personaHandler[1] === '0') {
+        persona = 'FirstUpdatedTechnicalLeads';
       } else {
-        GithubReduxKey = 'SecondUpdatedTechnicalLeads';
+        persona = 'SecondUpdatedTechnicalLeads';
       }
     }
-    return GithubReduxKey;
+    return persona;
   };
 
-  const reduxReference = getGithubIDKey(name);
-  const { inputKeyword, githubUser } = githubIDAllState[reduxReference];
+  const persona = getPersona(name);
+  const { inputKeyword, githubUser } = githubIDAllState[persona];
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0) {
-        fetchUserStartAsync(inputKeyword, reduxReference);
+        fetchUserStartAsync(inputKeyword, persona);
       }
     }, 1500);
 
@@ -50,7 +50,7 @@ const GithubUserValidation: React.FC<any> = (props) => {
       initialValue={initialValue}
       defaultValue={defaultValue}
       sx={{ textTransform: 'none' }}
-      reduxReference={reduxReference}
+      persona={persona}
       validate={validator.mustBeValidGithubName}
     />
   );
@@ -61,8 +61,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, reduxReference: string) =>
-    dispatch(searchGithubUsers(query, reduxReference)),
+  fetchUserStartAsync: (query: string, persona: string) =>
+    dispatch(searchGithubUsers(query, persona)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GithubUserValidation);

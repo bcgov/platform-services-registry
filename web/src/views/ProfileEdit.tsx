@@ -49,8 +49,9 @@ import {
 } from '../utils/transformDataHelper';
 
 const StyledDiv = styled.div`
-  margin-left: ${theme.spacingIncrements[1]};
-  margin-right: ${theme.spacingIncrements[1]};
+  min-width: 80%;
+  margin-left: clamp(10px, ${theme.spacingIncrements[1]});
+  margin-right: clamp(10px, ${theme.spacingIncrements[1]});
 `;
 
 const txtForQuotaEdit =

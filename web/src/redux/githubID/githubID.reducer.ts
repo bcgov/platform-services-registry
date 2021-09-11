@@ -1,24 +1,24 @@
 /* eslint-disable no-case-declarations */
-import GithubIDActionTypes from './user.types';
+import GithubIDActionTypes from './githubID.types';
 // TODO (BILLY), try to use interface instead of any
 
-// interface GithubIdBaseInterface {
-//   user: object | null;
-//   inputKeyword: string | null;
-//   isLoading: boolean;
-//   fetched: boolean;
-//   notFound: boolean;
-// }
+interface GithubIdBaseInterface {
+  githubUser: object | null;
+  inputKeyword: string | null;
+  isLoading: boolean;
+  everFetched: boolean;
+  notFound: boolean;
+}
 
-// interface ProductOwnerGithubIDInterface extends GithubIdBaseInterface {
-//   productOwnerGithubID: {};
-// }
-// interface TechnicalLeadInitialState extends Array<GithubIdBaseInterface> {
-//   technicalLeads: {};
-// }
-// interface GithubIdInitialState extends ProductOwnerGithubIDInterface, TechnicalLeadInitialState {}
+// interface ProductOwnerGithubIDInterface extends GithubIdBaseInterface {}
 
-const INITIAL_STATE: any = {
+interface GithubIdInitialState {
+  updatedProductOwner: GithubIdBaseInterface;
+  FirstUpdatedTechnicalLeads: GithubIdBaseInterface;
+  SecondUpdatedTechnicalLeads: GithubIdBaseInterface;
+}
+
+const INITIAL_STATE: GithubIdInitialState = {
   updatedProductOwner: {
     githubUser: null,
     inputKeyword: null,
@@ -42,14 +42,17 @@ const INITIAL_STATE: any = {
   },
 };
 
-const githubIDReducer = (state = INITIAL_STATE, action: any) => {
-  const GithubReduxKey = action.reduxReference;
+const githubIDReducer = (
+  state = INITIAL_STATE,
+  action: any,
+) => {
+  const persona = action.persona as keyof GithubIdInitialState;
   switch (action.type) {
     case GithubIDActionTypes.GITHUB_USERS_REQUEST:
       return {
         ...state,
-        [GithubReduxKey]: {
-          ...state[GithubReduxKey],
+        [persona]: {
+          ...state[persona],
           isLoading: true,
           everFetched: false,
         },
@@ -58,8 +61,8 @@ const githubIDReducer = (state = INITIAL_STATE, action: any) => {
     case GithubIDActionTypes.GITHUB_USER_EXIST:
       return {
         ...state,
-        [GithubReduxKey]: {
-          ...state[GithubReduxKey],
+        [persona]: {
+          ...state[persona],
           isLoading: true,
           everFetched: true,
           notFound: false,
@@ -69,8 +72,8 @@ const githubIDReducer = (state = INITIAL_STATE, action: any) => {
     case GithubIDActionTypes.GITHUB_USER_STORE_USER:
       return {
         ...state,
-        [GithubReduxKey]: {
-          ...state[GithubReduxKey],
+        [persona]: {
+          ...state[persona],
           githubUser: action.payload,
           isLoading: false,
         },
@@ -78,8 +81,8 @@ const githubIDReducer = (state = INITIAL_STATE, action: any) => {
     case GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST:
       return {
         ...state,
-        [GithubReduxKey]: {
-          ...state[GithubReduxKey],
+        [persona]: {
+          ...state[persona],
           githubUser: null,
           isLoading: false,
           everFetched: true,
@@ -90,7 +93,7 @@ const githubIDReducer = (state = INITIAL_STATE, action: any) => {
     case GithubIDActionTypes.GITHUB_USERS_INPUT:
       return {
         ...state,
-        [GithubReduxKey]: {
+        [persona]: {
           inputKeyword: action.payload,
           user: null,
           isLoading: false,
