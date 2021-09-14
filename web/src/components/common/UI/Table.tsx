@@ -287,12 +287,12 @@ const Table: React.FC<ITableProps> = (props) => {
     [],
   );
 
-  const findRowByRoleInfo = (rolwTosearch: object[], searchKey: string) => {
-    return rolwTosearch.find(
-      (a: any) =>
-        a.firstName.toLocaleLowerCase().includes(searchKey) ||
-        a.lastName.toLocaleLowerCase().includes(searchKey) ||
-        a.email.toLocaleLowerCase().includes(searchKey),
+  const findRowByRoleInfo = (rolesToSearch: object[], searchKey: string) => {
+    return rolesToSearch.find(
+      (role: any) =>
+        role.firstName.toLocaleLowerCase().includes(searchKey) ||
+        role.lastName.toLocaleLowerCase().includes(searchKey) ||
+        role.email.toLocaleLowerCase().includes(searchKey),
     );
   };
 
