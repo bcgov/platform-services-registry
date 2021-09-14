@@ -16,7 +16,7 @@
 
 import styled from '@emotion/styled';
 import { Input } from '@rebass/forms';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { Box, Flex, Heading } from 'rebass';
@@ -33,6 +33,7 @@ interface ITableProps {
   data: Object[];
   linkedRows?: boolean;
   title: string;
+  onSort: any;
 }
 
 const Styles = styled.div`
@@ -256,7 +257,7 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
 };
 
 const Table: React.FC<ITableProps> = (props) => {
-  const { columns, data, linkedRows, title } = props;
+  const { columns, data, linkedRows, title, onSort } = props;
   const { setOpenBackdrop } = useCommonState();
 
   const downloadCSV = () => {
@@ -323,6 +324,7 @@ const Table: React.FC<ITableProps> = (props) => {
     preGlobalFilteredRows,
     setGlobalFilter,
     allColumns,
+    state: { sortBy },
   } = useTable(
     {
       columns,
@@ -332,11 +334,16 @@ const Table: React.FC<ITableProps> = (props) => {
       initialState: {
         hiddenColumns: ['namespacePrefix', 'quotaSize'],
       },
+      manualSortBy: true,
     },
     useFilters,
     useGlobalFilter,
     useSortBy,
   );
+
+  useEffect(() => {
+    onSort(sortBy);
+  }, [onSort, sortBy]);
 
   const history = useHistory();
 
