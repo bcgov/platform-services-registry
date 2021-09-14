@@ -249,7 +249,7 @@ export default class ProfileModel extends Model {
       throw err;
     }
   }
-  
+
   async removeContactFromProfile(profileId: number, contactId: number): Promise<void> {
     const values: any[] = [];
     const table = 'profile_contact';
@@ -266,7 +266,7 @@ export default class ProfileModel extends Model {
       const results = await this.runQuery(query);
       return results.pop();
     } catch (err) {
-      const message = `Unable to remove contact ${contactId} from contact profile ${profileId}`;
+      const message = `Unable to remove contact ${contactId} from profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
