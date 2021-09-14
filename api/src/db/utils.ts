@@ -43,4 +43,3 @@ export const generateNamespacePrefix = (len: number = 6): string => {
     .toString('hex')
     .slice(0, len);
 };
-
