@@ -285,6 +285,16 @@ const Table: React.FC<ITableProps> = (props) => {
     }),
     [],
   );
+
+  const findRowByRoleInfo = (rolwTosearch: object[], searchKey: string) => {
+    return rolwTosearch.find(
+      (a: any) =>
+        a.firstName.toLocaleLowerCase().includes(searchKey) ||
+        a.lastName.toLocaleLowerCase().includes(searchKey) ||
+        a.email.toLocaleLowerCase().includes(searchKey),
+    );
+  };
+
   const ourGlobalFilterFunction = useCallback((rows: any, ids: any, query: string) => {
     const caseInsenstiveSearchKeyWord = query.toLocaleLowerCase();
     return rows.filter((row: any) => {
@@ -292,21 +302,13 @@ const Table: React.FC<ITableProps> = (props) => {
         row.values.busOrgId?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
         row.values.name?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
         row.values.description?.toLowerCase().includes(caseInsenstiveSearchKeyWord) || // ProjectDetail Table doesn't have description field
-        row.values.clusters?.find((a: string) =>
-          a.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
+        row.values.clusters?.find((cluster: string) =>
+          cluster.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
         ) ||
-        row.values.productOwners?.find(
-          (a: any) =>
-            a.firstName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
-            a.lastName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
-            a.email.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
-        ) ||
-        row.values.technicalLeads?.find(
-          (a: any) =>
-            a.firstName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
-            a.lastName.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord) ||
-            a.email.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
-        )
+        (row.values.productOwners &&
+          findRowByRoleInfo(row.values.productOwners, caseInsenstiveSearchKeyWord)) ||
+        (row.values.technicalLeads &&
+          findRowByRoleInfo(row.values.technicalLeads, caseInsenstiveSearchKeyWord))
       );
     });
   }, []);
