@@ -16,7 +16,7 @@
 
 import styled from '@emotion/styled';
 import { Input } from '@rebass/forms';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { Box, Flex, Heading } from 'rebass';
@@ -34,6 +34,13 @@ interface ITableProps {
   linkedRows?: boolean;
   title: string;
   onSort: any;
+}
+
+interface projectRole {
+  firstName: string;
+  lastName: string;
+  email: string;
+  githubId: string;
 }
 
 const Styles = styled.div`
@@ -287,6 +294,32 @@ const Table: React.FC<ITableProps> = (props) => {
     [],
   );
 
+  const findRowByRoleInfo = (rolesToSearch: projectRole[], searchKey: string) => {
+    return rolesToSearch.find(
+      (role: projectRole) =>
+        role.firstName.toLocaleLowerCase().includes(searchKey) ||
+        role.lastName.toLocaleLowerCase().includes(searchKey) ||
+        role.email.toLocaleLowerCase().includes(searchKey),
+    );
+  };
+
+  const ourGlobalFilterFunction = useCallback((rows: any, ids: any, query: string) => {
+    const caseInsenstiveSearchKeyWord = query.toLocaleLowerCase();
+    return rows.filter((row: any) => {
+      return (
+        row.values.busOrgId?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+        row.values.name?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+        row.values.description?.toLowerCase().includes(caseInsenstiveSearchKeyWord) || // ProjectDetail Table doesn't have description field
+        row.values.clusters?.find((cluster: string) =>
+          cluster.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
+        ) ||
+        (row.values.productOwners &&
+          findRowByRoleInfo(row.values.productOwners, caseInsenstiveSearchKeyWord)) ||
+        (row.values.technicalLeads &&
+          findRowByRoleInfo(row.values.technicalLeads, caseInsenstiveSearchKeyWord))
+      );
+    });
+  }, []);
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table
@@ -304,6 +337,7 @@ const Table: React.FC<ITableProps> = (props) => {
       columns,
       data,
       filterTypes,
+      globalFilter: ourGlobalFilterFunction,
       initialState: {
         hiddenColumns: ['namespacePrefix', 'quotaSize'],
       },
