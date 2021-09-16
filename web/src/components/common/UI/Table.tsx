@@ -36,7 +36,7 @@ interface ITableProps {
   onSort: any;
 }
 
-interface projectRole {
+interface ProjectRole {
   firstName: string;
   lastName: string;
   email: string;
@@ -294,9 +294,9 @@ const Table: React.FC<ITableProps> = (props) => {
     [],
   );
 
-  const findRowByRoleInfo = (rolesToSearch: projectRole[], searchKey: string) => {
+  const findRowByRoleInfo = (rolesToSearch: ProjectRole[], searchKey: string) => {
     return rolesToSearch.find(
-      (role: projectRole) =>
+      (role: ProjectRole) =>
         role.firstName.toLocaleLowerCase().includes(searchKey) ||
         role.lastName.toLocaleLowerCase().includes(searchKey) ||
         role.email.toLocaleLowerCase().includes(searchKey),
