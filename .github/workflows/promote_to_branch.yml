@@ -31,15 +31,6 @@ jobs:
         run: npm run test:lint
       - name: OpenAPI Schema
         run: npm run test:schema
-      - name: Upload coverage report
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.TestReporterID }}
-          CI: "true"
-        run: |
-          curl -Ls https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-          ./cc-test-reporter format-coverage -t lcov -o codeclimate.json
-          ./cc-test-reporter upload-coverage -i codeclimate.json
 
       - name: Check test result
         if: ${{ failure() }}
@@ -60,8 +51,6 @@ jobs:
           node-version: "12"
       - name: Install dependencies
         run: npm ci
-      - name: test
-        run: ls src/__tests__/__snapshots__/
       - name: Unit tests w/ coverage
         run: npm run test -- --coverage --passWithNoTests
       - name: LINTing
