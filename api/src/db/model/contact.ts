@@ -72,7 +72,7 @@ export default class ContactModel extends Model {
   async findForProject(profileId: number): Promise<Contact[]> {
     const query = {
       text: `
-        SELECT contact.first_name, contact.last_name, contact.email, contact.github_id, contact.role_id
+        SELECT contact.id, contact.first_name, contact.last_name, contact.email, contact.github_id, contact.role_id
           FROM contact
           JOIN profile_contact ON contact.id = profile_contact.contact_id
             WHERE profile_contact.profile_id = $1;

@@ -388,7 +388,7 @@ export default class ProfileModel extends Model {
                 'id', p.id,
                 'name', p.name,
                 'description', p.description,
-                'ministry', p.bus_org_id,
+                'busOrgId', p.bus_org_id,
                 'namespacePrefix', p.namespace_prefix,
                 'profileStatus', p.profile_status,
                 'profileMetadata', json_build_object(

@@ -54,8 +54,6 @@ const StyledDiv = styled.div`
   margin-right: clamp(10px, ${theme.spacingIncrements[1]});
 `;
 
-const txtForQuotaEdit =
-  "All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).";
 const { hasPendingEditRequest } = getProfileStatus();
 
 export interface BaseData {
@@ -301,11 +299,6 @@ const ProfileEdit: React.FC = (props: any) => {
               />
             )}
           </ShadowBox>
-          {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && (
-            <Box p="30px" width={[1, 1, 1 / 3]}>
-              <Text>{txtForQuotaEdit}</Text>
-            </Box>
-          )}
         </Flex>
       </ShadowBox>
     </StyledDiv>

@@ -24,6 +24,7 @@ import { parseEmails } from '../../utils/transformDataHelper';
 import { Modal } from '../common/modal/modal';
 import Table from '../common/UI/Table';
 import { ReviewRequestModal } from './ReviewRequestModal';
+import { useHandleSort } from '../../hooks/useHandleSort';
 
 const ProjectRequests: React.FC<any> = (props) => {
   const { profileDetails } = props;
@@ -33,6 +34,7 @@ const ProjectRequests: React.FC<any> = (props) => {
 
   const [profileId, setProfileId] = useState(0);
   const [requests, setRequests] = useState<any>([]);
+  const [data, setData] = useState([]);
 
   const [submitRefresh, setSubmitRefresh] = useState<any>(0);
 
@@ -53,7 +55,7 @@ const ProjectRequests: React.FC<any> = (props) => {
       },
       {
         Header: 'Ministry',
-        accessor: 'ministry',
+        accessor: 'busOrgId',
       },
       {
         Header: 'Product Owner',
@@ -138,7 +140,12 @@ const ProjectRequests: React.FC<any> = (props) => {
         }
       />
       <Box style={{ overflow: 'auto' }}>
-        <Table columns={requestColumns} data={requests} title="Project Requests" />
+        <Table
+          columns={requestColumns}
+          data={data}
+          title="Project Requests"
+          onSort={useHandleSort(setData, requests).ourHandleSort}
+        />
       </Box>
     </div>
   );
