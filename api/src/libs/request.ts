@@ -17,7 +17,7 @@
 'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
-import * as _ from "lodash";
+import differenceBy from "lodash";
 import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
@@ -147,7 +147,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
         }
 
         // functionality to delete a contact if a project goes from 2 TL's -> 1 TL.
-        const removeExistingContact = _.differenceBy(currentContacts, contacts, 'id');
+        const removeExistingContact = differenceBy(currentContacts, contacts, 'id');
 
         //remove contact if request's contacts number is less than what we have in db
         removeExistingContact.map(async contact => {

@@ -18,7 +18,7 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import * as _ from "lodash";
+import differenceBy from "lodash";
 import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
@@ -91,8 +91,8 @@ export const updateProfileContacts = async (
     const deletedOrNewContact: boolean = true;
     const provisionerContactEdit: boolean[] = [];
 
-    const removeExistingContact = _.differenceBy(currentContacts, contacts, 'id');
-    const addNewContact = _.differenceBy(contacts, currentContacts, 'id');
+    const removeExistingContact = differenceBy(currentContacts, contacts, 'id');
+    const addNewContact = differenceBy(contacts, currentContacts, 'id');
     const AddOrRemoveContact = removeExistingContact.concat(addNewContact);
 
     // 1. Check for provisioner related changes
