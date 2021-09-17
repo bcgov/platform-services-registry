@@ -25,8 +25,8 @@ import getDecodedToken from '../../utils/getDecodedToken';
 import getValidator from '../../utils/getValidator';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
-import TextInput from '../common/UI/TextInput';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
+import TextInput from '../common/UI/TextInput';
 
 const CreateFormPO: React.FC = () => {
   const validator = getValidator();
@@ -78,7 +78,12 @@ const CreateFormPO: React.FC = () => {
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="productOwner.githubId">GitHub Id</Label>
-        <GithubUserValidation name="productOwner.githubId" defaultValue="" />
+        <GithubUserValidation
+          name="productOwner.githubId"
+          index={0} //Product Ownder has index 0, other TL will start from 1
+          defaultValue=""
+          initialValue={""}
+        />
       </Flex>
     </Aux>
   );

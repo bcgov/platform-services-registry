@@ -1,18 +1,17 @@
 import arrayMutators from 'final-form-arrays';
 import React, { useState } from 'react';
 import { Form } from 'react-final-form';
-import { Flex } from 'rebass';
-import { FORM_ERROR } from 'final-form';
-import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Label } from '@rebass/forms';
+import { Flex } from 'rebass';
+import { createStructuredSelector } from 'reselect';
 import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
-import { selectGithubIDAllState } from '../redux/githubID/githubID.selector';
+import { selectAllPersona } from '../redux/githubID/githubID.selector';
 
 export const WizardPage: React.FC = ({ children }) => <div>{children}</div>;
 
-const Wizard: React.FC<any> = ({ onSubmit, children, GithubIDAllState }) => {
+
+const Wizard: React.FC<any> = ({ onSubmit, children, allPersona }) => {
   const [values, setValues] = useState<any | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [isLastPage, setLastPage] = useState(false);
@@ -31,19 +30,6 @@ const Wizard: React.FC<any> = ({ onSubmit, children, GithubIDAllState }) => {
   };
 
   const handleSubmit = (formData: any) => {
-    // page 2 and page 3 will need to validate github user ID
-    if (page === 2 || page === 3) {
-      let onSubmitErrorMessage;
-      Object.entries(GithubIDAllState).forEach(([key, value]) => {
-        if (GithubIDAllState[key].everFetched === true && GithubIDAllState[key].notFound === true) {
-          onSubmitErrorMessage = 'Github User Not Found';
-        }
-        if (GithubIDAllState[key].inputKeyword && GithubIDAllState[key].everFetched === false) {
-          onSubmitErrorMessage = 'Loading Github User infomation';
-        }
-      });
-      if (onSubmitErrorMessage) return { [FORM_ERROR]: onSubmitErrorMessage };
-    }
 
     setLastPage(page === React.Children.count(children) - 2);
     if (isLastPage) {
@@ -57,6 +43,11 @@ const Wizard: React.FC<any> = ({ onSubmit, children, GithubIDAllState }) => {
       onSubmit={handleSubmit}
       mutators={{
         ...arrayMutators,
+      }}
+      validate={(values) => {
+        const errors: any = {};
+
+        return errors;
       }}
     >
       {(props) => (
@@ -84,14 +75,7 @@ const Wizard: React.FC<any> = ({ onSubmit, children, GithubIDAllState }) => {
                 {isLastPage ? (
                   <StyledFormButton>Request</StyledFormButton>
                 ) : (
-                  <>
-                    <StyledFormButton>Next</StyledFormButton>
-                    {props.submitError && (
-                      <Label as="span" variant="errorLabel">
-                        {props.submitError}
-                      </Label>
-                    )}
-                  </>
+                  <StyledFormButton>Next</StyledFormButton>
                 )}
               </div>
             </ShadowBox>
@@ -103,7 +87,7 @@ const Wizard: React.FC<any> = ({ onSubmit, children, GithubIDAllState }) => {
 };
 
 const mapStateToProps = createStructuredSelector({
-  GithubIDAllState: selectGithubIDAllState,
+  allPersona: selectAllPersona,
 });
 
 export default connect(mapStateToProps)(Wizard);

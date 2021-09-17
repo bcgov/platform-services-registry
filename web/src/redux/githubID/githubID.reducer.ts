@@ -1,6 +1,5 @@
 /* eslint-disable no-case-declarations */
 import GithubIDActionTypes from './githubID.types';
-// TODO (BILLY), try to use interface instead of any
 
 interface GithubIdBaseInterface {
   githubUser: object | null;
@@ -10,99 +9,82 @@ interface GithubIdBaseInterface {
   notFound: boolean;
 }
 
-// interface ProductOwnerGithubIDInterface extends GithubIdBaseInterface {}
 
-interface GithubIdInitialState {
-  updatedProductOwner: GithubIdBaseInterface;
-  FirstUpdatedTechnicalLeads: GithubIdBaseInterface;
-  SecondUpdatedTechnicalLeads: GithubIdBaseInterface;
+
+
+const GithubIDBaseState = {
+  githubUser: null,
+  inputKeyword: '',
+  isLoading: false,
+  everFetched: false,
+  notFound: false,
 }
 
-const INITIAL_STATE: GithubIdInitialState = {
-  updatedProductOwner: {
-    githubUser: null,
-    inputKeyword: null,
-    isLoading: false,
-    everFetched: false,
-    notFound: false,
-  },
-  FirstUpdatedTechnicalLeads: {
-    githubUser: null,
-    inputKeyword: null,
-    isLoading: false,
-    everFetched: false,
-    notFound: false,
-  },
-  SecondUpdatedTechnicalLeads: {
-    githubUser: null,
-    inputKeyword: null,
-    isLoading: false,
-    everFetched: false,
-    notFound: false,
-  },
-};
+// IMPORTANT:  In this redux state,the first elememt (index 0) is PO, others are TL
+const INITIAL_STATE: GithubIdBaseInterface[] = [GithubIDBaseState, GithubIDBaseState];
 
 const githubIDReducer = (
   state = INITIAL_STATE,
   action: any,
 ) => {
-  const persona = action.persona as keyof GithubIdInitialState;
   switch (action.type) {
+
+    case GithubIDActionTypes.NEW_GITHUB_ID_ENTRY:
+      return [...state, GithubIDBaseState]
+
     case GithubIDActionTypes.GITHUB_USERS_REQUEST:
-      return {
-        ...state,
-        [persona]: {
-          ...state[persona],
-          isLoading: true,
-          everFetched: false,
-        },
-      };
+      const newArrayForUserRequest = [...state]
+      newArrayForUserRequest[action.payload] = {
+        ...state[action.payload],
+        isLoading: true,
+        everFetched: false,
+      }
+      return newArrayForUserRequest
+
 
     case GithubIDActionTypes.GITHUB_USER_EXIST:
-      return {
-        ...state,
-        [persona]: {
-          ...state[persona],
-          isLoading: true,
-          everFetched: true,
-          notFound: false,
-        },
-      };
+      const newArrayForUserExist = [...state]
+      newArrayForUserExist[action.payload] = {
+        ...state[action.payload],
+        isLoading: true,
+        everFetched: true,
+        notFound: false,
+      }
+      return newArrayForUserExist
 
     case GithubIDActionTypes.GITHUB_USER_STORE_USER:
-      return {
-        ...state,
-        [persona]: {
-          ...state[persona],
-          githubUser: action.payload,
-          isLoading: false,
-        },
-      };
+      const newArrayForStoreUser = [...state]
+      newArrayForStoreUser[action.payload.index] = {
+        ...state[action.payload.index],
+        githubUser: action.payload.data,
+        isLoading: false,
+      }
+      return newArrayForStoreUser
+
     case GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST:
-      return {
-        ...state,
-        [persona]: {
-          ...state[persona],
-          githubUser: null,
-          isLoading: false,
-          everFetched: true,
-          notFound: true,
-        },
-      };
+      const newArrayForNoneExistUser = [...state]
+      newArrayForNoneExistUser[action.payload] = {
+        ...state[action.payload],
+        githubUser: null,
+        isLoading: false,
+        everFetched: true,
+        notFound: true,
+      }
+      return newArrayForNoneExistUser
 
     case GithubIDActionTypes.GITHUB_USERS_INPUT:
-      return {
-        ...state,
-        [persona]: {
-          inputKeyword: action.payload,
-          user: null,
-          isLoading: false,
-          everFetched: false,
-          notFound: false,
-        },
-      };
+      const newArrayForInputAction = [...state]
+      newArrayForInputAction[action.payload.index] = {
+        inputKeyword: action.payload.inputValue,
+        githubUser: null,
+        isLoading: false,
+        everFetched: false,
+        notFound: false,
+      }
+      return newArrayForInputAction
+
     default:
-      return state;
+      return state
   }
 };
 

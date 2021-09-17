@@ -14,12 +14,12 @@
 // limitations under the License.
 //
 
-import React from 'react';
 import { Label } from '@rebass/forms';
+import React from 'react';
 import { StyledFormButton, StyledFormDisabledButton } from './Button';
 
 export const EditSubmitButton = (props: any) => {
-  const { submitError, hasPendingEdit, isProvisioned, pristine } = props;
+  const { hasPendingEdit, isProvisioned, pristine } = props;
 
   if (pristine) {
     return (
@@ -34,11 +34,6 @@ export const EditSubmitButton = (props: any) => {
     return (
       <>
         <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
-        {submitError && (
-          <Label as="span" variant="errorLabel">
-            {submitError}
-          </Label>
-        )}
       </>
     );
   }

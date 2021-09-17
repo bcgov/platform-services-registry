@@ -2,21 +2,21 @@ import { createSelector } from 'reselect';
 
 const selectGithubID = (state: any) => state.githubID;
 
-export const selectGithubIDAllState = createSelector([selectGithubID], (githubID) => githubID);
+export const selectAllPersona = createSelector([selectGithubID], (githubID) => githubID);
 
 export const selectFirstUpdatedTechnicalLeads = createSelector(
   [selectGithubID],
-  (githubID) => githubID.FirstUpdatedTechnicalLeads,
+  (githubID) => githubID[1],
 );
 
 export const selectSecondUpdatedTechnicalLeads = createSelector(
   [selectGithubID],
-  (githubID) => githubID.SecondUpdatedTechnicalLeads,
+  (githubID) => githubID[2],
 );
 
 export const selecUpdatedProductOwner = createSelector(
   [selectGithubID],
-  (githubID) => githubID.updatedProductOwner,
+  (githubID) => githubID[0],
 );
 
 export default selectGithubID;

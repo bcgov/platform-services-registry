@@ -1,15 +1,12 @@
 import React, { useEffect } from 'react';
-import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Box, Text, Flex, Image } from 'rebass';
-import TextInput from '../TextInput';
-import {
-  selectGithubIDAllState,
-  selectFirstUpdatedTechnicalLeads,
-  selectSecondUpdatedTechnicalLeads,
-  selecUpdatedProductOwner,
-} from '../../../../redux/githubID/githubID.selector';
+import { Box, Flex, Image, Text } from 'rebass';
+import { createStructuredSelector } from 'reselect';
 import { githubUserKeywordInput } from '../../../../redux/githubID/githubID.action';
+import {
+  selectAllPersona
+} from '../../../../redux/githubID/githubID.selector';
+import TextInput from '../TextInput';
 
 interface GithubUserInterface {
   avatar: string;
@@ -45,35 +42,33 @@ const User: React.FC<GithubUserInterface> = (props) => {
 };
 
 const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
-  const { input, githubIDAllState, persona, githubUserKeywordInputDispatch, ...rest } = props;
-
-  // TODO(Billy): For some reason, except for product owner, other two github id state is not been store in persistStore
+  const { input: userFieldInputEvent, name, allPersona, index, initialValue, dispatchGithubUserKeywordInput, ...rest } = props;
 
   useEffect(() => {
-    if (input.value !== githubIDAllState[persona].inputKeyword) {
-      githubUserKeywordInputDispatch(persona, input.value);
+    if (userFieldInputEvent.value !== allPersona[index].inputKeyword) {
+      const inputValue = userFieldInputEvent.value
+      dispatchGithubUserKeywordInput({ index, inputValue });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [input]);
+  }, [userFieldInputEvent, allPersona, dispatchGithubUserKeywordInput, index]);
 
   return (
     <>
-      <TextInput id="my-typeahead-id" {...input} {...rest} />
-      {githubIDAllState[persona].isLoading && (
+      <TextInput {...userFieldInputEvent} {...rest} />
+      {allPersona[index].isLoading && (
         <Text as="h4" mt={2}>
           Loading...
         </Text>
       )}
-      {githubIDAllState[persona].notFound && (
+      {allPersona[index].notFound && (
         <Text as="h4" mt={2}>
           User was not found! :(
         </Text>
       )}
-      {githubIDAllState[persona].githubUser && (
+      {allPersona[index].githubUser && (
         <User
-          name={githubIDAllState[persona].githubUser.name}
-          id={githubIDAllState[persona].githubUser.id}
-          avatar={githubIDAllState[persona].githubUser.avatar_url}
+          name={allPersona[index].githubUser.name}
+          id={allPersona[index].githubUser.id}
+          avatar={allPersona[index].githubUser.avatar_url}
         />
       )}
     </>
@@ -81,15 +76,12 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  githubUserKeywordInputDispatch: (persona: Array<string>, inputKeyworkd: string) =>
-    dispatch(githubUserKeywordInput(persona, inputKeyworkd)),
+  dispatchGithubUserKeywordInput: (payload: { index: number, input: string }) =>
+    dispatch(githubUserKeywordInput(payload)),
 });
 
 const mapStateToProps = createStructuredSelector({
-  githubIDAllState: selectGithubIDAllState,
-  firstUpdatedTechnicalLeads: selectFirstUpdatedTechnicalLeads,
-  secondUpdatedTechnicalLeads: selectSecondUpdatedTechnicalLeads,
-  updatedProductOwner: selecUpdatedProductOwner,
+  allPersona: selectAllPersona
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdaptedGithubUserDisplay);

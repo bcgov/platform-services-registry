@@ -1,40 +1,34 @@
 import React, { useEffect } from 'react';
-
-import { connect } from 'react-redux';
 import { Field } from 'react-final-form';
+import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectGithubIDAllState } from '../../../../redux/githubID/githubID.selector';
+import { createNewTechnicalLeads, searchGithubUsers } from '../../../../redux/githubID/githubID.action';
+import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
-import { searchGithubUsers } from '../../../../redux/githubID/githubID.action';
-import getValidator from '../../../../utils/getValidator';
-
-const validator = getValidator();
 
 const GithubUserValidation: React.FC<any> = (props) => {
-  const { name, initialValue, defaultValue, githubIDAllState, fetchUserStartAsync } = props;
+  const { name, index, initialValue, defaultValue, allPersona, fetchUserStartAsync } = props;
 
-  const getPersona = (inputName: string) => {
-    const personaHandler = inputName.split(/[^A-Za-z0-9]/);
-    let persona = 'updatedProductOwner';
-    if (personaHandler[0].includes('TechnicalLeads')) {
-      if (personaHandler[1] === '0') {
-        persona = 'FirstUpdatedTechnicalLeads';
-      } else {
-        persona = 'SecondUpdatedTechnicalLeads';
-      }
+  const githubValidator = (value: any) => {
+    if (!value) {
+      return "Required";
     }
-    return persona;
+    if (allPersona[index].everFetched && allPersona[index].notFound) {
+      return 'Github User Not Found';
+    } else if (allPersona[index].inputKeyword && !allPersona[index].everFetched) {
+      return 'Still Loading Github User infomation';
+    }
+
   };
 
-  const persona = getPersona(name);
-  const { inputKeyword, githubUser } = githubIDAllState[persona];
+  const { inputKeyword, githubUser } = allPersona[index]
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0) {
-        fetchUserStartAsync(inputKeyword, persona);
+        fetchUserStartAsync(inputKeyword, index);
       }
     }, 1500);
 
@@ -50,19 +44,20 @@ const GithubUserValidation: React.FC<any> = (props) => {
       initialValue={initialValue}
       defaultValue={defaultValue}
       sx={{ textTransform: 'none' }}
-      persona={persona}
-      validate={validator.mustBeValidGithubName}
+      index={index}
+      validate={githubValidator}
     />
   );
 };
 
 const mapStateToProps = createStructuredSelector({
-  githubIDAllState: selectGithubIDAllState,
+  allPersona: selectAllPersona,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, persona: string) =>
-    dispatch(searchGithubUsers(query, persona)),
+  fetchUserStartAsync: (query: string, index: number) =>
+    dispatch(searchGithubUsers(query, index)),
+  createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GithubUserValidation);

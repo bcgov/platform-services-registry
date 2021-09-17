@@ -1,50 +1,52 @@
-import GithubIDActionTypes from './githubID.types';
-import { Dispatch } from 'redux'
+import { Dispatch } from 'redux';
 import { ActionType } from 'typesafe-actions';
+import GithubIDActionTypes from './githubID.types';
 
 export type GithubIDAction = ActionType<typeof requestGithubUsers>;
 
-export const requestGithubUsers = (persona: string) => ({
+export const requestGithubUsers = (index: number) => ({
   type: GithubIDActionTypes.GITHUB_USERS_REQUEST,
-  persona,
+  payload: index,
 });
 
-export const userExist = (persona: string) => ({
+export const userExist = (index: number) => ({
   type: GithubIDActionTypes.GITHUB_USER_EXIST,
-  persona,
+  payload: index,
 });
 
-export const storeUser = (persona: string, payload: object) => ({
+export const storeUser = (payload: any) => ({
   type: GithubIDActionTypes.GITHUB_USER_STORE_USER,
   payload,
-  persona,
 });
 
-export const githubUserKeywordInput = (persona: Array<string>, payload: string) => ({
+export const githubUserKeywordInput = (payload: object) => ({
   type: GithubIDActionTypes.GITHUB_USERS_INPUT,
   payload,
-  persona,
 });
 
-export const noSuchUser = (persona: string) => ({
+export const noSuchUser = (index: number) => ({
   type: GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST,
-  persona,
+  payload: index,
 });
 
-export const searchGithubUsers = (query: string, persona: string) => (dispatch: Dispatch<GithubIDAction>) => {
-  dispatch(requestGithubUsers(persona));
+export const createNewTechnicalLeads = () => ({
+  type: GithubIDActionTypes.NEW_GITHUB_ID_ENTRY,
+})
+
+export const searchGithubUsers = (query: string, index: number) => (dispatch: Dispatch<GithubIDAction>) => {
+  dispatch(requestGithubUsers(index));
   fetch(`https://api.github.com/users/${query}`)
     .then(async (response) => {
       if (response.ok) {
-        dispatch(userExist(persona));
+        dispatch(userExist(index));
         const data = await response.json();
-        dispatch(storeUser(persona, data));
+        dispatch(storeUser({ index, data }));
       } else {
-        dispatch(noSuchUser(persona));
+        dispatch(noSuchUser(index));
       }
     })
     .catch((err) => {
-      dispatch(noSuchUser(persona));
+      dispatch(noSuchUser(index));
       throw new Error('Error happened during fetching Github data!');
     });
 };

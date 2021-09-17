@@ -16,32 +16,32 @@
 
 import { Label } from '@rebass/forms';
 import arrayMutators from 'final-form-arrays';
-import { FORM_ERROR } from 'final-form';
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
-import { Redirect } from 'react-router-dom';
-import { Flex } from 'rebass';
-import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { selectGithubIDAllState } from '../../redux/githubID/githubID.selector';
+import { Redirect } from 'react-router-dom';
+import { Flex, Text } from 'rebass';
+import { createStructuredSelector } from 'reselect';
 import {
   MAXIMUM_TECHNICAL_LEADS,
   MINIMUM_TECHNICAL_LEADS,
   PROFILE_EDIT_VIEW_NAMES,
   ROLES,
-  ROUTE_PATHS,
+  ROUTE_PATHS
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
+import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
+import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { Button } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormTitle from '../common/UI/FormTitle';
+import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
-import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 
 const validator = getValidator();
 
@@ -51,7 +51,8 @@ interface IContactCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
-  GithubIDAllState: any;
+  allPersona: any;
+  createNewTechnicalLeads: any;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
@@ -61,7 +62,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     handleSubmitRefresh,
     isProvisioned,
     hasPendingEdit,
-    GithubIDAllState,
+    allPersona,
+    createNewTechnicalLeads,
   } = props;
 
   const { setOpenBackdrop } = useCommonState();
@@ -82,16 +84,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   );
 
   const onSubmit = async (formData: any) => {
-    let onSubmitErrorMessage;
-    Object.entries(GithubIDAllState).forEach(([key, value]) => {
-      if (GithubIDAllState[key].everFetched === true && GithubIDAllState[key].notFound === true) {
-        onSubmitErrorMessage = 'Github User Not Found';
-      }
-      if (GithubIDAllState[key].inputKeyword && GithubIDAllState[key].everFetched === false) {
-        onSubmitErrorMessage = 'Loading Github User infomation';
-      }
-    });
-    if (onSubmitErrorMessage) return { [FORM_ERROR]: onSubmitErrorMessage };
 
     setOpenBackdrop(true);
     try {
@@ -184,6 +176,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
             <GithubUserValidation
               name="updatedProductOwner.githubId"
+              index={0} //Product Ownder has index 0, other TL will start from 1
               defaultValue=""
               initialValue={productOwner.githubId}
             />
@@ -194,88 +187,97 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               : 'Who is the technical lead for this project?'}
           </FormTitle>
           <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
-            {({ fields }) => (
-              <div>
-                {fields.map((name, index) => (
-                  <div key={name}>
-                    <Flex flexDirection="row">
-                      <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
-                      {/* TODO: (SB) implement the ability to delete contacts from edit page */}
-                      {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
-                        <Box my="auto" ml="auto" className="buttons">
-                          <SquareFormButton
-                            type="button"
-                            onClick={() => fields.remove(index)}
-                            style={{ cursor: 'pointer' }}
-                            inversed
-                          >
-                            X
-                          </SquareFormButton>
-                        </Box>
-                      )} */}
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
-                        {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
-                      </Field>
-                      <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                      <Field<string>
-                        name={`${name}.firstName`}
-                        component={TextInput}
-                        validate={validator.mustBeValidName}
-                        placeholder="Jane"
-                      />
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                      <Field<string>
-                        name={`${name}.lastName`}
-                        component={TextInput}
-                        validate={validator.mustBeValidName}
-                        placeholder="Doe"
-                      />
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.email`}>Email Address</Label>
-                      <Field<string>
-                        name={`${name}.email`}
-                        component={TextInput}
-                        validate={validator.mustBeValidEmail}
-                        placeholder="jane.doe@example.com"
-                        sx={{ textTransform: 'none' }}
-                      />
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                      <GithubUserValidation name={`${name}.githubId`} />
-                    </Flex>
-                  </div>
-                ))}
-                {fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      fields.push({
-                        id: '',
-                        firstName: '',
-                        lastName: '',
-                        email: '',
-                        githubId: '',
-                        roleId: ROLES.TECHNICAL_LEAD,
-                      })
-                    }
-                  >
-                    Add Technical Lead
-                  </Button>
-                ) : (
-                  ''
-                )}
-              </div>
-            )}
+            {({ fields }) => {
+              return (fields.length && (fields.length <= allPersona.length)) ?
+                <>
+                  {fields.map((name, index) => (
+                    <div key={name}>
+                      <Flex flexDirection="row">
+                        <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
+                        {/* TODO: (SB) implement the ability to delete contacts from edit page */}
+                        {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                      <Box my="auto" ml="auto" className="buttons">
+                        <SquareFormButton
+                          type="button"
+                          onClick={() => fields.remove(index)}
+                          style={{ cursor: 'pointer' }}
+                          inversed
+                        >
+                          X
+                        </SquareFormButton>
+                      </Box>
+                    )} */}
+                      </Flex>
+                      <Flex flexDirection="column">
+
+                        <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
+                          {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
+                        </Field>
+                        <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                        <Field<string>
+                          name={`${name}.firstName`}
+                          component={TextInput}
+                          validate={validator.mustBeValidName}
+                          placeholder="Jane"
+                        />
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                        <Field<string>
+                          name={`${name}.lastName`}
+                          component={TextInput}
+                          validate={validator.mustBeValidName}
+                          placeholder="Doe"
+                        />
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Label htmlFor={`${name}.email`}>Email Address</Label>
+                        <Field<string>
+                          name={`${name}.email`}
+                          component={TextInput}
+                          validate={validator.mustBeValidEmail}
+                          placeholder="jane.doe@example.com"
+                          sx={{ textTransform: 'none' }}
+                        />
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                        {/* Product Ownder has index 0, other TL will start from 1 */}
+                        <GithubUserValidation name={`${name}.githubId`} index={index + 1} />
+                      </Flex>
+                    </div>
+                  ))}
+                  {fields.length! < MAXIMUM_TECHNICAL_LEADS && (
+                    <Button
+                      type="button"
+                      onClick={async () => {
+
+                        fields.push({
+                          id: '',
+                          firstName: '',
+                          lastName: '',
+                          email: '',
+                          githubId: '',
+                          roleId: ROLES.TECHNICAL_LEAD,
+                        })
+                        await createNewTechnicalLeads()
+                      }
+                      }
+                    >
+                      Add Technical Lead
+                    </Button>
+                  )}
+                </>
+                :
+                <Text as="h4" mt={2}>
+                  Loading...
+                </Text>
+
+            }
+            }
           </FieldArray>
 
           <EditSubmitButton
-            submitError={formProps.submitError}
             hasPendingEdit={hasPendingEdit}
             isProvisioned={isProvisioned}
             pristine={formProps.pristine}
@@ -286,7 +288,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   );
 };
 const mapStateToProps = createStructuredSelector({
-  GithubIDAllState: selectGithubIDAllState,
+  allPersona: selectAllPersona,
+});
+const mapDispatchToProps = (dispatch: any) => ({
+  createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads())
 });
 
-export default connect(mapStateToProps)(ContactCardEdit);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactCardEdit);
