@@ -1,17 +1,14 @@
 import arrayMutators from 'final-form-arrays';
 import React, { useState } from 'react';
 import { Form } from 'react-final-form';
-import { connect } from 'react-redux';
 import { Flex } from 'rebass';
-import { createStructuredSelector } from 'reselect';
 import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
-import { selectAllPersona } from '../redux/githubID/githubID.selector';
 
 export const WizardPage: React.FC = ({ children }) => <div>{children}</div>;
 
 
-const Wizard: React.FC<any> = ({ onSubmit, children, allPersona }) => {
+const Wizard: React.FC<any> = ({ onSubmit, children }) => {
   const [values, setValues] = useState<any | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [isLastPage, setLastPage] = useState(false);
@@ -30,7 +27,6 @@ const Wizard: React.FC<any> = ({ onSubmit, children, allPersona }) => {
   };
 
   const handleSubmit = (formData: any) => {
-
     setLastPage(page === React.Children.count(children) - 2);
     if (isLastPage) {
       return onSubmit(values);
@@ -86,8 +82,5 @@ const Wizard: React.FC<any> = ({ onSubmit, children, allPersona }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  allPersona: selectAllPersona,
-});
 
-export default connect(mapStateToProps)(Wizard);
+export default Wizard;
