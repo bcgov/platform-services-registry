@@ -7,6 +7,7 @@ import { createStructuredSelector } from 'reselect';
 import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import { selectAllPersona } from '../redux/githubID/githubID.selector';
+
 export const WizardPage: React.FC = ({ children }) => <div>{children}</div>;
 
 const Wizard: React.FC<any> = ({ onSubmit, children }) => {

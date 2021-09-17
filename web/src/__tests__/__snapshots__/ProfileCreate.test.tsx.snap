@@ -220,5 +220,6 @@ exports[`matches the snapshot 1`] = `
       </div>
     </div>
   </form>
+  ,
 </div>
 `;
