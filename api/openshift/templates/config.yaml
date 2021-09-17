@@ -55,10 +55,15 @@ objects:
           },
           "reviewers": {
             "emails": "${REVIEWER_EMAILS}"
-          }
+          },
           "api": {
             "prefix": ""
-          }
+          },
+          "orgs": [
+            "bcgov",
+            "BCDevOps"
+          ],
+          "primaryOrg": "bcgov"          
         }
 parameters:
 - description:

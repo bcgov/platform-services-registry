@@ -103,6 +103,13 @@ export default function useRegistryApi() {
     return axiosInstance.current.post('contact', contact);
   };
 
+  const githubInvite = async (payload: any): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.post('contact/inviteToOrg', payload);
+  };
+
   const updateContactsByProfileId = async (
     profileId: string,
     requestedContacts: any,
@@ -223,6 +230,7 @@ export default function useRegistryApi() {
     createProfile,
     updateProfile,
     createContact,
+    githubInvite,
     updateContactsByProfileId,
     linkContactToProfileById,
     createNamespaceByProfileId,

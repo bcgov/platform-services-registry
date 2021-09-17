@@ -187,13 +187,14 @@ export const flatten = (obj: Object) => {
 export const parseEmails = (contacts: any) => {
   return (
     <>
-      {contacts.map((contact: any) => {
-        return (
-          <Box key={contact.email}>
-            <Link href={`mailto:${contact.email}`}>{contact.email}</Link>
-          </Box>
-        );
-      })}
+      {contacts &&
+        contacts.map((contact: any) => {
+          return (
+            <Box key={contact.email}>
+              <Link href={`mailto:${contact.email}`}>{contact.email}</Link>
+            </Box>
+          );
+        })}
     </>
   );
 };
