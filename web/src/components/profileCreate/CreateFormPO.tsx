@@ -80,9 +80,9 @@ const CreateFormPO: React.FC = () => {
         <Label htmlFor="productOwner.githubId">GitHub Id</Label>
         <GithubUserValidation
           name="productOwner.githubId"
-          index={0} //Product Ownder has index 0, other TL will start from 1
+          index={0} // Product Ownder has index 0, other TL will start from 1
           defaultValue=""
-          initialValue={""}
+          initialValue=""
         />
       </Flex>
     </Aux>

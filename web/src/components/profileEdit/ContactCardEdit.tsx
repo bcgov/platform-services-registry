@@ -28,7 +28,7 @@ import {
   MINIMUM_TECHNICAL_LEADS,
   PROFILE_EDIT_VIEW_NAMES,
   ROLES,
-  ROUTE_PATHS
+  ROUTE_PATHS,
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
@@ -52,7 +52,7 @@ interface IContactCardEditProps {
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
   allPersona: any;
-  createNewTechnicalLeads: any;
+  newTechnicalLeads: any;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
@@ -63,7 +63,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     isProvisioned,
     hasPendingEdit,
     allPersona,
-    createNewTechnicalLeads,
+    newTechnicalLeads,
   } = props;
 
   const { setOpenBackdrop } = useCommonState();
@@ -84,7 +84,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   );
 
   const onSubmit = async (formData: any) => {
-
     setOpenBackdrop(true);
     try {
       if (!profileId) {
@@ -176,7 +175,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
             <GithubUserValidation
               name="updatedProductOwner.githubId"
-              index={0} //Product Ownder has index 0, other TL will start from 1
+              index={0} // Product Ownder has index 0, other TL will start from 1
               defaultValue=""
               initialValue={productOwner.githubId}
             />
@@ -188,12 +187,14 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           </FormTitle>
           <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
             {({ fields }) => {
-              return (fields.length && (fields.length <= allPersona.length)) ?
+              return fields.length && fields.length <= allPersona.length ? (
                 <>
                   {fields.map((name, index) => (
                     <div key={name}>
                       <Flex flexDirection="row">
-                        <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
+                        <FormTitle style={{ fontSize: '20px' }}>
+                          Technical Lead {index + 1}
+                        </FormTitle>
                         {/* TODO: (SB) implement the ability to delete contacts from edit page */}
                         {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
                       <Box my="auto" ml="auto" className="buttons">
@@ -209,7 +210,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                     )} */}
                       </Flex>
                       <Flex flexDirection="column">
-
                         <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
                           {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
                         </Field>
@@ -251,7 +251,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                     <Button
                       type="button"
                       onClick={async () => {
-
                         fields.push({
                           id: '',
                           firstName: '',
@@ -259,22 +258,20 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                           email: '',
                           githubId: '',
                           roleId: ROLES.TECHNICAL_LEAD,
-                        })
-                        await createNewTechnicalLeads()
-                      }
-                      }
+                        });
+                        await newTechnicalLeads();
+                      }}
                     >
                       Add Technical Lead
                     </Button>
                   )}
                 </>
-                :
+              ) : (
                 <Text as="h4" mt={2}>
                   Loading...
                 </Text>
-
-            }
-            }
+              );
+            }}
           </FieldArray>
 
           <EditSubmitButton
@@ -291,8 +288,7 @@ const mapStateToProps = createStructuredSelector({
   allPersona: selectAllPersona,
 });
 const mapDispatchToProps = (dispatch: any) => ({
-  createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads())
+  newTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactCardEdit);

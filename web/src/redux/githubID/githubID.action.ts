@@ -31,9 +31,11 @@ export const noSuchUser = (index: number) => ({
 
 export const createNewTechnicalLeads = () => ({
   type: GithubIDActionTypes.NEW_GITHUB_ID_ENTRY,
-})
+});
 
-export const searchGithubUsers = (query: string, index: number) => (dispatch: Dispatch<GithubIDAction>) => {
+export const searchGithubUsers = (query: string, index: number) => (
+  dispatch: Dispatch<GithubIDAction>,
+) => {
   dispatch(requestGithubUsers(index));
   fetch(`https://api.github.com/users/${query}`)
     .then(async (response) => {

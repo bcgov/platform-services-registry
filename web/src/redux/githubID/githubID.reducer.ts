@@ -9,82 +9,74 @@ interface GithubIdBaseInterface {
   notFound: boolean;
 }
 
-
-
-
 const GithubIDBaseState = {
   githubUser: null,
   inputKeyword: '',
   isLoading: false,
   everFetched: false,
   notFound: false,
-}
+};
 
 // IMPORTANT:  In this redux state,the first elememt (index 0) is PO, others are TL
 const INITIAL_STATE: GithubIdBaseInterface[] = [GithubIDBaseState, GithubIDBaseState];
 
-const githubIDReducer = (
-  state = INITIAL_STATE,
-  action: any,
-) => {
+const githubIDReducer = (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
-
     case GithubIDActionTypes.NEW_GITHUB_ID_ENTRY:
-      return [...state, GithubIDBaseState]
+      return [...state, GithubIDBaseState];
 
     case GithubIDActionTypes.GITHUB_USERS_REQUEST:
-      const newArrayForUserRequest = [...state]
+      const newArrayForUserRequest = [...state];
       newArrayForUserRequest[action.payload] = {
         ...state[action.payload],
         isLoading: true,
         everFetched: false,
-      }
-      return newArrayForUserRequest
-
+      };
+      return newArrayForUserRequest;
 
     case GithubIDActionTypes.GITHUB_USER_EXIST:
-      const newArrayForUserExist = [...state]
+      const newArrayForUserExist = [...state];
       newArrayForUserExist[action.payload] = {
         ...state[action.payload],
         isLoading: true,
         everFetched: true,
         notFound: false,
-      }
-      return newArrayForUserExist
+      };
+      return newArrayForUserExist;
 
     case GithubIDActionTypes.GITHUB_USER_STORE_USER:
-      const newArrayForStoreUser = [...state]
+      const newArrayForStoreUser = [...state];
       newArrayForStoreUser[action.payload.index] = {
         ...state[action.payload.index],
         githubUser: action.payload.data,
         isLoading: false,
-      }
-      return newArrayForStoreUser
+      };
+      return newArrayForStoreUser;
 
     case GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST:
-      const newArrayForNoneExistUser = [...state]
+      const newArrayForNoneExistUser = [...state];
       newArrayForNoneExistUser[action.payload] = {
         ...state[action.payload],
         githubUser: null,
         isLoading: false,
         everFetched: true,
         notFound: true,
-      }
-      return newArrayForNoneExistUser
+      };
+      return newArrayForNoneExistUser;
 
     case GithubIDActionTypes.GITHUB_USERS_INPUT:
-      const newArrayForInputAction = [...state]
+      const newArrayForInputAction = [...state];
       newArrayForInputAction[action.payload.index] = {
         inputKeyword: action.payload.inputValue,
         githubUser: null,
         isLoading: false,
         everFetched: false,
         notFound: false,
-      }
-      return newArrayForInputAction
+      };
+      return newArrayForInputAction;
 
     default:
-      return state
+      return state;
   }
 };
 

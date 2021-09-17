@@ -382,7 +382,7 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           </div>
         </div>
         <button
-          class="misc-class-m-form-submit-btn css-1l289k6"
+          class="misc-class-m-form-submit-btn css-1pob16q"
           style="display: block;"
           type="submit"
         >
@@ -788,7 +788,7 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
           </div>
         </div>
         <button
-          class="misc-class-m-form-submit-btn css-1l289k6"
+          class="misc-class-m-form-submit-btn css-1pob16q"
           style="display: block;"
           type="submit"
         >

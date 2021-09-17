@@ -14,9 +14,6 @@ export const selectSecondUpdatedTechnicalLeads = createSelector(
   (githubID) => githubID[2],
 );
 
-export const selecUpdatedProductOwner = createSelector(
-  [selectGithubID],
-  (githubID) => githubID[0],
-);
+export const selecUpdatedProductOwner = createSelector([selectGithubID], (githubID) => githubID[0]);
 
 export default selectGithubID;
