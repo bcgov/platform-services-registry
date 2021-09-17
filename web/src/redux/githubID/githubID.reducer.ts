@@ -34,7 +34,7 @@ const githubIDReducer = (state = INITIAL_STATE, action: any) => {
       };
       return newArrayForUserRequest;
 
-    case GithubIDActionTypes.GITHUB_USER_EXIST:
+    case GithubIDActionTypes.GITHUB_USER_EXISTS:
       const newArrayForUserExist = [...state];
       newArrayForUserExist[action.payload] = {
         ...state[action.payload],

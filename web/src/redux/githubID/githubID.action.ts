@@ -10,7 +10,7 @@ export const requestGithubUsers = (index: number) => ({
 });
 
 export const userExist = (index: number) => ({
-  type: GithubIDActionTypes.GITHUB_USER_EXIST,
+  type: GithubIDActionTypes.GITHUB_USER_EXISTS,
   payload: index,
 });
 

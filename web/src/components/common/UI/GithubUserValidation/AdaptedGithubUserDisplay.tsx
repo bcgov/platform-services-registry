@@ -8,12 +8,11 @@ import TextInput from '../TextInput';
 
 interface GithubUserInterface {
   avatar: string;
-  id: string;
   name: string;
 }
 
 const User: React.FC<GithubUserInterface> = (props) => {
-  const { name, id, avatar } = props;
+  const { name, avatar } = props;
 
   return (
     <Flex flexDirection="row" justifyContent="space-evenly">
@@ -33,7 +32,6 @@ const User: React.FC<GithubUserInterface> = (props) => {
       </Box>
       <Flex flexDirection="column" justifyContent="center">
         <Text>Name: {name}</Text>
-        <Text mt={2}>ID: {id}</Text>
       </Flex>
     </Flex>
   );
@@ -73,7 +71,6 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
       {allPersona[index].githubUser && (
         <User
           name={allPersona[index].githubUser.name}
-          id={allPersona[index].githubUser.id}
           avatar={allPersona[index].githubUser.avatar_url}
         />
       )}
