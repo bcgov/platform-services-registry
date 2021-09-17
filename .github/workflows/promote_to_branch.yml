@@ -37,7 +37,6 @@ jobs:
         env:
           ROCKETCHAT_MESSAGE: "There was an error in the registry app API tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
-          echo '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
           exit 1
   web_test:
     runs-on: ubuntu-latest
@@ -63,5 +62,4 @@ jobs:
         env:
           ROCKETCHAT_MESSAGE: "There was an error in the registry app web tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
-          echo '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
           exit 1
