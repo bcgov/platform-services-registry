@@ -183,7 +183,7 @@ jobs:
       - name: test
         run: ls src/__tests__/__snapshots__/
       - name: Unit tests w/ coverage
-        run: npm run test -- --coverage --ci --passWithNoTests
+        run: npm run test -- --coverage --passWithNoTests
       - name: LINTing
         run: npm run lint -- --quiet -f codeframe
       - name: Prettier

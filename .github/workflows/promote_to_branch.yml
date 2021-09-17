@@ -1,0 +1,65 @@
+name: Run Test on push to branch
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!master'
+
+jobs:
+
+  # This action (dorny/paths-filter) allows us to selectively run jobs based on
+  # the files that have been updated, as in on.push.paths above.
+  # Saves us from doing unnecessary builds.
+  # ---------------------------------------------------------------------------
+  
+  api_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests w/ coverage
+        run: npm run test:coverage
+      - name: LINTing
+        run: npm run test:lint
+      - name: OpenAPI Schema
+        run: npm run test:schema
+
+      - name: Check test result
+        if: ${{ failure() }}
+        env:
+          ROCKETCHAT_MESSAGE: "There was an error in the registry app API tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          exit 1
+  web_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests w/ coverage
+        run: npm run test -- --coverage --passWithNoTests
+      - name: LINTing
+        run: npm run lint -- --quiet -f codeframe
+      - name: Prettier
+        run: npm run format -- --check
+
+      - name: Check test result
+        if: ${{ failure() }}
+        env:
+          ROCKETCHAT_MESSAGE: "There was an error in the registry app web tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          exit 1
