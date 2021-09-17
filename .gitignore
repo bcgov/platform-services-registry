@@ -35,7 +35,6 @@ node_modules
 task-definition.json
 *.sqlite
 db/backups
-api/src/config/config.json
 
 # These files contain credentials, do not add them to
 # the repo.
