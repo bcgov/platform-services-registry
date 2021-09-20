@@ -27,6 +27,9 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@bcgov/common-nodejs-utils": "^0.1.21",
+    "@octokit/auth": "^3.0.3",
+    "@octokit/request": "^5.6.0",
+    "@octokit/rest": "^18.7.1",
     "@types/dotenv": "^8.2.0",
     "axios": "^0.21.1",
     "connect-flash": "^0.1.1",

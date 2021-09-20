@@ -157,8 +157,10 @@ const buildContext = async (
     }
 
     // TODO:(sb) Find a more robust solution to convert quotas to snake_case
-    // @ts-ignore
-    delete Object.assign(quotas.storage, {pvc_count: quotas.storage.pvcCount }).pvcCount;
+    if (quotas.storage.pvcCount){
+      // @ts-ignore
+      delete Object.assign(quotas.storage, {pvc_count: quotas.storage.pvcCount }).pvcCount;
+    }
 
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(profile.id);
 

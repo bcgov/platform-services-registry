@@ -1,0 +1,43 @@
+name: Web test on push to non-master branches
+
+on:
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - "web/src/**/*.ts"
+      - "web/src/**/*.tsx"
+      - "web/package*.json"
+      - "web/public/**/*"
+      - "web/Caddyfile"
+
+jobs:
+  web_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@master
+      - name: Branch name
+        run: echo "--> $GITHUB_REF"
+      - uses: actions/setup-node@master
+        with:
+          node-version: "12"
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit tests w/ coverage
+        run: npm run test -- --coverage --passWithNoTests
+      - name: LINTing
+        run: npm run lint -- --quiet -f codeframe
+      - name: Prettier
+        run: npm run format -- --check
+
+      - name: Check test result
+        if: ${{ failure() }}
+        env:
+          ROCKETCHAT_MESSAGE: "There was an error in the registry app web tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --data '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
+          exit 1
+

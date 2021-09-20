@@ -25,6 +25,13 @@
     "prefix": ""
   },
   "reviewers": {
-    "emails": [""]
-  }
+    "emails": [
+      ""
+    ]
+  },
+  "orgs": [
+    "bcgov",
+    "BCDevOps"
+  ],
+  "primaryOrg": "bcgov"
 }

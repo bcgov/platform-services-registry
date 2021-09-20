@@ -33,6 +33,7 @@ export interface ClusterNamespace extends CommonFields {
 export interface ProjectNamespace extends CommonFields {
   name: string;
   profileId: number;
+  clusters?: any;
 }
 
 export default class NamespaceModel extends Model {
@@ -124,7 +125,7 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async createProjectSet(clusterId: number, nsResults:any): Promise<ProjectNamespace[]> {
+  async createProjectSet(clusterId: number, nsResults: any): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         INSERT INTO cluster_namespace
