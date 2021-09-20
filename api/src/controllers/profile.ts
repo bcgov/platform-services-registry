@@ -18,13 +18,13 @@
 
 import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
 import { Response } from 'express';
-import differenceBy from "lodash";
 import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
+import { comparerContact } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
 import { getQuotaSize, updateProfileStatus } from '../libs/profile';
@@ -91,8 +91,8 @@ export const updateProfileContacts = async (
     const deletedOrNewContact: boolean = true;
     const provisionerContactEdit: boolean[] = [];
 
-    const removeExistingContact = differenceBy(currentContacts, contacts, 'id');
-    const addNewContact = differenceBy(contacts, currentContacts, 'id');
+    const removeExistingContact = currentContacts.filter(comparerContact(contacts, 'id'));
+    const addNewContact = contacts.filter(comparerContact(currentContacts, 'id'));
     const AddOrRemoveContact = removeExistingContact.concat(addNewContact);
 
     // 1. Check for provisioner related changes
