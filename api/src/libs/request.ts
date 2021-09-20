@@ -150,7 +150,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
         const removeExistingContact = currentContacts.filter(comparerContact(contacts, 'id'));
 
         // remove contact if request's contacts number is less than what we have in db
-        removeExistingContact.map(async contact => {
+        removeExistingContact.forEach(async contact => {
             const removeExistingContactID = contact.id;
             await ProfileModel.removeContactFromProfile(Number(request.profileId), Number(removeExistingContactID))
             await ContactModel.delete(Number(removeExistingContactID))
