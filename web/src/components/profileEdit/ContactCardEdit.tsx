@@ -20,7 +20,7 @@ import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { Redirect } from 'react-router-dom';
-import { Flex } from 'rebass';
+import { Flex, Box } from 'rebass';
 import {
   MAXIMUM_TECHNICAL_LEADS,
   MINIMUM_TECHNICAL_LEADS,
@@ -32,7 +32,7 @@ import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button } from '../common/UI/Button';
+import { Button, SquareFormButton } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormTitle from '../common/UI/FormTitle';
 import TextInput from '../common/UI/TextInput';
@@ -178,8 +178,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                   <div key={name}>
                     <Flex flexDirection="row">
                       <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
-                      {/* TODO: (SB) implement the ability to delete contacts from edit page */}
-                      {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                      {fields.length! > MINIMUM_TECHNICAL_LEADS && (
                         <Box my="auto" ml="auto" className="buttons">
                           <SquareFormButton
                             type="button"
@@ -190,7 +189,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             X
                           </SquareFormButton>
                         </Box>
-                      )} */}
+                      )}
                     </Flex>
                     <Flex flexDirection="column">
                       <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>

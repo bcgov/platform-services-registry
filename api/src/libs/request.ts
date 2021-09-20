@@ -23,6 +23,7 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request, RequestEditType, RequestType } from '../db/model/request';
+import { comparerContact } from '../db/utils';
 import { updateProfileStatus } from '../libs/profile';
 import { AuthenticatedUser } from './authmware';
 import { MessageType, sendProvisioningMessage } from './messaging';
@@ -107,6 +108,26 @@ export const requestProfileContactsEdit = async (profileId: number, newContacts:
     }
 };
 
+export const requestProfileContactRemove = async (profileId: number, newContacts: Contact[], user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
+    try {
+        const editObject = newContacts;
+
+        return await createRequest(
+            RequestType.Edit,
+            user.id,
+            requiresHumanAction,
+            profileId,
+            RequestEditType.Contacts,
+            editObject
+        );
+    } catch (err) {
+        const message = `Unable to request contacts edit for profile ${profileId}`;
+        logger.error(`${message}, err = ${err.message}`);
+
+        throw err;
+    }
+};
+
 export const processProfileContactsEdit = async (request: Request): Promise<void> => {
     const { ProfileModel, ContactModel } = dm;
 
@@ -115,7 +136,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
 
         const contacts: Contact[] = request.editObject;
 
-        for (const contact of contacts){
+        for (const contact of contacts) {
             const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
             if (currentContact) {
                 await ContactModel.update(Number(contact.id), contact);
@@ -125,7 +146,16 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
             }
         }
 
-        // TODO(sb): implement functionality to delete a contact if a project goes from 2 TL's -> 1 TL.
+        // functionality to delete a contact if a project goes from 2 TL's -> 1 TL.
+        const removeExistingContact = currentContacts.filter(comparerContact(contacts, 'id'));
+
+        // remove contact if request's contacts number is less than what we have in db
+        removeExistingContact.forEach(async contact => {
+            const removeExistingContactID = contact.id;
+            await ProfileModel.removeContactFromProfile(Number(request.profileId), Number(removeExistingContactID))
+            await ContactModel.delete(Number(removeExistingContactID))
+        })
+
         return;
     } catch (err) {
         const message = `Unable to process profile contacts edit for request ${request.id}`;
@@ -183,16 +213,16 @@ export const processProfileQuotaSizeEdit = async (request: Request): Promise<voi
 };
 
 const createRequest = async (
-    type: RequestType,userId: number, requiresHumanAction: boolean,
+    type: RequestType, userId: number, requiresHumanAction: boolean,
     profileId: number, editType?: RequestEditType, editObject?: any
-    ): Promise<Request> => {
+): Promise<Request> => {
     try {
         const existingRequests = await RequestModel.findForProfile(profileId);
         if (existingRequests.length > 0) {
             throw new Error('Cant proceed as the profile has existing request');
         }
 
-        switch(type) {
+        switch (type) {
             case RequestType.Create:
                 await updateProfileStatus(Number(profileId), PROFILE_STATUS.PENDING_APPROVAL)
                 break;
