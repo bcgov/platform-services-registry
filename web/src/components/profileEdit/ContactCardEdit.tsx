@@ -247,7 +247,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       </Flex>
                     </div>
                   ))}
-                  {fields.length! < MAXIMUM_TECHNICAL_LEADS && (
+                  {fields.length && fields.length < MAXIMUM_TECHNICAL_LEADS && (
                     <Button
                       type="button"
                       onClick={async () => {

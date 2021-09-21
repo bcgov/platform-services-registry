@@ -4,17 +4,17 @@ import GithubIDActionTypes from './githubID.types';
 
 export type GithubIDAction = ActionType<typeof requestGithubUsers>;
 
-export const requestGithubUsers = (index: number) => ({
+const requestGithubUsers = (index: number) => ({
   type: GithubIDActionTypes.GITHUB_USERS_REQUEST,
   payload: index,
 });
 
-export const userExist = (index: number) => ({
+const userExists = (index: number) => ({
   type: GithubIDActionTypes.GITHUB_USER_EXISTS,
   payload: index,
 });
 
-export const storeUser = (payload: any) => ({
+const storeUser = (payload: any) => ({
   type: GithubIDActionTypes.GITHUB_USER_STORE_USER,
   payload,
 });
@@ -24,7 +24,7 @@ export const githubUserKeywordInput = (payload: object) => ({
   payload,
 });
 
-export const noSuchUser = (index: number) => ({
+const noSuchUser = (index: number) => ({
   type: GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST,
   payload: index,
 });
@@ -40,7 +40,7 @@ export const searchGithubUsers = (query: string, index: number) => (
   fetch(`https://api.github.com/users/${query}`)
     .then(async (response) => {
       if (response.ok) {
-        dispatch(userExist(index));
+        dispatch(userExists(index));
         const data = await response.json();
         dispatch(storeUser({ index, data }));
       } else {
