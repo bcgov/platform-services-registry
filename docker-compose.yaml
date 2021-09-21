@@ -24,7 +24,7 @@ x-env: &defaults
   GITHUB_CLIENT_SECRET:
   GITHUB_CLIENT_ID:
   GITHUB_APP_ID: 
-  DEFAULT_GITHUB_ORGANIZATION:
+  GITHUB_ORGANIZATION:
 
 # volumes:
 #   pg_data:
