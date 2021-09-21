@@ -16,6 +16,8 @@
 
 import { render } from '@testing-library/react';
 import React from 'react';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 import ProfileCreate from '../views/ProfileCreate';
 
 jest.mock(
@@ -36,7 +38,9 @@ test('matches the snapshot', () => {
   const stubPropCB = jest.fn();
 
   const { container } = render(
-    <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} />,
+    <Provider store={store}>
+      <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} />,
+    </Provider>,
   );
 
   expect(container).toMatchSnapshot();

@@ -19,7 +19,7 @@ import React from 'react';
 
 const StyledButton = styled.button`
   margin-top: 20px;
-  width: 50%;
+  min-width: clamp(30%, 50%, 80%);
   height: 60px;
   border-radius: 5px;
   background-color: #036;
@@ -32,7 +32,7 @@ const StyledButton = styled.button`
 
 const StyledDisabledButton = styled.button`
   margin-top: 20px;
-  width: 50%;
+  min-width: clamp(30%, 50%, 80%);
   height: 60px;
   border-radius: 5px;
   background-color: #d3d3d3;

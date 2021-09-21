@@ -212,7 +212,7 @@ exports[`matches the snapshot 1`] = `
           class="buttons"
         >
           <button
-            class="misc-class-m-form-submit-btn css-1l289k6"
+            class="misc-class-m-form-submit-btn css-1pob16q"
           >
             Next
           </button>
@@ -220,5 +220,6 @@ exports[`matches the snapshot 1`] = `
       </div>
     </div>
   </form>
+  ,
 </div>
 `;

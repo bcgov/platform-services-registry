@@ -14,15 +14,16 @@
 // limitations under the License.
 //
 
-import React from 'react';
 import { Label } from '@rebass/forms';
+import React from 'react';
 import { StyledFormButton, StyledFormDisabledButton } from './Button';
 
-export const EditSubmitButton = ({ hasPendingEdit, isProvisioned, pristine }: any) => {
+export const EditSubmitButton = (props: any) => {
+  const { hasPendingEdit, isProvisioned, pristine } = props;
+
   if (pristine) {
     return (
       <>
-        {/* @ts-ignore */}
         <StyledFormDisabledButton disabled style={{ display: 'block' }}>
           Request Update
         </StyledFormDisabledButton>
@@ -30,11 +31,14 @@ export const EditSubmitButton = ({ hasPendingEdit, isProvisioned, pristine }: an
     );
   }
   if (!hasPendingEdit && isProvisioned) {
-    return <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>;
+    return (
+      <>
+        <StyledFormButton style={{ display: 'block' }}>Request Update</StyledFormButton>
+      </>
+    );
   }
   return (
     <>
-      {/* @ts-ignore */}
       <StyledFormDisabledButton disabled style={{ display: 'block' }}>
         Request Update
       </StyledFormDisabledButton>

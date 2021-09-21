@@ -19,8 +19,10 @@ import arrayMutators from 'final-form-arrays';
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Flex, Box } from 'rebass';
+import { Flex, Text } from 'rebass';
+import { createStructuredSelector } from 'reselect';
 import {
   MAXIMUM_TECHNICAL_LEADS,
   MINIMUM_TECHNICAL_LEADS,
@@ -30,11 +32,14 @@ import {
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
+import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
+import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button, SquareFormButton } from '../common/UI/Button';
+import { Button } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormTitle from '../common/UI/FormTitle';
+import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
 
@@ -46,10 +51,20 @@ interface IContactCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
+  allPersona: any;
+  newTechnicalLeads: any;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
-  const { profileId, contactDetails, handleSubmitRefresh, isProvisioned, hasPendingEdit } = props;
+  const {
+    profileId,
+    contactDetails,
+    handleSubmitRefresh,
+    isProvisioned,
+    hasPendingEdit,
+    allPersona,
+    newTechnicalLeads,
+  } = props;
 
   const { setOpenBackdrop } = useCommonState();
   const api = useRegistryApi();
@@ -111,12 +126,13 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
         ...arrayMutators,
       }}
       validate={(values) => {
-        const errors = {};
+        const errors: any = {};
+
         return errors;
       }}
     >
-      {({ handleSubmit, pristine }) => (
-        <form onSubmit={handleSubmit}>
+      {(formProps) => (
+        <form onSubmit={formProps.handleSubmit}>
           <FormTitle>Who is the product owner for this project?</FormTitle>
           <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
             {({ input }) => <input type="hidden" {...input} id="id" />}
@@ -157,13 +173,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           </Flex>
           <Flex flexDirection="column">
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
-            <Field<string>
+            <GithubUserValidation
               name="updatedProductOwner.githubId"
-              component={TextInput}
-              validate={validator.mustBeValidGithubName}
+              index={0} // Product Ownder has index 0, other TL will start from 1
               defaultValue=""
               initialValue={productOwner.githubId}
-              sx={{ textTransform: 'none' }}
             />
           </Flex>
           <FormTitle>
@@ -172,99 +186,109 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               : 'Who is the technical lead for this project?'}
           </FormTitle>
           <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
-            {({ fields }) => (
-              <div>
-                {fields.map((name, index) => (
-                  <div key={name}>
-                    <Flex flexDirection="row">
-                      <FormTitle style={{ fontSize: '20px' }}>Technical Lead {index + 1}</FormTitle>
-                      {fields.length! > MINIMUM_TECHNICAL_LEADS && (
-                        <Box my="auto" ml="auto" className="buttons">
-                          <SquareFormButton
-                            type="button"
-                            onClick={() => fields.remove(index)}
-                            style={{ cursor: 'pointer' }}
-                            inversed
-                          >
-                            X
-                          </SquareFormButton>
-                        </Box>
-                      )}
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
-                        {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
-                      </Field>
-                      <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                      <Field<string>
-                        name={`${name}.firstName`}
-                        component={TextInput}
-                        validate={validator.mustBeValidName}
-                        placeholder="Jane"
-                      />
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                      <Field<string>
-                        name={`${name}.lastName`}
-                        component={TextInput}
-                        validate={validator.mustBeValidName}
-                        placeholder="Doe"
-                      />
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.email`}>Email Address</Label>
-                      <Field<string>
-                        name={`${name}.email`}
-                        component={TextInput}
-                        validate={validator.mustBeValidEmail}
-                        placeholder="jane.doe@example.com"
-                        sx={{ textTransform: 'none' }}
-                      />
-                    </Flex>
-                    <Flex flexDirection="column">
-                      <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                      <Field<string>
-                        name={`${name}.githubId`}
-                        component={TextInput}
-                        validate={validator.mustBeValidGithubName}
-                        placeholder="jane1100"
-                        sx={{ textTransform: 'none' }}
-                      />
-                    </Flex>
-                  </div>
-                ))}
-                {fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      fields.push({
-                        id: '',
-                        firstName: '',
-                        lastName: '',
-                        email: '',
-                        githubId: '',
-                        roleId: ROLES.TECHNICAL_LEAD,
-                      })
-                    }
-                  >
-                    Add Technical Lead
-                  </Button>
-                ) : (
-                  ''
-                )}
-              </div>
-            )}
+            {({ fields }) => {
+              return fields.length && fields.length <= allPersona.length ? (
+                <>
+                  {fields.map((name, index) => (
+                    <div key={name}>
+                      <Flex flexDirection="row">
+                        <FormTitle style={{ fontSize: '20px' }}>
+                          Technical Lead {index + 1}
+                        </FormTitle>
+                        {/* TODO: (SB) implement the ability to delete contacts from edit page */}
+                        {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                      <Box my="auto" ml="auto" className="buttons">
+                        <SquareFormButton
+                          type="button"
+                          onClick={() => fields.remove(index)}
+                          style={{ cursor: 'pointer' }}
+                          inversed
+                        >
+                          X
+                        </SquareFormButton>
+                      </Box>
+                    )} */}
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
+                          {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
+                        </Field>
+                        <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                        <Field<string>
+                          name={`${name}.firstName`}
+                          component={TextInput}
+                          validate={validator.mustBeValidName}
+                          placeholder="Jane"
+                        />
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                        <Field<string>
+                          name={`${name}.lastName`}
+                          component={TextInput}
+                          validate={validator.mustBeValidName}
+                          placeholder="Doe"
+                        />
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Label htmlFor={`${name}.email`}>Email Address</Label>
+                        <Field<string>
+                          name={`${name}.email`}
+                          component={TextInput}
+                          validate={validator.mustBeValidEmail}
+                          placeholder="jane.doe@example.com"
+                          sx={{ textTransform: 'none' }}
+                        />
+                      </Flex>
+                      <Flex flexDirection="column">
+                        <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                        {/* Product Ownder has index 0, other TL will start from 1 */}
+                        <GithubUserValidation name={`${name}.githubId`} index={index + 1} />
+                      </Flex>
+                    </div>
+                  ))}
+                  {fields.length && fields.length < MAXIMUM_TECHNICAL_LEADS && (
+                    <Button
+                      type="button"
+                      onClick={async () => {
+                        fields.push({
+                          id: '',
+                          firstName: '',
+                          lastName: '',
+                          email: '',
+                          githubId: '',
+                          roleId: ROLES.TECHNICAL_LEAD,
+                        });
+                        await newTechnicalLeads();
+                      }}
+                    >
+                      Add Technical Lead
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <Text as="h4" mt={2}>
+                  Loading...
+                </Text>
+              );
+            }}
           </FieldArray>
+
           <EditSubmitButton
             hasPendingEdit={hasPendingEdit}
             isProvisioned={isProvisioned}
-            pristine={pristine}
+            pristine={formProps.pristine}
           />
         </form>
       )}
     </Form>
   );
 };
+const mapStateToProps = createStructuredSelector({
+  allPersona: selectAllPersona,
+});
+const mapDispatchToProps = (dispatch: any) => ({
+  newTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
+});
 
-export default ContactCardEdit;
+export default connect(mapStateToProps, mapDispatchToProps)(ContactCardEdit);

@@ -25,6 +25,7 @@ import getValidator from '../../utils/getValidator';
 import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
+import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 
 const CreateFormTL: React.FC = () => {
@@ -91,12 +92,11 @@ const CreateFormTL: React.FC = () => {
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                  <Field<string>
+                  {/* Product Ownder has index 0, other TL will start from 1 */}
+                  <GithubUserValidation
                     name={`${name}.githubId`}
-                    component={TextInput}
-                    validate={validator.mustBeValidGithubName}
-                    placeholder="jane1100"
-                    sx={{ textTransform: 'none' }}
+                    defaultValue=""
+                    index={index + 1}
                   />
                 </Flex>
               </div>
