@@ -28,7 +28,7 @@ import {
   MINIMUM_TECHNICAL_LEADS,
   PROFILE_EDIT_VIEW_NAMES,
   ROLES,
-  ROUTE_PATHS
+  ROUTE_PATHS,
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
