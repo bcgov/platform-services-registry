@@ -53,9 +53,13 @@ export const CLUSTER_NAMES = [
 
 export const GOLD_QUORUM_COUNT = 2;
 
+export const BC_ORGNAZTION_GIT_APP_ID = 131752;
+
 export const PROFILE_STATUS = {
   PENDING_APPROVAL: 'pending_approval',
-  APPROVED: 'approved', 
-  PENDING_EDIT: 'pending_edit', 
+  APPROVED: 'approved',
+  PENDING_EDIT: 'pending_edit',
   PROVISIONED: 'provisioned'
 }
+
+export const DEFAULT_GITHUB_ORGANIZATION = ["bcgov", "BCDevOps"]

@@ -36,6 +36,7 @@ export const ROLES = {
 };
 
 export const DEFAULT_MINISTRY = 'CITZ';
+export const DEFAULT_GITHUB_ORGANIZATION = ['bcgov', 'BCDevOps'];
 export const CREATE_COMMUNITY_ISSUE_URL =
   'https://github.com/bcgov/platform-services-registry/issues/new?&labels=community&template=platform-experience-general-issue.md';
 

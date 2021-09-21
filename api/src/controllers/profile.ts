@@ -24,6 +24,7 @@ import { Contact } from '../db/model/contact';
 import { ProjectProfile } from '../db/model/profile';
 import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
+import { comparerContact } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
 import { fulfillRequest } from '../libs/fulfillment';
 import { getQuotaSize, updateProfileStatus } from '../libs/profile';
@@ -90,19 +91,26 @@ export const updateProfileContacts = async (
     const deletedOrNewContact: boolean = true;
     const provisionerContactEdit: boolean[] = [];
 
+    const removeExistingContact = currentContacts.filter(comparerContact(contacts, 'id'));
+    const addNewContact = contacts.filter(comparerContact(currentContacts, 'id'));
+    const AddOrRemoveContact = removeExistingContact.concat(addNewContact);
+
     // 1. Check for provisioner related changes
-    contacts.forEach((contact: Contact): void => {
-      const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
-      if (currentContact) {
-        provisionerContactEdit.push(currentContact.githubId !== contact.githubId);
-        provisionerContactEdit.push(currentContact.email !== contact.email);
-      } else {
-        provisionerContactEdit.push(deletedOrNewContact)
-      }
-    });
+    if (AddOrRemoveContact.length !== 0) {
+      provisionerContactEdit.push(deletedOrNewContact)
+    } else {
+      contacts.forEach((contact: Contact): void => {
+        const currentContact = currentContacts.filter(cc => cc.id === contact.id).pop();
+        if (currentContact) {
+          provisionerContactEdit.push(currentContact.githubId !== contact.githubId);
+          provisionerContactEdit.push(currentContact.email !== contact.email);
+        }
+      });
+    }
 
     // 2. Create request if provisionerRelatedChanges
     const isProvisionerRelatedChanges = provisionerContactEdit.some(contactEdit => contactEdit);
+
     if (isProvisionerRelatedChanges) {
       const editRequest = await requestProfileContactsEdit(Number(profileId), contacts, user);
       await fulfillRequest(editRequest);

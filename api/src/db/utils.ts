@@ -43,3 +43,15 @@ export const generateNamespacePrefix = (len: number = 6): string => {
     .toString('hex')
     .slice(0, len);
 };
+
+/**
+ * This function will need to call by filter function array.filter(compareContact)
+ * @param otherArray the array that we want to get the difference with our origional array
+ * @param comparator  The comparator is invoked with two arguments: (arrVal, othVal).
+ * @returns the difference item of two array that exist in calling array but not in other Array
+ */
+export const comparerContact = (otherArray, comparator) => {
+  return (current) => {
+    return otherArray.filter((other) => (other[comparator] === current[comparator])).length === 0
+  }
+}
