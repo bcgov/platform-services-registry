@@ -236,7 +236,7 @@ objects:
                 name: ${API_NAME}-config
             - name: github-private-key
               secret: 
-                secretName: ${API_NAME}-private-key
+                secretName: registry-api-github-app-key
 parameters:
   - description:
       The name assigned to all of the objects defined in this template.  You
