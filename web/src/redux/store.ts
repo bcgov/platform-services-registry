@@ -3,7 +3,7 @@ import logger from 'redux-logger';
 import { persistStore } from 'redux-persist';
 import { PersistPartial } from 'redux-persist/lib/persistReducer';
 import thunk from 'redux-thunk';
-import rootReducer, { iRootState } from './root-reducer';
+import rootReducer, { RootState } from './root-reducer';
 
 // TODO: thunk or saga?
 
@@ -13,5 +13,8 @@ if (process.env.NODE_ENV === 'development') {
   middlewares.push(logger);
 }
 
-export const store = createStore<EmptyObject & PersistPartial & iRootState, any, any, any>(rootReducer, applyMiddleware(...middlewares));
+export const store = createStore<EmptyObject & PersistPartial & RootState, any, any, any>(
+  rootReducer,
+  applyMiddleware(...middlewares),
+);
 export const persistor = persistStore(store);

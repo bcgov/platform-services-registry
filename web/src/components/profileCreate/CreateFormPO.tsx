@@ -82,7 +82,7 @@ const CreateFormPO: React.FC = () => {
           name="productOwner.githubId"
           defaultValue=""
           initialValue=""
-          persona='productOwner'
+          persona="productOwner"
           position={0}
         />
       </Flex>

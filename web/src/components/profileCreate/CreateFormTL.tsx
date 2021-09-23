@@ -92,7 +92,12 @@ const CreateFormTL: React.FC = () => {
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                  <GithubUserValidation name={`${name}.githubId`} defaultValue="" persona='technicalLeads' position={index} />
+                  <GithubUserValidation
+                    name={`${name}.githubId`}
+                    defaultValue=""
+                    persona="technicalLeads"
+                    position={index}
+                  />
                 </Flex>
               </div>
             ))}

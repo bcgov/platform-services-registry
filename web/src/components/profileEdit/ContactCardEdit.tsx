@@ -28,7 +28,7 @@ import {
   MINIMUM_TECHNICAL_LEADS,
   PROFILE_EDIT_VIEW_NAMES,
   ROLES,
-  ROUTE_PATHS
+  ROUTE_PATHS,
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
@@ -175,7 +175,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
             <GithubUserValidation
               name="updatedProductOwner.githubId"
-              persona='productOwner'
+              persona="productOwner"
               defaultValue=""
               initialValue={productOwner.githubId}
               position={0}
@@ -243,7 +243,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       </Flex>
                       <Flex flexDirection="column">
                         <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                        <GithubUserValidation name={`${name}.githubId`} persona='technicalLeads' position={index} />
+                        <GithubUserValidation
+                          name={`${name}.githubId`}
+                          persona="technicalLeads"
+                          position={index}
+                        />
                       </Flex>
                     </div>
                   ))}

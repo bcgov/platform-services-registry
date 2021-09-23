@@ -4,15 +4,18 @@ import GithubIDActionTypes from './githubID.types';
 
 export type GithubIDAction = ActionType<typeof requestGithubUsers>;
 
-interface githubIDActionPayload { persona: string, position: number }
-const requestGithubUsers = (payload: githubIDActionPayload) => ({
+interface GithubIDActionPayload {
+  persona: string;
+  position: number;
+}
+const requestGithubUsers = (payload: GithubIDActionPayload) => ({
   type: GithubIDActionTypes.GITHUB_USERS_REQUEST,
   payload,
 });
 
-const userExists = (payload: githubIDActionPayload) => ({
+const userExists = (payload: GithubIDActionPayload) => ({
   type: GithubIDActionTypes.GITHUB_USER_EXISTS,
-  payload
+  payload,
 });
 
 const storeUser = (payload: any) => ({
@@ -25,9 +28,9 @@ export const githubUserKeywordInput = (payload: object) => ({
   payload,
 });
 
-const noSuchUser = (payload: githubIDActionPayload) => ({
+const noSuchUser = (payload: GithubIDActionPayload) => ({
   type: GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST,
-  payload
+  payload,
 });
 
 export const createNewTechnicalLeads = () => ({

@@ -4,13 +4,21 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import {
   createNewTechnicalLeads,
-  searchGithubUsers
+  searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
 const GithubUserValidation: React.FC<any> = (props) => {
-  const { name, persona, position, initialValue, defaultValue, allPersona, fetchUserStartAsync } = props;
+  const {
+    name,
+    persona,
+    position,
+    initialValue,
+    defaultValue,
+    allPersona,
+    fetchUserStartAsync,
+  } = props;
 
   const githubValidator = (value: any) => {
     if (!value) {
@@ -24,7 +32,7 @@ const GithubUserValidation: React.FC<any> = (props) => {
     }
   };
 
-  const { inputKeyword, githubUser, notFound } = allPersona[persona][position]
+  const { inputKeyword, githubUser, notFound } = allPersona[persona][position];
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -60,7 +68,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, persona: string, position: number) => dispatch(searchGithubUsers(query, persona, position)),
+  fetchUserStartAsync: (query: string, persona: string, position: number) =>
+    dispatch(searchGithubUsers(query, persona, position)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 

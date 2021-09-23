@@ -9,12 +9,12 @@ const peresistConfig = {
   whitelist: ['githubID'],
 };
 
-export interface iRootState {
-  githubID: GithubIDInitialState
+export interface RootState {
+  githubID: GithubIDInitialState;
 }
 
 const rootReducer = combineReducers({
   githubID: githubIDReducer,
 });
 
-export default persistReducer<iRootState, any>(peresistConfig, rootReducer);
+export default persistReducer<RootState, any>(peresistConfig, rootReducer);

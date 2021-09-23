@@ -10,10 +10,9 @@ interface GithubIdBaseInterface {
 }
 
 export interface GithubIDInitialState {
-  productOwner: GithubIdBaseInterface[],
-  technicalLeads: GithubIdBaseInterface[]
+  productOwner: GithubIdBaseInterface[];
+  technicalLeads: GithubIdBaseInterface[];
 }
-
 
 const GithubIDBaseState: GithubIdBaseInterface = {
   githubUser: null,
@@ -23,46 +22,43 @@ const GithubIDBaseState: GithubIdBaseInterface = {
   notFound: false,
 };
 
-
 // IMPORTANT:  In this redux state,the first elememt (index 0) is PO, others are TL
 const INITIAL_STATE: GithubIDInitialState = {
   productOwner: [{ ...GithubIDBaseState }],
-  technicalLeads: [{ ...GithubIDBaseState }, { ...GithubIDBaseState }]
+  technicalLeads: [{ ...GithubIDBaseState }, { ...GithubIDBaseState }],
 };
 
-
 interface GithubUserInputAction {
-  type: string,
+  type: string;
   payload: {
-    persona: "productOwner" | "technicalLeads",
-    inputValue: string
-    position: number
-  }
+    persona: 'productOwner' | 'technicalLeads';
+    inputValue: string;
+    position: number;
+  };
 }
 interface GithubIDUserBasicAction {
-  type: string,
+  type: string;
   payload: {
-    persona: "productOwner" | "technicalLeads",
-    position: number
-  }
+    persona: 'productOwner' | 'technicalLeads';
+    position: number;
+  };
 }
 
 interface GithubIDUserStore {
-  type: string,
+  type: string;
   payload: {
-    persona: "productOwner" | "technicalLeads",
-    position: number
-    data: object
-  }
+    persona: 'productOwner' | 'technicalLeads';
+    position: number;
+    data: object;
+  };
 }
 type Action = GithubUserInputAction & GithubIDUserBasicAction & GithubIDUserStore;
 
 const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
   switch (action.type) {
-
     case GithubIDActionTypes.GITHUB_USERS_REQUEST:
       const { persona: userRequestPersona, position: userRequestPosition } = action.payload;
-      const newStateForUserRequest = { ...state }
+      const newStateForUserRequest = { ...state };
       newStateForUserRequest[userRequestPersona][userRequestPosition] = {
         ...newStateForUserRequest[userRequestPersona][userRequestPosition],
         isLoading: true,
@@ -83,7 +79,11 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
       return newArrayForUserExist;
 
     case GithubIDActionTypes.GITHUB_USER_STORE_USER:
-      const { persona: userStorePersona, position: userStorePosition, data: userStoreData } = action.payload;
+      const {
+        persona: userStorePersona,
+        position: userStorePosition,
+        data: userStoreData,
+      } = action.payload;
       const newArrayForStoreUser = { ...state };
       newArrayForStoreUser[userStorePersona][userStorePosition] = {
         ...newArrayForStoreUser[userStorePersona][userStorePosition],
@@ -93,7 +93,7 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
       return newArrayForStoreUser;
 
     case GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST:
-      const { persona: userNotExistPersona, position: userNotExistPosition, } = action.payload;
+      const { persona: userNotExistPersona, position: userNotExistPosition } = action.payload;
       const newArrayForNoneExistUser = { ...state };
       newArrayForNoneExistUser[userNotExistPersona][userNotExistPosition] = {
         ...newArrayForNoneExistUser[userNotExistPersona][userNotExistPosition],
@@ -105,8 +105,12 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
       return newArrayForNoneExistUser;
 
     case GithubIDActionTypes.GITHUB_USERS_INPUT:
-      const { persona: userInputPersona, position: userInputPosition, inputValue: userInputValue } = action.payload;
-      const newStateForUserInput = { ...state }
+      const {
+        persona: userInputPersona,
+        position: userInputPosition,
+        inputValue: userInputValue,
+      } = action.payload;
+      const newStateForUserInput = { ...state };
       newStateForUserInput[userInputPersona][userInputPosition] = {
         inputKeyword: userInputValue,
         githubUser: null,

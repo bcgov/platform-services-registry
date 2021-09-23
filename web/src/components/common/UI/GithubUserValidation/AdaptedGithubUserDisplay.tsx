@@ -57,7 +57,7 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
     // eslint-disable-next-line
   }, [userFieldInputEvent]);
 
-  const { isLoading, notFound, githubUser } = allPersona[persona][position]
+  const { isLoading, notFound, githubUser } = allPersona[persona][position];
 
   return (
     <>
@@ -72,19 +72,17 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
           User was not found! :(
         </Text>
       )}
-      {githubUser && (
-        <User
-          name={githubUser.name}
-          avatar={githubUser.avatar_url}
-        />
-      )}
+      {githubUser && <User name={githubUser.name} avatar={githubUser.avatar_url} />}
     </>
   );
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  dispatchGithubUserKeywordInput: (payload: { persona: string; inputValue: string; position: number }) =>
-    dispatch(githubUserKeywordInput(payload)),
+  dispatchGithubUserKeywordInput: (payload: {
+    persona: string;
+    inputValue: string;
+    position: number;
+  }) => dispatch(githubUserKeywordInput(payload)),
 });
 
 const mapStateToProps = createStructuredSelector({
