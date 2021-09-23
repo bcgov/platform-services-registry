@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box, Flex, Image, Text } from 'rebass';
 import { createStructuredSelector } from 'reselect';
-import { githubUserKeywordInput } from '../../../../redux/githubID/githubID.action';
+import { githubIDSearchKeyword } from '../../../../redux/githubID/githubID.action';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
 
@@ -42,45 +42,46 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
     input: userFieldInputEvent,
     name,
     allPersona,
-    index,
+    persona,
+    position,
     initialValue,
-    dispatchGithubUserKeywordInput,
+    dispatchSearchGithubIDInput,
     ...rest
   } = props;
 
   useEffect(() => {
-    if (userFieldInputEvent.value !== allPersona[index].inputKeyword) {
+    if (userFieldInputEvent.value !== allPersona[persona][position].inputKeyword) {
       const inputValue = userFieldInputEvent.value;
-      dispatchGithubUserKeywordInput({ index, inputValue });
+      dispatchSearchGithubIDInput({ persona, position, inputValue });
     }
-  }, [userFieldInputEvent, allPersona, dispatchGithubUserKeywordInput, index]);
+  }, [userFieldInputEvent.value, allPersona, persona, position, dispatchSearchGithubIDInput]);
+
+  const { isLoading, notFound, githubUser } = allPersona[persona][position];
 
   return (
     <>
       <TextInput {...userFieldInputEvent} {...rest} />
-      {allPersona[index].isLoading && (
+      {isLoading && (
         <Text as="h4" mt={2}>
           Loading...
         </Text>
       )}
-      {allPersona[index].notFound && (
+      {notFound && (
         <Text as="h4" mt={2}>
           User was not found! :(
         </Text>
       )}
-      {allPersona[index].githubUser && (
-        <User
-          name={allPersona[index].githubUser.name}
-          avatar={allPersona[index].githubUser.avatar_url}
-        />
-      )}
+      {githubUser && <User name={githubUser.name} avatar={githubUser.avatar_url} />}
     </>
   );
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  dispatchGithubUserKeywordInput: (payload: { index: number; input: string }) =>
-    dispatch(githubUserKeywordInput(payload)),
+  dispatchSearchGithubIDInput: (payload: {
+    persona: string;
+    inputValue: string;
+    position: number;
+  }) => dispatch(githubIDSearchKeyword(payload)),
 });
 
 const mapStateToProps = createStructuredSelector({

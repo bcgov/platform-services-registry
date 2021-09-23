@@ -309,6 +309,8 @@ const Table: React.FC<ITableProps> = (props) => {
       return (
         row.values.busOrgId?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
         row.values.name?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+        row.values.namespacePrefix?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
+        row.values.quotaSize?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
         row.values.description?.toLowerCase().includes(caseInsenstiveSearchKeyWord) || // ProjectDetail Table doesn't have description field
         row.values.clusters?.find((cluster: string) =>
           cluster.toLocaleLowerCase().includes(caseInsenstiveSearchKeyWord),
@@ -320,6 +322,7 @@ const Table: React.FC<ITableProps> = (props) => {
       );
     });
   }, []);
+
   // Use the useTable Hook to send the columns and data to build the table
   const {
     getTableProps, // table props from react-table

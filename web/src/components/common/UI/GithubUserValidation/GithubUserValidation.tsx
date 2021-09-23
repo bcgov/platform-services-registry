@@ -10,28 +10,37 @@ import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
 const GithubUserValidation: React.FC<any> = (props) => {
-  const { name, index, initialValue, defaultValue, allPersona, fetchUserStartAsync } = props;
+  const {
+    name,
+    persona,
+    position,
+    initialValue,
+    defaultValue,
+    allPersona,
+    fetchUserStartAsync,
+  } = props;
 
   const githubValidator = (value: any) => {
     if (!value) {
       return 'Required';
     }
-    if (allPersona[index].everFetched && allPersona[index].notFound) {
+    if (allPersona[persona][position].everFetched && allPersona[persona][position].notFound) {
       return 'Github User Not Found';
     }
-    if (allPersona[index].inputKeyword && !allPersona[index].everFetched) {
+    if (allPersona[persona][position].inputKeyword && !allPersona[persona][position].everFetched) {
       return 'Still Loading Github User infomation';
     }
   };
 
-  const { inputKeyword, githubUser } = allPersona[index];
+  const { inputKeyword, githubUser, notFound } = allPersona[persona][position];
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
-      if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0) {
-        fetchUserStartAsync(inputKeyword, index);
+      // Third condition: don't run again if there's a notfound result until there's ne
+      if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0 && !notFound) {
+        fetchUserStartAsync(inputKeyword, persona, position);
       }
     }, 1500);
 
@@ -47,7 +56,8 @@ const GithubUserValidation: React.FC<any> = (props) => {
       initialValue={initialValue}
       defaultValue={defaultValue}
       sx={{ textTransform: 'none' }}
-      index={index}
+      persona={persona}
+      position={position}
       validate={githubValidator}
     />
   );
@@ -58,7 +68,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, index: number) => dispatch(searchGithubUsers(query, index)),
+  fetchUserStartAsync: (query: string, persona: string, position: number) =>
+    dispatch(searchGithubUsers(query, persona, position)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 
