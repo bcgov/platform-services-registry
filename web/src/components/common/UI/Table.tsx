@@ -306,7 +306,6 @@ const Table: React.FC<ITableProps> = (props) => {
   const ourGlobalFilterFunction = useCallback((rows: any, ids: any, query: string) => {
     const caseInsenstiveSearchKeyWord = query.toLocaleLowerCase();
     return rows.filter((row: any) => {
-      console.log('hiahia', row.values)
       return (
         row.values.busOrgId?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
         row.values.name?.toLowerCase().includes(caseInsenstiveSearchKeyWord) ||
