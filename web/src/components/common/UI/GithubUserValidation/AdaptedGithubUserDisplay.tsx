@@ -42,36 +42,40 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
     input: userFieldInputEvent,
     name,
     allPersona,
-    index,
+    persona,
+    position,
     initialValue,
     dispatchGithubUserKeywordInput,
     ...rest
   } = props;
 
   useEffect(() => {
-    if (userFieldInputEvent.value !== allPersona[index].inputKeyword) {
+    if (userFieldInputEvent.value !== allPersona[persona][position].inputKeyword) {
       const inputValue = userFieldInputEvent.value;
-      dispatchGithubUserKeywordInput({ index, inputValue });
+      dispatchGithubUserKeywordInput({ persona, position, inputValue });
     }
-  }, [userFieldInputEvent, allPersona, dispatchGithubUserKeywordInput, index]);
+    // eslint-disable-next-line
+  }, [userFieldInputEvent]);
+
+  const { isLoading, notFound, githubUser } = allPersona[persona][position]
 
   return (
     <>
       <TextInput {...userFieldInputEvent} {...rest} />
-      {allPersona[index].isLoading && (
+      {isLoading && (
         <Text as="h4" mt={2}>
           Loading...
         </Text>
       )}
-      {allPersona[index].notFound && (
+      {notFound && (
         <Text as="h4" mt={2}>
           User was not found! :(
         </Text>
       )}
-      {allPersona[index].githubUser && (
+      {githubUser && (
         <User
-          name={allPersona[index].githubUser.name}
-          avatar={allPersona[index].githubUser.avatar_url}
+          name={githubUser.name}
+          avatar={githubUser.avatar_url}
         />
       )}
     </>
@@ -79,7 +83,7 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  dispatchGithubUserKeywordInput: (payload: { index: number; input: string }) =>
+  dispatchGithubUserKeywordInput: (payload: { persona: string; inputValue: string; position: number }) =>
     dispatch(githubUserKeywordInput(payload)),
 });
 

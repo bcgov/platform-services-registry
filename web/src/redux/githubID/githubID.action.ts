@@ -4,14 +4,15 @@ import GithubIDActionTypes from './githubID.types';
 
 export type GithubIDAction = ActionType<typeof requestGithubUsers>;
 
-const requestGithubUsers = (index: number) => ({
+interface githubIDActionPayload { persona: string, position: number }
+const requestGithubUsers = (payload: githubIDActionPayload) => ({
   type: GithubIDActionTypes.GITHUB_USERS_REQUEST,
-  payload: index,
+  payload,
 });
 
-const userExists = (index: number) => ({
+const userExists = (payload: githubIDActionPayload) => ({
   type: GithubIDActionTypes.GITHUB_USER_EXISTS,
-  payload: index,
+  payload
 });
 
 const storeUser = (payload: any) => ({
@@ -24,31 +25,31 @@ export const githubUserKeywordInput = (payload: object) => ({
   payload,
 });
 
-const noSuchUser = (index: number) => ({
+const noSuchUser = (payload: githubIDActionPayload) => ({
   type: GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST,
-  payload: index,
+  payload
 });
 
 export const createNewTechnicalLeads = () => ({
   type: GithubIDActionTypes.NEW_GITHUB_ID_ENTRY,
 });
 
-export const searchGithubUsers = (query: string, index: number) => (
+export const searchGithubUsers = (query: string, persona: string, position: number) => (
   dispatch: Dispatch<GithubIDAction>,
 ) => {
-  dispatch(requestGithubUsers(index));
+  dispatch(requestGithubUsers({ persona, position }));
   fetch(`https://api.github.com/users/${query}`)
     .then(async (response) => {
       if (response.ok) {
-        dispatch(userExists(index));
+        dispatch(userExists({ persona, position }));
         const data = await response.json();
-        dispatch(storeUser({ index, data }));
+        dispatch(storeUser({ persona, position, data }));
       } else {
-        dispatch(noSuchUser(index));
+        dispatch(noSuchUser({ persona, position }));
       }
     })
     .catch((err) => {
-      dispatch(noSuchUser(index));
+      dispatch(noSuchUser({ persona, position }));
       throw new Error('Error happened during fetching Github data!');
     });
 };

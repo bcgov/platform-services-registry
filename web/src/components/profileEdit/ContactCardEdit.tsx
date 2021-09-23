@@ -28,7 +28,7 @@ import {
   MINIMUM_TECHNICAL_LEADS,
   PROFILE_EDIT_VIEW_NAMES,
   ROLES,
-  ROUTE_PATHS,
+  ROUTE_PATHS
 } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
@@ -175,9 +175,10 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
             <GithubUserValidation
               name="updatedProductOwner.githubId"
-              index={0} // Product Ownder has index 0, other TL will start from 1
+              persona='productOwner'
               defaultValue=""
               initialValue={productOwner.githubId}
+              position={0}
             />
           </Flex>
           <FormTitle>
@@ -187,7 +188,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           </FormTitle>
           <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
             {({ fields }) => {
-              return fields.length && fields.length <= allPersona.length ? (
+              return fields.length && fields.length <= allPersona.technicalLeads.length ? (
                 <>
                   {fields.map((name, index) => (
                     <div key={name}>
@@ -242,8 +243,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       </Flex>
                       <Flex flexDirection="column">
                         <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                        {/* Product Ownder has index 0, other TL will start from 1 */}
-                        <GithubUserValidation name={`${name}.githubId`} index={index + 1} />
+                        <GithubUserValidation name={`${name}.githubId`} persona='technicalLeads' position={index} />
                       </Flex>
                     </div>
                   ))}
