@@ -13,9 +13,9 @@
 // limitations under the License.
 //
 
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { transformKeysToCamelCase } from '../utils';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { transformKeysToCamelCase } from "../utils";
 
 export interface Query {
   text: string;
@@ -31,11 +31,15 @@ export interface CommonFields {
 
 export abstract class Model {
   abstract table: string;
+
   abstract requiredFields: string[];
+
   abstract pool: Pool;
 
   abstract create(data: any): Promise<any>;
+
   abstract update(profileId: number, data: any): Promise<any>;
+
   abstract delete(profileId: number): Promise<any>;
 
   async findAll(): Promise<any[]> {
@@ -79,7 +83,9 @@ export abstract class Model {
     let client;
 
     if (this.pool.waitingCount > 0) {
-      logger.warn(`Database pool has ${this.pool.waitingCount} waiting queries`);
+      logger.warn(
+        `Database pool has ${this.pool.waitingCount} waiting queries`
+      );
     }
 
     try {
@@ -88,6 +94,8 @@ export abstract class Model {
 
       return results.rows.map(transformKeysToCamelCase);
     } catch (err) {
+      const message = `Unable to run query ${query}`;
+      logger.error(`${message}, err = ${err.message}`);
       throw err;
     } finally {
       client.release();

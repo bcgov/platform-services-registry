@@ -14,11 +14,9 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { CommonFields, Model } from './model';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { CommonFields, Model } from "./model";
 
 export interface Cluster extends CommonFields {
   name: string;
@@ -32,15 +30,17 @@ export interface Cluster extends CommonFields {
 }
 
 export default class ClusterModel extends Model {
-  table: string = 'ref_cluster';
+  table: string = "ref_cluster";
+
   requiredFields: string[] = [
-    'name',
-    'description',
-    'disasterRecovery',
-    'onPrem',
-    'onHardware',
-    'isProd'
+    "name",
+    "description",
+    "disasterRecovery",
+    "onPrem",
+    "onHardware",
+    "isProd",
   ];
+
   pool: Pool;
 
   constructor(pool: any) {
@@ -80,9 +80,7 @@ export default class ClusterModel extends Model {
         SELECT * FROM ${this.table}
           WHERE is_default = $1 AND archived = false;
       `,
-      values: [
-        true,
-      ],
+      values: [true],
     };
 
     try {
@@ -102,9 +100,7 @@ export default class ClusterModel extends Model {
       text: `
         SELECT * FROM ${this.table} WHERE name = $1;
       `,
-      values: [
-        name,
-      ],
+      values: [name],
     };
 
     try {
@@ -124,9 +120,7 @@ export default class ClusterModel extends Model {
       text: `
         SELECT * FROM ${this.table} WHERE is_prod = $1 AND archived = false;
       `,
-      values: [
-        true,
-      ],
+      values: [true],
     };
 
     try {
@@ -179,9 +173,7 @@ export default class ClusterModel extends Model {
           WHERE id = $1
           RETURNING *;
       `,
-      values: [
-        clusterId,
-      ],
+      values: [clusterId],
     };
 
     try {

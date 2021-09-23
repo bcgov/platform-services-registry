@@ -20,16 +20,14 @@
 
 /* eslint-env es6 */
 
-'use strict';
+import dotenv from "dotenv";
+import nconf from "nconf";
+import path from "path";
 
-import dotenv from 'dotenv';
-import nconf from 'nconf';
-import path from 'path';
+const env = process.env.NODE_ENV || "development";
+const fileName = "config.json";
 
-const env = process.env.NODE_ENV || 'development';
-const fileName = 'config.json';
-
-if (env === 'development') {
+if (env === "development") {
   dotenv.config();
 }
 

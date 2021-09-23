@@ -16,8 +16,8 @@
 // Created by Jason Leach on 2020-06-2.
 //
 
-import { JWTServiceManager } from '@bcgov/common-nodejs-utils';
-import axios, { AxiosInstance } from 'axios';
+import { JWTServiceManager } from "@bcgov/common-nodejs-utils";
+import axios, { AxiosInstance } from "axios";
 
 export interface Dependency {
   name: string;
@@ -34,33 +34,33 @@ export interface Options {
 }
 
 export const enum BodyType {
-  HTML = 'html',
-  Text = 'text',
+  HTML = "html",
+  Text = "text",
 }
 
 export const enum Encoding {
-  Default = 'utf-8',
-  Base64 = 'base64',
-  Binary = 'binary',
-  Hex = 'hex',
+  Default = "utf-8",
+  Base64 = "base64",
+  Binary = "binary",
+  Hex = "hex",
 }
 
 export const enum Priority {
-  Default = 'normal',
-  Low = 'low',
-  High = 'high',
+  Default = "normal",
+  Low = "low",
+  High = "high",
 }
 
 export const enum MessageSendStatus {
-  Accepted = 'accepted',
-  Cancelled = 'cancelled',
-  Completed = 'completed',
-  Failed = 'failed',
-  Pending = 'pending',
+  Accepted = "accepted",
+  Cancelled = "cancelled",
+  Completed = "completed",
+  Failed = "failed",
+  Pending = "pending",
 }
 
 export const enum AttachmentContentType {
-  String = 'string',
+  String = "string",
 }
 
 export interface Attachment {
@@ -107,15 +107,11 @@ export interface MessageStatus {
 
 export default class CommonEmailService {
   private tokenManager: JWTServiceManager;
+
   private axi: AxiosInstance;
 
   constructor(options: Options) {
-    const {
-      uri,
-      grantType,
-      clientId,
-      clientSecret,
-    } = options;
+    const { uri, grantType, clientId, clientSecret } = options;
     this.tokenManager = new JWTServiceManager({
       uri,
       grantType,
@@ -130,18 +126,18 @@ export default class CommonEmailService {
   public async health(): Promise<Dependency[]> {
     try {
       const token = await this.tokenManager.accessToken;
-      const response = await this.axi.get('health', {
+      const response = await this.axi.get("health", {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const { dependencies } = response.data;
 
-      return dependencies
+      return dependencies;
     } catch (err) {
-      const msg = 'Unable to fetch health status';
+      const msg = "Unable to fetch health status";
       throw new Error(`${msg}, reason = ${err.message}`);
     }
   }
@@ -149,48 +145,49 @@ export default class CommonEmailService {
   public async send(message: Message): Promise<SendReceipt> {
     try {
       const token = await this.tokenManager.accessToken;
-      const response = await this.axi.post('email', message,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+      const response = await this.axi.post("email", message, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const { txId, messages } = response.data;
-      const theMessages = messages.map(m => {
+      const theMessages = messages.map((m) => {
         return {
           to: m.to,
           messageId: m.msgId,
-        }
+        };
       });
 
       return {
         transactionId: txId,
         messages: theMessages,
-      }
+      };
     } catch (err) {
-      const msg = 'Unable to send message';
+      const msg = "Unable to send message";
       throw new Error(`${msg}, reason = ${err.message}`);
     }
   }
 
-  public async transactionStatus(transactionId: string): Promise<MessageStatus[]> {
+  public async transactionStatus(
+    transactionId: string
+  ): Promise<MessageStatus[]> {
     const params = {
       txId: transactionId,
     };
 
     try {
       const token = await this.tokenManager.accessToken;
-      const response = await this.axi.get('status', {
+      const response = await this.axi.get("status", {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         params,
       });
 
-      const processed = response.data.map(r => {
+      const processed = response.data.map((r) => {
         const { createdTS, delayTS, msgId, status, tag, txId, updatedTS } = r;
         return {
           createdAt: new Date(createdTS),
@@ -200,27 +197,29 @@ export default class CommonEmailService {
           tag,
           transactionId: txId,
           updatedAt: new Date(updatedTS),
-        }
-      })
+        };
+      });
 
       return processed;
     } catch (err) {
-      const msg = 'Unable to fetch transaction status';
+      const msg = "Unable to fetch transaction status";
       throw new Error(`${msg}, reason = ${err.message}`);
     }
   }
 
-  public async messageStatus(messageId: string): Promise<MessageStatus | undefined> {
+  public async messageStatus(
+    messageId: string
+  ): Promise<MessageStatus | undefined> {
     const params = {
       msgId: messageId,
     };
 
     try {
       const token = await this.tokenManager.accessToken;
-      const response = await this.axi.get('status', {
+      const response = await this.axi.get("status", {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         params,
       });
@@ -229,7 +228,8 @@ export default class CommonEmailService {
         return;
       }
 
-      const { createdTS, delayTS, msgId, status, tag, txId, updatedTS } = response.data.pop();
+      const { createdTS, delayTS, msgId, status, tag, txId, updatedTS } =
+        response.data.pop();
       return {
         createdAt: new Date(createdTS),
         delayedUntil: delayTS ? new Date(delayTS) : undefined,
@@ -238,9 +238,9 @@ export default class CommonEmailService {
         tag,
         transactionId: txId,
         updatedAt: new Date(updatedTS),
-      }
+      };
     } catch (err) {
-      const msg = 'Unable to fetch message status';
+      const msg = "Unable to fetch message status";
       throw new Error(`${msg}, reason = ${err.message}`);
     }
   }

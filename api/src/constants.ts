@@ -15,16 +15,11 @@
 //
 
 export const ENVIRONMENTS = {
-  DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
+  DEVELOPMENT: "development",
+  PRODUCTION: "production",
 };
 
-export const PROJECT_SET_NAMES = [
-  'tools',
-  'dev',
-  'test',
-  'prod',
-];
+export const PROJECT_SET_NAMES = ["tools", "dev", "test", "prod"];
 
 export const ROLE_IDS = {
   PRODUCT_OWNER: 1,
@@ -32,34 +27,28 @@ export const ROLE_IDS = {
 };
 
 export const USER_ROLES = {
-  ADMINISTRATOR: 'administrator',
+  ADMINISTRATOR: "administrator",
 };
 
-export const WEB_CLIENT_ID = 'registry-web';
-export const API_CLIENT_ID = 'registry-api';
-export const BOT_CLIENT_ID = 'registry-gitops-ci';
+export const WEB_CLIENT_ID = "registry-web";
+export const API_CLIENT_ID = "registry-api";
+export const BOT_CLIENT_ID = "registry-gitops-ci";
 
 export const STATUS_ERROR = {};
-STATUS_ERROR[401] = 'Unauthorized';
-STATUS_ERROR[500] = 'Internal Server Error';
+STATUS_ERROR[401] = "Unauthorized";
+STATUS_ERROR[500] = "Internal Server Error";
 
-export const CLUSTER_NAMES = [
-  'silver',
-  'gold',
-  'golddr',
-  'klab',
-  'clab',
-]
+export const CLUSTER_NAMES = ["silver", "gold", "golddr", "klab", "clab"];
 
 export const GOLD_QUORUM_COUNT = 2;
 
 export const BC_ORGNAZTION_GIT_APP_ID = 131752;
 
 export const PROFILE_STATUS = {
-  PENDING_APPROVAL: 'pending_approval',
-  APPROVED: 'approved',
-  PENDING_EDIT: 'pending_edit',
-  PROVISIONED: 'provisioned'
-}
+  PENDING_APPROVAL: "pending_approval",
+  APPROVED: "approved",
+  PENDING_EDIT: "pending_edit",
+  PROVISIONED: "provisioned",
+};
 
-export const DEFAULT_GITHUB_ORGANIZATION = ["bcgov", "BCDevOps"]
+export const DEFAULT_GITHUB_ORGANIZATION = ["bcgov", "BCDevOps"];

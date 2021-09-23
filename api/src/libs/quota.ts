@@ -14,27 +14,33 @@
 // limitations under the License.
 //
 
-'use strict';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { QuotaSize } from "../db/model/quota";
 
-import { logger } from '@bcgov/common-nodejs-utils';
-import { QuotaSize } from '../db/model/quota';
+const getAllowedQuotaSizes = (currentQuotaSize: QuotaSize): QuotaSize[] => {
+  try {
+    const quotaSizeNames = Object.values(QuotaSize);
+    const allQuotaOptions = [
+      QuotaSize.Small,
+      QuotaSize.Medium,
+      QuotaSize.Large,
+    ];
 
-export const getAllowedQuotaSizes = (currentQuotaSize: QuotaSize): QuotaSize[] => {
-    try {
-        const quotaSizeNames = Object.values(QuotaSize);
-        const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
+    const num: number = quotaSizeNames.indexOf(currentQuotaSize);
 
-        const num: number = quotaSizeNames.indexOf(currentQuotaSize);
+    // allows +1 size and all the smaller sizes
+    return allQuotaOptions
+      .slice(
+        0,
+        num + 2 <= allQuotaOptions.length ? num + 2 : allQuotaOptions.length
+      )
+      .filter((size) => size !== currentQuotaSize);
+  } catch (err) {
+    const message = "Unable to get a list of Allowed quota sizes";
+    logger.error(`${message}, err = ${err.message}`);
 
-        // allows +1 size and all the smaller sizes
-        return allQuotaOptions.slice(
-            0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
-                size => size !== currentQuotaSize
-            );
-    } catch (err) {
-        const message = `Unable to get a list of Allowed quota sizes`;
-        logger.error(`${message}, err = ${err.message}`);
-
-        throw err;
-    }
+    throw err;
+  }
 };
+
+export default getAllowedQuotaSizes;

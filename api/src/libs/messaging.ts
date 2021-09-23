@@ -14,17 +14,17 @@
 // limitations under the License.
 //
 
-import { logger } from '@bcgov/common-nodejs-utils';
-import fs from 'fs';
-import path from 'path';
-import config from '../config';
-import DataManager from '../db';
-import { ProjectProfile } from '../db/model/profile';
-import { HumanAction } from '../db/model/request';
-import { BodyType, Message, SendReceipt } from '../libs/service';
-import { getClusters } from './profile';
-import shared from './shared';
-import { transformContacts } from './utils';
+import { logger } from "@bcgov/common-nodejs-utils";
+import fs from "fs";
+import path from "path";
+import config from "../config";
+import DataManager from "../db";
+import { ProjectProfile } from "../db/model/profile";
+import { HumanAction } from "../db/model/request";
+import { getClusters } from "./profile";
+import { BodyType, Message, SendReceipt } from "./service";
+import shared from "./shared";
+import { transformContacts } from "./utils";
 
 export const enum MessageType {
   ProvisioningStarted = 0,
@@ -36,7 +36,7 @@ export const enum MessageType {
 }
 
 const dm = new DataManager(shared.pgPool);
-const { ProfileModel, ContactModel, RequestModel} = dm;
+const { ProfileModel, ContactModel, RequestModel } = dm;
 
 const consoleButton = (clusterName: string) => {
   return `
@@ -81,18 +81,25 @@ const consoleButton = (clusterName: string) => {
         </a>
       </td>
     </tr>
-    `
-}
+    `;
+};
 
 const updateEmailContent = async (
-    buff: string, profile: ProjectProfile, contactDetails: any, request: any, humanAction: any, clusters: any
-  ): Promise<string> => {
+  buff: string,
+  profile: ProjectProfile,
+  contactDetails: any,
+  request: any,
+  humanAction: any,
+  clusters: any
+): Promise<string> => {
   try {
-    let emailContent: string;
-    let humanActionComment: string = '';
+    let humanActionComment: string = "";
 
     if (humanAction) {
-      humanActionComment = (humanAction.comment !== null ? `Additional information: ${humanAction.comment}` : '');
+      humanActionComment =
+        humanAction.comment !== null
+          ? `Additional information: ${humanAction.comment}`
+          : "";
     }
 
     const mapObj = {
@@ -103,19 +110,22 @@ const updateEmailContent = async (
       POGitHub: contactDetails.POGithubId,
       TCGitHub: contactDetails.TCGithubId,
       projectName: profile.name,
-      projectDescription : profile.description,
+      projectDescription: profile.description,
       projectMinistry: profile.busOrgId,
-      setCluster: clusters.map(cluster => cluster.displayName).toString(),
+      setCluster: clusters.map((cluster) => cluster.displayName).toString(),
       licensePlate: `${profile.namespacePrefix}`,
-      requestType: ( request.editType ? 'Project Edit': 'New Project'),
-      quotaSize: ( request.editType === 'quotaSize' ? request.editObject.quota : 'Small'),
-      editType: ( request.editType === 'quotaSize' ? 'Quota' : ''),
+      requestType: request.editType ? "Project Edit" : "New Project",
+      quotaSize:
+        request.editType === "quotaSize" ? request.editObject.quota : "Small",
+      editType: request.editType === "quotaSize" ? "Quota" : "",
       humanActionComment,
-      consoleButtons: clusters.map(cluster => consoleButton(cluster.name)).toString(),
+      consoleButtons: clusters
+        .map((cluster) => consoleButton(cluster.name))
+        .toString(),
     };
 
-    const re = new RegExp(Object.keys(mapObj).join('|'),'gi');
-    emailContent = buff.replace(re, matched => {
+    const re = new RegExp(Object.keys(mapObj).join("|"), "gi");
+    const emailContent = buff.replace(re, (matched) => {
       return mapObj[matched];
     });
     return emailContent;
@@ -123,29 +133,32 @@ const updateEmailContent = async (
     const message = `Unable to update email content`;
     logger.error(`${message}, err = ${err.message}`);
 
-    return '';
+    return "";
   }
+};
 
-}
-
-export const sendProvisioningMessage = async (profileId: number, messageType: MessageType): Promise<SendReceipt | undefined> => {
-
+export const sendProvisioningMessage = async (
+  profileId: number,
+  messageType: MessageType
+): Promise<SendReceipt | undefined> => {
   try {
     const profile = await ProfileModel.findById(profileId);
 
-    const reviewerEmails = config.get('reviewers:emails');
+    const reviewerEmails = config.get("reviewers:emails");
     const contacts = await ContactModel.findForProject(profileId);
-    const contactDetails = await transformContacts(contacts)
-    const to = (
-      messageType === MessageType.RequestApproval ? reviewerEmails : [...new Set(contacts.map(c => c.email))]
-      );
+    const contactDetails = await transformContacts(contacts);
+    const to =
+      messageType === MessageType.RequestApproval
+        ? reviewerEmails
+        : [...new Set(contacts.map((c) => c.email))];
     const requests = await RequestModel.findForProfile(profileId);
     const request = requests.pop();
     if (!request) {
-      return
+      return;
     }
 
-    const humanAction: HumanAction | undefined = await RequestModel.findHumanActionByRequestId(Number(request.id));
+    const humanAction: HumanAction | undefined =
+      await RequestModel.findHumanActionByRequestId(Number(request.id));
 
     const clusters = await getClusters(profile);
 
@@ -157,37 +170,61 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
 
     switch (messageType) {
       case MessageType.ProvisioningStarted:
-        buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/provisioning-request-received.html')
-          ).toString();
+        buff = fs
+          .readFileSync(
+            path.join(
+              __dirname,
+              "../../",
+              "templates/provisioning-request-received.html"
+            )
+          )
+          .toString();
         break;
       case MessageType.ProvisioningCompleted:
-        buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/provisioning-request-done.html')
-          ).toString();
+        buff = fs
+          .readFileSync(
+            path.join(
+              __dirname,
+              "../../",
+              "templates/provisioning-request-done.html"
+            )
+          )
+          .toString();
         break;
       case MessageType.EditRequestStarted:
-        buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/edit-request-received.html')
-          ).toString();
+        buff = fs
+          .readFileSync(
+            path.join(
+              __dirname,
+              "../../",
+              "templates/edit-request-received.html"
+            )
+          )
+          .toString();
         break;
       case MessageType.EditRequestCompleted:
-        buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/edit-request-done.html')
-          ).toString();
+        buff = fs
+          .readFileSync(
+            path.join(__dirname, "../../", "templates/edit-request-done.html")
+          )
+          .toString();
         break;
       case MessageType.RequestApproval:
-        buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/request-approval.html')
-          ).toString();
+        buff = fs
+          .readFileSync(
+            path.join(__dirname, "../../", "templates/request-approval.html")
+          )
+          .toString();
         break;
       case MessageType.RequestRejected:
-        buff = fs.readFileSync(
-          path.join(__dirname, '../../', 'templates/request-rejected.html')
-          ).toString();
+        buff = fs
+          .readFileSync(
+            path.join(__dirname, "../../", "templates/request-rejected.html")
+          )
+          .toString();
         break;
       default:
-        logger.info('No message type given');
+        logger.info("No message type given");
         return;
     }
 
@@ -195,7 +232,14 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       return;
     }
 
-    const bodyContent = await updateEmailContent(buff, profile, contactDetails, request, humanAction, clusters);
+    const bodyContent = await updateEmailContent(
+      buff,
+      profile,
+      contactDetails,
+      request,
+      humanAction,
+      clusters
+    );
 
     if (!bodyContent) {
       return;
@@ -205,12 +249,16 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
       bodyType: BodyType.HTML,
       body: bodyContent,
       to,
-      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      from: "Registry <PlatformServicesTeam@gov.bc.ca>",
       subject: `${profile.name} OCP 4 Project Set`,
-    }
+    };
 
     const receipt = await shared.ches.send(message);
-    logger.info(`Message (${messageType}) sent with transaction details: ${JSON.stringify(receipt)}`);
+    logger.info(
+      `Message (${messageType}) sent with transaction details: ${JSON.stringify(
+        receipt
+      )}`
+    );
 
     return receipt;
   } catch (err) {
@@ -219,4 +267,4 @@ export const sendProvisioningMessage = async (profileId: number, messageType: Me
 
     return;
   }
-}
+};

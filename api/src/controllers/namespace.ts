@@ -14,18 +14,17 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
-import DataManager from '../db';
-import shared from '../libs/shared';
-import { validateRequiredFields } from '../libs/utils';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Response } from "express";
+import DataManager from "../db";
+import shared from "../libs/shared";
+import { validateRequiredFields } from "../libs/utils";
 
 const dm = new DataManager(shared.pgPool);
 
 export const createNamespace = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body }: { params: any; body: any },
+  res: Response
 ): Promise<void> => {
   const { NamespaceModel } = dm;
   const { profileId } = params;
@@ -41,7 +40,7 @@ export const createNamespace = async (
 
     res.status(201).json(results);
   } catch (err) {
-    const message = 'Unable create new namespace';
+    const message = "Unable create new namespace";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -49,7 +48,8 @@ export const createNamespace = async (
 };
 
 export const fetchProfileNamespaces = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { NamespaceModel } = dm;
   const { profileId } = params;
@@ -67,7 +67,8 @@ export const fetchProfileNamespaces = async (
 };
 
 export const fetchProfileNamespace = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { NamespaceModel } = dm;
   const { namespaceId } = params;
@@ -85,7 +86,8 @@ export const fetchProfileNamespace = async (
 };
 
 export const updateProfileNamespace = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { params, body }: { params: any; body: any },
+  res: Response
 ): Promise<void> => {
   const { NamespaceModel } = dm;
   const { profileId, namespaceId } = params;
@@ -110,7 +112,8 @@ export const updateProfileNamespace = async (
 };
 
 export const archiveProfileNamespace = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { NamespaceModel } = dm;
   const { profileId, namespaceId } = params;

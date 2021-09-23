@@ -16,25 +16,60 @@
 // Created by Jason Leach on 2020-06-15.
 //
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { provisionerCallbackHandler, provisionProfileNamespaces } from '../../controllers/provision';
-import { getAllProfileIdsUnderPending, getAllProvisionedProfileIds, getProfileBotJsonUnderPending, getProvisionedProfileBotJson } from '../../controllers/sync';
-import { AccessFlag, authorize, authorizeByFlag, validateRequiredProfile } from '../../libs/authorization';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import {
+  provisionerCallbackHandler,
+  provisionProfileNamespaces,
+} from "../../controllers/provision";
+import {
+  getAllProfileIdsUnderPending,
+  getAllProvisionedProfileIds,
+  getProfileBotJsonUnderPending,
+  getProvisionedProfileBotJson,
+} from "../../controllers/sync";
+import {
+  AccessFlag,
+  authorize,
+  authorizeByFlag,
+  validateRequiredProfile,
+} from "../../libs/authorization";
 
 const router = express.Router();
 const botCallback = AccessFlag.BotCallback;
 
 // Provisioning
-router.post('/:profileId/namespace', authorize(validateRequiredProfile), asyncMiddleware(provisionProfileNamespaces));
-router.put('/namespace', authorizeByFlag(botCallback), asyncMiddleware(provisionerCallbackHandler));
+router.post(
+  "/:profileId/namespace",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(provisionProfileNamespaces)
+);
+router.put(
+  "/namespace",
+  authorizeByFlag(botCallback),
+  asyncMiddleware(provisionerCallbackHandler)
+);
 
 // Bot-json-sync
-router.get('/sync/provisioned-profile-ids', authorizeByFlag(botCallback), asyncMiddleware(getAllProvisionedProfileIds));
-router.get('/sync/:profileId/provisioned-profile-bot-json', authorizeByFlag(botCallback), asyncMiddleware(getProvisionedProfileBotJson));
-router.get('/sync/under-pending-profile-ids', authorizeByFlag(botCallback), asyncMiddleware(getAllProfileIdsUnderPending));
-router.get('/sync/:profileId/under-pending-profile-bot-json', authorizeByFlag(botCallback), asyncMiddleware(getProfileBotJsonUnderPending));
+router.get(
+  "/sync/provisioned-profile-ids",
+  authorizeByFlag(botCallback),
+  asyncMiddleware(getAllProvisionedProfileIds)
+);
+router.get(
+  "/sync/:profileId/provisioned-profile-bot-json",
+  authorizeByFlag(botCallback),
+  asyncMiddleware(getProvisionedProfileBotJson)
+);
+router.get(
+  "/sync/under-pending-profile-ids",
+  authorizeByFlag(botCallback),
+  asyncMiddleware(getAllProfileIdsUnderPending)
+);
+router.get(
+  "/sync/:profileId/under-pending-profile-bot-json",
+  authorizeByFlag(botCallback),
+  asyncMiddleware(getProfileBotJsonUnderPending)
+);
 
 export default router;

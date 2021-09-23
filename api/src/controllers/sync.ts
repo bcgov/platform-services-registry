@@ -14,34 +14,90 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
-import DataManager from '../db';
-import { ProjectProfile } from '../db/model/profile';
-import { RequestEditType, RequestType } from '../db/model/request';
-import { contextForEditing, contextForProvisioning } from '../libs/fulfillment';
-import { getClusters, getProvisionStatus } from '../libs/profile';
-import shared from '../libs/shared';
-import { replaceForDescription } from '../libs/utils';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Request, Response } from "express";
+import DataManager from "../db";
+import { ProjectProfile } from "../db/model/profile";
+import { RequestEditType, RequestType } from "../db/model/request";
+import { contextForEditing, contextForProvisioning } from "../libs/fulfillment";
+import { getClusters, getProvisionStatus } from "../libs/profile";
+import shared from "../libs/shared";
+import { replaceForDescription } from "../libs/utils";
 
 const dm = new DataManager(shared.pgPool);
 
+const extractName = ({ name }) => {
+  return name;
+};
+
+const filterProfilesBySelectedClusterName = async (
+  profiles: ProjectProfile[],
+  clusterName: string
+): Promise<ProjectProfile[]> => {
+  try {
+    const clusterProfiles: ProjectProfile[] = [];
+    for (const profile of profiles) {
+      const clusters = await getClusters(profile);
+      const profileClusterNames = clusters.map((cluster) =>
+        extractName(cluster)
+      );
+
+      if (profileClusterNames.includes(clusterName)) {
+        clusterProfiles.push(profile);
+      }
+    }
+    return clusterProfiles;
+  } catch (err) {
+    const message =
+      "Unable to filter a list of profiles by selected cluster name";
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+const getProfilesUnderPendingEditOrCreate = async (): Promise<
+  ProjectProfile[]
+> => {
+  const { RequestModel, ProfileModel } = dm;
+  try {
+    // process those profiles that are under pending EDIT
+    const requests = await RequestModel.findActiveByFilter(
+      "requires_human_action",
+      false
+    );
+    const profileUnderRequestPromises: Promise<ProjectProfile>[] = requests.map(
+      (request) => ProfileModel.findById(request.profileId)
+    );
+
+    return await Promise.all(profileUnderRequestPromises);
+  } catch (err) {
+    const message =
+      "Unable to get a list of profiles for those that are under pending edit / create";
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
 export const getAllProvisionedProfileIds = async (
-  req: Request, res: Response
+  req: Request,
+  res: Response
 ): Promise<void> => {
   const { ProfileModel } = dm;
-  const clusterName: any = req.query['cluster-name'];
+  const clusterName: any = req.query["cluster-name"];
 
-  if (!(clusterName === undefined || typeof clusterName === 'string')) {
-    throw errorWithCode('Unable to determine the provided cluster name', 400);
+  if (!(clusterName === undefined || typeof clusterName === "string")) {
+    throw errorWithCode("Unable to determine the provided cluster name", 400);
   }
 
   try {
     let profiles: ProjectProfile[] = await ProfileModel.findAll();
     if (clusterName !== undefined) {
-      profiles = await filterProfilesBySelectedClusterName(profiles, clusterName);
+      profiles = await filterProfilesBySelectedClusterName(
+        profiles,
+        clusterName
+      );
     }
 
     const provisionedProfileIds: number[] = [];
@@ -54,7 +110,7 @@ export const getAllProvisionedProfileIds = async (
 
     res.status(200).json(provisionedProfileIds);
   } catch (err) {
-    const message = 'Unable to fetch all provisioned profile ids';
+    const message = "Unable to fetch all provisioned profile ids";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -62,7 +118,8 @@ export const getAllProvisionedProfileIds = async (
 };
 
 export const getProvisionedProfileBotJson = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { profileId } = params;
   const { ProfileModel, NamespaceModel } = dm;
@@ -82,7 +139,11 @@ export const getProvisionedProfileBotJson = async (
 
     const clusters = await NamespaceModel.findClustersForProfile(profile.id);
 
-    const context = await contextForProvisioning(profileId, clusters.pop(), true);
+    const context = await contextForProvisioning(
+      profileId,
+      clusters.pop(),
+      true
+    );
 
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
@@ -94,23 +155,28 @@ export const getProvisionedProfileBotJson = async (
 };
 
 export const getAllProfileIdsUnderPending = async (
-  req: Request, res: Response
+  req: Request,
+  res: Response
 ): Promise<void> => {
-  const clusterName: any = req.query['cluster-name'];
+  const clusterName: any = req.query["cluster-name"];
 
-  if (!(clusterName === undefined || typeof clusterName === 'string')) {
-    throw errorWithCode('Unable to determine the provided cluster name', 400);
+  if (!(clusterName === undefined || typeof clusterName === "string")) {
+    throw errorWithCode("Unable to determine the provided cluster name", 400);
   }
 
   try {
-    let profiles: ProjectProfile[] = await getProfilesUnderPendingEditOrCreate();
+    let profiles: ProjectProfile[] =
+      await getProfilesUnderPendingEditOrCreate();
     if (clusterName !== undefined) {
-      profiles = await filterProfilesBySelectedClusterName(profiles, clusterName);
+      profiles = await filterProfilesBySelectedClusterName(
+        profiles,
+        clusterName
+      );
     }
 
-    res.status(200).json(profiles.map(p => p.id));
+    res.status(200).json(profiles.map((p) => p.id));
   } catch (err) {
-    const message = 'Unable fetch all profile ids that are under pending edit';
+    const message = "Unable fetch all profile ids that are under pending edit";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
@@ -118,14 +184,16 @@ export const getAllProfileIdsUnderPending = async (
 };
 
 export const getProfileBotJsonUnderPending = async (
-  { params }: { params: any }, res: Response
+  { params }: { params: any },
+  res: Response
 ): Promise<void> => {
   const { profileId } = params;
   const { RequestModel, NamespaceModel } = dm;
 
   try {
-    const profiles: ProjectProfile[] = await getProfilesUnderPendingEditOrCreate();
-    const profileIds: (number | undefined)[] = profiles.map(p => p.id);
+    const profiles: ProjectProfile[] =
+      await getProfilesUnderPendingEditOrCreate();
+    const profileIds: (number | undefined)[] = profiles.map((p) => p.id);
     if (!profileIds.includes(Number(profileId))) {
       const errmsg = `This profile is not under any pending edit / create request`;
       throw new Error(errmsg);
@@ -149,19 +217,27 @@ export const getProfileBotJsonUnderPending = async (
           context = await contextForProvisioning(profileId, clusters.pop());
           break;
         case RequestType.Edit:
-          if (!request.editType){
+          if (!request.editType) {
             const errmsg = `Unable to get request edit Type`;
             throw new Error(errmsg);
           }
-          if (request.editType === RequestEditType.ProjectProfile || request.editType === RequestEditType.Contacts) {
-            request.editObject = JSON.stringify(request.editObject)
+          if (
+            request.editType === RequestEditType.ProjectProfile ||
+            request.editType === RequestEditType.Contacts
+          ) {
+            request.editObject = JSON.stringify(request.editObject);
           }
 
-          context = await contextForEditing(profileId, request.editType, request.editObject, clusters.pop());
+          context = await contextForEditing(
+            profileId,
+            request.editType,
+            request.editObject,
+            clusters.pop()
+          );
           break;
         default:
           throw new Error(`Invalid type for request ${request.id}`);
-        }
+      }
     }
     res.status(200).json(replaceForDescription(context));
   } catch (err) {
@@ -170,48 +246,5 @@ export const getProfileBotJsonUnderPending = async (
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
-  }
-};
-
-const getProfilesUnderPendingEditOrCreate = async (): Promise<ProjectProfile[]> => {
-  const { RequestModel, ProfileModel } = dm;
-  try {
-    // process those profiles that are under pending EDIT
-    const requests = await RequestModel.findActiveByFilter('requires_human_action', false );
-    const profileUnderRequestPromises: Promise<ProjectProfile>[] =
-      requests.map((request) => ProfileModel.findById(request.profileId));
-
-    return await Promise.all(profileUnderRequestPromises);
-  } catch (err) {
-    const message = 'Unable to get a list of profiles for those that are under pending edit / create';
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
-  }
-};
-
-const extractName = ({name}) => {
-  return name;
-}
-
-const filterProfilesBySelectedClusterName = async (profiles: ProjectProfile[], clusterName: string):
-  Promise<ProjectProfile[]> => {
-  try {
-    const clusterProfiles: ProjectProfile[] = [];
-    for (const profile of profiles) {
-      const clusters = await getClusters(profile);
-      const profileClusterNames = clusters.map(cluster => extractName(cluster));
-
-      if (profileClusterNames.includes(clusterName)){
-        clusterProfiles.push(profile);
-      }
-    }
-    return clusterProfiles;
-
-  } catch (err) {
-    const message = 'Unable to filter a list of profiles by selected cluster name';
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw err;
   }
 };
