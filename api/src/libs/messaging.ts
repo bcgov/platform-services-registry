@@ -125,10 +125,9 @@ const updateEmailContent = async (
     };
 
     const re = new RegExp(Object.keys(mapObj).join("|"), "gi");
-    const emailContent = buff.replace(re, (matched) => {
+    return buff.replace(re, (matched) => {
       return mapObj[matched];
     });
-    return emailContent;
   } catch (err) {
     const message = `Unable to update email content`;
     logger.error(`${message}, err = ${err.message}`);

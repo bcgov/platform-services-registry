@@ -344,12 +344,14 @@ export default class RequestModel extends Model {
     try {
       const record = await this.findBotMessageById(botMessageId);
       const aData = { ...record };
+      const receivedCallback = true;
+
       query.values = [
         aData.requestId,
         aData.natsSubject,
         JSON.stringify(aData.natsContext),
         aData.clusterName,
-        (aData.receivedCallback = true),
+        receivedCallback,
       ];
 
       const results = await this.runQuery(query);
