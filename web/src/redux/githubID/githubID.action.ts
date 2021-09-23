@@ -9,27 +9,27 @@ interface GithubIDActionPayload {
   position: number;
 }
 const requestGithubUsers = (payload: GithubIDActionPayload) => ({
-  type: GithubIDActionTypes.GITHUB_USERS_REQUEST,
+  type: GithubIDActionTypes.GITHUBID_USERS_REQUEST,
   payload,
 });
 
 const userExists = (payload: GithubIDActionPayload) => ({
-  type: GithubIDActionTypes.GITHUB_USER_EXISTS,
+  type: GithubIDActionTypes.GITHUBID_USER_EXISTS,
   payload,
 });
 
 const storeUser = (payload: any) => ({
-  type: GithubIDActionTypes.GITHUB_USER_STORE_USER,
+  type: GithubIDActionTypes.GITHUBID_STORE_USER,
   payload,
 });
 
-export const githubUserKeywordInput = (payload: object) => ({
-  type: GithubIDActionTypes.GITHUB_USERS_INPUT,
+export const githubIDSearchKeyword = (payload: object) => ({
+  type: GithubIDActionTypes.GITHUBID_USERS_INPUT_SEARCH_KEY,
   payload,
 });
 
 const noSuchUser = (payload: GithubIDActionPayload) => ({
-  type: GithubIDActionTypes.GITHUB_USER_DOES_NOT_EXIST,
+  type: GithubIDActionTypes.GITHUBID_USER_DOES_NOT_EXIST,
   payload,
 });
 
@@ -57,4 +57,4 @@ export const searchGithubUsers = (query: string, persona: string, position: numb
     });
 };
 
-export default githubUserKeywordInput;
+export default githubIDSearchKeyword;
