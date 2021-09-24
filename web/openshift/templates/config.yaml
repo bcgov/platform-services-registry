@@ -59,10 +59,12 @@ objects:
         try_files {path} {path}/ /index.html
         
         # The site js file caching age, we can add more filetype in 
-        # static object if needed.
+        # static object if needed. file matcher to @static - this 
+        # ensures the file exists on disk before Caddy will send the Cache-Control header.
+        # and also prevent index.html from being cached
         @static {
-            file
-            path *.js 
+            file 
+            path index.html *.js 
         }
         header @static Cache-Control max-age=864000
 
