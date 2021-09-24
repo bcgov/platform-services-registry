@@ -57,6 +57,14 @@ objects:
 
         # This properly deals with react routes.
         try_files {path} {path}/ /index.html
+        
+        # The site js file caching age, we can add more filetype in 
+        # static object if needed.
+        @static {
+            file
+            path *.js 
+        }
+        header @static Cache-Control max-age=864000
 
         # On OCP we should log to stdout so Prometheus can
         # slurp up the logs for human consumption.
