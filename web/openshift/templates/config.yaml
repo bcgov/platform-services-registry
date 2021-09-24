@@ -55,15 +55,12 @@ objects:
         #}
         #rewrite @try_files {http.matchers.file.relative}
 
-        
-        # The site js file caching age, we can add more filetype in 
-        # static object if needed. file matcher to @static - this 
-        # ensures the file exists on disk before Caddy will send the Cache-Control header.
-        # and also prevent index.html from being cached
+        # static object if needed. file in static will all be cached
         handle /static/* {
           header Cache-Control "max-age=31536000"
         }
-        
+
+        # prevent index.html from being cached
         handle {
           header Cache-Control "no-cache, must-revalidate"
         }
