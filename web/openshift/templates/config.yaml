@@ -64,9 +64,10 @@ objects:
         # and also prevent index.html from being cached
         @static {
             file 
-            path index.html *.js 
+            path *.js
         }
         header @static Cache-Control max-age=864000
+        header /index.html Cache-Control no-cache
 
         # On OCP we should log to stdout so Prometheus can
         # slurp up the logs for human consumption.
