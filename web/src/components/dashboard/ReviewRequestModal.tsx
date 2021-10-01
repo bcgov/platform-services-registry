@@ -41,6 +41,15 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
 
+  let differenceKey: any = []
+  if (profileDetails.type === 'edit') {
+    Object.keys(profileDetails.editObject.quota).forEach(key => {
+      if (profileDetails.editObject.quota[key] !== profileDetails.quotaSize[key]) {
+        differenceKey.push(key)
+      }
+    });
+  }
+
   const parseContacts = (contactDetails: any) => {
     return contactDetails.map(
       (contact: any) => ` ${contact.firstName} ${contact.lastName} | ${contact.email}`,
@@ -120,16 +129,25 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
-        <Input
+        {profileDetails.type === 'create' ? <Input
           name="project-quota"
           placeholder="Small"
           disabled
           value={
-            profileDetails.type === 'create'
-              ? profileDetails.quotaSize
-              : `${profileDetails.quotaSize} => ${profileDetails.editObject.quota}`
+            `CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`
           }
-        />
+        /> :
+          <Input
+            name="project-quota"
+            placeholder="Small"
+            disabled
+            value={
+              differenceKey.map((key: string) => (
+                `(${key}: ${profileDetails.quotaSize[key]} => ${key}: ${profileDetails.editObject.quota[key]}) `
+              ))
+            }
+          />
+        }
       </Flex>
       <Form onSubmit={onSubmit}>
         {(formProps) => (

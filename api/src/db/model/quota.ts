@@ -19,6 +19,7 @@
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
 import { CommonFields, Model } from './model';
+import { ProjectQuotaSize } from './namespace';
 
 export enum QuotaSize {
     Small = 'small',
@@ -130,16 +131,16 @@ export default class QuotaModel extends Model {
         }
     }
 
-    async findForQuotaSize(quotaSize: QuotaSize): Promise<any> {
+    async findForQuotaSize(quotaSize: ProjectQuotaSize): Promise<any> {
         const query = {
             text: `
                 SELECT json_build_object(
                     'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS "requests", cpu_limits AS "limits"
-                        FROM ref_quota WHERE id = '${quotaSize}') d),
+                        FROM ref_quota WHERE id = '${quotaSize.quotaCpuSize}') d),
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
-                        FROM ref_quota WHERE id = '${quotaSize}') d),
+                        FROM ref_quota WHERE id = '${quotaSize.quotaMemorySize}') d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = '${quotaSize}') d)
+                        FROM ref_quota WHERE id = '${quotaSize.quotaStorageSize}') d)
                 );
             `
         };

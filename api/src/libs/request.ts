@@ -20,8 +20,8 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
+import { ProjectQuotaSize } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
-import { QuotaSize } from '../db/model/quota';
 import { Request, RequestEditType, RequestType } from '../db/model/request';
 import { comparerContact } from '../db/utils';
 import { updateProfileStatus } from '../libs/profile';
@@ -165,7 +165,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
     }
 };
 
-export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: QuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
+export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: ProjectQuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
     try {
         const requestType = RequestType.Edit;
         const editType = RequestEditType.QuotaSize;
@@ -192,7 +192,6 @@ export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQu
 
 export const processProfileQuotaSizeEdit = async (request: Request): Promise<void> => {
     const { ProfileModel } = dm;
-
     try {
         const { profileId, editObject } = request;
         const { quota } = editObject;

@@ -18,7 +18,7 @@ import React from 'react';
 import { Box, Link } from 'rebass';
 import { ContactDetails } from '../components/profileEdit/ContactCard';
 import { CSV_PROFILE_ATTRIBUTES } from '../constants';
-import { Namespace, QuotaSize } from '../types';
+import { Namespace, ProjectResourceQuotaSize } from '../types';
 
 export function transformClusters(data: any) {
   const clusters: any = [];
@@ -83,7 +83,7 @@ export function getLicensePlate(namespaces: Namespace[]): string | Error {
   }
 }
 
-export function composeRequestBodyForQuotaEdit(requestedQuotaSize: QuotaSize): any {
+export function composeRequestBodyForQuotaEdit(requestedQuotaSize: ProjectResourceQuotaSize): any {
   try {
     return {
       requestedQuotaSize,

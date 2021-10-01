@@ -17,20 +17,29 @@
 'use strict';
 
 import { logger } from '@bcgov/common-nodejs-utils';
+import { NameSpacesQuotaSize, ProjectQuotaSize } from '../db/model/namespace';
 import { QuotaSize } from '../db/model/quota';
 
-export const getAllowedQuotaSizes = (currentQuotaSize: QuotaSize): QuotaSize[] => {
+export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSpacesQuotaSize => {
     try {
         const quotaSizeNames = Object.values(QuotaSize);
         const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
 
-        const num: number = quotaSizeNames.indexOf(currentQuotaSize);
+        let availableQuotaOptions: NameSpacesQuotaSize = {
+            quotaCpuSize: [],
+            quotaMemorySize: [],
+            quotaStorageSize: []
+        }
 
-        // allows +1 size and all the smaller sizes
-        return allQuotaOptions.slice(
-            0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
-                size => size !== currentQuotaSize
-            );
+        for (let key in currentQuotaSize) {
+            const num: number = quotaSizeNames.indexOf(currentQuotaSize[key]);
+            availableQuotaOptions[key] = allQuotaOptions.slice(
+                0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
+                    size => size !== currentQuotaSize[key]
+                );
+        }
+
+        return availableQuotaOptions
     } catch (err) {
         const message = `Unable to get a list of Allowed quota sizes`;
         logger.error(`${message}, err = ${err.message}`);

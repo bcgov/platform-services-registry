@@ -30,8 +30,8 @@
     ]
   },
   "orgs": [
-    "bcgov",
-    "BCDevOps"
+    "billy-org-test",
+    "snowinact"
   ],
-  "primaryOrg": "bcgov"
+  "primaryOrg": "snowinact"
 }

@@ -21,8 +21,8 @@ import { Response } from 'express';
 import { PROFILE_STATUS } from '../constants';
 import DataManager from '../db';
 import { Contact } from '../db/model/contact';
+import { NameSpacesQuotaSize, ProjectQuotaSize } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
-import { QuotaSize } from '../db/model/quota';
 import { Request } from '../db/model/request';
 import { comparerContact } from '../db/utils';
 import { AuthenticatedUser } from '../libs/authmware';
@@ -148,7 +148,7 @@ export const fetchProfileQuotaSize = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(Number(profileId));
-    const quotaSize: QuotaSize = await getQuotaSize(profile);
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
 
     res.status(200).json(quotaSize);
   } catch (err) {
@@ -171,8 +171,8 @@ export const fetchProfileAllowedQuotaSizes = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaSize: QuotaSize = await getQuotaSize(profile);
-    const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const allowedQuotaSizes: NameSpacesQuotaSize = getAllowedQuotaSizes(quotaSize);
 
     res.status(200).json(allowedQuotaSizes);
   } catch (err) {
@@ -192,14 +192,16 @@ export const updateProfileQuotaSize = async (
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaSize: QuotaSize = await getQuotaSize(profile);
-    const allowedQuotaSizes: QuotaSize[] = getAllowedQuotaSizes(quotaSize);
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const allowedQuotaSizes: NameSpacesQuotaSize = getAllowedQuotaSizes(quotaSize);
     const requiresHumanAction = true;
 
-    // verify if requested quota size is valid
-    if (!(requestedQuotaSize && allowedQuotaSizes.includes(requestedQuotaSize))) {
-      throw new Error('Please provide correct requested quota size in body');
-    }
+    // verify if requested quota size is valid 
+    Object.keys(requestedQuotaSize).map((key) => {
+      if (!(requestedQuotaSize[key] && (quotaSize[key].includes(requestedQuotaSize[key]) || allowedQuotaSizes[key].includes(requestedQuotaSize[key])))) {
+        throw new Error('Please provide correct requested quota size in body');
+      }
+    })
 
     await requestProfileQuotaSizeEdit(Number(profileId), requestedQuotaSize, user, requiresHumanAction);
 

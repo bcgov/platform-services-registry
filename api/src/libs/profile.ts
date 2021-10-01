@@ -19,9 +19,8 @@
 import { logger } from '@bcgov/common-nodejs-utils';
 import DataManager from '../db';
 import { Cluster } from '../db/model/cluster';
-import { ProjectNamespace } from '../db/model/namespace';
+import { ProjectNamespace, ProjectQuotaSize } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
-import { QuotaSize } from '../db/model/quota';
 import shared from './shared';
 
 const dm = new DataManager(shared.pgPool);
@@ -36,7 +35,7 @@ export const getProvisionStatus = async (profile: ProjectProfile): Promise<boole
         Number(cluster.id)
       );
 
-      if (!isClusterProvisioned){
+      if (!isClusterProvisioned) {
         return false;
       }
     }
@@ -77,7 +76,7 @@ export const updateProfileStatus = async (profileId: number, profileStatus: stri
   }
 };
 
-export const getQuotaSize = async (profile: ProjectProfile): Promise<QuotaSize> => {
+export const getQuotaSize = async (profile: ProjectProfile): Promise<ProjectQuotaSize> => {
   try {
     const clusters: Cluster[] = await getClusters(profile);
 
@@ -90,8 +89,20 @@ export const getQuotaSize = async (profile: ProjectProfile): Promise<QuotaSize> 
       promises.push(NamespaceModel.getProjectSetQuotaSize(profile.id, cluster.id));
     })
 
-    const quotaSizes: QuotaSize[] = await Promise.all(promises);
-    const hasSameQuotaSizes = (quotaSizes.every((val, i, arr) => val === arr[0]));
+    const quotaSizes: ProjectQuotaSize[] = await Promise.all(promises);
+
+    let hasSameQuotaSizes: boolean = false
+    if (quotaSizes.length === 1) {
+      hasSameQuotaSizes = true
+    } else {
+      // to check if quota for each resource in different cluster are the same.
+      for (let key = 0; key < quotaSizes.length - 1; key++) {
+        for (let quotaType in quotaSizes[key]) {
+          hasSameQuotaSizes = quotaSizes[key][quotaType] === quotaSizes[key + 1][quotaType]
+        }
+      }
+    }
+
     if (hasSameQuotaSizes) {
       return quotaSizes[0];
     } else {
@@ -106,7 +117,7 @@ export const getQuotaSize = async (profile: ProjectProfile): Promise<QuotaSize> 
   }
 };
 
-export const updateQuotaSize = async (profile: ProjectProfile, quotaSize: QuotaSize): Promise<void> => {
+export const updateQuotaSize = async (profile: ProjectProfile, quotaSize: ProjectQuotaSize): Promise<void> => {
   try {
     const clusters: Cluster[] = await getClusters(profile);
 

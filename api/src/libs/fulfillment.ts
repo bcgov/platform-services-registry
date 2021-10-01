@@ -22,8 +22,9 @@ import { ROLE_IDS } from '../constants';
 import DataManager from '../db';
 import { Cluster } from '../db/model/cluster';
 import { Contact } from '../db/model/contact';
+import { ProjectQuotaSize } from '../db/model/namespace';
 import { ProjectProfile } from '../db/model/profile';
-import { Quotas, QuotaSize } from '../db/model/quota';
+import { Quotas } from '../db/model/quota';
 import { Request, RequestEditType, RequestType } from '../db/model/request';
 import { replaceForDescription } from '../libs/utils';
 import { NatsContact, NatsContactRole, NatsContext, NatsContextAction, NatsMessage, NatsProjectNamespace } from '../types';
@@ -35,25 +36,25 @@ const { ProfileModel, ContactModel, QuotaModel, NamespaceModel } = dm;
 
 export const fulfillRequest = async (request: Request):
   Promise<any> => {
-    try {
-      const subjectPrefix: string = config.get('nats:subjectPrefix');
+  try {
+    const subjectPrefix: string = config.get('nats:subjectPrefix');
 
-      await createBotMessageSet(request, subjectPrefix)
-      const botMessageSet = await fetchBotMessageRequests(Number(request.id))
+    await createBotMessageSet(request, subjectPrefix)
+    const botMessageSet = await fetchBotMessageRequests(Number(request.id))
 
-      for (const botMessage of botMessageSet) {
-        await sendNatsMessage(request.profileId, {
-          natsSubject: botMessage.natsSubject,
-          natsContext: botMessage.natsContext,
-        })
-      }
-    } catch (err) {
-      const message = `Unable to fulfill edit request for profile ${request.profileId}`;
-      logger.error(`${message}, err = ${err.message}`);
-
-      throw err;
+    for (const botMessage of botMessageSet) {
+      await sendNatsMessage(request.profileId, {
+        natsSubject: botMessage.natsSubject,
+        natsContext: botMessage.natsContext,
+      })
     }
-  };
+  } catch (err) {
+    const message = `Unable to fulfill edit request for profile ${request.profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
 
 // TODO: modify around isForSync so as to avoid passing bool directly
 export const contextForProvisioning = async (profileId: number, cluster: Cluster, isForSync: boolean = false): Promise<NatsContext> => {
@@ -61,7 +62,7 @@ export const contextForProvisioning = async (profileId: number, cluster: Cluster
     const action = isForSync ? NatsContextAction.Sync : NatsContextAction.Create;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-    const quotaSize: QuotaSize = await getQuotaSize(profile);
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
 
     return await buildContext(action, profile, contacts, quotaSize, quotas, cluster);
@@ -77,7 +78,7 @@ export const contextForEditing = async (profileId: number, requestEditType: Requ
   try {
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
-    let quotaSize: QuotaSize;
+    let quotaSize: ProjectQuotaSize;
     let quotas: Quotas;
     let contacts: Contact[];
 
@@ -115,7 +116,7 @@ export const generateContext = async (request: Request, cluster: Cluster): Promi
     case RequestType.Create:
       return await contextForProvisioning(request.profileId, cluster);
     case RequestType.Edit:
-      if (!request.editType){
+      if (!request.editType) {
         throw new Error(`Invalid edit type for request ${request.id}`)
       }
       return await contextForEditing(request.profileId, request.editType, request.editObject, cluster);
@@ -126,11 +127,11 @@ export const generateContext = async (request: Request, cluster: Cluster): Promi
 
 const formatNamespacesForNats = (namespace, quota, quotas): NatsProjectNamespace => {
   return {
-      namespace_id: namespace.id,
-      name: namespace.name,
-      quota,
-      quotas,
-    };
+    namespace_id: namespace.id,
+    name: namespace.name,
+    quota,
+    quotas,
+  };
 }
 
 const formatContactsForNats = (contact): NatsContact => {
@@ -147,7 +148,7 @@ const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
   profileContacts: Contact[],
-  quotaSize: QuotaSize,
+  quotaSize: ProjectQuotaSize,
   quotas: Quotas,
   cluster: Cluster
 ): Promise<NatsContext> => {
@@ -157,9 +158,9 @@ const buildContext = async (
     }
 
     // TODO:(sb) Find a more robust solution to convert quotas to snake_case
-    if (quotas.storage.pvcCount){
+    if (quotas.storage.pvcCount) {
       // @ts-ignore
-      delete Object.assign(quotas.storage, {pvc_count: quotas.storage.pvcCount }).pvcCount;
+      delete Object.assign(quotas.storage, { pvc_count: quotas.storage.pvcCount }).pvcCount;
     }
 
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(profile.id);
