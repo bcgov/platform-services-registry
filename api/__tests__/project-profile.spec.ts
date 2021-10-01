@@ -14,50 +14,55 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from "fs";
+import { camelCase } from "lodash";
+import path from "path";
+import { Pool } from "pg";
+import {
+  archiveProjectProfile,
+  createProjectProfile,
+  fetchAllProjectProfiles,
+  fetchProjectProfile,
+  uniqueNamespacePrefix,
+  updateProjectProfile,
+} from "../src/controllers/project-profile";
+import ProfileModel from "../src/db/model/profile";
+import { AccessFlag } from "../src/libs/authorization";
+import { requestProjectProfileEdit } from "../src/libs/request";
+import FauxExpress from "./src/fauxexpress";
 
-import fs from 'fs';
-import { camelCase } from 'lodash';
-import path from 'path';
-import { Pool } from 'pg';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, uniqueNamespacePrefix, updateProjectProfile } from '../src/controllers/project-profile';
-import ProfileModel from '../src/db/model/profile';
-import { AccessFlag } from '../src/libs/authorization';
-import { requestProjectProfileEdit } from '../src/libs/request';
-import FauxExpress from './src/fauxexpress';
+const p0 = path.join(__dirname, "fixtures/select-profiles.json");
+const selectProfiles = JSON.parse(fs.readFileSync(p0, "utf8"));
 
-const p0 = path.join(__dirname, 'fixtures/select-profiles.json');
-const selectProfiles = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p1 = path.join(__dirname, "fixtures/insert-profile.json");
+const insertProfile = JSON.parse(fs.readFileSync(p1, "utf8"));
 
-const p1 = path.join(__dirname, 'fixtures/insert-profile.json');
-const insertProfile = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const p2 = path.join(__dirname, "fixtures/get-authenticated-user.json");
+const authenticatedUser = JSON.parse(fs.readFileSync(p2, "utf8"));
 
-const p2 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
-const authenticatedUser = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const p3 = path.join(__dirname, "fixtures/select-default-cluster.json");
+const selectCluster = JSON.parse(fs.readFileSync(p3, "utf8"));
 
-const p3 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-const selectCluster = JSON.parse(fs.readFileSync(p3, 'utf8'));
-
-const p4 = path.join(__dirname, 'fixtures/select-profile.json');
-const selectProfile = JSON.parse(fs.readFileSync(p4, 'utf8'));
+const p4 = path.join(__dirname, "fixtures/select-profile.json");
+const selectProfile = JSON.parse(fs.readFileSync(p4, "utf8"));
 
 const client = new Pool().connect();
 
-jest.mock('../src/libs/profile', () => {
+jest.mock("../src/libs/profile", () => {
   return {
     updateProfileStatus: jest.fn(),
   };
 });
 
-jest.mock('../src/libs/request', () => ({
-  requestProjectProfileEdit: jest.fn().mockResolvedValue({id: 2}),
+jest.mock("../src/libs/request", () => ({
+  requestProjectProfileEdit: jest.fn().mockResolvedValue({ id: 2 }),
 }));
 
-jest.mock('../src/db/utils', () => ({
-  generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e6'),
-  transformKeysToCamelCase: jest.fn().mockImplementation(data => {
+jest.mock("../src/db/utils", () => ({
+  generateNamespacePrefix: jest.fn().mockReturnValue("c8c7e6"),
+  transformKeysToCamelCase: jest.fn().mockImplementation((data) => {
     const obj = {};
-    Object.keys(data).forEach(key => {
+    Object.keys(data).forEach((key) => {
       obj[camelCase(key)] = data[key];
     });
 
@@ -65,13 +70,13 @@ jest.mock('../src/db/utils', () => ({
   }),
 }));
 
-jest.mock('../src/libs/fulfillment', () => {
+jest.mock("../src/libs/fulfillment", () => {
   return {
     fulfillRequest: jest.fn(),
   };
 });
 
-describe('Project-profile event handlers', () => {
+describe("Project-profile event handlers", () => {
   let ex;
 
   beforeEach(() => {
@@ -80,7 +85,7 @@ describe('Project-profile event handlers', () => {
     ex = new FauxExpress();
   });
 
-  it('A project-profile is created on a given prod-ready cluster', async () => {
+  it("A project-profile is created on a given prod-ready cluster", async () => {
     const req = {
       body: insertProfile,
       user: {
@@ -94,10 +99,12 @@ describe('Project-profile event handlers', () => {
     };
 
     client.query.mockReturnValueOnce({ rows: selectCluster });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({
+      rows: [{ ...insertProfile, ...addon }],
+    });
 
     // @ts-ignore
     await createProjectProfile(req, ex.res);
@@ -113,10 +120,13 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('A project-profile is created on a given test cluster', async () => {
+  it("A project-profile is created on a given test cluster", async () => {
     const req = {
-      body: { ...insertProfile, primaryClusterName: 'clab' },
-      user: { ...authenticatedUser, accessFlags: [AccessFlag.ProvisionOnTestCluster,] },
+      body: { ...insertProfile, primaryClusterName: "clab" },
+      user: {
+        ...authenticatedUser,
+        accessFlags: [AccessFlag.ProvisionOnTestCluster],
+      },
     };
     const addon = {
       id: 9,
@@ -125,15 +135,17 @@ describe('Project-profile event handlers', () => {
     };
 
     const testCluster = {
-      name: 'clab',
-      isProd: false
+      name: "clab",
+      isProd: false,
     };
 
     client.query.mockReturnValueOnce({ rows: [testCluster] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ ...insertProfile, ...addon }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({
+      rows: [{ ...insertProfile, ...addon }],
+    });
 
     // @ts-ignore
     await createProjectProfile(req, ex.res);
@@ -149,12 +161,14 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('A project-profile fails to create', async () => {
+  it("A project-profile fails to create", async () => {
     const req = {
       body: insertProfile,
     };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
     await expect(createProjectProfile(req, ex.res)).rejects.toThrow();
@@ -163,7 +177,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-  it('All project-profiles are returned', async () => {
+  it("All project-profiles are returned", async () => {
     const req = {
       user: authenticatedUser,
     };
@@ -179,13 +193,14 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('All project-profiles are returned to an administrator', async () => {
+  it("All project-profiles are returned to an administrator", async () => {
     const req = {
-      user: { ...authenticatedUser, accessFlags: [AccessFlag.EditAll,] },
+      user: { ...authenticatedUser, accessFlags: [AccessFlag.EditAll] },
     };
 
-    const findAll = ProfileModel.prototype.findAll = jest.fn();
-    const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn();
+    const findAll = (ProfileModel.prototype.findAll = jest.fn());
+    const findProfilesByUserId =
+      (ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn());
 
     await fetchAllProjectProfiles(req, ex.res);
 
@@ -193,34 +208,38 @@ describe('Project-profile event handlers', () => {
     expect(findProfilesByUserId).toHaveBeenCalledTimes(0);
   });
 
-  it('All project-profiles are returned to non-administrator',
-    async () => {
-      const req = {
-        user: authenticatedUser,
-      };
+  it("All project-profiles are returned to non-administrator", async () => {
+    const req = {
+      user: authenticatedUser,
+    };
 
-      const findAll = ProfileModel.prototype.findAll = jest.fn();
-      const findProfilesByUserId = ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn();
+    const findAll = (ProfileModel.prototype.findAll = jest.fn());
+    const findProfilesByUserId =
+      (ProfileModel.prototype.findProfilesByUserIdOrEmail = jest.fn());
 
-      await fetchAllProjectProfiles(req, ex.res);
+    await fetchAllProjectProfiles(req, ex.res);
 
-      expect(findAll).toHaveBeenCalledTimes(0);
-      expect(findProfilesByUserId).toHaveBeenCalledTimes(1);
-      expect(findProfilesByUserId.mock.calls[0][0]).toBe(req.user.id);
+    expect(findAll).toHaveBeenCalledTimes(0);
+    expect(findProfilesByUserId).toHaveBeenCalledTimes(1);
+    expect(findProfilesByUserId.mock.calls[0][0]).toBe(req.user.id);
+  });
+
+  it("Fetch all project-profiles should throw", async () => {
+    const req = {};
+    client.query.mockImplementation(() => {
+      throw new Error();
     });
 
-  it('Fetch all project-profiles should throw', async () => {
-    const req = {};
-    client.query.mockImplementation(() => { throw new Error() });
-
-    // @ts-ignore
-    await expect(fetchAllProjectProfiles(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(
+      // @ts-ignore
+      fetchAllProjectProfiles(req, ex.res)
+    ).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A single project-profile is returned', async () => {
+  it("A single project-profile is returned", async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -235,19 +254,23 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch single project-profiles should throw', async () => {
+  it("Fetch single project-profiles should throw", async () => {
     const req = {
       params: { profileId: 4 },
     };
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
-    await expect(fetchProjectProfile(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(
+      fetchProjectProfile(req, ex.res)
+    ).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('Update a project-profile with non provisioner-related changes', async () => {
+  it("Update a project-profile with non provisioner-related changes", async () => {
     const body = {
       id: 4,
       name: "Project X",
@@ -267,7 +290,7 @@ describe('Project-profile event handlers', () => {
     client.query.mockReturnValueOnce({ rows: selectProfile });
     client.query.mockReturnValueOnce({ rows: [] });
 
-    const update = ProfileModel.prototype.update = jest.fn();
+    const update = (ProfileModel.prototype.update = jest.fn());
 
     await updateProjectProfile(req, ex.res);
 
@@ -281,7 +304,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
   });
 
-  it('request project-profile edit with provisioner-related name changes', async () => {
+  it("request project-profile edit with provisioner-related name changes", async () => {
     const body = {
       id: 4,
       name: "Project X ATTEMPTED NAME CHANGE",
@@ -300,7 +323,7 @@ describe('Project-profile event handlers', () => {
 
     client.query.mockReturnValueOnce({ rows: selectProfile });
 
-    const update = ProfileModel.prototype.update = jest.fn();
+    const update = (ProfileModel.prototype.update = jest.fn());
 
     await updateProjectProfile(req, ex.res);
 
@@ -314,7 +337,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
   });
 
-  it('request project-profile edit with provisioner-related description changes', async () => {
+  it("request project-profile edit with provisioner-related description changes", async () => {
     const body = {
       id: 4,
       name: "Project X",
@@ -329,9 +352,9 @@ describe('Project-profile event handlers', () => {
       user: authenticatedUser,
     };
 
-    client.query.mockReturnValueOnce({ rows: selectProfile }); 
+    client.query.mockReturnValueOnce({ rows: selectProfile });
 
-    const update = ProfileModel.prototype.update = jest.fn();
+    const update = (ProfileModel.prototype.update = jest.fn());
 
     await updateProjectProfile(req, ex.res);
 
@@ -345,7 +368,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.status).toBeCalled();
   });
 
-  it('A project-profiles fails to update', async () => {
+  it("A project-profiles fails to update", async () => {
     const aBody = {
       id: 4,
       ...insertProfile,
@@ -356,9 +379,11 @@ describe('Project-profile event handlers', () => {
       params: { profileId: 4 },
       body: aBody,
       user: authenticatedUser,
-    }
+    };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     await expect(updateProjectProfile(req, ex.res)).rejects.toThrow();
 
@@ -366,7 +391,7 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-  it('A project-profiles is archived', async () => {
+  it("A project-profiles is archived", async () => {
     const aBody = {
       id: 4,
       ...insertProfile,
@@ -376,7 +401,7 @@ describe('Project-profile event handlers', () => {
     };
     const req = {
       params: { profileId: 4 },
-    }
+    };
 
     client.query.mockReturnValue({ rows: [aBody] });
 
@@ -389,12 +414,14 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.end).toBeCalled();
   });
 
-  it('A project-profiles fails to archive', async () => {
+  it("A project-profiles fails to archive", async () => {
     const req = {
       params: { profileId: 4 },
-    }
+    };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     await expect(archiveProjectProfile(req, ex.res)).rejects.toThrow();
 
@@ -404,11 +431,10 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.end).not.toBeCalled();
   });
 
-
-  it('Unique project-profiles names are derived', async () => {
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
-    client.query.mockReturnValueOnce({ rows: [{ count: '0' }] });
+  it("Unique project-profiles names are derived", async () => {
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
+    client.query.mockReturnValueOnce({ rows: [{ count: "0" }] });
 
     const result = await uniqueNamespacePrefix();
 

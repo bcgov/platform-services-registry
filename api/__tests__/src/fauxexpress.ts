@@ -13,23 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Response } from 'express';
+import { Response } from "express";
 
 export default class FauxExpress {
-    res: Partial<Response> = {
-        clearCookie: jest.fn(),
-        cookie: jest.fn(),
-        json: jest.fn().mockImplementation((param) => {
-            this.responseData = param;
-            return this.res;
-        }),
-        status: jest.fn().mockImplementation((code) => {
-            this.res.statusCode = code;
-            return this.res;
-        }),
-        statusCode: 200,
-        end: jest.fn(),
-    }
-    req: any;
-    responseData: any;
+  res: Partial<Response> = {
+    clearCookie: jest.fn(),
+    cookie: jest.fn(),
+    json: jest.fn().mockImplementation((param) => {
+      this.responseData = param;
+      return this.res;
+    }),
+    status: jest.fn().mockImplementation((code) => {
+      this.res.statusCode = code;
+      return this.res;
+    }),
+    statusCode: 200,
+    end: jest.fn(),
+  };
+
+  req: any;
+
+  responseData: any;
 }

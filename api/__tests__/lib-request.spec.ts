@@ -14,45 +14,46 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from "fs";
+import path from "path";
+import { Pool } from "pg";
+import { PROFILE_STATUS } from "../src/constants";
+import ContactModel from "../src/db/model/contact";
+import RequestModel from "../src/db/model/request";
+import { fulfillRequest } from "../src/libs/fulfillment";
+import {
+  processProfileContactsEdit,
+  requestProjectProfileEdit,
+} from "../src/libs/request";
 
-import fs from 'fs';
-import path from 'path';
-import { Pool } from 'pg';
-import { PROFILE_STATUS } from '../src/constants';
-import ContactModel from '../src/db/model/contact';
-import RequestModel from '../src/db/model/request';
-import { fulfillRequest } from '../src/libs/fulfillment';
-import { processProfileContactsEdit, requestProjectProfileEdit } from '../src/libs/request';
+const p0 = path.join(__dirname, "fixtures/get-request-edit-quota-size.json");
+const quotaSizeRequest = JSON.parse(fs.readFileSync(p0, "utf8"));
 
-const p0 = path.join(__dirname, 'fixtures/get-request-edit-quota-size.json');
-const quotaSizeRequest = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p1 = path.join(__dirname, "fixtures/get-provisioning-context.json");
+const natsContext = JSON.parse(fs.readFileSync(p1, "utf8"));
 
-const p1 = path.join(__dirname, 'fixtures/get-provisioning-context.json');
-const natsContext = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const p2 = path.join(__dirname, "fixtures/select-profile.json");
+const profile = JSON.parse(fs.readFileSync(p2, "utf8"))[0];
 
-const p2 = path.join(__dirname, 'fixtures/select-profile.json');
-const profile = JSON.parse(fs.readFileSync(p2, 'utf8'))[0];
-
-const p3 = path.join(__dirname, 'fixtures/get-request-edit-contacts.json');
-const contactEditRequest = JSON.parse(fs.readFileSync(p3, 'utf8'))[0];
+const p3 = path.join(__dirname, "fixtures/get-request-edit-contacts.json");
+const contactEditRequest = JSON.parse(fs.readFileSync(p3, "utf8"))[0];
 
 const requests = [quotaSizeRequest[0], contactEditRequest[0]];
-const p4 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
-const authenticatedUser = JSON.parse(fs.readFileSync(p4, 'utf8'));
+const p4 = path.join(__dirname, "fixtures/get-authenticated-user.json");
+const authenticatedUser = JSON.parse(fs.readFileSync(p4, "utf8"));
 
-const p5 = path.join(__dirname, 'fixtures/select-profile-contacts.json');
-const selectProfilesContacts = JSON.parse(fs.readFileSync(p5, 'utf8'));
+const p5 = path.join(__dirname, "fixtures/select-profile-contacts.json");
+const selectProfilesContacts = JSON.parse(fs.readFileSync(p5, "utf8"));
 
 const client = new Pool().connect();
 
-jest.mock('../src/libs/fulfillment', () => ({
+jest.mock("../src/libs/fulfillment", () => ({
   fulfillRequest: jest.fn(),
 }));
 
-describe('Request services', () => {
-  it('requestProjectProfileEdit works correctly', async () => {
-    const natsSubject = 'registry_project_provisioning';
+describe("Request services", () => {
+  it("requestProjectProfileEdit works correctly", async () => {
+    const natsSubject = "registry_project_provisioning";
     const profileId = 4;
 
     // @ts-ignore
@@ -62,27 +63,36 @@ describe('Request services', () => {
     });
 
     client.query.mockReturnValueOnce({ rows: [] });
-    client.query.mockReturnValueOnce({ rows: [PROFILE_STATUS.PENDING_APPROVAL] })
-    client.query.mockReturnValueOnce({ rows: ['mockRequest'] });
+    client.query.mockReturnValueOnce({
+      rows: [PROFILE_STATUS.PENDING_APPROVAL],
+    });
+    client.query.mockReturnValueOnce({ rows: ["mockRequest"] });
 
-    const result = await requestProjectProfileEdit(profileId, profile, authenticatedUser, false);
+    const result = await requestProjectProfileEdit(
+      profileId,
+      profile,
+      authenticatedUser,
+      false
+    );
     expect(result).toBeDefined();
   });
 
-  it('requestProjectProfileEdit fails due to existing request', async () => {
-    RequestModel.prototype.findForProfile = jest.fn().mockResolvedValue(requests);
+  it("requestProjectProfileEdit fails due to existing request", async () => {
+    RequestModel.prototype.findForProfile = jest
+      .fn()
+      .mockResolvedValue(requests);
 
-    await expect(requestProjectProfileEdit(4, profile, authenticatedUser, false))
-      .rejects
-      .toThrow('Cant proceed as the profile has existing request');
+    await expect(
+      requestProjectProfileEdit(4, profile, authenticatedUser, false)
+    ).rejects.toThrow("Cant proceed as the profile has existing request");
   });
 
-  it('A contact edit request is processed', async () => {
+  it("A contact edit request is processed", async () => {
     const contacts = contactEditRequest.editObject;
 
     client.query.mockReturnValueOnce({ rows: selectProfilesContacts });
 
-    const update = ContactModel.prototype.update = jest.fn();
+    const update = (ContactModel.prototype.update = jest.fn());
     await processProfileContactsEdit(contactEditRequest);
 
     expect(update).toHaveBeenCalledTimes(contacts.length);

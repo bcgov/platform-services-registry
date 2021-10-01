@@ -14,20 +14,18 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from "fs";
+import path from "path";
+import { Pool } from "pg";
+import { createContact } from "../src/controllers/contact";
+import FauxExpress from "./src/fauxexpress";
 
-import fs from 'fs';
-import path from 'path';
-import { Pool } from 'pg';
-import { createContact } from '../src/controllers/contact';
-import FauxExpress from './src/fauxexpress';
-
-const p0 = path.join(__dirname, 'fixtures/insert-contact.json');
-const insertContact = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p0 = path.join(__dirname, "fixtures/insert-contact.json");
+const insertContact = JSON.parse(fs.readFileSync(p0, "utf8"));
 
 const client = new Pool().connect();
 
-describe('Contact event handlers', () => {
+describe("Contact event handlers", () => {
   let ex;
 
   beforeEach(() => {
@@ -36,7 +34,7 @@ describe('Contact event handlers', () => {
     ex = new FauxExpress();
   });
 
-  it('A contact is created', async () => {
+  it("A contact is created", async () => {
     const req = {
       body: insertContact,
     };
@@ -59,12 +57,14 @@ describe('Contact event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('A contact fails to create due to db transaction error', async () => {
+  it("A contact fails to create due to db transaction error", async () => {
     const req = {
       body: insertContact,
     };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
     await expect(createContact(req, ex.res)).rejects.toThrow();
@@ -72,8 +72,7 @@ describe('Contact event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-
-  it('A contact fails to create due to missing fields in body', async () => {
+  it("A contact fails to create due to missing fields in body", async () => {
     const req = {
       body: {
         firstName: "John",

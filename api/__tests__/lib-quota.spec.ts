@@ -14,16 +14,19 @@
 // limitations under the License.
 //
 
-'use strict';
+import { QuotaSize } from "../src/db/model/quota";
+import getAllowedQuotaSizes from "../src/libs/quota";
 
-import { QuotaSize } from '../src/db/model/quota';
-import { getAllowedQuotaSizes } from '../src/libs/quota';
-
-describe('Quota services', () => {
-
-    it('getAllowedQuotaSizes works correctly', async () => {
-        expect(getAllowedQuotaSizes(QuotaSize.Small)).toEqual([QuotaSize.Medium]);
-        expect(getAllowedQuotaSizes(QuotaSize.Medium)).toEqual([QuotaSize.Small, QuotaSize.Large]);
-        expect(getAllowedQuotaSizes(QuotaSize.Large)).toEqual([QuotaSize.Small, QuotaSize.Medium]);
-    });
+describe("Quota services", () => {
+  it("getAllowedQuotaSizes works correctly", async () => {
+    expect(getAllowedQuotaSizes(QuotaSize.Small)).toEqual([QuotaSize.Medium]);
+    expect(getAllowedQuotaSizes(QuotaSize.Medium)).toEqual([
+      QuotaSize.Small,
+      QuotaSize.Large,
+    ]);
+    expect(getAllowedQuotaSizes(QuotaSize.Large)).toEqual([
+      QuotaSize.Small,
+      QuotaSize.Medium,
+    ]);
+  });
 });
