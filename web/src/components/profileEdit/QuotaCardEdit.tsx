@@ -193,12 +193,6 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   };
 
   const handleSubmit = async (formData: any) => {
-    // if (formData.selectedSize?.split(' ')[0] === 'Current:') {
-    //   setGoBackToProfileEditable(true);
-    //   promptSuccessToastWithText('Your quota will remain the same');
-    //   return;
-    // }
-    console.log('what is formData', formData)
     const selectedQuotaSize: ProjectResourceQuotaSize = {
       quotaCpuSize: formData.quotaCpuSize,
       quotaMemorySize: formData.quotaMemorySize,
