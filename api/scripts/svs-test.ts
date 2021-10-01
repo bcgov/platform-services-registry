@@ -1,5 +1,5 @@
 import config from '../src/config';
-import { BodyType, default as CommonEmailService, Message, Options } from '../src/libs/service';
+import CommonEmailService, { BodyType, Message, Options } from '../src/libs/service';
 
 const main = async () => {
   const opts: Options = {

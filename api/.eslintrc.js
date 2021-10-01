@@ -15,13 +15,16 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.json'
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+    sourceType: "module",
   },
   plugins: [
     '@typescript-eslint',
     'import'
   ],
   rules: {
+    'no-multi-assign': 'warn',
     'no-await-in-loop': 'warn',
     'no-restricted-syntax': 'warn',
     'consistent-return': 'warn',
