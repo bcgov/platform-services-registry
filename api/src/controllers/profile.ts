@@ -197,7 +197,7 @@ export const updateProfileQuotaSize = async (
     const requiresHumanAction = true;
 
     // verify if requested quota size is valid
-    Object.keys(requestedQuotaSize).map((key) => {
+    Object.keys(requestedQuotaSize).forEach((key) => {
       if (!(requestedQuotaSize[key] && (quotaSize[key].includes(requestedQuotaSize[key])
         || allowedQuotaSizes[key].includes(requestedQuotaSize[key])))) {
         throw new Error('Please provide correct requested quota size in body');
