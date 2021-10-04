@@ -196,9 +196,10 @@ export const updateProfileQuotaSize = async (
     const allowedQuotaSizes: NameSpacesQuotaSize = getAllowedQuotaSizes(quotaSize);
     const requiresHumanAction = true;
 
-    // verify if requested quota size is valid 
+    // verify if requested quota size is valid
     Object.keys(requestedQuotaSize).map((key) => {
-      if (!(requestedQuotaSize[key] && (quotaSize[key].includes(requestedQuotaSize[key]) || allowedQuotaSizes[key].includes(requestedQuotaSize[key])))) {
+      if (!(requestedQuotaSize[key] && (quotaSize[key].includes(requestedQuotaSize[key])
+        || allowedQuotaSizes[key].includes(requestedQuotaSize[key])))) {
         throw new Error('Please provide correct requested quota size in body');
       }
     })

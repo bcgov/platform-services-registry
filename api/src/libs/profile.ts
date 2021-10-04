@@ -97,8 +97,10 @@ export const getQuotaSize = async (profile: ProjectProfile): Promise<ProjectQuot
     } else {
       // to check if quota for each resource in different cluster are the same.
       for (let key = 0; key < quotaSizes.length - 1; key++) {
-        for (let quotaType in quotaSizes[key]) {
-          hasSameQuotaSizes = quotaSizes[key][quotaType] === quotaSizes[key + 1][quotaType]
+        for (const quotaType in quotaSizes[key]) {
+          if (quotaSizes[key][quotaType] && quotaSizes[key + 1][quotaType]) {
+            hasSameQuotaSizes = quotaSizes[key][quotaType] === quotaSizes[key + 1][quotaType]
+          }
         }
       }
     }

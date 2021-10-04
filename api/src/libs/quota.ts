@@ -25,18 +25,20 @@ export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSp
         const quotaSizeNames = Object.values(QuotaSize);
         const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
 
-        let availableQuotaOptions: NameSpacesQuotaSize = {
+        const availableQuotaOptions: NameSpacesQuotaSize = {
             quotaCpuSize: [],
             quotaMemorySize: [],
-            quotaStorageSize: []
+            quotaStorageSize: [],
         }
 
-        for (let key in currentQuotaSize) {
-            const num: number = quotaSizeNames.indexOf(currentQuotaSize[key]);
-            availableQuotaOptions[key] = allQuotaOptions.slice(
-                0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
-                    size => size !== currentQuotaSize[key]
-                );
+        for (const key in currentQuotaSize) {
+            if (currentQuotaSize[key]) {
+                const num: number = quotaSizeNames.indexOf(currentQuotaSize[key]);
+                availableQuotaOptions[key] = allQuotaOptions.slice(
+                    0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
+                        size => size !== currentQuotaSize[key]
+                    );
+            }
         }
 
         return availableQuotaOptions

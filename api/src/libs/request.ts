@@ -166,7 +166,6 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
 };
 
 export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: ProjectQuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
- 
     try {
         const requestType = RequestType.Edit;
         const editType = RequestEditType.QuotaSize;
