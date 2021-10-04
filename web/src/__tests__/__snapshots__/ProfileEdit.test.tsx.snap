@@ -26,85 +26,24 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           Quota Information
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Quota size
-            </label>
-            <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <div
-                class=""
-                style="flex: 1;"
-              >
-                <div
-                  class="css-4cffwv"
-                >
-                  <select
-                    class="css-4y926w"
-                    name="selectedSize"
-                  >
-                    <option>
-                       Current: MEDIUM 
-                    </option>
-                    <option
-                      value="small"
-                    >
-                      SMALL
-                    </option>
-                    <option
-                      value="large"
-                    >
-                      LARGE
-                    </option>
-                  </select>
-                  <svg
-                    class="css-6ibwe0"
-                    fill="currentcolor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M7 10l5 5 5-5z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="css-qdj3yo"
+            LicensePlate
+          </label>
+          <label
+            class="css-4hpp4k"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              LicensePlate
-            </label>
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-vurnku"
             >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                >
-                  473f50
-                </div>
-                 
-              </label>
+              473f50
             </div>
-          </div>
+             
+          </label>
         </div>
       </div>
       <div
@@ -116,54 +55,89 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           CPU
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Request
-            </label>
+            Quota Size
+          </label>
+          <div
+            class=""
+            style="flex: 1;"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-4cffwv"
             >
-              <label
-                class="css-4hpp4k"
+              <select
+                class="css-4y926w"
+                name="quotaCpuSize"
               >
-                <div
-                  class="css-vurnku"
+                <option
+                  value="medium"
+                >
+                  medium
+                </option>
+                <option
+                  value="smal"
+                >
+                  smal
+                </option>
+                <option
+                  value="large"
+                >
+                  large
+                </option>
+              </select>
+              <svg
+                class="css-6ibwe0"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
                 />
-                 
-              </label>
+              </svg>
             </div>
           </div>
-          <div
-            class="css-qdj3yo"
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Limit
-            </label>
+            Request
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                />
-                 
-              </label>
-            </div>
-          </div>
+              class="css-vurnku"
+            />
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Limit
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            />
+             
+          </label>
         </div>
       </div>
       <div
@@ -175,54 +149,89 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           RAM
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Request
-            </label>
+            Quota Size
+          </label>
+          <div
+            class=""
+            style="flex: 1;"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-4cffwv"
             >
-              <label
-                class="css-4hpp4k"
+              <select
+                class="css-4y926w"
+                name="quotaMemorySize"
               >
-                <div
-                  class="css-vurnku"
+                <option
+                  value="medium"
+                >
+                  medium
+                </option>
+                <option
+                  value="smal"
+                >
+                  smal
+                </option>
+                <option
+                  value="large"
+                >
+                  large
+                </option>
+              </select>
+              <svg
+                class="css-6ibwe0"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
                 />
-                 
-              </label>
+              </svg>
             </div>
           </div>
-          <div
-            class="css-qdj3yo"
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Limit
-            </label>
+            Request
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                />
-                 
-              </label>
-            </div>
-          </div>
+              class="css-vurnku"
+            />
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Limit
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            />
+             
+          </label>
         </div>
       </div>
       <div
@@ -234,77 +243,107 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           Storage
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              PVC Count
-            </label>
+            Quota Size
+          </label>
+          <div
+            class=""
+            style="flex: 1;"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-4cffwv"
             >
-              <label
-                class="css-4hpp4k"
+              <select
+                class="css-4y926w"
+                name="quotaStorageSize"
               >
-                <div
-                  class="css-vurnku"
+                <option
+                  value="medium"
+                >
+                  medium
+                </option>
+                <option
+                  value="smal"
+                >
+                  smal
+                </option>
+                <option
+                  value="large"
+                >
+                  large
+                </option>
+              </select>
+              <svg
+                class="css-6ibwe0"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
                 />
-                 
-              </label>
+              </svg>
             </div>
           </div>
-          <div
-            class="css-qdj3yo"
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Overall Storage
-            </label>
-            <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                />
-                 
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-qdj3yo"
+            PVC Count
+          </label>
+          <label
+            class="css-4hpp4k"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Backup Storage
-            </label>
             <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                />
-                 
-              </label>
-            </div>
-          </div>
+              class="css-vurnku"
+            />
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Overall Storage
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            />
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Backup Storage
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            />
+             
+          </label>
         </div>
       </div>
       <div
@@ -382,11 +421,11 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           </div>
         </div>
         <button
-          class="misc-class-m-form-submit-btn css-1pob16q"
+          class="css-1hcj3z"
+          disabled=""
           style="display: block;"
-          type="submit"
         >
-          Request Quota Change
+          Request Update
         </button>
       </div>
     </form>
@@ -420,85 +459,24 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
           Quota Information
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Quota size
-            </label>
-            <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <div
-                class=""
-                style="flex: 1;"
-              >
-                <div
-                  class="css-4cffwv"
-                >
-                  <select
-                    class="css-4y926w"
-                    name="selectedSize"
-                  >
-                    <option>
-                       Current: MEDIUM 
-                    </option>
-                    <option
-                      value="small"
-                    >
-                      SMALL
-                    </option>
-                    <option
-                      value="large"
-                    >
-                      LARGE
-                    </option>
-                  </select>
-                  <svg
-                    class="css-6ibwe0"
-                    fill="currentcolor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M7 10l5 5 5-5z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="css-qdj3yo"
+            LicensePlate
+          </label>
+          <label
+            class="css-4hpp4k"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              LicensePlate
-            </label>
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-vurnku"
             >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                >
-                  473f50
-                </div>
-                 
-              </label>
+              473f50
             </div>
-          </div>
+             
+          </label>
         </div>
       </div>
       <div
@@ -510,58 +488,93 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
           CPU
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Request
-            </label>
+            Quota Size
+          </label>
+          <div
+            class=""
+            style="flex: 1;"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-4cffwv"
             >
-              <label
-                class="css-4hpp4k"
+              <select
+                class="css-4y926w"
+                name="quotaCpuSize"
               >
-                <div
-                  class="css-vurnku"
+                <option
+                  value="medium"
                 >
-                  8
-                </div>
-                 
-              </label>
+                  medium
+                </option>
+                <option
+                  value="smal"
+                >
+                  smal
+                </option>
+                <option
+                  value="large"
+                >
+                  large
+                </option>
+              </select>
+              <svg
+                class="css-6ibwe0"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
             </div>
           </div>
-          <div
-            class="css-qdj3yo"
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Limit
-            </label>
+            Request
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-vurnku"
             >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                >
-                  16
-                </div>
-                 
-              </label>
+              8
             </div>
-          </div>
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Limit
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            >
+              16
+            </div>
+             
+          </label>
         </div>
       </div>
       <div
@@ -573,58 +586,93 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
           RAM
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Request
-            </label>
+            Quota Size
+          </label>
+          <div
+            class=""
+            style="flex: 1;"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-4cffwv"
             >
-              <label
-                class="css-4hpp4k"
+              <select
+                class="css-4y926w"
+                name="quotaMemorySize"
               >
-                <div
-                  class="css-vurnku"
+                <option
+                  value="medium"
                 >
-                  32GiB
-                </div>
-                 
-              </label>
+                  medium
+                </option>
+                <option
+                  value="smal"
+                >
+                  smal
+                </option>
+                <option
+                  value="large"
+                >
+                  large
+                </option>
+              </select>
+              <svg
+                class="css-6ibwe0"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
             </div>
           </div>
-          <div
-            class="css-qdj3yo"
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Limit
-            </label>
+            Request
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-vurnku"
             >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
-                >
-                  64GiB
-                </div>
-                 
-              </label>
+              32GiB
             </div>
-          </div>
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Limit
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            >
+              64GiB
+            </div>
+             
+          </label>
         </div>
       </div>
       <div
@@ -636,81 +684,111 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
           Storage
         </h3>
         <div
-          class="css-1g9coqg"
+          class="css-qdj3yo"
         >
-          <div
-            class="css-qdj3yo"
+          <label
+            class="css-toc01s"
+            for="project-quota"
           >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              PVC Count
-            </label>
+            Quota Size
+          </label>
+          <div
+            class=""
+            style="flex: 1;"
+          >
             <div
-              class="css-xtali0"
-              name="project-quota"
+              class="css-4cffwv"
             >
-              <label
-                class="css-4hpp4k"
+              <select
+                class="css-4y926w"
+                name="quotaStorageSize"
               >
-                <div
-                  class="css-vurnku"
+                <option
+                  value="medium"
                 >
-                  100GiB
-                </div>
-                 
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-qdj3yo"
-          >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Overall Storage
-            </label>
-            <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <label
-                class="css-4hpp4k"
-              >
-                <div
-                  class="css-vurnku"
+                  medium
+                </option>
+                <option
+                  value="smal"
                 >
-                  50GiB
-                </div>
-                 
-              </label>
-            </div>
-          </div>
-          <div
-            class="css-qdj3yo"
-          >
-            <label
-              class="css-toc01s"
-              for="project-quota"
-            >
-              Backup Storage
-            </label>
-            <div
-              class="css-xtali0"
-              name="project-quota"
-            >
-              <label
-                class="css-4hpp4k"
+                  smal
+                </option>
+                <option
+                  value="large"
+                >
+                  large
+                </option>
+              </select>
+              <svg
+                class="css-6ibwe0"
+                fill="currentcolor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <div
-                  class="css-vurnku"
+                <path
+                  d="M7 10l5 5 5-5z"
                 />
-                 
-              </label>
+              </svg>
             </div>
           </div>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            PVC Count
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            >
+              100GiB
+            </div>
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Overall Storage
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            >
+              50GiB
+            </div>
+             
+          </label>
+        </div>
+        <div
+          class="css-qdj3yo"
+        >
+          <label
+            class="css-toc01s"
+            for="project-quota"
+          >
+            Backup Storage
+          </label>
+          <label
+            class="css-4hpp4k"
+          >
+            <div
+              class="css-vurnku"
+            />
+             
+          </label>
         </div>
       </div>
       <div
@@ -788,11 +866,11 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
           </div>
         </div>
         <button
-          class="misc-class-m-form-submit-btn css-1pob16q"
+          class="css-1hcj3z"
+          disabled=""
           style="display: block;"
-          type="submit"
         >
-          Request Quota Change
+          Request Update
         </button>
       </div>
     </form>

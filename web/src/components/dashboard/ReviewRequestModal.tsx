@@ -41,11 +41,11 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
 
-  let differenceKey: any = []
+  const differenceKey: any = [];
   if (profileDetails.type === 'edit') {
-    Object.keys(profileDetails.editObject.quota).forEach(key => {
+    Object.keys(profileDetails.editObject.quota).forEach((key) => {
       if (profileDetails.editObject.quota[key] !== profileDetails.quotaSize[key]) {
-        differenceKey.push(key)
+        differenceKey.push(key);
       }
     });
   }
@@ -129,25 +129,24 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
-        {profileDetails.type === 'create' ? <Input
-          name="project-quota"
-          placeholder="Small"
-          disabled
-          value={
-            `CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`
-          }
-        /> :
+        {profileDetails.type === 'create' ? (
           <Input
             name="project-quota"
             placeholder="Small"
             disabled
-            value={
-              differenceKey.map((key: string) => (
-                `(${key}: ${profileDetails.quotaSize[key]} => ${key}: ${profileDetails.editObject.quota[key]}) `
-              ))
-            }
+            value={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
           />
-        }
+        ) : (
+          <Input
+            name="project-quota"
+            placeholder="Small"
+            disabled
+            value={differenceKey.map(
+              (key: string) =>
+                `(${key}: ${profileDetails.quotaSize[key]} => ${key}: ${profileDetails.editObject.quota[key]}) `,
+            )}
+          />
+        )}
       </Flex>
       <Form onSubmit={onSubmit}>
         {(formProps) => (

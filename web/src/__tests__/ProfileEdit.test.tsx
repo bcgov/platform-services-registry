@@ -19,7 +19,6 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
-import { QuotaSize } from '../types';
 import ProfileEdit from '../views/ProfileEdit';
 import mockContacts from './fixtures/profile-contacts.json';
 import mockMinistry from './fixtures/profile-ministry.json';
@@ -99,8 +98,16 @@ test('matches the snapshot', async () => {
 function renderQuota() {
   const profileIdProp: string = '1';
   const licensePlateProp: string = '473f50';
-  const quotaSizeProp: string = 'medium';
-  const quotaOptionsProp: QuotaSize[] = ['small', 'large'];
+  const quotaSizeProp: any = {
+    quotaCpuSize: 'medium',
+    quotaMemorySize: 'medium',
+    quotaStorageSize: 'medium',
+  };
+  const quotaOptionsProp: any = {
+    quotaCpuSize: ['smal', 'large'],
+    quotaMemorySize: ['smal', 'large'],
+    quotaStorageSize: ['smal', 'large'],
+  };
   const handleSubmitRefreshProp = jest.fn();
   const isProvisionedProp: boolean = true;
   const hasPendingEditProp: boolean = false;

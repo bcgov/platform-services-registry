@@ -31,8 +31,7 @@ export interface QuotaDetails {
     quotaCpuSize: QuotaSize[];
     quotaMemorySize: QuotaSize[];
     quotaStorageSize: QuotaSize[];
-
-  }
+  };
 }
 interface SpecTextInterface {
   CPU: string;
@@ -42,7 +41,10 @@ interface SpecTextInterface {
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   const {
-    quotaDetails: { licensePlate = '', quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '' } },
+    quotaDetails: {
+      licensePlate = '',
+      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '' },
+    },
   } = props;
 
   const namespaceTexts = [
@@ -54,7 +56,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   const specTexts: SpecTextInterface = {
     CPU: quotaSize?.quotaCpuSize,
     Memory: quotaSize?.quotaMemorySize,
-    Storage: quotaSize?.quotaStorageSize
+    Storage: quotaSize?.quotaStorageSize,
   };
 
   return (
