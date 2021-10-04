@@ -111,7 +111,11 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                 .pop()?.storageNums || [];
             break;
           default:
-            result = result;
+            result = {
+              cpuNums: [],
+              memoryNums: [],
+              storageNums: [],
+            };;
         }
       });
       return result;
