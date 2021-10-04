@@ -25,14 +25,19 @@ import {
   fetchProfileContacts,
   fetchProfileEditRequests,
   fetchProfileQuotaSize,
-  updateProfileContacts, updateProfileQuotaSize
+  updateProfileContacts,
+  updateProfileQuotaSize
 } from '../src/controllers/profile';
 import ContactModel from '../src/db/model/contact';
+import { ProjectQuotaSize } from '../src/db/model/namespace';
 import { QuotaSize } from '../src/db/model/quota';
 import RequestModel from '../src/db/model/request';
 import { getQuotaSize } from '../src/libs/profile';
 import { getAllowedQuotaSizes } from '../src/libs/quota';
-import { requestProfileContactsEdit, requestProfileQuotaSizeEdit } from '../src/libs/request';
+import {
+  requestProfileContactsEdit,
+  requestProfileQuotaSizeEdit
+} from '../src/libs/request';
 import FauxExpress from './src/fauxexpress';
 
 const p0 = path.join(__dirname, 'fixtures/select-profile.json');
@@ -56,14 +61,22 @@ const client = new Pool().connect();
 
 jest.mock('../src/libs/profile', () => {
   return {
-    getQuotaSize: jest.fn().mockResolvedValue('small'),
+    getQuotaSize: jest.fn().mockResolvedValue({
+      quotaCpuSize: 'small', 
+      quotaMemorySize: 'small',
+      quotaStorageSize: 'small' 
+    }),
     updateProfileStatus: jest.fn(),
   };
 });
 
 jest.mock('../src/libs/quota', () => {
   return {
-    getAllowedQuotaSizes: jest.fn().mockReturnValue(['medium']),
+    getAllowedQuotaSizes: jest.fn().mockReturnValue({
+      quotaCpuSize: 'medium', 
+      quotaMemorySize: 'medium',
+      quotaStorageSize: 'medium' 
+    }),
   };
 });
 
@@ -298,8 +311,13 @@ describe('Profile event handlers', () => {
   });
 
   it('Request profile quota size edit successfully', async () => {
+    const testRequestQuotaSize: ProjectQuotaSize = {
+      quotaCpuSize: QuotaSize.Small, 
+      quotaMemorySize: QuotaSize.Small,
+       quotaStorageSize: QuotaSize.Small
+    }
     const body = {
-      requestedQuotaSize: QuotaSize.Medium,
+      requestedQuotaSize: testRequestQuotaSize,
     };
     const req = {
       params: { profileId: 4 },
@@ -319,7 +337,11 @@ describe('Profile event handlers', () => {
 
   it('throws an error if profile quota size edit request is invalid', async () => {
     const body = {
-      requestedQuotaSize: QuotaSize.Large,
+      requestedQuotaSize: {
+        quotaCpuSize: QuotaSize.Large, 
+        quotaMemorySize: QuotaSize.Large,
+        quotaStorageSize: QuotaSize.Large 
+      }
     };
     const req = {
       params: { profileId: 4 },

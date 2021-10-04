@@ -16,14 +16,25 @@
 
 'use strict';
 
+import { NameSpacesQuotaSize, ProjectQuotaSize } from '../src/db/model/namespace';
 import { QuotaSize } from '../src/db/model/quota';
 import { getAllowedQuotaSizes } from '../src/libs/quota';
 
 describe('Quota services', () => {
 
     it('getAllowedQuotaSizes works correctly', async () => {
-        expect(getAllowedQuotaSizes(QuotaSize.Small)).toEqual([QuotaSize.Medium]);
-        expect(getAllowedQuotaSizes(QuotaSize.Medium)).toEqual([QuotaSize.Small, QuotaSize.Large]);
-        expect(getAllowedQuotaSizes(QuotaSize.Large)).toEqual([QuotaSize.Small, QuotaSize.Medium]);
+        const testCurrentQuotaSize: ProjectQuotaSize = {
+            quotaCpuSize: QuotaSize.Small,
+            quotaMemorySize: QuotaSize.Medium,
+            quotaStorageSize: QuotaSize.Large,
+        }
+
+        const expectedAllowQuotaSizes: NameSpacesQuotaSize = {
+            quotaCpuSize: [QuotaSize.Medium],
+            quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
+            quotaStorageSize: [QuotaSize.Small, QuotaSize.Medium]
+        }
+
+        expect(getAllowedQuotaSizes(testCurrentQuotaSize)).toEqual(expectedAllowQuotaSizes);
     });
 });

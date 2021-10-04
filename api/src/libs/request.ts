@@ -166,6 +166,7 @@ export const processProfileContactsEdit = async (request: Request): Promise<void
 };
 
 export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQuotaSize: ProjectQuotaSize, user: AuthenticatedUser, requiresHumanAction: boolean = false): Promise<Request> => {
+ 
     try {
         const requestType = RequestType.Edit;
         const editType = RequestEditType.QuotaSize;
@@ -173,7 +174,6 @@ export const requestProfileQuotaSizeEdit = async (profileId: number, requestedQu
             quota: requestedQuotaSize,
             quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
         };
-
         const request = await createRequest(requestType, user.id, requiresHumanAction, profileId, editType, editObject);
 
         logger.info(`Sending CHES message Project Edit Notification for ${profileId}`);

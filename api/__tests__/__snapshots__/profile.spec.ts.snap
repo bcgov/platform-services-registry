@@ -381,9 +381,11 @@ Array [
 exports[`Profile event handlers returns a list of quota options for a given profile 2`] = `200`;
 
 exports[`Profile event handlers returns a list of quota options for a given profile 3`] = `
-Array [
-  "medium",
-]
+Object {
+  "quotaCpuSize": "medium",
+  "quotaMemorySize": "medium",
+  "quotaStorageSize": "medium",
+}
 `;
 
 exports[`Profile event handlers returns the profiles quota size 1`] = `
@@ -403,7 +405,13 @@ Array [
 
 exports[`Profile event handlers returns the profiles quota size 2`] = `200`;
 
-exports[`Profile event handlers returns the profiles quota size 3`] = `"small"`;
+exports[`Profile event handlers returns the profiles quota size 3`] = `
+Object {
+  "quotaCpuSize": "small",
+  "quotaMemorySize": "small",
+  "quotaStorageSize": "small",
+}
+`;
 
 exports[`Profile event handlers throws an error if profile quota size edit request is invalid 1`] = `"Unable to update quota-size for profile 4"`;
 
