@@ -17,7 +17,7 @@
 import React from 'react';
 import { Box, Link } from 'rebass';
 import { ContactDetails } from '../components/profileEdit/ContactCard';
-import { CSV_PROFILE_ATTRIBUTES } from '../constants';
+import { CSV_PROFILE_ATTRIBUTES, CSV_PROFILE_ATTRIBUTES_HEADER } from '../constants';
 import { Namespace, QuotaSize } from '../types';
 
 export function transformClusters(data: any) {
@@ -149,7 +149,7 @@ const sanitizeStringForCsv = (projectDetail: any) => {
 
 export function transformJsonToCsv(objArray: any) {
   const csv = [
-    CSV_PROFILE_ATTRIBUTES.join(','), // header row first
+    CSV_PROFILE_ATTRIBUTES_HEADER.join(','), // header row first
     ...objArray.map((row: any) =>
       CSV_PROFILE_ATTRIBUTES.map((fieldName) => sanitizeStringForCsv(row[fieldName])).join(','),
     ),

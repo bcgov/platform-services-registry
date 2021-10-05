@@ -20,7 +20,7 @@ import {
   getClusterDisplayName,
   getProfileMinistry,
   isProfileProvisioned,
-  transformJsonToCsv,
+  transformJsonToCsv
 } from '../utils/transformDataHelper';
 import silverCluster from './fixtures/cluster.json';
 import profileMinistry from './fixtures/profile-ministry.json';
