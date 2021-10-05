@@ -233,7 +233,6 @@ export default class NamespaceModel extends Model {
         quotaStorageSize: []
       };
 
-      // const quotaSizes: QuotaSize[] = [];
       clusterNamespaces.forEach((clusterNamespace: (ClusterNamespace | undefined)): void => {
         if (!clusterNamespace) {
           return;
@@ -242,14 +241,13 @@ export default class NamespaceModel extends Model {
         quotaSizes.quotaCpuSize.push(quotaCpuSize)
         quotaSizes.quotaMemorySize.push(quotaMemorySize)
         quotaSizes.quotaStorageSize.push(quotaStorageSize)
-        // quotaSizes.push(quotaCpuSize, quotaMemorySize, quotaStorageSize);
       })
 
       let hasSameQuotaSizes: boolean = false
       for (let quotaType in quotaSizes) {
         hasSameQuotaSizes = quotaSizes[quotaType].every((val, i, arr) => val === arr[0])
       }
-      // const hasSameQuotaSizes: boolean = (quotaSizes.every((val, i, arr) => val === arr[0]));
+
       if (hasSameQuotaSizes) {
         const projectQuotaSize: ProjectQuotaSize = {
           quotaCpuSize: quotaSizes.quotaCpuSize[0],
