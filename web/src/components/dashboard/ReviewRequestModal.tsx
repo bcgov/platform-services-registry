@@ -14,13 +14,14 @@
 // limitations under the License.
 //
 
-import { Input, Label, Textarea } from '@rebass/forms';
+import { Label, Textarea } from '@rebass/forms';
 import React from 'react';
 import { Field, Form } from 'react-final-form';
-import { Flex, Heading } from 'rebass';
+import { Box, Flex, Heading } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
+import { findDifferenceBetweenTwoDifferentObject } from '../../utils/utils';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -32,7 +33,29 @@ interface ReviewRequestModalProps {
   hide: () => void;
   handleSubmitRefresh: any;
 }
+
+interface DisplayInfo {
+  displayText: string;
+  nonetextTransform?: boolean;
+}
+
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
+
+const InformationBox: React.FC<DisplayInfo> = (porps) => (
+  <Box
+    fontSize={2}
+    bg="#FAFAFA"
+    sx={{
+      px: 2,
+      py: 1,
+      borderRadius: 5,
+      border: '1px solid black',
+      textTransform: porps.nonetextTransform ? 'none' : 'capitalize',
+    }}
+  >
+    {porps.displayText}
+  </Box>
+);
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
   const { profileId, profiles, hide, handleSubmitRefresh } = props;
@@ -40,15 +63,6 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
-
-  const differenceKey: any = [];
-  if (profileDetails.type === 'edit') {
-    Object.keys(profileDetails.editObject.quota).forEach((key) => {
-      if (profileDetails.editObject.quota[key] !== profileDetails.quotaSize[key]) {
-        differenceKey.push(key);
-      }
-    });
-  }
 
   const parseContacts = (contactDetails: any) => {
     return contactDetails.map(
@@ -82,20 +96,15 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
-        <Input name="project-type" placeholder="Create" disabled value={profileDetails.type} />
+        <InformationBox displayText={profileDetails.type} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
-        <Input name="project-name" placeholder="Project X" disabled value={profileDetails.name} />
+        <InformationBox displayText={profileDetails.name} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-cluster">Project Cluster</Label>
-        <Input
-          name="project-cluster"
-          placeholder="Silver"
-          disabled
-          value={profileDetails.clusters.join(', ')}
-        />
+        <InformationBox displayText={profileDetails.clusters.join(', ')} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-description">Description</Label>
@@ -109,43 +118,37 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="product-owner">Product Owner</Label>
-        <Input
-          name="product-owner"
-          placeholder="John Doe | john.doe@example.com"
-          disabled
-          value={parseContacts(profileDetails.productOwners)}
-          sx={{ textTransform: 'none' }}
+
+        <InformationBox
+          nonetextTransform
+          displayText={parseContacts(profileDetails.productOwners)}
         />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="technical-lead">Technical Leads</Label>
-        <Input
-          name="technical-lead"
-          placeholder="Jane Doe | jane.doe@example.com"
-          disabled
-          value={parseContacts(profileDetails.technicalLeads)}
-          sx={{ textTransform: 'none' }}
+
+        <InformationBox
+          nonetextTransform
+          displayText={parseContacts(profileDetails.technicalLeads)}
         />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
-          <Input
-            name="project-quota"
-            placeholder="Small"
-            disabled
-            value={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
+          <InformationBox
+            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
           />
         ) : (
-          <Input
-            name="project-quota"
-            placeholder="Small"
-            disabled
-            value={differenceKey.map(
-              (key: string) =>
-                `(${key}: ${profileDetails.quotaSize[key]} => ${key}: ${profileDetails.editObject.quota[key]}) `,
-            )}
-          />
+          findDifferenceBetweenTwoDifferentObject(
+            profileDetails.editObject.quota,
+            profileDetails.quotaSize,
+          ).map((key: string) => (
+            <Box mb={3} key={key}>
+              <InformationBox
+                displayText={`${key}: ${profileDetails.quotaSize[key]} => ${profileDetails.editObject.quota[key]} `}
+              />
+            </Box>
+          ))
         )}
       </Flex>
       <Form onSubmit={onSubmit}>

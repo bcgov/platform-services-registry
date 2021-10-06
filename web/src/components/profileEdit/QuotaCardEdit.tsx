@@ -57,17 +57,23 @@ const StyledQuotaEditContainer = styled.div`
 `;
 
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
+  const DEFAULT_QUOTA_SIZES = {
+    quotaCpuSize: [],
+    quotaMemorySize: [],
+    quotaStorageSize: [],
+  };
+  const DEFAULT_QUOTA_INFO: QuotaSpecsInterface = {
+    cpuNums: [],
+    memoryNums: [],
+    storageNums: [],
+  };
   const required = (value: string | boolean) => (value ? undefined : 'Required');
   const QUOTA_DISPLAY_NAME = 'Quota Size';
   const {
     quotaDetails: {
       licensePlate = '',
       quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '' },
-      quotaOptions = {
-        quotaCpuSize: [],
-        quotaMemorySize: [],
-        quotaStorageSize: [],
-      },
+      quotaOptions = DEFAULT_QUOTA_SIZES,
     },
     profileId,
     handleSubmitRefresh,
@@ -84,38 +90,26 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [quotaSizes, setQuotaSizes] = useState<any>([]);
 
   const getCorrespondingQuota = (selectedSize: ProjectResourceQuotaSize): QuotaSpecsInterface => {
-    let result: QuotaSpecsInterface = {
-      cpuNums: [],
-      memoryNums: [],
-      storageNums: [],
-    };
+    let result: QuotaSpecsInterface = DEFAULT_QUOTA_INFO;
+    const getSelectedQuotaInfo = (selectedResourceQuotaSize: string) =>
+      quotaSizes
+        .filter((size: any) => size.name.toUpperCase() === selectedResourceQuotaSize.toUpperCase())
+        .pop();
+
     if (quotaSizes.length > 0) {
       Object.keys(quotaSize).forEach((key) => {
         switch (key) {
           case 'quotaCpuSize':
-            result.cpuNums =
-              quotaSizes
-                .filter((size: any) => size.name.toUpperCase() === selectedSize[key].toUpperCase())
-                .pop()?.cpuNums || [];
+            result.cpuNums = getSelectedQuotaInfo(selectedSize[key])?.cpuNums || [];
             break;
           case 'quotaMemorySize':
-            result.memoryNums =
-              quotaSizes
-                .filter((size: any) => size.name.toUpperCase() === selectedSize[key].toUpperCase())
-                .pop()?.memoryNums || [];
+            result.memoryNums = getSelectedQuotaInfo(selectedSize[key])?.memoryNums || [];
             break;
           case 'quotaStorageSize':
-            result.storageNums =
-              quotaSizes
-                .filter((size: any) => size.name.toUpperCase() === selectedSize[key].toUpperCase())
-                .pop()?.storageNums || [];
+            result.storageNums = getSelectedQuotaInfo(selectedSize[key])?.storageNums || [];
             break;
           default:
-            result = {
-              cpuNums: [],
-              memoryNums: [],
-              storageNums: [],
-            };
+            result = DEFAULT_QUOTA_INFO;
         }
       });
       return result;
