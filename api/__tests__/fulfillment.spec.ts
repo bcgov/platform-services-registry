@@ -19,6 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
+import { ProjectQuotaSize } from '../src/db/model/namespace';
 import { QuotaSize } from '../src/db/model/quota';
 import RequestModel, { RequestEditType } from '../src/db/model/request';
 import { contextForEditing, contextForProvisioning, fulfillRequest } from '../src/libs/fulfillment';
@@ -52,8 +53,13 @@ const p10 = path.join(__dirname, 'fixtures/select-default-cluster.json');
 const profileCluster = JSON.parse(fs.readFileSync(p10, 'utf8'));
 
 jest.mock('../src/libs/profile', () => {
+  const testQuotaSize: ProjectQuotaSize = {
+    quotaCpuSize: QuotaSize.Small,
+    quotaMemorySize: QuotaSize.Small,
+    quotaStorageSize: QuotaSize.Small,
+  }
   return {
-    getQuotaSize: jest.fn().mockResolvedValue(QuotaSize.Small),
+    getQuotaSize: jest.fn().mockResolvedValue(testQuotaSize),
   };
 });
 
@@ -71,8 +77,8 @@ describe('Fulfillment utility', () => {
     jest.clearAllMocks();
   });
 
-  it('should fulfill a request', async () => {   
-    
+  it('should fulfill a request', async () => {
+
     // context for provisioning
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: profile });
@@ -81,10 +87,10 @@ describe('Fulfillment utility', () => {
     // buildContext
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
     // createBotMessageSet
-    client.query.mockReturnValueOnce({ rows: [{id: 1, name: 'silver'}] });
+    client.query.mockReturnValueOnce({ rows: [{ id: 1, name: 'silver' }] });
     // fetchBotMessageRequests
     const fetchBotMessageRequests = RequestModel.prototype.findActiveBotMessagesByRequestId = jest.fn().mockResolvedValue(botMessageSet);
-    
+
     const result = await fulfillRequest(requests[2]);
 
     expect(result).toBeUndefined();

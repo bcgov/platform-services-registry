@@ -22,7 +22,6 @@ import { QuotaSize } from '../db/model/quota';
 
 export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSpacesQuotaSize => {
     try {
-        const quotaSizeNames = Object.values(QuotaSize);
         const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
 
         const availableQuotaOptions: NameSpacesQuotaSize = {
@@ -31,13 +30,24 @@ export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSp
             quotaStorageSize: [],
         }
 
+        /**
+         * Currently our rule for quota change is to allow user select any size below current option
+         * but only one step larger than current option
+         * @param currentQuotaSize the current quota Size 
+         * @returns all option that user can upgrade/downgrade
+         */
+        const getAllowQuotaForEachResource = (currentQuotaSize: QuotaSize) => {
+            const position = allQuotaOptions.indexOf(currentQuotaSize);
+            let lowerBound = allQuotaOptions.slice(
+                0, position)
+            let upperBound = allQuotaOptions[position + 1] || []
+
+            return lowerBound.concat(upperBound)
+        }
+
         for (const key in currentQuotaSize) {
             if (currentQuotaSize[key]) {
-                const num: number = quotaSizeNames.indexOf(currentQuotaSize[key]);
-                availableQuotaOptions[key] = allQuotaOptions.slice(
-                    0, (num + 2 <= allQuotaOptions.length) ? (num + 2) : allQuotaOptions.length).filter(
-                        size => size !== currentQuotaSize[key]
-                    );
+                availableQuotaOptions[key] = getAllowQuotaForEachResource(currentQuotaSize[key])
             }
         }
 

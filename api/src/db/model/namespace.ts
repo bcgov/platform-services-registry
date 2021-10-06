@@ -18,6 +18,7 @@
 
 import { logger } from '@bcgov/common-nodejs-utils';
 import { Pool } from 'pg';
+import { compareNameSpaceQuotaSize } from '../utils';
 import { CommonFields, Model } from './model';
 import { QuotaSize } from './quota';
 
@@ -243,16 +244,13 @@ export default class NamespaceModel extends Model {
         quotaSizes.quotaStorageSize.push(quotaStorageSize)
       })
 
-      let hasSameQuotaSizes: boolean = false
-      for (let quotaType in quotaSizes) {
-        hasSameQuotaSizes = quotaSizes[quotaType].every((val, i, arr) => val === arr[0])
-      }
+      let hasSameQuotaSizesForAllNameSpace: boolean = compareNameSpaceQuotaSize(quotaSizes)
 
-      if (hasSameQuotaSizes) {
+      if (hasSameQuotaSizesForAllNameSpace) {
         const projectQuotaSize: ProjectQuotaSize = {
-          quotaCpuSize: quotaSizes.quotaCpuSize[0],
-          quotaMemorySize: quotaSizes.quotaMemorySize[0],
-          quotaStorageSize: quotaSizes.quotaStorageSize[0]
+          quotaCpuSize: quotaSizes.quotaCpuSize.pop() || QuotaSize.Small,
+          quotaMemorySize: quotaSizes.quotaMemorySize.pop() || QuotaSize.Small,
+          quotaStorageSize: quotaSizes.quotaStorageSize.pop() || QuotaSize.Small
         }
         return projectQuotaSize;
       } else {

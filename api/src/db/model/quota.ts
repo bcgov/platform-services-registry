@@ -136,13 +136,18 @@ export default class QuotaModel extends Model {
             text: `
                 SELECT json_build_object(
                     'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS "requests", cpu_limits AS "limits"
-                        FROM ref_quota WHERE id = '${quotaSize.quotaCpuSize}') d),
+                        FROM ref_quota WHERE id = $1) d),
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
-                        FROM ref_quota WHERE id = '${quotaSize.quotaMemorySize}') d),
+                        FROM ref_quota WHERE id = $2) d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = '${quotaSize.quotaStorageSize}') d)
+                        FROM ref_quota WHERE id = $3) d)
                 );
-            `
+            `,
+            values: [
+                quotaSize.quotaCpuSize,
+                quotaSize.quotaMemorySize,
+                quotaSize.quotaStorageSize,
+            ],
         };
 
         try {
