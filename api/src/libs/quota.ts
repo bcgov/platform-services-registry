@@ -33,14 +33,14 @@ export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSp
         /**
          * Currently our rule for quota change is to allow user select any size below current option
          * but only one step larger than current option
-         * @param currentQuotaSize the current quota Size 
+         * @param quotaSize the current quota Size
          * @returns all option that user can upgrade/downgrade
          */
-        const getAllowQuotaForEachResource = (currentQuotaSize: QuotaSize) => {
-            const position = allQuotaOptions.indexOf(currentQuotaSize);
-            let lowerBound = allQuotaOptions.slice(
+        const getAllowQuotaForEachResource = (quotaSize: QuotaSize) => {
+            const position = allQuotaOptions.indexOf(quotaSize);
+            const lowerBound = allQuotaOptions.slice(
                 0, position)
-            let upperBound = allQuotaOptions[position + 1] || []
+            const upperBound = allQuotaOptions[position + 1] || []
 
             return lowerBound.concat(upperBound)
         }

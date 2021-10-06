@@ -96,21 +96,21 @@ export const getQuotaSize = async (profile: ProjectProfile): Promise<ProjectQuot
     const quotaSizesForAllClusters: NameSpacesQuotaSize = {
       quotaCpuSize: [],
       quotaMemorySize: [],
-      quotaStorageSize: []
+      quotaStorageSize: [],
     };
 
-    /** 
+    /**
      * following line is to push all quota info from array of object into a single object
      *  that can be consumed by compareNameSpaceQuotaSize to compare if quota size are the same
      * across all cluster.
-    */
+     */
     profileQuotaSizes.forEach((element) => {
       Object.keys(quotaSizesForAllClusters).forEach(key => {
         quotaSizesForAllClusters[key].push(element[key])
       })
     })
 
-    let hasSameQuotaSizesForAllClusters: boolean = compareNameSpaceQuotaSize(quotaSizesForAllClusters)
+    const hasSameQuotaSizesForAllClusters: boolean = compareNameSpaceQuotaSize(quotaSizesForAllClusters)
     if (hasSameQuotaSizesForAllClusters) {
       // because we checked if all element in profileQuotaSizes are the same, so we can just return any of the element
       return profileQuotaSizes[0];
