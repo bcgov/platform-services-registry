@@ -55,6 +55,16 @@ objects:
         #}
         #rewrite @try_files {http.matchers.file.relative}
 
+        # static object if needed. file in static will all be cached
+        handle /static/* {
+          header Cache-Control "max-age=31536000"
+        }
+
+        # prevent index.html from being cached
+        handle {
+          header Cache-Control "no-cache, must-revalidate"
+        }
+
         # This properly deals with react routes.
         try_files {path} {path}/ /index.html
 

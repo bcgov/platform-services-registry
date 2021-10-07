@@ -3,7 +3,7 @@
     "id": 3,
     "name": "Test Project C",
     "description": "Lorem ipsum doler",
-    "ministry": "CITZ",
+    "busOrgId": "CITZ",
     "namespacePrefix": "7f04fa",
     "profileStatus": "approved",
     "profileMetadata": {
@@ -46,7 +46,7 @@
     "id": 2,
     "name": "Test Project B",
     "description": "Lorem ipsum doler",
-    "ministry": "EMPR",
+    "busOrgId": "EMPR",
     "namespacePrefix": "3f4d4b",
     "profileStatus": "pending_edit",
     "profileMetadata": {
@@ -95,7 +95,7 @@
     "id": 1,
     "name": "Test Project A",
     "description": "Lorem ipsum doler",
-    "ministry": "AEST",
+    "busOrgId": "AEST",
     "namespacePrefix": "6f47f6",
     "profileStatus": "pending_approval",
     "profileMetadata": {
