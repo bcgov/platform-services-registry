@@ -102,15 +102,18 @@ jobs:
           ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
 
       - name: Check out manifest repo
+        if: ${{ success() }}
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
           repository: ${{ secrets.MANIFEST_REPO }}
 
       - name: Set up Kustomize
+        if: ${{ success() }}
         uses: imranismail/setup-kustomize@v1
 
       - name: Update image ID and commit change
+        if: ${{ success() }}
         run: |
           cd platform-registry-app/overlays/dev
           kustomize edit set image registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@$IMAGESHA
@@ -119,5 +122,6 @@ jobs:
           git commit -am "Update API image ID for Dev"
 
       - name: Push change to manifest repository
+        if: ${{ success() }}
         uses: ad-m/github-push-action@master
 
