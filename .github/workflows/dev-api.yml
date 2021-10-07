@@ -91,3 +91,32 @@ jobs:
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:dev
 
+      # Update the image ID in the manifest repository used by Argo CD.
+      # We need to use the SSH deploy key to check out the manifest repo, set up
+      # Kustomize in the runner, update the image ID, commit the change, and
+      # push the changes back to the manifest repository.
+      # ------------------------------------------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.MANIFEST_REPO }}
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+
+      - name: Update image ID and commit change
+        run: |
+          cd platform-registry-app/overlays/dev
+          kustomize edit set image registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@$IMAGESHA
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Update API image ID for Dev"
+
+      - name: Push change to manifest repository
+        uses: ad-m/github-push-action@master
+
