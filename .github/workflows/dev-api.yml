@@ -124,4 +124,6 @@ jobs:
       - name: Push change to manifest repository
         if: ${{ success() }}
         uses: ad-m/github-push-action@master
+        with:
+          repository: git@github.com:${{ secrets.MANIFEST_REPO }}
 
