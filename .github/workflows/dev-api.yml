@@ -41,35 +41,35 @@ jobs:
           chmod +x ./cc-test-reporter
           ./cc-test-reporter format-coverage -t lcov -o codeclimate.json
           ./cc-test-reporter upload-coverage -i codeclimate.json
-  #build:
-  #  runs-on: ubuntu-latest
-  #  needs: [test]
-  #  strategy:
-  #    matrix:
-  #      node-version: [10.x, 12.x]
-  #  steps:
-  #    - uses: actions/checkout@v1
-  #    - uses: actions/setup-node@v1
-  #      with:
-  #        node-version: ${{ matrix.node-version }}
-  #    - name: Cache node modules
-  #      uses: actions/cache@v1
-  #      with:
-  #        path: node_modules
-  #        key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
-  #        restore-keys: |
-  #          ${{ runner.OS }}-build-${{ env.cache-name }}-
-  #          ${{ runner.OS }}-build-
-  #          ${{ runner.OS }}-
-  #    - name: npm install and build
-  #      run: |
-  #        npm ci
-  #        npm run build --if-present
-  #      env:
-  #        CI: "true"
+  build:
+    runs-on: ubuntu-latest
+    needs: [test]
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: "true"
   s2i-build:
     runs-on: ubuntu-latest
-  #  needs: [test, build]
+    needs: [test, build]
     defaults:
       run:
         working-directory: .
@@ -104,14 +104,12 @@ jobs:
           ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
 
       - name: Check out manifest repo
-        if: ${{ success() }}
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
           repository: ${{ secrets.MANIFEST_REPO }}
 
       - name: Set up Kustomize
-        if: ${{ success() }}
         uses: imranismail/setup-kustomize@v1
 
       - name: Update image ID and commit change
@@ -123,10 +121,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -am "Update API image ID for Dev"
           git push origin
-
-      #- name: Push change to manifest repository
-      #  if: ${{ success() }}
-      #  uses: ad-m/github-push-action@master
-      #  with:
-      #    repository: git@github.com:${{ secrets.MANIFEST_REPO }}
 
