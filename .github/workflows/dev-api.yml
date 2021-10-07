@@ -82,6 +82,7 @@ jobs:
       # Tag the image with the commit ID and "dev"
       # ------------------------------------------------
       - name: Build and tag the image
+        id: build-image
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
@@ -90,6 +91,7 @@ jobs:
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:dev
+          echo "::set-output name=imagesha::$IMAGESHA"
 
       # Update the image ID in the manifest repository used by Argo CD.
       # We need to use the SSH deploy key to check out the manifest repo, set up
@@ -116,7 +118,7 @@ jobs:
         if: ${{ success() }}
         run: |
           cd platform-registry-app/overlays/dev
-          kustomize edit set image registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@$IMAGESHA
+          kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.build-image.outputs.imagesha }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "Update API image ID for Dev"
