@@ -120,10 +120,11 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "Update API image ID for Dev"
+          git push origin
 
-      - name: Push change to manifest repository
-        if: ${{ success() }}
-        uses: ad-m/github-push-action@master
-        with:
-          repository: git@github.com:${{ secrets.MANIFEST_REPO }}
+      #- name: Push change to manifest repository
+      #  if: ${{ success() }}
+      #  uses: ad-m/github-push-action@master
+      #  with:
+      #    repository: git@github.com:${{ secrets.MANIFEST_REPO }}
 
