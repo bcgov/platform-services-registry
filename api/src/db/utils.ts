@@ -70,6 +70,7 @@ export const compareNameSpaceQuotaSize = (quotaSizes: any): boolean => {
   for (const quotaType in quotaSizes) {
     if (quotaSizes[quotaType]) {
       isQuotaInEachNamespaceSame = quotaSizes[quotaType].every((val, i, arr) => val === arr[0])
+      if (!isQuotaInEachNamespaceSame) return false
     }
   }
   return isQuotaInEachNamespaceSame

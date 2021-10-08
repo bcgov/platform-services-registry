@@ -70,7 +70,6 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
             </Text>
           </Box>
           <Box width={1 / 2} px={2} mt={3}>
-
             <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
               CPU:{specTexts.CPU}
             </Text>
@@ -80,7 +79,6 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
             <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
               Storage:{specTexts.Storage}
             </Text>
-
           </Box>
         </Aux>
       ))}

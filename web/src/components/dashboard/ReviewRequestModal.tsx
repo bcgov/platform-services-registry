@@ -42,7 +42,7 @@ interface DisplayInfo {
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
 const InformationBox: React.FC<DisplayInfo> = (props) => {
-  const { nonetextTransform, displayText } = props
+  const { nonetextTransform, displayText } = props;
   return (
     <Box
       fontSize={2}
@@ -58,7 +58,7 @@ const InformationBox: React.FC<DisplayInfo> = (props) => {
       {displayText}
     </Box>
   );
-}
+};
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
   const { profileId, profiles, hide, handleSubmitRefresh } = props;

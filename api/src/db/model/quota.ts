@@ -45,6 +45,19 @@ export interface Quotas {
     };
 }
 
+interface QuotaSizeDedetail {
+    name: string
+    cpuNums: string[],
+    memoryNums: string[],
+    storageNums: string[],
+}
+
+interface QuotaSizeDedetails {
+    small: QuotaSizeDedetail
+    medium: QuotaSizeDedetail
+    large: QuotaSizeDedetail
+}
+
 export interface Quota extends CommonFields {
     cpuRequests: number;
     cpuLimits: number;
@@ -109,20 +122,39 @@ export default class QuotaModel extends Model {
     async findQuotaSizes(): Promise<any> {
         try {
             const quota = await this.findQuota();
-            const quotaSizes: any = [];
+            const quotaSizesDetail: QuotaSizeDedetails = {
+                small: {
+                    name: '',
+                    cpuNums: [],
+                    memoryNums: [],
+                    storageNums: []
+                },
+                medium: {
+                    name: '',
+                    cpuNums: [],
+                    memoryNums: [],
+                    storageNums: []
+                },
+                large: {
+                    name: '',
+                    cpuNums: [],
+                    memoryNums: [],
+                    storageNums: []
+                }
+            };
 
             for (let size of quota) {
-                quotaSizes.push(
-                    {
-                        name: size.id,
-                        cpuNums: [size.cpuRequests, size.cpuLimits],
-                        memoryNums: [size.memoryRequests.replace("Gi", "GiB"), size.memoryLimits.replace("Gi", "GiB")],
-                        storageNums: [size.storagePvcCount, size.storageFile.replace("Gi", "GiB"), size.storageBackup.replace("Gi", "GiB")],
-                    },
-                );
+                quotaSizesDetail[size.id] =
+                {
+                    name: size.id,
+                    cpuNums: [size.cpuRequests, size.cpuLimits],
+                    memoryNums: [size.memoryRequests.replace("Gi", "GiB"), size.memoryLimits.replace("Gi", "GiB")],
+                    storageNums: [size.storagePvcCount, size.storageFile.replace("Gi", "GiB"), size.storageBackup.replace("Gi", "GiB")],
+                }
+
             }
 
-            return quotaSizes;
+            return quotaSizesDetail;
         } catch (err) {
             const message = `Unable to get quota sizes`;
             logger.error(`${message}, err = ${err.message}`);

@@ -90,16 +90,17 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [quotaSizes, setQuotaSizes] = useState<any>({});
 
   const getCorrespondingQuota = (selectedSizes: ProjectResourceQuotaSize): QuotaSpecsInterface => {
-
-    if (quotaSizes
-      && Object.keys(quotaSizes).length === 0
-      && Object.getPrototypeOf(quotaSizes) === Object.prototype) {
-      return DEFAULT_QUOTA_INFO
+    if (
+      quotaSizes &&
+      Object.keys(quotaSizes).length === 0 &&
+      Object.getPrototypeOf(quotaSizes) === Object.prototype
+    ) {
+      return DEFAULT_QUOTA_INFO;
     }
     return {
-      cpuNums: quotaSizes[selectedSizes.quotaCpuSize].cpuNums,
-      memoryNums: quotaSizes[selectedSizes.quotaMemorySize].memoryNums,
-      storageNums: quotaSizes[selectedSizes.quotaStorageSize].storageNums,
+      cpuNums: quotaSizes[selectedSizes.quotaCpuSize]?.cpuNums || [],
+      memoryNums: quotaSizes[selectedSizes.quotaMemorySize]?.memoryNums || [],
+      storageNums: quotaSizes[selectedSizes.quotaStorageSize]?.storageNums || [],
     };
   };
 
@@ -351,8 +352,10 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                       quotaStorageSize: change.values?.quotaStorageSize || '',
                     };
 
-                    const selectedQuotaSpecs: QuotaSpecsInterface = Object.keys(quotaSizes).length !== 0 ?
-                      getCorrespondingQuota(selectedResourceQuota) : DEFAULT_QUOTA_INFO
+                    const selectedQuotaSpecs: QuotaSpecsInterface =
+                      Object.keys(quotaSizes).length !== 0
+                        ? getCorrespondingQuota(selectedResourceQuota)
+                        : DEFAULT_QUOTA_INFO;
 
                     // setApplyingQuotaSpecs only when change.value is not empty
                     if (

@@ -17,6 +17,7 @@
 'use strict';
 
 import { errorWithCode } from '@bcgov/common-nodejs-utils';
+import { compareNameSpaceQuotaSize } from '../src/db/utils';
 import { replaceForDescription, validateRequiredFields } from '../src/libs/utils';
 
 jest.mock('@bcgov/common-nodejs-utils', () => ({
@@ -81,4 +82,67 @@ describe('Utils', () => {
 
     expect(replaceForDescription(contextJson)).toEqual(result);
   });
+
+
+
+
+  it('compareNameSpaceQuotaSize works correctly', () => {
+    const quotaSizesTest1 = {
+      quotaCpuSize: ['small', 'small', 'small', 'small'],
+      quotaMemorySize: ['small', 'small', 'small', 'small'],
+      quotaStorageSize: ['small', 'small', 'small', 'small']
+    }
+    const quotaSizesTest2 = {
+      quotaCpuSize: ['small', 'small', 'large', 'small'],
+      quotaMemorySize: ['small', 'small', 'small', 'small'],
+      quotaStorageSize: ['small', 'lagre', 'small', 'small']
+    }
+    const quotaSizesTest3 = {
+      quotaCpuSize: ['small'],
+      quotaMemorySize: ['small'],
+      quotaStorageSize: ['small']
+    }
+    const quotaSizesTest4 = {
+      quotaCpuSize: [null],
+      quotaMemorySize: ['small', 'small', 'small', 'small'],
+      quotaStorageSize: [undefined]
+    }
+
+    const quotaSizesTest5 = {
+      quotaCpuSize: [],
+      quotaMemorySize: [],
+      quotaStorageSize: []
+    }
+
+    const quotaSizesTest6 = {
+      quotaCpuSize: [null, undefined],
+      quotaStorageSize: [undefined],
+      quotaMemorySize: ['small', 'small', 'small', 'small']
+    }
+
+    const quotaSizesTest7 = {
+      quotaCpuSize: [null, undefined],
+      quotaStorageSize: [],
+      quotaMemorySize: []
+    }
+    const quotaSizesTest8 = {
+      abcc: [9, 9, 9],
+      bca: [1, 1, 1]
+    }
+
+    const quotaSizesTest9 = {
+      abcc: [9, 8, 9],
+      bca: [1, 1, 1]
+    }
+
+    expect(compareNameSpaceQuotaSize(quotaSizesTest1)).toEqual(true);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest2)).toEqual(false);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest3)).toEqual(true);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest4)).toEqual(true);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest5)).toEqual(true);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest6)).toEqual(false);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest7)).toEqual(false);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest8)).toEqual(true);
+    expect(compareNameSpaceQuotaSize(quotaSizesTest9)).toEqual(false);
+  })
 });
