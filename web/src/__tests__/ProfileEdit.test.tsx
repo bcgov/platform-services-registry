@@ -27,6 +27,12 @@ import mockQuotaSizes from './fixtures/quota-sizes.json';
 
 const browserHistory = createBrowserHistory();
 
+export enum QuotaSize {
+  Small = 'small',
+  Medium = 'medium',
+  Large = 'large',
+}
+
 jest.mock(
   '../hooks/useRegistryApi',
   () =>
@@ -99,14 +105,14 @@ function renderQuota() {
   const profileIdProp: string = '1';
   const licensePlateProp: string = '473f50';
   const quotaSizeProp: any = {
-    quotaCpuSize: 'medium',
-    quotaMemorySize: 'medium',
-    quotaStorageSize: 'medium',
+    quotaCpuSize: QuotaSize.Medium,
+    quotaMemorySize: QuotaSize.Medium,
+    quotaStorageSize: QuotaSize.Medium,
   };
   const quotaOptionsProp: any = {
-    quotaCpuSize: ['small', 'large'],
-    quotaMemorySize: ['small', 'large'],
-    quotaStorageSize: ['small', 'large'],
+    quotaCpuSize: [QuotaSize.Small, QuotaSize.Large],
+    quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
+    quotaStorageSize: [QuotaSize.Small, QuotaSize.Large],
   };
   const handleSubmitRefreshProp = jest.fn();
   const isProvisionedProp: boolean = true;

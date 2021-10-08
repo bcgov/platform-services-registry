@@ -35,29 +35,34 @@ interface ReviewRequestModalProps {
 }
 
 interface DisplayInfo {
-  displayText: string;
+  displayTexts: string[];
   nonetextTransform?: boolean;
 }
 
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
-const InformationBox: React.FC<DisplayInfo> = (props) => {
-  const { nonetextTransform, displayText } = props;
-  return (
-    <Box
-      fontSize={2}
-      bg="#FAFAFA"
-      sx={{
-        px: 2,
-        py: 1,
-        borderRadius: 5,
-        border: '1px solid black',
-        textTransform: nonetextTransform ? 'none' : 'capitalize',
-      }}
-    >
-      {displayText}
-    </Box>
-  );
+const InformationBox: React.FC<any> = (props) => {
+  const { nonetextTransform, displayTexts } = props;
+  console.log('hiahia wtah is this?', displayTexts);
+  return displayTexts.map((displayText: string) => {
+    return (
+      <Box key={displayText} mb={1}>
+        <Box
+          fontSize={2}
+          bg="#FAFAFA"
+          sx={{
+            px: 2,
+            py: 2,
+            borderRadius: 5,
+            border: '1px solid black',
+            textTransform: nonetextTransform ? 'none' : 'capitalize',
+          }}
+        >
+          {displayText}
+        </Box>
+      </Box>
+    );
+  });
 };
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
@@ -72,6 +77,23 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       (contact: any) => ` ${contact.firstName} ${contact.lastName} | ${contact.email}`,
     );
   };
+
+  const parseUpdatedQuota = (updatedQuotaTypes: any) => {
+    return updatedQuotaTypes.map(
+      (quotaType: any) =>
+        `${quotaType}: ${profileDetails.quotaSize[quotaType]} => ${profileDetails.editObject.quota[quotaType]} `,
+    );
+  };
+
+  const requestedUpdateQuota =
+    profileDetails.type === 'edit'
+      ? findDifferenceBetweenTwoDifferentObject(
+          profileDetails.editObject.quota,
+          profileDetails.quotaSize,
+        )
+      : [];
+
+  console.log('wtfff is requestedUpdateQuota', requestedUpdateQuota);
 
   const onSubmit = async (requestBody: any) => {
     setOpenBackdrop(true);
@@ -99,15 +121,15 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
-        <InformationBox displayText={profileDetails.type} />
+        <InformationBox displayTexts={[`${profileDetails.type}`]} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
-        <InformationBox displayText={profileDetails.name} />
+        <InformationBox displayTexts={[`${profileDetails.name}`]} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-cluster">Project Cluster</Label>
-        <InformationBox displayText={profileDetails.clusters.join(', ')} />
+        <InformationBox displayTexts={[profileDetails.clusters.join(', ')]} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-description">Description</Label>
@@ -124,34 +146,28 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
 
         <InformationBox
           nonetextTransform
-          displayText={parseContacts(profileDetails.productOwners)}
+          displayTexts={parseContacts(profileDetails.productOwners)}
         />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="technical-lead">Technical Leads</Label>
-
         <InformationBox
           nonetextTransform
-          displayText={parseContacts(profileDetails.technicalLeads)}
+          displayTexts={parseContacts(profileDetails.technicalLeads)}
         />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
           <InformationBox
-            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
+            displayTexts={[
+              `CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`,
+            ]}
           />
         ) : (
-          findDifferenceBetweenTwoDifferentObject(
-            profileDetails.editObject.quota,
-            profileDetails.quotaSize,
-          ).map((quotaType: string) => (
-            <Box mb={3} key={quotaType}>
-              <InformationBox
-                displayText={`${quotaType}: ${profileDetails.quotaSize[quotaType]} => ${profileDetails.editObject.quota[quotaType]} `}
-              />
-            </Box>
-          ))
+          <Box mb={3}>
+            <InformationBox displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+          </Box>
         )}
       </Flex>
       <Form onSubmit={onSubmit}>

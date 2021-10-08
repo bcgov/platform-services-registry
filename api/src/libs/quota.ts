@@ -20,29 +20,34 @@ import { logger } from '@bcgov/common-nodejs-utils';
 import { NameSpacesQuotaSize, ProjectQuotaSize } from '../db/model/namespace';
 import { QuotaSize } from '../db/model/quota';
 
+
+
+/**
+ * Currently our rule for quota change is to allow user select any size below current option
+ * but only one step larger than current option
+ * @param quotaSize the current quota Size
+ * @returns all option that user can upgrade/downgrade
+ */
+export const getAllowQuotaForEachResource = (quotaSize: QuotaSize = QuotaSize.Small) => {
+    const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
+
+    // Incase we have some parameter that is not one of our option, we will use Small quota size as default parameter
+    const position = allQuotaOptions.indexOf(quotaSize) < 0 ? 0 : allQuotaOptions.indexOf(quotaSize)
+
+    const lowerBound = allQuotaOptions.slice(0, position)
+    const upperBound = allQuotaOptions[position + 1] || []
+
+    return lowerBound.concat(upperBound)
+}
+
 export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSpacesQuotaSize => {
     try {
-        const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
+
 
         const availableQuotaOptions: NameSpacesQuotaSize = {
             quotaCpuSize: [],
             quotaMemorySize: [],
             quotaStorageSize: [],
-        }
-
-        /**
-         * Currently our rule for quota change is to allow user select any size below current option
-         * but only one step larger than current option
-         * @param quotaSize the current quota Size
-         * @returns all option that user can upgrade/downgrade
-         */
-        const getAllowQuotaForEachResource = (quotaSize: QuotaSize) => {
-            const position = allQuotaOptions.indexOf(quotaSize);
-            const lowerBound = allQuotaOptions.slice(
-                0, position)
-            const upperBound = allQuotaOptions[position + 1] || []
-
-            return lowerBound.concat(upperBound)
         }
 
         for (const key in currentQuotaSize) {
