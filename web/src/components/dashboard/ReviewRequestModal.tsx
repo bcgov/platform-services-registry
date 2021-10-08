@@ -43,7 +43,7 @@ type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
 const InformationBox: React.FC<any> = (props) => {
   const { nonetextTransform, displayTexts } = props;
-  return displayTexts.map((displayText: string) =>
+  return displayTexts.map((displayText: string) => (
     <Box key={displayText} mb={1}>
       <Box
         fontSize={2}
@@ -59,7 +59,7 @@ const InformationBox: React.FC<any> = (props) => {
         {displayText}
       </Box>
     </Box>
-  );
+  ));
 };
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
@@ -85,9 +85,9 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
       ? findDifferenceBetweenTwoDifferentObject(
-        profileDetails.editObject.quota,
-        profileDetails.quotaSize,
-      )
+          profileDetails.editObject.quota,
+          profileDetails.quotaSize,
+        )
       : [];
 
   const onSubmit = async (requestBody: any) => {
