@@ -42,19 +42,16 @@ describe('Quota services', () => {
         const testCurrentQuotaSize1 = QuotaSize.Small
         const testCurrentQuotaSize2 = QuotaSize.Medium
         const testCurrentQuotaSize3 = QuotaSize.Large
-        const testCurrentQuotaSize4 = null
         const testCurrentQuotaSize5 = undefined
 
         const expectedAllowQuotaSizes1 = [QuotaSize.Medium]
         const expectedAllowQuotaSizes2 = [QuotaSize.Small, QuotaSize.Large]
         const expectedAllowQuotaSizes3 = [QuotaSize.Small, QuotaSize.Medium]
-        const expectedAllowQuotaSizes4 = [QuotaSize.Medium]
         const expectedAllowQuotaSizes5 = [QuotaSize.Medium]
 
         expect(getAllowQuotaForEachResource(testCurrentQuotaSize1)).toEqual(expectedAllowQuotaSizes1);
         expect(getAllowQuotaForEachResource(testCurrentQuotaSize2)).toEqual(expectedAllowQuotaSizes2);
         expect(getAllowQuotaForEachResource(testCurrentQuotaSize3)).toEqual(expectedAllowQuotaSizes3);
-        expect(getAllowQuotaForEachResource(testCurrentQuotaSize4)).toEqual(expectedAllowQuotaSizes4);
         expect(getAllowQuotaForEachResource(testCurrentQuotaSize5)).toEqual(expectedAllowQuotaSizes5);
     });
 });
