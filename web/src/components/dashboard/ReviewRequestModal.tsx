@@ -43,26 +43,23 @@ type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
 const InformationBox: React.FC<any> = (props) => {
   const { nonetextTransform, displayTexts } = props;
-  console.log('hiahia wtah is this?', displayTexts);
-  return displayTexts.map((displayText: string) => {
-    return (
-      <Box key={displayText} mb={1}>
-        <Box
-          fontSize={2}
-          bg="#FAFAFA"
-          sx={{
-            px: 2,
-            py: 2,
-            borderRadius: 5,
-            border: '1px solid black',
-            textTransform: nonetextTransform ? 'none' : 'capitalize',
-          }}
-        >
-          {displayText}
-        </Box>
+  return displayTexts.map((displayText: string) =>
+    <Box key={displayText} mb={1}>
+      <Box
+        fontSize={2}
+        bg="#FAFAFA"
+        sx={{
+          px: 2,
+          py: 2,
+          borderRadius: 5,
+          border: '1px solid black',
+          textTransform: nonetextTransform ? 'none' : 'capitalize',
+        }}
+      >
+        {displayText}
       </Box>
-    );
-  });
+    </Box>
+  );
 };
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
@@ -88,12 +85,10 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
       ? findDifferenceBetweenTwoDifferentObject(
-          profileDetails.editObject.quota,
-          profileDetails.quotaSize,
-        )
+        profileDetails.editObject.quota,
+        profileDetails.quotaSize,
+      )
       : [];
-
-  console.log('wtfff is requestedUpdateQuota', requestedUpdateQuota);
 
   const onSubmit = async (requestBody: any) => {
     setOpenBackdrop(true);
