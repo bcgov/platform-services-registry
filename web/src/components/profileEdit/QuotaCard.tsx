@@ -70,11 +70,17 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
             </Text>
           </Box>
           <Box width={1 / 2} px={2} mt={3}>
-            {Object.keys(specTexts).map((specText: keyof SpecTextInterface) => (
-              <Text key={specText} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                {specText}:{specTexts[specText]}
-              </Text>
-            ))}
+
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              CPU:{specTexts.CPU}
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              Memory:{specTexts.Memory}
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              Storage:{specTexts.Storage}
+            </Text>
+
           </Box>
         </Aux>
       ))}

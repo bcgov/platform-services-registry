@@ -104,9 +104,9 @@ function renderQuota() {
     quotaStorageSize: 'medium',
   };
   const quotaOptionsProp: any = {
-    quotaCpuSize: ['smal', 'large'],
-    quotaMemorySize: ['smal', 'large'],
-    quotaStorageSize: ['smal', 'large'],
+    quotaCpuSize: ['small', 'large'],
+    quotaMemorySize: ['small', 'large'],
+    quotaStorageSize: ['small', 'large'],
   };
   const handleSubmitRefreshProp = jest.fn();
   const isProvisionedProp: boolean = true;

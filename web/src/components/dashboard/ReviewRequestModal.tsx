@@ -41,21 +41,24 @@ interface DisplayInfo {
 
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
-const InformationBox: React.FC<DisplayInfo> = (porps) => (
-  <Box
-    fontSize={2}
-    bg="#FAFAFA"
-    sx={{
-      px: 2,
-      py: 1,
-      borderRadius: 5,
-      border: '1px solid black',
-      textTransform: porps.nonetextTransform ? 'none' : 'capitalize',
-    }}
-  >
-    {porps.displayText}
-  </Box>
-);
+const InformationBox: React.FC<DisplayInfo> = (props) => {
+  const { nonetextTransform, displayText } = props
+  return (
+    <Box
+      fontSize={2}
+      bg="#FAFAFA"
+      sx={{
+        px: 2,
+        py: 1,
+        borderRadius: 5,
+        border: '1px solid black',
+        textTransform: nonetextTransform ? 'none' : 'capitalize',
+      }}
+    >
+      {displayText}
+    </Box>
+  );
+}
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
   const { profileId, profiles, hide, handleSubmitRefresh } = props;
@@ -142,10 +145,10 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
           findDifferenceBetweenTwoDifferentObject(
             profileDetails.editObject.quota,
             profileDetails.quotaSize,
-          ).map((key: string) => (
-            <Box mb={3} key={key}>
+          ).map((quotaType: string) => (
+            <Box mb={3} key={quotaType}>
               <InformationBox
-                displayText={`${key}: ${profileDetails.quotaSize[key]} => ${profileDetails.editObject.quota[key]} `}
+                displayText={`${quotaType}: ${profileDetails.quotaSize[quotaType]} => ${profileDetails.editObject.quota[quotaType]} `}
               />
             </Box>
           ))

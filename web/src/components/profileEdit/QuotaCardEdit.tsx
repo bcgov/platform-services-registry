@@ -85,36 +85,22 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const { setOpenBackdrop } = useCommonState();
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
-  const [specs, setSpecs] = useState<any>([]);
+  const [specs, setSpecs] = useState<any>({});
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
-  const [quotaSizes, setQuotaSizes] = useState<any>([]);
+  const [quotaSizes, setQuotaSizes] = useState<any>({});
 
-  const getCorrespondingQuota = (selectedSize: ProjectResourceQuotaSize): QuotaSpecsInterface => {
-    let result: QuotaSpecsInterface = DEFAULT_QUOTA_INFO;
-    const getSelectedQuotaInfo = (selectedResourceQuotaSize: string) =>
-      quotaSizes
-        .filter((size: any) => size.name.toUpperCase() === selectedResourceQuotaSize.toUpperCase())
-        .pop();
+  const getCorrespondingQuota = (selectedSizes: ProjectResourceQuotaSize): QuotaSpecsInterface => {
 
-    if (quotaSizes.length > 0) {
-      Object.keys(quotaSize).forEach((key) => {
-        switch (key) {
-          case 'quotaCpuSize':
-            result.cpuNums = getSelectedQuotaInfo(selectedSize[key])?.cpuNums || [];
-            break;
-          case 'quotaMemorySize':
-            result.memoryNums = getSelectedQuotaInfo(selectedSize[key])?.memoryNums || [];
-            break;
-          case 'quotaStorageSize':
-            result.storageNums = getSelectedQuotaInfo(selectedSize[key])?.storageNums || [];
-            break;
-          default:
-            result = DEFAULT_QUOTA_INFO;
-        }
-      });
-      return result;
+    if (quotaSizes
+      && Object.keys(quotaSizes).length === 0
+      && Object.getPrototypeOf(quotaSizes) === Object.prototype) {
+      return DEFAULT_QUOTA_INFO
     }
-    return result;
+    return {
+      cpuNums: quotaSizes[selectedSizes.quotaCpuSize].cpuNums,
+      memoryNums: quotaSizes[selectedSizes.quotaMemorySize].memoryNums,
+      storageNums: quotaSizes[selectedSizes.quotaStorageSize].storageNums,
+    };
   };
 
   const txtForQuotaEdit =
@@ -248,8 +234,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       />
     );
   }
-
-  if (Object.entries(quotaSizes).length !== 0 && specs.length === 0) {
+  if (Object.keys(quotaSizes).length !== 0 && Object.keys(specs).length === 0) {
     const quotaSpecs: QuotaSpecsInterface = getCorrespondingQuota(quotaSize);
     setSpecs(quotaSpecs);
   }
@@ -365,9 +350,9 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                       quotaMemorySize: change.values?.quotaMemorySize || '',
                       quotaStorageSize: change.values?.quotaStorageSize || '',
                     };
-                    const selectedQuotaSpecs: QuotaSpecsInterface = getCorrespondingQuota(
-                      selectedResourceQuota,
-                    );
+
+                    const selectedQuotaSpecs: QuotaSpecsInterface = Object.keys(quotaSizes).length !== 0 ?
+                      getCorrespondingQuota(selectedResourceQuota) : DEFAULT_QUOTA_INFO
 
                     // setApplyingQuotaSpecs only when change.value is not empty
                     if (

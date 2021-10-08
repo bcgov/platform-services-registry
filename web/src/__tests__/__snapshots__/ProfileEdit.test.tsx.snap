@@ -80,9 +80,9 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
                   medium
                 </option>
                 <option
-                  value="smal"
+                  value="small"
                 >
-                  smal
+                  small
                 </option>
                 <option
                   value="large"
@@ -174,9 +174,9 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
                   medium
                 </option>
                 <option
-                  value="smal"
+                  value="small"
                 >
-                  smal
+                  small
                 </option>
                 <option
                   value="large"
@@ -268,9 +268,9 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
                   medium
                 </option>
                 <option
-                  value="smal"
+                  value="small"
                 >
-                  smal
+                  small
                 </option>
                 <option
                   value="large"
@@ -513,9 +513,9 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
                   medium
                 </option>
                 <option
-                  value="smal"
+                  value="small"
                 >
-                  smal
+                  small
                 </option>
                 <option
                   value="large"
@@ -611,9 +611,9 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
                   medium
                 </option>
                 <option
-                  value="smal"
+                  value="small"
                 >
-                  smal
+                  small
                 </option>
                 <option
                   value="large"
@@ -709,9 +709,9 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
                   medium
                 </option>
                 <option
-                  value="smal"
+                  value="small"
                 >
-                  smal
+                  small
                 </option>
                 <option
                   value="large"
