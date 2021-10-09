@@ -21,7 +21,7 @@
  * This function will return an array of string that have differnt key ['quotaMemorySize', 'quotaStorageSize']
  * @param object1
  * @param object2
- * @returns all key that
+ * @returns all key that that value is different in obj1 and obj2
  */
 export const findDifferenceBetweenTwoDifferentObject = (object1: any, object2: any): any => {
   const differenceKey: string[] = [];
