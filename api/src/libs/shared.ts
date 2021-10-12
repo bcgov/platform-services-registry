@@ -15,14 +15,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// Created by Jason Leach on 2018-07-23.
-//
 
-import { JWTServiceManager, logger } from '@bcgov/common-nodejs-utils';
-import nats from 'nats';
-import { Pool } from 'pg';
-import config from '../config';
-import { default as CommonEmailService, Options } from '../libs/service';
+import { JWTServiceManager, logger } from "@bcgov/common-nodejs-utils";
+import nats from "nats";
+import { Pool } from "pg";
+import config from "../config";
+import CommonEmailService, { Options } from "./service";
 
 interface Shared {
   pgPool: Pool;
@@ -30,45 +28,43 @@ interface Shared {
   ches: CommonEmailService;
 }
 
-
-const ssoKey = Symbol.for('ca.bc.gov.platsrv.sso');
-const pgPoolKey = Symbol.for('ca.bc.gov.platsrv.pgpool');
-const natsKey = Symbol.for('ca.bc.gov.platsrv.nats');
-const chesKey = Symbol.for('ca.bc.gov.platsrv.CHES');
+const ssoKey = Symbol.for("ca.bc.gov.platsrv.sso");
+const pgPoolKey = Symbol.for("ca.bc.gov.platsrv.pgpool");
+const natsKey = Symbol.for("ca.bc.gov.platsrv.nats");
+const chesKey = Symbol.for("ca.bc.gov.platsrv.CHES");
 
 const gs = Object.getOwnPropertySymbols(global);
 
 const main = async () => {
-
   if (gs.indexOf(chesKey) <= -1) {
     const opts: Options = {
-      uri: config.get('ches:ssoTokenURL'),
-      grantType: config.get('ches:ssoGrantType'),
-      clientId: config.get('ches:ssoClientId'),
-      clientSecret: config.get('ches:ssoClientSecret'),
-      baseURL: config.get('ches:baseURL'),
+      uri: config.get("ches:ssoTokenURL"),
+      grantType: config.get("ches:ssoGrantType"),
+      clientId: config.get("ches:ssoClientId"),
+      clientSecret: config.get("ches:ssoClientSecret"),
+      baseURL: config.get("ches:baseURL"),
     };
 
-    const ches = new CommonEmailService(opts)
+    const ches = new CommonEmailService(opts);
     global[chesKey] = ches;
   }
 
   if (gs.indexOf(natsKey) <= -1) {
-    const host = `${config.get('nats:host')}:${config.get('nats:port')}`;
+    const host = `${config.get("nats:host")}:${config.get("nats:port")}`;
     const nc = nats.connect({
       json: true,
       servers: [host],
     });
 
-    nc.on('reconnecting', () => {
-      logger.info('nats reconnecting');
+    nc.on("reconnecting", () => {
+      logger.info("nats reconnecting");
     });
 
-    nc.on('reconnect', conn => {
+    nc.on("reconnect", (conn) => {
       logger.info(`nats reconnect to ${conn.currentServer.url.host}`);
     });
 
-    nc.on('connect', conn => {
+    nc.on("connect", (conn) => {
       logger.info(`nats connect to ${conn.currentServer.url.host}`);
     });
 
@@ -77,10 +73,10 @@ const main = async () => {
 
   if (gs.indexOf(ssoKey) <= -1) {
     const params = {
-      uri: config.get('sso:tokenUrl'),
-      grantType: config.get('sso:grantType'),
-      clientId: config.get('sso:clientId'),
-      clientSecret: config.get('sso:clientSecret'),
+      uri: config.get("sso:tokenUrl"),
+      grantType: config.get("sso:grantType"),
+      clientId: config.get("sso:clientId"),
+      clientSecret: config.get("sso:clientSecret"),
     };
 
     global[ssoKey] = new JWTServiceManager(params);
@@ -88,37 +84,37 @@ const main = async () => {
 
   if (gs.indexOf(pgPoolKey) <= -1) {
     const params = {
-      host: config.get('db:host'),
-      port: config.get('db:port'),
-      database: config.get('db:database'),
-      user: config.get('db:user'),
-      password: config.get('db:password'),
-      max: config.get('db:maxConnections'),
-      idleTimeoutMillis: config.get('db:idleTimeout'),
-      connectionTimeoutMillis: config.get('db:connectionTimeout'),
-    }
+      host: config.get("db:host"),
+      port: config.get("db:port"),
+      database: config.get("db:database"),
+      user: config.get("db:user"),
+      password: config.get("db:password"),
+      max: config.get("db:maxConnections"),
+      idleTimeoutMillis: config.get("db:idleTimeout"),
+      connectionTimeoutMillis: config.get("db:connectionTimeout"),
+    };
 
     global[pgPoolKey] = new Pool(params);
   }
-}
+};
 
 main();
 
 const shared = {};
 
-Object.defineProperty(shared, 'sso', {
+Object.defineProperty(shared, "sso", {
   get: () => global[ssoKey],
 });
 
-Object.defineProperty(shared, 'pgPool', {
+Object.defineProperty(shared, "pgPool", {
   get: () => global[pgPoolKey],
 });
 
-Object.defineProperty(shared, 'nats', {
+Object.defineProperty(shared, "nats", {
   get: () => global[natsKey],
 });
 
-Object.defineProperty(shared, 'ches', {
+Object.defineProperty(shared, "ches", {
   get: () => global[chesKey],
 });
 

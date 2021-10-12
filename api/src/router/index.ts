@@ -16,38 +16,37 @@
 // Created by Jason Leach on 2020-04-21.
 //
 
-'use strict';
-
-import cors from 'cors';
-import passport from 'passport';
-import config from '../config';
-import cluster from './routes/cluster';
-import contact from './routes/contact';
-import ehlo from './routes/ehlo';
-import ministry from './routes/ministry';
-import profile from './routes/profile';
-import provision from './routes/provision';
-import quota from './routes/quota';
-import request from './routes/request';
+import cors from "cors";
+import passport from "passport";
+import config from "../config";
+import cluster from "./routes/cluster";
+import contact from "./routes/contact";
+import ehlo from "./routes/ehlo";
+import ministry from "./routes/ministry";
+import profile from "./routes/profile";
+import provision from "./routes/provision";
+import quota from "./routes/quota";
+import request from "./routes/request";
 
 const corsOptions = {
-  origin: config.get('environment') === 'development' ? '*' : config.get('apiUrl'),
+  origin:
+    config.get("environment") === "development" ? "*" : config.get("apiUrl"),
   credentials: true,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 // eslint-disable-next-line import/prefer-default-export
-export const router = app => {
+export const router = (app) => {
   app.use(cors(corsOptions));
-  app.use('/api/v1/ehlo', ehlo); // probes
+  app.use("/api/v1/ehlo", ehlo); // probes
   // Any routes following the authentication middleware line below
   // will require authentication.
-  app.use('/api/v1/ministry', ministry);
-  app.use('/api/v1/quota', quota);
-  app.use(passport.authenticate('jwt', { session: false }));
-  app.use('/api/v1/cluster', cluster);
-  app.use('/api/v1/profile', profile);
-  app.use('/api/v1/contact', contact);
-  app.use('/api/v1/provision', provision);
-  app.use('/api/v1/request', request);
+  app.use("/api/v1/ministry", ministry);
+  app.use("/api/v1/quota", quota);
+  app.use(passport.authenticate("jwt", { session: false }));
+  app.use("/api/v1/cluster", cluster);
+  app.use("/api/v1/profile", profile);
+  app.use("/api/v1/contact", contact);
+  app.use("/api/v1/provision", provision);
+  app.use("/api/v1/request", request);
 };

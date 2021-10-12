@@ -14,25 +14,21 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from "fs";
+import path from "path";
+import { Pool } from "pg";
+import { getProvisionStatus } from "../src/libs/profile";
 
-import fs from 'fs';
-import path from 'path';
-import { Pool } from 'pg';
-import { getProvisionStatus } from '../src/libs/profile';
+const p0 = path.join(__dirname, "fixtures/select-profile.json");
+const profile = JSON.parse(fs.readFileSync(p0, "utf8"))[0];
 
-const p0 = path.join(__dirname, 'fixtures/select-profile.json');
-const profile = JSON.parse(fs.readFileSync(p0, 'utf8'))[0];
-
-const p1 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-const selectDefaultCluster = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const p1 = path.join(__dirname, "fixtures/select-default-cluster.json");
+const selectDefaultCluster = JSON.parse(fs.readFileSync(p1, "utf8"));
 
 const client = new Pool().connect();
 
-describe('Profile services', () => {
-
-  it('getProvisionStatus works correctly', async () => {
-
+describe("Profile services", () => {
+  it("getProvisionStatus works correctly", async () => {
     const namespaces = [
       {
         id: 13,
@@ -40,7 +36,7 @@ describe('Profile services', () => {
         profileId: 4,
         archived: false,
         createdAt: "2020-05-06T21:16:42.799Z",
-        updatedAt: "2020-05-06T21:16:42.799Z"
+        updatedAt: "2020-05-06T21:16:42.799Z",
       },
       {
         id: 14,
@@ -48,7 +44,7 @@ describe('Profile services', () => {
         profileId: 4,
         archived: false,
         createdAt: "2020-05-06T21:16:42.799Z",
-        updatedAt: "2020-05-06T21:16:42.799Z"
+        updatedAt: "2020-05-06T21:16:42.799Z",
       },
       {
         id: 15,
@@ -56,8 +52,8 @@ describe('Profile services', () => {
         profileId: 4,
         archived: false,
         createdAt: "2020-05-06T21:16:42.799Z",
-        updatedAt: "2020-05-06T21:16:42.799Z"
-      }
+        updatedAt: "2020-05-06T21:16:42.799Z",
+      },
     ];
 
     client.query.mockResolvedValue({ rows: namespaces });

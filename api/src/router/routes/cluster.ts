@@ -14,15 +14,13 @@
 // limitations under the License
 //
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { fetchClusters } from '../../controllers/cluster';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import fetchClusters from "../../controllers/cluster";
 
 const router = express.Router();
 
 // Cluster
-router.get('/', asyncMiddleware(fetchClusters));
+router.get("/", asyncMiddleware(fetchClusters));
 
 export default router;

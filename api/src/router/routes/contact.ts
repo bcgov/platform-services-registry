@@ -16,17 +16,14 @@
 // Created by Jason Leach on 2020-06-16.
 //
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { createContact, inviteToOrg } from '../../controllers/contact';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import { createContact, inviteToOrg } from "../../controllers/contact";
 
 const router = express.Router();
 
 // Contact
-router.post('/', asyncMiddleware(createContact));
-router.post('/inviteToOrg', asyncMiddleware(inviteToOrg));
-
+router.post("/", asyncMiddleware(createContact));
+router.post("/inviteToOrg", asyncMiddleware(inviteToOrg));
 
 export default router;

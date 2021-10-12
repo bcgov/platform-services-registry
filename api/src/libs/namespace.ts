@@ -14,28 +14,33 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import DataManager from '../db';
-import ProjectNamespace from '../db/model/namespace';
-import shared from './shared';
+import { logger } from "@bcgov/common-nodejs-utils";
+import DataManager from "../db";
+import { ProjectNamespace } from "../db/model/namespace";
+import shared from "./shared";
 
 const dm = new DataManager(shared.pgPool);
 const { NamespaceModel } = dm;
 
-export const createNamespaces = async (names: any, profileId: number): Promise<ProjectNamespace[]> => {
+const createNamespaces = async (
+  names: any,
+  profileId: number
+): Promise<ProjectNamespace[]> => {
   try {
-    const nsPromises: ProjectNamespace[] = names.map(name => NamespaceModel.create({
-      name,
-      profileId,
-    }));
+    const nsPromises: ProjectNamespace[] = names.map((name) =>
+      NamespaceModel.create({
+        name,
+        profileId,
+      })
+    );
 
     return await Promise.all(nsPromises);
   } catch (err) {
-      const message = `Unable to create namespaces for profile ${profileId}`;
-      logger.error(`${message}, err = ${err.message}`);
+    const message = `Unable to create namespaces for profile ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
 
-      throw err;
+    throw err;
   }
 };
+
+export default createNamespaces;

@@ -14,12 +14,10 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { CommonFields, Model } from './model';
-import { QuotaSize } from './quota';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { CommonFields, Model } from "./model";
+import { QuotaSize } from "./quota";
 
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
@@ -37,11 +35,10 @@ export interface ProjectNamespace extends CommonFields {
 }
 
 export default class NamespaceModel extends Model {
-  table: string = 'namespace';
-  requiredFields: string[] = [
-    'name',
-    'profileId',
-  ];
+  table: string = "namespace";
+
+  requiredFields: string[] = ["name", "profileId"];
+
   pool: Pool;
 
   constructor(pool: any) {
@@ -55,10 +52,7 @@ export default class NamespaceModel extends Model {
         INSERT INTO ${this.table}
           (name, profile_id)
           VALUES ($1, $2) RETURNING *;`,
-      values: [
-        data.name,
-        data.profileId,
-      ],
+      values: [data.name, data.profileId],
     };
 
     try {
@@ -72,7 +66,10 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async update(namespaceId: number, data: ProjectNamespace): Promise<ProjectNamespace> {
+  async update(
+    namespaceId: number,
+    data: ProjectNamespace
+  ): Promise<ProjectNamespace> {
     const values: any[] = [];
     const query = {
       text: `
@@ -87,11 +84,7 @@ export default class NamespaceModel extends Model {
     try {
       const record = await this.findById(namespaceId);
       const aData = { ...record, ...data };
-      query.values = [
-        aData.name,
-        aData.profileId,
-        aData.clusterId,
-      ];
+      query.values = [aData.name, aData.profileId, aData.clusterId];
 
       const results = await this.runQuery(query);
       return results.pop();
@@ -125,7 +118,10 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async createProjectSet(clusterId: number, nsResults: any): Promise<ProjectNamespace[]> {
+  async createProjectSet(
+    clusterId: number,
+    nsResults: any
+  ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         INSERT INTO cluster_namespace
@@ -135,7 +131,9 @@ export default class NamespaceModel extends Model {
     };
     try {
       // default quota size set to QuotaSize.Small
-      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId, QuotaSize.Small] }));
+      const clPromises = nsResults.map((nr) =>
+        this.runQuery({ ...query, values: [nr.id, clusterId, QuotaSize.Small] })
+      );
       await Promise.all(clPromises);
 
       return nsResults;
@@ -147,7 +145,10 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async getProjectSetProvisionStatus(profileId: number, clusterId: number): Promise<boolean> {
+  async getProjectSetProvisionStatus(
+    profileId: number,
+    clusterId: number
+  ): Promise<boolean> {
     const query = {
       text: `
         SELECT provisioned FROM cluster_namespace
@@ -156,23 +157,31 @@ export default class NamespaceModel extends Model {
     };
 
     try {
-      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(profileId);
-      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
+      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(
+        profileId
+      );
+      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map((nr) =>
+        this.runQuery({ ...query, values: [nr.id, clusterId] })
+      );
       const clResults: ClusterNamespace[][] = await Promise.all(clPromises);
 
-      const clusterNamespaces = clResults.map((cl: ClusterNamespace[]) => cl.pop());
-      const flags: (boolean | undefined)[] = clusterNamespaces.map((cl: (ClusterNamespace | undefined)): boolean | undefined => {
-        return cl ? cl.provisioned : undefined;
-      });
+      const clusterNamespaces = clResults.map((cl: ClusterNamespace[]) =>
+        cl.pop()
+      );
+      const flags: (boolean | undefined)[] = clusterNamespaces.map(
+        (cl: ClusterNamespace | undefined): boolean | undefined => {
+          return cl ? cl.provisioned : undefined;
+        }
+      );
 
-      if (flags.every(f => f === true)) {
+      if (flags.every((f) => f === true)) {
         return true;
-      } else if (flags.every(f => f === false)) {
-        return false;
-      } else {
-        throw new Error(`Need to fix entries as the provisioning status of
-        the project set is not consistent`);
       }
+      if (flags.every((f) => f === false)) {
+        return false;
+      }
+      throw new Error(`Need to fix entries as the provisioning status of
+        the project set is not consistent`);
     } catch (err) {
       const message = `Unable to update provisioning status of the project set for profile ${profileId} and cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
@@ -181,7 +190,11 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateProjectSetProvisionStatus(profileId: number, clusterId: number, provisioned: boolean): Promise<ProjectNamespace[]> {
+  async updateProjectSetProvisionStatus(
+    profileId: number,
+    clusterId: number,
+    provisioned: boolean
+  ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         UPDATE cluster_namespace
@@ -192,8 +205,12 @@ export default class NamespaceModel extends Model {
     };
 
     try {
-      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(profileId);
-      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map(nr => this.runQuery({ ...query, values: [provisioned, nr.id, clusterId] }));
+      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(
+        profileId
+      );
+      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map((nr) =>
+        this.runQuery({ ...query, values: [provisioned, nr.id, clusterId] })
+      );
       await Promise.all(clPromises);
 
       return nsResults;
@@ -205,7 +222,10 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async getProjectSetQuotaSize(profileId: number, clusterId: number): Promise<QuotaSize> {
+  async getProjectSetQuotaSize(
+    profileId: number,
+    clusterId: number
+  ): Promise<QuotaSize> {
     const query = {
       text: `
         SELECT quota_cpu_size, quota_memory_size, quota_storage_size FROM cluster_namespace
@@ -214,27 +234,37 @@ export default class NamespaceModel extends Model {
     };
 
     try {
-      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(profileId);
-      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map(nr => this.runQuery({ ...query, values: [nr.id, clusterId] }));
+      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(
+        profileId
+      );
+      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map((nr) =>
+        this.runQuery({ ...query, values: [nr.id, clusterId] })
+      );
       const clResults: ClusterNamespace[][] = await Promise.all(clPromises);
 
-      const clusterNamespaces: (ClusterNamespace | undefined)[] = clResults.map(cl => cl.pop());
+      const clusterNamespaces: (ClusterNamespace | undefined)[] = clResults.map(
+        (cl) => cl.pop()
+      );
       const quotaSizes: QuotaSize[] = [];
-      clusterNamespaces.forEach((clusterNamespace: (ClusterNamespace | undefined)): void => {
-        if (!clusterNamespace) {
-          return;
+      clusterNamespaces.forEach(
+        (clusterNamespace: ClusterNamespace | undefined): void => {
+          if (!clusterNamespace) {
+            return;
+          }
+          const { quotaCpuSize, quotaMemorySize, quotaStorageSize } =
+            clusterNamespace;
+          quotaSizes.push(quotaCpuSize, quotaMemorySize, quotaStorageSize);
         }
-        const { quotaCpuSize, quotaMemorySize, quotaStorageSize } = clusterNamespace;
-        quotaSizes.push(quotaCpuSize, quotaMemorySize, quotaStorageSize);
-      })
+      );
 
-      const hasSameQuotaSizes: boolean = (quotaSizes.every((val, i, arr) => val === arr[0]));
+      const hasSameQuotaSizes: boolean = quotaSizes.every(
+        (val, i, arr) => val === arr[0]
+      );
       if (hasSameQuotaSizes) {
         return quotaSizes[0];
-      } else {
-        throw new Error(`Need to fix entries as the quota size of
-        the project set is not consistent`);
       }
+      throw new Error(`Need to fix entries as the quota size of
+        the project set is not consistent`);
     } catch (err) {
       const message = `Unable to get quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
@@ -243,7 +273,11 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateProjectSetQuotaSize(profileId: number, clusterId: number, quotaSize: QuotaSize): Promise<ProjectNamespace[]> {
+  async updateProjectSetQuotaSize(
+    profileId: number,
+    clusterId: number,
+    quotaSize: QuotaSize
+  ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         UPDATE cluster_namespace
@@ -255,7 +289,9 @@ export default class NamespaceModel extends Model {
 
     try {
       const nsResults = await this.findNamespacesForProfile(profileId);
-      const clPromises = nsResults.map(nr => this.runQuery({ ...query, values: [quotaSize, nr.id, clusterId] }));
+      const clPromises = nsResults.map((nr) =>
+        this.runQuery({ ...query, values: [quotaSize, nr.id, clusterId] })
+      );
       await Promise.all(clPromises);
 
       return nsResults;
@@ -284,9 +320,7 @@ export default class NamespaceModel extends Model {
         ) AS clusters
         FROM ${this.table} WHERE namespace.profile_id = $1;
       `,
-      values: [
-        profileId,
-      ],
+      values: [profileId],
     };
 
     try {
@@ -299,7 +333,9 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async findNamespacesForProfile(profileId: number): Promise<ProjectNamespace[]> {
+  async findNamespacesForProfile(
+    profileId: number
+  ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         SELECT * FROM ${this.table}

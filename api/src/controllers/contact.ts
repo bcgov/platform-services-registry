@@ -14,24 +14,21 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
-import DataManager from '../db';
-import { getUserByName, inviteUserToOrgs } from '../libs/github';
-import shared from '../libs/shared';
-import { DEFAULT_GITHUB_ORGANIZATION } from '../constants';
-import { validateRequiredFields } from '../libs/utils';
-
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Response } from "express";
+import { DEFAULT_GITHUB_ORGANIZATION } from "../constants";
+import DataManager from "../db";
+import { getUserByName, inviteUserToOrgs } from "../libs/github";
+import shared from "../libs/shared";
+import { validateRequiredFields } from "../libs/utils";
 
 const dm = new DataManager(shared.pgPool);
 const { ContactModel } = dm;
 
 export const createContact = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { body }: { body: any },
+  res: Response
 ): Promise<void> => {
-
   const rv = validateRequiredFields(ContactModel.requiredFields, body);
   if (rv) {
     throw rv;
@@ -57,35 +54,35 @@ export const createContact = async (
  * @returns will return 201 success code if request success, otherwise, will return 500 if there's any error.
  */
 export const inviteToOrg = async (
-  { params, body }: { params: any, body: any }, res: Response
+  { body }: { body: any },
+  res: Response
 ): Promise<void> => {
-  logger.info('createInvitationRequest')
+  logger.info("createInvitationRequest");
 
-  const { githubId: recipient } = body
+  const { githubId: recipient } = body;
 
   try {
-    logger.info(`user approved, request created for ${recipient}`)
-    const organizations = process.env.GITHUB_ORGANIZATION?.split(' ') || DEFAULT_GITHUB_ORGANIZATION
-    const { id } = await getUserByName(recipient)
+    logger.info(`user approved, request created for ${recipient}`);
+    const organizations =
+      process.env.GITHUB_ORGANIZATION?.split(" ") ||
+      DEFAULT_GITHUB_ORGANIZATION;
+    const { id } = await getUserByName(recipient);
 
-    const promises = await inviteUserToOrgs(
-      id,
-      organizations
-    )
+    const promises = await inviteUserToOrgs(id, organizations);
 
-    await Promise.all(promises)
+    await Promise.all(promises);
 
     res.status(201).send({
-      message: `${organizations.length} approved invitation${organizations.length > 1 ? 's' : ''
-        } created`,
-    })
-    logger.info('user created invitationRequest')
-
+      message: `${organizations.length} approved invitation${
+        organizations.length > 1 ? "s" : ""
+      } created`,
+    });
+    logger.info("user created invitationRequest");
   } catch (err) {
-    logger.warn(`user request failed`)
-    logger.error(err.message)
+    logger.warn(`user request failed`);
+    logger.error(err.message);
     res.status(500).send({
-      message: 'Unable to create invitation',
-    })
+      message: "Unable to create invitation",
+    });
   }
-}
+};
