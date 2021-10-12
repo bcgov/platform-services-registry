@@ -14,21 +14,22 @@
 // limitations under the License.
 //
 
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
-import { PROFILE_STATUS } from '../constants';
-import DataManager from '../db';
-import { HumanActionType, RequestType } from '../db/model/request';
-import { AuthenticatedUser } from '../libs/authmware';
-import { fulfillRequest } from '../libs/fulfillment';
-import { MessageType, sendProvisioningMessage } from '../libs/messaging';
-import { archiveProjectSet, updateProfileStatus } from '../libs/profile';
-import shared from '../libs/shared';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Response } from "express";
+import { PROFILE_STATUS } from "../constants";
+import DataManager from "../db";
+import { HumanActionType, RequestType } from "../db/model/request";
+import { AuthenticatedUser } from "../libs/authmware";
+import { fulfillRequest } from "../libs/fulfillment";
+import { MessageType, sendProvisioningMessage } from "../libs/messaging";
+import { archiveProjectSet, updateProfileStatus } from "../libs/profile";
+import shared from "../libs/shared";
 
 const dm = new DataManager(shared.pgPool);
 
 export const fetchHumanActionRequests = async (
-  { query }: { query: any }, res: Response
+  { query }: { query: any },
+  res: Response
 ): Promise<void> => {
   const { RequestModel } = dm;
   const { filter } = query;
@@ -48,7 +49,8 @@ export const fetchHumanActionRequests = async (
 };
 
 export const updateRequestHumanAction = async (
-  { params, body, user }: { params: any, body: any, user: AuthenticatedUser }, res: Response
+  { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
+  res: Response
 ): Promise<void> => {
   const { RequestModel } = dm;
   const { requestId } = params;
@@ -72,20 +74,31 @@ export const updateRequestHumanAction = async (
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
-      await updateProfileStatus(Number(request.profileId), PROFILE_STATUS.APPROVED);
+      await updateProfileStatus(
+        Number(request.profileId),
+        PROFILE_STATUS.APPROVED
+      );
       return res.status(204).end();
     }
 
-    logger.info(`Sending CHES message Project Request Rejected for ${request.profileId}`);
-    await sendProvisioningMessage(request.profileId, MessageType.RequestRejected);
+    logger.info(
+      `Sending CHES message Project Request Rejected for ${request.profileId}`
+    );
+    await sendProvisioningMessage(
+      request.profileId,
+      MessageType.RequestRejected
+    );
     logger.info(`CHES message sent for ${request.profileId}`);
 
-    if ( request.type === RequestType.Create) {
-      await archiveProjectSet(request.profileId)
+    if (request.type === RequestType.Create) {
+      await archiveProjectSet(request.profileId);
     }
 
-    if ( request.type === RequestType.Edit) {
-      await updateProfileStatus(Number(request.profileId), PROFILE_STATUS.PROVISIONED);
+    if (request.type === RequestType.Edit) {
+      await updateProfileStatus(
+        Number(request.profileId),
+        PROFILE_STATUS.PROVISIONED
+      );
     }
 
     await RequestModel.updateCompletionStatus(requestId);

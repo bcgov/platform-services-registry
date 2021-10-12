@@ -14,35 +14,36 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Response } from 'express';
-import DataManager from '../db';
-import { AuthenticatedUser } from '../libs/authmware';
-import { AccessFlag } from '../libs/authorization';
-import shared from '../libs/shared';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Response } from "express";
+import DataManager from "../db";
+import { AuthenticatedUser } from "../libs/authmware";
+import { AccessFlag } from "../libs/authorization";
+import shared from "../libs/shared";
 
 const dm = new DataManager(shared.pgPool);
 
-export const fetchClusters = async (
-    { user, body }: { user: AuthenticatedUser, body: any }, res: Response
+const fetchClusters = async (
+  { user }: { user: AuthenticatedUser },
+  res: Response
 ): Promise<void> => {
-    const { ClusterModel } = dm;
+  const { ClusterModel } = dm;
 
-    try {
-        let results;
-        if (user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster)) {
-            results = await ClusterModel.findAll();
-        } else {
-            results = await ClusterModel.findAllProdReady();
-        }
-
-        res.status(200).json(results);
-    } catch (err) {
-        const message = `Unable to fetch clusters`;
-        logger.error(`${message}, err = ${err.message}`);
-
-        throw errorWithCode(message, 500);
+  try {
+    let results;
+    if (user.accessFlags.includes(AccessFlag.ProvisionOnTestCluster)) {
+      results = await ClusterModel.findAll();
+    } else {
+      results = await ClusterModel.findAllProdReady();
     }
+
+    res.status(200).json(results);
+  } catch (err) {
+    const message = `Unable to fetch clusters`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
 };
+
+export default fetchClusters;

@@ -20,15 +20,13 @@
 
 /* eslint-env es6 */
 
-'use strict';
-
-import { getJwtCertificate, logger } from '@bcgov/common-nodejs-utils';
-import passport from 'passport';
-import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
-import config from '../config';
-import DataManager from '../db';
-import { assignUserAccessFlags } from '../libs/authorization';
-import shared from './shared';
+import { getJwtCertificate, logger } from "@bcgov/common-nodejs-utils";
+import passport from "passport";
+import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
+import config from "../config";
+import DataManager from "../db";
+import { assignUserAccessFlags } from "./authorization";
+import shared from "./shared";
 
 export interface AuthenticatedUser {
   id: number;
@@ -39,7 +37,7 @@ export interface AuthenticatedUser {
   email: string;
   archived: boolean;
   accessFlags: string[];
-  lastSeenAt: object,
+  lastSeenAt: object;
 }
 
 export const verify = async (req, jwtPayload, done) => {
@@ -71,37 +69,39 @@ export const verify = async (req, jwtPayload, done) => {
       // The returned user will be made available via `req.user`
       return done(null, profile); // OK
     } catch (err) {
-      const message = 'JWT verification error';
+      const message = "JWT verification error";
       logger.error(`${message}, err = ${err.message}`);
       return done(null, null); // FAIL
     }
   }
 
   // tslint:disable-next-line:no-shadowed-variable
-  const err = new Error('Unable to authenticate');
+  const err = new Error("Unable to authenticate");
   // err.code = 401;
 
   return done(err, false);
 };
 
-export const authmware = async app => {
+export const authmware = async (app) => {
   // app.use(session(sessionOptions));
   app.use(passport.initialize());
   app.use(passport.session());
 
   // We don't store any user information.
   passport.serializeUser((user, done) => {
-    logger.info('serialize');
+    logger.info("serialize");
     done(null, {});
   });
 
   // We don't load any addtional user information.
   passport.deserializeUser((id, done) => {
-    logger.info('deserialize');
+    logger.info("deserialize");
     done(null, {});
   });
 
-  const { certificate, algorithm } = await getJwtCertificate(config.get('sso:certsUrl'));
+  const { certificate, algorithm } = await getJwtCertificate(
+    config.get("sso:certsUrl")
+  );
   const opts: any = {};
   opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
   opts.algorithms = [algorithm];
@@ -109,7 +109,7 @@ export const authmware = async app => {
   opts.passReqToCallback = true;
   // For development purposes only ignore the expiration
   // time of tokens.
-  if (config.get('environment') === 'development') {
+  if (config.get("environment") === "development") {
     opts.ignoreExpiration = true;
   }
 

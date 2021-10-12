@@ -14,25 +14,23 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from "fs";
+import path from "path";
+import { Pool } from "pg";
+import fetchClusters from "../src/controllers/cluster";
+import ClusterModel from "../src/db/model/cluster";
+import { AccessFlag } from "../src/libs/authorization";
+import FauxExpress from "./src/fauxexpress";
 
-import fs from 'fs';
-import path from 'path';
-import { Pool } from 'pg';
-import { fetchClusters } from '../src/controllers/cluster';
-import ClusterModel from '../src/db/model/cluster';
-import { AccessFlag } from '../src/libs/authorization';
-import FauxExpress from './src/fauxexpress';
+const p0 = path.join(__dirname, "fixtures/select-default-cluster.json");
+const selectCluster = JSON.parse(fs.readFileSync(p0, "utf8"));
 
-const p0 = path.join(__dirname, 'fixtures/select-default-cluster.json');
-const selectCluster = JSON.parse(fs.readFileSync(p0, 'utf8'));
-
-const p1 = path.join(__dirname, 'fixtures/get-authenticated-user.json');
-const authenticatedUser = JSON.parse(fs.readFileSync(p1, 'utf8'));
+const p1 = path.join(__dirname, "fixtures/get-authenticated-user.json");
+const authenticatedUser = JSON.parse(fs.readFileSync(p1, "utf8"));
 
 const client = new Pool().connect();
 
-describe('Project-profile event handlers', () => {
+describe("Project-profile event handlers", () => {
   let ex;
 
   beforeEach(() => {
@@ -41,10 +39,12 @@ describe('Project-profile event handlers', () => {
     ex = new FauxExpress();
   });
 
-
-  it('All clusters are returned', async () => {
+  it("All clusters are returned", async () => {
     const req = {
-      user: { ...authenticatedUser, accessFlags: [AccessFlag.ProvisionOnTestCluster,] },
+      user: {
+        ...authenticatedUser,
+        accessFlags: [AccessFlag.ProvisionOnTestCluster],
+      },
     };
     client.query.mockReturnValueOnce({ rows: selectCluster });
 
@@ -58,19 +58,25 @@ describe('Project-profile event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch all clusters should throw', async () => {
+  it("Fetch all clusters should throw", async () => {
     const req = {};
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
-    // @ts-ignore
-    await expect(fetchClusters(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(
+      // @ts-ignore
+      fetchClusters(req, ex.res)
+    ).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('Prod-ready clusters are returned to non-authorized user', async () => {
-    const findAllProdReady = ClusterModel.prototype.findAllProdReady = jest.fn().mockResolvedValue({ rows: ['stub'] });
+  it("Prod-ready clusters are returned to non-authorized user", async () => {
+    const findAllProdReady = (ClusterModel.prototype.findAllProdReady = jest
+      .fn()
+      .mockResolvedValue({ rows: ["stub"] }));
     const req = {
       user: authenticatedUser,
     };
@@ -80,10 +86,15 @@ describe('Project-profile event handlers', () => {
     expect(findAllProdReady).toHaveBeenCalledTimes(1);
   });
 
-  it('Both test and prod-ready clusters are returned to authorized user', async () => {
-    const findAll = ClusterModel.prototype.findAll = jest.fn().mockResolvedValue({ rows: ['stub'] });
+  it("Both test and prod-ready clusters are returned to authorized user", async () => {
+    const findAll = (ClusterModel.prototype.findAll = jest
+      .fn()
+      .mockResolvedValue({ rows: ["stub"] }));
     const req = {
-      user: { ...authenticatedUser, accessFlags: [AccessFlag.ProvisionOnTestCluster,] },
+      user: {
+        ...authenticatedUser,
+        accessFlags: [AccessFlag.ProvisionOnTestCluster],
+      },
     };
 
     // @ts-ignore

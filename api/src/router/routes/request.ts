@@ -14,18 +14,27 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { fetchHumanActionRequests, updateRequestHumanAction } from '../../controllers/request';
-import { authorize, validateRequiredProfile } from '../../libs/authorization';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import {
+  fetchHumanActionRequests,
+  updateRequestHumanAction,
+} from "../../controllers/request";
+import { authorize, validateRequiredProfile } from "../../libs/authorization";
 
 const router = express.Router();
 
 // Requests
-router.get('/human-action', authorize(validateRequiredProfile), asyncMiddleware(fetchHumanActionRequests));
+router.get(
+  "/human-action",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchHumanActionRequests)
+);
 
 // Human Actions
-router.post('/:requestId/human-action', authorize(validateRequiredProfile), asyncMiddleware(updateRequestHumanAction))
+router.post(
+  "/:requestId/human-action",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(updateRequestHumanAction)
+);
 export default router;
