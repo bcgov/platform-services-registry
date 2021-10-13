@@ -14,19 +14,41 @@
 // limitations under the License.
 //
 
+import { NameSpacesQuotaSize, ProjectQuotaSize } from '../src/db/model/namespace';
 import { QuotaSize } from "../src/db/model/quota";
-import getAllowedQuotaSizes from "../src/libs/quota";
+import { getAllowedQuotaSizes, getAllowQuotaForEachResource } from '../src/libs/quota';
 
 describe("Quota services", () => {
   it("getAllowedQuotaSizes works correctly", async () => {
-    expect(getAllowedQuotaSizes(QuotaSize.Small)).toEqual([QuotaSize.Medium]);
-    expect(getAllowedQuotaSizes(QuotaSize.Medium)).toEqual([
-      QuotaSize.Small,
-      QuotaSize.Large,
-    ]);
-    expect(getAllowedQuotaSizes(QuotaSize.Large)).toEqual([
-      QuotaSize.Small,
-      QuotaSize.Medium,
-    ]);
+    const testCurrentQuotaSize: ProjectQuotaSize = {
+      quotaCpuSize: QuotaSize.Small,
+      quotaMemorySize: QuotaSize.Medium,
+      quotaStorageSize: QuotaSize.Large,
+    }
+
+    const expectedAllowQuotaSizes: NameSpacesQuotaSize = {
+      quotaCpuSize: [QuotaSize.Medium],
+      quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
+      quotaStorageSize: [QuotaSize.Small, QuotaSize.Medium]
+    }
+
+    expect(getAllowedQuotaSizes(testCurrentQuotaSize)).toEqual(expectedAllowQuotaSizes);
+  });
+
+  it('getAllowedQuotaSizes works correctly', async () => {
+    const testCurrentQuotaSize1 = QuotaSize.Small
+    const testCurrentQuotaSize2 = QuotaSize.Medium
+    const testCurrentQuotaSize3 = QuotaSize.Large
+    const testCurrentQuotaSize5 = undefined
+
+    const expectedAllowQuotaSizes1 = [QuotaSize.Medium]
+    const expectedAllowQuotaSizes2 = [QuotaSize.Small, QuotaSize.Large]
+    const expectedAllowQuotaSizes3 = [QuotaSize.Small, QuotaSize.Medium]
+    const expectedAllowQuotaSizes5 = [QuotaSize.Medium]
+
+    expect(getAllowQuotaForEachResource(testCurrentQuotaSize1)).toEqual(expectedAllowQuotaSizes1);
+    expect(getAllowQuotaForEachResource(testCurrentQuotaSize2)).toEqual(expectedAllowQuotaSizes2);
+    expect(getAllowQuotaForEachResource(testCurrentQuotaSize3)).toEqual(expectedAllowQuotaSizes3);
+    expect(getAllowQuotaForEachResource(testCurrentQuotaSize5)).toEqual(expectedAllowQuotaSizes5);
   });
 });

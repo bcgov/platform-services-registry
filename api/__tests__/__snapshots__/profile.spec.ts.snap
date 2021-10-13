@@ -382,9 +382,15 @@ exports[`Profile event handlers returns a list of quota options for a given prof
 
 exports[`Profile event handlers returns a list of quota options for a given profile 3`] = `
 Object {
-  "quotaCpuSize": "medium",
-  "quotaMemorySize": "medium",
-  "quotaStorageSize": "medium",
+  "quotaCpuSize": Array [
+    "medium",
+  ],
+  "quotaMemorySize": Array [
+    "medium",
+  ],
+  "quotaStorageSize": Array [
+    "medium",
+  ],
 }
 `;
 

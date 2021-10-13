@@ -566,7 +566,7 @@ Array [
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS \\"block\\", storage_file AS \\"file\\", storage_backup AS \\"backup\\", storage_capacity AS \\"capacity\\", storage_pvc_count AS \\"pvcCount\\"
                         FROM ref_quota WHERE id = $3) d)
                 );
-            ",
+                ",
       "values": Array [
         "small",
         "small",

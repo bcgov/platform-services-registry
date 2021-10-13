@@ -27,10 +27,10 @@ import {
   updateProfileQuotaSize
 } from "../src/controllers/profile";
 import ContactModel from "../src/db/model/contact";
+import { ProjectQuotaSize } from '../src/db/model/namespace';
 import { QuotaSize } from "../src/db/model/quota";
 import RequestModel from "../src/db/model/request";
 import { getQuotaSize } from "../src/libs/profile";
-import getAllowedQuotaSizes from "../src/libs/quota";
 import {
   requestProfileContactsEdit,
   requestProfileQuotaSizeEdit
@@ -58,12 +58,14 @@ const client = new Pool().connect();
 
 jest.mock("../src/libs/profile", () => {
   return {
-    getQuotaSize: jest.fn().mockResolvedValue("small"),
+    getQuotaSize: jest.fn().mockResolvedValue({
+      quotaCpuSize: 'small',
+      quotaMemorySize: 'small',
+      quotaStorageSize: 'small'
+    }),
     updateProfileStatus: jest.fn(),
   };
 });
-
-jest.mock("../src/libs/quota", () => jest.fn().mockReturnValue(["medium"]));
 
 jest.mock("../src/libs/request", () => ({
   requestProjectProfileEdit: jest.fn(),
@@ -287,8 +289,6 @@ describe("Profile event handlers", () => {
 
     await fetchProfileAllowedQuotaSizes(req, ex.res);
 
-    expect(getAllowedQuotaSizes).toHaveBeenCalledTimes(1);
-
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
@@ -312,6 +312,11 @@ describe("Profile event handlers", () => {
   });
 
   it("Request profile quota size edit successfully", async () => {
+    const testRequestQuotaSize: ProjectQuotaSize = {
+      quotaCpuSize: QuotaSize.Small,
+      quotaMemorySize: QuotaSize.Small,
+      quotaStorageSize: QuotaSize.Small
+    }
     const body = {
       requestedQuotaSize: testRequestQuotaSize,
     };
