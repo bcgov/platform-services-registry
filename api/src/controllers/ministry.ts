@@ -14,25 +14,28 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { errorWithCode, logger } from '@bcgov/common-nodejs-utils';
-import { Request, Response } from 'express';
-import DataManager from '../db';
-import shared from '../libs/shared';
+import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
+import { Request, Response } from "express";
+import DataManager from "../db";
+import shared from "../libs/shared";
 
 const dm = new DataManager(shared.pgPool);
 
-export const fetchMinistrySponsors = async (req: Request, res: Response): Promise<void> => {
+const fetchMinistrySponsors = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { MinistryModel } = dm;
   try {
     const results = await MinistryModel.findAll();
 
     res.status(200).json(results);
   } catch (err) {
-    const message = `Unable fetch ministries`;
+    const message = "Unable fetch ministries";
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
   }
 };
+
+export default fetchMinistrySponsors;

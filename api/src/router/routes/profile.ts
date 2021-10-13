@@ -14,51 +14,142 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { asyncMiddleware } from '@bcgov/common-nodejs-utils';
-import express from 'express';
-import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../../controllers/namespace';
-import { addContactToProfile, createProjectRequest, fetchDashboardProjectProfiles, fetchProfileAllowedQuotaSizes, fetchProfileContacts, fetchProfileEditRequests, fetchProfileQuotaSize, updateProfileContacts, updateProfileQuotaSize } from '../../controllers/profile';
-import { archiveProjectProfile, createProjectProfile, fetchAllProjectProfiles, fetchProjectProfile, updateProjectProfile } from '../../controllers/project-profile';
-import { authorize, validateRequiredCluster, validateRequiredProfile } from '../../libs/authorization';
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import {
+  archiveProfileNamespace,
+  createNamespace,
+  fetchProfileNamespace,
+  fetchProfileNamespaces,
+  updateProfileNamespace,
+} from "../../controllers/namespace";
+import {
+  addContactToProfile,
+  createProjectRequest,
+  fetchDashboardProjectProfiles,
+  fetchProfileAllowedQuotaSizes,
+  fetchProfileContacts,
+  fetchProfileEditRequests,
+  fetchProfileQuotaSize,
+  updateProfileContacts,
+  updateProfileQuotaSize,
+} from "../../controllers/profile";
+import {
+  archiveProjectProfile,
+  createProjectProfile,
+  fetchAllProjectProfiles,
+  fetchProjectProfile,
+  updateProjectProfile,
+} from "../../controllers/project-profile";
+import {
+  authorize,
+  validateRequiredCluster,
+  validateRequiredProfile,
+} from "../../libs/authorization";
 
 const router = express.Router();
 
 // Profiles
-router.post('/', authorize(validateRequiredCluster), asyncMiddleware(createProjectProfile));
-router.get('/', asyncMiddleware(fetchAllProjectProfiles));
-router.get('/dashboard-projects', asyncMiddleware(fetchDashboardProjectProfiles))
-router.get('/:profileId', authorize(validateRequiredProfile), asyncMiddleware(fetchProjectProfile));
-router.delete('/:profileId', authorize(validateRequiredProfile), asyncMiddleware(archiveProjectProfile));
+router.post(
+  "/",
+  authorize(validateRequiredCluster),
+  asyncMiddleware(createProjectProfile)
+);
+router.get("/", asyncMiddleware(fetchAllProjectProfiles));
+router.get(
+  "/dashboard-projects",
+  asyncMiddleware(fetchDashboardProjectProfiles)
+);
+router.get(
+  "/:profileId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProjectProfile)
+);
+router.delete(
+  "/:profileId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(archiveProjectProfile)
+);
 // may involve provisioner-related changes
-router.put('/:profileId', authorize(validateRequiredProfile), asyncMiddleware(updateProjectProfile));
-
+router.put(
+  "/:profileId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(updateProjectProfile)
+);
 
 // Namespace
-router.post('/:profileId/namespace', authorize(validateRequiredProfile), asyncMiddleware(createNamespace));
-router.get('/:profileId/namespace', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileNamespaces));
-router.get('/:profileId/namespace/:namespaceId', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileNamespace));
-router.put('/:profileId/namespace/:namespaceId', authorize(validateRequiredProfile), asyncMiddleware(updateProfileNamespace));
-router.delete('/:profileId/namespace/:namespaceId', authorize(validateRequiredProfile), asyncMiddleware(archiveProfileNamespace));
-
+router.post(
+  "/:profileId/namespace",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(createNamespace)
+);
+router.get(
+  "/:profileId/namespace",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProfileNamespaces)
+);
+router.get(
+  "/:profileId/namespace/:namespaceId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProfileNamespace)
+);
+router.put(
+  "/:profileId/namespace/:namespaceId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(updateProfileNamespace)
+);
+router.delete(
+  "/:profileId/namespace/:namespaceId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(archiveProfileNamespace)
+);
 
 // Contacts
-router.get('/:profileId/contacts', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileContacts));
-router.post('/:profileId/contact/:contactId', authorize(validateRequiredProfile), asyncMiddleware(addContactToProfile));
+router.get(
+  "/:profileId/contacts",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProfileContacts)
+);
+router.post(
+  "/:profileId/contact/:contactId",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(addContactToProfile)
+);
 // may involve provisioner-related changes
-router.post('/:profileId/contacts', authorize(validateRequiredProfile), asyncMiddleware(updateProfileContacts));
-
+router.post(
+  "/:profileId/contacts",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(updateProfileContacts)
+);
 
 // Quota
-router.get('/:profileId/quota-size', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileQuotaSize));
-router.get('/:profileId/allowed-quota-sizes', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileAllowedQuotaSizes));
+router.get(
+  "/:profileId/quota-size",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProfileQuotaSize)
+);
+router.get(
+  "/:profileId/allowed-quota-sizes",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProfileAllowedQuotaSizes)
+);
 // will involve provisioner-related changes
-router.post('/:profileId/quota-size', authorize(validateRequiredProfile), asyncMiddleware(updateProfileQuotaSize));
-
+router.post(
+  "/:profileId/quota-size",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(updateProfileQuotaSize)
+);
 
 // Request
-router.get('/:profileId/request', authorize(validateRequiredProfile), asyncMiddleware(fetchProfileEditRequests));
-router.post('/:profileId/request', authorize(validateRequiredProfile), asyncMiddleware(createProjectRequest));
+router.get(
+  "/:profileId/request",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(fetchProfileEditRequests)
+);
+router.post(
+  "/:profileId/request",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(createProjectRequest)
+);
 
 export default router;

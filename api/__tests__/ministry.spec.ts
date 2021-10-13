@@ -14,64 +14,65 @@
 // limitations under the License.
 //
 
-'use strict';
+import fs from "fs";
+import { camelCase } from "lodash";
+import path from "path";
+import { Pool } from "pg";
+import fetchMinistrySponsors from "../src/controllers/ministry";
+import FauxExpress from "./src/fauxexpress";
 
-import fs from 'fs';
-import { camelCase } from 'lodash';
-import path from 'path';
-import { Pool } from 'pg';
-import { fetchMinistrySponsors } from '../src/controllers/ministry';
-import FauxExpress from './src/fauxexpress';
-
-const p0 = path.join(__dirname, 'fixtures/select-ministry-sponsors.json');
-const selectMinistrySponsors = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p0 = path.join(__dirname, "fixtures/select-ministry-sponsors.json");
+const selectMinistrySponsors = JSON.parse(fs.readFileSync(p0, "utf8"));
 
 const client = new Pool().connect();
 
-jest.mock('../src/db/utils', () => ({
-    generateNamespacePrefix: jest.fn().mockReturnValue('c8c7e6'),
-    transformKeysToCamelCase: jest.fn().mockImplementation(data => {
-        const obj = {};
-        Object.keys(data).forEach(key => {
-            obj[camelCase(key)] = data[key];
-        });
+jest.mock("../src/db/utils", () => ({
+  generateNamespacePrefix: jest.fn().mockReturnValue("c8c7e6"),
+  transformKeysToCamelCase: jest.fn().mockImplementation((data) => {
+    const obj = {};
+    Object.keys(data).forEach((key) => {
+      obj[camelCase(key)] = data[key];
+    });
 
-        return obj;
-    }),
+    return obj;
+  }),
 }));
 
-describe('Ministry event handlers', () => {
-    let ex;
+describe("Ministry event handlers", () => {
+  let ex;
 
-    beforeEach(() => {
-        jest.clearAllMocks();
+  beforeEach(() => {
+    jest.clearAllMocks();
 
-        ex = new FauxExpress();
+    ex = new FauxExpress();
+  });
+
+  it("All ministry sponsors are returned", async () => {
+    const req = {};
+    client.query.mockReturnValueOnce({ rows: selectMinistrySponsors });
+
+    // @ts-ignore
+    await fetchMinistrySponsors(req, ex.res);
+
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.res.statusCode).toMatchSnapshot();
+    expect(ex.responseData).toMatchSnapshot();
+    expect(ex.res.status).toBeCalled();
+    expect(ex.res.json).toBeCalled();
+  });
+
+  it("Fetch all profiles should throw", async () => {
+    const req = {};
+    client.query.mockImplementation(() => {
+      throw new Error();
     });
 
-    it('All ministry sponsors are returned', async () => {
-        const req = {};
-        client.query.mockReturnValueOnce({ rows: selectMinistrySponsors });
+    await expect(
+      // @ts-ignore
+      fetchMinistrySponsors(req, ex.res)
+    ).rejects.toThrowErrorMatchingSnapshot();
 
-        // @ts-ignore
-        await fetchMinistrySponsors(req, ex.res);
-
-        expect(client.query.mock.calls).toMatchSnapshot();
-        expect(ex.res.statusCode).toMatchSnapshot();
-        expect(ex.responseData).toMatchSnapshot();
-        expect(ex.res.status).toBeCalled();
-        expect(ex.res.json).toBeCalled();
-    });
-
-    it('Fetch all profiles should throw', async () => {
-        const req = {};
-        client.query.mockImplementation(() => { throw new Error() });
-
-        // @ts-ignore
-        await expect(fetchMinistrySponsors(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
-
-        expect(client.query.mock.calls).toMatchSnapshot();
-        expect(ex.responseData).toBeUndefined();
-    });
-
+    expect(client.query.mock.calls).toMatchSnapshot();
+    expect(ex.responseData).toBeUndefined();
+  });
 });

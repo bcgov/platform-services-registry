@@ -14,22 +14,26 @@
 // limitations under the License.
 //
 
-'use strict';
+import { Response } from "express";
+import fs from "fs";
+import path from "path";
+import { Pool } from "pg";
+import {
+  archiveProfileNamespace,
+  createNamespace,
+  fetchProfileNamespace,
+  fetchProfileNamespaces,
+  updateProfileNamespace,
+} from "../src/controllers/namespace";
 
-import { Response } from 'express';
-import fs from 'fs';
-import path from 'path';
-import { Pool } from 'pg';
-import { archiveProfileNamespace, createNamespace, fetchProfileNamespace, fetchProfileNamespaces, updateProfileNamespace } from '../src/controllers/namespace';
+const p0 = path.join(__dirname, "fixtures/select-namespace.json");
+const selectNamespace = JSON.parse(fs.readFileSync(p0, "utf8"));
 
-const p0 = path.join(__dirname, 'fixtures/select-namespace.json');
-const selectNamespace = JSON.parse(fs.readFileSync(p0, 'utf8'));
+const p1 = path.join(__dirname, "fixtures/insert-namespace.json");
+const insertNamespace = JSON.parse(fs.readFileSync(p1, "utf8"));
 
-const p1 = path.join(__dirname, 'fixtures/insert-namespace.json');
-const insertNamespace = JSON.parse(fs.readFileSync(p1, 'utf8'));
-
-const p2 = path.join(__dirname, 'fixtures/select-project-set-namespaces.json');
-const selectProjectSetNamespaces = JSON.parse(fs.readFileSync(p2, 'utf8'));
+const p2 = path.join(__dirname, "fixtures/select-project-set-namespaces.json");
+const selectProjectSetNamespaces = JSON.parse(fs.readFileSync(p2, "utf8"));
 
 const client = new Pool().connect();
 
@@ -47,12 +51,14 @@ class FauxExpress {
     }),
     statusCode: 200,
     end: jest.fn(),
-  }
+  };
+
   req: any;
+
   responseData: any;
 }
 
-describe('Namespace event handlers', () => {
+describe("Namespace event handlers", () => {
   let ex;
 
   beforeEach(() => {
@@ -61,7 +67,7 @@ describe('Namespace event handlers', () => {
     ex = new FauxExpress();
   });
 
-  it('A Namespace is created', async () => {
+  it("A Namespace is created", async () => {
     const req = {
       body: insertNamespace,
       params: { profileId: 1 },
@@ -73,7 +79,9 @@ describe('Namespace event handlers', () => {
       updatedAt: new Date(),
     };
 
-    client.query.mockReturnValueOnce({ rows: [{ ...insertNamespace, ...addon }] });
+    client.query.mockReturnValueOnce({
+      rows: [{ ...insertNamespace, ...addon }],
+    });
 
     // @ts-ignore
     await createNamespace(req, ex.res);
@@ -89,12 +97,14 @@ describe('Namespace event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('A Namespace fails to create', async () => {
+  it("A Namespace fails to create", async () => {
     const req = {
       body: insertNamespace,
     };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
     await expect(createNamespace(req, ex.res)).rejects.toThrow();
@@ -103,8 +113,7 @@ describe('Namespace event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-
-  it('All Namespaces are returned', async () => {
+  it("All Namespaces are returned", async () => {
     const req = {
       params: { profileId: 4 },
     };
@@ -120,20 +129,24 @@ describe('Namespace event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch all Namespaces should throw', async () => {
+  it("Fetch all Namespaces should throw", async () => {
     const req = {
       params: {},
     };
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
-    await expect(fetchProfileNamespaces(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(
+      fetchProfileNamespaces(req, ex.res)
+    ).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A single Namespace is returned', async () => {
+  it("A single Namespace is returned", async () => {
     const req = {
       params: {
         profileId: 4,
@@ -152,20 +165,24 @@ describe('Namespace event handlers', () => {
     expect(ex.res.json).toBeCalled();
   });
 
-  it('Fetch single profile should throw', async () => {
+  it("Fetch single profile should throw", async () => {
     const req = {
       params: { profileId: 1 },
     };
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
-    await expect(fetchProfileNamespace(req, ex.res)).rejects.toThrowErrorMatchingSnapshot();
+    await expect(
+      fetchProfileNamespace(req, ex.res)
+    ).rejects.toThrowErrorMatchingSnapshot();
 
     expect(client.query.mock.calls).toMatchSnapshot();
     expect(ex.responseData).toBeUndefined();
   });
 
-  it('A Namespace is updated', async () => {
+  it("A Namespace is updated", async () => {
     const body = JSON.parse(JSON.stringify(insertNamespace));
     const req = {
       params: {
@@ -173,7 +190,7 @@ describe('Namespace event handlers', () => {
         namespaceId: 1,
       },
       body,
-    }
+    };
 
     client.query.mockReturnValue({ rows: [body] });
 
@@ -187,16 +204,18 @@ describe('Namespace event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-  it('A Namespace fails to update', async () => {
+  it("A Namespace fails to update", async () => {
     const body = JSON.parse(JSON.stringify(insertNamespace));
     const req = {
       params: {
         profileId: 1,
       },
       body,
-    }
+    };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
     await expect(updateProfileNamespace(req, ex.res)).rejects.toThrow();
@@ -205,15 +224,17 @@ describe('Namespace event handlers', () => {
     expect(ex.res.json).not.toBeCalled();
   });
 
-  it('A Namespace is archived', async () => {
+  it("A Namespace is archived", async () => {
     const req = {
       params: {
         profileId: 9,
         namespaceId: 9,
       },
-    }
+    };
 
-    client.query.mockReturnValueOnce({ rows: [{ ...insertNamespace, archived: true }] });
+    client.query.mockReturnValueOnce({
+      rows: [{ ...insertNamespace, archived: true }],
+    });
 
     // @ts-ignore
     await archiveProfileNamespace(req, ex.res);
@@ -225,14 +246,16 @@ describe('Namespace event handlers', () => {
     expect(ex.res.end).toBeCalled();
   });
 
-  it('A project fails to archive', async () => {
+  it("A project fails to archive", async () => {
     const req = {
       params: {
         profileId: 9,
       },
-    }
+    };
 
-    client.query.mockImplementation(() => { throw new Error() });
+    client.query.mockImplementation(() => {
+      throw new Error();
+    });
 
     // @ts-ignore
     await expect(archiveProfileNamespace(req, ex.res)).rejects.toThrow();

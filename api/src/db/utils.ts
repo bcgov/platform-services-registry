@@ -14,11 +14,9 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import crypto from 'crypto';
-import { camelCase } from 'lodash';
-import config from '../config';
+import crypto from "crypto";
+import { camelCase } from "lodash";
+import config from "../config";
 
 /**
  * Convert the keys of an object from snake notation to camel case
@@ -26,9 +24,9 @@ import config from '../config';
  * @param {object} data An object (dictionary) to have its keys converted
  * @return The converted object
  */
-export const transformKeysToCamelCase = data => {
+export const transformKeysToCamelCase = (data) => {
   const obj = {};
-  Object.keys(data).forEach(key => {
+  Object.keys(data).forEach((key) => {
     obj[camelCase(key)] = data[key];
   });
 
@@ -38,10 +36,13 @@ export const transformKeysToCamelCase = data => {
 export const generateNamespacePrefix = (len: number = 6): string => {
   // For DEV/TEST environments, a license plate prefix is necessary to avoid duplication
   // within ArgoCD. Utilizing the prefix "T" for TEST, and "D" for DEV will avoid this.
-  return config.get('api:prefix') + crypto
-    .randomBytes(Math.ceil(len / 2))
-    .toString('hex')
-    .slice(0, len);
+  return (
+    config.get("api:prefix") +
+    crypto
+      .randomBytes(Math.ceil(len / 2))
+      .toString("hex")
+      .slice(0, len)
+  );
 };
 
 /**
@@ -52,9 +53,13 @@ export const generateNamespacePrefix = (len: number = 6): string => {
  */
 export const comparerContact = (otherArray, comparator) => {
   return (current) => {
-    return otherArray.filter((other) => (other[comparator] === current[comparator])).length === 0
-  }
-}
+    return (
+      otherArray.filter((other) => other[comparator] === current[comparator])
+        .length === 0
+    );
+  };
+};
+
 
 
 /**

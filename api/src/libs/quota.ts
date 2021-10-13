@@ -14,12 +14,9 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
+import { logger } from "@bcgov/common-nodejs-utils";
 import { NameSpacesQuotaSize, ProjectQuotaSize } from '../db/model/namespace';
-import { QuotaSize } from '../db/model/quota';
-
+import { QuotaSize } from "../db/model/quota";
 
 
 /**
@@ -29,38 +26,37 @@ import { QuotaSize } from '../db/model/quota';
  * @returns all option that user can upgrade/downgrade
  */
 export const getAllowQuotaForEachResource = (quotaSize: QuotaSize = QuotaSize.Small) => {
-    const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
+  const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
 
-    // Incase we have some parameter that is not one of our option, we will use Small quota size as default parameter
-    const position = allQuotaOptions.indexOf(quotaSize) < 0 ? 0 : allQuotaOptions.indexOf(quotaSize)
+  // Incase we have some parameter that is not one of our option, we will use Small quota size as default parameter
+  const position = allQuotaOptions.indexOf(quotaSize) < 0 ? 0 : allQuotaOptions.indexOf(quotaSize)
 
-    const lowerBound = allQuotaOptions.slice(0, position)
-    const upperBound = allQuotaOptions[position + 1] || []
+  const lowerBound = allQuotaOptions.slice(0, position)
+  const upperBound = allQuotaOptions[position + 1] || []
 
-    return lowerBound.concat(upperBound)
+  return lowerBound.concat(upperBound)
 }
 
 export const getAllowedQuotaSizes = (currentQuotaSize: ProjectQuotaSize): NameSpacesQuotaSize => {
-    try {
-
-
-        const availableQuotaOptions: NameSpacesQuotaSize = {
-            quotaCpuSize: [],
-            quotaMemorySize: [],
-            quotaStorageSize: [],
-        }
-
-        for (const key in currentQuotaSize) {
-            if (currentQuotaSize[key]) {
-                availableQuotaOptions[key] = getAllowQuotaForEachResource(currentQuotaSize[key])
-            }
-        }
-
-        return availableQuotaOptions
-    } catch (err) {
-        const message = `Unable to get a list of Allowed quota sizes`;
-        logger.error(`${message}, err = ${err.message}`);
-
-        throw err;
+  try {
+    const availableQuotaOptions: NameSpacesQuotaSize = {
+      quotaCpuSize: [],
+      quotaMemorySize: [],
+      quotaStorageSize: [],
     }
+    for (const key in currentQuotaSize) {
+      if (currentQuotaSize[key]) {
+        availableQuotaOptions[key] = getAllowQuotaForEachResource(currentQuotaSize[key])
+      }
+    }
+
+    return availableQuotaOptions
+  } catch (err) {
+    const message = "Unable to get a list of Allowed quota sizes";
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
 };
+
+export default getAllowedQuotaSizes;
