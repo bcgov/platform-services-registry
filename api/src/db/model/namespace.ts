@@ -276,11 +276,18 @@ export default class NamespaceModel extends Model {
         compareNameSpaceQuotaSize(quotaSizes);
 
       if (hasSameQuotaSizesForAllNameSpace) {
-        return quotaSizes[0];
-      }
-      throw new Error(`Need to fix entries as the quota size of
+        const projectQuotaSize: ProjectQuotaSize = {
+          quotaCpuSize: quotaSizes.quotaCpuSize.pop() || QuotaSize.Small,
+          quotaMemorySize: quotaSizes.quotaMemorySize.pop() || QuotaSize.Small,
+          quotaStorageSize: quotaSizes.quotaStorageSize.pop() || QuotaSize.Small
+        }
+        return projectQuotaSize;
+      } else {
+        throw new Error(`Need to fix entries as the quota size of
         the project set is not consistent`);
-    } catch (err) {
+      }
+    }
+    catch (err) {
       const message = `Unable to get quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
 
