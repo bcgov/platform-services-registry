@@ -17,13 +17,12 @@
 import fs from "fs";
 import path from "path";
 import { Pool } from "pg";
-import { ProjectQuotaSize } from '../src/db/model/namespace';
-import { QuotaSize } from "../src/db/model/quota";
+import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
 import RequestModel, { RequestEditType } from "../src/db/model/request";
 import {
   contextForEditing,
   contextForProvisioning,
-  fulfillRequest
+  fulfillRequest,
 } from "../src/libs/fulfillment";
 
 const p1 = path.join(__dirname, "fixtures/select-profile.json");
@@ -65,7 +64,7 @@ jest.mock("../src/libs/profile", () => {
     quotaCpuSize: QuotaSize.Small,
     quotaMemorySize: QuotaSize.Small,
     quotaStorageSize: QuotaSize.Small,
-  }
+  };
   return {
     getQuotaSize: jest.fn().mockResolvedValue(testQuotaSize),
   };

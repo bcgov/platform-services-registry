@@ -17,12 +17,17 @@
 import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
 import { CommonFields, Model } from "./model";
-import { ProjectQuotaSize } from './namespace';
 
 export enum QuotaSize {
   Small = "small",
   Medium = "medium",
   Large = "large",
+}
+
+export interface ProjectQuotaSize {
+  quotaCpuSize: QuotaSize;
+  quotaMemorySize: QuotaSize;
+  quotaStorageSize: QuotaSize;
 }
 
 export interface Quotas {
@@ -44,29 +49,29 @@ export interface Quotas {
 }
 
 interface QuotaSizeDedetail {
-  name: string
-  cpuNums: string[],
-  memoryNums: string[],
-  storageNums: string[],
+  name: string;
+  cpuNums: string[];
+  memoryNums: string[];
+  storageNums: string[];
 }
 
 interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail
-  medium: QuotaSizeDedetail
-  large: QuotaSizeDedetail
+  small: QuotaSizeDedetail;
+  medium: QuotaSizeDedetail;
+  large: QuotaSizeDedetail;
 }
 
 interface QuotaSizeDedetail {
-  name: string
-  cpuNums: string[],
-  memoryNums: string[],
-  storageNums: string[],
+  name: string;
+  cpuNums: string[];
+  memoryNums: string[];
+  storageNums: string[];
 }
 
 interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail
-  medium: QuotaSizeDedetail
-  large: QuotaSizeDedetail
+  small: QuotaSizeDedetail;
+  medium: QuotaSizeDedetail;
+  large: QuotaSizeDedetail;
 }
 
 export interface Quota extends CommonFields {
@@ -140,41 +145,39 @@ export default class QuotaModel extends Model {
       const quota = await this.findQuota();
       const quotaSizesDetail: QuotaSizeDedetails = {
         small: {
-          name: '',
+          name: "",
           cpuNums: [],
           memoryNums: [],
-          storageNums: []
+          storageNums: [],
         },
         medium: {
-          name: '',
+          name: "",
           cpuNums: [],
           memoryNums: [],
-          storageNums: []
+          storageNums: [],
         },
         large: {
-          name: '',
+          name: "",
           cpuNums: [],
           memoryNums: [],
-          storageNums: []
-        }
+          storageNums: [],
+        },
       };
 
       for (const size of quota) {
-        quotaSizesDetail[size.id] =
-        {
+        quotaSizesDetail[size.id] = {
           name: size.id,
           cpuNums: [size.cpuRequests, size.cpuLimits],
           memoryNums: [
             size.memoryRequests.replace("Gi", "GiB"),
-            size.memoryLimits.replace("Gi", "GiB")
+            size.memoryLimits.replace("Gi", "GiB"),
           ],
           storageNums: [
             size.storagePvcCount,
             size.storageFile.replace("Gi", "GiB"),
-            size.storageBackup.replace("Gi", "GiB")
+            size.storageBackup.replace("Gi", "GiB"),
           ],
-        }
-
+        };
       }
 
       return quotaSizesDetail;

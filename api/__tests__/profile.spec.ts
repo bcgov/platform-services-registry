@@ -24,16 +24,15 @@ import {
   fetchProfileEditRequests,
   fetchProfileQuotaSize,
   updateProfileContacts,
-  updateProfileQuotaSize
+  updateProfileQuotaSize,
 } from "../src/controllers/profile";
 import ContactModel from "../src/db/model/contact";
-import { ProjectQuotaSize } from '../src/db/model/namespace';
-import { QuotaSize } from "../src/db/model/quota";
+import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
 import RequestModel from "../src/db/model/request";
 import { getQuotaSize } from "../src/libs/profile";
 import {
   requestProfileContactsEdit,
-  requestProfileQuotaSizeEdit
+  requestProfileQuotaSizeEdit,
 } from "../src/libs/request";
 import FauxExpress from "./src/fauxexpress";
 
@@ -59,9 +58,9 @@ const client = new Pool().connect();
 jest.mock("../src/libs/profile", () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue({
-      quotaCpuSize: 'small',
-      quotaMemorySize: 'small',
-      quotaStorageSize: 'small'
+      quotaCpuSize: "small",
+      quotaMemorySize: "small",
+      quotaStorageSize: "small",
     }),
     updateProfileStatus: jest.fn(),
   };
@@ -315,8 +314,8 @@ describe("Profile event handlers", () => {
     const testRequestQuotaSize: ProjectQuotaSize = {
       quotaCpuSize: QuotaSize.Small,
       quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small
-    }
+      quotaStorageSize: QuotaSize.Small,
+    };
     const body = {
       requestedQuotaSize: testRequestQuotaSize,
     };
@@ -341,8 +340,8 @@ describe("Profile event handlers", () => {
       requestedQuotaSize: {
         quotaCpuSize: QuotaSize.Large,
         quotaMemorySize: QuotaSize.Large,
-        quotaStorageSize: QuotaSize.Large
-      }
+        quotaStorageSize: QuotaSize.Large,
+      },
     };
     const req = {
       params: { profileId: 4 },

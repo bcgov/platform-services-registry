@@ -14,13 +14,11 @@
 // limitations under the License.
 //
 
-'use strict';
-
-import { logger } from '@bcgov/common-nodejs-utils';
-import { Pool } from 'pg';
-import { compareNameSpaceQuotaSize } from '../utils';
-import { CommonFields, Model } from './model';
-import { QuotaSize } from './quota';
+import { logger } from "@bcgov/common-nodejs-utils";
+import { Pool } from "pg";
+import { compareNameSpaceQuotaSize } from "../utils";
+import { CommonFields, Model } from "./model";
+import { ProjectQuotaSize, QuotaSize } from "./quota";
 
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
@@ -41,11 +39,7 @@ export interface NameSpacesQuotaSize {
   quotaMemorySize: QuotaSize[];
   quotaStorageSize: QuotaSize[];
 }
-export interface ProjectQuotaSize {
-  quotaCpuSize: QuotaSize;
-  quotaMemorySize: QuotaSize;
-  quotaStorageSize: QuotaSize;
-}
+
 export default class NamespaceModel extends Model {
   table: string = "namespace";
 
@@ -261,7 +255,7 @@ export default class NamespaceModel extends Model {
       const quotaSizes: NameSpacesQuotaSize = {
         quotaCpuSize: [],
         quotaMemorySize: [],
-        quotaStorageSize: []
+        quotaStorageSize: [],
       };
 
       clusterNamespaces.forEach(
@@ -272,13 +266,14 @@ export default class NamespaceModel extends Model {
           const { quotaCpuSize, quotaMemorySize, quotaStorageSize } =
             clusterNamespace;
 
-          quotaSizes.quotaCpuSize.push(quotaCpuSize)
-          quotaSizes.quotaMemorySize.push(quotaMemorySize)
-          quotaSizes.quotaStorageSize.push(quotaStorageSize)
+          quotaSizes.quotaCpuSize.push(quotaCpuSize);
+          quotaSizes.quotaMemorySize.push(quotaMemorySize);
+          quotaSizes.quotaStorageSize.push(quotaStorageSize);
         }
       );
 
-      let hasSameQuotaSizesForAllNameSpace: boolean = compareNameSpaceQuotaSize(quotaSizes)
+      const hasSameQuotaSizesForAllNameSpace: boolean =
+        compareNameSpaceQuotaSize(quotaSizes);
 
       if (hasSameQuotaSizesForAllNameSpace) {
         return quotaSizes[0];
@@ -309,10 +304,18 @@ export default class NamespaceModel extends Model {
 
     try {
       const nsResults = await this.findNamespacesForProfile(profileId);
-      const clPromises = nsResults.map(nr => this.runQuery({
-        ...query,
-        values: [quotaSize.quotaCpuSize, quotaSize.quotaMemorySize, quotaSize.quotaStorageSize, nr.id, clusterId]
-      }));
+      const clPromises = nsResults.map((nr) =>
+        this.runQuery({
+          ...query,
+          values: [
+            quotaSize.quotaCpuSize,
+            quotaSize.quotaMemorySize,
+            quotaSize.quotaStorageSize,
+            nr.id,
+            clusterId,
+          ],
+        })
+      );
       await Promise.all(clPromises);
 
       return nsResults;

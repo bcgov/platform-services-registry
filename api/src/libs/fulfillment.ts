@@ -20,14 +20,13 @@ import { ROLE_IDS } from "../constants";
 import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
 import { Contact } from "../db/model/contact";
-import { ProjectQuotaSize } from '../db/model/namespace';
 import { ProjectProfile } from "../db/model/profile";
-import { Quotas } from '../db/model/quota';
+import { ProjectQuotaSize, Quotas } from "../db/model/quota";
 import {
   BotMessage,
   Request,
   RequestEditType,
-  RequestType
+  RequestType,
 } from "../db/model/request";
 import {
   NatsContact,
@@ -35,7 +34,7 @@ import {
   NatsContext,
   NatsContextAction,
   NatsMessage,
-  NatsProjectNamespace
+  NatsProjectNamespace,
 } from "../types";
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
@@ -284,15 +283,15 @@ const createBotMessageSet = async (
 
 export const fulfillRequest = async (request: Request): Promise<any> => {
   try {
-    const subjectPrefix: string = config.get('nats:subjectPrefix');
+    const subjectPrefix: string = config.get("nats:subjectPrefix");
 
-    await createBotMessageSet(request, subjectPrefix)
-    const botMessageSet = await fetchBotMessageRequests(Number(request.id))
+    await createBotMessageSet(request, subjectPrefix);
+    const botMessageSet = await fetchBotMessageRequests(Number(request.id));
     for (const botMessage of botMessageSet) {
       await sendNatsMessage(request.profileId, {
         natsSubject: botMessage.natsSubject,
         natsContext: botMessage.natsContext,
-      })
+      });
     }
   } catch (err) {
     const message = `Unable to fulfill edit request for profile ${request.profileId}`;

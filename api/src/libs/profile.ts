@@ -17,9 +17,10 @@
 import { logger } from "@bcgov/common-nodejs-utils";
 import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
-import { NameSpacesQuotaSize, ProjectNamespace, ProjectQuotaSize } from '../db/model/namespace';
+import { NameSpacesQuotaSize, ProjectNamespace } from "../db/model/namespace";
 import { ProjectProfile } from "../db/model/profile";
-import { compareNameSpaceQuotaSize } from '../db/utils';
+import { ProjectQuotaSize } from "../db/model/quota";
+import { compareNameSpaceQuotaSize } from "../db/utils";
 import shared from "./shared";
 
 const dm = new DataManager(shared.pgPool);
@@ -143,28 +144,30 @@ export const getQuotaSize = async (
     // Some profile may have two clusters, which has eight namespace
     const profileQuotaSizes: ProjectQuotaSize[] = await Promise.all(promises);
 
-    let hasSameQuotaSizesForAllClusters: boolean = false
+    let hasSameQuotaSizesForAllClusters: boolean = false;
     // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small' }]
     if (profileQuotaSizes.length === 1) {
-      hasSameQuotaSizesForAllClusters = true
+      hasSameQuotaSizesForAllClusters = true;
     } else {
       const quotaSizesForAllClusters: NameSpacesQuotaSize = {
         quotaCpuSize: [],
         quotaMemorySize: [],
         quotaStorageSize: [],
       };
-      const QuodaSizeObjectKey = Object.keys(quotaSizesForAllClusters)
+      const QuodaSizeObjectKey = Object.keys(quotaSizesForAllClusters);
       /**
        * following line is to push all quota info from array of object into a single object
        *  that can be consumed by compareNameSpaceQuotaSize to compare if quota size are the same
        * across all cluster.
        */
       profileQuotaSizes.forEach((element) => {
-        QuodaSizeObjectKey.forEach(key => {
-          quotaSizesForAllClusters[key].push(element[key])
-        })
-      })
-      hasSameQuotaSizesForAllClusters = compareNameSpaceQuotaSize(quotaSizesForAllClusters)
+        QuodaSizeObjectKey.forEach((key) => {
+          quotaSizesForAllClusters[key].push(element[key]);
+        });
+      });
+      hasSameQuotaSizesForAllClusters = compareNameSpaceQuotaSize(
+        quotaSizesForAllClusters
+      );
     }
     if (hasSameQuotaSizesForAllClusters) {
       // because we checked if all element in profileQuotaSizes are the same, so we can just return any of the element
