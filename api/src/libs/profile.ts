@@ -154,14 +154,14 @@ export const getQuotaSize = async (
         quotaMemorySize: [],
         quotaStorageSize: [],
       };
-      const QuodaSizeObjectKey = Object.keys(quotaSizesForAllClusters);
+      const QuotaSizeObjectKey = Object.keys(quotaSizesForAllClusters);
       /**
        * following line is to push all quota info from array of object into a single object
        *  that can be consumed by compareNameSpaceQuotaSize to compare if quota size are the same
        * across all cluster.
        */
       profileQuotaSizes.forEach((element) => {
-        QuodaSizeObjectKey.forEach((key) => {
+        QuotaSizeObjectKey.forEach((key) => {
           quotaSizesForAllClusters[key].push(element[key]);
         });
       });
