@@ -36,7 +36,7 @@ interface ReviewRequestModalProps {
 
 interface DisplayInfo {
   displayText: string;
-  textTransform?: boolean;
+  style?: any;
 }
 interface DisplayInfomations {
   displayTexts: string[];
@@ -45,7 +45,7 @@ interface DisplayInfomations {
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
 
 const InformationBox: React.FC<DisplayInfo> = (props) => {
-  const { textTransform, displayText } = props;
+  const { displayText, ...rest } = props;
   return (
     <Box
       fontSize={2}
@@ -55,15 +55,15 @@ const InformationBox: React.FC<DisplayInfo> = (props) => {
         py: 1,
         borderRadius: 5,
         border: '1px solid black',
-        textTransform: textTransform ? 'capitalize' : 'none',
       }}
+      {...rest}
     >
       {displayText}
     </Box>
   );
 };
 
-const InformationBoxs = (props: DisplayInfomations) => {
+const InformationBoxes = (props: DisplayInfomations) => {
   const { displayTexts } = props;
   return (
     <>
@@ -82,6 +82,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
+  const textCapitalized = { textTransform: 'capitalize' };
 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
@@ -130,15 +131,15 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
-        <InformationBox textTransform displayText={profileDetails.type} />
+        <InformationBox style={textCapitalized} displayText={profileDetails.type} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
-        <InformationBox textTransform displayText={profileDetails.name} />
+        <InformationBox style={textCapitalized} displayText={profileDetails.name} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-cluster">Project Cluster</Label>
-        <InformationBox textTransform displayText={profileDetails.clusters.join(', ')} />
+        <InformationBox style={textCapitalized} displayText={profileDetails.clusters.join(', ')} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-description">Description</Label>
@@ -158,7 +159,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Flex flexDirection="column">
         <Label htmlFor="technical-lead">Technical Leads</Label>
 
-        <InformationBoxs displayTexts={parseContacts(profileDetails.technicalLeads)} />
+        <InformationBoxes displayTexts={parseContacts(profileDetails.technicalLeads)} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
@@ -167,7 +168,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
             displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
           />
         ) : (
-          <InformationBoxs displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+          <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
         )}
       </Flex>
       <Form onSubmit={onSubmit}>

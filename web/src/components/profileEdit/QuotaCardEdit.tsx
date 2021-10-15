@@ -135,7 +135,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       ],
     },
     memoryNums: {
-      displayTitle: 'RAM',
+      displayTitle: 'Memory',
       identifyer: 'ram',
       options: [
         {

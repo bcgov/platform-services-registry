@@ -146,7 +146,7 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
         <h3
           class="css-vurnku"
         >
-          RAM
+          Memory
         </h3>
         <div
           class="css-qdj3yo"
