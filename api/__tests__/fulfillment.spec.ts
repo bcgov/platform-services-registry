@@ -65,6 +65,12 @@ jest.mock("../src/libs/profile", () => {
   };
 });
 
+jest.mock("../src/config/index", () => {
+  return {
+    get: jest.fn().mockReturnValue("registry_project_provisioning_"),
+  };
+});
+
 jest.mock("../src/libs/utils", () => {
   return {
     replaceForDescription: jest.fn().mockReturnValue("nats_stub"),
