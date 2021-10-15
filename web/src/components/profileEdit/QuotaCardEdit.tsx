@@ -110,12 +110,10 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const QUOTA_INFORMATION: any = {
     Quota: {
       displayTitle: 'Quota Information',
-      identifyer: 'quota_information',
       options: [{ name: 'LicensePlate', displayName: 'LicensePlate', value: licensePlate }],
     },
     cpuNums: {
       displayTitle: 'CPU',
-      identifyer: 'cpu',
       options: [
         {
           name: 'quotaCpuSize',
@@ -136,7 +134,6 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     },
     memoryNums: {
       displayTitle: 'Memory',
-      identifyer: 'ram',
       options: [
         {
           name: 'quotaMemorySize',
@@ -157,7 +154,6 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     },
     storageNums: {
       displayTitle: 'Storage',
-      identifyer: 'storage',
       options: [
         {
           name: 'quotaStorageSize',
