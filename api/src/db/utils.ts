@@ -34,15 +34,21 @@ export const transformKeysToCamelCase = (data) => {
 };
 
 export const generateNamespacePrefix = (len: number = 6): string => {
-  // For DEV/TEST environments, a license plate prefix is necessary to avoid duplication
-  // within ArgoCD. Utilizing the prefix "T" for TEST, and "D" for DEV will avoid this.
-  return (
+  const getRandomPrefix = (requiredLength) =>
     config.get("api:prefix") +
     crypto
-      .randomBytes(Math.ceil(len / 2))
+      .randomBytes(Math.ceil(requiredLength / 2))
       .toString("hex")
-      .slice(0, len)
-  );
+      .slice(0, len);
+  let generatedNamespacePrefix = getRandomPrefix(len);
+  do {
+    generatedNamespacePrefix = getRandomPrefix(len);
+    // Number() will return a number if it is a number, will return NaN it's not a number
+    // Number.isNaN // returns true if NaN, otherwise false
+  } while (!Number.isNaN(+Number(generatedNamespacePrefix.charAt(0))));
+  // the reason we are doing this first Letter check is described in: https://app.zenhub.com/workspaces/platform-experience-5bb7c5ab4b5806bc2beb9d15/issues/bcgov/platform-services-registry/535
+
+  return generatedNamespacePrefix;
 };
 
 /**
