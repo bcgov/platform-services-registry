@@ -47,7 +47,7 @@ export const generateNamespacePrefix = (len: number = 6): string => {
     // Number.isNaN // returns true if NaN, otherwise false
   } while (!Number.isNaN(+Number(generatedNamespacePrefix.charAt(0))));
   // the reason we are doing this first Letter check is described in: https://app.zenhub.com/workspaces/platform-experience-5bb7c5ab4b5806bc2beb9d15/issues/bcgov/platform-services-registry/535
-
+  // As discussed, this is a suitable solution in the shortterm however recommend when F5 roll out their update in early November that we remove this.
   return generatedNamespacePrefix;
 };
 
