@@ -15,6 +15,7 @@
 //
 
 import { errorWithCode } from "@bcgov/common-nodejs-utils";
+import { generateNamespacePrefix } from "../src/db/utils";
 import {
   replaceForDescription,
   validateRequiredFields,
@@ -87,5 +88,19 @@ describe("Utils", () => {
     };
 
     expect(replaceForDescription(contextJson)).toEqual(result);
+  });
+
+  it("generateNamespacePrefix first character can not be a number", async () => {
+    const test1 = generateNamespacePrefix();
+    const test2 = generateNamespacePrefix();
+    const test3 = generateNamespacePrefix();
+    const test4 = generateNamespacePrefix();
+    const test5 = generateNamespacePrefix();
+
+    expect(Number(test1.charAt(0))).toBe(NaN);
+    expect(Number(test2.charAt(0))).toBe(NaN);
+    expect(Number(test3.charAt(0))).toBe(NaN);
+    expect(Number(test4.charAt(0))).toBe(NaN);
+    expect(Number(test5.charAt(0))).toBe(NaN);
   });
 });
