@@ -21,7 +21,7 @@ import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile } from "../db/model/profile";
-import { ProjectQuotaSize, Quotas } from "../db/model/quota";
+import { ProjectQuotaSize, Quotas, QuotaSize } from "../db/model/quota";
 import {
   BotMessage,
   Request,
@@ -39,6 +39,12 @@ import {
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
 import { replaceForDescription } from "./utils";
+
+interface ProvisonerPreferedFormatQuotasizeFormat {
+  cpu: QuotaSize;
+  memory: QuotaSize;
+  storage: QuotaSize;
+}
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, RequestModel } =
@@ -70,7 +76,7 @@ const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
   profileContacts: Contact[],
-  quotaSize: ProjectQuotaSize,
+  quotaSize: ProvisonerPreferedFormatQuotasizeFormat,
   quotas: Quotas,
   cluster: Cluster
 ): Promise<NatsContext> => {
@@ -132,12 +138,17 @@ export const contextForProvisioning = async (
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
-
+    const ProvisonerPreferedFormatQuotasize: ProvisonerPreferedFormatQuotasizeFormat =
+      {
+        cpu: quotaSize.quotaCpuSize,
+        memory: quotaSize.quotaMemorySize,
+        storage: quotaSize.quotaStorageSize,
+      };
     return await buildContext(
       action,
       profile,
       contacts,
-      quotaSize,
+      ProvisonerPreferedFormatQuotasize,
       quotas,
       cluster
     );
@@ -176,6 +187,13 @@ export const contextForEditing = async (
       quotas = await QuotaModel.findForQuotaSize(quotaSize);
     }
 
+    const ProvisonerPreferedFormatQuotasize: ProvisonerPreferedFormatQuotasizeFormat =
+      {
+        cpu: quotaSize.quotaCpuSize,
+        memory: quotaSize.quotaMemorySize,
+        storage: quotaSize.quotaStorageSize,
+      };
+
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
     } else {
@@ -185,7 +203,7 @@ export const contextForEditing = async (
       action,
       profile,
       contacts,
-      quotaSize,
+      ProvisonerPreferedFormatQuotasize,
       quotas,
       cluster
     );
