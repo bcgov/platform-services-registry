@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import {
   createNewTechnicalLeads,
-  searchGithubUsers
+  searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIDBaseState } from '../../../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
