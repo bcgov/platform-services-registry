@@ -28,6 +28,7 @@ export interface ProjectQuotaSize {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
   quotaStorageSize: QuotaSize;
+  quotaSnapshotSize: QuotaSize;
 }
 
 export interface Quotas {
@@ -53,6 +54,7 @@ interface QuotaSizeDedetail {
   cpuNums: string[];
   memoryNums: string[];
   storageNums: string[];
+  snapshotNums: string[];
 }
 
 interface QuotaSizeDedetails {
@@ -149,18 +151,21 @@ export default class QuotaModel extends Model {
           cpuNums: [],
           memoryNums: [],
           storageNums: [],
+          snapshotNums: [],
         },
         medium: {
           name: "",
           cpuNums: [],
           memoryNums: [],
           storageNums: [],
+          snapshotNums: [],
         },
         large: {
           name: "",
           cpuNums: [],
           memoryNums: [],
           storageNums: [],
+          snapshotNums: [],
         },
       };
 
@@ -177,6 +182,7 @@ export default class QuotaModel extends Model {
             size.storageFile.replace("Gi", "GiB"),
             size.storageBackup.replace("Gi", "GiB"),
           ],
+          snapshotNums: size.snapshotVolume,
         };
       }
 

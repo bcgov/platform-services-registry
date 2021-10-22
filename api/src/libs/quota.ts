@@ -49,14 +49,15 @@ export const getAllowedQuotaSizes = (
       quotaCpuSize: [],
       quotaMemorySize: [],
       quotaStorageSize: [],
+      quotaSnapshotSize: [],
     };
-    for (const key in currentQuotaSize) {
-      if (currentQuotaSize[key]) {
-        availableQuotaOptions[key] = getAllowQuotaForEachResource(
+    Object.keys(currentQuotaSize).forEach(
+      // eslint-disable-next-line no-return-assign
+      (key) =>
+        (availableQuotaOptions[key] = getAllowQuotaForEachResource(
           currentQuotaSize[key]
-        );
-      }
-    }
+        ))
+    );
 
     return availableQuotaOptions;
   } catch (err) {

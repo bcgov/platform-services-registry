@@ -388,6 +388,9 @@ Object {
   "quotaMemorySize": Array [
     "medium",
   ],
+  "quotaSnapshotSize": Array [
+    "medium",
+  ],
   "quotaStorageSize": Array [
     "medium",
   ],
@@ -415,6 +418,7 @@ exports[`Profile event handlers returns the profiles quota size 3`] = `
 Object {
   "quotaCpuSize": "small",
   "quotaMemorySize": "small",
+  "quotaSnapshotSize": "small",
   "quotaStorageSize": "small",
 }
 `;

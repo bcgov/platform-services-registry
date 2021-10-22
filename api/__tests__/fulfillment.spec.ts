@@ -64,6 +64,7 @@ jest.mock("../src/libs/profile", () => {
     quotaCpuSize: QuotaSize.Small,
     quotaMemorySize: QuotaSize.Small,
     quotaStorageSize: QuotaSize.Small,
+    quotaSnapshotSize: QuotaSize.Small,
   };
   return {
     getQuotaSize: jest.fn().mockResolvedValue(testQuotaSize),

@@ -27,6 +27,7 @@ export interface ClusterNamespace extends CommonFields {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
   quotaStorageSize: QuotaSize;
+  quotaSnapshotSize: QuotaSize;
 }
 
 export interface ProjectNamespace extends CommonFields {
@@ -38,6 +39,7 @@ export interface NameSpacesQuotaSize {
   quotaCpuSize: QuotaSize[];
   quotaMemorySize: QuotaSize[];
   quotaStorageSize: QuotaSize[];
+  quotaSnapshotSize: QuotaSize[];
 }
 
 export default class NamespaceModel extends Model {
@@ -234,7 +236,7 @@ export default class NamespaceModel extends Model {
   ): Promise<ProjectQuotaSize> {
     const query = {
       text: `
-        SELECT quota_cpu_size, quota_memory_size, quota_storage_size FROM cluster_namespace
+        SELECT quota_cpu_size, quota_memory_size, quota_storage_size, quota_snapshot_size FROM cluster_namespace
           WHERE namespace_id = $1 AND cluster_id = $2;`,
       values: [],
     };
@@ -256,6 +258,7 @@ export default class NamespaceModel extends Model {
         quotaCpuSize: [],
         quotaMemorySize: [],
         quotaStorageSize: [],
+        quotaSnapshotSize: [],
       };
 
       clusterNamespaces.forEach(
@@ -263,12 +266,17 @@ export default class NamespaceModel extends Model {
           if (!clusterNamespace) {
             return;
           }
-          const { quotaCpuSize, quotaMemorySize, quotaStorageSize } =
-            clusterNamespace;
+          const {
+            quotaCpuSize,
+            quotaMemorySize,
+            quotaStorageSize,
+            quotaSnapshotSize,
+          } = clusterNamespace;
 
           quotaSizes.quotaCpuSize.push(quotaCpuSize);
           quotaSizes.quotaMemorySize.push(quotaMemorySize);
           quotaSizes.quotaStorageSize.push(quotaStorageSize);
+          quotaSizes.quotaSnapshotSize.push(quotaSnapshotSize);
         }
       );
 
@@ -281,6 +289,8 @@ export default class NamespaceModel extends Model {
           quotaMemorySize: quotaSizes.quotaMemorySize.pop() || QuotaSize.Small,
           quotaStorageSize:
             quotaSizes.quotaStorageSize.pop() || QuotaSize.Small,
+          quotaSnapshotSize:
+            quotaSizes.quotaSnapshotSize.pop() || QuotaSize.Small,
         };
         return projectQuotaSize;
       }

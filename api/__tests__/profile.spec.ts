@@ -61,6 +61,7 @@ jest.mock("../src/libs/profile", () => {
       quotaCpuSize: "small",
       quotaMemorySize: "small",
       quotaStorageSize: "small",
+      quotaSnapshotSize: "small",
     }),
     updateProfileStatus: jest.fn(),
   };
@@ -315,6 +316,7 @@ describe("Profile event handlers", () => {
       quotaCpuSize: QuotaSize.Small,
       quotaMemorySize: QuotaSize.Small,
       quotaStorageSize: QuotaSize.Small,
+      quotaSnapshotSize: QuotaSize.Small,
     };
     const body = {
       requestedQuotaSize: testRequestQuotaSize,
@@ -341,6 +343,7 @@ describe("Profile event handlers", () => {
         quotaCpuSize: QuotaSize.Large,
         quotaMemorySize: QuotaSize.Large,
         quotaStorageSize: QuotaSize.Large,
+        quotaSnapshotSize: QuotaSize.Large,
       },
     };
     const req = {
