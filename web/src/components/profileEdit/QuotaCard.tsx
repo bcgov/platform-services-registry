@@ -31,6 +31,7 @@ export interface QuotaDetails {
     quotaCpuSize: QuotaSize[];
     quotaMemorySize: QuotaSize[];
     quotaStorageSize: QuotaSize[];
+    quotaSnapshotSize: QuotaSize[];
   };
 }
 interface SpecTextInterface {
@@ -43,7 +44,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   const {
     quotaDetails: {
       licensePlate = '',
-      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '' },
+      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '', quotaSnapshotSize: '' },
     },
   } = props;
 
@@ -57,6 +58,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     CPU: quotaSize?.quotaCpuSize,
     Memory: quotaSize?.quotaMemorySize,
     Storage: quotaSize?.quotaStorageSize,
+    Snapshot: quotaSize?.quotaSnapshotSize,
   };
 
   return (
@@ -78,6 +80,9 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
             </Text>
             <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
               Storage:{specTexts.Storage}
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              Snapshot:{specTexts.Snapshot}
             </Text>
           </Box>
         </Aux>
