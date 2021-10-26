@@ -44,23 +44,23 @@ jobs:
           web:
             - 'web/**'
 
-  # Prepare to update Kustomize files in the manifest repo
-  # ------------------------------------------------------
-  - name: Prepare deploy key
-    uses: webfactory/ssh-agent@v0.5.3
-    with:
-      ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-  - name: Check out manifest repo
-    uses: actions/checkout@v2
-    with:
-      ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-      repository: ${{ secrets.MANIFEST_REPO }}
-  - name: Set up Kustomize
-    uses: imranismail/setup-kustomize@v1
-  - name: Set global git config
-    run: |
-      git config --local user.email "action@github.com"
-      git config --local user.name "GitHub Action"
+    # Prepare to update Kustomize files in the manifest repo
+    # ------------------------------------------------------
+    - name: Prepare deploy key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+    - name: Check out manifest repo
+      uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+        repository: ${{ secrets.MANIFEST_REPO }}
+    - name: Set up Kustomize
+      uses: imranismail/setup-kustomize@v1
+    - name: Set global git config
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
 
   db_build_if_needed:
     needs: check_for_component_changes
@@ -195,12 +195,12 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:test
           echo "::set-output name=imagesha::$IMAGESHA"
 
-        - name: Update API image ID
-          run: |
-            cd platform-registry-app/overlays/test
-            kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.build-api-image.outputs.imagesha }}"
-            git commit -am "Update API image ID for Test"
-            git push origin
+      - name: Update API image ID
+        run: |
+          cd platform-registry-app/overlays/test
+          kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.build-api-image.outputs.imagesha }}"
+          git commit -am "Update API image ID for Test"
+          git push origin
 
   web_test:
     needs: [db_build_if_needed]
