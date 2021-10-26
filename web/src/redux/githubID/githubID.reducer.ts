@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 import GithubIDActionTypes from './githubID.types';
 
-interface GithubIdBaseInterface {
+export interface GithubIdBaseInterface {
   githubUser: object | null;
   inputKeyword: string | null;
   isLoading: boolean;
@@ -14,7 +14,7 @@ export interface GithubIDInitialState {
   technicalLeads: GithubIdBaseInterface[];
 }
 
-const GithubIDBaseState: GithubIdBaseInterface = {
+export const GithubIDBaseState: GithubIdBaseInterface = {
   githubUser: null,
   inputKeyword: '',
   isLoading: false,

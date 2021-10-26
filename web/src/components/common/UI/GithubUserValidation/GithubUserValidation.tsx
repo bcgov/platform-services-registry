@@ -6,6 +6,7 @@ import {
   createNewTechnicalLeads,
   searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
+import { GithubIDBaseState } from '../../../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
@@ -32,13 +33,14 @@ const GithubUserValidation: React.FC<any> = (props) => {
     }
   };
 
-  const { inputKeyword, githubUser, notFound } = allPersona[persona][position];
+  const validatingRole = allPersona[persona] || GithubIDBaseState;
+  const { inputKeyword, githubUser, notFound } = validatingRole[position];
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
-      // Third condition: don't run again if there's a notfound result until there's ne
+      // Third condition: Until there's a new input, it won't run again if there's a notfound result
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0 && !notFound) {
         fetchUserStartAsync(inputKeyword, persona, position);
       }

@@ -140,9 +140,9 @@ export const contextForProvisioning = async (
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
     const ProvisonerPreferedFormatQuotasize: ProvisonerPreferedFormatQuotasizeFormat =
       {
-        cpu: quotaSize.quotaCpuSize,
-        memory: quotaSize.quotaMemorySize,
-        storage: quotaSize.quotaStorageSize,
+        cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
+        memory: quotaSize.quotaMemorySize || QuotaSize.Small,
+        storage: quotaSize.quotaStorageSize || QuotaSize.Small,
       };
     return await buildContext(
       action,
