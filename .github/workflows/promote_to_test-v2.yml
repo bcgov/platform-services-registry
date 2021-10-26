@@ -44,6 +44,24 @@ jobs:
           web:
             - 'web/**'
 
+    # Prepare to update Kustomize files in the manifest repo
+    # ------------------------------------------------------
+    - name: Prepare deploy key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+    - name: Check out manifest repo
+      uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+        repository: ${{ secrets.MANIFEST_REPO }}
+    - name: Set up Kustomize
+      uses: imranismail/setup-kustomize@v1
+    - name: Set global git config
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
   db_build_if_needed:
     needs: check_for_component_changes
     runs-on: ubuntu-latest
@@ -55,6 +73,7 @@ jobs:
       # Tag the image with the commit ID and "test"
       # -----------------------------------------------------------
       - name: Build and tag the image
+        id: build-db-image
         if: ${{ needs.check_for_component_changes.outputs.db == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
           oc version
@@ -64,6 +83,7 @@ jobs:
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-flyway-master-build-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-flyway-master-build-$BUILDID)"
           oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGESHA platsrv-registry-flyway:$COMMITID platsrv-registry-flyway:test
+          echo "::set-output name=imagesha::$IMAGESHA"
 
       - name: Check test result
         if: ${{ failure() }}
@@ -72,6 +92,13 @@ jobs:
         run: |
           curl -X POST -H 'Content-Type: application/json' --data '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
           exit 1
+
+      - name: Update DB image ID
+        run: | 
+          cd platform-registry-app/overlays/test
+          kustomize edit set image "registry-flyway-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-flyway@${{ steps.build-db-image.outputs.imagesha }}"
+          git commit -am "Update flyway image ID for Test"
+          git push origin
 
   api_test:
     needs: [db_build_if_needed]
@@ -157,6 +184,7 @@ jobs:
       # Tag the image with the commit ID and "test"
       # ---------------------------------------------
       - name: Build and tag the image
+        id: build-api-image
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
@@ -165,6 +193,14 @@ jobs:
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-api-master-build-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-api-master-build-$BUILDID)"
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:test
+          echo "::set-output name=imagesha::$IMAGESHA"
+
+      - name: Update API image ID
+        run: |
+          cd platform-registry-app/overlays/test
+          kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.build-api-image.outputs.imagesha }}"
+          git commit -am "Update API image ID for Test"
+          git push origin
 
   web_test:
     needs: [db_build_if_needed]
@@ -278,6 +314,7 @@ jobs:
       # Tag the image with the commit ID and "test"
       # ---------------------------------------------
       - name: Build and tag the image
+        id: build-web-image
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
@@ -286,4 +323,12 @@ jobs:
           export COMMITID="$(oc -n platform-registry-tools get -o=jsonpath="{.spec.revision.git.commit}" build platsrv-registry-web-master-build-$BUILDID | cut -c1-7)"
           export IMAGESHA="$(oc -n platform-registry-tools get -o=jsonpath="{.status.output.to.imageDigest}" build platsrv-registry-web-master-build-$BUILDID)"
           oc -n platform-registry-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:test
+          echo "::set-output name=imagesha::$IMAGESHA"
+
+      - name: Update web image ID
+        run: |
+          cd platform-registry-app/overlays/test
+          kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@${{ steps.build-image.outputs.imagesha }}"
+          git commit -am "Update web image ID for Test"
+          git push origin
 
