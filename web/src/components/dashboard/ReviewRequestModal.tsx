@@ -87,9 +87,9 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
       ? findDifferenceBetweenTwoDifferentObject(
-          profileDetails.editObject.quota,
-          profileDetails.quotaSize,
-        )
+        profileDetails.editObject.quota,
+        profileDetails.quotaSize,
+      )
       : [];
 
   const parseContacts = (contactDetails: any) => {
@@ -162,10 +162,11 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
         <InformationBoxes displayTexts={parseContacts(profileDetails.technicalLeads)} />
       </Flex>
       <Flex flexDirection="column">
+        {console.log('hiahia', profileDetails.quotaSize)}
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
           <InformationBox
-            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
+            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize} | Snapshot: ${profileDetails.quotaSize.quotaSnapshotSize} `}
           />
         ) : (
           <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
