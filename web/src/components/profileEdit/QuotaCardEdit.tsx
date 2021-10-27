@@ -21,6 +21,8 @@ import React, { useEffect, useState } from 'react';
 import { Field, Form, FormSpy } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
@@ -33,8 +35,6 @@ import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
 import { QuotaDetails } from './QuotaCard';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
 interface IQuotaCardEditProps {
   profileId?: string;
@@ -66,33 +66,38 @@ const StyledInformationBox = styled.div`
   background-color: orange;
   border-radius: 10px;
   padding: 5px;
-`
+`;
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: red;
   :hover {
     cursor: pointer;
   }
-`
+`;
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
-  const TEMPORARY_DISABLE_FIELD = 'quotaSnapshotSize'
+  const TEMPORARY_DISABLE_FIELD = 'quotaSnapshotSize';
   const DEFAULT_QUOTA_SIZES = {
     quotaCpuSize: [],
     quotaMemorySize: [],
     quotaStorageSize: [],
-    quotaSnapshotSize: []
+    quotaSnapshotSize: [],
   };
   const DEFAULT_QUOTA_INFO: QuotaSpecsInterface = {
     cpuNums: [],
     memoryNums: [],
     storageNums: [],
-    snapshotNums: []
+    snapshotNums: [],
   };
   const required = (value: string | boolean) => (value ? undefined : 'Required');
   const QUOTA_DISPLAY_NAME = 'Quota Size';
   const {
     quotaDetails: {
       licensePlate = '',
-      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '', quotaSnapshotSize: '' },
+      quotaSize = {
+        quotaCpuSize: '',
+        quotaMemorySize: '',
+        quotaStorageSize: '',
+        quotaSnapshotSize: '',
+      },
       quotaOptions = DEFAULT_QUOTA_SIZES,
     },
     profileId,
@@ -108,10 +113,9 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [specs, setSpecs] = useState<any>({});
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
-  const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false)
+  const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
   const INFORMATION_BOX_VISIBLE_STYLE = { visibility: 'hidden' };
   const getCorrespondingQuota = (selectedSizes: ProjectResourceQuotaSize): QuotaSpecsInterface => {
-
     if (
       quotaSizes &&
       Object.keys(quotaSizes).length === 0 &&
@@ -206,14 +210,13 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         {
           name: 'quotaSnapshotSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaStorageSize, ...quotaOptions.quotaSnapshotSize],
+          value: [quotaSize.quotaSnapshotSize, ...quotaOptions.quotaSnapshotSize],
         },
         {
           name: 'snapshotCount',
           displayName: 'SnapShot Count',
           value: specs.snapshotNums === undefined ? '' : specs.snapshotNums,
         },
-
       ],
     },
   };
@@ -223,7 +226,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       quotaCpuSize: formData.quotaCpuSize,
       quotaMemorySize: formData.quotaMemorySize,
       quotaStorageSize: formData.quotaStorageSize,
-      quotaSnapshotSize: formData.quotaSnapshot,
+      quotaSnapshotSize: formData.quotaSnapshotSize,
     };
     setOpenBackdrop(true);
 
@@ -282,7 +285,6 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       <FormSubtitle>{txtForQuotaEdit}</FormSubtitle>
       <br />
 
-
       <Form
         onSubmit={handleSubmit}
         validate={(values) => {
@@ -295,20 +297,30 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             <Box key={index + QUOTA_INFORMATION[element].displayTitle}>
               <Text as="h3">{QUOTA_INFORMATION[element].displayTitle}</Text>
               {QUOTA_INFORMATION[element].options.map((option: any, optionIndex: any) => (
-                <Flex marginBottom="2" sx={{ alignItems: 'center' }} key={optionIndex + option.displayName}>
+                <Flex
+                  marginBottom="2"
+                  sx={{ alignItems: 'center' }}
+                  key={optionIndex + option.displayName}
+                >
                   <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
                     {option.displayName}
                   </Label>
-                  {option.name === TEMPORARY_DISABLE_FIELD &&
+                  {option.name === TEMPORARY_DISABLE_FIELD && (
                     <>
                       <StyledFontAwesomeIcon
                         onMouseEnter={() => setDisplayInfoBox(!displayInfoBox)}
                         onMouseLeave={() => setDisplayInfoBox(!displayInfoBox)}
-                        icon={faExclamationTriangle} />
-                      <StyledInformationBox style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }} > We current only support small snapshot voume size, more option will comming soon</StyledInformationBox>
+                        icon={faExclamationTriangle}
+                      />
+                      <StyledInformationBox
+                        style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
+                      >
+                        {' '}
+                        We current only support small snapshot voume size, more option will comming
+                        soon
+                      </StyledInformationBox>
                     </>
-                  }
-
+                  )}
                   {option.displayName === QUOTA_DISPLAY_NAME ? (
                     // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
 
@@ -326,8 +338,6 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                           </option>
                         ))}
                     </Field>
-
-
                   ) : (
                     <Label justifyContent="flex-end">
                       <Text>{option.value}</Text>{' '}
@@ -343,8 +353,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                     </Label>
                   )}
                 </Flex>
-              ))
-              }
+              ))}
             </Box>
           ));
 
@@ -428,7 +437,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           );
         }}
       </Form>
-    </StyledQuotaEditContainer >
+    </StyledQuotaEditContainer>
   );
 };
 

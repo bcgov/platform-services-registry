@@ -86,6 +86,7 @@ export interface Quota extends CommonFields {
   storageBackup: string;
   storageCapacity: string;
   storagePvcCount: number;
+  snapshotVolume: number;
 }
 
 export default class QuotaModel extends Model {
@@ -204,13 +205,16 @@ export default class QuotaModel extends Model {
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
                         FROM ref_quota WHERE id = $2) d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = $3) d)
+                        FROM ref_quota WHERE id = $3) d),
+                    'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS "count"
+                        FROM ref_quota WHERE id = $4) d)
                 );
                 `,
       values: [
         quotaSize.quotaCpuSize,
         quotaSize.quotaMemorySize,
         quotaSize.quotaStorageSize,
+        quotaSize.quotaSnapshotSize,
       ],
     };
 

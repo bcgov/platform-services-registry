@@ -23,6 +23,7 @@ Array [
     "id": "small",
     "memoryLimits": "32Gi",
     "memoryRequests": "16Gi",
+    "snapshotVolume": 5,
     "storageBackup": "25Gi",
     "storageBlock": "50Gi",
     "storageCapacity": "50Gi",
@@ -37,6 +38,7 @@ Array [
     "id": "medium",
     "memoryLimits": "64Gi",
     "memoryRequests": "32Gi",
+    "snapshotVolume": 5,
     "storageBackup": "50Gi",
     "storageBlock": "100Gi",
     "storageCapacity": "100Gi",
@@ -51,6 +53,7 @@ Array [
     "id": "large",
     "memoryLimits": "128Gi",
     "memoryRequests": "64Gi",
+    "snapshotVolume": 5,
     "storageBackup": "100Gi",
     "storageBlock": "200Gi",
     "storageCapacity": "200Gi",
@@ -101,6 +104,7 @@ Object {
       "128GiB",
     ],
     "name": "large",
+    "snapshotNums": 5,
     "storageNums": Array [
       60,
       "200GiB",
@@ -117,6 +121,7 @@ Object {
       "64GiB",
     ],
     "name": "medium",
+    "snapshotNums": 5,
     "storageNums": Array [
       40,
       "100GiB",
@@ -133,6 +138,7 @@ Object {
       "32GiB",
     ],
     "name": "small",
+    "snapshotNums": 5,
     "storageNums": Array [
       20,
       "50GiB",

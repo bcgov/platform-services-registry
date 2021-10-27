@@ -44,7 +44,12 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   const {
     quotaDetails: {
       licensePlate = '',
-      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '', quotaSnapshotSize: '' },
+      quotaSize = {
+        quotaCpuSize: '',
+        quotaMemorySize: '',
+        quotaStorageSize: '',
+        quotaSnapshotSize: '',
+      },
     },
   } = props;
 
