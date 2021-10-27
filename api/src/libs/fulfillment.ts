@@ -40,7 +40,7 @@ import { getQuotaSize } from "./profile";
 import shared from "./shared";
 import { replaceForDescription } from "./utils";
 
-interface NatsPreferQuotasInterface {
+interface QuotasInNatsFormat {
   cpu: {
     requests: number;
     limits: number;
@@ -96,7 +96,7 @@ const buildContext = async (
       throw new Error("Cant get profile id");
     }
 
-    const quotasInNatsPreferedFormat: NatsPreferQuotasInterface = {
+    const quotasInNatsPreferedFormat: QuotasInNatsFormat = {
       cpu: {
         ...quotas.cpu,
       },
