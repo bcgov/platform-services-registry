@@ -94,6 +94,7 @@ jobs:
           exit 1
 
       - name: Update DB image ID
+        if: ${{ success() }}
         run: | 
           cd platform-registry-app/overlays/test
           kustomize edit set image "registry-flyway-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-flyway@${{ steps.build-db-image.outputs.imagesha }}"
@@ -196,6 +197,7 @@ jobs:
           echo "::set-output name=imagesha::$IMAGESHA"
 
       - name: Update API image ID
+        if: ${{ success() }}
         run: |
           cd platform-registry-app/overlays/test
           kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.build-api-image.outputs.imagesha }}"
@@ -326,9 +328,12 @@ jobs:
           echo "::set-output name=imagesha::$IMAGESHA"
 
       - name: Update web image ID
+        if: ${{ success() }}
         run: |
           cd platform-registry-app/overlays/test
           kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@${{ steps.build-image.outputs.imagesha }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git commit -am "Update web image ID for Test"
           git push origin
 
