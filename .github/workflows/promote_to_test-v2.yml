@@ -96,6 +96,7 @@ jobs:
       - name: Update DB image ID
         if: ${{ success() }}
         run: | 
+          ls platform-registry-app/overlays
           cd platform-registry-app/overlays/test
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
