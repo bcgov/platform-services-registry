@@ -2,8 +2,8 @@
 import GithubIDActionTypes from './githubID.types';
 
 export interface GithubIdBaseInterface {
-  githubUser: object | null;
-  inputKeyword: string | null;
+  githubUser: any | null;
+  inputKeyword: string | '';
   isLoading: boolean;
   everFetched: boolean;
   notFound: boolean;

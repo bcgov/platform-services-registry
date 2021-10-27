@@ -6,7 +6,10 @@ import {
   createNewTechnicalLeads,
   searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
-import { GithubIDBaseState } from '../../../../redux/githubID/githubID.reducer';
+import {
+  GithubIdBaseInterface,
+  GithubIDBaseState,
+} from '../../../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
@@ -21,7 +24,7 @@ const GithubUserValidation: React.FC<any> = (props) => {
     fetchUserStartAsync,
   } = props;
 
-  const validatingRole = allPersona[persona] || GithubIDBaseState;
+  const validatingRole: GithubIdBaseInterface[] = allPersona[persona] || [{ ...GithubIDBaseState }];
   const { inputKeyword, githubUser, notFound, everFetched } = validatingRole[position];
 
   const githubValidator = (value: any) => {
