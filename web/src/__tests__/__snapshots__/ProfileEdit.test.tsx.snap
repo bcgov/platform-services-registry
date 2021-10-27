@@ -382,7 +382,8 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
             class="css-5fj4om"
             style="visibility: hidden;"
           >
-             We current only support small snapshot voume size, more option will comming soon
+             
+            We current only support small snapshot voume size, more option will comming soon
           </div>
           <div
             class=""
