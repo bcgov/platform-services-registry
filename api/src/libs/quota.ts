@@ -15,26 +15,50 @@
 //
 
 import { logger } from "@bcgov/common-nodejs-utils";
-import { QuotaSize } from "../db/model/quota";
+import { NameSpacesQuotaSize } from "../db/model/namespace";
+import { ProjectQuotaSize, QuotaSize } from "../db/model/quota";
 
-const getAllowedQuotaSizes = (currentQuotaSize: QuotaSize): QuotaSize[] => {
+/**
+ * Currently our rule for quota change is to allow user select any size below current option
+ * but only one step larger than current option
+ * @param quotaSize the current quota Size
+ * @returns all option that user can upgrade/downgrade
+ */
+export const getAllowQuotaForEachResource = (
+  quotaSize: QuotaSize = QuotaSize.Small
+) => {
+  const allQuotaOptions = [QuotaSize.Small, QuotaSize.Medium, QuotaSize.Large];
+
+  // Incase we have some parameter that is not one of our option, we will use Small quota size as default parameter
+  const position =
+    allQuotaOptions.indexOf(quotaSize) < 0
+      ? 0
+      : allQuotaOptions.indexOf(quotaSize);
+
+  const lowerBound = allQuotaOptions.slice(0, position);
+  const upperBound = allQuotaOptions[position + 1] || [];
+
+  return lowerBound.concat(upperBound);
+};
+
+export const getAllowedQuotaSizes = (
+  currentQuotaSize: ProjectQuotaSize
+): NameSpacesQuotaSize => {
   try {
-    const quotaSizeNames = Object.values(QuotaSize);
-    const allQuotaOptions = [
-      QuotaSize.Small,
-      QuotaSize.Medium,
-      QuotaSize.Large,
-    ];
+    const availableQuotaOptions: NameSpacesQuotaSize = {
+      quotaCpuSize: [],
+      quotaMemorySize: [],
+      quotaStorageSize: [],
+    };
+    for (const key in currentQuotaSize) {
+      if (currentQuotaSize[key]) {
+        availableQuotaOptions[key] = getAllowQuotaForEachResource(
+          currentQuotaSize[key]
+        );
+      }
+    }
 
-    const num: number = quotaSizeNames.indexOf(currentQuotaSize);
-
-    // allows +1 size and all the smaller sizes
-    return allQuotaOptions
-      .slice(
-        0,
-        num + 2 <= allQuotaOptions.length ? num + 2 : allQuotaOptions.length
-      )
-      .filter((size) => size !== currentQuotaSize);
+    return availableQuotaOptions;
   } catch (err) {
     const message = "Unable to get a list of Allowed quota sizes";
     logger.error(`${message}, err = ${err.message}`);
