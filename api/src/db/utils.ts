@@ -65,24 +65,3 @@ export const comparerContact = (otherArray, comparator) => {
     );
   };
 };
-
-/**
- *  This function will compare if value in array are all the same
- * @param quotaSizes is taking object like this
- * {quotaCpuSize: [ 'small', 'small', 'small', 'small' ],
- *   quotaMemorySize: [ 'small', 'small', 'small', 'small' ],
- *   quotaStorageSize: [ 'small', 'small', 'small', 'small' ]}
- * @returns true if all value in an array of the key are the same
- */
-export const compareNameSpaceQuotaSize = (quotaSizes: any): boolean => {
-  let isQuotaInEachNamespaceSame = false;
-  for (const quotaType in quotaSizes) {
-    if (quotaSizes[quotaType]) {
-      isQuotaInEachNamespaceSame = quotaSizes[quotaType].every(
-        (val, i, arr) => val === arr[0]
-      );
-      if (!isQuotaInEachNamespaceSame) return false;
-    }
-  }
-  return isQuotaInEachNamespaceSame;
-};

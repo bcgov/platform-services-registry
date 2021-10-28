@@ -21,7 +21,7 @@ import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile } from "../db/model/profile";
-import { ProjectQuotaSize, Quotas, QuotaSize } from "../db/model/quota";
+import { Quotas, QuotaSize } from "../db/model/quota";
 import {
   BotMessage,
   Request,
@@ -39,12 +39,6 @@ import {
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
 import { replaceForDescription } from "./utils";
-
-interface QuotasizeFormatInProvisonerFormat {
-  cpu: QuotaSize;
-  memory: QuotaSize;
-  storage: QuotaSize;
-}
 
 interface QuotasInNatsFormat {
   cpu: {
@@ -93,7 +87,7 @@ const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
   profileContacts: Contact[],
-  quotaSize: QuotasizeFormatInProvisonerFormat,
+  quotaSize: QuotaSize,
   quotas: Quotas,
   cluster: Cluster
 ): Promise<NatsContext> => {
@@ -164,19 +158,14 @@ export const contextForProvisioning = async (
       : NatsContextAction.Create;
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const quotaSize: QuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
-    const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-      {
-        cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
-        memory: quotaSize.quotaMemorySize || QuotaSize.Small,
-        storage: quotaSize.quotaStorageSize || QuotaSize.Small,
-      };
+
     return await buildContext(
       action,
       profile,
       contacts,
-      ProvisonerPreferedFormatQuotasize,
+      quotaSize,
       quotas,
       cluster
     );
@@ -197,7 +186,7 @@ export const contextForEditing = async (
   try {
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
-    let quotaSize: ProjectQuotaSize;
+    let quotaSize: QuotaSize;
     let quotas: Quotas;
     let contacts: Contact[];
 
@@ -215,13 +204,6 @@ export const contextForEditing = async (
       quotas = await QuotaModel.findForQuotaSize(quotaSize);
     }
 
-    const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-      {
-        cpu: quotaSize.quotaCpuSize,
-        memory: quotaSize.quotaMemorySize,
-        storage: quotaSize.quotaStorageSize,
-      };
-
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
     } else {
@@ -231,7 +213,7 @@ export const contextForEditing = async (
       action,
       profile,
       contacts,
-      ProvisonerPreferedFormatQuotasize,
+      quotaSize,
       quotas,
       cluster
     );
@@ -333,6 +315,7 @@ export const fulfillRequest = async (request: Request): Promise<any> => {
 
     await createBotMessageSet(request, subjectPrefix);
     const botMessageSet = await fetchBotMessageRequests(Number(request.id));
+
     for (const botMessage of botMessageSet) {
       await sendNatsMessage(request.profileId, {
         natsSubject: botMessage.natsSubject,

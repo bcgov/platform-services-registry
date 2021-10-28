@@ -16,9 +16,8 @@
 
 import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
-import { compareNameSpaceQuotaSize } from "../utils";
 import { CommonFields, Model } from "./model";
-import { ProjectQuotaSize, QuotaSize } from "./quota";
+import { QuotaSize } from "./quota";
 
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
@@ -33,11 +32,6 @@ export interface ProjectNamespace extends CommonFields {
   name: string;
   profileId: number;
   clusters?: any;
-}
-export interface NameSpacesQuotaSize {
-  quotaCpuSize: QuotaSize[];
-  quotaMemorySize: QuotaSize[];
-  quotaStorageSize: QuotaSize[];
 }
 
 export default class NamespaceModel extends Model {
@@ -231,7 +225,7 @@ export default class NamespaceModel extends Model {
   async getProjectSetQuotaSize(
     profileId: number,
     clusterId: number
-  ): Promise<ProjectQuotaSize> {
+  ): Promise<QuotaSize> {
     const query = {
       text: `
         SELECT quota_cpu_size, quota_memory_size, quota_storage_size FROM cluster_namespace
@@ -251,13 +245,7 @@ export default class NamespaceModel extends Model {
       const clusterNamespaces: (ClusterNamespace | undefined)[] = clResults.map(
         (cl) => cl.pop()
       );
-
-      const quotaSizes: NameSpacesQuotaSize = {
-        quotaCpuSize: [],
-        quotaMemorySize: [],
-        quotaStorageSize: [],
-      };
-
+      const quotaSizes: QuotaSize[] = [];
       clusterNamespaces.forEach(
         (clusterNamespace: ClusterNamespace | undefined): void => {
           if (!clusterNamespace) {
@@ -265,24 +253,15 @@ export default class NamespaceModel extends Model {
           }
           const { quotaCpuSize, quotaMemorySize, quotaStorageSize } =
             clusterNamespace;
-
-          quotaSizes.quotaCpuSize.push(quotaCpuSize);
-          quotaSizes.quotaMemorySize.push(quotaMemorySize);
-          quotaSizes.quotaStorageSize.push(quotaStorageSize);
+          quotaSizes.push(quotaCpuSize, quotaMemorySize, quotaStorageSize);
         }
       );
 
-      const hasSameQuotaSizesForAllNameSpace: boolean =
-        compareNameSpaceQuotaSize(quotaSizes);
-
-      if (hasSameQuotaSizesForAllNameSpace) {
-        const projectQuotaSize: ProjectQuotaSize = {
-          quotaCpuSize: quotaSizes.quotaCpuSize.pop() || QuotaSize.Small,
-          quotaMemorySize: quotaSizes.quotaMemorySize.pop() || QuotaSize.Small,
-          quotaStorageSize:
-            quotaSizes.quotaStorageSize.pop() || QuotaSize.Small,
-        };
-        return projectQuotaSize;
+      const hasSameQuotaSizes: boolean = quotaSizes.every(
+        (val, i, arr) => val === arr[0]
+      );
+      if (hasSameQuotaSizes) {
+        return quotaSizes[0];
       }
       throw new Error(`Need to fix entries as the quota size of
         the project set is not consistent`);
@@ -297,13 +276,13 @@ export default class NamespaceModel extends Model {
   async updateProjectSetQuotaSize(
     profileId: number,
     clusterId: number,
-    quotaSize: ProjectQuotaSize
+    quotaSize: QuotaSize
   ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
         UPDATE cluster_namespace
-          SET quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
-          WHERE namespace_id = $4 AND cluster_id = $5
+          SET quota_cpu_size = $1, quota_memory_size = $1, quota_storage_size = $1
+          WHERE namespace_id = $2 AND cluster_id = $3
         RETURNING *;`,
       values: [],
     };
@@ -311,16 +290,7 @@ export default class NamespaceModel extends Model {
     try {
       const nsResults = await this.findNamespacesForProfile(profileId);
       const clPromises = nsResults.map((nr) =>
-        this.runQuery({
-          ...query,
-          values: [
-            quotaSize.quotaCpuSize,
-            quotaSize.quotaMemorySize,
-            quotaSize.quotaStorageSize,
-            nr.id,
-            clusterId,
-          ],
-        })
+        this.runQuery({ ...query, values: [quotaSize, nr.id, clusterId] })
       );
       await Promise.all(clPromises);
 
