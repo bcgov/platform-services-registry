@@ -365,7 +365,7 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           </label>
           <svg
             aria-hidden="true"
-            class="svg-inline--fa fa-exclamation-triangle fa-w-18  css-1nugeb0"
+            class="svg-inline--fa fa-exclamation-triangle fa-w-18  css-8upjdz"
             data-icon="exclamation-triangle"
             data-prefix="fas"
             focusable="false"
@@ -382,8 +382,7 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
             class="css-5fj4om"
             style="visibility: hidden;"
           >
-             
-            We current only support small snapshot voume size, more option will comming soon
+            Only 'small' snapshot volumes are supported right now.
           </div>
           <div
             class=""
