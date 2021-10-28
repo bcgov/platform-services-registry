@@ -21,7 +21,7 @@ import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Flex, Text } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
 import { createStructuredSelector } from 'reselect';
 import {
   MAXIMUM_TECHNICAL_LEADS,
@@ -33,10 +33,11 @@ import {
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
+import { GithubIDInitialState } from '../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button } from '../common/UI/Button';
+import { Button, SquareFormButton } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
@@ -51,7 +52,7 @@ interface IContactCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
-  allPersona: any;
+  allPersona: GithubIDInitialState;
   newTechnicalLeads: any;
 }
 
@@ -66,6 +67,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     newTechnicalLeads,
   } = props;
 
+  const { technicalLeads } = allPersona;
+
   const { setOpenBackdrop } = useCommonState();
   const api = useRegistryApi();
 
@@ -79,7 +82,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     throw new Error('Unable to get product owner details');
   }
 
-  const technicalLeads = contactDetails.filter(
+  const existingTechnicalLeads = contactDetails.filter(
     (contact) => contact.roleId === ROLES.TECHNICAL_LEAD,
   );
 
@@ -182,13 +185,13 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             />
           </Flex>
           <FormTitle>
-            {technicalLeads.length > MINIMUM_TECHNICAL_LEADS
+            {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
               ? 'Who are the technical leads for this project?'
               : 'Who is the technical lead for this project?'}
           </FormTitle>
-          <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
+          <FieldArray name="updatedTechnicalLeads" initialValue={existingTechnicalLeads}>
             {({ fields }) => {
-              return fields.length && fields.length <= allPersona.technicalLeads.length ? (
+              return fields.length && fields.length <= technicalLeads.length ? (
                 <>
                   {fields.map((name, index) => (
                     <div key={name}>
@@ -197,18 +200,18 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                           Technical Lead {index + 1}
                         </FormTitle>
                         {/* TODO: (SB) implement the ability to delete contacts from edit page */}
-                        {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
-                      <Box my="auto" ml="auto" className="buttons">
-                        <SquareFormButton
-                          type="button"
-                          onClick={() => fields.remove(index)}
-                          style={{ cursor: 'pointer' }}
-                          inversed
-                        >
-                          X
-                        </SquareFormButton>
-                      </Box>
-                    )} */}
+                        {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                          <Box my="auto" ml="auto" className="buttons">
+                            <SquareFormButton
+                              type="button"
+                              onClick={() => fields.remove(index)}
+                              style={{ cursor: 'pointer' }}
+                              inversed
+                            >
+                              X
+                            </SquareFormButton>
+                          </Box>
+                        )}
                       </Flex>
                       <Flex flexDirection="column">
                         <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>

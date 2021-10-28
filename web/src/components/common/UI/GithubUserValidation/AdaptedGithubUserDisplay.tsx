@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { Box, Flex, Image, Text } from 'rebass';
 import { createStructuredSelector } from 'reselect';
 import { githubIDSearchKeyword } from '../../../../redux/githubID/githubID.action';
+import {
+  GithubIdBaseInterface,
+  GithubIDBaseState,
+} from '../../../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
 
@@ -56,7 +60,8 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
     }
   }, [userFieldInputEvent.value, allPersona, persona, position, dispatchSearchGithubIDInput]);
 
-  const { isLoading, notFound, githubUser } = allPersona[persona][position];
+  const validatingRole: GithubIdBaseInterface[] = allPersona[persona] || [{ ...GithubIDBaseState }];
+  const { isLoading, githubUser, notFound } = validatingRole[position];
 
   return (
     <>
