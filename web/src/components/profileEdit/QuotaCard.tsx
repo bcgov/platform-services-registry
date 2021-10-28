@@ -18,7 +18,7 @@ import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import Aux from '../../hoc/auxillary';
 import theme from '../../theme';
-import { QuotaSize } from '../../types';
+import { ProjectResourceQuotaSize, QuotaSize } from '../../types';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
@@ -26,13 +26,25 @@ interface IQuotaCardProps {
 
 export interface QuotaDetails {
   licensePlate?: string;
-  quotaSize?: string;
-  quotaOptions?: QuotaSize[];
+  quotaSize?: ProjectResourceQuotaSize;
+  quotaOptions?: {
+    quotaCpuSize: QuotaSize[];
+    quotaMemorySize: QuotaSize[];
+    quotaStorageSize: QuotaSize[];
+  };
+}
+interface SpecTextInterface {
+  CPU: string;
+  Memory: string;
+  [key: string]: string;
 }
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   const {
-    quotaDetails: { licensePlate = '', quotaSize = '' },
+    quotaDetails: {
+      licensePlate = '',
+      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '' },
+    },
   } = props;
 
   const namespaceTexts = [
@@ -41,7 +53,11 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     ['Development', 'dev'],
     ['Tools', 'tools'],
   ];
-  const specTexts = ['CPU', 'Memory', 'Storage'];
+  const specTexts: SpecTextInterface = {
+    CPU: quotaSize?.quotaCpuSize,
+    Memory: quotaSize?.quotaMemorySize,
+    Storage: quotaSize?.quotaStorageSize,
+  };
 
   return (
     <Flex flexWrap="wrap">
@@ -54,11 +70,15 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
             </Text>
           </Box>
           <Box width={1 / 2} px={2} mt={3}>
-            {specTexts.map((specText: string, index1: number) => (
-              <Text key={index1} as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                {specText}:{quotaSize}
-              </Text>
-            ))}
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              CPU:{specTexts.CPU}
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              Memory:{specTexts.Memory}
+            </Text>
+            <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+              Storage:{specTexts.Storage}
+            </Text>
           </Box>
         </Aux>
       ))}

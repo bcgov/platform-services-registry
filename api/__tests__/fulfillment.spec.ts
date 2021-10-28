@@ -17,7 +17,7 @@
 import fs from "fs";
 import path from "path";
 import { Pool } from "pg";
-import { QuotaSize } from "../src/db/model/quota";
+import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
 import RequestModel, { RequestEditType } from "../src/db/model/request";
 import {
   contextForEditing,
@@ -60,8 +60,13 @@ const p10 = path.join(__dirname, "fixtures/select-default-cluster.json");
 const profileCluster = JSON.parse(fs.readFileSync(p10, "utf8"));
 
 jest.mock("../src/libs/profile", () => {
+  const testQuotaSize: ProjectQuotaSize = {
+    quotaCpuSize: QuotaSize.Small,
+    quotaMemorySize: QuotaSize.Small,
+    quotaStorageSize: QuotaSize.Small,
+  };
   return {
-    getQuotaSize: jest.fn().mockResolvedValue(QuotaSize.Small),
+    getQuotaSize: jest.fn().mockResolvedValue(testQuotaSize),
   };
 });
 

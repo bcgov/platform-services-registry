@@ -19,7 +19,7 @@ import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile } from "../db/model/profile";
-import { QuotaSize } from "../db/model/quota";
+import { ProjectQuotaSize } from "../db/model/quota";
 import { Request, RequestEditType, RequestType } from "../db/model/request";
 import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "./authmware";
@@ -253,7 +253,7 @@ export const processProfileContactsEdit = async (
 
 export const requestProfileQuotaSizeEdit = async (
   profileId: number,
-  requestedQuotaSize: QuotaSize,
+  requestedQuotaSize: ProjectQuotaSize,
   user: AuthenticatedUser,
   requiresHumanAction: boolean = false
 ): Promise<Request> => {
