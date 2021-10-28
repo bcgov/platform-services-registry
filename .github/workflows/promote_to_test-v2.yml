@@ -95,7 +95,6 @@ jobs:
 
       - name: Update DB image ID
         run: | 
-          ls platform-registry-app/overlays
           cd platform-registry-app/overlays/test
           kustomize edit set image "registry-flyway-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-flyway@${{ steps.build-db-image.outputs.imagesha }}"
           git commit -am "Update flyway image ID for Test"
