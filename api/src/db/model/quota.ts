@@ -24,12 +24,6 @@ export enum QuotaSize {
   Large = "large",
 }
 
-export interface ProjectQuotaSize {
-  quotaCpuSize: QuotaSize;
-  quotaMemorySize: QuotaSize;
-  quotaStorageSize: QuotaSize;
-}
-
 export interface Quotas {
   cpu: {
     requests: number;
@@ -46,32 +40,6 @@ export interface Quotas {
     capacity: string;
     pvcCount: number;
   };
-}
-
-interface QuotaSizeDedetail {
-  name: string;
-  cpuNums: string[];
-  memoryNums: string[];
-  storageNums: string[];
-}
-
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
-}
-
-interface QuotaSizeDedetail {
-  name: string;
-  cpuNums: string[];
-  memoryNums: string[];
-  storageNums: string[];
-}
-
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
 }
 
 export interface Quota extends CommonFields {
@@ -143,29 +111,10 @@ export default class QuotaModel extends Model {
   async findQuotaSizes(): Promise<any> {
     try {
       const quota = await this.findQuota();
-      const quotaSizesDetail: QuotaSizeDedetails = {
-        small: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-        },
-        medium: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-        },
-        large: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-        },
-      };
+      const quotaSizes: any = [];
 
       for (const size of quota) {
-        quotaSizesDetail[size.id] = {
+        quotaSizes.push({
           name: size.id,
           cpuNums: [size.cpuRequests, size.cpuLimits],
           memoryNums: [
@@ -177,10 +126,10 @@ export default class QuotaModel extends Model {
             size.storageFile.replace("Gi", "GiB"),
             size.storageBackup.replace("Gi", "GiB"),
           ],
-        };
+        });
       }
 
-      return quotaSizesDetail;
+      return quotaSizes;
     } catch (err) {
       const message = `Unable to get quota sizes`;
       logger.error(`${message}, err = ${err.message}`);
@@ -189,23 +138,18 @@ export default class QuotaModel extends Model {
     }
   }
 
-  async findForQuotaSize(quotaSize: ProjectQuotaSize): Promise<any> {
+  async findForQuotaSize(quotaSize: QuotaSize): Promise<any> {
     const query = {
       text: `
                 SELECT json_build_object(
                     'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS "requests", cpu_limits AS "limits"
-                        FROM ref_quota WHERE id = $1) d),
+                        FROM ref_quota WHERE id = '${quotaSize}') d),
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
-                        FROM ref_quota WHERE id = $2) d),
+                        FROM ref_quota WHERE id = '${quotaSize}') d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = $3) d)
+                        FROM ref_quota WHERE id = '${quotaSize}') d)
                 );
-                `,
-      values: [
-        quotaSize.quotaCpuSize,
-        quotaSize.quotaMemorySize,
-        quotaSize.quotaStorageSize,
-      ],
+            `,
     };
 
     try {

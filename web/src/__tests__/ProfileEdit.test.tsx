@@ -19,6 +19,7 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
+import { QuotaSize } from '../types';
 import ProfileEdit from '../views/ProfileEdit';
 import mockContacts from './fixtures/profile-contacts.json';
 import mockMinistry from './fixtures/profile-ministry.json';
@@ -26,12 +27,6 @@ import mockProfile from './fixtures/profiles.json';
 import mockQuotaSizes from './fixtures/quota-sizes.json';
 
 const browserHistory = createBrowserHistory();
-
-export enum QuotaSize {
-  Small = 'small',
-  Medium = 'medium',
-  Large = 'large',
-}
 
 jest.mock(
   '../hooks/useRegistryApi',
@@ -104,16 +99,8 @@ test('matches the snapshot', async () => {
 function renderQuota() {
   const profileIdProp: string = '1';
   const licensePlateProp: string = '473f50';
-  const quotaSizeProp: any = {
-    quotaCpuSize: QuotaSize.Medium,
-    quotaMemorySize: QuotaSize.Medium,
-    quotaStorageSize: QuotaSize.Medium,
-  };
-  const quotaOptionsProp: any = {
-    quotaCpuSize: [QuotaSize.Small, QuotaSize.Large],
-    quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
-    quotaStorageSize: [QuotaSize.Small, QuotaSize.Large],
-  };
+  const quotaSizeProp: string = 'medium';
+  const quotaOptionsProp: QuotaSize[] = ['small', 'large'];
   const handleSubmitRefreshProp = jest.fn();
   const isProvisionedProp: boolean = true;
   const hasPendingEditProp: boolean = false;

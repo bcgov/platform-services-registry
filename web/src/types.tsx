@@ -39,9 +39,3 @@ export interface Namespace {
   name: string;
   clusters: NamespaceCN[];
 }
-
-export interface ProjectResourceQuotaSize {
-  quotaCpuSize: '';
-  quotaMemorySize: '';
-  quotaStorageSize: '';
-}

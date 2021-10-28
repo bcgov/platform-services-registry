@@ -90,40 +90,8 @@ Array [
 exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 2`] = `200`;
 
 exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 3`] = `
-Object {
-  "large": Object {
-    "cpuNums": Array [
-      32,
-      64,
-    ],
-    "memoryNums": Array [
-      "64GiB",
-      "128GiB",
-    ],
-    "name": "large",
-    "storageNums": Array [
-      60,
-      "200GiB",
-      "100GiB",
-    ],
-  },
-  "medium": Object {
-    "cpuNums": Array [
-      8,
-      16,
-    ],
-    "memoryNums": Array [
-      "32GiB",
-      "64GiB",
-    ],
-    "name": "medium",
-    "storageNums": Array [
-      40,
-      "100GiB",
-      "50GiB",
-    ],
-  },
-  "small": Object {
+Array [
+  Object {
     "cpuNums": Array [
       4,
       8,
@@ -139,7 +107,39 @@ Object {
       "25GiB",
     ],
   },
-}
+  Object {
+    "cpuNums": Array [
+      8,
+      16,
+    ],
+    "memoryNums": Array [
+      "32GiB",
+      "64GiB",
+    ],
+    "name": "medium",
+    "storageNums": Array [
+      40,
+      "100GiB",
+      "50GiB",
+    ],
+  },
+  Object {
+    "cpuNums": Array [
+      32,
+      64,
+    ],
+    "memoryNums": Array [
+      "64GiB",
+      "128GiB",
+    ],
+    "name": "large",
+    "storageNums": Array [
+      60,
+      "200GiB",
+      "100GiB",
+    ],
+  },
+]
 `;
 
 exports[`Quota event handlers fetchQuotaSizes Quota sizes query error should throw 1`] = `"Unable to get quota sizes"`;

@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
   useInterval(() => {
     async function verifyProjects() {
       const updatedProfiles = await api.getDashboardProjects();
-      const updatedProfileDetailsArray = updatedProfiles.data ? [...updatedProfiles.data] : [];
+      const updatedProfileDetailsArray = [...updatedProfiles.data];
       const profileChanged =
         JSON.stringify(updatedProfileDetailsArray) !== JSON.stringify(profileDetails);
 
