@@ -44,27 +44,10 @@ jobs:
           web:
             - 'web/**'
 
-    # Prepare to update Kustomize files in the manifest repo
-    # ------------------------------------------------------
-    - name: Prepare deploy key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-    - name: Check out manifest repo
-      uses: actions/checkout@v2
-      with:
-        ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-        repository: ${{ secrets.MANIFEST_REPO }}
-    - name: Set up Kustomize
-      uses: imranismail/setup-kustomize@v1
-    - name: Set global git config
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-
   db_build_if_needed:
     needs: check_for_component_changes
     runs-on: ubuntu-latest
+    if: ${{ needs.check_for_component_changes.outputs.db == 'true' || github.event_name == 'workflow_dispatch' }}
     steps:
       # Build the DB image from master only if there are DB updates
       # Get its build ID
@@ -74,7 +57,6 @@ jobs:
       # -----------------------------------------------------------
       - name: Build and tag the image
         id: build-db-image
-        if: ${{ needs.check_for_component_changes.outputs.db == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
@@ -92,6 +74,24 @@ jobs:
         run: |
           curl -X POST -H 'Content-Type: application/json' --data '{"text":"${{ env.ROCKETCHAT_MESSAGE }}"}' "${{ secrets.ROCKETCHAT_HOOK_URL }}"
           exit 1
+
+      # Prepare Kustomize and update manifests
+      # --------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
 
       - name: Update DB image ID
         run: | 
@@ -195,6 +195,23 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-api@$IMAGESHA platsrv-registry-api:$COMMITID platsrv-registry-api:test
           echo "::set-output name=imagesha::$IMAGESHA"
 
+      # Prepare Kustomize and update manifests
+      # --------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
       - name: Update API image ID
         run: |
           cd platform-registry-app/overlays/test
@@ -325,10 +342,27 @@ jobs:
           oc -n platform-registry-tools tag platsrv-registry-web@$IMAGESHA platsrv-registry-web:$COMMITID platsrv-registry-web:test
           echo "::set-output name=imagesha::$IMAGESHA"
 
+      # Prepare Kustomize and update manifests
+      # --------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
       - name: Update web image ID
         run: |
           cd platform-registry-app/overlays/test
-          kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@${{ steps.build-image.outputs.imagesha }}"
+          kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@${{ steps.build-web-image.outputs.imagesha }}"
           git commit -am "Update web image ID for Test"
           git push origin
 
