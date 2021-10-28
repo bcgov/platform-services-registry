@@ -68,7 +68,7 @@ const StyledInformationBox = styled.div`
   padding: 5px;
 `;
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
-  color: red;
+  color: #fcba19;
   :hover {
     cursor: pointer;
   }
@@ -315,9 +315,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                       <StyledInformationBox
                         style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
                       >
-                        {' '}
-                        We current only support small snapshot voume size, more option will comming
-                        soon
+                        Only 'small' snapshot volumes are supported right now.
                       </StyledInformationBox>
                     </>
                   )}

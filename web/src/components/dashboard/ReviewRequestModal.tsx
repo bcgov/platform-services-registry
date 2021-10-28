@@ -158,11 +158,9 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="technical-lead">Technical Leads</Label>
-
         <InformationBoxes displayTexts={parseContacts(profileDetails.technicalLeads)} />
       </Flex>
       <Flex flexDirection="column">
-        {console.log('hiahia', profileDetails.quotaSize)}
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
           <InformationBox

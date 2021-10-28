@@ -234,11 +234,11 @@ export const updateProfileQuotaSize = async (
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
-    console.log("father !!!:::", quotaSize);
+
     const allowedQuotaSizes: NameSpacesQuotaSize =
       getAllowedQuotaSizes(quotaSize);
     const requiresHumanAction = true;
-    console.log("mother !!!:::", allowedQuotaSizes);
+
     // verify if requested quota size is valid
     Object.keys(requestedQuotaSize).forEach((key) => {
       if (
