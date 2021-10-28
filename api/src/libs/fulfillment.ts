@@ -26,7 +26,7 @@ import {
   BotMessage,
   Request,
   RequestEditType,
-  RequestType
+  RequestType,
 } from "../db/model/request";
 import {
   NatsContact,
@@ -34,7 +34,7 @@ import {
   NatsContext,
   NatsContextAction,
   NatsMessage,
-  NatsProjectNamespace
+  NatsProjectNamespace,
 } from "../types";
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
@@ -167,11 +167,11 @@ export const contextForProvisioning = async (
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
     const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-    {
-      cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
-      memory: quotaSize.quotaMemorySize || QuotaSize.Small,
-      storage: quotaSize.quotaStorageSize || QuotaSize.Small,
-    };
+      {
+        cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
+        memory: quotaSize.quotaMemorySize || QuotaSize.Small,
+        storage: quotaSize.quotaStorageSize || QuotaSize.Small,
+      };
     return await buildContext(
       action,
       profile,
@@ -216,11 +216,11 @@ export const contextForEditing = async (
     }
 
     const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-    {
-      cpu: quotaSize.quotaCpuSize,
-      memory: quotaSize.quotaMemorySize,
-      storage: quotaSize.quotaStorageSize,
-    };
+      {
+        cpu: quotaSize.quotaCpuSize,
+        memory: quotaSize.quotaMemorySize,
+        storage: quotaSize.quotaStorageSize,
+      };
 
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
