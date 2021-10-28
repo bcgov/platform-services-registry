@@ -44,6 +44,24 @@ jobs:
           web:
             - 'web/**'
 
+    # Prepare to update Kustomize files in the manifest repo
+    # ------------------------------------------------------
+    - name: Prepare deploy key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+    - name: Check out manifest repo
+      uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+        repository: ${{ secrets.MANIFEST_REPO }}
+    - name: Set up Kustomize
+      uses: imranismail/setup-kustomize@v1
+    - name: Set global git config
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
   db_build_if_needed:
     needs: check_for_component_changes
     runs-on: ubuntu-latest

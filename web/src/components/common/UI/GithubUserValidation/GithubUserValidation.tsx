@@ -6,7 +6,10 @@ import {
   createNewTechnicalLeads,
   searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
-import { GithubIDBaseState } from '../../../../redux/githubID/githubID.reducer';
+import {
+  GithubIdBaseInterface,
+  GithubIDBaseState,
+} from '../../../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
@@ -21,21 +24,20 @@ const GithubUserValidation: React.FC<any> = (props) => {
     fetchUserStartAsync,
   } = props;
 
+  const validatingRole: GithubIdBaseInterface[] = allPersona[persona] || [{ ...GithubIDBaseState }];
+  const { inputKeyword, githubUser, notFound, everFetched } = validatingRole[position];
+
   const githubValidator = (value: any) => {
     if (!value) {
       return 'Required';
     }
-    if (allPersona[persona][position].everFetched && allPersona[persona][position].notFound) {
+    if (everFetched && notFound) {
       return 'Github User Not Found';
     }
-    if (allPersona[persona][position].inputKeyword && !allPersona[persona][position].everFetched) {
+    if (inputKeyword && !everFetched) {
       return 'Still Loading Github User infomation';
     }
   };
-
-  const validatingRole = allPersona[persona] || GithubIDBaseState;
-  const { inputKeyword, githubUser, notFound } = validatingRole[position];
-
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
