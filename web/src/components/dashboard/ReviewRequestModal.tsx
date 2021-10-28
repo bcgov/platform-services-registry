@@ -14,13 +14,14 @@
 // limitations under the License.
 //
 
-import { Input, Label, Textarea } from '@rebass/forms';
+import { Label, Textarea } from '@rebass/forms';
 import React from 'react';
 import { Field, Form } from 'react-final-form';
-import { Flex, Heading } from 'rebass';
+import { Box, Flex, Heading } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
+import { findDifferenceBetweenTwoDifferentObject } from '../../utils/utils';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -32,7 +33,48 @@ interface ReviewRequestModalProps {
   hide: () => void;
   handleSubmitRefresh: any;
 }
+
+interface DisplayInfo {
+  displayText: string;
+  style?: any;
+}
+interface DisplayInfomations {
+  displayTexts: string[];
+}
+
 type HumanActionType = 'approve' | 'reject' | 'commentOnly';
+
+const InformationBox: React.FC<DisplayInfo> = (props) => {
+  const { displayText, ...rest } = props;
+  return (
+    <Box
+      fontSize={2}
+      bg="#FAFAFA"
+      sx={{
+        px: 2,
+        py: 1,
+        borderRadius: 5,
+        border: '1px solid black',
+      }}
+      {...rest}
+    >
+      {displayText}
+    </Box>
+  );
+};
+
+const InformationBoxes = (props: DisplayInfomations) => {
+  const { displayTexts } = props;
+  return (
+    <>
+      {displayTexts.map((displayText: string) => (
+        <Box key={displayText} mb={2}>
+          <InformationBox displayText={displayText} />
+        </Box>
+      ))}
+    </>
+  );
+};
 
 export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => {
   const { profileId, profiles, hide, handleSubmitRefresh } = props;
@@ -40,10 +82,26 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
+  const textCapitalized = { textTransform: 'capitalize' };
+
+  const requestedUpdateQuota =
+    profileDetails.type === 'edit'
+      ? findDifferenceBetweenTwoDifferentObject(
+          profileDetails.editObject.quota,
+          profileDetails.quotaSize,
+        )
+      : [];
 
   const parseContacts = (contactDetails: any) => {
     return contactDetails.map(
       (contact: any) => ` ${contact.firstName} ${contact.lastName} | ${contact.email}`,
+    );
+  };
+
+  const parseUpdatedQuota = (updatedQuotaTypes: any) => {
+    return updatedQuotaTypes.map(
+      (quotaType: any) =>
+        `${quotaType}: ${profileDetails.quotaSize[quotaType]} => ${profileDetails.editObject.quota[quotaType]} `,
     );
   };
 
@@ -73,20 +131,15 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
-        <Input name="project-type" placeholder="Create" disabled value={profileDetails.type} />
+        <InformationBox style={textCapitalized} displayText={profileDetails.type} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
-        <Input name="project-name" placeholder="Project X" disabled value={profileDetails.name} />
+        <InformationBox style={textCapitalized} displayText={profileDetails.name} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-cluster">Project Cluster</Label>
-        <Input
-          name="project-cluster"
-          placeholder="Silver"
-          disabled
-          value={profileDetails.clusters.join(', ')}
-        />
+        <InformationBox style={textCapitalized} displayText={profileDetails.clusters.join(', ')} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-description">Description</Label>
@@ -100,36 +153,23 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="product-owner">Product Owner</Label>
-        <Input
-          name="product-owner"
-          placeholder="John Doe | john.doe@example.com"
-          disabled
-          value={parseContacts(profileDetails.productOwners)}
-          sx={{ textTransform: 'none' }}
-        />
+
+        <InformationBox displayText={parseContacts(profileDetails.productOwners)} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="technical-lead">Technical Leads</Label>
-        <Input
-          name="technical-lead"
-          placeholder="Jane Doe | jane.doe@example.com"
-          disabled
-          value={parseContacts(profileDetails.technicalLeads)}
-          sx={{ textTransform: 'none' }}
-        />
+
+        <InformationBoxes displayTexts={parseContacts(profileDetails.technicalLeads)} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
-        <Input
-          name="project-quota"
-          placeholder="Small"
-          disabled
-          value={
-            profileDetails.type === 'create'
-              ? profileDetails.quotaSize
-              : `${profileDetails.quotaSize} => ${profileDetails.editObject.quota}`
-          }
-        />
+        {profileDetails.type === 'create' ? (
+          <InformationBox
+            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize}`}
+          />
+        ) : (
+          <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+        )}
       </Flex>
       <Form onSubmit={onSubmit}>
         {(formProps) => (
