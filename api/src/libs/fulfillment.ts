@@ -26,7 +26,7 @@ import {
   BotMessage,
   Request,
   RequestEditType,
-  RequestType,
+  RequestType
 } from "../db/model/request";
 import {
   NatsContact,
@@ -34,18 +34,35 @@ import {
   NatsContext,
   NatsContextAction,
   NatsMessage,
-  NatsProjectNamespace,
+  NatsProjectNamespace
 } from "../types";
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
 import { replaceForDescription } from "./utils";
 
-interface ProvisonerPreferedFormatQuotasizeFormat {
+interface QuotasizeFormatInProvisonerFormat {
   cpu: QuotaSize;
   memory: QuotaSize;
   storage: QuotaSize;
 }
 
+interface QuotasInNatsFormat {
+  cpu: {
+    requests: number;
+    limits: number;
+  };
+  memory: {
+    requests: string;
+    limits: string;
+  };
+  storage: {
+    block: string;
+    file: string;
+    backup: string;
+    capacity: string;
+    pvc_count: number;
+  };
+}
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, RequestModel } =
   dm;
@@ -76,7 +93,7 @@ const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
   profileContacts: Contact[],
-  quotaSize: ProvisonerPreferedFormatQuotasizeFormat,
+  quotaSize: QuotasizeFormatInProvisonerFormat,
   quotas: Quotas,
   cluster: Cluster
 ): Promise<NatsContext> => {
@@ -85,17 +102,28 @@ const buildContext = async (
       throw new Error("Cant get profile id");
     }
 
-    // TODO:(sb) Find a more robust solution to convert quotas to snake_case
-    // @ts-ignore
-    delete Object.assign(quotas.storage, { pvc_count: quotas.storage.pvcCount })
-      .pvcCount;
+    const quotasInNatsPreferedFormat: QuotasInNatsFormat = {
+      cpu: {
+        ...quotas.cpu,
+      },
+      memory: {
+        ...quotas.memory,
+      },
+      storage: {
+        block: quotas.storage.block,
+        file: quotas.storage.file,
+        backup: quotas.storage.backup,
+        capacity: quotas.storage.capacity,
+        pvc_count: quotas.storage.pvcCount,
+      },
+    };
 
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(
       profile.id
     );
 
     const namespaces = namespacesDetails.map((n) =>
-      formatNamespacesForNats(n, quotaSize, quotas)
+      formatNamespacesForNats(n, quotaSize, quotasInNatsPreferedFormat)
     );
 
     const contacts: NatsContact[] = profileContacts.map((contact) =>
@@ -138,12 +166,12 @@ export const contextForProvisioning = async (
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
-    const ProvisonerPreferedFormatQuotasize: ProvisonerPreferedFormatQuotasizeFormat =
-      {
-        cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
-        memory: quotaSize.quotaMemorySize || QuotaSize.Small,
-        storage: quotaSize.quotaStorageSize || QuotaSize.Small,
-      };
+    const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
+    {
+      cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
+      memory: quotaSize.quotaMemorySize || QuotaSize.Small,
+      storage: quotaSize.quotaStorageSize || QuotaSize.Small,
+    };
     return await buildContext(
       action,
       profile,
@@ -187,12 +215,12 @@ export const contextForEditing = async (
       quotas = await QuotaModel.findForQuotaSize(quotaSize);
     }
 
-    const ProvisonerPreferedFormatQuotasize: ProvisonerPreferedFormatQuotasizeFormat =
-      {
-        cpu: quotaSize.quotaCpuSize,
-        memory: quotaSize.quotaMemorySize,
-        storage: quotaSize.quotaStorageSize,
-      };
+    const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
+    {
+      cpu: quotaSize.quotaCpuSize,
+      memory: quotaSize.quotaMemorySize,
+      storage: quotaSize.quotaStorageSize,
+    };
 
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
