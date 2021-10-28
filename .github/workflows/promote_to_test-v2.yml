@@ -101,7 +101,7 @@ jobs:
           git push origin
 
   api_test:
-    needs: [db_build_if_needed]
+    needs: check_for_component_changes
     if: ${{ needs.check_for_component_changes.outputs.api == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
@@ -139,8 +139,7 @@ jobs:
           exit 1
 
   api_build:
-    needs: [api_test]
-    if: ${{ needs.check_for_component_changes.outputs.api == 'true' || github.event_name == 'workflow_dispatch' }}
+    needs: api_test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -170,8 +169,7 @@ jobs:
           CI: "true"
 
   api_s2i-build:
-    needs: [api_build]
-    if: ${{ needs.check_for_component_changes.outputs.api == 'true' || github.event_name == 'workflow_dispatch' }}
+    needs: api_build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -220,7 +218,7 @@ jobs:
           git push origin
 
   web_test:
-    needs: [db_build_if_needed]
+    needs: check_for_component_changes
     if: ${{ needs.check_for_component_changes.outputs.web == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     defaults:
@@ -251,8 +249,7 @@ jobs:
           exit 1
 
   web_build:
-    needs: [web_test]
-    if: ${{ needs.check_for_component_changes.outputs.web == 'true' || github.event_name == 'workflow_dispatch' }}
+    needs: web_test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -317,8 +314,7 @@ jobs:
           exit 1
 
   web_s2i_build:
-    needs: [web_build]
-    if: ${{ needs.check_for_component_changes.outputs.web == 'true' || github.event_name == 'workflow_dispatch' }}
+    needs: web_build
     runs-on: ubuntu-latest
     defaults:
       run:
