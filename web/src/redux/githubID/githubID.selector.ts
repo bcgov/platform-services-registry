@@ -20,6 +20,7 @@ export const selectTechnicalLead = (position: number) =>
     return githubIDTechnicalLeads ? githubIDTechnicalLeads[position] : GithubIDBaseState;
   });
 
+// use O index because we only have 1 PO. TODO: replace it with more generaic method
 export const selectProductOwner = () =>
   createSelector([selectedProductOwner], (githubIDProductOwner) =>
     githubIDProductOwner ? githubIDProductOwner[0] : GithubIDBaseState,
