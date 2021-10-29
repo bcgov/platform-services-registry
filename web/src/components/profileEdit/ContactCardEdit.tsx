@@ -33,7 +33,6 @@ import {
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
-import { GithubIDInitialState } from '../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
@@ -52,7 +51,6 @@ interface IContactCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
-  allPersona: GithubIDInitialState;
   newTechnicalLeads: any;
 }
 
@@ -63,11 +61,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     handleSubmitRefresh,
     isProvisioned,
     hasPendingEdit,
-    allPersona,
     newTechnicalLeads,
   } = props;
-
-  const { technicalLeads } = allPersona;
 
   const { setOpenBackdrop } = useCommonState();
   const api = useRegistryApi();
@@ -191,7 +186,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
           </FormTitle>
           <FieldArray name="updatedTechnicalLeads" initialValue={existingTechnicalLeads}>
             {({ fields }) => {
-              return fields.length && fields.length <= technicalLeads.length ? (
+              return fields.length && fields.length <= MAXIMUM_TECHNICAL_LEADS ? (
                 <>
                   {fields.map((name, index) => (
                     <div key={name}>
@@ -291,6 +286,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     </Form>
   );
 };
+
+// please DO NOT remove this mapStateToProps from this component as the react final form is using allPersona to do validation
 const mapStateToProps = createStructuredSelector({
   allPersona: selectAllPersona,
 });

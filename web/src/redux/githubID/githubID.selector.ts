@@ -4,17 +4,17 @@ const selectGithubID = (state: any) => state.githubID;
 
 export const selectAllPersona = createSelector([selectGithubID], (githubID) => githubID);
 
-export const selectFirstTechnicalLeads = createSelector(
-  [selectGithubID],
-  (githubID) => githubID.TechnicalLeads[0],
-);
-
 export const selectSecondTechnicalLeads = createSelector(
   [selectGithubID],
-  (githubID) => githubID.TechnicalLeads[1],
+  (githubID) => githubID.technicalLeads[1],
 );
 
-export const selecUpdatedProductOwner = createSelector(
+export const selectFirstTechnicalLeads = createSelector(
+  [selectGithubID],
+  (githubID) => githubID.technicalLeads[0],
+);
+
+export const selecProductOwner = createSelector(
   [selectGithubID],
   (githubID) => githubID.productOwner[0],
 );

@@ -6,11 +6,12 @@ import {
   createNewTechnicalLeads,
   searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
+import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
-  GithubIdBaseInterface,
-  GithubIDBaseState,
-} from '../../../../redux/githubID/githubID.reducer';
-import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
+  selecProductOwner,
+  selectFirstTechnicalLeads,
+  selectSecondTechnicalLeads,
+} from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
 const GithubUserValidation: React.FC<any> = (props) => {
@@ -20,12 +21,22 @@ const GithubUserValidation: React.FC<any> = (props) => {
     position,
     initialValue,
     defaultValue,
-    allPersona,
+    firstTechnicalLeads,
+    secondTechnicalLeads,
+    productOwner,
     fetchUserStartAsync,
   } = props;
 
-  const validatingRole: GithubIdBaseInterface[] = allPersona[persona] || [{ ...GithubIDBaseState }];
-  const { inputKeyword, githubUser, notFound, everFetched } = validatingRole[position];
+  let validatingRole: GithubIdBaseInterface;
+  if (persona === 'productOwner') {
+    validatingRole = productOwner;
+  } else if (position === 0) {
+    validatingRole = firstTechnicalLeads;
+  } else {
+    validatingRole = secondTechnicalLeads;
+  }
+
+  const { inputKeyword, githubUser, notFound, everFetched } = validatingRole;
 
   const githubValidator = (value: any) => {
     if (!value) {
@@ -38,6 +49,7 @@ const GithubUserValidation: React.FC<any> = (props) => {
       return 'Still Loading Github User infomation';
     }
   };
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
@@ -68,7 +80,9 @@ const GithubUserValidation: React.FC<any> = (props) => {
 };
 
 const mapStateToProps = createStructuredSelector({
-  allPersona: selectAllPersona,
+  firstTechnicalLeads: selectFirstTechnicalLeads,
+  secondTechnicalLeads: selectSecondTechnicalLeads,
+  productOwner: selecProductOwner,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { Box, Flex, Image, Text } from 'rebass';
 import { createStructuredSelector } from 'reselect';
 import { githubIDSearchKeyword } from '../../../../redux/githubID/githubID.action';
+import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
-  GithubIdBaseInterface,
-  GithubIDBaseState,
-} from '../../../../redux/githubID/githubID.reducer';
-import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
+  selecProductOwner,
+  selectFirstTechnicalLeads,
+  selectSecondTechnicalLeads,
+} from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
 
 interface GithubUserInterface {
@@ -45,23 +46,33 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
   const {
     input: userFieldInputEvent,
     name,
-    allPersona,
     persona,
+    firstTechnicalLeads,
+    secondTechnicalLeads,
+    productOwner,
     position,
     initialValue,
     dispatchSearchGithubIDInput,
     ...rest
   } = props;
 
+  let validatingRole: GithubIdBaseInterface;
+  if (persona === 'productOwner') {
+    validatingRole = productOwner;
+  } else if (position === 0) {
+    validatingRole = firstTechnicalLeads;
+  } else {
+    validatingRole = secondTechnicalLeads;
+  }
+
+  const { isLoading, githubUser, notFound, inputKeyword } = validatingRole;
+
   useEffect(() => {
-    if (userFieldInputEvent.value !== allPersona[persona][position].inputKeyword) {
+    if (userFieldInputEvent.value !== inputKeyword) {
       const inputValue = userFieldInputEvent.value;
       dispatchSearchGithubIDInput({ persona, position, inputValue });
     }
-  }, [userFieldInputEvent.value, allPersona, persona, position, dispatchSearchGithubIDInput]);
-
-  const validatingRole: GithubIdBaseInterface[] = allPersona[persona] || [{ ...GithubIDBaseState }];
-  const { isLoading, githubUser, notFound } = validatingRole[position];
+  }, [userFieldInputEvent.value, inputKeyword, persona, position, dispatchSearchGithubIDInput]);
 
   return (
     <>
@@ -90,7 +101,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 const mapStateToProps = createStructuredSelector({
-  allPersona: selectAllPersona,
+  firstTechnicalLeads: selectFirstTechnicalLeads,
+  secondTechnicalLeads: selectSecondTechnicalLeads,
+  productOwner: selecProductOwner,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdaptedGithubUserDisplay);
