@@ -33,7 +33,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     productOwner,
     fetchUserStartAsync,
   } = props;
-  console.log('wtfff is productOwner', productOwner);
+
   const { inputKeyword, githubUser, notFound, everFetched } =
     persona === 'productOwner' ? productOwner : selectedTechnicalLeads;
 
