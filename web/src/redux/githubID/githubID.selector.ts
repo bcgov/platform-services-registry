@@ -1,18 +1,19 @@
 import { createSelector } from 'reselect';
+import { GithubIDBaseState } from './githubID.reducer';
 
 const selectGithubID = (state: any) => state.githubID;
 
+const selectTechnicalLeads = createSelector(
+  [selectGithubID],
+  (githubIDTechnicalLeads) => githubIDTechnicalLeads.technicalLeads,
+);
+
 export const selectAllPersona = createSelector([selectGithubID], (githubID) => githubID);
 
-export const selectSecondTechnicalLeads = createSelector(
-  [selectGithubID],
-  (githubID) => githubID.technicalLeads[1],
-);
-
-export const selectFirstTechnicalLeads = createSelector(
-  [selectGithubID],
-  (githubID) => githubID.technicalLeads[0],
-);
+export const selectTechnicalLead = (position: number) =>
+  createSelector([selectTechnicalLeads], (githubIDTechnicalLeads) => {
+    return githubIDTechnicalLeads ? githubIDTechnicalLeads[position] : GithubIDBaseState;
+  });
 
 export const selecProductOwner = createSelector(
   [selectGithubID],

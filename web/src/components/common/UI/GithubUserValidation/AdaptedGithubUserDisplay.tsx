@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box, Flex, Image, Text } from 'rebass';
-import { createStructuredSelector } from 'reselect';
 import { githubIDSearchKeyword } from '../../../../redux/githubID/githubID.action';
-import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
   selecProductOwner,
-  selectFirstTechnicalLeads,
-  selectSecondTechnicalLeads,
+  selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
 
@@ -47,8 +44,7 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
     input: userFieldInputEvent,
     name,
     persona,
-    firstTechnicalLeads,
-    secondTechnicalLeads,
+    selectedTechnicalLead,
     productOwner,
     position,
     initialValue,
@@ -56,16 +52,8 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
     ...rest
   } = props;
 
-  let validatingRole: GithubIdBaseInterface;
-  if (persona === 'productOwner') {
-    validatingRole = productOwner;
-  } else if (position === 0) {
-    validatingRole = firstTechnicalLeads;
-  } else {
-    validatingRole = secondTechnicalLeads;
-  }
-
-  const { isLoading, githubUser, notFound, inputKeyword } = validatingRole;
+  const { isLoading, githubUser, notFound, inputKeyword } =
+    persona === 'productOwner' ? productOwner : selectedTechnicalLead;
 
   useEffect(() => {
     if (userFieldInputEvent.value !== inputKeyword) {
@@ -100,10 +88,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   }) => dispatch(githubIDSearchKeyword(payload)),
 });
 
-const mapStateToProps = createStructuredSelector({
-  firstTechnicalLeads: selectFirstTechnicalLeads,
-  secondTechnicalLeads: selectSecondTechnicalLeads,
-  productOwner: selecProductOwner,
+const mapStateToProps = (state: any, githubID: any) => ({
+  selectedTechnicalLead: selectTechnicalLead(githubID.position)(state),
+  productOwner: selecProductOwner(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdaptedGithubUserDisplay);

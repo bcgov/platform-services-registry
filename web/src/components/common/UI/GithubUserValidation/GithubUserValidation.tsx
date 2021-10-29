@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Field } from 'react-final-form';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import {
   createNewTechnicalLeads,
   searchGithubUsers,
@@ -9,34 +8,34 @@ import {
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
   selecProductOwner,
-  selectFirstTechnicalLeads,
-  selectSecondTechnicalLeads,
+  selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
-const GithubUserValidation: React.FC<any> = (props) => {
+interface GithubUserValidationInterface {
+  name: string;
+  persona: string;
+  position: number;
+  initialValue: string;
+  defaultValue: string;
+  selectedTechnicalLeads: GithubIdBaseInterface;
+  productOwner: GithubIdBaseInterface;
+  fetchUserStartAsync: any;
+}
+const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) => {
   const {
     name,
     persona,
     position,
     initialValue,
     defaultValue,
-    firstTechnicalLeads,
-    secondTechnicalLeads,
+    selectedTechnicalLeads,
     productOwner,
     fetchUserStartAsync,
   } = props;
 
-  let validatingRole: GithubIdBaseInterface;
-  if (persona === 'productOwner') {
-    validatingRole = productOwner;
-  } else if (position === 0) {
-    validatingRole = firstTechnicalLeads;
-  } else {
-    validatingRole = secondTechnicalLeads;
-  }
-
-  const { inputKeyword, githubUser, notFound, everFetched } = validatingRole;
+  const { inputKeyword, githubUser, notFound, everFetched } =
+    persona === 'productOwner' ? productOwner : selectedTechnicalLeads;
 
   const githubValidator = (value: any) => {
     if (!value) {
@@ -79,10 +78,9 @@ const GithubUserValidation: React.FC<any> = (props) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  firstTechnicalLeads: selectFirstTechnicalLeads,
-  secondTechnicalLeads: selectSecondTechnicalLeads,
-  productOwner: selecProductOwner,
+const mapStateToProps = (state: any, githubID: any) => ({
+  selectedTechnicalLeads: selectTechnicalLead(githubID.position)(state),
+  productOwner: selecProductOwner(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
