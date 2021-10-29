@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Box, Flex, Image, Text } from 'rebass';
 import { githubIDSearchKeyword } from '../../../../redux/githubID/githubID.action';
 import {
-  selecProductOwner,
+  selectProductOwner,
   selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
@@ -90,7 +90,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const mapStateToProps = (state: any, githubID: any) => ({
   selectedTechnicalLead: selectTechnicalLead(githubID.position)(state),
-  productOwner: selecProductOwner(state),
+  productOwner: selectProductOwner()(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdaptedGithubUserDisplay);

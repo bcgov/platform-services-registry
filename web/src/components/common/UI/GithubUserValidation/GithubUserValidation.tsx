@@ -7,7 +7,7 @@ import {
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
-  selecProductOwner,
+  selectProductOwner,
   selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
@@ -80,7 +80,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
 
 const mapStateToProps = (state: any, githubID: any) => ({
   selectedTechnicalLeads: selectTechnicalLead(githubID.position)(state),
-  productOwner: selecProductOwner(state),
+  productOwner: selectProductOwner()(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
