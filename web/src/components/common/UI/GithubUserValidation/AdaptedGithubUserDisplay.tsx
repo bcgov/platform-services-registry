@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box, Flex, Image, Text } from 'rebass';
-import { createStructuredSelector } from 'reselect';
 import { githubIDSearchKeyword } from '../../../../redux/githubID/githubID.action';
-import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
+import {
+  selecProductOwner,
+  selectTechnicalLead,
+} from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
 
 interface GithubUserInterface {
@@ -41,22 +43,24 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
   const {
     input: userFieldInputEvent,
     name,
-    allPersona,
     persona,
+    selectedTechnicalLead,
+    productOwner,
     position,
     initialValue,
     dispatchSearchGithubIDInput,
     ...rest
   } = props;
 
+  const { isLoading, githubUser, notFound, inputKeyword } =
+    persona === 'productOwner' ? productOwner : selectedTechnicalLead;
+
   useEffect(() => {
-    if (userFieldInputEvent.value !== allPersona[persona][position].inputKeyword) {
+    if (userFieldInputEvent.value !== inputKeyword) {
       const inputValue = userFieldInputEvent.value;
       dispatchSearchGithubIDInput({ persona, position, inputValue });
     }
-  }, [userFieldInputEvent.value, allPersona, persona, position, dispatchSearchGithubIDInput]);
-
-  const { isLoading, notFound, githubUser } = allPersona[persona][position];
+  }, [userFieldInputEvent.value, inputKeyword, persona, position, dispatchSearchGithubIDInput]);
 
   return (
     <>
@@ -84,8 +88,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   }) => dispatch(githubIDSearchKeyword(payload)),
 });
 
-const mapStateToProps = createStructuredSelector({
-  allPersona: selectAllPersona,
+const mapStateToProps = (state: any, githubID: any) => ({
+  selectedTechnicalLead: selectTechnicalLead(githubID.position)(state),
+  productOwner: selecProductOwner(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdaptedGithubUserDisplay);

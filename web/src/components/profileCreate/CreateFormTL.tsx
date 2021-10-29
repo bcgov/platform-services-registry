@@ -95,6 +95,7 @@ const CreateFormTL: React.FC = () => {
                   <GithubUserValidation
                     name={`${name}.githubId`}
                     defaultValue=""
+                    initialValue=""
                     persona="technicalLeads"
                     position={index}
                   />

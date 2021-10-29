@@ -1,44 +1,59 @@
 import React, { useEffect } from 'react';
 import { Field } from 'react-final-form';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import {
   createNewTechnicalLeads,
   searchGithubUsers,
 } from '../../../../redux/githubID/githubID.action';
-import { selectAllPersona } from '../../../../redux/githubID/githubID.selector';
+import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
+import {
+  selecProductOwner,
+  selectTechnicalLead,
+} from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
 
-const GithubUserValidation: React.FC<any> = (props) => {
+interface GithubUserValidationInterface {
+  name: string;
+  persona: string;
+  position: number;
+  initialValue: string;
+  defaultValue: string;
+  selectedTechnicalLeads: GithubIdBaseInterface;
+  productOwner: GithubIdBaseInterface;
+  fetchUserStartAsync: any;
+}
+const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) => {
   const {
     name,
     persona,
     position,
     initialValue,
     defaultValue,
-    allPersona,
+    selectedTechnicalLeads,
+    productOwner,
     fetchUserStartAsync,
   } = props;
+
+  const { inputKeyword, githubUser, notFound, everFetched } =
+    persona === 'productOwner' ? productOwner : selectedTechnicalLeads;
 
   const githubValidator = (value: any) => {
     if (!value) {
       return 'Required';
     }
-    if (allPersona[persona][position].everFetched && allPersona[persona][position].notFound) {
+    if (everFetched && notFound) {
       return 'Github User Not Found';
     }
-    if (allPersona[persona][position].inputKeyword && !allPersona[persona][position].everFetched) {
+    if (inputKeyword && !everFetched) {
       return 'Still Loading Github User infomation';
     }
   };
-
-  const { inputKeyword, githubUser, notFound } = allPersona[persona][position];
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
-      // Third condition: don't run again if there's a notfound result until there's ne
+      // Third condition: Until there's a new input, it won't run again if there's a notfound result
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0 && !notFound) {
         fetchUserStartAsync(inputKeyword, persona, position);
       }
@@ -63,8 +78,9 @@ const GithubUserValidation: React.FC<any> = (props) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  allPersona: selectAllPersona,
+const mapStateToProps = (state: any, githubID: any) => ({
+  selectedTechnicalLeads: selectTechnicalLead(githubID.position)(state),
+  productOwner: selecProductOwner(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

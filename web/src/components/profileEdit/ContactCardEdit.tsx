@@ -21,7 +21,7 @@ import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Flex, Text } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
 import { createStructuredSelector } from 'reselect';
 import {
   MAXIMUM_TECHNICAL_LEADS,
@@ -36,7 +36,7 @@ import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
 import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { Button } from '../common/UI/Button';
+import { Button, SquareFormButton } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
@@ -51,7 +51,6 @@ interface IContactCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
-  allPersona: any;
   newTechnicalLeads: any;
 }
 
@@ -62,7 +61,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     handleSubmitRefresh,
     isProvisioned,
     hasPendingEdit,
-    allPersona,
     newTechnicalLeads,
   } = props;
 
@@ -79,7 +77,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     throw new Error('Unable to get product owner details');
   }
 
-  const technicalLeads = contactDetails.filter(
+  const existingTechnicalLeads = contactDetails.filter(
     (contact) => contact.roleId === ROLES.TECHNICAL_LEAD,
   );
 
@@ -182,13 +180,13 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             />
           </Flex>
           <FormTitle>
-            {technicalLeads.length > MINIMUM_TECHNICAL_LEADS
+            {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
               ? 'Who are the technical leads for this project?'
               : 'Who is the technical lead for this project?'}
           </FormTitle>
-          <FieldArray name="updatedTechnicalLeads" initialValue={technicalLeads}>
+          <FieldArray name="updatedTechnicalLeads" initialValue={existingTechnicalLeads}>
             {({ fields }) => {
-              return fields.length && fields.length <= allPersona.technicalLeads.length ? (
+              return fields.length && fields.length <= MAXIMUM_TECHNICAL_LEADS ? (
                 <>
                   {fields.map((name, index) => (
                     <div key={name}>
@@ -197,18 +195,18 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                           Technical Lead {index + 1}
                         </FormTitle>
                         {/* TODO: (SB) implement the ability to delete contacts from edit page */}
-                        {/* {fields.length! > MINIMUM_TECHNICAL_LEADS && (
-                      <Box my="auto" ml="auto" className="buttons">
-                        <SquareFormButton
-                          type="button"
-                          onClick={() => fields.remove(index)}
-                          style={{ cursor: 'pointer' }}
-                          inversed
-                        >
-                          X
-                        </SquareFormButton>
-                      </Box>
-                    )} */}
+                        {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                          <Box my="auto" ml="auto" className="buttons">
+                            <SquareFormButton
+                              type="button"
+                              onClick={() => fields.remove(index)}
+                              style={{ cursor: 'pointer' }}
+                              inversed
+                            >
+                              X
+                            </SquareFormButton>
+                          </Box>
+                        )}
                       </Flex>
                       <Flex flexDirection="column">
                         <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
@@ -288,6 +286,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     </Form>
   );
 };
+
+// please DO NOT remove this mapStateToProps from this component as the react final form is using allPersona to do validation
 const mapStateToProps = createStructuredSelector({
   allPersona: selectAllPersona,
 });

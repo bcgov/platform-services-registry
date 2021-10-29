@@ -87,9 +87,9 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
       ? findDifferenceBetweenTwoDifferentObject(
-          profileDetails.editObject.quota,
-          profileDetails.quotaSize,
-        )
+        profileDetails.editObject.quota,
+        profileDetails.quotaSize,
+      )
       : [];
 
   const parseContacts = (contactDetails: any) => {
