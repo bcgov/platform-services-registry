@@ -168,12 +168,12 @@ export const contextForProvisioning = async (
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
     const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-    {
-      cpu: quotaSize.quotaCpuSize,
-      memory: quotaSize.quotaMemorySize,
-      storage: quotaSize.quotaStorageSize,
-      snapshot: quotaSize.quotaSnapshotSize,
-    };
+      {
+        cpu: quotaSize.quotaCpuSize,
+        memory: quotaSize.quotaMemorySize,
+        storage: quotaSize.quotaStorageSize,
+        snapshot: quotaSize.quotaSnapshotSize,
+      };
     return await buildContext(
       action,
       profile,
@@ -218,12 +218,12 @@ export const contextForEditing = async (
     }
 
     const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-    {
-      cpu: quotaSize.quotaCpuSize,
-      memory: quotaSize.quotaMemorySize,
-      storage: quotaSize.quotaStorageSize,
-      snapshot: quotaSize.quotaSnapshotSize,
-    };
+      {
+        cpu: quotaSize.quotaCpuSize,
+        memory: quotaSize.quotaMemorySize,
+        storage: quotaSize.quotaStorageSize,
+        snapshot: quotaSize.quotaSnapshotSize,
+      };
 
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);

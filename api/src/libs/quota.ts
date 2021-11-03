@@ -54,9 +54,9 @@ export const getAllowedQuotaSizes = (
     Object.keys(currentQuotaSize).forEach(
       // eslint-disable-next-line no-return-assign
       (key) =>
-      (availableQuotaOptions[key] = getAllowQuotaForEachResource(
-        currentQuotaSize[key]
-      ))
+        (availableQuotaOptions[key] = getAllowQuotaForEachResource(
+          currentQuotaSize[key]
+        ))
     );
 
     return availableQuotaOptions;
