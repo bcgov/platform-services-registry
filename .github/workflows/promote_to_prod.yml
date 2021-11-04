@@ -20,24 +20,42 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
+          oc project platform-registry-tools
 
-      - name: Tag the Test DB image for Prod
+      # Prepare to update Kustomize files in the manifest repo
+      # ------------------------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+      - name: Check out manifest repo
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          repository: ${{ secrets.MANIFEST_REPO }}
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+      - name: Set global git config
         run: |
-          oc -n platform-registry-tools tag platsrv-registry-flyway:test platsrv-registry-flyway:prod
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
 
-      # Perform DB verification and/or wait for DB deployment
-      # -----------------------------------------------------
-
-      - name: Tag the Test API image for Prod
-        if: ${{ success() }}
+      - name: Get the Test image IDs
+        id: get-image-ids
         run: |
-          oc -n platform-registry-tools tag platsrv-registry-api:test platsrv-registry-api:prod
+          export IMAGE_ID_DB="$(oc -n platform-registry-tools get imagestreamtag platsrv-registry-flyway:test -o custom-columns=id:tag.from.name --no-headers | cut -d '@' -f 2)"
+          export IMAGE_ID_API="$(oc -n platform-registry-tools get imagestreamtag platsrv-registry-api:test -o custom-columns=id:tag.from.name --no-headers | cut -d '@' -f 2)"
+          export IMAGE_ID_WEB="$(oc -n platform-registry-tools get imagestreamtag platsrv-registry-web:test -o custom-columns=id:tag.from.name --no-headers | cut -d '@' -f 2)"
+          echo "::set-output name=imagesha-db::$IMAGE_ID_DB"
+          echo "::set-output name=imagesha-api::$IMAGE_ID_API"
+          echo "::set-output name=imagesha-web::$IMAGE_ID_WEB"
 
-      # Perform API verification and/or wait for API deployment
-      # -------------------------------------------------------
-
-      - name: Tag the Test Web image for Prod
-        if: ${{ success() }}
+      - name: Set image IDs in Kustomize manifests
         run: |
-          oc -n platform-registry-tools tag platsrv-registry-web:test platsrv-registry-web:prod
+          cd platform-registry-app/overlays/prod
+          kustomize edit set image "registry-flyway-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-flyway@${{ steps.get-image-ids.outputs.imagesha-db }}"
+          kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.get-image-ids.outputs.imagesha-api }}"
+          kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@${{ steps.get-image-ids.outputs.imagesha-web }}"
+          git commit -am "Update image IDs for Test"
+          git push origin
 
