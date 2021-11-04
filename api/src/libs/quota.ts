@@ -45,21 +45,21 @@ export const getAllowedQuotaSizes = (
   currentQuotaSize: ProjectQuotaSize
 ): NameSpacesQuotaSize => {
   try {
-    const availableQuotaOptions: NameSpacesQuotaSize = {
-      quotaCpuSize: [],
-      quotaMemorySize: [],
-      quotaStorageSize: [],
-      quotaSnapshotSize: [],
-    };
-
-    Object.keys(currentQuotaSize).reduce(
+    const availableQuotaOptions: NameSpacesQuotaSize = Object.keys(
+      currentQuotaSize
+    ).reduce(
       (acc: NameSpacesQuotaSize, quotaSize: string) => {
         acc[quotaSize] = getAllowQuotaForEachResource(
           currentQuotaSize[quotaSize]
         );
         return acc;
       },
-      availableQuotaOptions
+      {
+        quotaCpuSize: [],
+        quotaMemorySize: [],
+        quotaStorageSize: [],
+        quotaSnapshotSize: [],
+      }
     );
 
     return availableQuotaOptions;
