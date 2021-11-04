@@ -51,12 +51,15 @@ export const getAllowedQuotaSizes = (
       quotaStorageSize: [],
       quotaSnapshotSize: [],
     };
-    Object.keys(currentQuotaSize).forEach(
-      // eslint-disable-next-line no-return-assign
-      (key) =>
-        (availableQuotaOptions[key] = getAllowQuotaForEachResource(
-          currentQuotaSize[key]
-        ))
+
+    Object.keys(currentQuotaSize).reduce(
+      (acc: NameSpacesQuotaSize, quotaSize: string) => {
+        acc[quotaSize] = getAllowQuotaForEachResource(
+          currentQuotaSize[quotaSize]
+        );
+        return acc;
+      },
+      availableQuotaOptions
     );
 
     return availableQuotaOptions;
