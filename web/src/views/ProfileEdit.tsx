@@ -19,7 +19,6 @@ import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
-import Icon from '../components/common/UI/Icon';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
@@ -27,6 +26,8 @@ import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCa
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
 import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
+import { BaseIcon } from '../components/common/UI/Icon';
+import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
   HOME_PAGE_URL,
   PROFILE_EDIT_VIEW_NAMES,
@@ -224,7 +225,14 @@ const ProfileEdit: React.FC = (props: any) => {
             <Flex>
               <Box my="auto">
                 <RouterLink className="misc-class-m-dropdown-link" to={HOME_PAGE_URL}>
-                  <Icon hover color="black" name="goBack" width={1.5} height={1.5} />
+                  <BaseIcon
+                    name='goBack'
+                    color="black"
+                    hover
+                    width={1.5}
+                    height={1.5}
+                    displayIcon={faArrowLeft}
+                  />
                 </RouterLink>
               </Box>
               <Text as="h1" mx={2}>
@@ -239,7 +247,14 @@ const ProfileEdit: React.FC = (props: any) => {
                       {c.title}
                     </Text>
                     <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
-                      <Icon hover color="contrast" name="edit" width={1.5} height={1.5} />
+                      <BaseIcon
+                        name='edit'
+                        color="contrast"
+                        hover
+                        width={1.5}
+                        height={1.5}
+                        displayIcon={faPen}
+                      />
                     </RouterLink>
                   </Flex>
                   <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
@@ -262,7 +277,14 @@ const ProfileEdit: React.FC = (props: any) => {
             PROFILE_EDIT_VIEW_NAMES.OVERVIEW,
           )}
         >
-          <Icon hover color="contrast" name="goBack" width={1} height={1} />
+          <BaseIcon
+            name='goBack'
+            color="contrast"
+            hover
+            width={1.5}
+            height={1.5}
+            displayIcon={faArrowLeft}
+          />
         </RouterLink>
         <Text as="h3" color={theme.colors.contrast} mx={2} sx={{ textTransform: 'capitalize' }}>
           {viewName}

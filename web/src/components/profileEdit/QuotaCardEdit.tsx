@@ -114,7 +114,6 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
-  const INFORMATION_BOX_VISIBLE_STYLE = { visibility: 'hidden' };
   const getCorrespondingQuota = (selectedSizes: ProjectResourceQuotaSize): QuotaSpecsInterface => {
     if (
       quotaSizes &&
