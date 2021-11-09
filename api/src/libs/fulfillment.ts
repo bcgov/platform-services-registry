@@ -44,6 +44,7 @@ interface QuotasizeFormatInProvisonerFormat {
   cpu: QuotaSize;
   memory: QuotaSize;
   storage: QuotaSize;
+  snapshot: QuotaSize;
 }
 
 interface QuotasInNatsFormat {
@@ -168,9 +169,10 @@ export const contextForProvisioning = async (
     const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
     const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
       {
-        cpu: quotaSize.quotaCpuSize || QuotaSize.Small,
-        memory: quotaSize.quotaMemorySize || QuotaSize.Small,
-        storage: quotaSize.quotaStorageSize || QuotaSize.Small,
+        cpu: quotaSize.quotaCpuSize,
+        memory: quotaSize.quotaMemorySize,
+        storage: quotaSize.quotaStorageSize,
+        snapshot: quotaSize.quotaSnapshotSize,
       };
     return await buildContext(
       action,
@@ -220,6 +222,7 @@ export const contextForEditing = async (
         cpu: quotaSize.quotaCpuSize,
         memory: quotaSize.quotaMemorySize,
         storage: quotaSize.quotaStorageSize,
+        snapshot: quotaSize.quotaSnapshotSize,
       };
 
     if (requestEditType === RequestEditType.Contacts) {

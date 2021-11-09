@@ -27,12 +27,14 @@ describe("Quota services", () => {
       quotaCpuSize: QuotaSize.Small,
       quotaMemorySize: QuotaSize.Medium,
       quotaStorageSize: QuotaSize.Large,
+      quotaSnapshotSize: QuotaSize.Small,
     };
 
     const expectedAllowQuotaSizes: NameSpacesQuotaSize = {
       quotaCpuSize: [QuotaSize.Medium],
       quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
       quotaStorageSize: [QuotaSize.Small, QuotaSize.Medium],
+      quotaSnapshotSize: [QuotaSize.Medium],
     };
 
     expect(getAllowedQuotaSizes(testCurrentQuotaSize)).toEqual(

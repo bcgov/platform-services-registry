@@ -145,7 +145,7 @@ export const getQuotaSize = async (
     const profileQuotaSizes: ProjectQuotaSize[] = await Promise.all(promises);
 
     let hasSameQuotaSizesForAllClusters: boolean = false;
-    // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small' }]
+    // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
     if (profileQuotaSizes.length === 1) {
       hasSameQuotaSizesForAllClusters = true;
     } else {
@@ -153,6 +153,7 @@ export const getQuotaSize = async (
         quotaCpuSize: [],
         quotaMemorySize: [],
         quotaStorageSize: [],
+        quotaSnapshotSize: [],
       };
       const QuotaSizeObjectKey = Object.keys(quotaSizesForAllClusters);
       /**

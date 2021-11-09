@@ -44,4 +44,5 @@ export interface ProjectResourceQuotaSize {
   quotaCpuSize: '';
   quotaMemorySize: '';
   quotaStorageSize: '';
+  quotaSnapshotSize: '';
 }

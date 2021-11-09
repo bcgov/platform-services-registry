@@ -21,6 +21,8 @@ import React, { useEffect, useState } from 'react';
 import { Field, Form, FormSpy } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
@@ -46,6 +48,7 @@ interface QuotaSpecsInterface {
   cpuNums: Array<string>;
   memoryNums: Array<string>;
   storageNums: Array<string>;
+  snapshotNums: Array<string>;
 }
 
 const StyledQuotaEditContainer = styled.div`
@@ -56,23 +59,45 @@ const StyledQuotaEditContainer = styled.div`
   }
 `;
 
+const StyledInformationBox = styled.div`
+  max-width: 213px;
+  position: absolute;
+  z-index: 1;
+  background-color: orange;
+  border-radius: 10px;
+  padding: 5px;
+`;
+const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
+  color: #fcba19;
+  :hover {
+    cursor: pointer;
+  }
+`;
 const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
+  const TEMPORARY_DISABLE_FIELD = 'quotaSnapshotSize';
   const DEFAULT_QUOTA_SIZES = {
     quotaCpuSize: [],
     quotaMemorySize: [],
     quotaStorageSize: [],
+    quotaSnapshotSize: [],
   };
   const DEFAULT_QUOTA_INFO: QuotaSpecsInterface = {
     cpuNums: [],
     memoryNums: [],
     storageNums: [],
+    snapshotNums: [],
   };
   const required = (value: string | boolean) => (value ? undefined : 'Required');
   const QUOTA_DISPLAY_NAME = 'Quota Size';
   const {
     quotaDetails: {
       licensePlate = '',
-      quotaSize = { quotaCpuSize: '', quotaMemorySize: '', quotaStorageSize: '' },
+      quotaSize = {
+        quotaCpuSize: '',
+        quotaMemorySize: '',
+        quotaStorageSize: '',
+        quotaSnapshotSize: '',
+      },
       quotaOptions = DEFAULT_QUOTA_SIZES,
     },
     profileId,
@@ -88,7 +113,8 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [specs, setSpecs] = useState<any>({});
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
-
+  const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
+  const INFORMATION_BOX_VISIBLE_STYLE = { visibility: 'hidden' };
   const getCorrespondingQuota = (selectedSizes: ProjectResourceQuotaSize): QuotaSpecsInterface => {
     if (
       quotaSizes &&
@@ -101,6 +127,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       cpuNums: quotaSizes[selectedSizes.quotaCpuSize]?.cpuNums || [],
       memoryNums: quotaSizes[selectedSizes.quotaMemorySize]?.memoryNums || [],
       storageNums: quotaSizes[selectedSizes.quotaStorageSize]?.storageNums || [],
+      snapshotNums: quotaSizes[selectedSizes.quotaSnapshotSize]?.snapshotNums || [],
     };
   };
 
@@ -177,6 +204,21 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         },
       ],
     },
+    snapshotNumber: {
+      displayTitle: 'Snapshot',
+      options: [
+        {
+          name: 'quotaSnapshotSize',
+          displayName: QUOTA_DISPLAY_NAME,
+          value: [quotaSize.quotaSnapshotSize, ...quotaOptions.quotaSnapshotSize],
+        },
+        {
+          name: 'snapshotCount',
+          displayName: 'SnapShot Count',
+          value: specs.snapshotNums === undefined ? '' : specs.snapshotNums,
+        },
+      ],
+    },
   };
 
   const handleSubmit = async (formData: any) => {
@@ -184,6 +226,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       quotaCpuSize: formData.quotaCpuSize,
       quotaMemorySize: formData.quotaMemorySize,
       quotaStorageSize: formData.quotaStorageSize,
+      quotaSnapshotSize: formData.quotaSnapshotSize,
     };
     setOpenBackdrop(true);
 
@@ -254,15 +297,34 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
             <Box key={index + QUOTA_INFORMATION[element].displayTitle}>
               <Text as="h3">{QUOTA_INFORMATION[element].displayTitle}</Text>
               {QUOTA_INFORMATION[element].options.map((option: any, optionIndex: any) => (
-                <Flex marginBottom="2" key={optionIndex + option.displayName}>
+                <Flex
+                  marginBottom="2"
+                  sx={{ alignItems: 'center' }}
+                  key={optionIndex + option.displayName}
+                >
                   <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
                     {option.displayName}
                   </Label>
-
+                  {option.name === TEMPORARY_DISABLE_FIELD && (
+                    <>
+                      <StyledFontAwesomeIcon
+                        onMouseEnter={() => setDisplayInfoBox(!displayInfoBox)}
+                        onMouseLeave={() => setDisplayInfoBox(!displayInfoBox)}
+                        icon={faExclamationTriangle}
+                      />
+                      <StyledInformationBox
+                        style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
+                      >
+                        Only 'small' snapshot volumes are supported right now.
+                      </StyledInformationBox>
+                    </>
+                  )}
                   {option.displayName === QUOTA_DISPLAY_NAME ? (
                     // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
+
                     <Field
                       name={option.name}
+                      disabled={option.name === TEMPORARY_DISABLE_FIELD}
                       component={SelectInput}
                       initialValue={option.value[0]}
                       validate={required}
@@ -346,6 +408,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                       quotaCpuSize: change.values?.quotaCpuSize || '',
                       quotaMemorySize: change.values?.quotaMemorySize || '',
                       quotaStorageSize: change.values?.quotaStorageSize || '',
+                      quotaSnapshotSize: change.values?.quotaSnapshotSize || '',
                     };
 
                     const selectedQuotaSpecs: QuotaSpecsInterface =

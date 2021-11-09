@@ -108,11 +108,13 @@ function renderQuota() {
     quotaCpuSize: QuotaSize.Medium,
     quotaMemorySize: QuotaSize.Medium,
     quotaStorageSize: QuotaSize.Medium,
+    quotaSnapshotSize: QuotaSize.Small,
   };
   const quotaOptionsProp: any = {
     quotaCpuSize: [QuotaSize.Small, QuotaSize.Large],
     quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
     quotaStorageSize: [QuotaSize.Small, QuotaSize.Large],
+    quotaSnapshotSize: [QuotaSize.Medium],
   };
   const handleSubmitRefreshProp = jest.fn();
   const isProvisionedProp: boolean = true;

@@ -28,6 +28,7 @@ export interface ProjectQuotaSize {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
   quotaStorageSize: QuotaSize;
+  quotaSnapshotSize: QuotaSize;
 }
 
 export interface Quotas {
@@ -53,6 +54,7 @@ interface QuotaSizeDedetail {
   cpuNums: string[];
   memoryNums: string[];
   storageNums: string[];
+  snapshotNums: string[];
 }
 
 interface QuotaSizeDedetails {
@@ -84,6 +86,7 @@ export interface Quota extends CommonFields {
   storageBackup: string;
   storageCapacity: string;
   storagePvcCount: number;
+  snapshotVolume: number;
 }
 
 export default class QuotaModel extends Model {
@@ -149,18 +152,21 @@ export default class QuotaModel extends Model {
           cpuNums: [],
           memoryNums: [],
           storageNums: [],
+          snapshotNums: [],
         },
         medium: {
           name: "",
           cpuNums: [],
           memoryNums: [],
           storageNums: [],
+          snapshotNums: [],
         },
         large: {
           name: "",
           cpuNums: [],
           memoryNums: [],
           storageNums: [],
+          snapshotNums: [],
         },
       };
 
@@ -177,6 +183,7 @@ export default class QuotaModel extends Model {
             size.storageFile.replace("Gi", "GiB"),
             size.storageBackup.replace("Gi", "GiB"),
           ],
+          snapshotNums: size.snapshotVolume,
         };
       }
 
@@ -198,13 +205,16 @@ export default class QuotaModel extends Model {
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
                         FROM ref_quota WHERE id = $2) d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = $3) d)
+                        FROM ref_quota WHERE id = $3) d),
+                    'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS "count"
+                        FROM ref_quota WHERE id = $4) d)
                 );
                 `,
       values: [
         quotaSize.quotaCpuSize,
         quotaSize.quotaMemorySize,
         quotaSize.quotaStorageSize,
+        quotaSize.quotaSnapshotSize,
       ],
     };
 
