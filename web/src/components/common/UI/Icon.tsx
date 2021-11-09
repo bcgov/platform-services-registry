@@ -16,13 +16,9 @@
 
 import React, { CSSProperties, MouseEventHandler } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import theme from '../../../theme';
 import { ColorSet } from '../../../types';
-import {
-
-  IconProp,
-
-} from '@fortawesome/fontawesome-svg-core'
 
 interface IIconProps {
   onClick?: MouseEventHandler<SVGSVGElement>;
@@ -32,7 +28,6 @@ interface IIconProps {
   width?: number | 'auto';
   height?: number | 'auto';
   style?: CSSProperties;
-
 }
 
 interface IBaseIconPropstest extends IIconProps {

@@ -20,7 +20,14 @@ import React, { useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { Box, Flex, Heading } from 'rebass';
-import { faCloudDownloadAlt, faSearch, faBars, faTimes, faSort, faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCloudDownloadAlt,
+  faSearch,
+  faBars,
+  faTimes,
+  faSort,
+  faCheck,
+} from '@fortawesome/free-solid-svg-icons';
 import useCommonState from '../../../hooks/useCommonState';
 import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
@@ -255,14 +262,9 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
               {allColumns.map((column: any) => (
                 <ListItem onClick={() => column.toggleHidden()} key={column.id}>
                   {column.Header}{' '}
-                  {column.isVisible &&
-                    <BaseIcon
-                      name="checkmark"
-                      color="primary"
-                      hover
-                      displayIcon={faCheck}
-                    />
-                  }
+                  {column.isVisible && (
+                    <BaseIcon name="checkmark" color="primary" hover displayIcon={faCheck} />
+                  )}
                 </ListItem>
               ))}
             </DropDownList>

@@ -18,6 +18,7 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Text } from 'rebass';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { HOME_PAGE_URL, ROUTE_PATHS } from '../../../constants';
 import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
@@ -27,7 +28,6 @@ import Authbutton from '../UI/AuthButton';
 import CreateButton from '../UI/CreateButton';
 import DropdownMenu from '../UI/DropdownMenu';
 import DropdownMenuItem from '../UI/DropdownMenuItem';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import GovLogo from '../UI/GovLogo';
 import { BaseIcon } from '../UI/Icon';
 import { ContainerDesktop, ContainerMobile } from '../UI/ResponsiveContainer';
@@ -97,9 +97,9 @@ const Nav: React.FC<INavProps> = (props) => {
         )}
       </ContainerDesktop>
       <ContainerMobile>
-        {isDDMobileOpen ?
+        {isDDMobileOpen ? (
           <BaseIcon
-            name='close'
+            name="close"
             color="contrast"
             hover
             onClick={handleDDMobile}
@@ -107,9 +107,9 @@ const Nav: React.FC<INavProps> = (props) => {
             height={1.4}
             displayIcon={faTimes}
           />
-          :
+        ) : (
           <BaseIcon
-            name='menuStack'
+            name="menuStack"
             color="contrast"
             hover
             onClick={handleDDMobile}
@@ -117,7 +117,7 @@ const Nav: React.FC<INavProps> = (props) => {
             height={1.4}
             displayIcon={faBars}
           />
-        }
+        )}
       </ContainerMobile>
     </StyledNav>
   );
