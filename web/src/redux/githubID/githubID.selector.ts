@@ -3,9 +3,14 @@ import { GithubIDBaseState } from './githubID.reducer';
 
 const selectGithubID = (state: any) => state.githubID;
 
-const selectTechnicalLeads = createSelector(
-  [selectGithubID],
-  (githubIDTechnicalLeads) => githubIDTechnicalLeads.technicalLeads,
+const selectTechnicalLeads = createSelector([selectGithubID], (githubIDTechnicalLeads) =>
+  githubIDTechnicalLeads
+    ? githubIDTechnicalLeads.technicalLeads
+    : [{ ...GithubIDBaseState }, { ...GithubIDBaseState }],
+);
+
+const selectedProductOwner = createSelector([selectGithubID], (githubIDProductOwner) =>
+  githubIDProductOwner ? githubIDProductOwner.productOwner : [{ ...GithubIDBaseState }],
 );
 
 export const selectAllPersona = createSelector([selectGithubID], (githubID) => githubID);
@@ -15,9 +20,10 @@ export const selectTechnicalLead = (position: number) =>
     return githubIDTechnicalLeads ? githubIDTechnicalLeads[position] : GithubIDBaseState;
   });
 
-export const selecProductOwner = createSelector(
-  [selectGithubID],
-  (githubID) => githubID.productOwner[0],
-);
+// use O index because we only have 1 PO. TODO: replace it with more generaic method
+export const selectProductOwner = () =>
+  createSelector([selectedProductOwner], (githubIDProductOwner) =>
+    githubIDProductOwner ? githubIDProductOwner[0] : GithubIDBaseState,
+  );
 
 export default selectGithubID;
