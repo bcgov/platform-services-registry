@@ -20,12 +20,20 @@ import React, { useCallback, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAsyncDebounce, useFilters, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { Box, Flex, Heading } from 'rebass';
+import {
+  faCloudDownloadAlt,
+  faSearch,
+  faBars,
+  faTimes,
+  faSort,
+  faCheck,
+} from '@fortawesome/free-solid-svg-icons';
 import useCommonState from '../../../hooks/useCommonState';
 import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
 import { promptErrToastWithText } from '../../../utils/promptToastHelper';
 import { flatten, transformJsonToCsv } from '../../../utils/transformDataHelper';
-import Icon from './Icon';
+import { BaseIcon } from './Icon';
 import Tooltip from './Tooltip';
 
 interface ITableProps {
@@ -226,22 +234,24 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
         <DropDownHeader onClick={handleOpenColumn}>
           <Tooltip text="Select Columns">
             {isComponentVisible ? (
-              <Icon
-                hover
-                color="primary"
+              <BaseIcon
                 name="close"
-                style={{ margin: '14px 5px 5px' }}
-                width={1.4}
+                color="primary"
+                hover
+                width={2}
                 height={1.4}
+                displayIcon={faTimes}
+                style={{ margin: '14px 5px 5px' }}
               />
             ) : (
-              <Icon
-                hover
-                color="primary"
+              <BaseIcon
                 name="menuStack"
-                width={1.4}
+                color="primary"
+                hover
+                width={2}
                 height={1.4}
-                style={{ margin: '14px 5px 5px', transform: 'rotate(90deg)' }}
+                displayIcon={faBars}
+                style={{ margin: '14px 5px 5px' }}
               />
             )}
           </Tooltip>
@@ -252,7 +262,9 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
               {allColumns.map((column: any) => (
                 <ListItem onClick={() => column.toggleHidden()} key={column.id}>
                   {column.Header}{' '}
-                  {column.isVisible && <Icon hover color="primary" name="checkmark" />}
+                  {column.isVisible && (
+                    <BaseIcon name="checkmark" color="primary" hover displayIcon={faCheck} />
+                  )}
                 </ListItem>
               ))}
             </DropDownList>
@@ -376,12 +388,13 @@ const Table: React.FC<ITableProps> = (props) => {
         <Box mx="auto" />
         <ColumnFilter allColumns={allColumns} />
         <Tooltip text="Search Table">
-          <Icon
-            hover
-            color="primary"
-            width={1.4}
-            height={1.4}
+          <BaseIcon
             name="search"
+            color="primary"
+            hover
+            width={2}
+            height={1.4}
+            displayIcon={faSearch}
             onClick={handleOpenSearch}
             style={{ margin: '14px 5px 5px' }}
           />
@@ -396,12 +409,13 @@ const Table: React.FC<ITableProps> = (props) => {
           </Box>
         )}
         <Tooltip text="Download CSV">
-          <Icon
-            hover
-            color="primary"
-            width={1.4}
-            height={1.4}
+          <BaseIcon
             name="download"
+            color="primary"
+            hover
+            width={2}
+            height={1.4}
+            displayIcon={faCloudDownloadAlt}
             onClick={downloadCSV}
             style={{ margin: '14px 5px 5px' }}
           />
@@ -423,7 +437,13 @@ const Table: React.FC<ITableProps> = (props) => {
                     key={column.id}
                   >
                     {column.render('Header')}
-                    <Icon color="contrast" name="sort" style={{ float: 'right', margin: '2px' }} />
+                    <BaseIcon
+                      name="sort"
+                      color="contrast"
+                      hover
+                      displayIcon={faSort}
+                      style={{ float: 'right', margin: '2px' }}
+                    />
                   </th>
                 ))}
               </tr>
