@@ -54,7 +54,13 @@ oc process -f api/openshift/templates/secret.yaml \
   -p CHES_SSO_CLIENT_ID=XXXX
   -p CHES_SSO_CLIENT_SECRET=XXXX \
   -p SSO_CLIENT_SECRET=XXXX | \
+  -p GITHUB_APP_ID=XXXX | \
+  -p GITHUB_CLIENT_ID=XXXX | \
+  -p GITHUB_CLIENT_SECRET=XXXX | \
+  -p GITHUB_ORGANIZATION=XXXX | \
   oc create -f -
+
+  | oc apply -f 
 ```
 
 | Name                   | Description |
@@ -62,11 +68,15 @@ oc process -f api/openshift/templates/secret.yaml \
 | CHES_SSO_CLIENT_ID     | The CHES client ID provided from the Web UI; You have one for each of dev / test / prod |
 | CHES_SSO_CLIENT_SECRET | The CHES Token (Secret) provided from the Web UI; You have one for each of dev / test / prod |
 | SSO_CLIENT_SECRET      | The SSO shared secret for your client provided by the SSO Web UI.
+| GITHUB_APP_ID          | Those Github app infor mation is available in github => org => Setting => Developer setting => Github Apps The Github Application ID
+| GITHUB_CLIENT_ID       | The Github Application client ID
+| GITHUB_CLIENT_SECRET   | The Github Application client secret
+| GITHUB_ORGANIZATION    | Orgnization that Github App invite user into
 
 
 Next, deploy the newly minted API image with the following command. This will create all the components required to run the API.
 
-```console
+```
 oc process -f api/openshift/templates/deploy.yaml \
   -p NAMESPACE=$(oc project --short) \
   -p SOURCE_IMAGE_NAMESPACE=<YOUR_TOOLS_NAMESPACE> \
@@ -74,7 +84,11 @@ oc process -f api/openshift/templates/deploy.yaml \
   -p CHES_BASEURL=https://blarb.example.com \
   -p CHES_SSO_TOKEN_URL=https://sso-dev.example.com \
   -p NATS_HOST_URL=nats://NAME.NAMESPACE.svc | \
+  -p APP_DB_NAME=registry \
+  -p FLYWAY_IMAGE_NAME=platsrv-registry-flyway \
+  -p FLYWAY_IMAGE_TAG=XXXX \
   oc apply -f -
+
   ```
 
 | Name                   | Description |
@@ -85,6 +99,8 @@ oc process -f api/openshift/templates/deploy.yaml \
 | CHES_BASEURL           | The CHES API URL; ; You have one for each of dev / test / prod.
 | CHES_SSO_TOKEN_URL     | The CHES SSO token URL used for authentication; You have one for each of dev / test / prod.
 | NATS_HOST_URL          | The URL for the NATS service.
+| FLYWAY_IMAGE_NAME          | The URL for the NATS service.
+| FLYWAY_IMAGE_TAG          | The Flyway source image tag that will be deployed
 
 
 ### ProTip 🤓
