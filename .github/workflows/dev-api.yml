@@ -70,6 +70,7 @@ jobs:
   s2i-build:
     runs-on: ubuntu-latest
     needs: [test, build]
+    concurrency: platsrv-registry-api
     defaults:
       run:
         working-directory: .
