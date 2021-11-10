@@ -20,7 +20,6 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL }}
-          oc project platform-registry-tools
 
       # Prepare to update Kustomize files in the manifest repo
       # ------------------------------------------------------
