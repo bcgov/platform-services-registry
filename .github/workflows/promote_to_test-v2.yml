@@ -48,6 +48,7 @@ jobs:
     needs: check_for_component_changes
     runs-on: ubuntu-latest
     if: ${{ needs.check_for_component_changes.outputs.db == 'true' || github.event_name == 'workflow_dispatch' }}
+    concurrency: platsrv-registry-flyway
     steps:
       # Build the DB image from master only if there are DB updates
       # Get its build ID
@@ -171,6 +172,7 @@ jobs:
   api_s2i-build:
     needs: api_build
     runs-on: ubuntu-latest
+    concurrency: platsrv-registry-api
     defaults:
       run:
         working-directory: .
@@ -316,6 +318,7 @@ jobs:
   web_s2i_build:
     needs: web_build
     runs-on: ubuntu-latest
+    concurrency: platsrv-registry-web
     defaults:
       run:
         working-directory: .
