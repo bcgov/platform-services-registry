@@ -128,7 +128,7 @@ Contributions are welcome. Please ensure they relate to an issue. See our
 #### How to setup Local development
 We suggest running this in a docker container, you can download docker [here](https://www.docker.com/get-started).
 
-This application has a function that will invite GitHub users to a specified GitHub organization, to make it locally, you will need to create your own test GitHub organization and Git App.
+This application has a function that will invite GitHub users to a specified GitHub organization, to make it locally, you will need to create your own test GitHub organization and GitHub App.
 
 **Step 1**
 Create a/two GitHub Organization(s) [here](https://github.com/account/organizations/new?coupon=&plan=team_free) or you can use any existing organization that you have full access permissions organization
