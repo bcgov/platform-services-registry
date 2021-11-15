@@ -71,7 +71,7 @@ oc process -f api/openshift/templates/secret.yaml \
 | GITHUB_APP_ID          | Those Github app infor mation is available in github => org => Setting => Developer setting => Github Apps The Github Application ID
 | GITHUB_CLIENT_ID       | The Github Application client ID
 | GITHUB_CLIENT_SECRET   | The Github Application client secret
-| GITHUB_ORGANIZATION    | Orgnization that Github App invite user into
+| GITHUB_ORGANIZATION    | Organization that Github App invite user into
 
 
 Next, deploy the newly minted API image with the following command. This will create all the components required to run the API.

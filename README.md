@@ -126,36 +126,37 @@ If you find issues with this application suite please create an [issue](https://
 Contributions are welcome. Please ensure they relate to an issue. See our 
 [Code of Conduct](./CODE-OF-CONDUCT.md) that is included with this repo for important details on contributing to Government of British Columbia projects. 
 #### How to setup Local development
-We suggest run this in docker container, you can download docker [here](https://www.docker.com/get-started).
+We suggest running this in a docker container, you can download docker [here](https://www.docker.com/get-started).
 
-This application has a function that will invite GitHub users to specified git organization, to make it locally, you will need to create your own test GitHub organization and Git App.
+This application has a function that will invite GitHub users to a specified GitHub organization, to make it locally, you will need to create your own test GitHub organization and Git App.
 
 **Step 1**
-Create a/two Git Organization(s) [here](https://github.com/account/organizations/new?coupon=&plan=team_free) or you can use any exiting orgnization that you have full access.
+Create a/two GitHub Organization(s) [here](https://github.com/account/organizations/new?coupon=&plan=team_free) or you can use any existing organization that you have full access permissions organization
+(ps*: API can invite the user into one or multiple GitHub org(s). for testing and development purpose, we suggest you at least create two GitHub orgs to make sure this function works properly)
 
 **Step 2**
-* In organization setting => Developer settings => GitHub Apps create a new GitHub app.
+* Under organization setting => Developer settings => GitHub Apps create a new GitHub app. (`https://github.com/organizations/${REPLEASE WITH_YOUR_ORG_NAME}/settings/apps`)
 * Give your app a meaningful name, and description.
 * Homepage URL can be anything, I recommend we can fill in with `http://localhost:8100/api`. 
 * Make sure **Expire user authorization tokens**, **Request user authorization (OAuth) during installation** and **Webhook:Active** boxes are unchecked.
 * In your apps permissions configuration, ensure to add read/write to membership.
-* You can allow Any account to installed this GitHub App.
+* You can allow any account to installed this GitHub App.
 
 **Step 3**
 * Create and save a client secret, this will be needed as env variable
-* Create and save the github app private key(.pem file), this will be needed to deploy the server
-* Install the application on your desired github organizations
+* Create and save the GitHub App private key(.pem file), this will be needed to deploy the server
+* Install the application on your desired GitHub organizations
 
 **Step 4**
-* In `api/src/config` copy `config.json.example` to create `config.json` and update **orgs** and **primaryOrg** to the orgnization name that you have your GitHub App installed on. 
+* In `api/src/config` copy `config.json.example` to create `config.json` and update **orgs** and **primaryOrg** to the organization name that you have your GitHub App installed on. 
 
-* copy the private key from GitHub App you just downloaded to `api/src/config` and rename it to `github-private-key.pem`
+* copy the private key from the GitHub App you just downloaded to `api/src/config` and rename it to `github-private-key.pem`
 
 **Step 5**
 * Copy `.env.example` to create `.env`.
-* You can find `Client ID` and `App ID` in GitHub App page, copy those value to  `GITHUB_CLIENT_ID` and `GITHUB_APP_ID`. 
+* You can find the `Client ID` and `App ID` on the GitHub App page, copy those values to `GITHUB_CLIENT_ID` and `GITHUB_APP_ID`.
 * Copy the client secret that you saved in Step 3 to `GITHUB_CLIENT_SECRET`
-* Fill `GITHUB_ORGANIZATION` with orgnization name that you have your GitHub App installed on.
+* Fill `GITHUB_ORGANIZATION` with Organization name that you have your GitHub App installed on.
 
 **Last Step**
 * In application root directory: run `mkdir pg_data`
@@ -173,6 +174,18 @@ Now you are ready to go back to application root directory and run `docker-compo
 
 After Docker Container finish creating, you can vist you local build at: http://localhost:8101/public-landing
 
+
+## Tips
+- Create an empty pg_data folder for the database: 
+`mkdir pg_data`
+- Install and build the api dependencies and application:
+`cd api && npm install && npm run build && cd ..`
+- Install the web dependencies:
+`cd web && npm install && cd ..`
+- Build the docker images:
+`docker-compose build`
+- Start Platform Services Registry
+`docker-compose up -d`
 ## License
 
 See the included [LICENSE](./LICENSE) file.
