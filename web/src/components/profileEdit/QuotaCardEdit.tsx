@@ -20,7 +20,7 @@ import { Label } from '@rebass/forms';
 import React, { useEffect, useState } from 'react';
 import { Field, Form, FormSpy } from 'react-final-form';
 import { Redirect } from 'react-router-dom';
-import { Box, Flex, Text } from 'rebass';
+import { Box, Flex, Text, Link } from 'rebass';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { PROFILE_EDIT_VIEW_NAMES, ROUTE_PATHS } from '../../constants';
@@ -42,6 +42,8 @@ interface IQuotaCardEditProps {
   handleSubmitRefresh: any;
   isProvisioned: boolean;
   hasPendingEdit: boolean;
+  namespace: string;
+  primaryClusterName: string;
 }
 
 interface QuotaSpecsInterface {
@@ -52,9 +54,10 @@ interface QuotaSpecsInterface {
 }
 
 const StyledQuotaEditContainer = styled.div`
-  max-width: 35vw;
+  max-width: 60vw;
+  width: 50vw;
   padding: 0px;
-  @media only screen and (max-width: 680px) {
+  @media only screen and (max-width: 810px) {
     max-width: 90vw;
   }
 `;
@@ -104,8 +107,9 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     handleSubmitRefresh,
     isProvisioned,
     hasPendingEdit,
+    namespace,
+    primaryClusterName
   } = props;
-
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
 
@@ -115,6 +119,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
   const getCorrespondingQuota = (selectedSizes: ProjectResourceQuotaSize): QuotaSpecsInterface => {
+    console.log('quotaSizesquotaSizesquotaSizes,', quotaSizes)
     if (
       quotaSizes &&
       Object.keys(quotaSizes).length === 0 &&
@@ -131,12 +136,12 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   };
 
   const txtForQuotaEdit =
-    "All quota increase requests require Platform Services Team's approval. Please contact the Platform Admins (@cailey.jones, @patrick.simonian or @shelly.han) in RocketChat BEFORE submitting the request to provide justification for the increased need of Platform resources (i.e. historic data showing increased CPU/RAM consumption).";
+    "All quota increase requests require Platform Services Team's approval and must have supporting information as per \"Quota Increase Request Process\"(https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set). The Quota Requests without supporting information will NOT be processed";
 
   const QUOTA_INFORMATION: any = {
     Quota: {
       displayTitle: 'Quota Information',
-      options: [{ name: 'LicensePlate', displayName: 'LicensePlate', value: licensePlate }],
+      options: [{ name: 'LicensePlate', displayName: 'LicensePlate', displayValue: licensePlate, value: licensePlate }],
     },
     cpuNums: {
       displayTitle: 'CPU',
@@ -147,14 +152,16 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           value: [quotaSize.quotaCpuSize, ...quotaOptions.quotaCpuSize],
         },
         {
-          name: 'Request',
-          displayName: 'Request',
-          value: specs.cpuNums === undefined ? '' : specs.cpuNums[0],
+          name: 'current',
+          displayName: 'Current',
+          value: specs.cpuNums === undefined ? '' : specs.cpuNums,
+          displayValue: specs.cpuNums === undefined ? '' : `Request: ${specs.cpuNums[0]} core, Limit: ${specs.cpuNums[1]} core`,
         },
         {
-          name: 'Limit',
-          displayName: 'Limit',
-          value: specs.cpuNums === undefined ? '' : specs.cpuNums[1],
+          name: 'upgrade',
+          displayName: 'Upgrade to',
+          value: specs.cpuNums === undefined ? '' : specs.cpuNums,
+          displayValue: ''
         },
       ],
     },
@@ -167,14 +174,16 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           value: [quotaSize.quotaMemorySize, ...quotaOptions.quotaMemorySize],
         },
         {
-          name: 'Request',
-          displayName: 'Request',
-          value: specs.memoryNums === undefined ? '' : specs.memoryNums[0],
+          name: 'current',
+          displayName: 'Current',
+          value: specs.memoryNums === undefined ? '' : specs.memoryNums,
+          displayValue: specs.cpuNums === undefined ? '' : `Request: ${specs.memoryNums[0]} GiB, Limit: ${specs.memoryNums[1]} GiB`,
         },
         {
-          name: 'Limit',
-          displayName: 'Limit',
-          value: specs.memoryNums === undefined ? '' : specs.memoryNums[1],
+          name: 'upgrade',
+          displayName: 'Upgrade to',
+          value: specs.cpuNums === undefined ? '' : specs.memoryNums,
+          displayValue: ''
         },
       ],
     },
@@ -187,20 +196,18 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           value: [quotaSize.quotaStorageSize, ...quotaOptions.quotaStorageSize],
         },
         {
-          name: 'PVCCount',
-          displayName: 'PVC Count',
-          value: specs.storageNums === undefined ? '' : specs.storageNums[0],
+          name: 'current',
+          displayName: 'Current',
+          value: specs.storageNums === undefined ? '' : specs.storageNums,
+          displayValue: specs.storageNums === undefined ? '' : ` PVC:${specs.storageNums[0]} Overall Storage: ${specs.storageNums[1]} GiB, Backup: ${specs.storageNums[2]} GiB`,
         },
         {
-          name: 'OverallStorage',
-          displayName: 'Overall Storage',
-          value: specs.storageNums === undefined ? '' : specs.storageNums[1],
+          name: 'upgrade',
+          displayName: 'Upgrade to',
+          value: specs.storageNums === undefined ? '' : specs.storageNums,
+          displayValue: ''
         },
-        {
-          name: 'BackupStorage',
-          displayName: 'Backup Storage',
-          value: specs.storageNums === undefined ? '' : specs.storageNums[2],
-        },
+
       ],
     },
     snapshotNumber: {
@@ -212,9 +219,10 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           value: [quotaSize.quotaSnapshotSize, ...quotaOptions.quotaSnapshotSize],
         },
         {
-          name: 'snapshotCount',
-          displayName: 'SnapShot Count',
+          name: 'current',
+          displayName: 'Current',
           value: specs.snapshotNums === undefined ? '' : specs.snapshotNums,
+          displayValue: specs.snapshotNums === undefined ? '' : `Request: ${specs.snapshotNums} GiB`,
         },
       ],
     },
@@ -280,8 +288,27 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
 
   return (
     <StyledQuotaEditContainer>
-      <FormTitle>License plates for the openshift namespaces</FormTitle>
-      <FormSubtitle>{txtForQuotaEdit}</FormSubtitle>
+      <FormTitle>  Resource Quotas for {licensePlate} project set in {primaryClusterName} cluster </FormTitle>
+      <FormSubtitle>
+        All quota increase requests require Platform Services Team's approval and must have supporting information as per
+        <Link
+          color="blue"
+          href='https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set'
+          target="_blank"
+        >
+          &nbsp;"Quota Increase Request Process".&nbsp;
+        </Link>
+        The Quota Requests without supporting information will NOT be processed.
+      </FormSubtitle>
+      <Flex marginY={2}>
+        <Text fontWeight='600' >
+          * Attention: You are now viewing the resource quotas for the
+          <span style={{ color: 'red' }} >
+            &nbsp;{namespace}&nbsp;
+          </span>
+          namespace
+        </Text>
+      </Flex>
       <br />
 
       <Form
@@ -295,62 +322,127 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           const DisplayQuotaForm = Object.keys(QUOTA_INFORMATION).map((element: any, index) => (
             <Box key={index + QUOTA_INFORMATION[element].displayTitle}>
               <Text as="h3">{QUOTA_INFORMATION[element].displayTitle}</Text>
-              {QUOTA_INFORMATION[element].options.map((option: any, optionIndex: any) => (
-                <Flex
-                  marginBottom="2"
-                  sx={{ alignItems: 'center' }}
-                  key={optionIndex + option.displayName}
-                >
-                  <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
-                    {option.displayName}
-                  </Label>
-                  {option.name === TEMPORARY_DISABLE_FIELD && (
-                    <>
-                      <StyledFontAwesomeIcon
-                        onMouseEnter={() => setDisplayInfoBox(!displayInfoBox)}
-                        onMouseLeave={() => setDisplayInfoBox(!displayInfoBox)}
-                        icon={faExclamationTriangle}
-                      />
-                      <StyledInformationBox
-                        style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
-                      >
-                        Only 'small' snapshot volumes are supported right now.
-                      </StyledInformationBox>
-                    </>
-                  )}
-                  {option.displayName === QUOTA_DISPLAY_NAME ? (
-                    // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
+              {QUOTA_INFORMATION[element].options.map((option: any, optionIndex: any) => {
+                const hasUserchangeOption =
+                  applyingQuotaSpecs[element] &&
+                  applyingQuotaSpecs[element].length !== 0 &&
+                  option.value !== applyingQuotaSpecs[element]
+                return (
+                  <Flex
+                    marginBottom="2"
+                    sx={{ alignItems: 'center' }}
+                    key={optionIndex + option.displayName}
+                  >
 
-                    <Field
-                      name={option.name}
-                      disabled={option.name === TEMPORARY_DISABLE_FIELD}
-                      component={SelectInput}
-                      initialValue={option.value[0]}
-                      validate={required}
-                    >
-                      {option.value.length &&
-                        option.value.map((opt: any) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                    </Field>
-                  ) : (
-                    <Label justifyContent="flex-end">
-                      <Text>{option.value}</Text>{' '}
-                      {applyingQuotaSpecs[element] &&
-                        applyingQuotaSpecs[element].length !== 0 &&
-                        applyingQuotaSpecs[element][optionIndex - 1] !== option.value &&
-                        element !== 'Quota' && (
-                          <Flex marginLeft="1">
-                            {/* (optionIndex - 1) because Quota size is taking index 0 */}
-                            <Text> to {applyingQuotaSpecs[element][optionIndex - 1]}</Text>
-                          </Flex>
-                        )}
+                     {console.log('hiahia, hwat this this specs', specs)}
+             
+                    {
+                      (option.name !== 'upgrade' || hasUserchangeOption) &&
+                      < Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
+                        {option.displayName}
+                      </Label>
+                    }
+
+                    {option.name === TEMPORARY_DISABLE_FIELD && (
+                      <>
+                        <StyledFontAwesomeIcon
+                          onMouseEnter={() => setDisplayInfoBox(!displayInfoBox)}
+                          onMouseLeave={() => setDisplayInfoBox(!displayInfoBox)}
+                          icon={faExclamationTriangle}
+                        />
+                        <StyledInformationBox
+                          style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
+                        >
+                          Only 'small' snapshot volumes are supported right now.
+                        </StyledInformationBox>
+                      </>
+                    )}
+                    {option.displayName === QUOTA_DISPLAY_NAME ? (
+                      // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
+
+                      <Field
+                        name={option.name}
+                        disabled={option.name === TEMPORARY_DISABLE_FIELD}
+                        component={SelectInput}
+                        initialValue={option.value[0]}
+                        validate={required}
+                      >
+                        {option.value.length &&
+                          option.value.map((opt: any) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                      </Field>
+                    ) : option.name !== 'upgrade' ? (
+                      <Label justifyContent="flex-end">
+                        <Text>{option.displayValue}</Text>{' '}
+                        {/* {applyingQuotaSpecs[element] &&
+                          applyingQuotaSpecs[element].length !== 0 &&
+                          applyingQuotaSpecs[element][optionIndex - 1] !== option.value &&
+                          element !== 'Quota' &&
+                          option.name === 'update' && (
+                            <Flex marginLeft="1">
+                              {console.log('what is applyingQuotaSpecs', applyingQuotaSpecs)}
+                              {console.log('what is element', element)}
+                              (optionIndex - 1) because Quota size is taking index 0
+                              <Text> to {applyingQuotaSpecs[element][optionIndex - 1]}</Text>
+                            </Flex>
+                          )} */}
+
+                      </Label>
+                    ) : hasUserchangeOption && (
+                      <Label justifyContent="flex-end">
+                        {console.log('sadf', applyingQuotaSpecs)}
+                        <Text>Request: {applyingQuotaSpecs[element][0]} , Limit: {applyingQuotaSpecs[element][1]} </Text>
+                      </Label>
+
+                    )
+                    }
+                  </Flex>
+                )
+              }
+                // else {
+
+                //   if (applyingQuotaSpecs[element] &&
+                //     applyingQuotaSpecs[element].length !== 0 &&
+                //     applyingQuotaSpecs[element][optionIndex - 1] !== option.value) {
+
+                //     return (
+                //       <Flex
+                //         marginBottom="2"
+                //         sx={{ alignItems: 'center' }}
+                //         key={optionIndex + option.displayName}
+                //       >
+
+                //         <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
+                //           {option.displayName}
+                //         </Label>
+                //       </Flex>
+                //     )
+                //   }
+                // }
+                // }
+              )
+              }
+
+
+              {/* {applyingQuotaSpecs[element] &&
+                applyingQuotaSpecs[element].length !== 0 && (
+
+                  <Flex
+                    marginBottom="2"
+                    sx={{ alignItems: 'center' }}
+                  >
+                    <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
+                      Upgrade to:
                     </Label>
-                  )}
-                </Flex>
-              ))}
+                    <Label justifyContent="flex-end">
+                      <Text>Request: {applyingQuotaSpecs[element][0]} core, Limit: {applyingQuotaSpecs[element][1]} core </Text>{' '}
+                    </Label>
+                  </Flex>
+                )
+              } */}
             </Box>
           ));
 
@@ -434,7 +526,7 @@ const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           );
         }}
       </Form>
-    </StyledQuotaEditContainer>
+    </StyledQuotaEditContainer >
   );
 };
 

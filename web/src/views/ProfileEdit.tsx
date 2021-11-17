@@ -19,6 +19,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
+import { useQuery } from '../../src/utils/AppRoute'
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
@@ -77,6 +78,8 @@ const ProfileEdit: React.FC = (props: any) => {
       params: { profileId, viewName },
     },
   } = props;
+  const FOUR_NAME_SPACE = ['Production', 'Test', 'Development', 'Tools']
+  const namespaceSearchQuery = useQuery().get('namespace') || '';
 
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
@@ -117,7 +120,6 @@ const ProfileEdit: React.FC = (props: any) => {
         cluster.data,
       ),
     };
-
     const contactDetails = await api.getContactsByProfileId(profileId);
 
     const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
@@ -187,6 +189,7 @@ const ProfileEdit: React.FC = (props: any) => {
 
   const cards = [
     {
+      name: 'project',
       title: 'Project Information',
       href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
@@ -195,6 +198,7 @@ const ProfileEdit: React.FC = (props: any) => {
       component: <ProjectCard projectDetails={profileState.projectDetails} />,
     },
     {
+      name: "contact",
       title: 'Contact Information',
       href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
@@ -203,12 +207,13 @@ const ProfileEdit: React.FC = (props: any) => {
       component: <ContactCard contactDetails={profileState.contactDetails} />,
     },
     {
+      name: 'quota',
       title: 'Quota Information',
-      href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
+
+      component: <QuotaCard quotaDetails={profileState.quotaDetails} href={ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
         PROFILE_EDIT_VIEW_NAMES.QUOTA,
-      ),
-      component: <QuotaCard quotaDetails={profileState.quotaDetails} />,
+      )} />,
     },
   ];
 
@@ -246,16 +251,18 @@ const ProfileEdit: React.FC = (props: any) => {
                     <Text as="h3" color={theme.colors.contrast} mx={2}>
                       {c.title}
                     </Text>
-                    <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
-                      <BaseIcon
-                        name="edit"
-                        color="contrast"
-                        hover
-                        width={1.5}
-                        height={1.5}
-                        displayIcon={faPen}
-                      />
-                    </RouterLink>
+                    {c.name !== 'quota' &&
+                      <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
+                        <BaseIcon
+                          name="edit"
+                          color="contrast"
+                          hover
+                          width={1.5}
+                          height={1.5}
+                          displayIcon={faPen}
+                        />
+                      </RouterLink>
+                    }
                   </Flex>
                   <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
                     {c.component}
@@ -311,15 +318,18 @@ const ProfileEdit: React.FC = (props: any) => {
                 hasPendingEdit={profileState.hasPendingEdit}
               />
             )}
-            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && (
+            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && FOUR_NAME_SPACE.includes(namespaceSearchQuery) && (
               <QuotaCardEdit
                 profileId={profileId}
                 quotaDetails={profileState.quotaDetails}
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                namespace={namespaceSearchQuery}
+                primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
               />
             )}
+
           </ShadowBox>
         </Flex>
       </ShadowBox>

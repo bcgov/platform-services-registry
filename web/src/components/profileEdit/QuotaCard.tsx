@@ -16,12 +16,16 @@
 
 import React from 'react';
 import { Box, Flex, Text } from 'rebass';
+import { Link as RouterLink } from 'react-router-dom';
 import Aux from '../../hoc/auxillary';
 import theme from '../../theme';
 import { ProjectResourceQuotaSize, QuotaSize } from '../../types';
+import { BaseIcon } from '../../components/common/UI/Icon';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
+  href: string;
 }
 
 export interface QuotaDetails {
@@ -51,8 +55,8 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
         quotaSnapshotSize: '',
       },
     },
+    href
   } = props;
-
   const namespaceTexts = [
     ['Production', 'prod'],
     ['Test', 'test'],
@@ -71,7 +75,19 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
       {namespaceTexts.map((namespaceText: string[], index0: number) => (
         <Aux key={index0}>
           <Box width={1 / 2} px={2} mt={3}>
-            <Text as="h3">{namespaceText[0]} Namespace</Text>
+            <Flex>
+              <Text as="h3" marginX={2}>{namespaceText[0]} Namespace</Text>
+              <RouterLink className="misc-class-m-dropdown-link" to={`${href}?namespace=${namespaceText[0]}`}>
+                <BaseIcon
+                  name="edit"
+                  color="primary"
+                  hover
+                  width={1.5}
+                  height={1.5}
+                  displayIcon={faPen}
+                />
+              </RouterLink>
+            </Flex>
             <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
               {`${licensePlate}-${namespaceText[1]} namespace`}
             </Text>
