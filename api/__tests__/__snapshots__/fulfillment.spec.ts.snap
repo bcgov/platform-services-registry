@@ -23,6 +23,7 @@ Object {
   ],
   "description": "This is a cool project.",
   "display_name": "Project X",
+  "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
       "name": "4ea35c-tools",
@@ -160,6 +161,7 @@ Object {
   ],
   "description": "This is a cool edited project.",
   "display_name": "Project X",
+  "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
       "name": "4ea35c-tools",
@@ -297,6 +299,7 @@ Object {
   ],
   "description": "This is a cool project.",
   "display_name": "Project X",
+  "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
       "name": "4ea35c-tools",
@@ -434,6 +437,7 @@ Object {
   ],
   "description": "This is a cool project.",
   "display_name": "Project X",
+  "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
       "name": "4ea35c-tools",
@@ -628,7 +632,7 @@ Array [
       "values": Array [
         3,
         "registry_project_provisioning_Project X",
-        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":4,\\"cluster_name\\":\\"Project X\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"namespace_id\\":13,\\"name\\":\\"4ea35c-tools\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":14,\\"name\\":\\"4ea35c-test\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":15,\\"name\\":\\"4ea35c-dev\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":16,\\"name\\":\\"4ea35c-prod\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
+        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":4,\\"cluster_name\\":\\"Project X\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"ministry_id\\":\\"CITZ\\",\\"namespaces\\":[{\\"namespace_id\\":13,\\"name\\":\\"4ea35c-tools\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":14,\\"name\\":\\"4ea35c-test\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":15,\\"name\\":\\"4ea35c-dev\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":16,\\"name\\":\\"4ea35c-prod\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
         "Project X",
         false,
       ],
