@@ -52,6 +52,7 @@ export interface NatsContext {
   cluster_name: string;
   display_name: string;
   description: string;
+  ministry_id: string;
   namespaces: NatsProjectNamespace[];
   contacts: NatsContact[];
 }
