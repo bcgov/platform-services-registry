@@ -125,7 +125,7 @@ If you find issues with this application suite please create an [issue](https://
 
 Contributions are welcome. Please ensure they relate to an issue. See our 
 [Code of Conduct](./CODE-OF-CONDUCT.md) that is included with this repo for important details on contributing to Government of British Columbia projects. 
-#### How to setup Local development
+## How to setup Local development
 We suggest running this in a docker container, you can download docker [here](https://www.docker.com/get-started).
 
 This application has a function that will invite GitHub users to a specified GitHub organization, to make it locally, you will need to create your own test GitHub organization and GitHub App.
@@ -135,20 +135,22 @@ Create a/two GitHub Organization(s) [here](https://github.com/account/organizati
 (ps*: API can invite the user into one or multiple GitHub org(s). for testing and development purpose, we suggest you at least create two GitHub orgs to make sure this function works properly)
 
 **Step 2**
-* Under organization setting => Developer settings => GitHub Apps create a new GitHub app. (`https://github.com/organizations/${REPLEASE WITH_YOUR_ORG_NAME}/settings/apps`)
+* Under organization setting => Developer settings => GitHub Apps create a new GitHub app. (`https://github.com/organizations/[REPLACE_WITH_YOUR_ORG_NAME]ap/settings/apps`)
 * Give your app a meaningful name, and description.
 * Homepage URL can be anything, I recommend we can fill in with `http://localhost:8100/api`. 
-* Make sure **Expire user authorization tokens**, **Request user authorization (OAuth) during installation** and **Webhook:Active** boxes are unchecked.
-* In your apps permissions configuration, ensure to add read/write to membership.
+* Make sure **Expire user authorization tokens**, **Request user authorization (OAuth) during installation** and **Webhook:Active** boxes are unchecked.[]
+<img src="DocAsset/github_app_screen_shot1.png" width="500" height="600">
+* In your apps permissions configuration, ensure to add read/write to member.
+<img src="DocAsset/github_app_screen_shot2.png" width="500" height="80">
 * You can allow any account to installed this GitHub App.
 
 **Step 3**
 * Create and save a client secret, this will be needed as env variable
 * Create and save the GitHub App private key(.pem file), this will be needed to deploy the server
-* Install the application on your desired GitHub organizations
+* Click Install App in side bar, find the test organization created earlier, click Install to install application to organization
 
 **Step 4**
-* In `api/src/config` copy `config.json.example` to create `config.json` and update **orgs** and **primaryOrg** to the organization name that you have your GitHub App installed on. 
+* In `api/src/config` run `cp config.json.example config.json` to copy `config.json.example` and create `config.json`. Update **orgs** and **primaryOrg** to the organization name that you have your GitHub App installed on.
 
 * copy the private key from the GitHub App you just downloaded to `api/src/config` and rename it to `github-private-key.pem`
 
