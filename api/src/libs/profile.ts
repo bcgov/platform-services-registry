@@ -124,6 +124,56 @@ export const updateProfileStatus = async (
   }
 };
 
+// Test just to get one namespace quptasize
+export const getNamespaceQuotaSize = async (
+  profile: ProjectProfile,
+  namespace: string
+): Promise<ProjectQuotaSize> => {
+  try {
+    const profileNamespaceQuotaSizesInAllCulster: ProjectQuotaSize[] =
+      await NamespaceModel.getProfileNamespaceQuotaSize(profile.id, namespace);
+
+    let hasSameQuotaSizesForAllClusters: boolean = false;
+    // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
+    if (profileNamespaceQuotaSizesInAllCulster.length === 1) {
+      hasSameQuotaSizesForAllClusters = true;
+    } else {
+      const namespaceQuotaSizesForAllClusters: NameSpacesQuotaSize = {
+        quotaCpuSize: [],
+        quotaMemorySize: [],
+        quotaStorageSize: [],
+        quotaSnapshotSize: [],
+      };
+      const QuotaSizeObjectKey = Object.keys(namespaceQuotaSizesForAllClusters);
+      /**
+       * following line is to push all quota info from array of object into a single object
+       *  that can be consumed by compareNameSpaceQuotaSize to compare if quota size are the same
+       * across all cluster.
+       */
+      profileNamespaceQuotaSizesInAllCulster.forEach((element) => {
+        QuotaSizeObjectKey.forEach((key) => {
+          namespaceQuotaSizesForAllClusters[key].push(element[key]);
+        });
+      });
+      hasSameQuotaSizesForAllClusters = compareNameSpaceQuotaSize(
+        namespaceQuotaSizesForAllClusters
+      );
+    }
+
+    if (hasSameQuotaSizesForAllClusters) {
+      // because we checked if all element in profileQuotaSizes are the same, so we can just return any of the element
+      return profileNamespaceQuotaSizesInAllCulster[0];
+    }
+    throw new Error(`Need to fix entries as the quota size of cluster namespaces
+      under the profile is not consistent`);
+  } catch (err) {
+    const message = `Unable to get namespace quota size for profile ${profile.id}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
 export const getQuotaSize = async (
   profile: ProjectProfile
 ): Promise<ProjectQuotaSize> => {
@@ -143,7 +193,10 @@ export const getQuotaSize = async (
 
     // Some profile may have two clusters, which has eight namespace
     const profileQuotaSizes: ProjectQuotaSize[] = await Promise.all(promises);
-
+    // console.log(
+    //   "hiahia in api/src/lib/profile.ts profileQuotaSizes is:",
+    //   profileQuotaSizes
+    // );
     let hasSameQuotaSizesForAllClusters: boolean = false;
     // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
     if (profileQuotaSizes.length === 1) {
@@ -184,6 +237,7 @@ export const getQuotaSize = async (
   }
 };
 
+// This function is currently unused, keep it here in case we want to update all namesapce together again in the future
 export const updateQuotaSize = async (
   profile: ProjectProfile,
   quotaSize: ProjectQuotaSize

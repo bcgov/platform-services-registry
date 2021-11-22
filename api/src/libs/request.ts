@@ -24,11 +24,11 @@ import { Request, RequestEditType, RequestType } from "../db/model/request";
 import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "./authmware";
 import { MessageType, sendProvisioningMessage } from "./messaging";
-import { updateProfileStatus, updateQuotaSize } from "./profile";
+import { updateProfileStatus } from "./profile";
 import shared from "./shared";
 
 const dm = new DataManager(shared.pgPool);
-const { RequestModel, QuotaModel } = dm;
+const { RequestModel, QuotaModel, NamespaceModel } = dm;
 
 const createRequest = async (
   type: RequestType,
@@ -255,12 +255,14 @@ export const requestProfileQuotaSizeEdit = async (
   profileId: number,
   requestedQuotaSize: ProjectQuotaSize,
   user: AuthenticatedUser,
-  requiresHumanAction: boolean = false
+  requiresHumanAction: boolean = false,
+  namespace: string
 ): Promise<Request> => {
   try {
     const requestType = RequestType.Edit;
     const editType = RequestEditType.QuotaSize;
     const editObject = {
+      namespace,
       quota: requestedQuotaSize,
       quotas: await QuotaModel.findForQuotaSize(requestedQuotaSize),
     };
@@ -293,14 +295,11 @@ export const requestProfileQuotaSizeEdit = async (
 export const processProfileQuotaSizeEdit = async (
   request: Request
 ): Promise<void> => {
-  const { ProfileModel } = dm;
-
   try {
     const { profileId, editObject } = request;
-    const { quota } = editObject;
-    const profile = await ProfileModel.findById(profileId);
+    const { quota, namespace } = editObject;
 
-    await updateQuotaSize(profile, quota);
+    await NamespaceModel.updateNamespaceQuotaSize(profileId, quota, namespace);
 
     logger.info(`Sending CHES message Project Edit Success for ${profileId}`);
     await sendProvisioningMessage(profileId, MessageType.EditRequestCompleted);

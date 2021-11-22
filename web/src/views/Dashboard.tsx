@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
   // @ts-ignore
   const userRoles = decodedToken.resource_access['registry-web']
     ? // @ts-ignore
-      decodedToken.resource_access['registry-web'].roles
+    decodedToken.resource_access['registry-web'].roles
     : [];
 
   useEffect(() => {

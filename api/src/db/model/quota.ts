@@ -24,11 +24,17 @@ export enum QuotaSize {
   Large = "large",
 }
 
-export interface ProjectQuotaSize {
+export interface NamespaceQuotaSize {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
   quotaStorageSize: QuotaSize;
   quotaSnapshotSize: QuotaSize;
+}
+export interface ProjectQuotaSize {
+  dev: NamespaceQuotaSize;
+  test: NamespaceQuotaSize;
+  tools: NamespaceQuotaSize;
+  prod: NamespaceQuotaSize;
 }
 
 export interface Quotas {
@@ -183,7 +189,7 @@ export default class QuotaModel extends Model {
             size.storageFile.replace("Gi", "GiB"),
             size.storageBackup.replace("Gi", "GiB"),
           ],
-          snapshotNums: size.snapshotVolume,
+          snapshotNums: [size.snapshotVolume],
         };
       }
 

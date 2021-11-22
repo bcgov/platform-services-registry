@@ -17,11 +17,11 @@
 import { Label, Textarea } from '@rebass/forms';
 import React from 'react';
 import { Field, Form } from 'react-final-form';
-import { Box, Flex, Heading } from 'rebass';
+import { Box, Flex, Heading, Text } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { findDifferenceBetweenTwoDifferentObject } from '../../utils/utils';
+import { findDifferenceBetweenTwoDifferentObject, getLicenseplatPostfix } from '../../utils/utils';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -83,13 +83,14 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
   const textCapitalized = { textTransform: 'capitalize' };
+  const editNamespace = getLicenseplatPostfix(profileDetails.editObject.namespace)
 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
       ? findDifferenceBetweenTwoDifferentObject(
-          profileDetails.editObject.quota,
-          profileDetails.quotaSize,
-        )
+        profileDetails.editObject.quota,
+        profileDetails.quotaSize[editNamespace],
+      )
       : [];
 
   const parseContacts = (contactDetails: any) => {
@@ -101,7 +102,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const parseUpdatedQuota = (updatedQuotaTypes: any) => {
     return updatedQuotaTypes.map(
       (quotaType: any) =>
-        `${quotaType}: ${profileDetails.quotaSize[quotaType]} => ${profileDetails.editObject.quota[quotaType]} `,
+        `${quotaType}: ${profileDetails.quotaSize[editNamespace][quotaType]} => ${profileDetails.editObject.quota[quotaType]} `,
     );
   };
 
@@ -167,7 +168,11 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
             displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize} | Snapshot: ${profileDetails.quotaSize.quotaSnapshotSize} `}
           />
         ) : (
-          <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+          <>
+            {profileDetails.editObject.namespace && <Text>Namespace: {profileDetails.editObject.namespace}</Text>}
+            {console.log('what is this??requestedUpdateQuota:', requestedUpdateQuota)}
+            <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+          </>
         )}
       </Flex>
       <Form onSubmit={onSubmit}>

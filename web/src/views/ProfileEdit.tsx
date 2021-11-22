@@ -19,6 +19,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
+import { getLicenseplatPostfix } from '../utils/utils'
 import { useQuery } from '../../src/utils/AppRoute'
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
@@ -26,7 +27,7 @@ import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCa
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
 import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCard';
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
-import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
+import QuotaCard, { QuotaDetails, NAMESPACE_DEFAULT_QUOTA } from '../components/profileEdit/QuotaCard';
 import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
 import { BaseIcon } from '../components/common/UI/Icon';
 import {
@@ -39,7 +40,7 @@ import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
-import { Namespace } from '../types';
+import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
@@ -78,8 +79,16 @@ const ProfileEdit: React.FC = (props: any) => {
       params: { profileId, viewName },
     },
   } = props;
-  const FOUR_NAME_SPACE = ['Production', 'Test', 'Development', 'Tools']
+  const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NamespaceQuotaOption = {
+    quotaCpuSize: [],
+    quotaMemorySize: [],
+    quotaStorageSize: [],
+    quotaSnapshotSize: [],
+  };
+  const FOUR_NAME_SPACE = ['prod', 'test', 'dev', 'tools']
   const namespaceSearchQuery = useQuery().get('namespace') || '';
+  // as keyof typeof profileState.quotaDetails.quotaOptions
+  const editNamespace = getLicenseplatPostfix(namespaceSearchQuery)
 
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
@@ -94,7 +103,20 @@ const ProfileEdit: React.FC = (props: any) => {
     hasPendingEdit: true,
     projectDetails: {},
     contactDetails: [],
-    quotaDetails: {},
+    quotaDetails: {
+      quotaSize: {
+        dev: NAMESPACE_DEFAULT_QUOTA,
+        test: NAMESPACE_DEFAULT_QUOTA,
+        tools: NAMESPACE_DEFAULT_QUOTA,
+        prod: NAMESPACE_DEFAULT_QUOTA,
+      },
+      quotaOptions: {
+        dev: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+        test: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+        tools: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+        prod: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+      }
+    },
   });
 
   const [initialRender, setInitialRender] = useState(true);
@@ -123,6 +145,7 @@ const ProfileEdit: React.FC = (props: any) => {
     const contactDetails = await api.getContactsByProfileId(profileId);
 
     const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
+
     const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
     setProfileState((profileState0: any) => ({
@@ -318,10 +341,13 @@ const ProfileEdit: React.FC = (props: any) => {
                 hasPendingEdit={profileState.hasPendingEdit}
               />
             )}
-            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && FOUR_NAME_SPACE.includes(namespaceSearchQuery) && (
+
+            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && FOUR_NAME_SPACE.includes(editNamespace) && (
               <QuotaCardEdit
                 profileId={profileId}
-                quotaDetails={profileState.quotaDetails}
+                licensePlate={profileState.quotaDetails.licensePlate || ''}
+                quotaOptions={profileState.quotaDetails.quotaOptions[editNamespace as keyof typeof profileState.quotaDetails.quotaOptions] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE}
+                quotaSize={profileState.quotaDetails.quotaSize[editNamespace as keyof typeof profileState.quotaDetails.quotaOptions] || NAMESPACE_DEFAULT_QUOTA}
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
