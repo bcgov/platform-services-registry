@@ -72,12 +72,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     ['Development', 'dev'],
     ['Tools', 'tools'],
   ];
-  // const specTexts: SpecTextInterface = {
-  //   CPU: quotaSize?.quotaCpuSize,
-  //   Memory: quotaSize?.quotaMemorySize,
-  //   Storage: quotaSize?.quotaStorageSize,
-  //   Snapshot: quotaSize?.quotaSnapshotSize,
-  // };
+
   return (
     <Flex flexWrap="wrap">
       {namespaceTexts.map((namespaceText: string[], index0: number) => {

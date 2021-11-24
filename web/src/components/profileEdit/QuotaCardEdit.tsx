@@ -36,14 +36,7 @@ import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
 
 export interface NamespaceQuotaDetails {
-  // licensePlate?: string;
   quotaSize?: ProjectNamespaceResourceQuotaSize;
-  // quotaOptions?: {
-  //   quotaCpuSize: QuotaSize[];
-  //   quotaMemorySize: QuotaSize[];
-  //   quotaStorageSize: QuotaSize[];
-  //   quotaSnapshotSize: QuotaSize[];
-  // };
 }
 interface IQuotaCardEditProps {
   profileId?: string;
@@ -151,7 +144,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       case 'memory':
         return `Request:  ${size[0]}, Limit:  ${size[1]}`
       case 'storage':
-        return `PVC:${size[0]}, Overall Storage: ${size[1]} GiB, Backup:${size[2]} GiB`
+        return `PVC:${size[0]}, Overall Storage: ${size[1]}, Backup:${size[2]}`
       case 'snapshot':
         return `Request: ${size[0]} snapshot`
       default:
@@ -343,8 +336,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                   applyingQuotaSpecs[element] &&
                   applyingQuotaSpecs[element].length !== 0 &&
                   option.value !== applyingQuotaSpecs[element]
-                const displayValue = option.type ? buildDisplayMessage(option.value, option.type) : ''
-                // const upgradeDisplayValue = hasUserchangeOption ? buildDisplayMessage(applyingQuotaSpecs[element], option.type) : ''
 
                 return (
                   <Flex

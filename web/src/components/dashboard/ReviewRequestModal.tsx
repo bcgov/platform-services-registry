@@ -164,13 +164,21 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
-          <InformationBox
-            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize} | Snapshot: ${profileDetails.quotaSize.quotaSnapshotSize} `}
-          />
+          <>
+            {
+              Object.keys(profileDetails.quotaSize).map((key: string) => (
+                <Flex flexDirection='column' paddingBottom='1' key={key}>
+                  {key}
+                  <InformationBox
+                    displayText={`CPU: ${profileDetails.quotaSize[key].quotaCpuSize} | RAM: ${profileDetails.quotaSize[key].quotaMemorySize} |  Storage: ${profileDetails.quotaSize[key].quotaStorageSize} | Snapshot: ${profileDetails.quotaSize[key].quotaSnapshotSize} `}
+                  />
+                </Flex>
+              ))
+            }
+          </>
         ) : (
           <>
             {profileDetails.editObject.namespace && <Text>Namespace: {profileDetails.editObject.namespace}</Text>}
-            {console.log('what is this??requestedUpdateQuota:', requestedUpdateQuota)}
             <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
           </>
         )}

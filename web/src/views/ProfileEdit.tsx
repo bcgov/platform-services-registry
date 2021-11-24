@@ -87,7 +87,6 @@ const ProfileEdit: React.FC = (props: any) => {
   };
   const FOUR_NAME_SPACE = ['prod', 'test', 'dev', 'tools']
   const namespaceSearchQuery = useQuery().get('namespace') || '';
-  // as keyof typeof profileState.quotaDetails.quotaOptions
   const editNamespace = getLicenseplatPostfix(namespaceSearchQuery)
 
   const api = useRegistryApi();

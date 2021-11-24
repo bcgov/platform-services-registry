@@ -16,8 +16,8 @@
 
 import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
-// import { compareNameSpaceQuotaSize } from "../utils";
 import { CommonFields, Model } from "./model";
+import { getLicenseplatPostfix } from "../../libs/utils";
 import { ProjectQuotaSize, QuotaSize, NamespaceQuotaSize } from "./quota";
 
 export interface ClusterNamespace extends CommonFields {
@@ -316,10 +316,12 @@ export default class NamespaceModel extends Model {
       };
       // TODO cluster duplication only show one
       ClustersnamespaceQuotaSize.forEach((namespaceQuotaInfo) => {
-        const namespace =
-          namespaceQuotaInfo.namespacename.match(/(?<=-).*/) || null;
+        const namespace = getLicenseplatPostfix(
+          namespaceQuotaInfo.namespacename
+        );
+
         try {
-          projectQuotaSize[namespace[0]] = namespaceQuotaInfo.quotaInfo;
+          projectQuotaSize[namespace] = namespaceQuotaInfo.quotaInfo;
         } catch (err) {
           const message = `unable to resolve project namespace name for for profile ${profileId} on cluster ${clusterId}`;
           logger.error(`${message}, err = ${err.message}`);
@@ -327,9 +329,6 @@ export default class NamespaceModel extends Model {
         }
       });
       return projectQuotaSize;
-      // }
-      // throw new Error(`Need to fix entries as the quota size of
-      //   the project set is not consistent`);
     } catch (err) {
       const message = `Unable to get quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
@@ -338,6 +337,7 @@ export default class NamespaceModel extends Model {
     }
   }
 
+  // This will update Specified namespace in all cluster
   async updateNamespaceQuotaSize(
     profileId: number,
     quotaSize: NamespaceQuotaSize,
@@ -372,46 +372,7 @@ export default class NamespaceModel extends Model {
       throw err;
     }
   }
-
-  // This function is currently unused, keep it here in case we want to update all namesapce together again in the future
-  // async updateProjectSetQuotaSize(
-  //   profileId: number,
-  //   clusterId: number,
-  //   quotaSize: ProjectQuotaSize
-  // ): Promise<ProjectNamespace[]> {
-  //   const query = {
-  //     text: `
-  //       UPDATE cluster_namespace
-  //         SET quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
-  //         WHERE namespace_id = $4 AND cluster_id = $5
-  //       RETURNING *;`,
-  //     values: [],
-  //   };
-
-  //   try {
-  //     const nsResults = await this.findNamespacesForProfile(profileId);
-  //     const clPromises = nsResults.map((nr) =>
-  //       this.runQuery({
-  //         ...query,
-  //         values: [
-  //           quotaSize.quotaCpuSize,
-  //           quotaSize.quotaMemorySize,
-  //           quotaSize.quotaStorageSize,
-  //           nr.id,
-  //           clusterId,
-  //         ],
-  //       })
-  //     );
-  //     await Promise.all(clPromises);
-
-  //     return nsResults;
-  //   } catch (err) {
-  //     const message = `Unable to update quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
-  //     logger.error(`${message}, err = ${err.message}`);
-
-  //     throw err;
-  //   }
-  // }
+  // update project wide quota size function was removed in https://github.com/bcgov/platform-services-registry/pull/573/files
 
   async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
