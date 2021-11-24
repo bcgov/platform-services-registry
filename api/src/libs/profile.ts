@@ -19,7 +19,7 @@ import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
 import { NameSpacesQuotaSize, ProjectNamespace } from "../db/model/namespace";
 import { ProjectProfile } from "../db/model/profile";
-import { ProjectQuotaSize } from "../db/model/quota";
+import { ProjectQuotaSize, NamespaceQuotaSize } from "../db/model/quota";
 import { compareNameSpaceQuotaSize } from "../db/utils";
 import shared from "./shared";
 
@@ -128,9 +128,9 @@ export const updateProfileStatus = async (
 export const getNamespaceQuotaSize = async (
   profile: ProjectProfile,
   namespace: string
-): Promise<ProjectQuotaSize> => {
+): Promise<NamespaceQuotaSize> => {
   try {
-    const profileNamespaceQuotaSizesInAllCulster: ProjectQuotaSize[] =
+    const profileNamespaceQuotaSizesInAllCulster: NamespaceQuotaSize[] =
       await NamespaceModel.getProfileNamespaceQuotaSize(profile.id, namespace);
 
     let hasSameQuotaSizesForAllClusters: boolean = false;
@@ -193,10 +193,7 @@ export const getQuotaSize = async (
 
     // Some profile may have two clusters, which has eight namespace
     const profileQuotaSizes: ProjectQuotaSize[] = await Promise.all(promises);
-    // console.log(
-    //   "hiahia in api/src/lib/profile.ts profileQuotaSizes is:",
-    //   profileQuotaSizes
-    // );
+
     let hasSameQuotaSizesForAllClusters: boolean = false;
     // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
     if (profileQuotaSizes.length === 1) {
@@ -238,36 +235,36 @@ export const getQuotaSize = async (
 };
 
 // This function is currently unused, keep it here in case we want to update all namesapce together again in the future
-export const updateQuotaSize = async (
-  profile: ProjectProfile,
-  quotaSize: ProjectQuotaSize
-): Promise<void> => {
-  try {
-    const clusters: Cluster[] = await getClusters(profile);
+// export const updateQuotaSize = async (
+//   profile: ProjectProfile,
+//   quotaSize: ProjectQuotaSize
+// ): Promise<void> => {
+//   try {
+//     const clusters: Cluster[] = await getClusters(profile);
 
-    const promises: any = [];
-    clusters.forEach((cluster: Cluster) => {
-      if (!profile.id || !cluster.id) {
-        throw new Error("Unable to get profile id or cluster id");
-      }
+//     const promises: any = [];
+//     clusters.forEach((cluster: Cluster) => {
+//       if (!profile.id || !cluster.id) {
+//         throw new Error("Unable to get profile id or cluster id");
+//       }
 
-      promises.push(
-        NamespaceModel.updateProjectSetQuotaSize(
-          profile.id,
-          cluster.id,
-          quotaSize
-        )
-      );
-    });
+//       promises.push(
+//         NamespaceModel.updateProjectSetQuotaSize(
+//           profile.id,
+//           cluster.id,
+//           quotaSize
+//         )
+//       );
+//     });
 
-    await Promise.all(promises);
-  } catch (err) {
-    const message = `Unable to apply quota size ${quotaSize} for profile ${profile.id}`;
-    logger.error(`${message}, err = ${err.message}`);
+//     await Promise.all(promises);
+//   } catch (err) {
+//     const message = `Unable to apply quota size ${quotaSize} for profile ${profile.id}`;
+//     logger.error(`${message}, err = ${err.message}`);
 
-    throw err;
-  }
-};
+//     throw err;
+//   }
+// };
 
 export const archiveProjectSet = async (profileId: number): Promise<void> => {
   try {

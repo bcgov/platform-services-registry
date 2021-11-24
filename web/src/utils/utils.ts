@@ -24,8 +24,6 @@
  * @returns all key that that value is different in obj1 and obj2
  */
 export const findDifferenceBetweenTwoDifferentObject = (object1: any, object2: any): any => {
-  console.log('what is obj1', object1)
-  console.log('what is obj2', object2)
   const differenceKey: string[] = [];
   Object.keys(object1).forEach((key) => {
     if (object1[key] !== object2[key]) {

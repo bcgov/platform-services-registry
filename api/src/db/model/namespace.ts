@@ -237,9 +237,8 @@ export default class NamespaceModel extends Model {
 
   async getProfileNamespaceQuotaSize(
     profileId: number,
-    // clusterId: number,
     namespace: string
-  ): Promise<ProjectQuotaSize[]> {
+  ): Promise<NamespaceQuotaSize[]> {
     const query = {
       text: `
       SELECT 
@@ -251,14 +250,13 @@ export default class NamespaceModel extends Model {
       values: [],
     };
     try {
-      // will need to add clusterId later
       const result = await this.runQuery({
         ...query,
         values: [profileId, namespace],
       });
       return result;
     } catch (err) {
-      const message = `Unable to get quota size namespace of the project set for profile ${profileId} on cluster ${clusterId}`;
+      const message = `Unable to get quota size namespace of the project set for profile ${profileId} in getProfileNamespaceQuotaSize`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
@@ -375,44 +373,45 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateProjectSetQuotaSize(
-    profileId: number,
-    clusterId: number,
-    quotaSize: ProjectQuotaSize
-  ): Promise<ProjectNamespace[]> {
-    const query = {
-      text: `
-        UPDATE cluster_namespace
-          SET quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
-          WHERE namespace_id = $4 AND cluster_id = $5
-        RETURNING *;`,
-      values: [],
-    };
+  // This function is currently unused, keep it here in case we want to update all namesapce together again in the future
+  // async updateProjectSetQuotaSize(
+  //   profileId: number,
+  //   clusterId: number,
+  //   quotaSize: ProjectQuotaSize
+  // ): Promise<ProjectNamespace[]> {
+  //   const query = {
+  //     text: `
+  //       UPDATE cluster_namespace
+  //         SET quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
+  //         WHERE namespace_id = $4 AND cluster_id = $5
+  //       RETURNING *;`,
+  //     values: [],
+  //   };
 
-    try {
-      const nsResults = await this.findNamespacesForProfile(profileId);
-      const clPromises = nsResults.map((nr) =>
-        this.runQuery({
-          ...query,
-          values: [
-            quotaSize.quotaCpuSize,
-            quotaSize.quotaMemorySize,
-            quotaSize.quotaStorageSize,
-            nr.id,
-            clusterId,
-          ],
-        })
-      );
-      await Promise.all(clPromises);
+  //   try {
+  //     const nsResults = await this.findNamespacesForProfile(profileId);
+  //     const clPromises = nsResults.map((nr) =>
+  //       this.runQuery({
+  //         ...query,
+  //         values: [
+  //           quotaSize.quotaCpuSize,
+  //           quotaSize.quotaMemorySize,
+  //           quotaSize.quotaStorageSize,
+  //           nr.id,
+  //           clusterId,
+  //         ],
+  //       })
+  //     );
+  //     await Promise.all(clPromises);
 
-      return nsResults;
-    } catch (err) {
-      const message = `Unable to update quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
-      logger.error(`${message}, err = ${err.message}`);
+  //     return nsResults;
+  //   } catch (err) {
+  //     const message = `Unable to update quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
+  //     logger.error(`${message}, err = ${err.message}`);
 
-      throw err;
-    }
-  }
+  //     throw err;
+  //   }
+  // }
 
   async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {

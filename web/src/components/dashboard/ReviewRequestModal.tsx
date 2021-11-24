@@ -83,7 +83,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
   const textCapitalized = { textTransform: 'capitalize' };
-  const editNamespace = getLicenseplatPostfix(profileDetails.editObject.namespace)
+  const editNamespace = profileDetails.type === 'edit' ? getLicenseplatPostfix(profileDetails.editObject.namespace) : ''
 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'

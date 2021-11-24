@@ -260,7 +260,6 @@ export const updateProfileQuotaSize = async (
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const namespaceQuotaSize = await getNamespaceQuotaSize(profile, namespace);
-    // const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const allowedQuotaSizes: NameSpacesQuotaSize =
       getAllowedQuotaSizes(namespaceQuotaSize);
     const requiresHumanAction = true;

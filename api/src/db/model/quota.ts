@@ -53,6 +53,14 @@ export interface Quotas {
     capacity: string;
     pvcCount: number;
   };
+  snapshot: { count: number };
+}
+
+export interface ProjectSetQuotas {
+  dev: Quotas;
+  test: Quotas;
+  tools: Quotas;
+  prod: Quotas;
 }
 
 interface QuotaSizeDedetail {
@@ -81,6 +89,24 @@ interface QuotaSizeDedetails {
   medium: QuotaSizeDedetail;
   large: QuotaSizeDedetail;
 }
+const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
+  cpu: {
+    requests: 4,
+    limits: 8,
+  },
+  memory: {
+    requests: "16 Gi",
+    limits: "32 Gi",
+  },
+  storage: {
+    block: "100Gi",
+    file: "100Gi",
+    backup: "25Gi",
+    capacity: "20",
+    pvcCount: 20,
+  },
+  snapshot: { count: 5 },
+};
 
 export interface Quota extends CommonFields {
   cpuRequests: number;
@@ -202,7 +228,35 @@ export default class QuotaModel extends Model {
     }
   }
 
-  async findForQuotaSize(quotaSize: ProjectQuotaSize): Promise<any> {
+  async findQuotaSizeForProjectSet(
+    quotaSize: ProjectQuotaSize
+  ): Promise<ProjectSetQuotas> {
+    const projectSetQuotaSize: ProjectSetQuotas = {
+      dev: DEFAULT_NAMESPACE_QUOTAS,
+      test: DEFAULT_NAMESPACE_QUOTAS,
+      tools: DEFAULT_NAMESPACE_QUOTAS,
+      prod: DEFAULT_NAMESPACE_QUOTAS,
+    };
+    try {
+      await Promise.all(
+        Object.keys(quotaSize).map(async (namespace) => {
+          projectSetQuotaSize[namespace] = await this.findQuotaSizeForNamespace(
+            quotaSize[namespace]
+          );
+        })
+      );
+      return projectSetQuotaSize;
+    } catch (err) {
+      const message = `Unable to retrieve Project set Quota Size`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findQuotaSizeForNamespace(
+    quotaSize: NamespaceQuotaSize
+  ): Promise<Quotas> {
     const query = {
       text: `
                 SELECT json_build_object(

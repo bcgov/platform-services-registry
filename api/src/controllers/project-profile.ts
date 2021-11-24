@@ -200,6 +200,7 @@ export const updateProjectProfile = async (
       profileId
     );
     const aBody = {
+      id: profileId,
       name,
       description,
       busOrgId,
