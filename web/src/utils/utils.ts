@@ -38,5 +38,4 @@ export const getLicenseplatPostfix = (input: string | undefined): any => {
   return regexMatch ? regexMatch[0] : '';
 };
 
-
 export default findDifferenceBetweenTwoDifferentObject;
