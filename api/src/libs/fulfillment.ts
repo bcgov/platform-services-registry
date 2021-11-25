@@ -193,6 +193,7 @@ const buildContext = async (
       cluster_name: cluster.name,
       display_name: profile.name,
       description: profile.description,
+      ministry_id: profile.busOrgId,
       namespaces,
       contacts,
     };
