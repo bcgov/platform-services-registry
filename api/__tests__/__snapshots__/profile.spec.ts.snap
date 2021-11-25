@@ -382,18 +382,62 @@ exports[`Profile event handlers returns a list of quota options for a given prof
 
 exports[`Profile event handlers returns a list of quota options for a given profile 3`] = `
 Object {
-  "quotaCpuSize": Array [
-    "medium",
-  ],
-  "quotaMemorySize": Array [
-    "medium",
-  ],
-  "quotaSnapshotSize": Array [
-    "medium",
-  ],
-  "quotaStorageSize": Array [
-    "medium",
-  ],
+  "dev": Object {
+    "quotaCpuSize": Array [
+      "medium",
+    ],
+    "quotaMemorySize": Array [
+      "medium",
+    ],
+    "quotaSnapshotSize": Array [
+      "medium",
+    ],
+    "quotaStorageSize": Array [
+      "medium",
+    ],
+  },
+  "prod": Object {
+    "quotaCpuSize": Array [
+      "medium",
+    ],
+    "quotaMemorySize": Array [
+      "medium",
+    ],
+    "quotaSnapshotSize": Array [
+      "medium",
+    ],
+    "quotaStorageSize": Array [
+      "medium",
+    ],
+  },
+  "test": Object {
+    "quotaCpuSize": Array [
+      "medium",
+    ],
+    "quotaMemorySize": Array [
+      "medium",
+    ],
+    "quotaSnapshotSize": Array [
+      "medium",
+    ],
+    "quotaStorageSize": Array [
+      "medium",
+    ],
+  },
+  "tools": Object {
+    "quotaCpuSize": Array [
+      "medium",
+    ],
+    "quotaMemorySize": Array [
+      "medium",
+    ],
+    "quotaSnapshotSize": Array [
+      "medium",
+    ],
+    "quotaStorageSize": Array [
+      "medium",
+    ],
+  },
 }
 `;
 
@@ -416,16 +460,36 @@ exports[`Profile event handlers returns the profiles quota size 2`] = `200`;
 
 exports[`Profile event handlers returns the profiles quota size 3`] = `
 Object {
-  "quotaCpuSize": "small",
-  "quotaMemorySize": "small",
-  "quotaSnapshotSize": "small",
-  "quotaStorageSize": "small",
+  "dev": Object {
+    "quotaCpuSize": "small",
+    "quotaMemorySize": "small",
+    "quotaSnapshotSize": "small",
+    "quotaStorageSize": "small",
+  },
+  "prod": Object {
+    "quotaCpuSize": "small",
+    "quotaMemorySize": "small",
+    "quotaSnapshotSize": "small",
+    "quotaStorageSize": "small",
+  },
+  "test": Object {
+    "quotaCpuSize": "small",
+    "quotaMemorySize": "small",
+    "quotaSnapshotSize": "small",
+    "quotaStorageSize": "small",
+  },
+  "tools": Object {
+    "quotaCpuSize": "small",
+    "quotaMemorySize": "small",
+    "quotaSnapshotSize": "small",
+    "quotaStorageSize": "small",
+  },
 }
 `;
 
-exports[`Profile event handlers throws an error if profile quota size edit request is invalid 1`] = `"Unable to update quota-size for profile 4"`;
+exports[`Profile event handlers throws an error if profile quota size edit request is invalid 1`] = `"Unable to update quota-size for profile 4 namespace undefined"`;
 
-exports[`Profile event handlers throws an error if there is a db transaction issue when requesting profile quota size edit 1`] = `"Unable to update quota-size for profile 4"`;
+exports[`Profile event handlers throws an error if there is a db transaction issue when requesting profile quota size edit 1`] = `"Unable to update quota-size for profile 4 namespace undefined"`;
 
 exports[`Profile event handlers throws an error when fetch profiles quota size has problem 1`] = `"Unable fetch profile quota size with profile ID 4"`;
 

@@ -17,7 +17,11 @@
 import fs from "fs";
 import path from "path";
 import { Pool } from "pg";
-import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
+import {
+  // NamespaceQuotaSize,
+  ProjectQuotaSize,
+  QuotaSize,
+} from "../src/db/model/quota";
 import RequestModel, { RequestEditType } from "../src/db/model/request";
 import {
   contextForEditing,
@@ -59,12 +63,40 @@ const botMessageSet = JSON.parse(fs.readFileSync(p9, "utf8"));
 const p10 = path.join(__dirname, "fixtures/select-default-cluster.json");
 const profileCluster = JSON.parse(fs.readFileSync(p10, "utf8"));
 
+// const p11 = path.join(__dirname, "fixtures/select-project-set-quotas.json");
+// const projectSetQuotas= JSON.parse(fs.readFileSync(p11, "utf8"));
+
+// const p12 = path.join(
+//   __dirname,
+//   "fixtures/select-project-set-quota-sizes.json"
+// );
+// const projectSetQuotaSizes = JSON.parse(fs.readFileSync(p12, "utf8"));
 jest.mock("../src/libs/profile", () => {
   const testQuotaSize: ProjectQuotaSize = {
-    quotaCpuSize: QuotaSize.Small,
-    quotaMemorySize: QuotaSize.Small,
-    quotaStorageSize: QuotaSize.Small,
-    quotaSnapshotSize: QuotaSize.Small,
+    dev: {
+      quotaCpuSize: QuotaSize.Small,
+      quotaMemorySize: QuotaSize.Small,
+      quotaStorageSize: QuotaSize.Small,
+      quotaSnapshotSize: QuotaSize.Small,
+    },
+    test: {
+      quotaCpuSize: QuotaSize.Small,
+      quotaMemorySize: QuotaSize.Small,
+      quotaStorageSize: QuotaSize.Small,
+      quotaSnapshotSize: QuotaSize.Small,
+    },
+    tools: {
+      quotaCpuSize: QuotaSize.Small,
+      quotaMemorySize: QuotaSize.Small,
+      quotaStorageSize: QuotaSize.Small,
+      quotaSnapshotSize: QuotaSize.Small,
+    },
+    prod: {
+      quotaCpuSize: QuotaSize.Small,
+      quotaMemorySize: QuotaSize.Small,
+      quotaStorageSize: QuotaSize.Small,
+      quotaSnapshotSize: QuotaSize.Small,
+    },
   };
   return {
     getQuotaSize: jest.fn().mockResolvedValue(testQuotaSize),
@@ -77,11 +109,10 @@ jest.mock("../src/config/index", () => {
   };
 });
 
-jest.mock("../src/libs/utils", () => {
-  return {
-    replaceForDescription: jest.fn().mockReturnValue("nats_stub"),
-  };
-});
+jest.mock("../src/libs/utils", () => ({
+  ...(jest.requireActual("../src/libs/utils") as any),
+  replaceForDescription: jest.fn().mockReturnValue("nats_stub"),
+}));
 
 describe("Fulfillment utility", () => {
   const client = new Pool().connect();
@@ -95,8 +126,13 @@ describe("Fulfillment utility", () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
-    client.query.mockReturnValueOnce({ rows: quotas });
+
     // buildContext
+
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
     // createBotMessageSet
     client.query.mockReturnValueOnce({ rows: [{ id: 1, name: "silver" }] });
@@ -117,6 +153,9 @@ describe("Fulfillment utility", () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
     const result = await contextForProvisioning(
@@ -132,6 +171,9 @@ describe("Fulfillment utility", () => {
   it("should not create a context for provisioning with no contacts", async () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
@@ -155,6 +197,9 @@ describe("Fulfillment utility", () => {
     const requestEditType = RequestEditType.ProjectProfile;
 
     client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
@@ -174,6 +219,9 @@ describe("Fulfillment utility", () => {
     const requestEditType = RequestEditType.Contacts;
 
     client.query.mockReturnValueOnce({ rows: profile });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
@@ -196,6 +244,10 @@ describe("Fulfillment utility", () => {
     const requestEditType = RequestEditType.QuotaSize;
     client.query.mockReturnValueOnce({ rows: profile });
 
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
+    client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 

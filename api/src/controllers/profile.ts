@@ -276,7 +276,6 @@ export const updateProfileQuotaSize = async (
         throw new Error("Please provide correct requested quota size in body");
       }
     });
-
     await requestProfileQuotaSizeEdit(
       Number(profileId),
       requestedQuotaSize,

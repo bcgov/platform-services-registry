@@ -84,12 +84,12 @@ const DEFAULT_NAMESPACE_QUOTA_SIZE: QuotasizeFormatInProvisonerFormat = {
 };
 
 const DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE: ProjectSetQuotaSizeFormatInProvisonerFormat =
-{
-  dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-};
+  {
+    dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+  };
 
 interface ProjectSetQuotaSizeFormatInProvisonerFormat {
   dev: QuotasizeFormatInProvisonerFormat;
@@ -214,9 +214,9 @@ export const contextForProvisioning = async (
     const action = isForSync
       ? NatsContextAction.Sync
       : NatsContextAction.Create;
+
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
-
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: ProjectSetQuotas =
       await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
@@ -281,7 +281,6 @@ export const contextForEditing = async (
     let profile: ProjectProfile;
 
     let contacts: Contact[];
-
     if (requestEditType === RequestEditType.ProjectProfile) {
       profile = JSON.parse(requestEditObject);
     } else {
@@ -291,10 +290,7 @@ export const contextForEditing = async (
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: ProjectSetQuotas =
       await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
-
-    const editNamespacePostFix = getLicenseplatPostfix(
-      requestEditObject.namespace
-    );
+    const editNamespacePostFix = getLicenseplatPostfix(profile.namespace);
     if (
       requestEditType === RequestEditType.QuotaSize &&
       FOUR_NAME_SPACE.includes(editNamespacePostFix)

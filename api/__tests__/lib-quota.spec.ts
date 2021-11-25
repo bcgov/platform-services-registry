@@ -15,7 +15,7 @@
 //
 
 import { NameSpacesQuotaSize } from "../src/db/model/namespace";
-import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
+import { NamespaceQuotaSize, QuotaSize } from "../src/db/model/quota";
 import {
   getAllowedQuotaSizes,
   getAllowQuotaForEachResource,
@@ -23,7 +23,7 @@ import {
 
 describe("Quota services", () => {
   it("getAllowedQuotaSizes works correctly", async () => {
-    const testCurrentQuotaSize: ProjectQuotaSize = {
+    const testCurrentNameSpaceQuotaSize: NamespaceQuotaSize = {
       quotaCpuSize: QuotaSize.Small,
       quotaMemorySize: QuotaSize.Medium,
       quotaStorageSize: QuotaSize.Large,
@@ -37,7 +37,7 @@ describe("Quota services", () => {
       quotaSnapshotSize: [QuotaSize.Medium],
     };
 
-    expect(getAllowedQuotaSizes(testCurrentQuotaSize)).toEqual(
+    expect(getAllowedQuotaSizes(testCurrentNameSpaceQuotaSize)).toEqual(
       expectedAllowQuotaSizes
     );
   });

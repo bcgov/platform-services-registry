@@ -270,16 +270,19 @@ export default class QuotaModel extends Model {
                         FROM ref_quota WHERE id = $4) d)
                 );
                 `,
-      values: [
-        quotaSize.quotaCpuSize,
-        quotaSize.quotaMemorySize,
-        quotaSize.quotaStorageSize,
-        quotaSize.quotaSnapshotSize,
-      ],
+      values: [],
     };
 
     try {
-      const results = await this.runQuery(query);
+      const results = await this.runQuery({
+        ...query,
+        values: [
+          quotaSize.quotaCpuSize,
+          quotaSize.quotaMemorySize,
+          quotaSize.quotaStorageSize,
+          quotaSize.quotaSnapshotSize,
+        ],
+      });
       return results.pop().jsonBuildObject;
     } catch (err) {
       const message = `Unable to retrieve quotas object by size ${quotaSize}`;

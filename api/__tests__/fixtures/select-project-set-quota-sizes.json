@@ -1,0 +1,28 @@
+[
+    {
+        "dev": {
+            "quotaCpuSize": "small",
+            "quotaMemorySize": "small",
+            "quotaStorageSize": "small",
+            "quotaSnapshotSize": "small"
+        },
+        "test": {
+            "quotaCpuSize": "small",
+            "quotaMemorySize": "small",
+            "quotaStorageSize": "small",
+            "quotaSnapshotSize": "small"
+        },
+        "tools": {
+            "quotaCpuSize": "small",
+            "quotaMemorySize": "small",
+            "quotaStorageSize": "small",
+            "quotaSnapshotSize": "small"
+        },
+        "prod": {
+            "quotaCpuSize": "small",
+            "quotaMemorySize": "small",
+            "quotaStorageSize": "small",
+            "quotaSnapshotSize": "small"
+        }
+    }
+]

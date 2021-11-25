@@ -42,6 +42,9 @@ Object {
           "limits": "32Gi",
           "requests": "16Gi",
         },
+        "snapshot": Object {
+          "count": 5,
+        },
         "storage": Object {
           "backup": "25Gi",
           "block": "50Gi",
@@ -68,6 +71,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -96,6 +102,9 @@ Object {
           "limits": "32Gi",
           "requests": "16Gi",
         },
+        "snapshot": Object {
+          "count": 5,
+        },
         "storage": Object {
           "backup": "25Gi",
           "block": "50Gi",
@@ -122,6 +131,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -179,6 +191,9 @@ Object {
           "limits": "32Gi",
           "requests": "16Gi",
         },
+        "snapshot": Object {
+          "count": 5,
+        },
         "storage": Object {
           "backup": "25Gi",
           "block": "50Gi",
@@ -205,6 +220,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -233,6 +251,9 @@ Object {
           "limits": "32Gi",
           "requests": "16Gi",
         },
+        "snapshot": Object {
+          "count": 5,
+        },
         "storage": Object {
           "backup": "25Gi",
           "block": "50Gi",
@@ -259,6 +280,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -302,10 +326,10 @@ Object {
       "name": "4ea35c-tools",
       "namespace_id": 13,
       "quota": Object {
-        "cpu": undefined,
-        "memory": undefined,
-        "snapshot": undefined,
-        "storage": undefined,
+        "cpu": "small",
+        "memory": "small",
+        "snapshot": "small",
+        "storage": "small",
       },
       "quotas": Object {
         "cpu": Object {
@@ -315,6 +339,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -329,10 +356,10 @@ Object {
       "name": "4ea35c-test",
       "namespace_id": 14,
       "quota": Object {
-        "cpu": undefined,
-        "memory": undefined,
-        "snapshot": undefined,
-        "storage": undefined,
+        "cpu": "small",
+        "memory": "small",
+        "snapshot": "small",
+        "storage": "small",
       },
       "quotas": Object {
         "cpu": Object {
@@ -342,6 +369,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -356,10 +386,10 @@ Object {
       "name": "4ea35c-dev",
       "namespace_id": 15,
       "quota": Object {
-        "cpu": undefined,
-        "memory": undefined,
-        "snapshot": undefined,
-        "storage": undefined,
+        "cpu": "small",
+        "memory": "small",
+        "snapshot": "small",
+        "storage": "small",
       },
       "quotas": Object {
         "cpu": Object {
@@ -369,6 +399,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -383,10 +416,10 @@ Object {
       "name": "4ea35c-prod",
       "namespace_id": 16,
       "quota": Object {
-        "cpu": undefined,
-        "memory": undefined,
-        "snapshot": undefined,
-        "storage": undefined,
+        "cpu": "small",
+        "memory": "small",
+        "snapshot": "small",
+        "storage": "small",
       },
       "quotas": Object {
         "cpu": Object {
@@ -396,6 +429,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -453,6 +489,9 @@ Object {
           "limits": "32Gi",
           "requests": "16Gi",
         },
+        "snapshot": Object {
+          "count": 5,
+        },
         "storage": Object {
           "backup": "25Gi",
           "block": "50Gi",
@@ -479,6 +518,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -507,6 +549,9 @@ Object {
           "limits": "32Gi",
           "requests": "16Gi",
         },
+        "snapshot": Object {
+          "count": 5,
+        },
         "storage": Object {
           "backup": "25Gi",
           "block": "50Gi",
@@ -533,6 +578,9 @@ Object {
         "memory": Object {
           "limits": "32Gi",
           "requests": "16Gi",
+        },
+        "snapshot": Object {
+          "count": 5,
         },
         "storage": Object {
           "backup": "25Gi",
@@ -612,6 +660,72 @@ Array [
   Array [
     Object {
       "text": "
+                SELECT json_build_object(
+                    'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS \\"requests\\", cpu_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = $1) d),
+                    'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS \\"requests\\", memory_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = $2) d),
+                    'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS \\"block\\", storage_file AS \\"file\\", storage_backup AS \\"backup\\", storage_capacity AS \\"capacity\\", storage_pvc_count AS \\"pvcCount\\"
+                        FROM ref_quota WHERE id = $3) d),
+                    'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS \\"count\\"
+                        FROM ref_quota WHERE id = $4) d)
+                );
+                ",
+      "values": Array [
+        "small",
+        "small",
+        "small",
+        "small",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT json_build_object(
+                    'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS \\"requests\\", cpu_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = $1) d),
+                    'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS \\"requests\\", memory_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = $2) d),
+                    'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS \\"block\\", storage_file AS \\"file\\", storage_backup AS \\"backup\\", storage_capacity AS \\"capacity\\", storage_pvc_count AS \\"pvcCount\\"
+                        FROM ref_quota WHERE id = $3) d),
+                    'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS \\"count\\"
+                        FROM ref_quota WHERE id = $4) d)
+                );
+                ",
+      "values": Array [
+        "small",
+        "small",
+        "small",
+        "small",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
+                SELECT json_build_object(
+                    'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS \\"requests\\", cpu_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = $1) d),
+                    'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS \\"requests\\", memory_limits AS \\"limits\\"
+                        FROM ref_quota WHERE id = $2) d),
+                    'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS \\"block\\", storage_file AS \\"file\\", storage_backup AS \\"backup\\", storage_capacity AS \\"capacity\\", storage_pvc_count AS \\"pvcCount\\"
+                        FROM ref_quota WHERE id = $3) d),
+                    'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS \\"count\\"
+                        FROM ref_quota WHERE id = $4) d)
+                );
+                ",
+      "values": Array [
+        "small",
+        "small",
+        "small",
+        "small",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "text": "
         SELECT * FROM namespace
           WHERE profile_id = $1 AND archived = false;",
       "values": Array [
@@ -628,7 +742,7 @@ Array [
       "values": Array [
         3,
         "registry_project_provisioning_Project X",
-        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":4,\\"cluster_name\\":\\"Project X\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"namespace_id\\":13,\\"name\\":\\"4ea35c-tools\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":14,\\"name\\":\\"4ea35c-test\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":15,\\"name\\":\\"4ea35c-dev\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}},{\\"namespace_id\\":16,\\"name\\":\\"4ea35c-prod\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
+        "{\\"action\\":\\"create\\",\\"profile_id\\":4,\\"cluster_id\\":4,\\"cluster_name\\":\\"Project X\\",\\"display_name\\":\\"Project X\\",\\"description\\":\\"This is a cool project.\\",\\"namespaces\\":[{\\"namespace_id\\":13,\\"name\\":\\"4ea35c-tools\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20},\\"snapshot\\":{\\"count\\":5}}},{\\"namespace_id\\":14,\\"name\\":\\"4ea35c-test\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20},\\"snapshot\\":{\\"count\\":5}}},{\\"namespace_id\\":15,\\"name\\":\\"4ea35c-dev\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20},\\"snapshot\\":{\\"count\\":5}}},{\\"namespace_id\\":16,\\"name\\":\\"4ea35c-prod\\",\\"quota\\":{\\"cpu\\":\\"small\\",\\"memory\\":\\"small\\",\\"storage\\":\\"small\\",\\"snapshot\\":\\"small\\"},\\"quotas\\":{\\"cpu\\":{\\"requests\\":4,\\"limits\\":8},\\"memory\\":{\\"requests\\":\\"16Gi\\",\\"limits\\":\\"32Gi\\"},\\"storage\\":{\\"block\\":\\"50Gi\\",\\"file\\":\\"50Gi\\",\\"backup\\":\\"25Gi\\",\\"capacity\\":\\"50Gi\\",\\"pvc_count\\":20},\\"snapshot\\":{\\"count\\":5}}}],\\"contacts\\":[{\\"user_id\\":\\"jane1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"jane@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"owner\\"},{\\"user_id\\":\\"john1100\\",\\"provider\\":\\"github\\",\\"email\\":\\"john@example.com\\",\\"rocketchat_username\\":null,\\"role\\":\\"lead\\"}]}",
         "Project X",
         false,
       ],

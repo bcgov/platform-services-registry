@@ -23,6 +23,7 @@ export interface ProjectProfile extends CommonFields {
   id: number;
   name: string;
   description: string;
+  namespace?: string;
   busOrgId: string;
   userId: number;
   namespacePrefix: string;

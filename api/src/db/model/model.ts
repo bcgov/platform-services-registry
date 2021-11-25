@@ -91,7 +91,8 @@ export abstract class Model {
     try {
       client = await this.pool.connect();
       const results = await client.query(query);
-
+      // console.log("wtf is query", query);
+      // console.log("wtf is results", results);
       return results.rows.map(transformKeysToCamelCase);
     } catch (err) {
       const message = `Unable to run query ${query}`;
