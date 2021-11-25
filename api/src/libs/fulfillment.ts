@@ -84,12 +84,12 @@ const DEFAULT_NAMESPACE_QUOTA_SIZE: QuotasizeFormatInProvisonerFormat = {
 };
 
 const DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE: ProjectSetQuotaSizeFormatInProvisonerFormat =
-{
-  dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-};
+  {
+    dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+  };
 
 interface ProjectSetQuotaSizeFormatInProvisonerFormat {
   dev: QuotasizeFormatInProvisonerFormat;
@@ -321,8 +321,9 @@ export const contextForEditing = async (
 
         quotas[editNamespacePostFix] = requestEditObject.quotas;
       } else {
-        const errMessage = "Undefined edit namesspace, throwing error";
-        throw new Error(`${errMessage}:  ${profileId}`);
+        const errMessage =
+          "Editing quota namespace name is not been provided in edit object, It is required in quota edit process. throwing error in contextForEditing";
+        throw new Error(`${errMessage}: ProfileID is: ${profileId}`);
       }
     }
 
@@ -365,10 +366,6 @@ const generateContext = async (
       if (!request.editType) {
         throw new Error(`Invalid edit type for request ${request.id}`);
       }
-      console.log(
-        "wtfff is in generateContext request.editObject",
-        request.editObject
-      );
       return contextForEditing(
         request.profileId,
         request.editType,

@@ -244,15 +244,15 @@ export default class NamespaceModel extends Model {
       SELECT 
       quota_cpu_size,quota_memory_size,quota_storage_size,quota_snapshot_size 
       FROM 
-      cluster_namespace RIGHT 
-      JOIN namespace ON cluster_namespace.namespace_id = namespace.id 
-      WHERE profile_id=$1 AND name=$2 AND archived = false ;`,
+      cluster_namespace 
+      RIGHT JOIN namespace ON cluster_namespace.namespace_id = namespace.id 
+      WHERE profile_id=$1 AND name=$2 AND archived=$3 ;`,
       values: [],
     };
     try {
       const result = await this.runQuery({
         ...query,
-        values: [profileId, namespace],
+        values: [profileId, namespace, false],
       });
       return result;
     } catch (err) {
@@ -410,13 +410,16 @@ export default class NamespaceModel extends Model {
   ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
-        SELECT * FROM ${this.table}
+        SELECT * FROM $3
           WHERE profile_id = $1 AND name= $2 AND archived = false;`,
       values: [],
     };
 
     try {
-      return await this.runQuery({ ...query, values: [profileId, namespace] });
+      return await this.runQuery({
+        ...query,
+        values: [profileId, namespace, this.table],
+      });
     } catch (err) {
       const message = `Unable to find namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);

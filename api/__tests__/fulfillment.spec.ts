@@ -17,11 +17,7 @@
 import fs from "fs";
 import path from "path";
 import { Pool } from "pg";
-import {
-  // NamespaceQuotaSize,
-  ProjectQuotaSize,
-  QuotaSize,
-} from "../src/db/model/quota";
+import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
 import RequestModel, { RequestEditType } from "../src/db/model/request";
 import {
   contextForEditing,
@@ -63,14 +59,6 @@ const botMessageSet = JSON.parse(fs.readFileSync(p9, "utf8"));
 const p10 = path.join(__dirname, "fixtures/select-default-cluster.json");
 const profileCluster = JSON.parse(fs.readFileSync(p10, "utf8"));
 
-// const p11 = path.join(__dirname, "fixtures/select-project-set-quotas.json");
-// const projectSetQuotas= JSON.parse(fs.readFileSync(p11, "utf8"));
-
-// const p12 = path.join(
-//   __dirname,
-//   "fixtures/select-project-set-quota-sizes.json"
-// );
-// const projectSetQuotaSizes = JSON.parse(fs.readFileSync(p12, "utf8"));
 jest.mock("../src/libs/profile", () => {
   const testQuotaSize: ProjectQuotaSize = {
     dev: {

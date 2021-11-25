@@ -6,7 +6,7 @@ module.exports = {
   extends: [
     'airbnb-base',
     'airbnb-typescript/base',
-    'plugin:import/typescript',  
+    'plugin:import/typescript',
     'plugin:prettier/recommended'
   ],
   globals: {
@@ -29,6 +29,7 @@ module.exports = {
     'no-restricted-syntax': 'warn',
     'consistent-return': 'warn',
     'array-callback-return': 'warn',
+    'eol-last': 'error',
     'no-useless-return': 'off',
     'max-len': [
       'warn',
