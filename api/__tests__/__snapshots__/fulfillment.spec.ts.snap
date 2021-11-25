@@ -390,7 +390,7 @@ Object {
       "namespace_id": 15,
       "quota": Object {
         "cpu": "small",
-        "memory": "small",
+        "memory": "medium",
         "snapshot": "small",
         "storage": "small",
       },
