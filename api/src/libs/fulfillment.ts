@@ -152,6 +152,50 @@ const formatContactsForNats = (contact): NatsContact => ({
       : NatsContactRole.Owner,
 });
 
+const makeNatsFormatQuotaSizeMessage = (
+  quotaSize: ProjectQuotaSize
+): ProjectSetQuotaSizeFormatInProvisonerFormat => {
+  const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
+    DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE;
+  const namespaceObjectKey = Object.keys(quotaSize);
+  namespaceObjectKey.forEach((namespace) => {
+    provisonerPreferedFormatQuotasize[namespace] = {
+      cpu: quotaSize[namespace]?.quotaCpuSize,
+      memory: quotaSize[namespace]?.quotaMemorySize,
+      storage: quotaSize[namespace]?.quotaStorageSize,
+      snapshot: quotaSize[namespace]?.quotaSnapshotSize,
+    };
+  });
+  return provisonerPreferedFormatQuotasize;
+};
+
+const makeNatsFormatQuotasMessage = (
+  quotas: ProjectSetQuotas
+): ProjectSetQuotasInNatsFormat => {
+  const namespaceObjectKey = Object.keys(quotas);
+  const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
+    DEFAULT_PROJECT_SET_NAMESPACE_QUOTAS;
+  namespaceObjectKey.forEach((namespace) => {
+    provisonerPreferedFormatQuotas[namespace] = {
+      cpu: {
+        ...quotas[namespace].cpu,
+      },
+      memory: {
+        ...quotas[namespace].memory,
+      },
+      storage: {
+        block: quotas[namespace].storage.block,
+        file: quotas[namespace].storage.file,
+        backup: quotas[namespace].storage.backup,
+        capacity: quotas[namespace].storage.capacity,
+        pvc_count: quotas[namespace].storage.pvcCount,
+      },
+      snapshot: { count: quotas[namespace].snapshot.count },
+    };
+  });
+  return provisonerPreferedFormatQuotas;
+};
+
 const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
@@ -223,37 +267,10 @@ export const contextForProvisioning = async (
       await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
 
     const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
-      DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE;
-    const namespaceObjectKey = Object.keys(quotaSize);
-    namespaceObjectKey.forEach((namespace) => {
-      provisonerPreferedFormatQuotasize[namespace] = {
-        cpu: quotaSize[namespace]?.quotaCpuSize,
-        memory: quotaSize[namespace]?.quotaMemorySize,
-        storage: quotaSize[namespace]?.quotaStorageSize,
-        snapshot: quotaSize[namespace]?.quotaSnapshotSize,
-      };
-    });
+      makeNatsFormatQuotaSizeMessage(quotaSize);
 
     const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
-      DEFAULT_PROJECT_SET_NAMESPACE_QUOTAS;
-    namespaceObjectKey.forEach((namespace) => {
-      provisonerPreferedFormatQuotas[namespace] = {
-        cpu: {
-          ...quotas[namespace].cpu,
-        },
-        memory: {
-          ...quotas[namespace].memory,
-        },
-        storage: {
-          block: quotas[namespace].storage.block,
-          file: quotas[namespace].storage.file,
-          backup: quotas[namespace].storage.backup,
-          capacity: quotas[namespace].storage.capacity,
-          pvc_count: quotas[namespace].storage.pvcCount,
-        },
-        snapshot: { count: quotas[namespace].snapshot.count },
-      };
-    });
+      makeNatsFormatQuotasMessage(quotas);
 
     return await buildContext(
       action,
@@ -301,39 +318,11 @@ export const contextForEditing = async (
       quotas[editNamespacePostFix] = requestEditObject.quotas;
     }
 
-    const namespaceObjectKey = Object.keys(quotaSize);
-
     const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
-      DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE;
-    namespaceObjectKey.forEach((namespace) => {
-      provisonerPreferedFormatQuotasize[namespace] = {
-        cpu: quotaSize[namespace]?.quotaCpuSize,
-        memory: quotaSize[namespace]?.quotaMemorySize,
-        storage: quotaSize[namespace]?.quotaStorageSize,
-        snapshot: quotaSize[namespace]?.quotaSnapshotSize,
-      };
-    });
+      makeNatsFormatQuotaSizeMessage(quotaSize);
 
     const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
-      DEFAULT_PROJECT_SET_NAMESPACE_QUOTAS;
-    namespaceObjectKey.forEach((namespace) => {
-      provisonerPreferedFormatQuotas[namespace] = {
-        cpu: {
-          ...quotas[namespace].cpu,
-        },
-        memory: {
-          ...quotas[namespace].memory,
-        },
-        storage: {
-          block: quotas[namespace].storage.block,
-          file: quotas[namespace].storage.file,
-          backup: quotas[namespace].storage.backup,
-          capacity: quotas[namespace].storage.capacity,
-          pvc_count: quotas[namespace].storage.pvcCount,
-        },
-        snapshot: { count: quotas[namespace].snapshot.count },
-      };
-    });
+      makeNatsFormatQuotasMessage(quotas);
 
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
