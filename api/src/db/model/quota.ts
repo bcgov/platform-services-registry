@@ -99,10 +99,10 @@ const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
     limits: "32 Gi",
   },
   storage: {
-    block: "100Gi",
-    file: "100Gi",
+    block: "50Gi",
+    file: "50Gi",
     backup: "25Gi",
-    capacity: "20",
+    capacity: "50Gi",
     pvcCount: 20,
   },
   snapshot: { count: 5 },

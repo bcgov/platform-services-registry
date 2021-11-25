@@ -84,12 +84,12 @@ const DEFAULT_NAMESPACE_QUOTA_SIZE: QuotasizeFormatInProvisonerFormat = {
 };
 
 const DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE: ProjectSetQuotaSizeFormatInProvisonerFormat =
-  {
-    dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-    test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-    tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-    prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
-  };
+{
+  dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+  test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+  tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+  prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+};
 
 interface ProjectSetQuotaSizeFormatInProvisonerFormat {
   dev: QuotasizeFormatInProvisonerFormat;
@@ -297,8 +297,8 @@ export const contextForEditing = async (
   try {
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
-
     let contacts: Contact[];
+
     if (requestEditType === RequestEditType.ProjectProfile) {
       profile = JSON.parse(requestEditObject);
     } else {
@@ -308,14 +308,22 @@ export const contextForEditing = async (
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: ProjectSetQuotas =
       await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
-    const editNamespacePostFix = getLicenseplatPostfix(profile.namespace);
-    if (
-      requestEditType === RequestEditType.QuotaSize &&
-      FOUR_NAME_SPACE.includes(editNamespacePostFix)
-    ) {
-      quotaSize[editNamespacePostFix] = requestEditObject.quota;
 
-      quotas[editNamespacePostFix] = requestEditObject.quotas;
+    if (requestEditType === RequestEditType.QuotaSize) {
+      const editNamespacePostFix = getLicenseplatPostfix(
+        requestEditObject.namespace
+      );
+      if (
+        editNamespacePostFix &&
+        FOUR_NAME_SPACE.includes(editNamespacePostFix)
+      ) {
+        quotaSize[editNamespacePostFix] = requestEditObject.quota;
+
+        quotas[editNamespacePostFix] = requestEditObject.quotas;
+      } else {
+        const errMessage = "Undefined edit namesspace, throwing error";
+        throw new Error(`${errMessage}:  ${profileId}`);
+      }
     }
 
     const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
@@ -357,6 +365,10 @@ const generateContext = async (
       if (!request.editType) {
         throw new Error(`Invalid edit type for request ${request.id}`);
       }
+      console.log(
+        "wtfff is in generateContext request.editObject",
+        request.editObject
+      );
       return contextForEditing(
         request.profileId,
         request.editType,

@@ -33,8 +33,8 @@ export const findDifferenceBetweenTwoDifferentObject = (object1: any, object2: a
   return differenceKey;
 };
 
-export const getLicenseplatPostfix = (input: string): any => {
-  const regexMatch = input.match(/(?<=-).*/);
+export const getLicenseplatPostfix = (input: string | undefined): any => {
+  const regexMatch = input ? input.match(/(?<=-).*/) : null;
   return regexMatch ? regexMatch[0] : '';
 };
 
