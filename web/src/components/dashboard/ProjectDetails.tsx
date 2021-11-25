@@ -61,7 +61,7 @@ const ProjectDetails: React.FC<any> = (props) => {
       {
         Header: 'Namespace',
         accessor: 'namespacePrefix',
-      }
+      },
     ],
     [],
   );

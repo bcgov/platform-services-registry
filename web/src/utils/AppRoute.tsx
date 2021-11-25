@@ -30,7 +30,7 @@ export const useQuery = () => {
   const { search } = useLocation();
 
   return React.useMemo(() => new URLSearchParams(search), [search]);
-}
+};
 
 const AppRoute: React.FC<IAppRouteProps> = (props) => {
   const { protected: usePrivateRoute, component: Component, checkQueryParams, ...rest } = props;

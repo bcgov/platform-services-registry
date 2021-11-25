@@ -19,16 +19,19 @@ import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
-import { getLicenseplatPostfix } from '../utils/utils'
-import { useQuery } from '../../src/utils/AppRoute'
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
+import { getLicenseplatPostfix } from '../utils/utils';
+import { useQuery } from '../utils/AppRoute';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
 import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCard';
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
-import QuotaCard, { QuotaDetails, NAMESPACE_DEFAULT_QUOTA } from '../components/profileEdit/QuotaCard';
-import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
+import QuotaCard, {
+  QuotaDetails,
+  NAMESPACE_DEFAULT_QUOTA,
+} from '../components/profileEdit/QuotaCard';
+import { QuotaCardEdit } from '../components/profileEdit/QuotaCardEdit';
 import { BaseIcon } from '../components/common/UI/Icon';
 import {
   HOME_PAGE_URL,
@@ -85,9 +88,9 @@ const ProfileEdit: React.FC = (props: any) => {
     quotaStorageSize: [],
     quotaSnapshotSize: [],
   };
-  const FOUR_NAME_SPACE = ['prod', 'test', 'dev', 'tools']
+  const FOUR_NAME_SPACE = ['prod', 'test', 'dev', 'tools'];
   const namespaceSearchQuery = useQuery().get('namespace') || '';
-  const editNamespace = getLicenseplatPostfix(namespaceSearchQuery)
+  const editNamespace = getLicenseplatPostfix(namespaceSearchQuery);
 
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
@@ -114,7 +117,7 @@ const ProfileEdit: React.FC = (props: any) => {
         test: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
         tools: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
         prod: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-      }
+      },
     },
   });
 
@@ -220,7 +223,7 @@ const ProfileEdit: React.FC = (props: any) => {
       component: <ProjectCard projectDetails={profileState.projectDetails} />,
     },
     {
-      name: "contact",
+      name: 'contact',
       title: 'Contact Information',
       href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
@@ -232,10 +235,15 @@ const ProfileEdit: React.FC = (props: any) => {
       name: 'quota',
       title: 'Quota Information',
 
-      component: <QuotaCard quotaDetails={profileState.quotaDetails} href={ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
-        ':viewName',
-        PROFILE_EDIT_VIEW_NAMES.QUOTA,
-      )} />,
+      component: (
+        <QuotaCard
+          quotaDetails={profileState.quotaDetails}
+          href={ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
+            ':viewName',
+            PROFILE_EDIT_VIEW_NAMES.QUOTA,
+          )}
+        />
+      ),
     },
   ];
 
@@ -273,7 +281,7 @@ const ProfileEdit: React.FC = (props: any) => {
                     <Text as="h3" color={theme.colors.contrast} mx={2}>
                       {c.title}
                     </Text>
-                    {c.name !== 'quota' &&
+                    {c.name !== 'quota' && (
                       <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
                         <BaseIcon
                           name="edit"
@@ -284,7 +292,7 @@ const ProfileEdit: React.FC = (props: any) => {
                           displayIcon={faPen}
                         />
                       </RouterLink>
-                    }
+                    )}
                   </Flex>
                   <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
                     {c.component}
@@ -341,20 +349,28 @@ const ProfileEdit: React.FC = (props: any) => {
               />
             )}
 
-            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && FOUR_NAME_SPACE.includes(editNamespace) && (
-              <QuotaCardEdit
-                profileId={profileId}
-                licensePlate={profileState.quotaDetails.licensePlate || ''}
-                quotaOptions={profileState.quotaDetails.quotaOptions[editNamespace as keyof typeof profileState.quotaDetails.quotaOptions] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE}
-                quotaSize={profileState.quotaDetails.quotaSize[editNamespace as keyof typeof profileState.quotaDetails.quotaOptions] || NAMESPACE_DEFAULT_QUOTA}
-                handleSubmitRefresh={handleSubmitRefresh}
-                isProvisioned={profileState.isProvisioned}
-                hasPendingEdit={profileState.hasPendingEdit}
-                namespace={namespaceSearchQuery}
-                primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
-              />
-            )}
-
+            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA &&
+              FOUR_NAME_SPACE.includes(editNamespace) && (
+                <QuotaCardEdit
+                  profileId={profileId}
+                  licensePlate={profileState.quotaDetails.licensePlate || ''}
+                  quotaOptions={
+                    profileState.quotaDetails.quotaOptions[
+                      editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
+                    ] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
+                  }
+                  quotaSize={
+                    profileState.quotaDetails.quotaSize[
+                      editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
+                    ] || NAMESPACE_DEFAULT_QUOTA
+                  }
+                  handleSubmitRefresh={handleSubmitRefresh}
+                  isProvisioned={profileState.isProvisioned}
+                  hasPendingEdit={profileState.hasPendingEdit}
+                  namespace={namespaceSearchQuery}
+                  primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
+                />
+              )}
           </ShadowBox>
         </Flex>
       </ShadowBox>

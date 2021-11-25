@@ -17,11 +17,15 @@
 import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import { Link as RouterLink } from 'react-router-dom';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 import Aux from '../../hoc/auxillary';
 import theme from '../../theme';
-import { ProjectSetResourceQuotaSize, NamespaceQuotaOption, ProjectNamespaceResourceQuotaSize } from '../../types';
-import { BaseIcon } from '../../components/common/UI/Icon';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import {
+  ProjectSetResourceQuotaSize,
+  NamespaceQuotaOption,
+  ProjectNamespaceResourceQuotaSize,
+} from '../../types';
+import { BaseIcon } from '../common/UI/Icon';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
@@ -39,7 +43,6 @@ export interface QuotaDetails {
   };
 }
 
-
 interface SpecTextInterface {
   CPU: string;
   Memory: string;
@@ -50,8 +53,8 @@ export const NAMESPACE_DEFAULT_QUOTA: ProjectNamespaceResourceQuotaSize = {
   quotaCpuSize: '',
   quotaMemorySize: '',
   quotaStorageSize: '',
-  quotaSnapshotSize: ''
-}
+  quotaSnapshotSize: '',
+};
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   const {
@@ -61,10 +64,10 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
         dev: NAMESPACE_DEFAULT_QUOTA,
         test: NAMESPACE_DEFAULT_QUOTA,
         tools: NAMESPACE_DEFAULT_QUOTA,
-        prod: NAMESPACE_DEFAULT_QUOTA
+        prod: NAMESPACE_DEFAULT_QUOTA,
       },
     },
-    href
+    href,
   } = props;
   const namespaceTexts = [
     ['Production', 'prod'],
@@ -76,13 +79,18 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
   return (
     <Flex flexWrap="wrap">
       {namespaceTexts.map((namespaceText: string[], index0: number) => {
-        const index = namespaceText[1] as keyof typeof quotaSize
+        const index = namespaceText[1] as keyof typeof quotaSize;
         return (
           <Aux key={index0}>
             <Box width={1 / 2} px={2} mt={3}>
               <Flex>
-                <Text as="h3" marginX={2}>{namespaceText[0]} Namespace</Text>
-                <RouterLink className="misc-class-m-dropdown-link" to={`${href}?namespace=${licensePlate}-${namespaceText[1]}`}>
+                <Text as="h3" marginX={2}>
+                  {namespaceText[0]} Namespace
+                </Text>
+                <RouterLink
+                  className="misc-class-m-dropdown-link"
+                  to={`${href}?namespace=${licensePlate}-${namespaceText[1]}`}
+                >
                   <BaseIcon
                     name="edit"
                     color="primary"
@@ -112,9 +120,8 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
               </Text>
             </Box>
           </Aux>
-        )
-      })
-      }
+        );
+      })}
     </Flex>
   );
 };

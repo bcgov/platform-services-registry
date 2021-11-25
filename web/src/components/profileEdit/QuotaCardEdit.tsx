@@ -97,7 +97,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const required = (value: string | boolean) => (value ? undefined : 'Required');
   const QUOTA_DISPLAY_NAME = 'Quota Size';
   const {
-
     licensePlate = '',
     quotaSize = {
       quotaCpuSize: '',
@@ -112,7 +111,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     isProvisioned,
     hasPendingEdit,
     namespace,
-    primaryClusterName
+    primaryClusterName,
   } = props;
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
@@ -122,7 +121,9 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
-  const getCorrespondingQuota = (selectedSizes: ProjectNamespaceResourceQuotaSize): QuotaSpecsInterface => {
+  const getCorrespondingQuota = (
+    selectedSizes: ProjectNamespaceResourceQuotaSize,
+  ): QuotaSpecsInterface => {
     if (
       quotaSizes &&
       Object.keys(quotaSizes).length === 0 &&
@@ -140,17 +141,17 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const buildDisplayMessage = (size: number[], type: string) => {
     switch (type) {
       case 'cpu':
-        return `Request: ${size[0]} core, Limit: ${size[1]} core`
+        return `Request: ${size[0]} core, Limit: ${size[1]} core`;
       case 'memory':
-        return `Request:  ${size[0]}, Limit:  ${size[1]}`
+        return `Request:  ${size[0]}, Limit:  ${size[1]}`;
       case 'storage':
-        return `PVC:${size[0]}, Overall Storage: ${size[1]}, Backup:${size[2]}`
+        return `PVC:${size[0]}, Overall Storage: ${size[1]}, Backup:${size[2]}`;
       case 'snapshot':
-        return `Request: ${size[0]} snapshot`
+        return `Request: ${size[0]} snapshot`;
       default:
-        return ''
+        return '';
     }
-  }
+  };
   const QUOTA_INFORMATION: any = {
     cpuNums: {
       displayTitle: 'CPU',
@@ -216,7 +217,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           type: 'storage',
           value: specs.storageNums === undefined ? '' : specs.storageNums,
         },
-
       ],
     },
     snapshotNumber: {
@@ -297,12 +297,16 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
 
   return (
     <StyledQuotaEditContainer>
-      <FormTitle>  Resource Quotas for {licensePlate} project set in {primaryClusterName} cluster </FormTitle>
+      <FormTitle>
+        {' '}
+        Resource Quotas for {licensePlate} project set in {primaryClusterName} cluster{' '}
+      </FormTitle>
       <FormSubtitle>
-        All quota increase requests require Platform Services Team's approval and must have supporting information as per
+        All quota increase requests require Platform Services Team's approval and must have
+        supporting information as per
         <Link
           color="blue"
-          href='https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set'
+          href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
           target="_blank"
         >
           &nbsp;"Quota Increase Request Process".&nbsp;
@@ -310,11 +314,9 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         The Quota Requests without supporting information will NOT be processed.
       </FormSubtitle>
       <Flex marginY={2}>
-        <Text fontWeight='600' >
+        <Text fontWeight="600">
           * Attention: You are now viewing the resource quotas for the
-          <span style={{ color: 'red' }} >
-            &nbsp;{namespace}&nbsp;
-          </span>
+          <span style={{ color: 'red' }}>&nbsp;{namespace}&nbsp;</span>
           namespace
         </Text>
       </Flex>
@@ -335,7 +337,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                 const hasUserchangeOption =
                   applyingQuotaSpecs[element] &&
                   applyingQuotaSpecs[element].length !== 0 &&
-                  option.value !== applyingQuotaSpecs[element]
+                  option.value !== applyingQuotaSpecs[element];
 
                 return (
                   <Flex
@@ -343,13 +345,11 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                     sx={{ alignItems: 'center' }}
                     key={optionIndex + option.displayName}
                   >
-
-                    {
-                      (option.name !== 'upgrade' || hasUserchangeOption) &&
-                      < Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
+                    {(option.name !== 'upgrade' || hasUserchangeOption) && (
+                      <Label variant="adjacentLabel" m="auto" htmlFor="project-quota">
                         {option.displayName}
                       </Label>
-                    }
+                    )}
 
                     {option.name === TEMPORARY_DISABLE_FIELD && (
                       <>
@@ -386,15 +386,18 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                       <Label justifyContent="flex-end">
                         <Text fontSize={2}>{buildDisplayMessage(option.value, option.type)}</Text>
                       </Label>
-                    ) : hasUserchangeOption && option.type && (
-                      <Label justifyContent="flex-end">
-                        <Text fontSize={2}>{buildDisplayMessage(applyingQuotaSpecs[element], option.type)}</Text>{' '}
-                      </Label>
-
-                    )
-                    }
+                    ) : (
+                      hasUserchangeOption &&
+                      option.type && (
+                        <Label justifyContent="flex-end">
+                          <Text fontSize={2}>
+                            {buildDisplayMessage(applyingQuotaSpecs[element], option.type)}
+                          </Text>{' '}
+                        </Label>
+                      )
+                    )}
                   </Flex>
-                )
+                );
               })}
             </Box>
           ));
@@ -479,7 +482,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           );
         }}
       </Form>
-    </StyledQuotaEditContainer >
+    </StyledQuotaEditContainer>
   );
 };
 

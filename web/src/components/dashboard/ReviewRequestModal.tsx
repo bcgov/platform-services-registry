@@ -83,14 +83,17 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
   const textCapitalized = { textTransform: 'capitalize' };
-  const editNamespace = profileDetails.type === 'edit' ? getLicenseplatPostfix(profileDetails.editObject.namespace) : ''
+  const editNamespace =
+    profileDetails.type === 'edit'
+      ? getLicenseplatPostfix(profileDetails.editObject.namespace)
+      : '';
 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
       ? findDifferenceBetweenTwoDifferentObject(
-        profileDetails.editObject.quota,
-        profileDetails.quotaSize[editNamespace],
-      )
+          profileDetails.editObject.quota,
+          profileDetails.quotaSize[editNamespace],
+        )
       : [];
 
   const parseContacts = (contactDetails: any) => {
@@ -165,20 +168,20 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
           <>
-            {
-              Object.keys(profileDetails.quotaSize).map((key: string) => (
-                <Flex flexDirection='column' paddingBottom='1' key={key}>
-                  {key}
-                  <InformationBox
-                    displayText={`CPU: ${profileDetails.quotaSize[key].quotaCpuSize} | RAM: ${profileDetails.quotaSize[key].quotaMemorySize} |  Storage: ${profileDetails.quotaSize[key].quotaStorageSize} | Snapshot: ${profileDetails.quotaSize[key].quotaSnapshotSize} `}
-                  />
-                </Flex>
-              ))
-            }
+            {Object.keys(profileDetails.quotaSize).map((key: string) => (
+              <Flex flexDirection="column" paddingBottom="1" key={key}>
+                {key}
+                <InformationBox
+                  displayText={`CPU: ${profileDetails.quotaSize[key].quotaCpuSize} | RAM: ${profileDetails.quotaSize[key].quotaMemorySize} |  Storage: ${profileDetails.quotaSize[key].quotaStorageSize} | Snapshot: ${profileDetails.quotaSize[key].quotaSnapshotSize} `}
+                />
+              </Flex>
+            ))}
           </>
         ) : (
           <>
-            {profileDetails.editObject.namespace && <Text>Namespace: {profileDetails.editObject.namespace}</Text>}
+            {profileDetails.editObject.namespace && (
+              <Text>Namespace: {profileDetails.editObject.namespace}</Text>
+            )}
             <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
           </>
         )}

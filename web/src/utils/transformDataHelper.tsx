@@ -83,11 +83,14 @@ export function getLicensePlate(namespaces: Namespace[]): string | Error {
   }
 }
 
-export function composeRequestBodyForQuotaEdit(requestedQuotaSize: ProjectNamespaceResourceQuotaSize, namespace: string): any {
+export function composeRequestBodyForQuotaEdit(
+  requestedQuotaSize: ProjectNamespaceResourceQuotaSize,
+  namespace: string,
+): any {
   try {
     return {
       requestedQuotaSize,
-      namespace
+      namespace,
     };
   } catch (err) {
     const msg = 'Unable to compose request body';
