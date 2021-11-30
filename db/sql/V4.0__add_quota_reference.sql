@@ -40,13 +40,14 @@ update_changetimestamp_column();
 
 
 INSERT INTO ref_memory_quota(id, memory_requests, memory_limits) VALUES
-    ('memory-request-2-limit-4', '2Gi', '4Gi'),
-    ('memory-request-4-limit-8', '4Gi', '8Gi'),
-    ('memory-request-8-limit-16', '8Gi', '16Gi'),
-    ('memory-request-16-limit-32', '16Gi', '32Gi'),
-    ('memory-request-32-limit-64', '32Gi', '64Gi'),
-    ('memory-request-64-limit-128', '64Gi', '32Gi')
+    ('memory-request-2-limit-4', 2, 4),
+    ('memory-request-4-limit-8', 4, 8),
+    ('memory-request-8-limit-16', 8, 16),
+    ('memory-request-16-limit-32', 16, 32),
+    ('memory-request-32-limit-64', 32, 64),
+    ('memory-request-64-limit-128', 64, 32)
 ON CONFLICT (id) DO NOTHING;
+
 
 CREATE TABLE IF NOT EXISTS ref_storage_quota (
     id                  varchar(32) PRIMARY KEY,
