@@ -17,7 +17,7 @@
 import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
 import { CommonFields, Model } from "./model";
-import { getLicenseplatPostfix } from "../../libs/utils";
+import { getLicencePlatePostFix } from "../../libs/utils";
 import { ProjectQuotaSize, QuotaSize, NamespaceQuotaSize } from "./quota";
 
 export interface ClusterNamespace extends CommonFields {
@@ -283,51 +283,33 @@ export default class NamespaceModel extends Model {
       values: [],
     };
     try {
-      const ClustersnamespaceQuotaSize = await this.runQuery({
+      const clustersNamespaceQuotaSize = await this.runQuery({
         ...query,
         values: [profileId, clusterId],
       });
 
-      const projectQuotaSize: ProjectQuotaSize = {
-        dev: {
-          quotaCpuSize: QuotaSize.Small,
-          quotaMemorySize: QuotaSize.Small,
-          quotaStorageSize: QuotaSize.Small,
-          quotaSnapshotSize: QuotaSize.Small,
-        },
-        test: {
-          quotaCpuSize: QuotaSize.Small,
-          quotaMemorySize: QuotaSize.Small,
-          quotaStorageSize: QuotaSize.Small,
-          quotaSnapshotSize: QuotaSize.Small,
-        },
-        tools: {
-          quotaCpuSize: QuotaSize.Small,
-          quotaMemorySize: QuotaSize.Small,
-          quotaStorageSize: QuotaSize.Small,
-          quotaSnapshotSize: QuotaSize.Small,
-        },
-        prod: {
-          quotaCpuSize: QuotaSize.Small,
-          quotaMemorySize: QuotaSize.Small,
-          quotaStorageSize: QuotaSize.Small,
-          quotaSnapshotSize: QuotaSize.Small,
-        },
-      };
-      // TODO cluster duplication only show one
-      ClustersnamespaceQuotaSize.forEach((namespaceQuotaInfo) => {
-        const namespace = getLicenseplatPostfix(
+      clustersNamespaceQuotaSize.forEach((namespaceQuotaInfo, index) => {
+        const namespace = getLicencePlatePostFix(
           namespaceQuotaInfo.namespacename
         );
-
-        try {
-          projectQuotaSize[namespace] = namespaceQuotaInfo.quotaInfo;
-        } catch (err) {
-          const message = `unable to resolve project namespace name for for profile ${profileId} on cluster ${clusterId}`;
-          logger.error(`${message}, err = ${err.message}`);
-          throw err;
-        }
+        clustersNamespaceQuotaSize[index].namespacename = namespace;
       });
+
+      const projectQuotaSize: ProjectQuotaSize = {
+        dev:
+          clustersNamespaceQuotaSize.find((e) => e.namespacename === "dev")
+            .quotaInfo || QuotaSize.Small,
+        test:
+          clustersNamespaceQuotaSize.find((e) => e.namespacename === "test")
+            .quotaInfo || QuotaSize.Small,
+        tools:
+          clustersNamespaceQuotaSize.find((e) => e.namespacename === "tools")
+            .quotaInfo || QuotaSize.Small,
+        prod:
+          clustersNamespaceQuotaSize.find((e) => e.namespacename === "prod")
+            .quotaInfo || QuotaSize.Small,
+      };
+
       return projectQuotaSize;
     } catch (err) {
       const message = `Unable to get quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
