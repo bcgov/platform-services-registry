@@ -21,7 +21,7 @@ import { Box, Flex, Heading, Text } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { findDifferenceBetweenTwoDifferentObject, getLicenseplatPostfix } from '../../utils/utils';
+import { findDifferenceBetweenTwoDifferentObject, getLicencePlatePostFix } from '../../utils/utils';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -85,7 +85,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const textCapitalized = { textTransform: 'capitalize' };
   const editNamespace =
     profileDetails.type === 'edit'
-      ? getLicenseplatPostfix(profileDetails.editObject.namespace)
+      ? getLicencePlatePostFix(profileDetails.editObject.namespace)
       : '';
 
   const requestedUpdateQuota =

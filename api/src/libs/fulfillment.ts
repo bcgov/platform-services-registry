@@ -42,7 +42,7 @@ import {
 } from "../types";
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
-import { replaceForDescription, getLicenseplatPostfix } from "./utils";
+import { replaceForDescription, getLicencePlatePostFix } from "./utils";
 
 interface QuotasizeFormatInProvisonerFormat {
   cpu: QuotaSize;
@@ -214,7 +214,7 @@ const buildContext = async (
     );
 
     const namespaces = namespacesDetails.map((n) => {
-      const namespacePostFix = getLicenseplatPostfix(n.name);
+      const namespacePostFix = getLicencePlatePostFix(n.name);
       return formatNamespacesForNats(
         n,
         quotaSize[namespacePostFix],
@@ -310,7 +310,7 @@ export const contextForEditing = async (
       await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
 
     if (requestEditType === RequestEditType.QuotaSize) {
-      const editNamespacePostFix = getLicenseplatPostfix(
+      const editNamespacePostFix = getLicencePlatePostFix(
         requestEditObject.namespace
       );
       if (

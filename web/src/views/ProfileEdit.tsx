@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
-import { getLicenseplatPostfix } from '../utils/utils';
+import { getLicencePlatePostFix } from '../utils/utils';
 import { useQuery } from '../utils/AppRoute';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
@@ -90,7 +90,7 @@ const ProfileEdit: React.FC = (props: any) => {
   };
   const FOUR_NAME_SPACE = ['prod', 'test', 'dev', 'tools'];
   const namespaceSearchQuery = useQuery().get('namespace') || '';
-  const editNamespace = getLicenseplatPostfix(namespaceSearchQuery);
+  const editNamespace = getLicencePlatePostFix(namespaceSearchQuery);
 
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
