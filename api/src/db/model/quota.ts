@@ -70,7 +70,31 @@ interface QuotaSizeDedetail {
   storageNums: string[];
   snapshotNums: string[];
 }
+interface CPUQuotaSizeDedetail {
+  name: string;
+  cpuNums: string[];
+}
 
+interface MemoryQuotaSizeDedetail {
+  name: string;
+  memoryNums: string[];
+}
+
+interface StorageQuotaSizeDedetail {
+  name: string;
+  storageNums: string[];
+}
+
+interface SnapshotQuotaSizeDedetail {
+  name: string;
+  snapshotNums: number;
+}
+interface NewQuotaSizeDedetails {
+  CPU_QuotaSize_Detail: CPUQuotaSizeDedetail[];
+  Memory_QuotaSize_Detail: MemoryQuotaSizeDedetail[];
+  Storage_QuotaSize_Detail: StorageQuotaSizeDedetail[];
+  Snapshot_QuotaSize_Detail: SnapshotQuotaSizeDedetail[];
+}
 interface QuotaSizeDedetails {
   small: QuotaSizeDedetail;
   medium: QuotaSizeDedetail;
@@ -175,6 +199,31 @@ export default class QuotaModel extends Model {
     }
   }
 
+  async findResourceQuotaRef(resourceType: string): Promise<any[]> {
+    const queryMap = {
+      CPUQuery: {
+        text: `SELECT id, cpu_requests, cpu_limits FROM ref_cpu_quota;`,
+      },
+      MemoryQuery: {
+        text: `SELECT id, memory_requests, memory_limits FROM ref_memory_quota;`,
+      },
+      StorageQuery: {
+        text: `SELECT id, storage_pvc_count, storage_File , storage_backup FROM ref_storage_quota;`,
+      },
+      SnapshotQuery: {
+        text: `SELECT id, snapshot_volume FROM ref_snapshot_quota;`,
+      },
+    };
+    try {
+      return await this.runQuery(queryMap[resourceType]);
+    } catch (err) {
+      const message = `Unable to fetch cpu quota ref`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async findQuotaSizes(): Promise<any> {
     try {
       const quota = await this.findQuota();
@@ -202,24 +251,79 @@ export default class QuotaModel extends Model {
         },
       };
 
-      for (const size of quota) {
-        quotaSizesDetail[size.id] = {
-          name: size.id,
-          cpuNums: [size.cpuRequests, size.cpuLimits],
-          memoryNums: [
-            size.memoryRequests.replace("Gi", "GiB"),
-            size.memoryLimits.replace("Gi", "GiB"),
-          ],
-          storageNums: [
-            size.storagePvcCount,
-            size.storageFile.replace("Gi", "GiB"),
-            size.storageBackup.replace("Gi", "GiB"),
-          ],
-          snapshotNums: [size.snapshotVolume],
-        };
-      }
+      const newQuotaSizeDedetails = {
+        CPU_QuotaSize_Detail:
+          (await this.findResourceQuotaRef("CPUQuery")) || [],
+        Memory_QuotaSize_Detail:
+          (await this.findResourceQuotaRef("MemoryQuery")) || [],
+        Storage_QuotaSize_Detail:
+          (await this.findResourceQuotaRef("StorageQuery")) || [],
+        Snapshot_QuotaSize_Detail:
+          (await this.findResourceQuotaRef("SnapshotQuery")) || [],
+      };
 
-      return quotaSizesDetail;
+      const formatedQuotaSizeDedetails: NewQuotaSizeDedetails = {
+        CPU_QuotaSize_Detail: [],
+        Memory_QuotaSize_Detail: [],
+        Storage_QuotaSize_Detail: [],
+        Snapshot_QuotaSize_Detail: [],
+      };
+
+      console.log("newQuotaSizeDedetails is : ", newQuotaSizeDedetails);
+      // console.log("quota is : ", quota);
+      newQuotaSizeDedetails.CPU_QuotaSize_Detail.forEach((CPUOption) => {
+        formatedQuotaSizeDedetails.CPU_QuotaSize_Detail.push({
+          name: CPUOption.id,
+          cpuNums: [CPUOption.cpuRequests, CPUOption.cpuLimits],
+        });
+      });
+      newQuotaSizeDedetails.Memory_QuotaSize_Detail.forEach((CPUOption) => {
+        formatedQuotaSizeDedetails.Memory_QuotaSize_Detail.push({
+          name: CPUOption.id,
+          memoryNums: [
+            CPUOption.memoryRequests.replace("Gi", "GiB"),
+            CPUOption.memoryLimits.replace("Gi", "GiB"),
+          ],
+        });
+      });
+      newQuotaSizeDedetails.Storage_QuotaSize_Detail.forEach(
+        (storageOption) => {
+          formatedQuotaSizeDedetails.Storage_QuotaSize_Detail.push({
+            name: storageOption.id,
+            storageNums: [
+              storageOption.storagePvcCount,
+              storageOption.storageFile.replace("Gi", "GiB"),
+              storageOption.storageBackup.replace("Gi", "GiB"),
+            ],
+          });
+        }
+      );
+      newQuotaSizeDedetails.Snapshot_QuotaSize_Detail.forEach(
+        (snapshotOption) => {
+          formatedQuotaSizeDedetails.Snapshot_QuotaSize_Detail.push({
+            name: snapshotOption.id,
+            snapshotNums: snapshotOption.snapshotVolume,
+          });
+        }
+      );
+      // for (const size of quota) {
+      //   quotaSizesDetail[size.id] = {
+      //     name: size.id,
+      //     cpuNums: [size.cpuRequests, size.cpuLimits],
+      //     memoryNums: [
+      //       size.memoryRequests.replace("Gi", "GiB"),
+      //       size.memoryLimits.replace("Gi", "GiB"),
+      //     ],
+      //     storageNums: [
+      //       size.storagePvcCount,
+      //       size.storageFile.replace("Gi", "GiB"),
+      //       size.storageBackup.replace("Gi", "GiB"),
+      //     ],
+      //     snapshotNums: [size.snapshotVolume],
+      //   };
+      // }
+      console.log("haihia???:?:", formatedQuotaSizeDedetails);
+      return formatedQuotaSizeDedetails;
     } catch (err) {
       const message = `Unable to get quota sizes`;
       logger.error(`${message}, err = ${err.message}`);

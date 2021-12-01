@@ -34,6 +34,7 @@ import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
+import { element } from 'prop-types';
 
 export interface NamespaceQuotaDetails {
   quotaSize?: ProjectNamespaceResourceQuotaSize;
@@ -55,6 +56,26 @@ interface QuotaSpecsInterface {
   memoryNums: Array<string>;
   storageNums: Array<string>;
   snapshotNums: Array<string>;
+}
+
+interface CPUQuotaSizeDedetail {
+  name: string;
+  cpuNums: string[];
+}
+
+interface MemoryQuotaSizeDedetail {
+  name: string;
+  memoryNums: string[];
+}
+
+interface StorageQuotaSizeDedetail {
+  name: string;
+  storageNums: string[];
+}
+
+interface SnapshotQuotaSizeDedetail {
+  name: string;
+  snapshotNums: number;
 }
 
 const StyledQuotaEditContainer = styled.div`
@@ -124,6 +145,9 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const getCorrespondingQuota = (
     selectedSizes: ProjectNamespaceResourceQuotaSize,
   ): QuotaSpecsInterface => {
+
+    console.log('wtfff is quotaSizes: ',quotaSizes)
+    console.log('wtfff is selectedSizes.quotaCpuSize: ',selectedSizes)
     if (
       quotaSizes &&
       Object.keys(quotaSizes).length === 0 &&
@@ -131,11 +155,12 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     ) {
       return DEFAULT_QUOTA_INFO;
     }
+    console.log(quotaSizes.Snapshot_QuotaSize_Detail.find((snapshotOption: SnapshotQuotaSizeDedetail) => snapshotOption.name === selectedSizes.quotaSnapshotSize).snapshotNums)
     return {
-      cpuNums: quotaSizes[selectedSizes.quotaCpuSize]?.cpuNums || [],
-      memoryNums: quotaSizes[selectedSizes.quotaMemorySize]?.memoryNums || [],
-      storageNums: quotaSizes[selectedSizes.quotaStorageSize]?.storageNums || [],
-      snapshotNums: quotaSizes[selectedSizes.quotaSnapshotSize]?.snapshotNums || [],
+      cpuNums: quotaSizes.CPU_QuotaSize_Detail.find((cpuOption:CPUQuotaSizeDedetail) => cpuOption.name === selectedSizes.quotaCpuSize)?.cpuNums || [],
+      memoryNums: quotaSizes.Memory_QuotaSize_Detail.find((memoryOption: MemoryQuotaSizeDedetail) =>memoryOption.name ===selectedSizes.quotaMemorySize)?.memoryNums || [],
+      storageNums: quotaSizes.Storage_QuotaSize_Detail.find((storageOtion: StorageQuotaSizeDedetail) => storageOtion.name === selectedSizes.quotaStorageSize)?.storageNums || [],
+      snapshotNums: quotaSizes.Snapshot_QuotaSize_Detail.find((snapshotOption: SnapshotQuotaSizeDedetail) => snapshotOption.name === selectedSizes.quotaSnapshotSize)?.snapshotNums || [],
     };
   };
   const buildDisplayMessage = (size: number[], type: string) => {
@@ -143,11 +168,11 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       case 'cpu':
         return `Request: ${size[0]} core, Limit: ${size[1]} core`;
       case 'memory':
-        return `Request:  ${size[0]}, Limit:  ${size[1]}`;
+        return `Request: ${size[0]}, Limit: ${size[1]}`;
       case 'storage':
-        return `PVC:${size[0]}, Overall Storage: ${size[1]}, Backup:${size[2]}`;
+        return `PVC: ${size[0]}, Overall Storage: ${size[1]}, Backup: ${size[2]}`;
       case 'snapshot':
-        return `Request: ${size[0]} snapshot`;
+        return `Request: ${size} snapshot`;
       default:
         return '';
     }
