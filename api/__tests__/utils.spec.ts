@@ -19,6 +19,7 @@ import { compareNameSpaceQuotaSize } from "../src/db/utils";
 import {
   replaceForDescription,
   validateRequiredFields,
+  getLicencePlatePostFix,
 } from "../src/libs/utils";
 
 jest.mock("@bcgov/common-nodejs-utils", () => ({
@@ -163,5 +164,43 @@ describe("Utils", () => {
     };
 
     expect(compareNameSpaceQuotaSize(quotaSizesTest)).toEqual(true);
+  });
+
+  it("compareNameSpaceQuotaSize works correctly upon edge usecase where input object has three empty array, will return true.", () => {
+    const testObject = [
+      {
+        testNamespaceName: "ef123d-dev",
+        testExpectedResult: "dev",
+      },
+      {
+        testNamespaceName: "ef123d-test",
+        testExpectedResult: "test",
+      },
+      {
+        testNamespaceName: undefined,
+        testExpectedResult: "",
+      },
+      {
+        testNamespaceName: "ef123dsdaf-tessadfat",
+        testExpectedResult: "tessadfat",
+      },
+      {
+        testNamespaceName: "-test",
+        testExpectedResult: "test",
+      },
+      {
+        testNamespaceName: "-",
+        testExpectedResult: "",
+      },
+      {
+        testNamespaceName: "test",
+        testExpectedResult: "",
+      },
+    ];
+    testObject.forEach((testcase) => {
+      expect(getLicencePlatePostFix(testcase.testNamespaceName)).toEqual(
+        testcase.testExpectedResult
+      );
+    });
   });
 });

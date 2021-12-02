@@ -109,7 +109,7 @@ describe("Fulfillment utility", () => {
     jest.clearAllMocks();
   });
 
-  it.skip("should fulfill a request", async () => {
+  it("should fulfill a request", async () => {
     // context for provisioning
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: profile });
@@ -137,7 +137,7 @@ describe("Fulfillment utility", () => {
     expect(client.query.mock.calls).toMatchSnapshot();
   });
 
-  it.skip("should create a context for provisioning", async () => {
+  it("should create a context for provisioning", async () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: quotas });
@@ -156,7 +156,7 @@ describe("Fulfillment utility", () => {
     expect(result).toMatchSnapshot();
   });
 
-  it.skip("should not create a context for provisioning with no contacts", async () => {
+  it("should not create a context for provisioning with no contacts", async () => {
     client.query.mockReturnValueOnce({ rows: profile });
     client.query.mockReturnValueOnce({ rows: [] });
     client.query.mockReturnValueOnce({ rows: quotas });
@@ -170,7 +170,7 @@ describe("Fulfillment utility", () => {
     ).rejects.toThrow();
   });
 
-  it.skip("should not create a context for provisioning with failing query", async () => {
+  it("should not create a context for provisioning with failing query", async () => {
     client.query.mockImplementation(() => {
       throw new Error();
     });
@@ -180,7 +180,7 @@ describe("Fulfillment utility", () => {
     ).rejects.toThrow();
   });
 
-  it.skip("should create a context for a profile edit", async () => {
+  it("should create a context for a profile edit", async () => {
     const requestEditObject = profileEditObject;
     const requestEditType = RequestEditType.ProjectProfile;
 
@@ -202,7 +202,7 @@ describe("Fulfillment utility", () => {
     expect(result).toMatchSnapshot();
   });
 
-  it.skip("should create a context for a contact edit", async () => {
+  it("should create a context for a contact edit", async () => {
     const requestEditObject = contactEditObject;
     const requestEditType = RequestEditType.Contacts;
 
@@ -256,7 +256,7 @@ describe("Fulfillment utility", () => {
     expect(result).toMatchSnapshot();
   });
 
-  it.skip("should throw an error if edit context is missing contacts", async () => {
+  it("should throw an error if edit context is missing contacts", async () => {
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,
@@ -277,7 +277,7 @@ describe("Fulfillment utility", () => {
     ).rejects.toThrow();
   });
 
-  it.skip("should throw an error if edit context query fails", async () => {
+  it("should throw an error if edit context query fails", async () => {
     const requestEditObject = {
       quota: QuotaSize.Small,
       quotas: spec,

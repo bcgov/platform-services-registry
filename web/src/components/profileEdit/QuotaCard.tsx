@@ -69,27 +69,40 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     },
     href,
   } = props;
-  const namespaceTexts = [
-    ['Production', 'prod'],
-    ['Test', 'test'],
-    ['Development', 'dev'],
-    ['Tools', 'tools'],
+  const NAMESPACE_TEXT = [
+    {
+      displayName: 'Production',
+      shortName: 'prod',
+    },
+    {
+      displayName: 'Test',
+      shortName: 'test',
+    },
+    {
+      displayName: 'Development',
+      shortName: 'dev',
+    },
+    {
+      displayName: 'Tools',
+      shortName: 'tools',
+    },
   ];
 
   return (
     <Flex flexWrap="wrap">
-      {namespaceTexts.map((namespaceText: string[], index0: number) => {
-        const index = namespaceText[1] as keyof typeof quotaSize;
+      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string }) => {
+        const index = namespaceText.shortName as keyof typeof quotaSize;
+        const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
         return (
-          <Aux key={index0}>
+          <Aux key={namespaceText.displayName}>
             <Box width={1 / 2} px={2} mt={3}>
               <Flex>
-                <Text as="h3" marginX={2}>
-                  {namespaceText[0]} Namespace
+                <Text as="h3" marginRight={2}>
+                  {namespaceText.displayName} Namespace
                 </Text>
                 <RouterLink
                   className="misc-class-m-dropdown-link"
-                  to={`${href}?namespace=${licensePlate}-${namespaceText[1]}`}
+                  to={`${href}?namespace=${namespaceFullName}`}
                 >
                   <BaseIcon
                     name="edit"
@@ -102,7 +115,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                 </RouterLink>
               </Flex>
               <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                {`${licensePlate}-${namespaceText[1]} namespace`}
+                {`${namespaceFullName} namespace`}
               </Text>
             </Box>
             <Box width={1 / 2} px={2} mt={3}>

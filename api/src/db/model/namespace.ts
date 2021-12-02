@@ -270,7 +270,7 @@ export default class NamespaceModel extends Model {
     const query = {
       text: `
       SELECT 
-        name as namespaceName, 
+        name as namespace_name, 
         json_build_object(
           'quotaCpuSize', quota_cpu_size, 
           'quotaMemorySize', quota_memory_size, 
@@ -290,23 +290,23 @@ export default class NamespaceModel extends Model {
 
       clustersNamespaceQuotaSize.forEach((namespaceQuotaInfo, index) => {
         const namespace = getLicencePlatePostFix(
-          namespaceQuotaInfo.namespacename
+          namespaceQuotaInfo.namespaceName
         );
-        clustersNamespaceQuotaSize[index].namespacename = namespace;
+        clustersNamespaceQuotaSize[index].namespaceName = namespace;
       });
 
       const projectQuotaSize: ProjectQuotaSize = {
         dev:
-          clustersNamespaceQuotaSize.find((e) => e.namespacename === "dev")
+          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "dev")
             .quotaInfo || QuotaSize.Small,
         test:
-          clustersNamespaceQuotaSize.find((e) => e.namespacename === "test")
+          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "test")
             .quotaInfo || QuotaSize.Small,
         tools:
-          clustersNamespaceQuotaSize.find((e) => e.namespacename === "tools")
+          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "tools")
             .quotaInfo || QuotaSize.Small,
         prod:
-          clustersNamespaceQuotaSize.find((e) => e.namespacename === "prod")
+          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "prod")
             .quotaInfo || QuotaSize.Small,
       };
 
