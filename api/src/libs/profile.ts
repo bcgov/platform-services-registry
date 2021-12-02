@@ -135,7 +135,7 @@ export const getNamespaceQuotaSize = async (
       await NamespaceModel.getProfileNamespaceQuotaSize(profile.id, namespace);
 
     let hasSameQuotaSizesForAllClusters: boolean = false;
-    // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
+
     if (profileNamespaceQuotaSizesInAllCluster.length === 1) {
       hasSameQuotaSizesForAllClusters = true;
     } else {

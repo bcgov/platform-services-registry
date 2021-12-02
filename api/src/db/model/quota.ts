@@ -24,6 +24,12 @@ export enum QuotaSize {
   Large = "large",
 }
 
+export enum QuotaSizeQueryRef {
+  CPUQuery = "CPUQuery",
+  MemoryQuery = "MemoryQuery",
+  StorageQuery = "StorageQuery",
+  SnapshotQuery = "SnapshotQuery",
+}
 export interface NamespaceQuotaSize {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
@@ -146,7 +152,7 @@ export interface Quota extends CommonFields {
 }
 
 export default class QuotaModel extends Model {
-  table: string = "ref_quota";
+  table: string = "ref_cpu_quota";
 
   requiredFields: string[] = [
     "cpu_requests",
@@ -180,6 +186,36 @@ export default class QuotaModel extends Model {
   // eslint-disable-next-line class-methods-use-this
   async delete(): Promise<any> {
     // this is intentional (required by Sonarcloud)
+  }
+
+  async getAllQuotaRef(resourceType: string): Promise<any[]> {
+    const queryMap = {
+      CPUQuery: {
+        text: `SELECT id FROM ref_cpu_quota;`,
+      },
+      MemoryQuery: {
+        text: `SELECT id FROM ref_memory_quota;`,
+      },
+      StorageQuery: {
+        text: `SELECT id FROM ref_storage_quota;`,
+      },
+      SnapshotQuery: {
+        text: `SELECT id FROM ref_snapshot_quota;`,
+      },
+    };
+
+    try {
+      const queryResult = await this.runQuery(queryMap[resourceType]);
+      const allAvailableQuotaSize: String[] = queryResult.map(
+        (resourceName) => resourceName.id
+      );
+      return allAvailableQuotaSize;
+    } catch (err) {
+      const message = `Unable to fetch cpu quota ref`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
   }
 
   async findQuota(): Promise<any[]> {
@@ -269,8 +305,6 @@ export default class QuotaModel extends Model {
         Snapshot_QuotaSize_Detail: [],
       };
 
-      console.log("newQuotaSizeDedetails is : ", newQuotaSizeDedetails);
-      // console.log("quota is : ", quota);
       newQuotaSizeDedetails.CPU_QuotaSize_Detail.forEach((CPUOption) => {
         formatedQuotaSizeDedetails.CPU_QuotaSize_Detail.push({
           name: CPUOption.id,
@@ -306,23 +340,6 @@ export default class QuotaModel extends Model {
           });
         }
       );
-      // for (const size of quota) {
-      //   quotaSizesDetail[size.id] = {
-      //     name: size.id,
-      //     cpuNums: [size.cpuRequests, size.cpuLimits],
-      //     memoryNums: [
-      //       size.memoryRequests.replace("Gi", "GiB"),
-      //       size.memoryLimits.replace("Gi", "GiB"),
-      //     ],
-      //     storageNums: [
-      //       size.storagePvcCount,
-      //       size.storageFile.replace("Gi", "GiB"),
-      //       size.storageBackup.replace("Gi", "GiB"),
-      //     ],
-      //     snapshotNums: [size.snapshotVolume],
-      //   };
-      // }
-      console.log("haihia???:?:", formatedQuotaSizeDedetails);
       return formatedQuotaSizeDedetails;
     } catch (err) {
       const message = `Unable to get quota sizes`;
@@ -365,13 +382,13 @@ export default class QuotaModel extends Model {
       text: `
                 SELECT json_build_object(
                     'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS "requests", cpu_limits AS "limits"
-                        FROM ref_quota WHERE id = $1) d),
+                        FROM ref_cpu_quota WHERE id = $1) d),
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
-                        FROM ref_quota WHERE id = $2) d),
+                        FROM ref_memory_quota WHERE id = $2) d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = $3) d),
+                        FROM ref_storage_quota WHERE id = $3) d),
                     'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS "count"
-                        FROM ref_quota WHERE id = $4) d)
+                        FROM ref_snapshot_quota WHERE id = $4) d)
                 );
                 `,
       values: [],

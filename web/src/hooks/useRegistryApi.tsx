@@ -61,6 +61,13 @@ export default function useRegistryApi() {
     return axiosInstance.current.get('quota/sizes');
   };
 
+  const getAllAvailableQuotaSize = async (): Promise<AxiosResponse<any>> => {
+      if (!axiosInstance.current) {
+        throw new Error(errorMsg);
+      }
+      return axiosInstance.current.get(`quota/get-all-available-quota-sizes`);
+    };
+  
   const getCluster = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -177,6 +184,7 @@ export default function useRegistryApi() {
     return axiosInstance.current.get(`profile/${profileId}/allowed-quota-sizes`);
   };
 
+
   const updateQuotaSizeByProfileId = async (
     profileId: string,
     requstedQuotas: any,
@@ -244,5 +252,6 @@ export default function useRegistryApi() {
     createProjectRequestByProfileId,
     getHumanActionRequests,
     updateProjectRequest,
+    getAllAvailableQuotaSize
   };
 }

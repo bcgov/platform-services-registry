@@ -253,29 +253,12 @@ export const updateProfileQuotaSize = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
   res: Response
 ): Promise<void> => {
-  const { ProfileModel } = dm;
   const { profileId } = params;
   const { requestedQuotaSize, namespace } = body;
 
   try {
-    const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const namespaceQuotaSize = await getNamespaceQuotaSize(profile, namespace);
-    const allowedQuotaSizes: NameSpacesQuotaSize =
-      getAllowedQuotaSizes(namespaceQuotaSize);
     const requiresHumanAction = true;
 
-    // verify if requested quota size is valid
-    Object.keys(requestedQuotaSize).forEach((key) => {
-      if (
-        !(
-          requestedQuotaSize[key] &&
-          (namespaceQuotaSize[key].includes(requestedQuotaSize[key]) ||
-            allowedQuotaSizes[key].includes(requestedQuotaSize[key]))
-        )
-      ) {
-        throw new Error("Please provide correct requested quota size in body");
-      }
-    });
     await requestProfileQuotaSizeEdit(
       Number(profileId),
       requestedQuotaSize,

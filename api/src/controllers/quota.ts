@@ -17,6 +17,8 @@ import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
 import { Request, Response } from "express";
 import DataManager from "../db";
 import shared from "../libs/shared";
+import { NameSpacesQuotaSize } from "../db/model/namespace";
+import { QuotaSizeQueryRef } from "../db/model/quota";
 
 const dm = new DataManager(shared.pgPool);
 
@@ -46,6 +48,29 @@ export const fetchQuotaSizes = async (
     res.status(200).json(quotaSizes);
   } catch (err) {
     const message = `Unable to get quota sizes`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
+export const getAllAllowedQuotaSize = async (req: Request, res: Response) => {
+  try {
+    const { QuotaModel } = dm;
+    const allAvailableQuotaSize: NameSpacesQuotaSize = {
+      quotaCpuSize:
+        (await QuotaModel.getAllQuotaRef(QuotaSizeQueryRef.CPUQuery)) || [],
+      quotaMemorySize:
+        (await QuotaModel.getAllQuotaRef(QuotaSizeQueryRef.MemoryQuery)) || [],
+      quotaStorageSize:
+        (await QuotaModel.getAllQuotaRef(QuotaSizeQueryRef.StorageQuery)) || [],
+      quotaSnapshotSize:
+        (await QuotaModel.getAllQuotaRef(QuotaSizeQueryRef.SnapshotQuery)) ||
+        [],
+    };
+    res.status(200).json(allAvailableQuotaSize);
+  } catch (err) {
+    const message = `Unable to get all quota sizes name.`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

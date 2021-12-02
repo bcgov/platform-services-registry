@@ -94,6 +94,10 @@ const StyledInformationBox = styled.div`
   background-color: orange;
   border-radius: 10px;
   padding: 5px;
+  margin-left: auto;
+  left: 0;
+  right: 0;
+  margin-right: auto;
 `;
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #fcba19;
@@ -146,8 +150,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     selectedSizes: ProjectNamespaceResourceQuotaSize,
   ): QuotaSpecsInterface => {
 
-    console.log('wtfff is quotaSizes: ',quotaSizes)
-    console.log('wtfff is selectedSizes.quotaCpuSize: ',selectedSizes)
     if (
       quotaSizes &&
       Object.keys(quotaSizes).length === 0 &&
@@ -184,7 +186,8 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         {
           name: 'quotaCpuSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaCpuSize, ...quotaOptions.quotaCpuSize],
+          selectedSize: quotaSize.quotaCpuSize,
+          value: [ ...quotaOptions.quotaCpuSize],
         },
         {
           name: 'current',
@@ -206,7 +209,8 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         {
           name: 'quotaMemorySize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaMemorySize, ...quotaOptions.quotaMemorySize],
+          selectedSize: quotaSize.quotaMemorySize,
+          value: [ ...quotaOptions.quotaMemorySize],
         },
         {
           name: 'current',
@@ -228,7 +232,8 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         {
           name: 'quotaStorageSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaStorageSize, ...quotaOptions.quotaStorageSize],
+          selectedSize: quotaSize.quotaStorageSize,
+          value: [...quotaOptions.quotaStorageSize],
         },
         {
           name: 'current',
@@ -250,7 +255,8 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         {
           name: 'quotaSnapshotSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaSnapshotSize, ...quotaOptions.quotaSnapshotSize],
+          selectedSize: quotaSize.quotaSnapshotSize,
+          value: [ ...quotaOptions.quotaSnapshotSize],
         },
         {
           name: 'current',
@@ -278,11 +284,11 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
 
       // 1. Prepare quota edit request body.
       const requestBody = composeRequestBodyForQuotaEdit(selectedQuotaSize, namespace);
-
+      
       // 2. Request the profile quota edit.
       await api.updateQuotaSizeByProfileId(profileId, requestBody);
 
-      // 3. All good? Redirect back to overview and tell the user.
+      // // 3. All good? Redirect back to overview and tell the user.
       handleSubmitRefresh();
       setGoBackToProfileEditable(true);
       promptSuccessToastWithText('Your quota request was successful');
@@ -363,7 +369,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                   applyingQuotaSpecs[element] &&
                   applyingQuotaSpecs[element].length !== 0 &&
                   option.value !== applyingQuotaSpecs[element];
-
+                const selectIndex = option.selectedSize && option.value ? option.value.indexOf(option.selectedSize) : null;
                 return (
                   <Flex
                     marginBottom="2"
@@ -386,18 +392,18 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                         <StyledInformationBox
                           style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
                         >
-                          Only 'small' snapshot volumes are supported right now.
+                          Only 'snapshot-5' are supported right now.
                         </StyledInformationBox>
                       </>
                     )}
-                    {option.displayName === QUOTA_DISPLAY_NAME ? (
+                    {option.displayName === QUOTA_DISPLAY_NAME && selectIndex!==null ? (
                       // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
 
                       <Field
                         name={option.name}
                         disabled={option.name === TEMPORARY_DISABLE_FIELD}
                         component={SelectInput}
-                        initialValue={option.value[0]}
+                        initialValue={option.value[selectIndex]}
                         validate={required}
                       >
                         {option.value.length &&
