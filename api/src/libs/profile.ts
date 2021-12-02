@@ -131,12 +131,12 @@ export const getNamespaceQuotaSize = async (
   namespace: string
 ): Promise<NamespaceQuotaSize> => {
   try {
-    const profileNamespaceQuotaSizesInAllCulster: NamespaceQuotaSize[] =
+    const profileNamespaceQuotaSizesInAllCluster: NamespaceQuotaSize[] =
       await NamespaceModel.getProfileNamespaceQuotaSize(profile.id, namespace);
 
     let hasSameQuotaSizesForAllClusters: boolean = false;
     // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
-    if (profileNamespaceQuotaSizesInAllCulster.length === 1) {
+    if (profileNamespaceQuotaSizesInAllCluster.length === 1) {
       hasSameQuotaSizesForAllClusters = true;
     } else {
       const namespaceQuotaSizesForAllClusters: NameSpacesQuotaSize = {
@@ -151,7 +151,7 @@ export const getNamespaceQuotaSize = async (
        *  that can be consumed by compareNameSpaceQuotaSize to compare if quota size are the same
        * across all cluster.
        */
-      profileNamespaceQuotaSizesInAllCulster.forEach((element) => {
+      profileNamespaceQuotaSizesInAllCluster.forEach((element) => {
         QuotaSizeObjectKey.forEach((key) => {
           namespaceQuotaSizesForAllClusters[key].push(element[key]);
         });
@@ -163,7 +163,7 @@ export const getNamespaceQuotaSize = async (
 
     if (hasSameQuotaSizesForAllClusters) {
       // because we checked if all element in profileQuotaSizes are the same, so we can just return any of the element
-      return profileNamespaceQuotaSizesInAllCulster[0];
+      return profileNamespaceQuotaSizesInAllCluster[0];
     }
     throw new Error(`Need to fix entries as the quota size of cluster namespaces
       under the profile is not consistent`);
