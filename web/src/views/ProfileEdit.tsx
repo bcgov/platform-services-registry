@@ -350,7 +350,7 @@ const ProfileEdit: React.FC = (props: any) => {
                   profileId={profileId}
                   licensePlate={profileState.quotaDetails.licensePlate || ''}
                   quotaOptions={
-                    profileState.quotaDetails.quotaOptions|| DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
+                    profileState.quotaDetails.quotaOptions || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
                   }
                   quotaSize={
                     profileState.quotaDetails.quotaSize[

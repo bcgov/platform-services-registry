@@ -105,16 +105,41 @@ function renderQuota() {
   const profileIdProp: string = '1';
   const licensePlateProp: string = '473f50';
   const quotaSizeProp: any = {
-    quotaCpuSize: QuotaSize.Medium,
-    quotaMemorySize: QuotaSize.Medium,
-    quotaStorageSize: QuotaSize.Medium,
-    quotaSnapshotSize: QuotaSize.Small,
+    quotaCpuSize: 'cpu-request-0.5-limit-1.5',
+    quotaMemorySize: 'memory-request-64-limit-128',
+    quotaSnapshotSize: 'snapshot-5',
+    quotaStorageSize: 'storage-2',
   };
   const quotaOptionsProp: any = {
-    quotaCpuSize: [QuotaSize.Small, QuotaSize.Large],
-    quotaMemorySize: [QuotaSize.Small, QuotaSize.Large],
-    quotaStorageSize: [QuotaSize.Small, QuotaSize.Large],
-    quotaSnapshotSize: [QuotaSize.Medium],
+    quotaCpuSize: [
+      'cpu-request-0.5-limit-1.5',
+      'cpu-request-1-limit-2',
+      'cpu-request-2-limit-4',
+      'cpu-request-4-limit-8',
+      'cpu-request-8-limit-16',
+      'cpu-request-16-limit-32',
+      'cpu-request-32-limit-64',
+    ],
+    quotaMemorySize: [
+      'memory-request-2-limit-4',
+      'memory-request-4-limit-8',
+      'memory-request-8-limit-16',
+      'memory-request-16-limit-32',
+      'memory-request-32-limit-64',
+      'memory-request-64-limit-128',
+    ],
+    quotaStorageSize: [
+      'storage-1',
+      'storage-2',
+      'storage-4',
+      'storage-16',
+      'storage-32',
+      'storage-64',
+      'storage-128',
+      'storage-256',
+      'storage-512',
+    ],
+    quotaSnapshotSize: ['snapshot-5'],
   };
   const handleSubmitRefreshProp = jest.fn();
   const isProvisionedProp: boolean = true;

@@ -34,7 +34,6 @@ import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import SelectInput from '../common/UI/SelectInput';
-import { element } from 'prop-types';
 
 export interface NamespaceQuotaDetails {
   quotaSize?: ProjectNamespaceResourceQuotaSize;
@@ -146,10 +145,10 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
+
   const getCorrespondingQuota = (
     selectedSizes: ProjectNamespaceResourceQuotaSize,
   ): QuotaSpecsInterface => {
-
     if (
       quotaSizes &&
       Object.keys(quotaSizes).length === 0 &&
@@ -157,12 +156,27 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     ) {
       return DEFAULT_QUOTA_INFO;
     }
-    console.log(quotaSizes.Snapshot_QuotaSize_Detail.find((snapshotOption: SnapshotQuotaSizeDedetail) => snapshotOption.name === selectedSizes.quotaSnapshotSize).snapshotNums)
+
     return {
-      cpuNums: quotaSizes.CPU_QuotaSize_Detail.find((cpuOption:CPUQuotaSizeDedetail) => cpuOption.name === selectedSizes.quotaCpuSize)?.cpuNums || [],
-      memoryNums: quotaSizes.Memory_QuotaSize_Detail.find((memoryOption: MemoryQuotaSizeDedetail) =>memoryOption.name ===selectedSizes.quotaMemorySize)?.memoryNums || [],
-      storageNums: quotaSizes.Storage_QuotaSize_Detail.find((storageOtion: StorageQuotaSizeDedetail) => storageOtion.name === selectedSizes.quotaStorageSize)?.storageNums || [],
-      snapshotNums: quotaSizes.Snapshot_QuotaSize_Detail.find((snapshotOption: SnapshotQuotaSizeDedetail) => snapshotOption.name === selectedSizes.quotaSnapshotSize)?.snapshotNums || [],
+      cpuNums:
+        quotaSizes.CPU_QuotaSize_Detail.find(
+          (cpuOption: CPUQuotaSizeDedetail) => cpuOption.name === selectedSizes.quotaCpuSize,
+        )?.cpuNums || [],
+      memoryNums:
+        quotaSizes.Memory_QuotaSize_Detail.find(
+          (memoryOption: MemoryQuotaSizeDedetail) =>
+            memoryOption.name === selectedSizes.quotaMemorySize,
+        )?.memoryNums || [],
+      storageNums:
+        quotaSizes.Storage_QuotaSize_Detail.find(
+          (storageOtion: StorageQuotaSizeDedetail) =>
+            storageOtion.name === selectedSizes.quotaStorageSize,
+        )?.storageNums || [],
+      snapshotNums:
+        quotaSizes.Snapshot_QuotaSize_Detail.find(
+          (snapshotOption: SnapshotQuotaSizeDedetail) =>
+            snapshotOption.name === selectedSizes.quotaSnapshotSize,
+        )?.snapshotNums || [],
     };
   };
   const buildDisplayMessage = (size: number[], type: string) => {
@@ -187,7 +201,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'quotaCpuSize',
           displayName: QUOTA_DISPLAY_NAME,
           selectedSize: quotaSize.quotaCpuSize,
-          value: [ ...quotaOptions.quotaCpuSize],
+          value: [...quotaOptions.quotaCpuSize],
         },
         {
           name: 'current',
@@ -210,7 +224,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'quotaMemorySize',
           displayName: QUOTA_DISPLAY_NAME,
           selectedSize: quotaSize.quotaMemorySize,
-          value: [ ...quotaOptions.quotaMemorySize],
+          value: [...quotaOptions.quotaMemorySize],
         },
         {
           name: 'current',
@@ -256,7 +270,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'quotaSnapshotSize',
           displayName: QUOTA_DISPLAY_NAME,
           selectedSize: quotaSize.quotaSnapshotSize,
-          value: [ ...quotaOptions.quotaSnapshotSize],
+          value: [...quotaOptions.quotaSnapshotSize],
         },
         {
           name: 'current',
@@ -284,7 +298,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
 
       // 1. Prepare quota edit request body.
       const requestBody = composeRequestBodyForQuotaEdit(selectedQuotaSize, namespace);
-      
+
       // 2. Request the profile quota edit.
       await api.updateQuotaSizeByProfileId(profileId, requestBody);
 
@@ -369,7 +383,10 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                   applyingQuotaSpecs[element] &&
                   applyingQuotaSpecs[element].length !== 0 &&
                   option.value !== applyingQuotaSpecs[element];
-                const selectIndex = option.selectedSize && option.value ? option.value.indexOf(option.selectedSize) : null;
+                const selectIndex =
+                  option.selectedSize && option.value
+                    ? option.value.indexOf(option.selectedSize)
+                    : null;
                 return (
                   <Flex
                     marginBottom="2"
@@ -396,7 +413,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                         </StyledInformationBox>
                       </>
                     )}
-                    {option.displayName === QUOTA_DISPLAY_NAME && selectIndex!==null ? (
+                    {option.displayName === QUOTA_DISPLAY_NAME && selectIndex !== null ? (
                       // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
 
                       <Field

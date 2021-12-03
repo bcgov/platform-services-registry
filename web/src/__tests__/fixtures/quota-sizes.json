@@ -1,20 +1,102 @@
-[
-  {
-    "name": "small",
-    "cpuNums": [4, 8],
-    "memoryNums": ["16GiB", "32GiB"],
-    "storageNums": ["50GiB", "25GiB"]
-  },
-  {
-    "name": "medium",
-    "cpuNums": [8, 16],
-    "memoryNums": ["32GiB", "64GiB"],
-    "storageNums": ["100GiB", "50GiB"]
-  },
-  {
-    "name": "large",
-    "cpuNums": [32, 64],
-    "memoryNums": ["64GiB", "128GiB"],
-    "storageNums": ["200GiB", "100GiB"]
-  }
-]
+{
+  "CPU_QuotaSize_Detail": [
+    {
+      "name": "cpu-request-0.5-limit-1.5",
+      "cpuNums": [0.5, 1.5]
+    },
+    {
+      "name": "cpu-request-1-limit-2",
+      "cpuNums": [1, 2]
+    },
+    {
+      "name": "cpu-request-2-limit-4",
+      "cpuNums": [2, 4]
+    },
+    {
+      "name": "cpu-request-4-limit-8",
+      "cpuNums": [4, 8]
+    },
+    {
+      "name": "cpu-request-8-limit-16",
+      "cpuNums": [8, 16]
+    },
+    {
+      "name": "cpu-request-16-limit-32",
+      "cpuNums": [16, 32]
+    },
+    {
+      "name": "cpu-request-32-limit-64",
+      "cpuNums": [32, 64]
+    }
+  ],
+  "Memory_QuotaSize_Detail": [
+    {
+      "name": "memory-request-2-limit-4",
+      "memoryNums": ["2GiB", "4GiB"]
+    },
+    {
+      "name": "memory-request-4-limit-8",
+      "memoryNums": ["4GiB", "8GiB"]
+    },
+    {
+      "name": "memory-request-8-limit-16",
+      "memoryNums": ["8GiB", "16GiB"]
+    },
+    {
+      "name": "memory-request-16-limit-32",
+      "memoryNums": ["16GiB", "32GiB"]
+    },
+    {
+      "name": "memory-request-32-limit-64",
+      "memoryNums": ["32GiB", "64GiB"]
+    },
+    {
+      "name": "memory-request-64-limit-128",
+      "memoryNums": ["64GiB", "32GiB"]
+    }
+  ],
+  "Storage_QuotaSize_Detail": [
+    {
+      "name": "storage-1",
+      "storageNums": [60, "1GiB", "512m"]
+    },
+    {
+      "name": "storage-2",
+      "storageNums": [60, "2GiB", "1GiB"]
+    },
+    {
+      "name": "storage-4",
+      "storageNums": [60, "4GiB", "2GiB"]
+    },
+    {
+      "name": "storage-16",
+      "storageNums": [60, "16GiB", "8GiB"]
+    },
+    {
+      "name": "storage-32",
+      "storageNums": [60, "32GiB", "16GiB"]
+    },
+    {
+      "name": "storage-64",
+      "storageNums": [60, "64GiB", "32GiB"]
+    },
+    {
+      "name": "storage-128",
+      "storageNums": [60, "128GiB", "64GiB"]
+    },
+    {
+      "name": "storage-256",
+      "storageNums": [60, "256GiB", "128GiB"]
+    },
+    {
+      "name": "storage-512",
+      "storageNums": [60, "512GiB", "256GiB"]
+    }
+  ],
+  "Snapshot_QuotaSize_Detail": [
+    {
+      "name": "snapshot-5",
+      "snapshotNums": 5
+    }
+  ]
+}
