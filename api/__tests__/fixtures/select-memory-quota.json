@@ -1,0 +1,23 @@
+[
+    {
+        "id": "memory-request-2-limit-4",
+        "memoryRequests": "2 Gi",
+        "memoryLimits": "4 Gi",
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "memory-request-4-limit-8",
+        "memoryRequests": "4 Gi",
+        "memoryLimits": "8 Gi",
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "memory-request-8-limit-16",
+        "memoryRequests": "8 Gi",
+        "memoryLimits": "16 Gi",
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    }
+]

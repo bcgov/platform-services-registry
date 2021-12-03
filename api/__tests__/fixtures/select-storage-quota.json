@@ -1,0 +1,42 @@
+[
+    {
+        "id": "storage-1",
+        "storageBlock": "50Gi",
+        "storageFile": "50Gi",
+        "storageBackup": "25Gi",
+        "storageCapacity": "50Gi",
+        "storagePvcCount": 20,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "storage-2",
+        "storageBlock": "50Gi",
+        "storageFile": "50Gi",
+        "storageBackup": "25Gi",
+        "storageCapacity": "50Gi",
+        "storagePvcCount": 20,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "storage-3",
+        "storageBlock": "50Gi",
+        "storageFile": "50Gi",
+        "storageBackup": "25Gi",
+        "storageCapacity": "50Gi",
+        "storagePvcCount": 20,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "storage-4",
+        "storageBlock": "50Gi",
+        "storageFile": "50Gi",
+        "storageBackup": "25Gi",
+        "storageCapacity": "50Gi",
+        "storagePvcCount": 20,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    }
+]

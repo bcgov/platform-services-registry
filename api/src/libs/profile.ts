@@ -125,7 +125,8 @@ export const updateProfileStatus = async (
   }
 };
 
-// Test just to get one namespace quptasize
+// This function is now not been used, but keep it here because this is used to validate if the request quota size is allowed
+// In current desicion, we allowed user to select any quota size.
 export const getNamespaceQuotaSize = async (
   profile: ProjectProfile,
   namespace: string

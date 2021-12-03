@@ -69,13 +69,6 @@ export interface ProjectSetQuotas {
   prod: Quotas;
 }
 
-interface QuotaSizeDedetail {
-  name: string;
-  cpuNums: string[];
-  memoryNums: string[];
-  storageNums: string[];
-  snapshotNums: string[];
-}
 interface CPUQuotaSizeDedetail {
   name: string;
   cpuNums: string[];
@@ -101,24 +94,7 @@ interface NewQuotaSizeDedetails {
   Storage_QuotaSize_Detail: StorageQuotaSizeDedetail[];
   Snapshot_QuotaSize_Detail: SnapshotQuotaSizeDedetail[];
 }
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
-}
 
-interface QuotaSizeDedetail {
-  name: string;
-  cpuNums: string[];
-  memoryNums: string[];
-  storageNums: string[];
-}
-
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
-}
 const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
   cpu: {
     requests: 4,
@@ -262,31 +238,6 @@ export default class QuotaModel extends Model {
 
   async findQuotaSizes(): Promise<any> {
     try {
-      const quota = await this.findQuota();
-      const quotaSizesDetail: QuotaSizeDedetails = {
-        small: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-          snapshotNums: [],
-        },
-        medium: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-          snapshotNums: [],
-        },
-        large: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-          snapshotNums: [],
-        },
-      };
-
       const newQuotaSizeDedetails = {
         CPU_QuotaSize_Detail:
           (await this.findResourceQuotaRef("CPUQuery")) || [],
@@ -311,12 +262,12 @@ export default class QuotaModel extends Model {
           cpuNums: [CPUOption.cpuRequests, CPUOption.cpuLimits],
         });
       });
-      newQuotaSizeDedetails.Memory_QuotaSize_Detail.forEach((CPUOption) => {
+      newQuotaSizeDedetails.Memory_QuotaSize_Detail.forEach((memoryOption) => {
         formatedQuotaSizeDedetails.Memory_QuotaSize_Detail.push({
-          name: CPUOption.id,
+          name: memoryOption.id,
           memoryNums: [
-            CPUOption.memoryRequests.replace("Gi", "GiB"),
-            CPUOption.memoryLimits.replace("Gi", "GiB"),
+            memoryOption.memoryRequests.replace("Gi", "GiB"),
+            memoryOption.memoryLimits.replace("Gi", "GiB"),
           ],
         });
       });

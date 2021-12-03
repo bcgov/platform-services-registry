@@ -29,11 +29,7 @@ import { Request } from "../db/model/request";
 import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "../libs/authmware";
 import { fulfillRequest } from "../libs/fulfillment";
-import {
-  getQuotaSize,
-  updateProfileStatus,
-  getNamespaceQuotaSize,
-} from "../libs/profile";
+import { getQuotaSize, updateProfileStatus } from "../libs/profile";
 import { getAllowedQuotaSizes } from "../libs/quota";
 import {
   requestProfileContactsEdit,

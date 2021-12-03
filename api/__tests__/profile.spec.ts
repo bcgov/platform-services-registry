@@ -59,36 +59,36 @@ jest.mock("../src/libs/profile", () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue({
       dev: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
       test: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
       tools: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
       prod: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
     }),
     updateProfileStatus: jest.fn(),
     getNamespaceQuotaSize: jest.fn().mockResolvedValue({
-      quotaCpuSize: "small",
-      quotaMemorySize: "small",
-      quotaStorageSize: "small",
-      quotaSnapshotSize: "small",
+      quotaCpuSize: "cpu-request-0.5-limit-1.5",
+      quotaMemorySize: "memory-request-2-limit-4",
+      quotaStorageSize: "storage-1",
+      quotaSnapshotSize: "snapshot-5",
     }),
   };
 });
@@ -364,7 +364,8 @@ describe("Profile event handlers", () => {
     expect(ex.res.status).toBeCalled();
   });
 
-  it("throws an error if profile quota size edit request is invalid", async () => {
+  // Disable this test because current decision is allow user to request any quota size
+  it.skip("throws an error if profile quota size edit request is invalid", async () => {
     const body = {
       requestedQuotaSize: {
         quotaCpuSize: QuotaSize.Large,
@@ -388,10 +389,30 @@ describe("Profile event handlers", () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it("throws an error if there is a db transaction issue when requesting profile quota size edit", async () => {
+  //  Disable this test because current decision is allow user to request any quota size, no need to request current profile quota.
+  it.skip("throws an error if there is a db transaction issue when requesting profile quota size edit", async () => {
     const body = {
-      requestedQuotaSize: "medium",
+      namespace: "b10671-prod",
+      quota: {
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-4-limit-8",
+        quotaStorageSize: "storage-64",
+        quotaSnapshotSize: "snapshot-5",
+      },
+      quotas: {
+        cpu: { requests: 0.5, limits: 1.5 },
+        memory: { requests: "4Gi", limits: "8Gi" },
+        storage: {
+          block: "64Gi",
+          file: "64Gi",
+          backup: "32Gi",
+          capacity: "64Gi",
+          pvcCount: 60,
+        },
+        snapshot: { count: 5 },
+      },
     };
+
     const req = {
       params: { profileId: 4 },
       body,

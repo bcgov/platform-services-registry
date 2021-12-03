@@ -1,46 +1,50 @@
 [
     {
-        "id": "small",
+        "id": "cpu-request-0.5-limit-1.5",
+        "cpuRequests": 0.5,
+        "cpuLimits": 1.5,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "cpu-request-1-limit-2",
+        "cpuRequests": 1,
+        "cpuLimits": 2,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "cpu-request-2-limit-4",
         "cpuRequests": 4,
         "cpuLimits": 8,
-        "memoryRequests": "16Gi",
-        "memoryLimits": "32Gi",
-        "storageBlock": "50Gi",
-        "storageFile": "50Gi",
-        "storageBackup": "25Gi",
-        "storageCapacity": "50Gi",
-        "storagePvcCount": 20,
-        "snapshotVolume": 5,
         "createdAt": "2021-03-17T23:06:05.112Z",
         "updatedAt": "2021-03-17T23:06:05.112Z"
     },
     {
-        "id": "medium",
-        "cpuRequests": 8,
-        "cpuLimits": 16,
-        "memoryRequests": "32Gi",
-        "memoryLimits": "64Gi",
-        "storageBlock": "100Gi",
-        "storageFile": "100Gi",
-        "storageBackup": "50Gi",
-        "storageCapacity": "100Gi",
-        "storagePvcCount": 40,
-        "snapshotVolume": 5,
+        "id": "cpu-request-4-limit-8",
+        "cpuRequests": 4,
+        "cpuLimits": 8,
         "createdAt": "2021-03-17T23:06:05.112Z",
         "updatedAt": "2021-03-17T23:06:05.112Z"
     },
     {
-        "id": "large",
+        "id": "cpu-request-8-limit-16",
+        "cpuRequests": 4,
+        "cpuLimits": 8,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "cpu-request-16-limit-32",
+        "cpuRequests": 4,
+        "cpuLimits": 8,
+        "createdAt": "2021-03-17T23:06:05.112Z",
+        "updatedAt": "2021-03-17T23:06:05.112Z"
+    },
+    {
+        "id": "cpu-request-4-limit-8",
         "cpuRequests": 32,
         "cpuLimits": 64,
-        "memoryRequests": "64Gi",
-        "memoryLimits": "128Gi",
-        "storageBlock": "200Gi",
-        "storageFile": "200Gi",
-        "storageBackup": "100Gi",
-        "storageCapacity": "200Gi",
-        "storagePvcCount": 60,
-        "snapshotVolume": 5,
         "createdAt": "2021-03-17T23:06:05.112Z",
         "updatedAt": "2021-03-17T23:06:05.112Z"
     }

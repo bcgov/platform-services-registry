@@ -461,28 +461,28 @@ exports[`Profile event handlers returns the profiles quota size 2`] = `200`;
 exports[`Profile event handlers returns the profiles quota size 3`] = `
 Object {
   "dev": Object {
-    "quotaCpuSize": "small",
-    "quotaMemorySize": "small",
-    "quotaSnapshotSize": "small",
-    "quotaStorageSize": "small",
+    "quotaCpuSize": "cpu-request-0.5-limit-1.5",
+    "quotaMemorySize": "memory-request-2-limit-4",
+    "quotaSnapshotSize": "snapshot-5",
+    "quotaStorageSize": "storage-1",
   },
   "prod": Object {
-    "quotaCpuSize": "small",
-    "quotaMemorySize": "small",
-    "quotaSnapshotSize": "small",
-    "quotaStorageSize": "small",
+    "quotaCpuSize": "cpu-request-0.5-limit-1.5",
+    "quotaMemorySize": "memory-request-2-limit-4",
+    "quotaSnapshotSize": "snapshot-5",
+    "quotaStorageSize": "storage-1",
   },
   "test": Object {
-    "quotaCpuSize": "small",
-    "quotaMemorySize": "small",
-    "quotaSnapshotSize": "small",
-    "quotaStorageSize": "small",
+    "quotaCpuSize": "cpu-request-0.5-limit-1.5",
+    "quotaMemorySize": "memory-request-2-limit-4",
+    "quotaSnapshotSize": "snapshot-5",
+    "quotaStorageSize": "storage-1",
   },
   "tools": Object {
-    "quotaCpuSize": "small",
-    "quotaMemorySize": "small",
-    "quotaSnapshotSize": "small",
-    "quotaStorageSize": "small",
+    "quotaCpuSize": "cpu-request-0.5-limit-1.5",
+    "quotaMemorySize": "memory-request-2-limit-4",
+    "quotaSnapshotSize": "snapshot-5",
+    "quotaStorageSize": "storage-1",
   },
 }
 `;
