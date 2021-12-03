@@ -45,7 +45,7 @@ INSERT INTO ref_memory_quota(id, memory_requests, memory_limits) VALUES
     ('memory-request-8-limit-16', '8Gi', '16Gi'),
     ('memory-request-16-limit-32', '16Gi', '32Gi'),
     ('memory-request-32-limit-64', '32Gi', '64Gi'),
-    ('memory-request-64-limit-128', '64Gi', '32Gi')
+    ('memory-request-64-limit-128', '64Gi', '128Gi')
 ON CONFLICT (id) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS ref_storage_quota (
