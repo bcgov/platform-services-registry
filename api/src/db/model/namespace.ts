@@ -35,6 +35,14 @@ export interface ProjectNamespace extends CommonFields {
   profileId: number;
   clusters?: any;
 }
+
+export enum ProjectSetNamespace {
+  Prod = "prod",
+  Test = "test",
+  Dev = "dev",
+  Tools = "tools",
+}
+
 export interface NameSpacesQuotaSize {
   quotaCpuSize: QuotaSize[];
   quotaMemorySize: QuotaSize[];
@@ -297,17 +305,21 @@ export default class NamespaceModel extends Model {
 
       const projectQuotaSize: ProjectQuotaSize = {
         dev:
-          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "dev")
-            .quotaInfo || QuotaSize.Small,
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Dev
+          ).quotaInfo || QuotaSize.Small,
         test:
-          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "test")
-            .quotaInfo || QuotaSize.Small,
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Test
+          ).quotaInfo || QuotaSize.Small,
         tools:
-          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "tools")
-            .quotaInfo || QuotaSize.Small,
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Tools
+          ).quotaInfo || QuotaSize.Small,
         prod:
-          clustersNamespaceQuotaSize.find((e) => e.namespaceName === "prod")
-            .quotaInfo || QuotaSize.Small,
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Prod
+          ).quotaInfo || QuotaSize.Small,
       };
 
       return projectQuotaSize;
