@@ -199,7 +199,7 @@ export const updateProjectProfile = async (
     const currentProjectProfile: ProjectProfile = await ProfileModel.findById(
       profileId
     );
-    const aBody = {
+    const applicationBody = {
       id: profileId,
       name,
       description,
@@ -236,7 +236,7 @@ export const updateProjectProfile = async (
     if (provisionerRelatedChanges) {
       const request = await requestProjectProfileEdit(
         Number(profileId),
-        { ...aBody, id: profileId },
+        { ...applicationBody, id: profileId },
         user,
         false
       );
@@ -245,11 +245,11 @@ export const updateProjectProfile = async (
     } else {
       const request = await requestProjectProfileEdit(
         Number(profileId),
-        { ...aBody, id: profileId },
+        { ...applicationBody, id: profileId },
         user,
         false
       );
-      await ProfileModel.update(profileId, aBody);
+      await ProfileModel.update(profileId, applicationBody);
       await updateProfileStatus(Number(profileId), PROFILE_STATUS.PROVISIONED);
       await RequestModel.updateCompletionStatus(Number(request.id));
       res.status(204).end();

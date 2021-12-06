@@ -300,7 +300,7 @@ export default class QuotaModel extends Model {
     }
   }
 
-  async findQuotaSizeForProjectSet(
+  async fetchProjectSetQuotaDetail(
     quotaSize: ProjectQuotaSize
   ): Promise<ProjectSetQuotas> {
     const projectSetQuotaSize: ProjectSetQuotas = {
