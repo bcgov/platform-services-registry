@@ -246,7 +246,7 @@ export default class NamespaceModel extends Model {
       FROM 
       cluster_namespace 
       RIGHT JOIN namespace ON cluster_namespace.namespace_id = namespace.id 
-      WHERE profile_id=$1 AND name=$2 AND archived=$3 ;`,
+      WHERE profile_id=$1 AND name=$2 AND archived=$3;`,
       values: [],
     };
     try {

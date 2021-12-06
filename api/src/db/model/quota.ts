@@ -63,7 +63,7 @@ export interface ProjectSetQuotas {
   prod: Quotas;
 }
 
-interface QuotaSizeDedetail {
+interface QuotaSizeDetail {
   name: string;
   cpuNums: string[];
   memoryNums: string[];
@@ -71,24 +71,19 @@ interface QuotaSizeDedetail {
   snapshotNums: string[];
 }
 
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
+interface QuotaSizeDetails {
+  small: QuotaSizeDetail;
+  medium: QuotaSizeDetail;
+  large: QuotaSizeDetail;
 }
 
-interface QuotaSizeDedetail {
+interface QuotaSizeDetail {
   name: string;
   cpuNums: string[];
   memoryNums: string[];
   storageNums: string[];
 }
 
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
-}
 const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
   cpu: {
     requests: 4,
@@ -178,7 +173,7 @@ export default class QuotaModel extends Model {
   async findQuotaSizes(): Promise<any> {
     try {
       const quota = await this.findQuota();
-      const quotaSizesDetail: QuotaSizeDedetails = {
+      const quotaSizesDetail: QuotaSizeDetails = {
         small: {
           name: "",
           cpuNums: [],
@@ -228,7 +223,7 @@ export default class QuotaModel extends Model {
     }
   }
 
-  async findQuotaSizeForProjectSet(
+  async fetchProjectSetQuotaDetail(
     quotaSize: ProjectQuotaSize
   ): Promise<ProjectSetQuotas> {
     const projectSetQuotaSize: ProjectSetQuotas = {

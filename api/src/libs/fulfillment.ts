@@ -264,7 +264,7 @@ export const contextForProvisioning = async (
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: ProjectSetQuotas =
-      await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
+      await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
 
     const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
       makeNatsFormatQuotaSizeMessage(quotaSize);
@@ -307,7 +307,7 @@ export const contextForEditing = async (
 
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
     const quotas: ProjectSetQuotas =
-      await QuotaModel.findQuotaSizeForProjectSet(quotaSize);
+      await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
 
     if (requestEditType === RequestEditType.QuotaSize) {
       const editNamespacePostFix = getLicencePlatePostFix(
