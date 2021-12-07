@@ -18,7 +18,7 @@ import { render, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router } from 'react-router-dom';
-import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
+import { QuotaCardEdit } from '../components/profileEdit/QuotaCardEdit';
 import ProfileEdit from '../views/ProfileEdit';
 import mockContacts from './fixtures/profile-contacts.json';
 import mockMinistry from './fixtures/profile-ministry.json';
@@ -103,7 +103,7 @@ test('matches the snapshot', async () => {
 
 function renderQuota() {
   const profileIdProp: string = '1';
-  const licensePlateProp: string = '473f50';
+  const licensePlate: string = '473f50';
   const quotaSizeProp: any = {
     quotaCpuSize: QuotaSize.Medium,
     quotaMemorySize: QuotaSize.Medium,
@@ -123,11 +123,11 @@ function renderQuota() {
   const utils = render(
     <QuotaCardEdit
       profileId={profileIdProp}
-      quotaDetails={{
-        licensePlate: licensePlateProp,
-        quotaSize: quotaSizeProp,
-        quotaOptions: quotaOptionsProp,
-      }}
+      licensePlate={licensePlate}
+      quotaSize={quotaSizeProp}
+      quotaOptions={quotaOptionsProp}
+      namespace={`${licensePlate}-dev`}
+      primaryClusterName="gold"
       handleSubmitRefresh={handleSubmitRefreshProp}
       isProvisioned={isProvisionedProp}
       hasPendingEdit={hasPendingEditProp}

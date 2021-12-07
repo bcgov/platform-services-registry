@@ -20,13 +20,18 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
+import { getLicencePlatePostFix } from '../utils/utils';
+import { useQuery } from '../utils/AppRoute';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
 import ProjectCard, { ProjectDetails } from '../components/profileEdit/ProjectCard';
 import ProjectCardEdit from '../components/profileEdit/ProjectCardEdit';
-import QuotaCard, { QuotaDetails } from '../components/profileEdit/QuotaCard';
-import QuotaCardEdit from '../components/profileEdit/QuotaCardEdit';
+import QuotaCard, {
+  QuotaDetails,
+  NAMESPACE_DEFAULT_QUOTA,
+} from '../components/profileEdit/QuotaCard';
+import { QuotaCardEdit } from '../components/profileEdit/QuotaCardEdit';
 import { BaseIcon } from '../components/common/UI/Icon';
 import {
   HOME_PAGE_URL,
@@ -38,7 +43,7 @@ import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
 import theme from '../theme';
-import { Namespace } from '../types';
+import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
 import {
@@ -77,6 +82,15 @@ const ProfileEdit: React.FC = (props: any) => {
       params: { profileId, viewName },
     },
   } = props;
+  const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NamespaceQuotaOption = {
+    quotaCpuSize: [],
+    quotaMemorySize: [],
+    quotaStorageSize: [],
+    quotaSnapshotSize: [],
+  };
+  const PROJECT_SET = ['prod', 'test', 'dev', 'tools'];
+  const namespaceSearchQuery = useQuery().get('namespace') || '';
+  const editNamespace = getLicencePlatePostFix(namespaceSearchQuery);
 
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
@@ -91,7 +105,20 @@ const ProfileEdit: React.FC = (props: any) => {
     hasPendingEdit: true,
     projectDetails: {},
     contactDetails: [],
-    quotaDetails: {},
+    quotaDetails: {
+      quotaSize: {
+        dev: NAMESPACE_DEFAULT_QUOTA,
+        test: NAMESPACE_DEFAULT_QUOTA,
+        tools: NAMESPACE_DEFAULT_QUOTA,
+        prod: NAMESPACE_DEFAULT_QUOTA,
+      },
+      quotaOptions: {
+        dev: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+        test: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+        tools: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+        prod: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+      },
+    },
   });
 
   const [initialRender, setInitialRender] = useState(true);
@@ -117,10 +144,10 @@ const ProfileEdit: React.FC = (props: any) => {
         cluster.data,
       ),
     };
-
     const contactDetails = await api.getContactsByProfileId(profileId);
 
     const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
+
     const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
     setProfileState((profileState0: any) => ({
@@ -187,6 +214,7 @@ const ProfileEdit: React.FC = (props: any) => {
 
   const cards = [
     {
+      name: 'project',
       title: 'Project Information',
       href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
@@ -195,6 +223,7 @@ const ProfileEdit: React.FC = (props: any) => {
       component: <ProjectCard projectDetails={profileState.projectDetails} />,
     },
     {
+      name: 'contact',
       title: 'Contact Information',
       href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
@@ -203,12 +232,18 @@ const ProfileEdit: React.FC = (props: any) => {
       component: <ContactCard contactDetails={profileState.contactDetails} />,
     },
     {
+      name: 'quota',
       title: 'Quota Information',
-      href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
-        ':viewName',
-        PROFILE_EDIT_VIEW_NAMES.QUOTA,
+
+      component: (
+        <QuotaCard
+          quotaDetails={profileState.quotaDetails}
+          href={ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
+            ':viewName',
+            PROFILE_EDIT_VIEW_NAMES.QUOTA,
+          )}
+        />
       ),
-      component: <QuotaCard quotaDetails={profileState.quotaDetails} />,
     },
   ];
 
@@ -246,16 +281,18 @@ const ProfileEdit: React.FC = (props: any) => {
                     <Text as="h3" color={theme.colors.contrast} mx={2}>
                       {c.title}
                     </Text>
-                    <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
-                      <BaseIcon
-                        name="edit"
-                        color="contrast"
-                        hover
-                        width={1.5}
-                        height={1.5}
-                        displayIcon={faPen}
-                      />
-                    </RouterLink>
+                    {c.name !== 'quota' && (
+                      <RouterLink className="misc-class-m-dropdown-link" to={c.href}>
+                        <BaseIcon
+                          name="edit"
+                          color="contrast"
+                          hover
+                          width={1.5}
+                          height={1.5}
+                          displayIcon={faPen}
+                        />
+                      </RouterLink>
+                    )}
                   </Flex>
                   <ShadowBox p={3} key={profileId} style={{ position: 'relative' }}>
                     {c.component}
@@ -311,13 +348,26 @@ const ProfileEdit: React.FC = (props: any) => {
                 hasPendingEdit={profileState.hasPendingEdit}
               />
             )}
-            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && (
+
+            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && PROJECT_SET.includes(editNamespace) && (
               <QuotaCardEdit
                 profileId={profileId}
-                quotaDetails={profileState.quotaDetails}
+                licensePlate={profileState.quotaDetails.licensePlate || ''}
+                quotaOptions={
+                  profileState.quotaDetails.quotaOptions[
+                    editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
+                  ] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
+                }
+                quotaSize={
+                  profileState.quotaDetails.quotaSize[
+                    editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
+                  ] || NAMESPACE_DEFAULT_QUOTA
+                }
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                namespace={namespaceSearchQuery}
+                primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
               />
             )}
           </ShadowBox>

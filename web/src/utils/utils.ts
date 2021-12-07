@@ -23,7 +23,7 @@
  * @param object2
  * @returns all key that that value is different in obj1 and obj2
  */
-export const findDifferenceBetweenTwoDifferentObject = (object1: any, object2: any): any => {
+export const findDifference = (object1: any, object2: any): any => {
   const differenceKey: string[] = [];
   Object.keys(object1).forEach((key) => {
     if (object1[key] !== object2[key]) {
@@ -33,4 +33,9 @@ export const findDifferenceBetweenTwoDifferentObject = (object1: any, object2: a
   return differenceKey;
 };
 
-export default findDifferenceBetweenTwoDifferentObject;
+export const getLicencePlatePostFix = (input: string | undefined): any => {
+  const regexMatch = input ? input.match(/(?<=-).*/) : null;
+  return regexMatch ? regexMatch[0] : '';
+};
+
+export default findDifference;

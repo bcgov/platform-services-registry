@@ -15,6 +15,9 @@
         "backup": "25Gi",
         "capacity": "50Gi",
         "pvcCount": 20
+      },
+      "snapshot": {
+        "count": 5
       }
     }
   }

@@ -21,7 +21,11 @@ import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile } from "../db/model/profile";
-import { ProjectQuotaSize, Quotas, QuotaSize } from "../db/model/quota";
+import {
+  ProjectQuotaSize,
+  ProjectSetQuotas,
+  QuotaSize,
+} from "../db/model/quota";
 import {
   BotMessage,
   Request,
@@ -38,13 +42,60 @@ import {
 } from "../types";
 import { getQuotaSize } from "./profile";
 import shared from "./shared";
-import { replaceForDescription } from "./utils";
+import { replaceForDescription, getLicencePlatePostFix } from "./utils";
 
 interface QuotasizeFormatInProvisonerFormat {
   cpu: QuotaSize;
   memory: QuotaSize;
   storage: QuotaSize;
   snapshot: QuotaSize;
+}
+const DEFAULT_NAMESPACE_QUOTAS: QuotasInNatsFormat = {
+  cpu: {
+    requests: 4,
+    limits: 8,
+  },
+  memory: {
+    requests: "16 Gi",
+    limits: "32 Gi",
+  },
+  storage: {
+    block: "100Gi",
+    file: "100Gi",
+    backup: "25Gi",
+    capacity: "20",
+    pvc_count: 20,
+  },
+  snapshot: { count: 5 },
+};
+
+const DEFAULT_PROJECT_SET_NAMESPACE_QUOTAS = {
+  dev: DEFAULT_NAMESPACE_QUOTAS,
+  test: DEFAULT_NAMESPACE_QUOTAS,
+  tools: DEFAULT_NAMESPACE_QUOTAS,
+  prod: DEFAULT_NAMESPACE_QUOTAS,
+};
+
+const DEFAULT_NAMESPACE_QUOTA_SIZE: QuotasizeFormatInProvisonerFormat = {
+  cpu: QuotaSize.Small,
+  memory: QuotaSize.Small,
+  storage: QuotaSize.Small,
+  snapshot: QuotaSize.Small,
+};
+
+const DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE: ProjectSetQuotaSizeFormatInProvisonerFormat =
+  {
+    dev: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    test: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    tools: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+    prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
+  };
+
+interface ProjectSetQuotaSizeFormatInProvisonerFormat {
+  dev: QuotasizeFormatInProvisonerFormat;
+  test: QuotasizeFormatInProvisonerFormat;
+  tools: QuotasizeFormatInProvisonerFormat;
+  prod: QuotasizeFormatInProvisonerFormat;
 }
 
 interface QuotasInNatsFormat {
@@ -63,7 +114,22 @@ interface QuotasInNatsFormat {
     capacity: string;
     pvc_count: number;
   };
+  snapshot: { count: number };
 }
+
+interface ProjectSetQuotasInNatsFormat {
+  dev: QuotasInNatsFormat;
+  test: QuotasInNatsFormat;
+  tools: QuotasInNatsFormat;
+  prod: QuotasInNatsFormat;
+}
+
+export enum MergeType {
+  Auto = "auto",
+  Manual = "manual",
+}
+const PROJECT_SET = ["prod", "test", "dev", "tools"];
+
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, RequestModel } =
   dm;
@@ -90,42 +156,76 @@ const formatContactsForNats = (contact): NatsContact => ({
       : NatsContactRole.Owner,
 });
 
+const makeNatsFormatQuotaSizeMessage = (
+  quotaSize: ProjectQuotaSize
+): ProjectSetQuotaSizeFormatInProvisonerFormat => {
+  const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
+    DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE;
+  const namespaceObjectKey = Object.keys(quotaSize);
+  namespaceObjectKey.forEach((namespace) => {
+    provisonerPreferedFormatQuotasize[namespace] = {
+      cpu: quotaSize[namespace]?.quotaCpuSize,
+      memory: quotaSize[namespace]?.quotaMemorySize,
+      storage: quotaSize[namespace]?.quotaStorageSize,
+      snapshot: quotaSize[namespace]?.quotaSnapshotSize,
+    };
+  });
+  return provisonerPreferedFormatQuotasize;
+};
+
+const makeNatsFormatQuotasMessage = (
+  quotas: ProjectSetQuotas
+): ProjectSetQuotasInNatsFormat => {
+  const namespaceObjectKey = Object.keys(quotas);
+  const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
+    DEFAULT_PROJECT_SET_NAMESPACE_QUOTAS;
+  namespaceObjectKey.forEach((namespace) => {
+    provisonerPreferedFormatQuotas[namespace] = {
+      cpu: {
+        ...quotas[namespace].cpu,
+      },
+      memory: {
+        ...quotas[namespace].memory,
+      },
+      storage: {
+        block: quotas[namespace].storage.block,
+        file: quotas[namespace].storage.file,
+        backup: quotas[namespace].storage.backup,
+        capacity: quotas[namespace].storage.capacity,
+        pvc_count: quotas[namespace].storage.pvcCount,
+      },
+      snapshot: { count: quotas[namespace].snapshot.count },
+    };
+  });
+  return provisonerPreferedFormatQuotas;
+};
+
 const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
   profileContacts: Contact[],
-  quotaSize: QuotasizeFormatInProvisonerFormat,
-  quotas: Quotas,
-  cluster: Cluster
+  quotaSize: ProjectSetQuotaSizeFormatInProvisonerFormat,
+  quotas: ProjectSetQuotasInNatsFormat,
+  cluster: Cluster,
+  auoMergeFlag: string
 ): Promise<NatsContext> => {
   try {
     if (!profile.id) {
       throw new Error("Cant get profile id");
     }
 
-    const quotasInNatsPreferedFormat: QuotasInNatsFormat = {
-      cpu: {
-        ...quotas.cpu,
-      },
-      memory: {
-        ...quotas.memory,
-      },
-      storage: {
-        block: quotas.storage.block,
-        file: quotas.storage.file,
-        backup: quotas.storage.backup,
-        capacity: quotas.storage.capacity,
-        pvc_count: quotas.storage.pvcCount,
-      },
-    };
-
     const namespacesDetails = await NamespaceModel.findNamespacesForProfile(
       profile.id
     );
 
-    const namespaces = namespacesDetails.map((n) =>
-      formatNamespacesForNats(n, quotaSize, quotasInNatsPreferedFormat)
-    );
+    const namespaces = namespacesDetails.map((n) => {
+      const namespacePostFix = getLicencePlatePostFix(n.name);
+      return formatNamespacesForNats(
+        n,
+        quotaSize[namespacePostFix],
+        quotas[namespacePostFix]
+      );
+    });
 
     const contacts: NatsContact[] = profileContacts.map((contact) =>
       formatContactsForNats(contact)
@@ -143,6 +243,7 @@ const buildContext = async (
       display_name: profile.name,
       description: profile.description,
       ministry_id: profile.busOrgId,
+      merge_type: auoMergeFlag,
       namespaces,
       contacts,
     };
@@ -161,27 +262,31 @@ export const contextForProvisioning = async (
   isForSync: boolean = false
 ): Promise<NatsContext> => {
   try {
+    const auoMergeFlag: string = MergeType.Manual;
     const action = isForSync
       ? NatsContextAction.Sync
       : NatsContextAction.Create;
+
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
-    const quotas: Quotas = await QuotaModel.findForQuotaSize(quotaSize);
-    const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-      {
-        cpu: quotaSize.quotaCpuSize,
-        memory: quotaSize.quotaMemorySize,
-        storage: quotaSize.quotaStorageSize,
-        snapshot: quotaSize.quotaSnapshotSize,
-      };
+    const quotas: ProjectSetQuotas =
+      await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
+
+    const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
+      makeNatsFormatQuotaSizeMessage(quotaSize);
+
+    const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
+      makeNatsFormatQuotasMessage(quotas);
+
     return await buildContext(
       action,
       profile,
       contacts,
-      ProvisonerPreferedFormatQuotasize,
-      quotas,
-      cluster
+      provisonerPreferedFormatQuotasize,
+      provisonerPreferedFormatQuotas,
+      cluster,
+      auoMergeFlag
     );
   } catch (err) {
     const message = `Unable to create context for provisioning ${profileId}`;
@@ -200,9 +305,8 @@ export const contextForEditing = async (
   try {
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
-    let quotaSize: ProjectQuotaSize;
-    let quotas: Quotas;
     let contacts: Contact[];
+    let auoMergeFlag: string = MergeType.Auto;
 
     if (requestEditType === RequestEditType.ProjectProfile) {
       profile = JSON.parse(requestEditObject);
@@ -210,34 +314,46 @@ export const contextForEditing = async (
       profile = await ProfileModel.findById(profileId);
     }
 
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const quotas: ProjectSetQuotas =
+      await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
+
     if (requestEditType === RequestEditType.QuotaSize) {
-      quotaSize = requestEditObject.quota;
-      quotas = requestEditObject.quotas;
-    } else {
-      quotaSize = await getQuotaSize(profile);
-      quotas = await QuotaModel.findForQuotaSize(quotaSize);
+      const editNamespacePostFix = getLicencePlatePostFix(
+        requestEditObject.namespace
+      );
+      auoMergeFlag = MergeType.Manual;
+      if (editNamespacePostFix && PROJECT_SET.includes(editNamespacePostFix)) {
+        quotaSize[editNamespacePostFix] = requestEditObject.quota;
+
+        quotas[editNamespacePostFix] = requestEditObject.quotas;
+      } else {
+        const errMessage =
+          "Editing quota namespace name is not been provided in edit object, It is required in quota edit process. throwing error in contextForEditing";
+        throw new Error(`${errMessage}: ProfileID is: ${profileId}`);
+      }
     }
 
-    const ProvisonerPreferedFormatQuotasize: QuotasizeFormatInProvisonerFormat =
-      {
-        cpu: quotaSize.quotaCpuSize,
-        memory: quotaSize.quotaMemorySize,
-        storage: quotaSize.quotaStorageSize,
-        snapshot: quotaSize.quotaSnapshotSize,
-      };
+    const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
+      makeNatsFormatQuotaSizeMessage(quotaSize);
+
+    const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
+      makeNatsFormatQuotasMessage(quotas);
 
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
     } else {
       contacts = await ContactModel.findForProject(profileId);
     }
+
     return await buildContext(
       action,
       profile,
       contacts,
-      ProvisonerPreferedFormatQuotasize,
-      quotas,
-      cluster
+      provisonerPreferedFormatQuotasize,
+      provisonerPreferedFormatQuotas,
+      cluster,
+      auoMergeFlag
     );
   } catch (err) {
     const message = `Unable to create context for updating ${profileId}`;

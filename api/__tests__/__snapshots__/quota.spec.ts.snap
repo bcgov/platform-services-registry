@@ -104,7 +104,9 @@ Object {
       "128GiB",
     ],
     "name": "large",
-    "snapshotNums": 5,
+    "snapshotNums": Array [
+      5,
+    ],
     "storageNums": Array [
       60,
       "200GiB",
@@ -121,7 +123,9 @@ Object {
       "64GiB",
     ],
     "name": "medium",
-    "snapshotNums": 5,
+    "snapshotNums": Array [
+      5,
+    ],
     "storageNums": Array [
       40,
       "100GiB",
@@ -138,7 +142,9 @@ Object {
       "32GiB",
     ],
     "name": "small",
-    "snapshotNums": 5,
+    "snapshotNums": Array [
+      5,
+    ],
     "storageNums": Array [
       20,
       "50GiB",

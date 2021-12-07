@@ -16,9 +16,9 @@
 
 import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
-import { compareNameSpaceQuotaSize } from "../utils";
 import { CommonFields, Model } from "./model";
-import { ProjectQuotaSize, QuotaSize } from "./quota";
+import { getLicencePlatePostFix } from "../../libs/utils";
+import { ProjectQuotaSize, QuotaSize, NamespaceQuotaSize } from "./quota";
 
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
@@ -35,13 +35,26 @@ export interface ProjectNamespace extends CommonFields {
   profileId: number;
   clusters?: any;
 }
+
+export enum ProjectSetNamespace {
+  Prod = "prod",
+  Test = "test",
+  Dev = "dev",
+  Tools = "tools",
+}
+
 export interface NameSpacesQuotaSize {
   quotaCpuSize: QuotaSize[];
   quotaMemorySize: QuotaSize[];
   quotaStorageSize: QuotaSize[];
   quotaSnapshotSize: QuotaSize[];
 }
-
+export interface ProjectSetAllowedQuotaSize {
+  dev: NameSpacesQuotaSize;
+  test: NameSpacesQuotaSize;
+  tools: NameSpacesQuotaSize;
+  prod: NameSpacesQuotaSize;
+}
 export default class NamespaceModel extends Model {
   table: string = "namespace";
 
@@ -230,72 +243,86 @@ export default class NamespaceModel extends Model {
     }
   }
 
+  async getProfileNamespaceQuotaSize(
+    profileId: number,
+    namespace: string
+  ): Promise<NamespaceQuotaSize[]> {
+    const query = {
+      text: `
+      SELECT 
+      quota_cpu_size,quota_memory_size,quota_storage_size,quota_snapshot_size 
+      FROM 
+      cluster_namespace 
+      RIGHT JOIN namespace ON cluster_namespace.namespace_id = namespace.id 
+      WHERE profile_id=$1 AND name=$2 AND archived=$3;`,
+      values: [],
+    };
+    try {
+      const result = await this.runQuery({
+        ...query,
+        values: [profileId, namespace, false],
+      });
+      return result;
+    } catch (err) {
+      const message = `Unable to get quota size namespace of the project set for profile ${profileId} in getProfileNamespaceQuotaSize`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async getProjectSetQuotaSize(
     profileId: number,
     clusterId: number
-  ): Promise<ProjectQuotaSize> {
+  ): Promise<any> {
     const query = {
       text: `
-        SELECT quota_cpu_size, quota_memory_size, quota_storage_size, quota_snapshot_size FROM cluster_namespace
-          WHERE namespace_id = $1 AND cluster_id = $2;`,
+      SELECT 
+        name as namespace_name, 
+        json_build_object(
+          'quotaCpuSize', quota_cpu_size, 
+          'quotaMemorySize', quota_memory_size, 
+          'quotaStorageSize', quota_storage_size, 
+          'quotaSnapshotSize', quota_snapshot_size ) as quota_info
+    FROM cluster_namespace
+    JOIN namespace ON cluster_namespace.namespace_id = namespace.id 
+    WHERE namespace.profile_id = $1 AND cluster_namespace.cluster_id = $2;
+    `,
       values: [],
     };
-
     try {
-      const nsResults: ProjectNamespace[] = await this.findNamespacesForProfile(
-        profileId
-      );
-      const clPromises: Promise<ClusterNamespace[]>[] = nsResults.map((nr) =>
-        this.runQuery({ ...query, values: [nr.id, clusterId] })
-      );
-      const clResults: ClusterNamespace[][] = await Promise.all(clPromises);
+      const clustersNamespaceQuotaSize = await this.runQuery({
+        ...query,
+        values: [profileId, clusterId],
+      });
 
-      const clusterNamespaces: (ClusterNamespace | undefined)[] = clResults.map(
-        (cl) => cl.pop()
-      );
+      clustersNamespaceQuotaSize.forEach((namespaceQuotaInfo, index) => {
+        const namespace = getLicencePlatePostFix(
+          namespaceQuotaInfo.namespaceName
+        );
+        clustersNamespaceQuotaSize[index].namespaceName = namespace;
+      });
 
-      const quotaSizes: NameSpacesQuotaSize = {
-        quotaCpuSize: [],
-        quotaMemorySize: [],
-        quotaStorageSize: [],
-        quotaSnapshotSize: [],
+      const projectQuotaSize: ProjectQuotaSize = {
+        dev:
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Dev
+          ).quotaInfo || QuotaSize.Small,
+        test:
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Test
+          ).quotaInfo || QuotaSize.Small,
+        tools:
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Tools
+          ).quotaInfo || QuotaSize.Small,
+        prod:
+          clustersNamespaceQuotaSize.find(
+            (e) => e.namespaceName === ProjectSetNamespace.Prod
+          ).quotaInfo || QuotaSize.Small,
       };
 
-      clusterNamespaces.forEach(
-        (clusterNamespace: ClusterNamespace | undefined): void => {
-          if (!clusterNamespace) {
-            return;
-          }
-          const {
-            quotaCpuSize,
-            quotaMemorySize,
-            quotaStorageSize,
-            quotaSnapshotSize,
-          } = clusterNamespace;
-
-          quotaSizes.quotaCpuSize.push(quotaCpuSize);
-          quotaSizes.quotaMemorySize.push(quotaMemorySize);
-          quotaSizes.quotaStorageSize.push(quotaStorageSize);
-          quotaSizes.quotaSnapshotSize.push(quotaSnapshotSize);
-        }
-      );
-
-      const hasSameQuotaSizesForAllNameSpace: boolean =
-        compareNameSpaceQuotaSize(quotaSizes);
-
-      if (hasSameQuotaSizesForAllNameSpace) {
-        const projectQuotaSize: ProjectQuotaSize = {
-          quotaCpuSize: quotaSizes.quotaCpuSize.pop() || QuotaSize.Small,
-          quotaMemorySize: quotaSizes.quotaMemorySize.pop() || QuotaSize.Small,
-          quotaStorageSize:
-            quotaSizes.quotaStorageSize.pop() || QuotaSize.Small,
-          quotaSnapshotSize:
-            quotaSizes.quotaSnapshotSize.pop() || QuotaSize.Small,
-        };
-        return projectQuotaSize;
-      }
-      throw new Error(`Need to fix entries as the quota size of
-        the project set is not consistent`);
+      return projectQuotaSize;
     } catch (err) {
       const message = `Unable to get quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
       logger.error(`${message}, err = ${err.message}`);
@@ -304,44 +331,42 @@ export default class NamespaceModel extends Model {
     }
   }
 
-  async updateProjectSetQuotaSize(
+  // This will update Specified namespace in all cluster
+  async updateNamespaceQuotaSize(
     profileId: number,
-    clusterId: number,
-    quotaSize: ProjectQuotaSize
+    quotaSize: NamespaceQuotaSize,
+    namespace: string
   ): Promise<ProjectNamespace[]> {
     const query = {
       text: `
-        UPDATE cluster_namespace
-          SET quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
-          WHERE namespace_id = $4 AND cluster_id = $5
-        RETURNING *;`,
+      Update cluster_namespace
+      SET quota_cpu_size = $1, quota_memory_size = $2, quota_storage_size = $3
+      From namespace
+      where
+      namespace.name = $4 AND namespace.profile_id = $5 AND namespace.id = cluster_namespace.namespace_id 
+      RETURNING *;`,
       values: [],
     };
 
     try {
-      const nsResults = await this.findNamespacesForProfile(profileId);
-      const clPromises = nsResults.map((nr) =>
-        this.runQuery({
-          ...query,
-          values: [
-            quotaSize.quotaCpuSize,
-            quotaSize.quotaMemorySize,
-            quotaSize.quotaStorageSize,
-            nr.id,
-            clusterId,
-          ],
-        })
-      );
-      await Promise.all(clPromises);
-
-      return nsResults;
+      return await this.runQuery({
+        ...query,
+        values: [
+          quotaSize.quotaCpuSize,
+          quotaSize.quotaMemorySize,
+          quotaSize.quotaStorageSize,
+          namespace,
+          profileId,
+        ],
+      });
     } catch (err) {
-      const message = `Unable to update quota size of the project set for profile ${profileId} on cluster ${clusterId}`;
+      const message = `Unable to update quota size of the project namespace ${namespace} for profile ${profileId} on cluster`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
     }
   }
+  // update project wide quota size function was removed in https://github.com/bcgov/platform-services-registry/pull/573/files
 
   async findForProfile(profileId: number): Promise<ProjectNamespace[]> {
     const query = {
@@ -367,6 +392,30 @@ export default class NamespaceModel extends Model {
       return await this.runQuery(query);
     } catch (err) {
       const message = `Unable to fetch namespaces for profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findNamespaceForProfile(
+    profileId: number,
+    namespace: string
+  ): Promise<ProjectNamespace[]> {
+    const query = {
+      text: `
+        SELECT * FROM $3
+          WHERE profile_id = $1 AND name= $2 AND archived = false;`,
+      values: [],
+    };
+
+    try {
+      return await this.runQuery({
+        ...query,
+        values: [profileId, namespace, this.table],
+      });
+    } catch (err) {
+      const message = `Unable to find namespaces for profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;

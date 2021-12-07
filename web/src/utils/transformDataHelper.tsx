@@ -18,7 +18,7 @@ import React from 'react';
 import { Box, Link } from 'rebass';
 import { ContactDetails } from '../components/profileEdit/ContactCard';
 import { CSV_PROFILE_ATTRIBUTES, CSV_PROFILE_ATTRIBUTES_HEADER } from '../constants';
-import { Namespace, ProjectResourceQuotaSize } from '../types';
+import { Namespace, ProjectNamespaceResourceQuotaSize } from '../types';
 
 export function transformClusters(data: any) {
   const clusters: any = [];
@@ -83,10 +83,14 @@ export function getLicensePlate(namespaces: Namespace[]): string | Error {
   }
 }
 
-export function composeRequestBodyForQuotaEdit(requestedQuotaSize: ProjectResourceQuotaSize): any {
+export function composeRequestBodyForQuotaEdit(
+  requestedQuotaSize: ProjectNamespaceResourceQuotaSize,
+  namespace: string,
+): any {
   try {
     return {
       requestedQuotaSize,
+      namespace,
     };
   } catch (err) {
     const msg = 'Unable to compose request body';

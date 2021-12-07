@@ -24,11 +24,17 @@ export enum QuotaSize {
   Large = "large",
 }
 
-export interface ProjectQuotaSize {
+export interface NamespaceQuotaSize {
   quotaCpuSize: QuotaSize;
   quotaMemorySize: QuotaSize;
   quotaStorageSize: QuotaSize;
   quotaSnapshotSize: QuotaSize;
+}
+export interface ProjectQuotaSize {
+  dev: NamespaceQuotaSize;
+  test: NamespaceQuotaSize;
+  tools: NamespaceQuotaSize;
+  prod: NamespaceQuotaSize;
 }
 
 export interface Quotas {
@@ -47,9 +53,17 @@ export interface Quotas {
     capacity: string;
     pvcCount: number;
   };
+  snapshot: { count: number };
 }
 
-interface QuotaSizeDedetail {
+export interface ProjectSetQuotas {
+  dev: Quotas;
+  test: Quotas;
+  tools: Quotas;
+  prod: Quotas;
+}
+
+interface QuotaSizeDetail {
   name: string;
   cpuNums: string[];
   memoryNums: string[];
@@ -57,24 +71,37 @@ interface QuotaSizeDedetail {
   snapshotNums: string[];
 }
 
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
+interface QuotaSizeDetails {
+  small: QuotaSizeDetail;
+  medium: QuotaSizeDetail;
+  large: QuotaSizeDetail;
 }
 
-interface QuotaSizeDedetail {
+interface QuotaSizeDetail {
   name: string;
   cpuNums: string[];
   memoryNums: string[];
   storageNums: string[];
 }
 
-interface QuotaSizeDedetails {
-  small: QuotaSizeDedetail;
-  medium: QuotaSizeDedetail;
-  large: QuotaSizeDedetail;
-}
+const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
+  cpu: {
+    requests: 4,
+    limits: 8,
+  },
+  memory: {
+    requests: "16 Gi",
+    limits: "32 Gi",
+  },
+  storage: {
+    block: "50Gi",
+    file: "50Gi",
+    backup: "25Gi",
+    capacity: "50Gi",
+    pvcCount: 20,
+  },
+  snapshot: { count: 5 },
+};
 
 export interface Quota extends CommonFields {
   cpuRequests: number;
@@ -146,7 +173,7 @@ export default class QuotaModel extends Model {
   async findQuotaSizes(): Promise<any> {
     try {
       const quota = await this.findQuota();
-      const quotaSizesDetail: QuotaSizeDedetails = {
+      const quotaSizesDetail: QuotaSizeDetails = {
         small: {
           name: "",
           cpuNums: [],
@@ -183,7 +210,7 @@ export default class QuotaModel extends Model {
             size.storageFile.replace("Gi", "GiB"),
             size.storageBackup.replace("Gi", "GiB"),
           ],
-          snapshotNums: size.snapshotVolume,
+          snapshotNums: [size.snapshotVolume],
         };
       }
 
@@ -196,7 +223,35 @@ export default class QuotaModel extends Model {
     }
   }
 
-  async findForQuotaSize(quotaSize: ProjectQuotaSize): Promise<any> {
+  async fetchProjectSetQuotaDetail(
+    quotaSize: ProjectQuotaSize
+  ): Promise<ProjectSetQuotas> {
+    const projectSetQuotaSize: ProjectSetQuotas = {
+      dev: DEFAULT_NAMESPACE_QUOTAS,
+      test: DEFAULT_NAMESPACE_QUOTAS,
+      tools: DEFAULT_NAMESPACE_QUOTAS,
+      prod: DEFAULT_NAMESPACE_QUOTAS,
+    };
+    try {
+      await Promise.all(
+        Object.keys(quotaSize).map(async (namespace) => {
+          projectSetQuotaSize[namespace] = await this.findQuotaSizeForNamespace(
+            quotaSize[namespace]
+          );
+        })
+      );
+      return projectSetQuotaSize;
+    } catch (err) {
+      const message = `Unable to retrieve Project set Quota Size`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async findQuotaSizeForNamespace(
+    quotaSize: NamespaceQuotaSize
+  ): Promise<Quotas> {
     const query = {
       text: `
                 SELECT json_build_object(
@@ -210,16 +265,19 @@ export default class QuotaModel extends Model {
                         FROM ref_quota WHERE id = $4) d)
                 );
                 `,
-      values: [
-        quotaSize.quotaCpuSize,
-        quotaSize.quotaMemorySize,
-        quotaSize.quotaStorageSize,
-        quotaSize.quotaSnapshotSize,
-      ],
+      values: [],
     };
 
     try {
-      const results = await this.runQuery(query);
+      const results = await this.runQuery({
+        ...query,
+        values: [
+          quotaSize.quotaCpuSize,
+          quotaSize.quotaMemorySize,
+          quotaSize.quotaStorageSize,
+          quotaSize.quotaSnapshotSize,
+        ],
+      });
       return results.pop().jsonBuildObject;
     } catch (err) {
       const message = `Unable to retrieve quotas object by size ${quotaSize}`;

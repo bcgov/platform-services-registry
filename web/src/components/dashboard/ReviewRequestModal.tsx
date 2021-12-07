@@ -17,11 +17,11 @@
 import { Label, Textarea } from '@rebass/forms';
 import React from 'react';
 import { Field, Form } from 'react-final-form';
-import { Box, Flex, Heading } from 'rebass';
+import { Box, Flex, Heading, Text } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { findDifferenceBetweenTwoDifferentObject } from '../../utils/utils';
+import { findDifference, getLicencePlatePostFix } from '../../utils/utils';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -83,13 +83,14 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
   const textCapitalized = { textTransform: 'capitalize' };
+  const editNamespace =
+    profileDetails.type === 'edit'
+      ? getLicencePlatePostFix(profileDetails.editObject.namespace)
+      : '';
 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
-      ? findDifferenceBetweenTwoDifferentObject(
-          profileDetails.editObject.quota,
-          profileDetails.quotaSize,
-        )
+      ? findDifference(profileDetails.editObject.quota, profileDetails.quotaSize[editNamespace])
       : [];
 
   const parseContacts = (contactDetails: any) => {
@@ -101,7 +102,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const parseUpdatedQuota = (updatedQuotaTypes: any) => {
     return updatedQuotaTypes.map(
       (quotaType: any) =>
-        `${quotaType}: ${profileDetails.quotaSize[quotaType]} => ${profileDetails.editObject.quota[quotaType]} `,
+        `${quotaType}: ${profileDetails.quotaSize[editNamespace][quotaType]} => ${profileDetails.editObject.quota[quotaType]} `,
     );
   };
 
@@ -163,11 +164,23 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
         {profileDetails.type === 'create' ? (
-          <InformationBox
-            displayText={`CPU: ${profileDetails.quotaSize.quotaCpuSize} | RAM: ${profileDetails.quotaSize.quotaMemorySize} |  Storage: ${profileDetails.quotaSize.quotaStorageSize} | Snapshot: ${profileDetails.quotaSize.quotaSnapshotSize} `}
-          />
+          <>
+            {Object.keys(profileDetails.quotaSize).map((key: string) => (
+              <Flex flexDirection="column" paddingBottom="1" key={key}>
+                {key}
+                <InformationBox
+                  displayText={`CPU: ${profileDetails.quotaSize[key].quotaCpuSize} | RAM: ${profileDetails.quotaSize[key].quotaMemorySize} |  Storage: ${profileDetails.quotaSize[key].quotaStorageSize} | Snapshot: ${profileDetails.quotaSize[key].quotaSnapshotSize} `}
+                />
+              </Flex>
+            ))}
+          </>
         ) : (
-          <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+          <>
+            {profileDetails.editObject.namespace && (
+              <Text>Namespace: {profileDetails.editObject.namespace}</Text>
+            )}
+            <InformationBoxes displayTexts={parseUpdatedQuota(requestedUpdateQuota)} />
+          </>
         )}
       </Flex>
       <Form onSubmit={onSubmit}>

@@ -1,8 +1,11 @@
 {
-  "plugins": ["prettier", "@typescript-eslint"],
+  "plugins": [
+    "prettier",
+    "@typescript-eslint"
+  ],
   "extends": [
-    "airbnb-typescript", 
-    "react-app",  
+    "airbnb-typescript",
+    "react-app",
     "prettier/@typescript-eslint",
     "prettier/react",
     "plugin:prettier/recommended"
@@ -19,7 +22,10 @@
     }
   },
   "rules": {
-    "object-curly-spacing": ["warn", "always"],
+    "object-curly-spacing": [
+      "warn",
+      "always"
+    ],
     "no-unused-vars": [
       "warn",
       {
@@ -65,6 +71,7 @@
         "devDependencies": true
       }
     ],
+    "no-nested-ternary": "warn",
     "no-param-reassign": "warn",
     "consistent-return": "warn",
     "import/no-cycle": "warn",

@@ -27,7 +27,7 @@ import {
   updateProfileQuotaSize,
 } from "../src/controllers/profile";
 import ContactModel from "../src/db/model/contact";
-import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
+import { NamespaceQuotaSize, QuotaSize } from "../src/db/model/quota";
 import RequestModel from "../src/db/model/request";
 import { getQuotaSize } from "../src/libs/profile";
 import {
@@ -58,12 +58,38 @@ const client = new Pool().connect();
 jest.mock("../src/libs/profile", () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue({
+      dev: {
+        quotaCpuSize: "small",
+        quotaMemorySize: "small",
+        quotaStorageSize: "small",
+        quotaSnapshotSize: "small",
+      },
+      test: {
+        quotaCpuSize: "small",
+        quotaMemorySize: "small",
+        quotaStorageSize: "small",
+        quotaSnapshotSize: "small",
+      },
+      tools: {
+        quotaCpuSize: "small",
+        quotaMemorySize: "small",
+        quotaStorageSize: "small",
+        quotaSnapshotSize: "small",
+      },
+      prod: {
+        quotaCpuSize: "small",
+        quotaMemorySize: "small",
+        quotaStorageSize: "small",
+        quotaSnapshotSize: "small",
+      },
+    }),
+    updateProfileStatus: jest.fn(),
+    getNamespaceQuotaSize: jest.fn().mockResolvedValue({
       quotaCpuSize: "small",
       quotaMemorySize: "small",
       quotaStorageSize: "small",
       quotaSnapshotSize: "small",
     }),
-    updateProfileStatus: jest.fn(),
   };
 });
 
@@ -312,7 +338,7 @@ describe("Profile event handlers", () => {
   });
 
   it("Request profile quota size edit successfully", async () => {
-    const testRequestQuotaSize: ProjectQuotaSize = {
+    const testRequestQuotaSize: NamespaceQuotaSize = {
       quotaCpuSize: QuotaSize.Small,
       quotaMemorySize: QuotaSize.Small,
       quotaStorageSize: QuotaSize.Small,
@@ -320,6 +346,7 @@ describe("Profile event handlers", () => {
     };
     const body = {
       requestedQuotaSize: testRequestQuotaSize,
+      namespace: "e128df-dev",
     };
     const req = {
       params: { profileId: 4 },

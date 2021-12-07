@@ -19,14 +19,21 @@ import { Response } from "express";
 import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
 import { Contact } from "../db/model/contact";
-import { NameSpacesQuotaSize } from "../db/model/namespace";
+import {
+  ProjectSetAllowedQuotaSize,
+  NameSpacesQuotaSize,
+} from "../db/model/namespace";
 import { ProjectProfile } from "../db/model/profile";
 import { ProjectQuotaSize } from "../db/model/quota";
 import { Request } from "../db/model/request";
 import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "../libs/authmware";
 import { fulfillRequest } from "../libs/fulfillment";
-import { getQuotaSize, updateProfileStatus } from "../libs/profile";
+import {
+  getQuotaSize,
+  updateProfileStatus,
+  getNamespaceQuotaSize,
+} from "../libs/profile";
 import { getAllowedQuotaSizes } from "../libs/quota";
 import {
   requestProfileContactsEdit,
@@ -186,6 +193,7 @@ export const fetchProfileQuotaSize = async (
     const profile: ProjectProfile = await ProfileModel.findById(
       Number(profileId)
     );
+
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
 
     res.status(200).json(quotaSize);
@@ -207,12 +215,30 @@ export const fetchProfileAllowedQuotaSizes = async (
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
-
+  const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NameSpacesQuotaSize = {
+    quotaCpuSize: [],
+    quotaMemorySize: [],
+    quotaStorageSize: [],
+    quotaSnapshotSize: [],
+  };
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
-    const allowedQuotaSizes: NameSpacesQuotaSize =
-      getAllowedQuotaSizes(quotaSize);
+
+    const allowedQuotaSizes: ProjectSetAllowedQuotaSize = {
+      dev:
+        getAllowedQuotaSizes(quotaSize.dev) ||
+        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+      test:
+        getAllowedQuotaSizes(quotaSize.test) ||
+        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+      tools:
+        getAllowedQuotaSizes(quotaSize.tools) ||
+        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+      prod:
+        getAllowedQuotaSizes(quotaSize.prod) ||
+        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+    };
 
     res.status(200).json(allowedQuotaSizes);
   } catch (err) {
@@ -229,13 +255,13 @@ export const updateProfileQuotaSize = async (
 ): Promise<void> => {
   const { ProfileModel } = dm;
   const { profileId } = params;
-  const { requestedQuotaSize } = body;
+  const { requestedQuotaSize, namespace } = body;
 
   try {
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const namespaceQuotaSize = await getNamespaceQuotaSize(profile, namespace);
     const allowedQuotaSizes: NameSpacesQuotaSize =
-      getAllowedQuotaSizes(quotaSize);
+      getAllowedQuotaSizes(namespaceQuotaSize);
     const requiresHumanAction = true;
 
     // verify if requested quota size is valid
@@ -243,24 +269,24 @@ export const updateProfileQuotaSize = async (
       if (
         !(
           requestedQuotaSize[key] &&
-          (quotaSize[key].includes(requestedQuotaSize[key]) ||
+          (namespaceQuotaSize[key].includes(requestedQuotaSize[key]) ||
             allowedQuotaSizes[key].includes(requestedQuotaSize[key]))
         )
       ) {
         throw new Error("Please provide correct requested quota size in body");
       }
     });
-
     await requestProfileQuotaSizeEdit(
       Number(profileId),
       requestedQuotaSize,
       user,
-      requiresHumanAction
+      requiresHumanAction,
+      namespace
     );
 
     res.status(204).end();
   } catch (err) {
-    const message = `Unable to update quota-size for profile ${profileId}`;
+    const message = `Unable to update quota-size for profile ${profileId} namespace ${namespace}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

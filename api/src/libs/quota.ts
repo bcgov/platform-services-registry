@@ -16,7 +16,7 @@
 
 import { logger } from "@bcgov/common-nodejs-utils";
 import { NameSpacesQuotaSize } from "../db/model/namespace";
-import { ProjectQuotaSize, QuotaSize } from "../db/model/quota";
+import { NamespaceQuotaSize, QuotaSize } from "../db/model/quota";
 
 /**
  * Currently our rule for quota change is to allow user select any size below current option
@@ -42,7 +42,7 @@ export const getAllowQuotaForEachResource = (
 };
 
 export const getAllowedQuotaSizes = (
-  currentQuotaSize: ProjectQuotaSize
+  currentQuotaSize: NamespaceQuotaSize
 ): NameSpacesQuotaSize => {
   try {
     const availableQuotaOptions: NameSpacesQuotaSize = Object.keys(

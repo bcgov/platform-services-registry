@@ -15,7 +15,7 @@
 //
 
 import React from 'react';
-import { Route, RouteProps } from 'react-router-dom';
+import { Route, RouteProps, useLocation } from 'react-router-dom';
 import { PublicLayout } from '../layouts/Layout';
 import PrivateRoute from './PrivateRoute';
 
@@ -24,6 +24,13 @@ interface IAppRouteProps extends RouteProps {
   component: React.ComponentType<any>;
   checkQueryParams?: (props: any) => boolean;
 }
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+export const useQuery = () => {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+};
 
 const AppRoute: React.FC<IAppRouteProps> = (props) => {
   const { protected: usePrivateRoute, component: Component, checkQueryParams, ...rest } = props;

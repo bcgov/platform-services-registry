@@ -40,9 +40,22 @@ export interface Namespace {
   clusters: NamespaceCN[];
 }
 
-export interface ProjectResourceQuotaSize {
+export interface ProjectNamespaceResourceQuotaSize {
   quotaCpuSize: '';
   quotaMemorySize: '';
   quotaStorageSize: '';
   quotaSnapshotSize: '';
+}
+
+export interface NamespaceQuotaOption {
+  quotaCpuSize: QuotaSize[];
+  quotaMemorySize: QuotaSize[];
+  quotaStorageSize: QuotaSize[];
+  quotaSnapshotSize: QuotaSize[];
+}
+export interface ProjectSetResourceQuotaSize {
+  dev: ProjectNamespaceResourceQuotaSize;
+  test: ProjectNamespaceResourceQuotaSize;
+  tools: ProjectNamespaceResourceQuotaSize;
+  prod: ProjectNamespaceResourceQuotaSize;
 }

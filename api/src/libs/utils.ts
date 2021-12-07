@@ -98,3 +98,8 @@ export const transformContacts = (contactSet: any[]) => {
 export const generateNamespaceNames = (namespacePrefix: string) => {
   return PROJECT_SET_NAMES.map((n) => `${namespacePrefix}-${n}`);
 };
+
+export const getLicencePlatePostFix = (input: string | undefined): any => {
+  const regexMatch = input ? input.match(/(?<=-).*/) : null;
+  return regexMatch ? regexMatch[0] : "";
+};
