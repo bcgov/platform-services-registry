@@ -54,6 +54,7 @@ export interface NatsContext {
   description: string;
   ministry_id: string;
   namespaces: NatsProjectNamespace[];
+  merge_type: string;
   contacts: NatsContact[];
 }
 

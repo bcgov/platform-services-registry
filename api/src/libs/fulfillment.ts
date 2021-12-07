@@ -124,6 +124,10 @@ interface ProjectSetQuotasInNatsFormat {
   prod: QuotasInNatsFormat;
 }
 
+export enum MergeType {
+  Auto = "auto",
+  Manual = "manual",
+}
 const FOUR_NAME_SPACE = ["prod", "test", "dev", "tools"];
 
 const dm = new DataManager(shared.pgPool);
@@ -202,7 +206,8 @@ const buildContext = async (
   profileContacts: Contact[],
   quotaSize: ProjectSetQuotaSizeFormatInProvisonerFormat,
   quotas: ProjectSetQuotasInNatsFormat,
-  cluster: Cluster
+  cluster: Cluster,
+  auoMergeFlag: string
 ): Promise<NatsContext> => {
   try {
     if (!profile.id) {
@@ -238,6 +243,7 @@ const buildContext = async (
       display_name: profile.name,
       description: profile.description,
       ministry_id: profile.busOrgId,
+      merge_type: auoMergeFlag,
       namespaces,
       contacts,
     };
@@ -256,6 +262,7 @@ export const contextForProvisioning = async (
   isForSync: boolean = false
 ): Promise<NatsContext> => {
   try {
+    const auoMergeFlag: string = MergeType.Manual;
     const action = isForSync
       ? NatsContextAction.Sync
       : NatsContextAction.Create;
@@ -278,7 +285,8 @@ export const contextForProvisioning = async (
       contacts,
       provisonerPreferedFormatQuotasize,
       provisonerPreferedFormatQuotas,
-      cluster
+      cluster,
+      auoMergeFlag
     );
   } catch (err) {
     const message = `Unable to create context for provisioning ${profileId}`;
@@ -298,6 +306,7 @@ export const contextForEditing = async (
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
     let contacts: Contact[];
+    let auoMergeFlag: string = MergeType.Auto;
 
     if (requestEditType === RequestEditType.ProjectProfile) {
       profile = JSON.parse(requestEditObject);
@@ -313,6 +322,7 @@ export const contextForEditing = async (
       const editNamespacePostFix = getLicencePlatePostFix(
         requestEditObject.namespace
       );
+      auoMergeFlag = MergeType.Manual;
       if (
         editNamespacePostFix &&
         FOUR_NAME_SPACE.includes(editNamespacePostFix)
@@ -345,7 +355,8 @@ export const contextForEditing = async (
       contacts,
       provisonerPreferedFormatQuotasize,
       provisonerPreferedFormatQuotas,
-      cluster
+      cluster,
+      auoMergeFlag
     );
   } catch (err) {
     const message = `Unable to create context for updating ${profileId}`;
