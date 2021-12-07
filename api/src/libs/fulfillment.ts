@@ -128,7 +128,7 @@ export enum MergeType {
   Auto = "auto",
   Manual = "manual",
 }
-const FOUR_NAME_SPACE = ["prod", "test", "dev", "tools"];
+const PROJECT_SET = ["prod", "test", "dev", "tools"];
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, RequestModel } =
@@ -323,10 +323,7 @@ export const contextForEditing = async (
         requestEditObject.namespace
       );
       auoMergeFlag = MergeType.Manual;
-      if (
-        editNamespacePostFix &&
-        FOUR_NAME_SPACE.includes(editNamespacePostFix)
-      ) {
+      if (editNamespacePostFix && PROJECT_SET.includes(editNamespacePostFix)) {
         quotaSize[editNamespacePostFix] = requestEditObject.quota;
 
         quotas[editNamespacePostFix] = requestEditObject.quotas;
