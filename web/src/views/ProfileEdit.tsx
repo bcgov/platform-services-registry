@@ -88,7 +88,7 @@ const ProfileEdit: React.FC = (props: any) => {
     quotaStorageSize: [],
     quotaSnapshotSize: [],
   };
-  const FOUR_NAME_SPACE = ['prod', 'test', 'dev', 'tools'];
+  const PROJECT_SET = ['prod', 'test', 'dev', 'tools'];
   const namespaceSearchQuery = useQuery().get('namespace') || '';
   const editNamespace = getLicencePlatePostFix(namespaceSearchQuery);
 
@@ -349,28 +349,27 @@ const ProfileEdit: React.FC = (props: any) => {
               />
             )}
 
-            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA &&
-              FOUR_NAME_SPACE.includes(editNamespace) && (
-                <QuotaCardEdit
-                  profileId={profileId}
-                  licensePlate={profileState.quotaDetails.licensePlate || ''}
-                  quotaOptions={
-                    profileState.quotaDetails.quotaOptions[
-                      editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
-                    ] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
-                  }
-                  quotaSize={
-                    profileState.quotaDetails.quotaSize[
-                      editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
-                    ] || NAMESPACE_DEFAULT_QUOTA
-                  }
-                  handleSubmitRefresh={handleSubmitRefresh}
-                  isProvisioned={profileState.isProvisioned}
-                  hasPendingEdit={profileState.hasPendingEdit}
-                  namespace={namespaceSearchQuery}
-                  primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
-                />
-              )}
+            {viewName === PROFILE_EDIT_VIEW_NAMES.QUOTA && PROJECT_SET.includes(editNamespace) && (
+              <QuotaCardEdit
+                profileId={profileId}
+                licensePlate={profileState.quotaDetails.licensePlate || ''}
+                quotaOptions={
+                  profileState.quotaDetails.quotaOptions[
+                    editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
+                  ] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
+                }
+                quotaSize={
+                  profileState.quotaDetails.quotaSize[
+                    editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
+                  ] || NAMESPACE_DEFAULT_QUOTA
+                }
+                handleSubmitRefresh={handleSubmitRefresh}
+                isProvisioned={profileState.isProvisioned}
+                hasPendingEdit={profileState.hasPendingEdit}
+                namespace={namespaceSearchQuery}
+                primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
+              />
+            )}
           </ShadowBox>
         </Flex>
       </ShadowBox>

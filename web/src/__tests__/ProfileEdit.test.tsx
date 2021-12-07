@@ -103,7 +103,7 @@ test('matches the snapshot', async () => {
 
 function renderQuota() {
   const profileIdProp: string = '1';
-  const licensePlateProp: string = '473f50';
+  const licensePlate: string = '473f50';
   const quotaSizeProp: any = {
     quotaCpuSize: QuotaSize.Medium,
     quotaMemorySize: QuotaSize.Medium,
@@ -123,10 +123,10 @@ function renderQuota() {
   const utils = render(
     <QuotaCardEdit
       profileId={profileIdProp}
-      licensePlate={licensePlateProp}
+      licensePlate={licensePlate}
       quotaSize={quotaSizeProp}
       quotaOptions={quotaOptionsProp}
-      namespace={`${licensePlateProp}-dev`}
+      namespace={`${licensePlate}-dev`}
       primaryClusterName="gold"
       handleSubmitRefresh={handleSubmitRefreshProp}
       isProvisioned={isProvisionedProp}

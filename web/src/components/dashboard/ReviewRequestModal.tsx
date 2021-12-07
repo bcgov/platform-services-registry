@@ -21,7 +21,7 @@ import { Box, Flex, Heading, Text } from 'rebass';
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
-import { findDifferenceBetweenTwoDifferentObject, getLicencePlatePostFix } from '../../utils/utils';
+import { findDifference, getLicencePlatePostFix } from '../../utils/utils';
 import { StyledFormButton } from '../common/UI/Button';
 import RadioInput from '../common/UI/RadioInput';
 import TextAreaInput from '../common/UI/TextAreaInput';
@@ -90,10 +90,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
 
   const requestedUpdateQuota =
     profileDetails.type === 'edit'
-      ? findDifferenceBetweenTwoDifferentObject(
-          profileDetails.editObject.quota,
-          profileDetails.quotaSize[editNamespace],
-        )
+      ? findDifference(profileDetails.editObject.quota, profileDetails.quotaSize[editNamespace])
       : [];
 
   const parseContacts = (contactDetails: any) => {
