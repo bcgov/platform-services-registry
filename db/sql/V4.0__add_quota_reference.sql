@@ -1,11 +1,11 @@
 BEGIN TRANSACTION;
 
 CREATE TABLE IF NOT EXISTS ref_cpu_quota (
-    id                  varchar(32) PRIMARY KEY,
-    cpu_requests        real NOT NULL,
-    cpu_limits          real NOT NULL,
-    created_at          timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at          timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    id              varchar(32) PRIMARY KEY,
+    cpu_requests    real NOT NULL,
+    cpu_limits      real NOT NULL,
+    created_at      timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at      timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 DROP TRIGGER IF EXISTS update_ref_cpu_quota_changetimestamp on ref_cpu_quota;
