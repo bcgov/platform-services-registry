@@ -56,13 +56,10 @@ CREATE TABLE IF NOT EXISTS ref_storage_quota (
     created_at          timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
 
-
 DROP TRIGGER IF EXISTS update_ref_storage_quota_changetimestamp on ref_storage_quota;
 CREATE TRIGGER update_ref_storage_quota_changetimestamp BEFORE UPDATE
 ON ref_storage_quota FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
-
-
 
 INSERT INTO ref_storage_quota(id, storage_block, storage_file, storage_backup, storage_capacity, storage_pvc_count) VALUES
     ('storage-1', '1Gi','1Gi','512m','1Gi', 60),
@@ -75,7 +72,6 @@ INSERT INTO ref_storage_quota(id, storage_block, storage_file, storage_backup, s
     ('storage-256', '256Gi','256Gi','128Gi','256Gi', 60),
     ('storage-512', '512Gi','512Gi','256Gi','512Gi', 60)
 ON CONFLICT (id) DO NOTHING;
-
 
 CREATE TABLE IF NOT EXISTS ref_snapshot_quota (
     id                  varchar(16) PRIMARY KEY,
