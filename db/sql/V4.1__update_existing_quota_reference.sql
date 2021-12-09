@@ -1,11 +1,15 @@
 BEGIN TRANSACTION;
 
-ALTER TABLE cluster_namespace
+ALTER TABLE 
+  cluster_namespace 
 DROP 
-    CONSTRAINT  cluster_namespace_quota_snapshot_size_fkey,
-                cluster_namespace_quota_storage_size_fkey,
-                cluster_namespace_quota_memory_size_fkey,
-                cluster_namespace_quota_cpu_size_fkey,
+  CONSTRAINT cluster_namespace_quota_snapshot_size_fkey, 
+DROP 
+  CONSTRAINT cluster_namespace_quota_storage_size_fkey, 
+DROP 
+  CONSTRAINT cluster_namespace_quota_memory_size_fkey, 
+DROP 
+  CONSTRAINT cluster_namespace_quota_cpu_size_fkey, 
 ALTER COLUMN quota_cpu_size TYPE varchar(32), 
 ALTER COLUMN quota_memory_size TYPE varchar(32);
 
