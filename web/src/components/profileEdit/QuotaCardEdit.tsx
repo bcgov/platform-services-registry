@@ -145,7 +145,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
-
   const getCorrespondingQuota = (
     selectedSizes: ProjectNamespaceResourceQuotaSize,
   ): QuotaSpecsInterface => {
@@ -193,6 +192,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
         return '';
     }
   };
+
   const QUOTA_INFORMATION: any = {
     cpuNums: {
       displayTitle: 'CPU',

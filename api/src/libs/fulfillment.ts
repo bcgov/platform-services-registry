@@ -94,6 +94,12 @@ interface ProjectSetQuotaSizeFormatInProvisonerFormat {
   tools: QuotasizeFormatInProvisonerFormat;
   prod: QuotasizeFormatInProvisonerFormat;
 }
+interface ProjectSetQuotaSizeFormatInProvisonerFormat {
+  dev: QuotasizeFormatInProvisonerFormat;
+  test: QuotasizeFormatInProvisonerFormat;
+  tools: QuotasizeFormatInProvisonerFormat;
+  prod: QuotasizeFormatInProvisonerFormat;
+}
 
 interface QuotasInNatsFormat {
   cpu: {
@@ -121,7 +127,11 @@ interface ProjectSetQuotasInNatsFormat {
   prod: QuotasInNatsFormat;
 }
 
-const FOUR_NAME_SPACE = ["prod", "test", "dev", "tools"];
+export enum MergeType {
+  Auto = "auto",
+  Manual = "manual",
+}
+const PROJECT_SET = ["prod", "test", "dev", "tools"];
 
 const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel, QuotaModel, NamespaceModel, RequestModel } =
@@ -199,7 +209,8 @@ const buildContext = async (
   profileContacts: Contact[],
   quotaSize: ProjectSetQuotaSizeFormatInProvisonerFormat,
   quotas: ProjectSetQuotasInNatsFormat,
-  cluster: Cluster
+  cluster: Cluster,
+  auoMergeFlag: string
 ): Promise<NatsContext> => {
   try {
     if (!profile.id) {
@@ -235,6 +246,7 @@ const buildContext = async (
       display_name: profile.name,
       description: profile.description,
       ministry_id: profile.busOrgId,
+      merge_type: auoMergeFlag,
       namespaces,
       contacts,
     };
@@ -253,6 +265,7 @@ export const contextForProvisioning = async (
   isForSync: boolean = false
 ): Promise<NatsContext> => {
   try {
+    const auoMergeFlag: string = MergeType.Manual;
     const action = isForSync
       ? NatsContextAction.Sync
       : NatsContextAction.Create;
@@ -275,7 +288,8 @@ export const contextForProvisioning = async (
       contacts,
       provisonerPreferedFormatQuotasize,
       provisonerPreferedFormatQuotas,
-      cluster
+      cluster,
+      auoMergeFlag
     );
   } catch (err) {
     const message = `Unable to create context for provisioning ${profileId}`;
@@ -295,6 +309,7 @@ export const contextForEditing = async (
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
     let contacts: Contact[];
+    let auoMergeFlag: string = MergeType.Auto;
 
     if (requestEditType === RequestEditType.ProjectProfile) {
       profile = JSON.parse(requestEditObject);
@@ -310,10 +325,8 @@ export const contextForEditing = async (
       const editNamespacePostFix = getLicencePlatePostFix(
         requestEditObject.namespace
       );
-      if (
-        editNamespacePostFix &&
-        FOUR_NAME_SPACE.includes(editNamespacePostFix)
-      ) {
+      auoMergeFlag = MergeType.Manual;
+      if (editNamespacePostFix && PROJECT_SET.includes(editNamespacePostFix)) {
         quotaSize[editNamespacePostFix] = requestEditObject.quota;
 
         quotas[editNamespacePostFix] = requestEditObject.quotas;
@@ -342,7 +355,8 @@ export const contextForEditing = async (
       contacts,
       provisonerPreferedFormatQuotasize,
       provisonerPreferedFormatQuotas,
-      cluster
+      cluster,
+      auoMergeFlag
     );
   } catch (err) {
     const message = `Unable to create context for updating ${profileId}`;
