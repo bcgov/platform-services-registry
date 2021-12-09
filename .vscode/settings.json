@@ -1,6 +1,7 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
+    "source.fixAll.sqlfluff": true
   },
-  "eslint.validate": ["typescript"]
+  "eslint.validate": ["typescript", "sql"]
 }

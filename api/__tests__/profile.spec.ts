@@ -19,7 +19,6 @@ import path from "path";
 import { Pool } from "pg";
 import {
   addContactToProfile,
-  fetchProfileAllowedQuotaSizes,
   fetchProfileContacts,
   fetchProfileEditRequests,
   fetchProfileQuotaSize,
@@ -27,7 +26,8 @@ import {
   updateProfileQuotaSize,
 } from "../src/controllers/profile";
 import ContactModel from "../src/db/model/contact";
-import { NamespaceQuotaSize, QuotaSize } from "../src/db/model/quota";
+import { NamespaceQuotaSize } from "../src/db/model/quota";
+import { DEFAULT_NAMESPACE_INITIAL_VALUE } from "../src/constants";
 import RequestModel from "../src/db/model/request";
 import { getQuotaSize } from "../src/libs/profile";
 import {
@@ -306,44 +306,41 @@ describe("Profile event handlers", () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it("returns a list of quota options for a given profile", async () => {
-    const req = {
-      params: { profileId: 4 },
-    };
+  // Comment out this code becasue under current rule, we allow user to select all available quota size
+  // it("returns a list of quota options for a given profile", async () => {
+  //   const req = {
+  //     params: { profileId: 4 },
+  //   };
 
-    client.query.mockReturnValueOnce({ rows: selectProfile });
+  //   client.query.mockReturnValueOnce({ rows: selectProfile });
 
-    await fetchProfileAllowedQuotaSizes(req, ex.res);
+  //   await fetchProfileAllowedQuotaSizes(req, ex.res);
 
-    expect(client.query.mock.calls).toMatchSnapshot();
-    expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
-    expect(ex.res.status).toBeCalled();
-    expect(ex.res.json).toBeCalled();
-  });
+  //   expect(client.query.mock.calls).toMatchSnapshot();
+  //   expect(ex.res.statusCode).toMatchSnapshot();
+  //   expect(ex.responseData).toMatchSnapshot();
+  //   expect(ex.res.status).toBeCalled();
+  //   expect(ex.res.json).toBeCalled();
+  // });
+  // Comment out this code becasue under current rule, we allow user to select all available quota size
+  // it("throws an error when fetching a list of quota options for a given profile has a problem", async () => {
+  //   const req = {
+  //     params: { profileId: 4 },
+  //   };
 
-  it("throws an error when fetching a list of quota options for a given profile has a problem", async () => {
-    const req = {
-      params: { profileId: 4 },
-    };
+  //   client.query.mockImplementation(() => {
+  //     throw new Error();
+  //   });
 
-    client.query.mockImplementation(() => {
-      throw new Error();
-    });
-
-    await expect(
-      fetchProfileAllowedQuotaSizes(req, ex.res)
-    ).rejects.toThrowErrorMatchingSnapshot();
-    expect(ex.responseData).toBeUndefined();
-  });
+  //   await expect(
+  //     fetchProfileAllowedQuotaSizes(req, ex.res)
+  //   ).rejects.toThrowErrorMatchingSnapshot();
+  //   expect(ex.responseData).toBeUndefined();
+  // });
 
   it("Request profile quota size edit successfully", async () => {
-    const testRequestQuotaSize: NamespaceQuotaSize = {
-      quotaCpuSize: QuotaSize.Small,
-      quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small,
-      quotaSnapshotSize: QuotaSize.Small,
-    };
+    const testRequestQuotaSize: NamespaceQuotaSize =
+      DEFAULT_NAMESPACE_INITIAL_VALUE;
     const body = {
       requestedQuotaSize: testRequestQuotaSize,
       namespace: "e128df-dev",
@@ -367,12 +364,7 @@ describe("Profile event handlers", () => {
   // Disable this test because current decision is allow user to request any quota size
   it.skip("throws an error if profile quota size edit request is invalid", async () => {
     const body = {
-      requestedQuotaSize: {
-        quotaCpuSize: QuotaSize.Large,
-        quotaMemorySize: QuotaSize.Large,
-        quotaStorageSize: QuotaSize.Large,
-        quotaSnapshotSize: QuotaSize.Large,
-      },
+      requestedQuotaSize: DEFAULT_NAMESPACE_INITIAL_VALUE,
     };
     const req = {
       params: { profileId: 4 },

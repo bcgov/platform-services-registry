@@ -18,12 +18,6 @@ import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
 import { CommonFields, Model } from "./model";
 
-export enum QuotaSize {
-  Small = "small",
-  Medium = "medium",
-  Large = "large",
-}
-
 export enum QuotaSizeQueryRef {
   CPUQuery = "CPUQuery",
   MemoryQuery = "MemoryQuery",
@@ -31,10 +25,10 @@ export enum QuotaSizeQueryRef {
   SnapshotQuery = "SnapshotQuery",
 }
 export interface NamespaceQuotaSize {
-  quotaCpuSize: QuotaSize;
-  quotaMemorySize: QuotaSize;
-  quotaStorageSize: QuotaSize;
-  quotaSnapshotSize: QuotaSize;
+  quotaCpuSize: string;
+  quotaMemorySize: string;
+  quotaStorageSize: string;
+  quotaSnapshotSize: string;
 }
 export interface ProjectQuotaSize {
   dev: NamespaceQuotaSize;

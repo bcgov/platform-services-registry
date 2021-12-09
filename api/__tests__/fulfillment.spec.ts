@@ -17,7 +17,8 @@
 import fs from "fs";
 import path from "path";
 import { Pool } from "pg";
-import { ProjectQuotaSize, QuotaSize } from "../src/db/model/quota";
+import { ProjectQuotaSize } from "../src/db/model/quota";
+import { DEFAULT_NAMESPACE_INITIAL_VALUE } from "../src/constants";
 import RequestModel, { RequestEditType } from "../src/db/model/request";
 import {
   contextForEditing,
@@ -61,30 +62,10 @@ const profileCluster = JSON.parse(fs.readFileSync(p10, "utf8"));
 
 jest.mock("../src/libs/profile", () => {
   const testQuotaSize: ProjectQuotaSize = {
-    dev: {
-      quotaCpuSize: QuotaSize.Small,
-      quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small,
-      quotaSnapshotSize: QuotaSize.Small,
-    },
-    test: {
-      quotaCpuSize: QuotaSize.Small,
-      quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small,
-      quotaSnapshotSize: QuotaSize.Small,
-    },
-    tools: {
-      quotaCpuSize: QuotaSize.Small,
-      quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small,
-      quotaSnapshotSize: QuotaSize.Small,
-    },
-    prod: {
-      quotaCpuSize: QuotaSize.Small,
-      quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small,
-      quotaSnapshotSize: QuotaSize.Small,
-    },
+    dev: DEFAULT_NAMESPACE_INITIAL_VALUE,
+    test: DEFAULT_NAMESPACE_INITIAL_VALUE,
+    tools: DEFAULT_NAMESPACE_INITIAL_VALUE,
+    prod: DEFAULT_NAMESPACE_INITIAL_VALUE,
   };
   return {
     getQuotaSize: jest.fn().mockResolvedValue(testQuotaSize),
@@ -225,13 +206,14 @@ describe("Fulfillment utility", () => {
   });
 
   it("should create a context for a quota edit", async () => {
+    const TEST_NAMESPACE_QUOTA_SIZE = {
+      quotaCpuSize: "cpu-request-2-limit-4",
+      quotaMemorySize: "memory-request-4-limit-8",
+      quotaStorageSize: "storage-16",
+      quotaSnapshotSize: "snapshot-5",
+    };
     const requestEditObject = {
-      quota: {
-        quotaCpuSize: QuotaSize.Small,
-        quotaMemorySize: QuotaSize.Medium,
-        quotaStorageSize: QuotaSize.Small,
-        quotaSnapshotSize: QuotaSize.Small,
-      },
+      quota: TEST_NAMESPACE_QUOTA_SIZE,
       quotas: spec,
       namespace: "4ea35c-dev",
     };
@@ -258,7 +240,7 @@ describe("Fulfillment utility", () => {
 
   it("should throw an error if edit context is missing contacts", async () => {
     const requestEditObject = {
-      quota: QuotaSize.Small,
+      quota: DEFAULT_NAMESPACE_INITIAL_VALUE,
       quotas: spec,
     };
     const requestEditType = RequestEditType.QuotaSize;
@@ -279,7 +261,7 @@ describe("Fulfillment utility", () => {
 
   it("should throw an error if edit context query fails", async () => {
     const requestEditObject = {
-      quota: QuotaSize.Small,
+      quota: DEFAULT_NAMESPACE_INITIAL_VALUE,
       quotas: spec,
     };
     const requestEditType = RequestEditType.QuotaSize;

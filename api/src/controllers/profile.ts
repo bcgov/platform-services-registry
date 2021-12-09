@@ -19,10 +19,6 @@ import { Response } from "express";
 import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
 import { Contact } from "../db/model/contact";
-import {
-  ProjectSetAllowedQuotaSize,
-  NameSpacesQuotaSize,
-} from "../db/model/namespace";
 import { ProjectProfile } from "../db/model/profile";
 import { ProjectQuotaSize } from "../db/model/quota";
 import { Request } from "../db/model/request";
@@ -30,7 +26,6 @@ import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "../libs/authmware";
 import { fulfillRequest } from "../libs/fulfillment";
 import { getQuotaSize, updateProfileStatus } from "../libs/profile";
-import { getAllowedQuotaSizes } from "../libs/quota";
 import {
   requestProfileContactsEdit,
   requestProfileQuotaSizeEdit,
@@ -205,45 +200,46 @@ export const fetchProfileQuotaSize = async (
   }
 };
 
-export const fetchProfileAllowedQuotaSizes = async (
-  { params }: { params: any },
-  res: Response
-): Promise<void> => {
-  const { ProfileModel } = dm;
-  const { profileId } = params;
-  const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NameSpacesQuotaSize = {
-    quotaCpuSize: [],
-    quotaMemorySize: [],
-    quotaStorageSize: [],
-    quotaSnapshotSize: [],
-  };
-  try {
-    const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+// Comment out this code becasue under current rule, we allow user to select all available quota size
+// export const fetchProfileAllowedQuotaSizes = async (
+//   { params }: { params: any },
+//   res: Response
+// ): Promise<void> => {
+//   const { ProfileModel } = dm;
+//   const { profileId } = params;
+//   const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NameSpacesQuotaSize = {
+//     quotaCpuSize: [],
+//     quotaMemorySize: [],
+//     quotaStorageSize: [],
+//     quotaSnapshotSize: [],
+//   };
+//   try {
+//     const profile: ProjectProfile = await ProfileModel.findById(profileId);
+//     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
 
-    const allowedQuotaSizes: ProjectSetAllowedQuotaSize = {
-      dev:
-        getAllowedQuotaSizes(quotaSize.dev) ||
-        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-      test:
-        getAllowedQuotaSizes(quotaSize.test) ||
-        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-      tools:
-        getAllowedQuotaSizes(quotaSize.tools) ||
-        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-      prod:
-        getAllowedQuotaSizes(quotaSize.prod) ||
-        DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-    };
+//     const allowedQuotaSizes: ProjectSetAllowedQuotaSize = {
+//       dev:
+//         getAllowedQuotaSizes(quotaSize.dev) ||
+//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+//       test:
+//         getAllowedQuotaSizes(quotaSize.test) ||
+//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+//       tools:
+//         getAllowedQuotaSizes(quotaSize.tools) ||
+//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+//       prod:
+//         getAllowedQuotaSizes(quotaSize.prod) ||
+//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
+//     };
 
-    res.status(200).json(allowedQuotaSizes);
-  } catch (err) {
-    const message = `Unable to fetch allowed quota-sizes for profile ${profileId}`;
-    logger.error(`${message}, err = ${err.message}`);
+//     res.status(200).json(allowedQuotaSizes);
+//   } catch (err) {
+//     const message = `Unable to fetch allowed quota-sizes for profile ${profileId}`;
+//     logger.error(`${message}, err = ${err.message}`);
 
-    throw errorWithCode(message, 500);
-  }
-};
+//     throw errorWithCode(message, 500);
+//   }
+// };
 
 export const updateProfileQuotaSize = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },

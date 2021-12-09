@@ -363,84 +363,6 @@ exports[`Profile event handlers requests profile contacts edit with provisioner-
 
 exports[`Profile event handlers requests profile contacts edit with provisioner-related changes 3`] = `undefined`;
 
-exports[`Profile event handlers returns a list of quota options for a given profile 1`] = `
-Array [
-  Array [
-    Object {
-      "text": "
-        SELECT * FROM profile
-          WHERE id = $1 AND archived = false;",
-      "values": Array [
-        4,
-      ],
-    },
-  ],
-]
-`;
-
-exports[`Profile event handlers returns a list of quota options for a given profile 2`] = `200`;
-
-exports[`Profile event handlers returns a list of quota options for a given profile 3`] = `
-Object {
-  "dev": Object {
-    "quotaCpuSize": Array [
-      "medium",
-    ],
-    "quotaMemorySize": Array [
-      "medium",
-    ],
-    "quotaSnapshotSize": Array [
-      "medium",
-    ],
-    "quotaStorageSize": Array [
-      "medium",
-    ],
-  },
-  "prod": Object {
-    "quotaCpuSize": Array [
-      "medium",
-    ],
-    "quotaMemorySize": Array [
-      "medium",
-    ],
-    "quotaSnapshotSize": Array [
-      "medium",
-    ],
-    "quotaStorageSize": Array [
-      "medium",
-    ],
-  },
-  "test": Object {
-    "quotaCpuSize": Array [
-      "medium",
-    ],
-    "quotaMemorySize": Array [
-      "medium",
-    ],
-    "quotaSnapshotSize": Array [
-      "medium",
-    ],
-    "quotaStorageSize": Array [
-      "medium",
-    ],
-  },
-  "tools": Object {
-    "quotaCpuSize": Array [
-      "medium",
-    ],
-    "quotaMemorySize": Array [
-      "medium",
-    ],
-    "quotaSnapshotSize": Array [
-      "medium",
-    ],
-    "quotaStorageSize": Array [
-      "medium",
-    ],
-  },
-}
-`;
-
 exports[`Profile event handlers returns the profiles quota size 1`] = `
 Array [
   Array [
@@ -492,8 +414,6 @@ exports[`Profile event handlers throws an error if profile quota size edit reque
 exports[`Profile event handlers throws an error if there is a db transaction issue when requesting profile quota size edit 1`] = `"Unable to update quota-size for profile 4 namespace undefined"`;
 
 exports[`Profile event handlers throws an error when fetch profiles quota size has problem 1`] = `"Unable fetch profile quota size with profile ID 4"`;
-
-exports[`Profile event handlers throws an error when fetching a list of quota options for a given profile has a problem 1`] = `"Unable to fetch allowed quota-sizes for profile 4"`;
 
 exports[`Profile event handlers updates profile contacts with non provisioner-related changes 1`] = `
 Array [
