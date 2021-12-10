@@ -1,11 +1,11 @@
 BEGIN TRANSACTION;
 
 CREATE TABLE IF NOT EXISTS ref_cpu_quota (
-    id                  varchar(32) PRIMARY KEY,
-    cpu_requests        real NOT NULL,
-    cpu_limits          real NOT NULL,
-    created_at  timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    id              varchar(32) PRIMARY KEY,
+    cpu_requests    real NOT NULL,
+    cpu_limits      real NOT NULL,
+    created_at      timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at      timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 DROP TRIGGER IF EXISTS update_ref_cpu_quota_changetimestamp on ref_cpu_quota;
@@ -24,20 +24,17 @@ INSERT INTO ref_cpu_quota (id, cpu_requests, cpu_limits) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS ref_memory_quota (
-    id                  varchar(32) PRIMARY KEY,
-    memory_requests     varchar(16) NOT NULL,
-    memory_limits       varchar(16) NOT NULL,
-    created_at  timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    id               varchar(32) PRIMARY KEY,
+    memory_requests  varchar(16) NOT NULL,
+    memory_limits    varchar(16) NOT NULL,
+    created_at       timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at       timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
-
 
 DROP TRIGGER IF EXISTS update_ref_memory_quota_changetimestamp on ref_memory_quota;
 CREATE TRIGGER update_ref_memory_quota_changetimestamp BEFORE UPDATE
 ON ref_memory_quota FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
-
-
 
 INSERT INTO ref_memory_quota(id, memory_requests, memory_limits) VALUES
     ('memory-request-2-limit-4', '2Gi', '4Gi'),
@@ -54,18 +51,15 @@ CREATE TABLE IF NOT EXISTS ref_storage_quota (
     storage_file        varchar(16) NOT NULL,
     storage_backup      varchar(16) NOT NULL,
     storage_capacity    varchar(16) NOT NULL,
-    storage_pvc_count   SMALLINT NOT NULL,
-    created_at  timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    storage_pvc_count   smallint NOT NULL,
+    updated_at          timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    created_at          timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
-
 
 DROP TRIGGER IF EXISTS update_ref_storage_quota_changetimestamp on ref_storage_quota;
 CREATE TRIGGER update_ref_storage_quota_changetimestamp BEFORE UPDATE
 ON ref_storage_quota FOR EACH ROW EXECUTE PROCEDURE 
 update_changetimestamp_column();
-
-
 
 INSERT INTO ref_storage_quota(id, storage_block, storage_file, storage_backup, storage_capacity, storage_pvc_count) VALUES
     ('storage-1', '1Gi','1Gi','512m','1Gi', 60),
@@ -79,12 +73,11 @@ INSERT INTO ref_storage_quota(id, storage_block, storage_file, storage_backup, s
     ('storage-512', '512Gi','512Gi','256Gi','512Gi', 60)
 ON CONFLICT (id) DO NOTHING;
 
-
 CREATE TABLE IF NOT EXISTS ref_snapshot_quota (
     id                  varchar(16) PRIMARY KEY,
-    snapshot_volume     SMALLINT NOT NULL DEFAULT 5,
-    created_at  timestamp DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at  timestamp DEFAULT CURRENT_TIMESTAMP(3)
+    snapshot_volume     smallint NOT NULL DEFAULT 5,
+    created_at          timestamp DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at          timestamp DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 DROP TRIGGER IF EXISTS update_ref_snapshot_quota_changetimestamp on ref_snapshot_quota;
