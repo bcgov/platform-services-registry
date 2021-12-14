@@ -302,7 +302,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       // 2. Request the profile quota edit.
       await api.updateQuotaSizeByProfileId(profileId, requestBody);
 
-      // // 3. All good? Redirect back to overview and tell the user.
+      // 3. All good? Redirect back to overview and tell the user.
       handleSubmitRefresh();
       setGoBackToProfileEditable(true);
       promptSuccessToastWithText('Your quota request was successful');

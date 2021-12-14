@@ -128,13 +128,6 @@ router.get(
   asyncMiddleware(fetchProfileQuotaSize)
 );
 
-// Comment out this code becasue under current rule, we allow user to select all available quota size
-// router.get(
-//   "/:profileId/allowed-quota-sizes",
-//   authorize(validateRequiredProfile),
-//   asyncMiddleware(fetchProfileAllowedQuotaSizes)
-// );
-
 // will involve provisioner-related changes
 router.post(
   "/:profileId/quota-size",

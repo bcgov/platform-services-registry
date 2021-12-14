@@ -409,10 +409,6 @@ Object {
 }
 `;
 
-exports[`Profile event handlers throws an error if profile quota size edit request is invalid 1`] = `"Unable to update quota-size for profile 4 namespace undefined"`;
-
-exports[`Profile event handlers throws an error if there is a db transaction issue when requesting profile quota size edit 1`] = `"Unable to update quota-size for profile 4 namespace undefined"`;
-
 exports[`Profile event handlers throws an error when fetch profiles quota size has problem 1`] = `"Unable fetch profile quota size with profile ID 4"`;
 
 exports[`Profile event handlers updates profile contacts with non provisioner-related changes 1`] = `

@@ -200,47 +200,6 @@ export const fetchProfileQuotaSize = async (
   }
 };
 
-// Comment out this code becasue under current rule, we allow user to select all available quota size
-// export const fetchProfileAllowedQuotaSizes = async (
-//   { params }: { params: any },
-//   res: Response
-// ): Promise<void> => {
-//   const { ProfileModel } = dm;
-//   const { profileId } = params;
-//   const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NameSpacesQuotaSize = {
-//     quotaCpuSize: [],
-//     quotaMemorySize: [],
-//     quotaStorageSize: [],
-//     quotaSnapshotSize: [],
-//   };
-//   try {
-//     const profile: ProjectProfile = await ProfileModel.findById(profileId);
-//     const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
-
-//     const allowedQuotaSizes: ProjectSetAllowedQuotaSize = {
-//       dev:
-//         getAllowedQuotaSizes(quotaSize.dev) ||
-//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-//       test:
-//         getAllowedQuotaSizes(quotaSize.test) ||
-//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-//       tools:
-//         getAllowedQuotaSizes(quotaSize.tools) ||
-//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-//       prod:
-//         getAllowedQuotaSizes(quotaSize.prod) ||
-//         DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-//     };
-
-//     res.status(200).json(allowedQuotaSizes);
-//   } catch (err) {
-//     const message = `Unable to fetch allowed quota-sizes for profile ${profileId}`;
-//     logger.error(`${message}, err = ${err.message}`);
-
-//     throw errorWithCode(message, 500);
-//   }
-// };
-
 export const updateProfileQuotaSize = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
   res: Response
