@@ -34,9 +34,6 @@ router.get("/", asyncMiddleware(fetchQuota));
 // Utilizes raw data from DB
 // and transfroms to usable data for the front end
 router.get("/sizes", asyncMiddleware(fetchQuotaSizes));
-router.get(
-  "/get-all-available-quota-sizes",
-  asyncMiddleware(getAllAllowedQuotaSize)
-);
+router.get("/allowed-quota-sizes", asyncMiddleware(getAllAllowedQuotaSize));
 
 export default router;

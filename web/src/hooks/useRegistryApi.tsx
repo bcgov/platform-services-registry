@@ -65,7 +65,7 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }
-    return axiosInstance.current.get(`quota/get-all-available-quota-sizes`);
+    return axiosInstance.current.get(`quota/allowed-quota-sizes`);
   };
 
   const getCluster = async (): Promise<AxiosResponse<any>> => {
@@ -175,15 +175,6 @@ export default function useRegistryApi() {
     return axiosInstance.current.get(`profile/${profileId}/quota-size`);
   };
 
-  const getAllowedQuotaSizesByProfileId = async (
-    profileId: string,
-  ): Promise<AxiosResponse<any>> => {
-    if (!axiosInstance.current) {
-      throw new Error(errorMsg);
-    }
-    return axiosInstance.current.get(`profile/${profileId}/allowed-quota-sizes`);
-  };
-
   const updateQuotaSizeByProfileId = async (
     profileId: string,
     requstedQuotas: any,
@@ -245,7 +236,6 @@ export default function useRegistryApi() {
     getNamespacesByProfileId,
     getQuotaSizeByProfileId,
     getProfileByProfileId,
-    getAllowedQuotaSizesByProfileId,
     updateQuotaSizeByProfileId,
     getEditRequestStatus,
     createProjectRequestByProfileId,

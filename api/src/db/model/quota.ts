@@ -64,22 +64,26 @@ export interface ProjectSetQuotas {
 }
 
 interface CPUQuotaSizeDedetail {
-  name: string;
-  cpuNums: string[];
+  id: string;
+  cpuRequests: number;
+  cpuLimits: number;
 }
 
 interface MemoryQuotaSizeDedetail {
-  name: string;
-  memoryNums: string[];
+  id: string;
+  memoryRequests: string;
+  memoryLimits: string;
 }
 
 interface StorageQuotaSizeDedetail {
-  name: string;
-  storageNums: string[];
+  id: string;
+  storagePvcCount: number;
+  storageFile: string;
+  storageBackup: string;
 }
 
 interface SnapshotQuotaSizeDedetail {
-  name: string;
+  id: string;
   snapshotNums: number;
 }
 interface NewQuotaSizeDedetails {
@@ -214,7 +218,7 @@ export default class QuotaModel extends Model {
         text: `SELECT id, memory_requests, memory_limits FROM ref_memory_quota;`,
       },
       StorageQuery: {
-        text: `SELECT id, storage_pvc_count, storage_File , storage_backup FROM ref_storage_quota;`,
+        text: `SELECT id, storage_pvc_count, storage_File, storage_backup FROM ref_storage_quota;`,
       },
       SnapshotQuery: {
         text: `SELECT id, snapshot_volume FROM ref_snapshot_quota;`,
@@ -232,7 +236,7 @@ export default class QuotaModel extends Model {
 
   async findQuotaSizes(): Promise<any> {
     try {
-      const newQuotaSizeDedetails = {
+      const quotaSizeDedetails: NewQuotaSizeDedetails = {
         CPU_QuotaSize_Detail:
           (await this.findResourceQuotaRef("CPUQuery")) || [],
         Memory_QuotaSize_Detail:
@@ -243,49 +247,7 @@ export default class QuotaModel extends Model {
           (await this.findResourceQuotaRef("SnapshotQuery")) || [],
       };
 
-      const formatedQuotaSizeDedetails: NewQuotaSizeDedetails = {
-        CPU_QuotaSize_Detail: [],
-        Memory_QuotaSize_Detail: [],
-        Storage_QuotaSize_Detail: [],
-        Snapshot_QuotaSize_Detail: [],
-      };
-
-      newQuotaSizeDedetails.CPU_QuotaSize_Detail.forEach((CPUOption) => {
-        formatedQuotaSizeDedetails.CPU_QuotaSize_Detail.push({
-          name: CPUOption.id,
-          cpuNums: [CPUOption.cpuRequests, CPUOption.cpuLimits],
-        });
-      });
-      newQuotaSizeDedetails.Memory_QuotaSize_Detail.forEach((memoryOption) => {
-        formatedQuotaSizeDedetails.Memory_QuotaSize_Detail.push({
-          name: memoryOption.id,
-          memoryNums: [
-            memoryOption.memoryRequests.replace("Gi", "GiB"),
-            memoryOption.memoryLimits.replace("Gi", "GiB"),
-          ],
-        });
-      });
-      newQuotaSizeDedetails.Storage_QuotaSize_Detail.forEach(
-        (storageOption) => {
-          formatedQuotaSizeDedetails.Storage_QuotaSize_Detail.push({
-            name: storageOption.id,
-            storageNums: [
-              storageOption.storagePvcCount,
-              storageOption.storageFile.replace("Gi", "GiB"),
-              storageOption.storageBackup.replace("Gi", "GiB"),
-            ],
-          });
-        }
-      );
-      newQuotaSizeDedetails.Snapshot_QuotaSize_Detail.forEach(
-        (snapshotOption) => {
-          formatedQuotaSizeDedetails.Snapshot_QuotaSize_Detail.push({
-            name: snapshotOption.id,
-            snapshotNums: snapshotOption.snapshotVolume,
-          });
-        }
-      );
-      return formatedQuotaSizeDedetails;
+      return quotaSizeDedetails;
     } catch (err) {
       const message = `Unable to get quota sizes`;
       logger.error(`${message}, err = ${err.message}`);

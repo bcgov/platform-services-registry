@@ -2,95 +2,126 @@
   "CPU_QuotaSize_Detail": [
     {
       "name": "cpu-request-0.5-limit-1.5",
-      "cpuNums": [0.5, 1.5]
+      "cpuRequests": 0.5,
+      "cpuLimits": 1.5
     },
     {
       "name": "cpu-request-1-limit-2",
-      "cpuNums": [1, 2]
+      "cpuRequests": 1,
+      "cpuLimits": 2
     },
     {
       "name": "cpu-request-2-limit-4",
-      "cpuNums": [2, 4]
+      "cpuRequests": 2,
+      "cpuLimits": 4
     },
     {
       "name": "cpu-request-4-limit-8",
-      "cpuNums": [4, 8]
+      "cpuRequests": 4,
+      "cpuLimits": 8
     },
     {
       "name": "cpu-request-8-limit-16",
-      "cpuNums": [8, 16]
+      "cpuRequests": 8,
+      "cpuLimits": 16
     },
     {
       "name": "cpu-request-16-limit-32",
-      "cpuNums": [16, 32]
+      "cpuRequests": 16,
+      "cpuLimits": 32
     },
     {
       "name": "cpu-request-32-limit-64",
-      "cpuNums": [32, 64]
+      "cpuRequests": 32,
+      "cpuLimits": 64
     }
   ],
   "Memory_QuotaSize_Detail": [
     {
       "name": "memory-request-2-limit-4",
-      "memoryNums": ["2GiB", "4GiB"]
+      "memoryRequests": "2GiB",
+      "memoryLimits": "4GiB"
     },
     {
       "name": "memory-request-4-limit-8",
-      "memoryNums": ["4GiB", "8GiB"]
+      "memoryRequests": "4GiB",
+      "memoryLimits": "8GiB"
     },
     {
       "name": "memory-request-8-limit-16",
-      "memoryNums": ["8GiB", "16GiB"]
+      "memoryRequests": "8GiB",
+      "memoryLimits": "16GiB"
     },
     {
       "name": "memory-request-16-limit-32",
-      "memoryNums": ["16GiB", "32GiB"]
+      "memoryRequests": "16GiB",
+      "memoryLimits": "32GiB"
     },
     {
       "name": "memory-request-32-limit-64",
-      "memoryNums": ["32GiB", "64GiB"]
+      "memoryRequests": "32GiB",
+      "memoryLimits": "64GiB"
     },
     {
       "name": "memory-request-64-limit-128",
-      "memoryNums": ["64GiB", "32GiB"]
+      "memoryRequests": "64GiB",
+      "memoryLimits": "32GiB"
     }
   ],
   "Storage_QuotaSize_Detail": [
     {
       "name": "storage-1",
-      "storageNums": [60, "1GiB", "512m"]
+      "storagePvcCount": 60,
+      "storageFile": "1GiB",
+      "storageBackup": "512m"
     },
     {
       "name": "storage-2",
-      "storageNums": [60, "2GiB", "1GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "2GiB",
+      "storageBackup": "1GiB"
     },
     {
       "name": "storage-4",
-      "storageNums": [60, "4GiB", "2GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "4GiB",
+      "storageBackup": "2GiB"
     },
     {
       "name": "storage-16",
-      "storageNums": [60, "16GiB", "8GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "16GiB",
+      "storageBackup": "8GiB"
     },
     {
       "name": "storage-32",
-      "storageNums": [60, "32GiB", "16GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "32GiB",
+      "storageBackup": "16Gi"
     },
     {
       "name": "storage-64",
-      "storageNums": [60, "64GiB", "32GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "64GiB",
+      "storageBackup": "32Gi"
     },
     {
       "name": "storage-128",
-      "storageNums": [60, "128GiB", "64GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "128GiB",
+      "storageBackup": "64GB"
     },
     {
       "name": "storage-256",
-      "storageNums": [60, "256GiB", "128GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "256GiB",
+      "storageBackup": " 28GiB"
     },
     {
       "name": "storage-512",
-      "storageNums": [60, "512GiB", "256GiB"]
+      "storagePvcCount": 60,
+      "storageFile": "512GiB",
+      "storageBackup": "256iB"
     }
   ],
   "Snapshot_QuotaSize_Detail": [

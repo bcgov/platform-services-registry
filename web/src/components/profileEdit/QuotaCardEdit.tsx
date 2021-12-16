@@ -58,23 +58,39 @@ interface QuotaSpecsInterface {
 }
 
 interface CPUQuotaSizeDedetail {
-  name: string;
-  cpuNums: string[];
+  id: string;
+  cpuRequests: number;
+  cpuLimits: number;
 }
 
 interface MemoryQuotaSizeDedetail {
-  name: string;
-  memoryNums: string[];
+  id: string;
+  memoryRequests: string;
+  memoryLimits: string;
 }
 
 interface StorageQuotaSizeDedetail {
-  name: string;
-  storageNums: string[];
+  id: string;
+  storagePvcCount: number;
+  storageFile: string;
+  storageBackup: string;
 }
 
 interface SnapshotQuotaSizeDedetail {
-  name: string;
+  id: string;
   snapshotNums: number;
+}
+
+interface QuotaDisplayMessageType {
+  id: string;
+  cpuRequests?: number;
+  cpuLimits?: number;
+  memoryRequests?: string;
+  memoryLimits?: string;
+  storageBackup?: string;
+  storageFile?: string;
+  storagePvcCount?: number;
+  snapshotVolume?: number;
 }
 
 const StyledQuotaEditContainer = styled.div`
@@ -145,6 +161,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
+
   const getCorrespondingQuota = (
     selectedSizes: ProjectNamespaceResourceQuotaSize,
   ): QuotaSpecsInterface => {
@@ -159,35 +176,40 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     return {
       cpuNums:
         quotaSizes.CPU_QuotaSize_Detail.find(
-          (cpuOption: CPUQuotaSizeDedetail) => cpuOption.name === selectedSizes.quotaCpuSize,
-        )?.cpuNums || [],
+          (cpuOption: CPUQuotaSizeDedetail) => cpuOption.id === selectedSizes.quotaCpuSize,
+        ) || [],
       memoryNums:
         quotaSizes.Memory_QuotaSize_Detail.find(
           (memoryOption: MemoryQuotaSizeDedetail) =>
-            memoryOption.name === selectedSizes.quotaMemorySize,
-        )?.memoryNums || [],
+            memoryOption.id === selectedSizes.quotaMemorySize,
+        ) || [],
       storageNums:
         quotaSizes.Storage_QuotaSize_Detail.find(
           (storageOtion: StorageQuotaSizeDedetail) =>
-            storageOtion.name === selectedSizes.quotaStorageSize,
-        )?.storageNums || [],
+            storageOtion.id === selectedSizes.quotaStorageSize,
+        ) || [],
       snapshotNums:
         quotaSizes.Snapshot_QuotaSize_Detail.find(
           (snapshotOption: SnapshotQuotaSizeDedetail) =>
-            snapshotOption.name === selectedSizes.quotaSnapshotSize,
-        )?.snapshotNums || [],
+            snapshotOption.id === selectedSizes.quotaSnapshotSize,
+        ) || [],
     };
   };
-  const buildDisplayMessage = (size: number[], type: string) => {
+  const buildDisplayMessage = (size: QuotaDisplayMessageType, type: string) => {
+    const humanPreferQuotaFormat = (quotaInfo: string = '') => quotaInfo.replace('Gi', 'GiB');
     switch (type) {
       case 'cpu':
-        return `Request: ${size[0]} core, Limit: ${size[1]} core`;
+        return `Request: ${size.cpuRequests} core, Limit: ${size.cpuLimits} core`;
       case 'memory':
-        return `Request: ${size[0]}, Limit: ${size[1]}`;
+        return `Request: ${humanPreferQuotaFormat(
+          size.memoryRequests,
+        )}, Limit: ${humanPreferQuotaFormat(size.memoryLimits)}`;
       case 'storage':
-        return `PVC: ${size[0]}, Overall Storage: ${size[1]}, Backup: ${size[2]}`;
+        return `PVC: ${size.storagePvcCount}, Overall Storage: ${humanPreferQuotaFormat(
+          size.storageFile,
+        )}, Backup: ${humanPreferQuotaFormat(size.storageBackup)}`;
       case 'snapshot':
-        return `Request: ${size} snapshot`;
+        return `Request: ${size.snapshotVolume} snapshot`;
       default:
         return '';
     }
@@ -430,7 +452,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                             </option>
                           ))}
                       </Field>
-                    ) : option.name !== 'upgrade' && option.type ? (
+                    ) : option.name !== 'upgrade' && option.type && option.value ? (
                       <Label justifyContent="flex-end">
                         <Text fontSize={2}>{buildDisplayMessage(option.value, option.type)}</Text>
                       </Label>

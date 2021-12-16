@@ -134,15 +134,6 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           >
             Current
           </label>
-          <label
-            class="css-4hpp4k"
-          >
-            <div
-              class="css-1p4nx4e"
-            >
-              Request: undefined core, Limit: undefined core
-            </div>
-          </label>
         </div>
         <div
           class="css-wf4fqk"
@@ -228,15 +219,6 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
             for="project-quota"
           >
             Current
-          </label>
-          <label
-            class="css-4hpp4k"
-          >
-            <div
-              class="css-1p4nx4e"
-            >
-              Request: undefined, Limit: undefined
-            </div>
           </label>
         </div>
         <div
@@ -339,15 +321,6 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
           >
             Current
           </label>
-          <label
-            class="css-4hpp4k"
-          >
-            <div
-              class="css-1p4nx4e"
-            >
-              PVC: undefined, Overall Storage: undefined, Backup: undefined
-            </div>
-          </label>
         </div>
         <div
           class="css-wf4fqk"
@@ -430,15 +403,6 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
             for="project-quota"
           >
             Current
-          </label>
-          <label
-            class="css-4hpp4k"
-          >
-            <div
-              class="css-1p4nx4e"
-            >
-              Request:  snapshot
-            </div>
           </label>
         </div>
       </div>
@@ -669,7 +633,7 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
             <div
               class="css-1p4nx4e"
             >
-              Request: 0.5 core, Limit: 1.5 core
+              Request: undefined core, Limit: undefined core
             </div>
           </label>
         </div>
@@ -764,7 +728,7 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
             <div
               class="css-1p4nx4e"
             >
-              Request: 64GiB, Limit: 32GiB
+              Request: , Limit: 
             </div>
           </label>
         </div>
@@ -874,7 +838,7 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
             <div
               class="css-1p4nx4e"
             >
-              PVC: 60, Overall Storage: 2GiB, Backup: 1GiB
+              PVC: undefined, Overall Storage: , Backup: 
             </div>
           </label>
         </div>
@@ -966,7 +930,7 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
             <div
               class="css-1p4nx4e"
             >
-              Request: 5 snapshot
+              Request: undefined snapshot
             </div>
           </label>
         </div>
