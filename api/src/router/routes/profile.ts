@@ -27,7 +27,6 @@ import {
   addContactToProfile,
   createProjectRequest,
   fetchDashboardProjectProfiles,
-  fetchProfileAllowedQuotaSizes,
   fetchProfileContacts,
   fetchProfileEditRequests,
   fetchProfileQuotaSize,
@@ -128,11 +127,7 @@ router.get(
   authorize(validateRequiredProfile),
   asyncMiddleware(fetchProfileQuotaSize)
 );
-router.get(
-  "/:profileId/allowed-quota-sizes",
-  authorize(validateRequiredProfile),
-  asyncMiddleware(fetchProfileAllowedQuotaSizes)
-);
+
 // will involve provisioner-related changes
 router.post(
   "/:profileId/quota-size",

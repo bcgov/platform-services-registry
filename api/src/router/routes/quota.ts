@@ -18,7 +18,11 @@
 
 import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
 import express from "express";
-import { fetchQuota, fetchQuotaSizes } from "../../controllers/quota";
+import {
+  fetchQuota,
+  fetchQuotaSizes,
+  getAllAllowedQuotaSize,
+} from "../../controllers/quota";
 
 const router = express.Router();
 
@@ -30,5 +34,6 @@ router.get("/", asyncMiddleware(fetchQuota));
 // Utilizes raw data from DB
 // and transfroms to usable data for the front end
 router.get("/sizes", asyncMiddleware(fetchQuotaSizes));
+router.get("/allowed-quota-sizes", asyncMiddleware(getAllAllowedQuotaSize));
 
 export default router;

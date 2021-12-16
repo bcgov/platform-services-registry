@@ -90,8 +90,6 @@ const ProfileEdit: React.FC = (props: any) => {
   };
   const PROJECT_SET = ['prod', 'test', 'dev', 'tools'];
   const namespaceSearchQuery = useQuery().get('namespace') || '';
-  const editNamespace = getLicencePlatePostFix(namespaceSearchQuery);
-
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
@@ -112,18 +110,16 @@ const ProfileEdit: React.FC = (props: any) => {
         tools: NAMESPACE_DEFAULT_QUOTA,
         prod: NAMESPACE_DEFAULT_QUOTA,
       },
-      quotaOptions: {
-        dev: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-        test: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-        tools: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-        prod: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
-      },
+      quotaOptions: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
     },
   });
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
   const [submitRefresh, setSubmitRefresh] = useState<any>(0);
+  const editNamespace = getLicencePlatePostFix(
+    namespaceSearchQuery,
+  ) as keyof typeof profileState.quotaDetails.quotaSize;
 
   const handleSubmitRefresh = () => {
     setSubmitRefresh(submitRefresh + 1);
@@ -146,7 +142,7 @@ const ProfileEdit: React.FC = (props: any) => {
     };
     const contactDetails = await api.getContactsByProfileId(profileId);
 
-    const quotaOptions = await api.getAllowedQuotaSizesByProfileId(profileId);
+    const quotaOptions = await api.getAllAvailableQuotaSize();
 
     const quotaSize = await api.getQuotaSizeByProfileId(profileId);
 
@@ -354,14 +350,10 @@ const ProfileEdit: React.FC = (props: any) => {
                 profileId={profileId}
                 licensePlate={profileState.quotaDetails.licensePlate || ''}
                 quotaOptions={
-                  profileState.quotaDetails.quotaOptions[
-                    editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
-                  ] || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
+                  profileState.quotaDetails.quotaOptions || DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE
                 }
                 quotaSize={
-                  profileState.quotaDetails.quotaSize[
-                    editNamespace as keyof typeof profileState.quotaDetails.quotaOptions
-                  ] || NAMESPACE_DEFAULT_QUOTA
+                  profileState.quotaDetails.quotaSize[editNamespace] || NAMESPACE_DEFAULT_QUOTA
                 }
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}

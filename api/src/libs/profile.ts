@@ -125,7 +125,8 @@ export const updateProfileStatus = async (
   }
 };
 
-// Test just to get one namespace quptasize
+// This function is now not been used, but keep it here because this is used to validate if the request quota size is allowed
+// In current desicion, we allowed user to select any quota size.
 export const getNamespaceQuotaSize = async (
   profile: ProjectProfile,
   namespace: string
@@ -135,7 +136,7 @@ export const getNamespaceQuotaSize = async (
       await NamespaceModel.getProfileNamespaceQuotaSize(profile.id, namespace);
 
     let hasSameQuotaSizesForAllClusters: boolean = false;
-    // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
+
     if (profileNamespaceQuotaSizesInAllCluster.length === 1) {
       hasSameQuotaSizesForAllClusters = true;
     } else {
@@ -180,21 +181,17 @@ export const getQuotaSize = async (
 ): Promise<ProjectQuotaSize> => {
   try {
     const clusters: Cluster[] = await getClusters(profile);
-
     const promises: any = [];
     clusters.forEach((cluster: Cluster) => {
       if (!profile.id || !cluster.id) {
         throw new Error("Unable to get profile id or cluster id");
       }
-
       promises.push(
         NamespaceModel.getProjectSetQuotaSize(profile.id, cluster.id)
       );
     });
-
     // Some profile may have two clusters, which has eight namespace
     const profileQuotaSizes: ProjectQuotaSize[] = await Promise.all(promises);
-
     let hasSameQuotaSizesForAllClusters: boolean = false;
     // profileQuotaSizes is an array [{ quotaCpuSize: 'small', quotaMemorySize: 'small', quotaStorageSize: 'small', quotaSnapshotSize: 'small' }]
     if (profileQuotaSizes.length === 1) {
@@ -224,11 +221,10 @@ export const getQuotaSize = async (
       return profileQuotaSizes[0];
     }
     throw new Error(`Need to fix entries as the quota size of cluster namespaces
-      under the profile is not consistent`);
+     under the profile is not consistent`);
   } catch (err) {
     const message = `Unable to get quota size for profile ${profile.id}`;
     logger.error(`${message}, err = ${err.message}`);
-
     throw err;
   }
 };

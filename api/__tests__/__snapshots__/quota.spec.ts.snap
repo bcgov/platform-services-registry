@@ -5,7 +5,7 @@ Array [
   Array [
     Object {
       "text": "
-          SELECT * FROM ref_quota;
+          SELECT * FROM ref_cpu_quota;
           ",
     },
   ],
@@ -17,48 +17,52 @@ exports[`Quota event handlers fetchQuota All quotas are returned 2`] = `200`;
 exports[`Quota event handlers fetchQuota All quotas are returned 3`] = `
 Array [
   Object {
-    "cpuLimits": 8,
-    "cpuRequests": 4,
+    "cpuLimits": 1.5,
+    "cpuRequests": 0.5,
     "createdAt": "2021-03-17T23:06:05.112Z",
-    "id": "small",
-    "memoryLimits": "32Gi",
-    "memoryRequests": "16Gi",
-    "snapshotVolume": 5,
-    "storageBackup": "25Gi",
-    "storageBlock": "50Gi",
-    "storageCapacity": "50Gi",
-    "storageFile": "50Gi",
-    "storagePvcCount": 20,
+    "id": "cpu-request-0.5-limit-1.5",
     "updatedAt": "2021-03-17T23:06:05.112Z",
   },
   Object {
-    "cpuLimits": 16,
-    "cpuRequests": 8,
+    "cpuLimits": 2,
+    "cpuRequests": 1,
     "createdAt": "2021-03-17T23:06:05.112Z",
-    "id": "medium",
-    "memoryLimits": "64Gi",
-    "memoryRequests": "32Gi",
-    "snapshotVolume": 5,
-    "storageBackup": "50Gi",
-    "storageBlock": "100Gi",
-    "storageCapacity": "100Gi",
-    "storageFile": "100Gi",
-    "storagePvcCount": 40,
+    "id": "cpu-request-1-limit-2",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+  Object {
+    "cpuLimits": 8,
+    "cpuRequests": 4,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "cpu-request-2-limit-4",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+  Object {
+    "cpuLimits": 8,
+    "cpuRequests": 4,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "cpu-request-4-limit-8",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+  Object {
+    "cpuLimits": 8,
+    "cpuRequests": 4,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "cpu-request-8-limit-16",
+    "updatedAt": "2021-03-17T23:06:05.112Z",
+  },
+  Object {
+    "cpuLimits": 8,
+    "cpuRequests": 4,
+    "createdAt": "2021-03-17T23:06:05.112Z",
+    "id": "cpu-request-16-limit-32",
     "updatedAt": "2021-03-17T23:06:05.112Z",
   },
   Object {
     "cpuLimits": 64,
     "cpuRequests": 32,
     "createdAt": "2021-03-17T23:06:05.112Z",
-    "id": "large",
-    "memoryLimits": "128Gi",
-    "memoryRequests": "64Gi",
-    "snapshotVolume": 5,
-    "storageBackup": "100Gi",
-    "storageBlock": "200Gi",
-    "storageCapacity": "200Gi",
-    "storageFile": "200Gi",
-    "storagePvcCount": 60,
+    "id": "cpu-request-4-limit-8",
     "updatedAt": "2021-03-17T23:06:05.112Z",
   },
 ]
@@ -71,7 +75,7 @@ Array [
   Array [
     Object {
       "text": "
-          SELECT * FROM ref_quota;
+          SELECT * FROM ref_cpu_quota;
           ",
     },
   ],
@@ -82,9 +86,22 @@ exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 1`] =
 Array [
   Array [
     Object {
-      "text": "
-          SELECT * FROM ref_quota;
-          ",
+      "text": "SELECT id, cpu_requests, cpu_limits FROM ref_cpu_quota;",
+    },
+  ],
+  Array [
+    Object {
+      "text": "SELECT id, memory_requests, memory_limits FROM ref_memory_quota;",
+    },
+  ],
+  Array [
+    Object {
+      "text": "SELECT id, storage_pvc_count, storage_File, storage_backup FROM ref_storage_quota;",
+    },
+  ],
+  Array [
+    Object {
+      "text": "SELECT id, snapshot_volume FROM ref_snapshot_quota;",
     },
   ],
 ]
@@ -94,63 +111,173 @@ exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 2`] =
 
 exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 3`] = `
 Object {
-  "large": Object {
-    "cpuNums": Array [
-      32,
-      64,
-    ],
-    "memoryNums": Array [
-      "64GiB",
-      "128GiB",
-    ],
-    "name": "large",
-    "snapshotNums": Array [
-      5,
-    ],
-    "storageNums": Array [
-      60,
-      "200GiB",
-      "100GiB",
-    ],
-  },
-  "medium": Object {
-    "cpuNums": Array [
-      8,
-      16,
-    ],
-    "memoryNums": Array [
-      "32GiB",
-      "64GiB",
-    ],
-    "name": "medium",
-    "snapshotNums": Array [
-      5,
-    ],
-    "storageNums": Array [
-      40,
-      "100GiB",
-      "50GiB",
-    ],
-  },
-  "small": Object {
-    "cpuNums": Array [
-      4,
-      8,
-    ],
-    "memoryNums": Array [
-      "16GiB",
-      "32GiB",
-    ],
-    "name": "small",
-    "snapshotNums": Array [
-      5,
-    ],
-    "storageNums": Array [
-      20,
-      "50GiB",
-      "25GiB",
-    ],
-  },
+  "quotaCpuSize": Array [
+    Object {
+      "cpuLimits": 1.5,
+      "cpuRequests": 0.5,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-0.5-limit-1.5",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 2,
+      "cpuRequests": 1,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-1-limit-2",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-2-limit-4",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-4-limit-8",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-8-limit-16",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-16-limit-32",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 64,
+      "cpuRequests": 32,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-4-limit-8",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+  ],
+  "quotaMemorySize": Array [
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "memory-request-2-limit-4",
+      "memoryLimits": "4 Gi",
+      "memoryRequests": "2 Gi",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "memory-request-4-limit-8",
+      "memoryLimits": "8 Gi",
+      "memoryRequests": "4 Gi",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "memory-request-8-limit-16",
+      "memoryLimits": "16 Gi",
+      "memoryRequests": "8 Gi",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+  ],
+  "quotaSnapshotSize": Array [
+    Object {
+      "cpuLimits": 1.5,
+      "cpuRequests": 0.5,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-0.5-limit-1.5",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 2,
+      "cpuRequests": 1,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-1-limit-2",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-2-limit-4",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-4-limit-8",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-8-limit-16",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 8,
+      "cpuRequests": 4,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-16-limit-32",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "cpuLimits": 64,
+      "cpuRequests": 32,
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "cpu-request-4-limit-8",
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+  ],
+  "quotaStorageSize": Array [
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "storage-1",
+      "storageBackup": "25Gi",
+      "storageBlock": "50Gi",
+      "storageCapacity": "50Gi",
+      "storageFile": "50Gi",
+      "storagePvcCount": 20,
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "storage-2",
+      "storageBackup": "25Gi",
+      "storageBlock": "50Gi",
+      "storageCapacity": "50Gi",
+      "storageFile": "50Gi",
+      "storagePvcCount": 20,
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "storage-3",
+      "storageBackup": "25Gi",
+      "storageBlock": "50Gi",
+      "storageCapacity": "50Gi",
+      "storageFile": "50Gi",
+      "storagePvcCount": 20,
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+    Object {
+      "createdAt": "2021-03-17T23:06:05.112Z",
+      "id": "storage-4",
+      "storageBackup": "25Gi",
+      "storageBlock": "50Gi",
+      "storageCapacity": "50Gi",
+      "storageFile": "50Gi",
+      "storagePvcCount": 20,
+      "updatedAt": "2021-03-17T23:06:05.112Z",
+    },
+  ],
 }
 `;
 
@@ -160,9 +287,7 @@ exports[`Quota event handlers fetchQuotaSizes Quota sizes query error should thr
 Array [
   Array [
     Object {
-      "text": "
-          SELECT * FROM ref_quota;
-          ",
+      "text": "SELECT id, cpu_requests, cpu_limits FROM ref_cpu_quota;",
     },
   ],
 ]

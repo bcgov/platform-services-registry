@@ -35,12 +35,7 @@ interface IQuotaCardProps {
 export interface QuotaDetails {
   licensePlate?: string;
   quotaSize: ProjectSetResourceQuotaSize;
-  quotaOptions: {
-    dev: NamespaceQuotaOption;
-    test: NamespaceQuotaOption;
-    tools: NamespaceQuotaOption;
-    prod: NamespaceQuotaOption;
-  };
+  quotaOptions: NamespaceQuotaOption;
 }
 
 interface SpecTextInterface {

@@ -16,16 +16,13 @@
 
 import { logger } from "@bcgov/common-nodejs-utils";
 import config from "../config";
-import { ROLE_IDS } from "../constants";
+import { ROLE_IDS, DEFAULT_NAMESPACE_INITIAL_VALUE } from "../constants";
 import DataManager from "../db";
 import { Cluster } from "../db/model/cluster";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile } from "../db/model/profile";
-import {
-  ProjectQuotaSize,
-  ProjectSetQuotas,
-  QuotaSize,
-} from "../db/model/quota";
+import { ProjectQuotaSize, ProjectSetQuotas } from "../db/model/quota";
+
 import {
   BotMessage,
   Request,
@@ -45,10 +42,10 @@ import shared from "./shared";
 import { replaceForDescription, getLicencePlatePostFix } from "./utils";
 
 interface QuotasizeFormatInProvisonerFormat {
-  cpu: QuotaSize;
-  memory: QuotaSize;
-  storage: QuotaSize;
-  snapshot: QuotaSize;
+  cpu: string;
+  memory: string;
+  storage: string;
+  snapshot: string;
 }
 const DEFAULT_NAMESPACE_QUOTAS: QuotasInNatsFormat = {
   cpu: {
@@ -77,10 +74,10 @@ const DEFAULT_PROJECT_SET_NAMESPACE_QUOTAS = {
 };
 
 const DEFAULT_NAMESPACE_QUOTA_SIZE: QuotasizeFormatInProvisonerFormat = {
-  cpu: QuotaSize.Small,
-  memory: QuotaSize.Small,
-  storage: QuotaSize.Small,
-  snapshot: QuotaSize.Small,
+  cpu: DEFAULT_NAMESPACE_INITIAL_VALUE.quotaCpuSize,
+  memory: DEFAULT_NAMESPACE_INITIAL_VALUE.quotaMemorySize,
+  storage: DEFAULT_NAMESPACE_INITIAL_VALUE.quotaStorageSize,
+  snapshot: DEFAULT_NAMESPACE_INITIAL_VALUE.quotaSnapshotSize,
 };
 
 const DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE: ProjectSetQuotaSizeFormatInProvisonerFormat =
@@ -91,6 +88,12 @@ const DEFAULT_PROJECT_SET_NAMESPACE_QUOTA_SIZE: ProjectSetQuotaSizeFormatInProvi
     prod: { ...DEFAULT_NAMESPACE_QUOTA_SIZE },
   };
 
+interface ProjectSetQuotaSizeFormatInProvisonerFormat {
+  dev: QuotasizeFormatInProvisonerFormat;
+  test: QuotasizeFormatInProvisonerFormat;
+  tools: QuotasizeFormatInProvisonerFormat;
+  prod: QuotasizeFormatInProvisonerFormat;
+}
 interface ProjectSetQuotaSizeFormatInProvisonerFormat {
   dev: QuotasizeFormatInProvisonerFormat;
   test: QuotasizeFormatInProvisonerFormat;

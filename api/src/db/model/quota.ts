@@ -18,17 +18,17 @@ import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
 import { CommonFields, Model } from "./model";
 
-export enum QuotaSize {
-  Small = "small",
-  Medium = "medium",
-  Large = "large",
+export enum QuotaSizeQueryRef {
+  CPUQuery = "CPUQuery",
+  MemoryQuery = "MemoryQuery",
+  StorageQuery = "StorageQuery",
+  SnapshotQuery = "SnapshotQuery",
 }
-
 export interface NamespaceQuotaSize {
-  quotaCpuSize: QuotaSize;
-  quotaMemorySize: QuotaSize;
-  quotaStorageSize: QuotaSize;
-  quotaSnapshotSize: QuotaSize;
+  quotaCpuSize: string;
+  quotaMemorySize: string;
+  quotaStorageSize: string;
+  quotaSnapshotSize: string;
 }
 export interface ProjectQuotaSize {
   dev: NamespaceQuotaSize;
@@ -63,25 +63,34 @@ export interface ProjectSetQuotas {
   prod: Quotas;
 }
 
-interface QuotaSizeDetail {
-  name: string;
-  cpuNums: string[];
-  memoryNums: string[];
-  storageNums: string[];
-  snapshotNums: string[];
+interface CPUQuotaSizeDedetail {
+  id: string;
+  cpuRequests: number;
+  cpuLimits: number;
 }
 
-interface QuotaSizeDetails {
-  small: QuotaSizeDetail;
-  medium: QuotaSizeDetail;
-  large: QuotaSizeDetail;
+interface MemoryQuotaSizeDedetail {
+  id: string;
+  memoryRequests: string;
+  memoryLimits: string;
 }
 
-interface QuotaSizeDetail {
-  name: string;
-  cpuNums: string[];
-  memoryNums: string[];
-  storageNums: string[];
+interface StorageQuotaSizeDedetail {
+  id: string;
+  storagePvcCount: number;
+  storageFile: string;
+  storageBackup: string;
+}
+
+interface SnapshotQuotaSizeDedetail {
+  id: string;
+  snapshotNums: number;
+}
+interface NewQuotaSizeDedetails {
+  quotaCpuSize: CPUQuotaSizeDedetail[];
+  quotaMemorySize: MemoryQuotaSizeDedetail[];
+  quotaSnapshotSize: StorageQuotaSizeDedetail[];
+  quotaStorageSize: SnapshotQuotaSizeDedetail[];
 }
 
 const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
@@ -117,7 +126,7 @@ export interface Quota extends CommonFields {
 }
 
 export default class QuotaModel extends Model {
-  table: string = "ref_quota";
+  table: string = "ref_cpu_quota";
 
   requiredFields: string[] = [
     "cpu_requests",
@@ -153,6 +162,36 @@ export default class QuotaModel extends Model {
     // this is intentional (required by Sonarcloud)
   }
 
+  async getAllQuotaRef(resourceType: string): Promise<any[]> {
+    const queryMap = {
+      CPUQuery: {
+        text: `SELECT id FROM ref_cpu_quota;`,
+      },
+      MemoryQuery: {
+        text: `SELECT id FROM ref_memory_quota;`,
+      },
+      StorageQuery: {
+        text: `SELECT id FROM ref_storage_quota;`,
+      },
+      SnapshotQuery: {
+        text: `SELECT id FROM ref_snapshot_quota;`,
+      },
+    };
+
+    try {
+      const queryResult = await this.runQuery(queryMap[resourceType]);
+      const allAvailableQuotaSize: String[] = queryResult.map(
+        (resourceName) => resourceName.id
+      );
+      return allAvailableQuotaSize;
+    } catch (err) {
+      const message = `Unable to fetch cpu quota ref`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async findQuota(): Promise<any[]> {
     const query = {
       text: `
@@ -170,51 +209,43 @@ export default class QuotaModel extends Model {
     }
   }
 
+  async findResourceQuotaRef(resourceType: string): Promise<any[]> {
+    const queryMap = {
+      CPUQuery: {
+        text: `SELECT id, cpu_requests, cpu_limits FROM ref_cpu_quota;`,
+      },
+      MemoryQuery: {
+        text: `SELECT id, memory_requests, memory_limits FROM ref_memory_quota;`,
+      },
+      StorageQuery: {
+        text: `SELECT id, storage_pvc_count, storage_File, storage_backup FROM ref_storage_quota;`,
+      },
+      SnapshotQuery: {
+        text: `SELECT id, snapshot_volume FROM ref_snapshot_quota;`,
+      },
+    };
+    try {
+      return await this.runQuery(queryMap[resourceType]);
+    } catch (err) {
+      const message = `Unable to fetch cpu quota ref`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async findQuotaSizes(): Promise<any> {
     try {
-      const quota = await this.findQuota();
-      const quotaSizesDetail: QuotaSizeDetails = {
-        small: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-          snapshotNums: [],
-        },
-        medium: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-          snapshotNums: [],
-        },
-        large: {
-          name: "",
-          cpuNums: [],
-          memoryNums: [],
-          storageNums: [],
-          snapshotNums: [],
-        },
+      const quotaSizeDedetails: NewQuotaSizeDedetails = {
+        quotaCpuSize: (await this.findResourceQuotaRef("CPUQuery")) || [],
+        quotaMemorySize: (await this.findResourceQuotaRef("MemoryQuery")) || [],
+        quotaStorageSize:
+          (await this.findResourceQuotaRef("StorageQuery")) || [],
+        quotaSnapshotSize:
+          (await this.findResourceQuotaRef("SnapshotQuery")) || [],
       };
 
-      for (const size of quota) {
-        quotaSizesDetail[size.id] = {
-          name: size.id,
-          cpuNums: [size.cpuRequests, size.cpuLimits],
-          memoryNums: [
-            size.memoryRequests.replace("Gi", "GiB"),
-            size.memoryLimits.replace("Gi", "GiB"),
-          ],
-          storageNums: [
-            size.storagePvcCount,
-            size.storageFile.replace("Gi", "GiB"),
-            size.storageBackup.replace("Gi", "GiB"),
-          ],
-          snapshotNums: [size.snapshotVolume],
-        };
-      }
-
-      return quotaSizesDetail;
+      return quotaSizeDedetails;
     } catch (err) {
       const message = `Unable to get quota sizes`;
       logger.error(`${message}, err = ${err.message}`);
@@ -256,13 +287,13 @@ export default class QuotaModel extends Model {
       text: `
                 SELECT json_build_object(
                     'cpu', (SELECT row_to_json(d) FROM (SELECT cpu_requests AS "requests", cpu_limits AS "limits"
-                        FROM ref_quota WHERE id = $1) d),
+                        FROM ref_cpu_quota WHERE id = $1) d),
                     'memory', (SELECT row_to_json(d) FROM (SELECT memory_requests AS "requests", memory_limits AS "limits"
-                        FROM ref_quota WHERE id = $2) d),
+                        FROM ref_memory_quota WHERE id = $2) d),
                     'storage', (SELECT row_to_json(d) FROM (SELECT storage_block AS "block", storage_file AS "file", storage_backup AS "backup", storage_capacity AS "capacity", storage_pvc_count AS "pvcCount"
-                        FROM ref_quota WHERE id = $3) d),
+                        FROM ref_storage_quota WHERE id = $3) d),
                     'snapshot', (SELECT row_to_json(d) FROM (SELECT snapshot_volume AS "count"
-                        FROM ref_quota WHERE id = $4) d)
+                        FROM ref_snapshot_quota WHERE id = $4) d)
                 );
                 `,
       values: [],

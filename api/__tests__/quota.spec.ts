@@ -22,7 +22,16 @@ import { fetchQuota, fetchQuotaSizes } from "../src/controllers/quota";
 import FauxExpress from "./src/fauxexpress";
 
 const p0 = path.join(__dirname, "fixtures/select-quota.json");
-const selectQuota = JSON.parse(fs.readFileSync(p0, "utf8"));
+const selectCPUQuota = JSON.parse(fs.readFileSync(p0, "utf8"));
+
+const p1 = path.join(__dirname, "fixtures/select-memory-quota.json");
+const selectMemoryQuota = JSON.parse(fs.readFileSync(p1, "utf8"));
+
+const p2 = path.join(__dirname, "fixtures/select-storage-quota.json");
+const selectStroageQuota = JSON.parse(fs.readFileSync(p2, "utf8"));
+
+const p3 = path.join(__dirname, "fixtures/select-quota.json");
+const selectSnapshotQuota = JSON.parse(fs.readFileSync(p3, "utf8"));
 
 const client = new Pool().connect();
 
@@ -49,7 +58,7 @@ describe("Quota event handlers", () => {
   describe("fetchQuota", () => {
     it("All quotas are returned", async () => {
       const req = {};
-      client.query.mockReturnValueOnce({ rows: selectQuota });
+      client.query.mockReturnValueOnce({ rows: selectCPUQuota });
 
       // @ts-ignore
       await fetchQuota(req, ex.res);
@@ -80,7 +89,10 @@ describe("Quota event handlers", () => {
   describe("fetchQuotaSizes", () => {
     it("All quota sizes are returned", async () => {
       const req = {};
-      client.query.mockReturnValueOnce({ rows: selectQuota });
+      client.query.mockReturnValueOnce({ rows: selectCPUQuota });
+      client.query.mockReturnValueOnce({ rows: selectMemoryQuota });
+      client.query.mockReturnValueOnce({ rows: selectStroageQuota });
+      client.query.mockReturnValueOnce({ rows: selectSnapshotQuota });
 
       // @ts-ignore
       await fetchQuotaSizes(req, ex.res);

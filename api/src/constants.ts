@@ -52,3 +52,10 @@ export const PROFILE_STATUS = {
 };
 
 export const DEFAULT_GITHUB_ORGANIZATION = ["bcgov", "BCDevOps"];
+
+export const DEFAULT_NAMESPACE_INITIAL_VALUE = {
+  quotaCpuSize: "cpu-request-0.5-limit-1.5",
+  quotaMemorySize: "memory-request-2-limit-4",
+  quotaStorageSize: "storage-1",
+  quotaSnapshotSize: "snapshot-5",
+};

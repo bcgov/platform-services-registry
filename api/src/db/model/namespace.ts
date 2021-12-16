@@ -18,16 +18,17 @@ import { logger } from "@bcgov/common-nodejs-utils";
 import { Pool } from "pg";
 import { CommonFields, Model } from "./model";
 import { getLicencePlatePostFix } from "../../libs/utils";
-import { ProjectQuotaSize, QuotaSize, NamespaceQuotaSize } from "./quota";
+import { ProjectQuotaSize, NamespaceQuotaSize } from "./quota";
+import { DEFAULT_NAMESPACE_INITIAL_VALUE } from "../../constants";
 
 export interface ClusterNamespace extends CommonFields {
   namespaceId: number;
   clusterId: number;
   provisioned: boolean;
-  quotaCpuSize: QuotaSize;
-  quotaMemorySize: QuotaSize;
-  quotaStorageSize: QuotaSize;
-  quotaSnapshotSize: QuotaSize;
+  quotaCpuSize: string;
+  quotaMemorySize: string;
+  quotaStorageSize: string;
+  quotaSnapshotSize: string;
 }
 
 export interface ProjectNamespace extends CommonFields {
@@ -44,10 +45,10 @@ export enum ProjectSetNamespace {
 }
 
 export interface NameSpacesQuotaSize {
-  quotaCpuSize: QuotaSize[];
-  quotaMemorySize: QuotaSize[];
-  quotaStorageSize: QuotaSize[];
-  quotaSnapshotSize: QuotaSize[];
+  quotaCpuSize: string[];
+  quotaMemorySize: string[];
+  quotaStorageSize: string[];
+  quotaSnapshotSize: string[];
 }
 export interface ProjectSetAllowedQuotaSize {
   dev: NameSpacesQuotaSize;
@@ -147,13 +148,22 @@ export default class NamespaceModel extends Model {
       text: `
         INSERT INTO cluster_namespace
           (namespace_id, cluster_id, quota_cpu_size, quota_memory_size, quota_storage_size)
-          VALUES ($1, $2, $3, $3, $3) RETURNING *;`,
+          VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
       values: [],
     };
     try {
-      // default quota size set to QuotaSize.Small
+      // default quota size set to DEFAULT_NAMESPACE_INITIAL_VALUE
       const clPromises = nsResults.map((nr) =>
-        this.runQuery({ ...query, values: [nr.id, clusterId, QuotaSize.Small] })
+        this.runQuery({
+          ...query,
+          values: [
+            nr.id,
+            clusterId,
+            DEFAULT_NAMESPACE_INITIAL_VALUE.quotaCpuSize,
+            DEFAULT_NAMESPACE_INITIAL_VALUE.quotaMemorySize,
+            DEFAULT_NAMESPACE_INITIAL_VALUE.quotaStorageSize,
+          ],
+        })
       );
       await Promise.all(clPromises);
 
@@ -307,19 +317,19 @@ export default class NamespaceModel extends Model {
         dev:
           clustersNamespaceQuotaSize.find(
             (e) => e.namespaceName === ProjectSetNamespace.Dev
-          ).quotaInfo || QuotaSize.Small,
+          ).quotaInfo || DEFAULT_NAMESPACE_INITIAL_VALUE,
         test:
           clustersNamespaceQuotaSize.find(
             (e) => e.namespaceName === ProjectSetNamespace.Test
-          ).quotaInfo || QuotaSize.Small,
+          ).quotaInfo || DEFAULT_NAMESPACE_INITIAL_VALUE,
         tools:
           clustersNamespaceQuotaSize.find(
             (e) => e.namespaceName === ProjectSetNamespace.Tools
-          ).quotaInfo || QuotaSize.Small,
+          ).quotaInfo || DEFAULT_NAMESPACE_INITIAL_VALUE,
         prod:
           clustersNamespaceQuotaSize.find(
             (e) => e.namespaceName === ProjectSetNamespace.Prod
-          ).quotaInfo || QuotaSize.Small,
+          ).quotaInfo || DEFAULT_NAMESPACE_INITIAL_VALUE,
       };
 
       return projectQuotaSize;

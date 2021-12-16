@@ -19,7 +19,6 @@ import path from "path";
 import { Pool } from "pg";
 import {
   addContactToProfile,
-  fetchProfileAllowedQuotaSizes,
   fetchProfileContacts,
   fetchProfileEditRequests,
   fetchProfileQuotaSize,
@@ -27,7 +26,8 @@ import {
   updateProfileQuotaSize,
 } from "../src/controllers/profile";
 import ContactModel from "../src/db/model/contact";
-import { NamespaceQuotaSize, QuotaSize } from "../src/db/model/quota";
+import { NamespaceQuotaSize } from "../src/db/model/quota";
+import { DEFAULT_NAMESPACE_INITIAL_VALUE } from "../src/constants";
 import RequestModel from "../src/db/model/request";
 import { getQuotaSize } from "../src/libs/profile";
 import {
@@ -59,36 +59,36 @@ jest.mock("../src/libs/profile", () => {
   return {
     getQuotaSize: jest.fn().mockResolvedValue({
       dev: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
       test: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
       tools: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
       prod: {
-        quotaCpuSize: "small",
-        quotaMemorySize: "small",
-        quotaStorageSize: "small",
-        quotaSnapshotSize: "small",
+        quotaCpuSize: "cpu-request-0.5-limit-1.5",
+        quotaMemorySize: "memory-request-2-limit-4",
+        quotaStorageSize: "storage-1",
+        quotaSnapshotSize: "snapshot-5",
       },
     }),
     updateProfileStatus: jest.fn(),
     getNamespaceQuotaSize: jest.fn().mockResolvedValue({
-      quotaCpuSize: "small",
-      quotaMemorySize: "small",
-      quotaStorageSize: "small",
-      quotaSnapshotSize: "small",
+      quotaCpuSize: "cpu-request-0.5-limit-1.5",
+      quotaMemorySize: "memory-request-2-limit-4",
+      quotaStorageSize: "storage-1",
+      quotaSnapshotSize: "snapshot-5",
     }),
   };
 });
@@ -306,44 +306,9 @@ describe("Profile event handlers", () => {
     expect(ex.responseData).toBeUndefined();
   });
 
-  it("returns a list of quota options for a given profile", async () => {
-    const req = {
-      params: { profileId: 4 },
-    };
-
-    client.query.mockReturnValueOnce({ rows: selectProfile });
-
-    await fetchProfileAllowedQuotaSizes(req, ex.res);
-
-    expect(client.query.mock.calls).toMatchSnapshot();
-    expect(ex.res.statusCode).toMatchSnapshot();
-    expect(ex.responseData).toMatchSnapshot();
-    expect(ex.res.status).toBeCalled();
-    expect(ex.res.json).toBeCalled();
-  });
-
-  it("throws an error when fetching a list of quota options for a given profile has a problem", async () => {
-    const req = {
-      params: { profileId: 4 },
-    };
-
-    client.query.mockImplementation(() => {
-      throw new Error();
-    });
-
-    await expect(
-      fetchProfileAllowedQuotaSizes(req, ex.res)
-    ).rejects.toThrowErrorMatchingSnapshot();
-    expect(ex.responseData).toBeUndefined();
-  });
-
   it("Request profile quota size edit successfully", async () => {
-    const testRequestQuotaSize: NamespaceQuotaSize = {
-      quotaCpuSize: QuotaSize.Small,
-      quotaMemorySize: QuotaSize.Small,
-      quotaStorageSize: QuotaSize.Small,
-      quotaSnapshotSize: QuotaSize.Small,
-    };
+    const testRequestQuotaSize: NamespaceQuotaSize =
+      DEFAULT_NAMESPACE_INITIAL_VALUE;
     const body = {
       requestedQuotaSize: testRequestQuotaSize,
       namespace: "e128df-dev",
@@ -362,51 +327,6 @@ describe("Profile event handlers", () => {
     expect(ex.res.statusCode).toMatchSnapshot();
     expect(ex.responseData).toMatchSnapshot();
     expect(ex.res.status).toBeCalled();
-  });
-
-  it("throws an error if profile quota size edit request is invalid", async () => {
-    const body = {
-      requestedQuotaSize: {
-        quotaCpuSize: QuotaSize.Large,
-        quotaMemorySize: QuotaSize.Large,
-        quotaStorageSize: QuotaSize.Large,
-        quotaSnapshotSize: QuotaSize.Large,
-      },
-    };
-    const req = {
-      params: { profileId: 4 },
-      body,
-      user: authenticatedUser,
-    };
-
-    client.query.mockReturnValueOnce({ rows: selectProfile });
-
-    await expect(
-      updateProfileQuotaSize(req, ex.res)
-    ).rejects.toThrowErrorMatchingSnapshot();
-    expect(requestProfileQuotaSizeEdit).toHaveBeenCalledTimes(0);
-    expect(ex.responseData).toBeUndefined();
-  });
-
-  it("throws an error if there is a db transaction issue when requesting profile quota size edit", async () => {
-    const body = {
-      requestedQuotaSize: "medium",
-    };
-    const req = {
-      params: { profileId: 4 },
-      body,
-      user: authenticatedUser,
-    };
-
-    client.query.mockImplementation(() => {
-      throw new Error();
-    });
-
-    await expect(
-      updateProfileQuotaSize(req, ex.res)
-    ).rejects.toThrowErrorMatchingSnapshot();
-
-    expect(ex.responseData).toBeUndefined();
   });
 
   it("Profile edit requests are returned", async () => {

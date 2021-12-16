@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { Quotas, QuotaSize } from "./db/model/quota";
+import { Quotas } from "./db/model/quota";
 
 export const enum NatsContextAction {
   Create = "create",
@@ -39,7 +39,7 @@ export interface NatsContact {
 export interface NatsProjectNamespace {
   namespace_id: number;
   name: string;
-  quota: QuotaSize;
+  quota: string;
   quotas: Quotas;
 }
 

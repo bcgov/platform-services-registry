@@ -49,12 +49,53 @@ interface IQuotaCardEditProps {
   namespace: string;
   primaryClusterName: string;
 }
-
+interface QuotaSizeDedetails {
+  quotaCpuSize: CPUQuotaSizeDedetail[];
+  quotaMemorySize: MemoryQuotaSizeDedetail[];
+  quotaSnapshotSize: StorageQuotaSizeDedetail[];
+  quotaStorageSize: SnapshotQuotaSizeDedetail[];
+}
 interface QuotaSpecsInterface {
-  cpuNums: Array<string>;
-  memoryNums: Array<string>;
-  storageNums: Array<string>;
-  snapshotNums: Array<string>;
+  cpuSize: any;
+  memorySize: any;
+  storageSize: any;
+  snapshotSize: any;
+}
+
+interface CPUQuotaSizeDedetail {
+  id: string;
+  cpuRequests: number;
+  cpuLimits: number;
+}
+
+interface MemoryQuotaSizeDedetail {
+  id: string;
+  memoryRequests: string;
+  memoryLimits: string;
+}
+
+interface StorageQuotaSizeDedetail {
+  id: string;
+  storagePvcCount: number;
+  storageFile: string;
+  storageBackup: string;
+}
+
+interface SnapshotQuotaSizeDedetail {
+  id: string;
+  snapshotNums: number;
+}
+
+interface QuotaDisplayMessageType {
+  id: string;
+  cpuRequests?: number;
+  cpuLimits?: number;
+  memoryRequests?: string;
+  memoryLimits?: string;
+  storageBackup?: string;
+  storageFile?: string;
+  storagePvcCount?: number;
+  snapshotVolume?: number;
 }
 
 const StyledQuotaEditContainer = styled.div`
@@ -73,6 +114,10 @@ const StyledInformationBox = styled.div`
   background-color: orange;
   border-radius: 10px;
   padding: 5px;
+  margin-left: auto;
+  left: 0;
+  right: 0;
+  margin-right: auto;
 `;
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   color: #fcba19;
@@ -89,10 +134,10 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     quotaSnapshotSize: [],
   };
   const DEFAULT_QUOTA_INFO: QuotaSpecsInterface = {
-    cpuNums: [],
-    memoryNums: [],
-    storageNums: [],
-    snapshotNums: [],
+    cpuSize: {},
+    memorySize: {},
+    storageSize: {},
+    snapshotSize: {},
   };
   const required = (value: string | boolean) => (value ? undefined : 'Required');
   const QUOTA_DISPLAY_NAME = 'Quota Size';
@@ -115,12 +160,12 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   } = props;
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
-
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
   const [specs, setSpecs] = useState<any>({});
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
   const [quotaSizes, setQuotaSizes] = useState<any>({});
   const [displayInfoBox, setDisplayInfoBox] = useState<boolean>(false);
+
   const getCorrespondingQuota = (
     selectedSizes: ProjectNamespaceResourceQuotaSize,
   ): QuotaSpecsInterface => {
@@ -131,107 +176,127 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     ) {
       return DEFAULT_QUOTA_INFO;
     }
+
+    const findSelectedQuotaDetail = (resourceType: keyof QuotaSizeDedetails) => {
+      const quotaDetail =
+        quotaSizes[resourceType].find((quotaOption: CPUQuotaSizeDedetail) => {
+          return quotaOption.id === selectedSizes[resourceType];
+        }) || {};
+      return quotaDetail;
+    };
+
     return {
-      cpuNums: quotaSizes[selectedSizes.quotaCpuSize]?.cpuNums || [],
-      memoryNums: quotaSizes[selectedSizes.quotaMemorySize]?.memoryNums || [],
-      storageNums: quotaSizes[selectedSizes.quotaStorageSize]?.storageNums || [],
-      snapshotNums: quotaSizes[selectedSizes.quotaSnapshotSize]?.snapshotNums || [],
+      cpuSize: findSelectedQuotaDetail('quotaCpuSize'),
+      memorySize: findSelectedQuotaDetail('quotaMemorySize'),
+      storageSize: findSelectedQuotaDetail('quotaStorageSize'),
+      snapshotSize: findSelectedQuotaDetail('quotaSnapshotSize'),
     };
   };
-  const buildDisplayMessage = (size: number[], type: string) => {
+
+  const buildDisplayMessage = (size: QuotaDisplayMessageType, type: string) => {
+    const humanPreferQuotaFormat = (quotaInfo: string = '') => quotaInfo.replace('Gi', 'GiB');
     switch (type) {
       case 'cpu':
-        return `Request: ${size[0]} core, Limit: ${size[1]} core`;
+        return `Request: ${size.cpuRequests} core, Limit: ${size.cpuLimits} core`;
       case 'memory':
-        return `Request:  ${size[0]}, Limit:  ${size[1]}`;
+        return `Request: ${humanPreferQuotaFormat(
+          size.memoryRequests,
+        )}, Limit: ${humanPreferQuotaFormat(size.memoryLimits)}`;
       case 'storage':
-        return `PVC:${size[0]}, Overall Storage: ${size[1]}, Backup:${size[2]}`;
+        return `PVC: ${size.storagePvcCount}, Overall Storage: ${humanPreferQuotaFormat(
+          size.storageFile,
+        )}, Backup: ${humanPreferQuotaFormat(size.storageBackup)}`;
       case 'snapshot':
-        return `Request: ${size[0]} snapshot`;
+        return `Request: ${size.snapshotVolume} snapshot`;
       default:
         return '';
     }
   };
+
   const QUOTA_INFORMATION: any = {
-    cpuNums: {
+    cpuSize: {
       displayTitle: 'CPU',
       options: [
         {
           name: 'quotaCpuSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaCpuSize, ...quotaOptions.quotaCpuSize],
+          selectedSize: quotaSize.quotaCpuSize,
+          value: [...quotaOptions.quotaCpuSize],
         },
         {
           name: 'current',
           displayName: 'Current',
           type: 'cpu',
-          value: specs.cpuNums === undefined ? '' : specs.cpuNums,
+          value: specs.cpuSize === undefined ? '' : specs.cpuSize,
         },
         {
           name: 'upgrade',
           displayName: 'Upgrade to',
           type: 'cpu',
-          value: specs.cpuNums === undefined ? '' : specs.cpuNums,
+          value: specs.cpuSize === undefined ? '' : specs.cpuSize,
         },
       ],
     },
-    memoryNums: {
+    memorySize: {
       displayTitle: 'Memory',
       options: [
         {
           name: 'quotaMemorySize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaMemorySize, ...quotaOptions.quotaMemorySize],
+          selectedSize: quotaSize.quotaMemorySize,
+          value: [...quotaOptions.quotaMemorySize],
         },
         {
           name: 'current',
           displayName: 'Current',
           type: 'memory',
-          value: specs.memoryNums === undefined ? '' : specs.memoryNums,
+          value: specs.memorySize === undefined ? '' : specs.memorySize,
         },
         {
           name: 'upgrade',
           displayName: 'Upgrade to',
           type: 'memory',
-          value: specs.cpuNums === undefined ? '' : specs.memoryNums,
+          value: specs.cpuSize === undefined ? '' : specs.memorySize,
         },
       ],
     },
-    storageNums: {
+    storageSize: {
       displayTitle: 'Storage',
       options: [
         {
           name: 'quotaStorageSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaStorageSize, ...quotaOptions.quotaStorageSize],
+          selectedSize: quotaSize.quotaStorageSize,
+          value: [...quotaOptions.quotaStorageSize],
         },
         {
           name: 'current',
           displayName: 'Current',
           type: 'storage',
-          value: specs.storageNums === undefined ? '' : specs.storageNums,
+          value: specs.storageSize === undefined ? '' : specs.storageSize,
         },
         {
           name: 'upgrade',
           displayName: 'Upgrade to',
           type: 'storage',
-          value: specs.storageNums === undefined ? '' : specs.storageNums,
+          value: specs.storageSize === undefined ? '' : specs.storageSize,
         },
       ],
     },
-    snapshotNumber: {
+    snapshotSize: {
       displayTitle: 'Snapshot',
       options: [
         {
           name: 'quotaSnapshotSize',
           displayName: QUOTA_DISPLAY_NAME,
-          value: [quotaSize.quotaSnapshotSize, ...quotaOptions.quotaSnapshotSize],
+          selectedSize: quotaSize.quotaSnapshotSize,
+          value: [...quotaOptions.quotaSnapshotSize],
         },
         {
           name: 'current',
           displayName: 'Current',
           type: 'snapshot',
-          value: specs.snapshotNums === undefined ? '' : specs.snapshotNums,
+          value: specs.snapshotSize === undefined ? '' : specs.snapshotSize,
         },
       ],
     },
@@ -338,7 +403,10 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                   applyingQuotaSpecs[element] &&
                   applyingQuotaSpecs[element].length !== 0 &&
                   option.value !== applyingQuotaSpecs[element];
-
+                const selectIndex =
+                  option.selectedSize && option.value
+                    ? option.value.indexOf(option.selectedSize)
+                    : null;
                 return (
                   <Flex
                     marginBottom="2"
@@ -361,18 +429,18 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                         <StyledInformationBox
                           style={{ visibility: displayInfoBox ? 'visible' : 'hidden' }}
                         >
-                          Only 'small' snapshot volumes are supported right now.
+                          Only 'snapshot-5' are supported right now.
                         </StyledInformationBox>
                       </>
                     )}
-                    {option.displayName === QUOTA_DISPLAY_NAME ? (
+                    {option.displayName === QUOTA_DISPLAY_NAME && selectIndex !== null ? (
                       // React-final-form onChange bug: https://github.com/final-form/react-final-form/issues/91
 
                       <Field
                         name={option.name}
                         disabled={option.name === TEMPORARY_DISABLE_FIELD}
                         component={SelectInput}
-                        initialValue={option.value[0]}
+                        initialValue={option.value[selectIndex]}
                         validate={required}
                       >
                         {option.value.length &&
@@ -382,7 +450,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                             </option>
                           ))}
                       </Field>
-                    ) : option.name !== 'upgrade' && option.type ? (
+                    ) : option.name !== 'upgrade' && option.type && option.value ? (
                       <Label justifyContent="flex-end">
                         <Text fontSize={2}>{buildDisplayMessage(option.value, option.type)}</Text>
                       </Label>
