@@ -111,7 +111,7 @@ exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 2`] =
 
 exports[`Quota event handlers fetchQuotaSizes All quota sizes are returned 3`] = `
 Object {
-  "CPU_QuotaSize_Detail": Array [
+  "quotaCpuSize": Array [
     Object {
       "cpuLimits": 1.5,
       "cpuRequests": 0.5,
@@ -162,7 +162,7 @@ Object {
       "updatedAt": "2021-03-17T23:06:05.112Z",
     },
   ],
-  "Memory_QuotaSize_Detail": Array [
+  "quotaMemorySize": Array [
     Object {
       "createdAt": "2021-03-17T23:06:05.112Z",
       "id": "memory-request-2-limit-4",
@@ -185,7 +185,7 @@ Object {
       "updatedAt": "2021-03-17T23:06:05.112Z",
     },
   ],
-  "Snapshot_QuotaSize_Detail": Array [
+  "quotaSnapshotSize": Array [
     Object {
       "cpuLimits": 1.5,
       "cpuRequests": 0.5,
@@ -236,7 +236,7 @@ Object {
       "updatedAt": "2021-03-17T23:06:05.112Z",
     },
   ],
-  "Storage_QuotaSize_Detail": Array [
+  "quotaStorageSize": Array [
     Object {
       "createdAt": "2021-03-17T23:06:05.112Z",
       "id": "storage-1",

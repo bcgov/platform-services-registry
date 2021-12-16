@@ -49,12 +49,17 @@ interface IQuotaCardEditProps {
   namespace: string;
   primaryClusterName: string;
 }
-
+interface QuotaSizeDedetails {
+  quotaCpuSize: CPUQuotaSizeDedetail[];
+  quotaMemorySize: MemoryQuotaSizeDedetail[];
+  quotaSnapshotSize: StorageQuotaSizeDedetail[];
+  quotaStorageSize: SnapshotQuotaSizeDedetail[];
+}
 interface QuotaSpecsInterface {
-  cpuNums: Array<string>;
-  memoryNums: Array<string>;
-  storageNums: Array<string>;
-  snapshotNums: Array<string>;
+  cpuSize: any;
+  memorySize: any;
+  storageSize: any;
+  snapshotSize: any;
 }
 
 interface CPUQuotaSizeDedetail {
@@ -129,10 +134,10 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     quotaSnapshotSize: [],
   };
   const DEFAULT_QUOTA_INFO: QuotaSpecsInterface = {
-    cpuNums: [],
-    memoryNums: [],
-    storageNums: [],
-    snapshotNums: [],
+    cpuSize: {},
+    memorySize: {},
+    storageSize: {},
+    snapshotSize: {},
   };
   const required = (value: string | boolean) => (value ? undefined : 'Required');
   const QUOTA_DISPLAY_NAME = 'Quota Size';
@@ -155,7 +160,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   } = props;
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
-
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
   const [specs, setSpecs] = useState<any>({});
   const [applyingQuotaSpecs, setApplyingQuotaSpecs] = useState<any>({});
@@ -173,28 +177,22 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       return DEFAULT_QUOTA_INFO;
     }
 
+    const findSelectedQuotaDetail = (resourceType: keyof QuotaSizeDedetails) => {
+      const quotaDetail =
+        quotaSizes[resourceType].find((quotaOption: CPUQuotaSizeDedetail) => {
+          return quotaOption.id === selectedSizes[resourceType];
+        }) || {};
+      return quotaDetail;
+    };
+
     return {
-      cpuNums:
-        quotaSizes.CPU_QuotaSize_Detail.find(
-          (cpuOption: CPUQuotaSizeDedetail) => cpuOption.id === selectedSizes.quotaCpuSize,
-        ) || [],
-      memoryNums:
-        quotaSizes.Memory_QuotaSize_Detail.find(
-          (memoryOption: MemoryQuotaSizeDedetail) =>
-            memoryOption.id === selectedSizes.quotaMemorySize,
-        ) || [],
-      storageNums:
-        quotaSizes.Storage_QuotaSize_Detail.find(
-          (storageOtion: StorageQuotaSizeDedetail) =>
-            storageOtion.id === selectedSizes.quotaStorageSize,
-        ) || [],
-      snapshotNums:
-        quotaSizes.Snapshot_QuotaSize_Detail.find(
-          (snapshotOption: SnapshotQuotaSizeDedetail) =>
-            snapshotOption.id === selectedSizes.quotaSnapshotSize,
-        ) || [],
+      cpuSize: findSelectedQuotaDetail('quotaCpuSize'),
+      memorySize: findSelectedQuotaDetail('quotaMemorySize'),
+      storageSize: findSelectedQuotaDetail('quotaStorageSize'),
+      snapshotSize: findSelectedQuotaDetail('quotaSnapshotSize'),
     };
   };
+
   const buildDisplayMessage = (size: QuotaDisplayMessageType, type: string) => {
     const humanPreferQuotaFormat = (quotaInfo: string = '') => quotaInfo.replace('Gi', 'GiB');
     switch (type) {
@@ -216,7 +214,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
   };
 
   const QUOTA_INFORMATION: any = {
-    cpuNums: {
+    cpuSize: {
       displayTitle: 'CPU',
       options: [
         {
@@ -229,17 +227,17 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'current',
           displayName: 'Current',
           type: 'cpu',
-          value: specs.cpuNums === undefined ? '' : specs.cpuNums,
+          value: specs.cpuSize === undefined ? '' : specs.cpuSize,
         },
         {
           name: 'upgrade',
           displayName: 'Upgrade to',
           type: 'cpu',
-          value: specs.cpuNums === undefined ? '' : specs.cpuNums,
+          value: specs.cpuSize === undefined ? '' : specs.cpuSize,
         },
       ],
     },
-    memoryNums: {
+    memorySize: {
       displayTitle: 'Memory',
       options: [
         {
@@ -252,17 +250,17 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'current',
           displayName: 'Current',
           type: 'memory',
-          value: specs.memoryNums === undefined ? '' : specs.memoryNums,
+          value: specs.memorySize === undefined ? '' : specs.memorySize,
         },
         {
           name: 'upgrade',
           displayName: 'Upgrade to',
           type: 'memory',
-          value: specs.cpuNums === undefined ? '' : specs.memoryNums,
+          value: specs.cpuSize === undefined ? '' : specs.memorySize,
         },
       ],
     },
-    storageNums: {
+    storageSize: {
       displayTitle: 'Storage',
       options: [
         {
@@ -275,17 +273,17 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'current',
           displayName: 'Current',
           type: 'storage',
-          value: specs.storageNums === undefined ? '' : specs.storageNums,
+          value: specs.storageSize === undefined ? '' : specs.storageSize,
         },
         {
           name: 'upgrade',
           displayName: 'Upgrade to',
           type: 'storage',
-          value: specs.storageNums === undefined ? '' : specs.storageNums,
+          value: specs.storageSize === undefined ? '' : specs.storageSize,
         },
       ],
     },
-    snapshotNumber: {
+    snapshotSize: {
       displayTitle: 'Snapshot',
       options: [
         {
@@ -298,7 +296,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           name: 'current',
           displayName: 'Current',
           type: 'snapshot',
-          value: specs.snapshotNums === undefined ? '' : specs.snapshotNums,
+          value: specs.snapshotSize === undefined ? '' : specs.snapshotSize,
         },
       ],
     },

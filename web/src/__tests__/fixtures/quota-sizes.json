@@ -1,5 +1,5 @@
 {
-  "CPU_QuotaSize_Detail": [
+  "quotaCpuSize": [
     {
       "name": "cpu-request-0.5-limit-1.5",
       "cpuRequests": 0.5,
@@ -36,7 +36,7 @@
       "cpuLimits": 64
     }
   ],
-  "Memory_QuotaSize_Detail": [
+  "quotaMemorySize": [
     {
       "name": "memory-request-2-limit-4",
       "memoryRequests": "2GiB",
@@ -68,7 +68,7 @@
       "memoryLimits": "32GiB"
     }
   ],
-  "Storage_QuotaSize_Detail": [
+  "quotaStorageSize": [
     {
       "name": "storage-1",
       "storagePvcCount": 60,
@@ -124,7 +124,7 @@
       "storageBackup": "256iB"
     }
   ],
-  "Snapshot_QuotaSize_Detail": [
+  "quotaSnapshotSize": [
     {
       "name": "snapshot-5",
       "snapshotNums": 5

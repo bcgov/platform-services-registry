@@ -87,10 +87,10 @@ interface SnapshotQuotaSizeDedetail {
   snapshotNums: number;
 }
 interface NewQuotaSizeDedetails {
-  CPU_QuotaSize_Detail: CPUQuotaSizeDedetail[];
-  Memory_QuotaSize_Detail: MemoryQuotaSizeDedetail[];
-  Storage_QuotaSize_Detail: StorageQuotaSizeDedetail[];
-  Snapshot_QuotaSize_Detail: SnapshotQuotaSizeDedetail[];
+  quotaCpuSize: CPUQuotaSizeDedetail[];
+  quotaMemorySize: MemoryQuotaSizeDedetail[];
+  quotaSnapshotSize: StorageQuotaSizeDedetail[];
+  quotaStorageSize: SnapshotQuotaSizeDedetail[];
 }
 
 const DEFAULT_NAMESPACE_QUOTAS: Quotas = {
@@ -237,13 +237,11 @@ export default class QuotaModel extends Model {
   async findQuotaSizes(): Promise<any> {
     try {
       const quotaSizeDedetails: NewQuotaSizeDedetails = {
-        CPU_QuotaSize_Detail:
-          (await this.findResourceQuotaRef("CPUQuery")) || [],
-        Memory_QuotaSize_Detail:
-          (await this.findResourceQuotaRef("MemoryQuery")) || [],
-        Storage_QuotaSize_Detail:
+        quotaCpuSize: (await this.findResourceQuotaRef("CPUQuery")) || [],
+        quotaMemorySize: (await this.findResourceQuotaRef("MemoryQuery")) || [],
+        quotaStorageSize:
           (await this.findResourceQuotaRef("StorageQuery")) || [],
-        Snapshot_QuotaSize_Detail:
+        quotaSnapshotSize:
           (await this.findResourceQuotaRef("SnapshotQuery")) || [],
       };
 
