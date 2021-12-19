@@ -20,7 +20,7 @@ SET
     CASE WHEN quota_cpu_size = 'small' THEN 'cpu-request-4-limit-8' WHEN quota_cpu_size = 'medium' THEN 'cpu-request-8-limit-16' WHEN quota_cpu_size = 'large' THEN 'cpu-request-16-limit-32' ELSE quota_cpu_size END
   ), 
   quota_memory_size = (
-    CASE WHEN quota_memory_size = 'small' THEN 'memory-request-4-limit-8' WHEN quota_memory_size = 'medium' THEN 'memory-request-8-limit-16' WHEN quota_memory_size = 'large' THEN 'memory-request-16-limit-32' ELSE quota_memory_size END
+    CASE WHEN quota_memory_size = 'small' THEN 'memory-request-16-limit-32' WHEN quota_memory_size = 'medium' THEN 'memory-request-32-limit-64' WHEN quota_memory_size = 'large' THEN 'memory-request-64-limit-128' ELSE quota_memory_size END
   ), 
   quota_storage_size = (
     CASE WHEN quota_storage_size = 'small' THEN 'storage-64' WHEN quota_storage_size = 'medium' THEN 'storage-128' WHEN quota_storage_size = 'large' THEN 'storage-256' ELSE quota_storage_size END
