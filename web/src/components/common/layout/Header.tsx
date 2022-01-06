@@ -16,17 +16,15 @@
 
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Text } from 'rebass';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { HOME_PAGE_URL, ROUTE_PATHS } from '../../../constants';
-import useComponentVisible from '../../../hooks/useComponentVisible';
 import theme from '../../../theme';
 import { MenuItem } from '../../../types';
 import typography from '../../../typography';
 import Authbutton from '../UI/AuthButton';
 import CreateButton from '../UI/CreateButton';
-import DropdownMenu from '../UI/DropdownMenu';
 import DropdownMenuItem from '../UI/DropdownMenuItem';
 import GovLogo from '../UI/GovLogo';
 import { BaseIcon } from '../UI/Icon';
@@ -81,20 +79,18 @@ interface INavProps {
 const Nav: React.FC<INavProps> = (props) => {
   const { isAuthenticated, handleDDMobile, isDDMobileOpen, dirs } = props;
 
-  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const history = useHistory();
 
-  const handleDDDesktop = () => {
-    setIsComponentVisible(!isComponentVisible);
+  const handleCreateDesktop = () => {
+    //  newer versions of react uses useNavigate instead of useHistory from 'react-router-dom'
+    history.push(ROUTE_PATHS.PROFILE_CREATE);
   };
 
   return (
     <StyledNav>
       <ContainerDesktop>
-        {isAuthenticated && <CreateButton onClick={handleDDDesktop}>Create</CreateButton>}
+        {isAuthenticated && <CreateButton onClick={handleCreateDesktop}>Create</CreateButton>}
         <Authbutton />
-        {isAuthenticated && isComponentVisible && (
-          <DropdownMenu handleOnClick={handleDDDesktop} ref={ref} menuItems={dirs} />
-        )}
       </ContainerDesktop>
       <ContainerMobile>
         {isDDMobileOpen ? (
