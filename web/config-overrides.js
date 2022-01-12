@@ -9,10 +9,10 @@ const cspConfigPolicy = {
     'https://registry-web-platform-registry-dev.apps.silver.devops.gov.bc.ca/api/',
   ],
   'base-uri': "'self'",
-  'script-src': ["'self'", "'unsafe-inline'"],
+  'script-src': "'self'",
   'manifest-src': "'self'",
   'font-src': "'self'",
-  'style-src': ["'self'", "'unsafe-inline'"],
+  'style-src': "'self'",
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
 };
 
