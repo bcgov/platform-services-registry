@@ -12,7 +12,7 @@ const cspConfigPolicy = {
   'script-src': "'self'",
   'manifest-src': "'self'",
   'font-src': "'self'",
-  'style-src': "'self'",
+  'style-src': '*',
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
 };
 
