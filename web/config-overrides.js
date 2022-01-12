@@ -8,19 +8,18 @@ const cspConfigPolicy = {
     'http://localhost:8100/api/',
     'https://registry-web-platform-registry-dev.apps.silver.devops.gov.bc.ca/api/',
   ],
+  'script-src': ["'self'"],
   'base-uri': "'self'",
-  'script-src': "'self'",
   'manifest-src': "'self'",
   'font-src': "'self'",
-  'style-src': '*',
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
 };
 
 function addCspHtmlWebpackPlugin(config) {
   console.log('haihaihaiha', process.env);
-  if (process.env.NODE_ENV === 'production') {
-    config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy));
-  }
+  //   if (process.env.NODE_ENV === 'production') {
+  config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy));
+  //   }
 
   return config;
 }
