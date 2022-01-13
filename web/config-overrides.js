@@ -17,7 +17,6 @@ const cspConfigPolicy = {
     'https://api.github.com/users/',
     '*.oidc.gov.bc.ca/',
     '*.gov.bc.ca/api/',
-    'http://localhost:8100/api/',
   ],
   'form-action': ["'self'"],
 };
@@ -28,9 +27,9 @@ const additionalOps = {
   nonceEnabled: { 'script-src': true, 'style-src': false },
 };
 function addCspHtmlWebpackPlugin(config) {
-  //   if (process.env.NODE_ENV === 'production') {
-  config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
-  //   }
+  if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
+  }
 
   return config;
 }
