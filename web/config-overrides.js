@@ -22,10 +22,9 @@ const additionalOps = {
   nonceEnabled: { 'script-src': false, 'style-src': false },
 };
 function addCspHtmlWebpackPlugin(config) {
-  //   if (process.env.NODE_ENV === 'production') {
-  console.log('whta I am pushing', new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
-  config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
-  //   }
+  if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
+  }
 
   return config;
 }
