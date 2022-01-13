@@ -2,7 +2,7 @@ const { override } = require('customize-cra');
 const cspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 
 const cspConfigPolicy = {
-  'default-src': ["'self'", '*.gov.bc.ca/', '*.gov.bc.ca/api/'],
+  'default-src': ["'self'"],
   'script-src': ["'self'"],
   'base-uri': "'self'",
   'manifest-src': "'self'",
@@ -12,6 +12,14 @@ const cspConfigPolicy = {
   'object-src': "'self'",
   'frame-src': ["'self'", '*.oidc.gov.bc.ca/'],
   'frame-ancestors': "'self'",
+  'connect-src': [
+    "'self'",
+    'https://api.github.com/users/',
+    '*.oidc.gov.bc.ca/',
+    '*.gov.bc.ca/api/',
+    'http://localhost:8100/api/',
+  ],
+  'form-action': ["'self'"],
 };
 
 const additionalOps = {
