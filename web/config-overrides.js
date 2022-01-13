@@ -12,6 +12,7 @@ const cspConfigPolicy = {
   'base-uri': "'self'",
   'manifest-src': "'self'",
   'font-src': "'self'",
+  'style-src': ["'self'"],
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
 };
 
