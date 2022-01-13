@@ -26,6 +26,7 @@ const additionalOps = {
   hashingMethod: 'sha256',
   nonceEnabled: { 'script-src': true, 'style-src': false },
 };
+
 function addCspHtmlWebpackPlugin(config) {
   if (process.env.NODE_ENV === 'production') {
     config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
