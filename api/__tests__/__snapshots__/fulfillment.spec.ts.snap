@@ -325,7 +325,7 @@ Object {
   ],
   "description": "This is a cool project.",
   "display_name": "Project X",
-  "merge_type": "manual",
+  "merge_type": "auto",
   "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
