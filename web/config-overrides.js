@@ -12,14 +12,19 @@ const cspConfigPolicy = {
   'base-uri': "'self'",
   'manifest-src': "'self'",
   'font-src': "'self'",
-  'style-src': ["'self'"],
+  'style-src': "'self'",
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
 };
 
+const additionalOps = {
+  enabled: true,
+  hashingMethod: 'sha256',
+  nonceEnabled: { 'script-src': false, 'style-src': false },
+};
 function addCspHtmlWebpackPlugin(config) {
-  console.log('haihaihaiha', process.env);
   //   if (process.env.NODE_ENV === 'production') {
-  config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy));
+  console.log('whta I am pushing', new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
+  config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
   //   }
 
   return config;
