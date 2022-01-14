@@ -48,10 +48,10 @@
     "validate.js": "^0.13.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
-    "eject": "react-scripts eject",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jest-environment-jsdom-sixteen",
+    "eject": "react-app-rewired eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src --color",
     "format": "prettier 'src/**/*.{ts,tsx,scss,css,json}'"
   },
@@ -86,6 +86,8 @@
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "babel-eslint": "^10.1.0",
+    "csp-html-webpack-plugin": "^5.1.0",
+    "customize-cra": "^1.0.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.2.0",
@@ -101,6 +103,7 @@
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "prettier": "^2.2.1",
     "prettier-eslint": "^12.0.0",
-    "prettier-eslint-cli": "^5.0.0"
+    "prettier-eslint-cli": "^5.0.0",
+    "react-app-rewired": "^2.1.11"
   }
 }
