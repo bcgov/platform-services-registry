@@ -10,7 +10,11 @@ const cspConfigPolicy = {
   'style-src': ["'self'", "'unsafe-inline'"],
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
   'object-src': "'self'",
-  'frame-src': ["'self'", '*.oidc.gov.bc.ca/'],
+  'frame-src': [
+    "'self'",
+    'https://dev.oidc.gov.bc.ca/',
+    'https://oidc.gov.bc.ca',
+  ],
   'frame-ancestors': "'self'",
   'connect-src': [
     "'self'",
