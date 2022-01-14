@@ -3,6 +3,8 @@ on:
   schedule:
     # Runs every Monday At 01:00.
     - cron: "0 1 * * 1"
+  workflow_dispatch:
+
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
