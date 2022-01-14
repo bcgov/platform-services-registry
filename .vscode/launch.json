@@ -1,7 +1,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-  
     {
       "name": "Attach to API (docker)",
       "preLaunchTask": "api-watch-src-changes",
@@ -21,8 +20,8 @@
       "name": "Jest Current File",
       "program": "${workspaceFolder}/api/node_modules/.bin/jest",
       "args": [
-        "${fileBasenameNoExtension}",
-        "--config",
+        "${fileBasenameNoExtension}", 
+        "--config", 
         "api/jest.config.js"
       ],
       "console": "integratedTerminal",
