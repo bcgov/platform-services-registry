@@ -15,7 +15,8 @@ const cspConfigPolicy = {
   'connect-src': [
     "'self'",
     'https://api.github.com/users/',
-    '*oidc.gov.bc.ca/',
+    'https://dev.oidc.gov.bc.ca/',
+    'https://oidc.gov.bc.ca',
     '*.gov.bc.ca/api/',
   ],
   'form-action': ["'self'"],
