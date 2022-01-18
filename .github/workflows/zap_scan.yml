@@ -18,7 +18,7 @@ jobs:
         uses: zaproxy/action-baseline@v0.4.0
         with:
           # Target URL
-          target: "https://registry-web-platform-registry-dev.apps.silver.devops.gov.bc.ca"
+          target: "https://registry.developer.gov.bc.ca"
           # The Docker file to be executed (optional)
           docker_name: "owasp/zap2docker-stable"
           # Relative path of the ZAP configuration file (optional)
