@@ -154,6 +154,22 @@ export const createProjectProfile = async (
     throw errorWithCode(message, 500);
   }
 };
+export const updateProfileeDleteableStatus = async (
+  { params }: { params: any },
+  res: Response
+) => {
+  const { ProfileModel } = dm;
+  const { profileId } = params;
+  try {
+    const response = await ProfileModel.markProjectNotDeletable(profileId);
+    res.status(200).json(response);
+  } catch (err) {
+    const message = `Unable to mark deletable to false to ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
 
 export const updateProjectProfile = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },

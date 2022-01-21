@@ -22,6 +22,8 @@ import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import { getLicencePlatePostFix } from '../utils/utils';
 import { useQuery } from '../utils/AppRoute';
+import { useModal } from '../hooks/useModal';
+import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
@@ -33,6 +35,7 @@ import QuotaCard, {
 } from '../components/profileEdit/QuotaCard';
 import { QuotaCardEdit } from '../components/profileEdit/QuotaCardEdit';
 import { BaseIcon } from '../components/common/UI/Icon';
+import { Modal } from '../components/common/modal/modal';
 import {
   HOME_PAGE_URL,
   PROFILE_EDIT_VIEW_NAMES,
@@ -46,6 +49,7 @@ import theme from '../theme';
 import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
+import { ProjectDeletionModal } from '../views/ProjectDeletion';
 import {
   getClusterDisplayName,
   getLicensePlate,
@@ -169,7 +173,7 @@ const ProfileEdit: React.FC = (props: any) => {
       setOpenBackdrop(true);
       try {
         await updateProfileState();
-      } catch (err) {
+      } catch (err: any) {
         if (
           err.response &&
           err.response.status &&
@@ -192,7 +196,7 @@ const ProfileEdit: React.FC = (props: any) => {
     async function wrap() {
       try {
         await updateProfileState();
-      } catch (err) {
+      } catch (err: any) {
         const msg = 'Unable to update Profile State';
         throw new Error(`${msg}, reason = ${err.message}`);
       }
@@ -200,6 +204,32 @@ const ProfileEdit: React.FC = (props: any) => {
     wrap();
   }, 1000 * 30);
 
+  const { isShown, toggle } = useModal();
+
+  const closeDeletionModal = async () => {
+    const msg = 'Unable to mark project as undeletable';
+    try {
+      const response = await api.updateProfileDeleteableStatus(profileId);
+      const {
+        pvcDeletability,
+        podsDeletability,
+        namespaceDeletability,
+        provisonerDeletionChecked,
+      } = response.data;
+      if (
+        pvcDeletability ||
+        podsDeletability ||
+        namespaceDeletability ||
+        provisonerDeletionChecked
+      ) {
+        throw new Error(`${msg}, it still mark as deletable`);
+      }
+    } catch (err: any) {
+      promptErrToastWithText('Something went wrong');
+      throw new Error(`${msg}, reason = ${err.message}`);
+    }
+    toggle();
+  };
   if (initialRender) {
     return null;
   }
@@ -246,6 +276,18 @@ const ProfileEdit: React.FC = (props: any) => {
   if (viewName === PROFILE_EDIT_VIEW_NAMES.OVERVIEW) {
     return (
       <StyledDiv>
+        <Modal
+          isShown={isShown}
+          hide={closeDeletionModal}
+          headerText="Project Deletion"
+          modalContent={
+            <ProjectDeletionModal
+              licensePlate={profileState.quotaDetails.licensePlate || ''}
+              profileId={profileId}
+              closeDeletionModal={() => closeDeletionModal()}
+            />
+          }
+        />
         <Box
           sx={{
             display: 'grid',
@@ -295,6 +337,16 @@ const ProfileEdit: React.FC = (props: any) => {
                   </ShadowBox>
                 </Box>
               ))}
+            {profileState.isProvisioned && (
+              <StyledFormButton
+                style={{ backgroundColor: '#C70000', display: 'block', margin: '50px auto' }}
+                onClick={() => {
+                  toggle();
+                }}
+              >
+                Delete Project
+              </StyledFormButton>
+            )}
           </ShadowBox>
         </Box>
       </StyledDiv>

@@ -39,6 +39,7 @@ import {
   fetchAllProjectProfiles,
   fetchProjectProfile,
   updateProjectProfile,
+  updateProfileeDleteableStatus,
 } from "../../controllers/project-profile";
 import {
   authorize,
@@ -145,6 +146,11 @@ router.post(
   "/:profileId/request",
   authorize(validateRequiredProfile),
   asyncMiddleware(createProjectRequest)
+);
+router.put(
+  "/:profileId/update-profile-deleteable-status",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(updateProfileeDleteableStatus)
 );
 
 export default router;

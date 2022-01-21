@@ -252,6 +252,35 @@ export default class ProfileModel extends Model {
     }
   }
 
+  async markProjectNotDeletable(profileId: number): Promise<any> {
+    const values: any[] = [];
+    const query = {
+      text: `
+        Update profile
+        SET 
+        pvc_deletability=false,
+        namespace_deletability=false,
+        pods_deletability=false,
+        provisoner_deletion_checked=false
+        WHERE id = $1 
+        RETURNING provisoner_deletion_checked,pods_deletability,namespace_deletability,pvc_deletability;`,
+      values,
+    };
+
+    try {
+      query.values = [profileId];
+
+      const results = await this.runQuery(query);
+
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to mark undeletable to profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
   async removeContactFromProfile(
     profileId: number,
     contactId: number
