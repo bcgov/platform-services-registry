@@ -15,7 +15,7 @@ jobs:
         with:
           ref: master
       - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.4.0
+        uses: zaproxy/action-baseline@v0.6.1
         with:
           # Target URL
           target: "https://registry.developer.gov.bc.ca"
