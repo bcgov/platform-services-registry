@@ -265,7 +265,7 @@ export const contextForProvisioning = async (
   isForSync: boolean = false
 ): Promise<NatsContext> => {
   try {
-    const auoMergeFlag: string = MergeType.Manual;
+    const auoMergeFlag: string = MergeType.Auto;
     const action = isForSync
       ? NatsContextAction.Sync
       : NatsContextAction.Create;
