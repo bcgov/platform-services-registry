@@ -195,7 +195,7 @@ describe("Project-profile event handlers", () => {
 
   it("All project-profiles are returned to an administrator", async () => {
     const req = {
-      user: { ...authenticatedUser, accessFlags: [AccessFlag.EditAll] },
+      user: { ...authenticatedUser, accessFlags: [AccessFlag.ReadAll] },
     };
 
     const findAll = (ProfileModel.prototype.findAll = jest.fn());

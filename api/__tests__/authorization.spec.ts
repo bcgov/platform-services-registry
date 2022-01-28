@@ -86,7 +86,7 @@ describe("Authorization services", () => {
   });
 
   it("authorizeByFlag should grant access to authorized user", async () => {
-    const accessFlag = AccessFlag.EditAll;
+    const accessFlag = AccessFlag.ReadAll;
     const req = {
       user: { ...authenticatedUser, accessFlags: [accessFlag] },
     };
@@ -98,7 +98,7 @@ describe("Authorization services", () => {
   });
 
   it("authorizeByFlag should deny access to not authorized user", async () => {
-    const accessFlag = AccessFlag.EditAll;
+    const accessFlag = AccessFlag.ReadAll;
     const req = {
       user: authenticatedUser,
     };
