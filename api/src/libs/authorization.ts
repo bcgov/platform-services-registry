@@ -28,6 +28,8 @@ import shared from "./shared";
 export const enum AccessFlag {
   ProvisionOnTestCluster = "provision_on_test_clusters",
   EditAll = "edit_all",
+  ReadAll = "read_all",
+  ReadEditAll = "read_edit_all",
   ApproveRequests = "approve_request",
   BotCallback = "bot_callback",
 }
@@ -37,6 +39,11 @@ AccessFlags[USER_ROLES.ADMINISTRATOR] = [
   AccessFlag.ProvisionOnTestCluster,
   AccessFlag.EditAll,
   AccessFlag.ApproveRequests,
+];
+
+AccessFlags[USER_ROLES.READ_ONLY_ADMINISTRATOR] = [
+  AccessFlag.ProvisionOnTestCluster,
+  AccessFlag.ReadAll,
 ];
 
 AccessFlags[BOT_CLIENT_ID] = [AccessFlag.BotCallback];
