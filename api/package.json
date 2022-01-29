@@ -32,7 +32,7 @@
     "@octokit/request": "^5.6.0",
     "@octokit/rest": "^18.7.1",
     "@types/dotenv": "^8.2.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",

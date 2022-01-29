@@ -265,7 +265,7 @@ export const contextForProvisioning = async (
   isForSync: boolean = false
 ): Promise<NatsContext> => {
   try {
-    const auoMergeFlag: string = MergeType.Manual;
+    const auoMergeFlag: string = MergeType.Auto;
     const action = isForSync
       ? NatsContextAction.Sync
       : NatsContextAction.Create;
@@ -309,7 +309,7 @@ export const contextForEditing = async (
     const action = NatsContextAction.Edit;
     let profile: ProjectProfile;
     let contacts: Contact[];
-    let auoMergeFlag: string = MergeType.Auto;
+    const auoMergeFlag: string = MergeType.Auto;
 
     if (requestEditType === RequestEditType.ProjectProfile) {
       profile = JSON.parse(requestEditObject);
@@ -325,7 +325,6 @@ export const contextForEditing = async (
       const editNamespacePostFix = getLicencePlatePostFix(
         requestEditObject.namespace
       );
-      auoMergeFlag = MergeType.Manual;
       if (editNamespacePostFix && PROJECT_SET.includes(editNamespacePostFix)) {
         quotaSize[editNamespacePostFix] = requestEditObject.quota;
 
