@@ -18,6 +18,7 @@ import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
 import { Response } from "express";
 import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
+import { AccessFlag } from "../libs/authorization";
 import { HumanActionType, RequestType } from "../db/model/request";
 import { AuthenticatedUser } from "../libs/authmware";
 import { fulfillRequest } from "../libs/fulfillment";
@@ -57,6 +58,9 @@ export const updateRequestHumanAction = async (
   const { type, comment } = body;
 
   try {
+    if (!user.accessFlags.includes(AccessFlag.EditAll)) {
+      throw errorWithCode("unuthorized", 401);
+    }
     // Step 1. fetch Request
     const request = await RequestModel.findById(requestId);
 
