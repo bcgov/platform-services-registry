@@ -36,6 +36,7 @@ task-definition.json
 *.sqlite
 db/backups
 api/src/config/config.json
+api/.vscode/
 
 # These files contain credentials, do not add them to
 # the repo.
