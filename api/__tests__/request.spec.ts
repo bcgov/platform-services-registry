@@ -23,6 +23,25 @@ import FauxExpress from "./src/fauxexpress";
 const p4 = path.join(__dirname, "fixtures/get-authenticated-user.json");
 const authenticatedUser = JSON.parse(fs.readFileSync(p4, "utf8"));
 
+const body = [
+  {
+    id: 1,
+    firstName: "JaneTEST",
+    lastName: "DoeTEST",
+    email: "jane@example.com",
+    githubId: "jane1100",
+    roleId: 1,
+  },
+  {
+    id: 2,
+    firstName: "JohnTEST",
+    lastName: "DoeTEST",
+    email: "john@example.com",
+    githubId: "john1100",
+    roleId: 2,
+  },
+];
+
 describe("Request event handlers", () => {
   let ex;
 
@@ -33,31 +52,27 @@ describe("Request event handlers", () => {
   });
 
   it("updateRequestHumanAction throws unauthorized error for read all flag", async () => {
-    const body = [
-      {
-        id: 1,
-        firstName: "JaneTEST",
-        lastName: "DoeTEST",
-        email: "jane@example.com",
-        githubId: "jane1100",
-        roleId: 1,
-      },
-      {
-        id: 2,
-        firstName: "JohnTEST",
-        lastName: "DoeTEST",
-        email: "john@example.com",
-        githubId: "john1100",
-        roleId: 2,
-      },
-    ];
-
     const req = {
       params: { profileId: 4 },
       body,
       user: {
         ...authenticatedUser,
         accessFlags: [AccessFlag.ReadAll],
+      },
+    };
+
+    await expect(updateRequestHumanAction(req, ex.res)).rejects.toThrow(
+      "unauthorized"
+    );
+  });
+
+  it("updateRequestHumanAction throws unauthorized error for no flags", async () => {
+    const req = {
+      params: { profileId: 4 },
+      body,
+      user: {
+        ...authenticatedUser,
+        accessFlags: [],
       },
     };
 
