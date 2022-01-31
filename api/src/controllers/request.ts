@@ -59,7 +59,7 @@ export const updateRequestHumanAction = async (
 
   try {
     if (!user.accessFlags.includes(AccessFlag.EditAll)) {
-      throw errorWithCode("unuthorized", 401);
+      throw errorWithCode("unauthorized", 401);
     }
     // Step 1. fetch Request
     const request = await RequestModel.findById(requestId);
