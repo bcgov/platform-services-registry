@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      { (userRoles.includes('administrator') || userRoles.includes('read_only_administrator')) && <ProjectRequests userRoles={userRoles} profileDetails={profileDetails} isAdminUser = {userRoles.includes('administrator')}/>}
+      { (userRoles.includes('administrator') || userRoles.includes('read_only_administrator')) && <ProjectRequests profileDetails={profileDetails} isAdminUser = {userRoles.includes('administrator')}/>}
 
       <ProjectDetails profileDetails={profileDetails} linkedRows={true} />
     </>
