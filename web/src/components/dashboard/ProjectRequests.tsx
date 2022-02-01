@@ -81,7 +81,6 @@ const ProjectRequests: React.FC<any> = (props) => {
                 type="button"
                 value={values.profileId}
                 onClick={() => {
-                  console.log('Click');
                   setProfileId(values.profileId);
                   toggle();
                 }}
