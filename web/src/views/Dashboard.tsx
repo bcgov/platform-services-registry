@@ -74,10 +74,14 @@ const Dashboard: React.FC = () => {
     verifyProjects();
   }, 1000 * 30);
 
-
   return (
     <>
-      { (userRoles.includes('administrator') || userRoles.includes('read_only_administrator')) && <ProjectRequests profileDetails={profileDetails} isAdminUser = {userRoles.includes('administrator')}/>}
+      {(userRoles.includes('administrator') || userRoles.includes('read_only_administrator')) && (
+        <ProjectRequests
+          profileDetails={profileDetails}
+          isAdminUser={userRoles.includes('administrator')}
+        />
+      )}
 
       <ProjectDetails profileDetails={profileDetails} linkedRows={true} />
     </>
