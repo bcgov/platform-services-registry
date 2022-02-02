@@ -64,6 +64,21 @@ describe("Authorization services", () => {
     expect(assignUserAccessFlags(jwtPayloadUserWithAdminRole)).toEqual(flags);
   });
 
+  it("assignUserAccessFlags should return flags to authorized user with read only admin role", async () => {
+    const flags = AccessFlags[USER_ROLES.READ_ONLY_ADMINISTRATOR];
+    const resourceAccessObj = {
+      "registry-web": {
+        roles: [USER_ROLES.READ_ONLY_ADMINISTRATOR],
+      },
+    };
+
+    const jwtPayloadUserWithAdminRole = {
+      ...jwtPayloadUser,
+      resource_access: resourceAccessObj,
+    };
+    expect(assignUserAccessFlags(jwtPayloadUserWithAdminRole)).toEqual(flags);
+  });
+
   it("assignUserAccessFlags should return flags to authorized bot service account", async () => {
     const flags = AccessFlags[BOT_CLIENT_ID];
 
@@ -71,7 +86,7 @@ describe("Authorization services", () => {
   });
 
   it("authorizeByFlag should grant access to authorized user", async () => {
-    const accessFlag = AccessFlag.EditAll;
+    const accessFlag = AccessFlag.ReadAll;
     const req = {
       user: { ...authenticatedUser, accessFlags: [accessFlag] },
     };
@@ -83,7 +98,7 @@ describe("Authorization services", () => {
   });
 
   it("authorizeByFlag should deny access to not authorized user", async () => {
-    const accessFlag = AccessFlag.EditAll;
+    const accessFlag = AccessFlag.ReadAll;
     const req = {
       user: authenticatedUser,
     };

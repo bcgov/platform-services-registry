@@ -67,7 +67,7 @@ export const fetchAllProjectProfiles = async (
 
   try {
     let results;
-    if (user.accessFlags.includes(AccessFlag.EditAll)) {
+    if (user.accessFlags.includes(AccessFlag.ReadAll)) {
       results = await ProfileModel.findAll();
     } else {
       results = await ProfileModel.findProfilesByUserIdOrEmail(
