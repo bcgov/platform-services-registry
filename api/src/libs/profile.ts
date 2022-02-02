@@ -182,6 +182,7 @@ export const getQuotaSize = async (
   try {
     const clusters: Cluster[] = await getClusters(profile);
     const promises: any = [];
+
     clusters.forEach((cluster: Cluster) => {
       if (!profile.id || !cluster.id) {
         throw new Error("Unable to get profile id or cluster id");
@@ -197,12 +198,6 @@ export const getQuotaSize = async (
     if (profileQuotaSizes.length === 1) {
       hasSameQuotaSizesForAllClusters = true;
     } else {
-      const quotaSizesForAllClusters: NameSpacesQuotaSize = {
-        quotaCpuSize: [],
-        quotaMemorySize: [],
-        quotaStorageSize: [],
-        quotaSnapshotSize: [],
-      };
       /**
        * following line is to push all quota info from array of object into a single object
        *  that can be consumed by compareNameSpaceQuotaSize to compare if quota size are the same
@@ -210,10 +205,6 @@ export const getQuotaSize = async (
        */
       hasSameQuotaSizesForAllClusters = profileQuotaSizes.every((element) =>
         isEqual(element, profileQuotaSizes[0])
-      );
-
-      hasSameQuotaSizesForAllClusters = compareNameSpaceQuotaSize(
-        quotaSizesForAllClusters
       );
     }
     if (hasSameQuotaSizesForAllClusters) {
