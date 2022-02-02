@@ -192,9 +192,9 @@ export const parseEmails = (contacts: any) => {
   return (
     <>
       {contacts &&
-        contacts.map((contact: any) => {
+        contacts.map((contact: any, index: number) => {
           return (
-            <Box key={contact.email}>
+            <Box key={`${contact.email}.${index}`}>
               <Link href={`mailto:${contact.email}`}>{contact.email}</Link>
             </Box>
           );
