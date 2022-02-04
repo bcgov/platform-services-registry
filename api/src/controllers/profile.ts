@@ -30,6 +30,7 @@ import {
   requestProfileContactsEdit,
   requestProfileQuotaSizeEdit,
   requestProjectProfileCreate,
+  requestProjectProfileDelete,
 } from "../libs/request";
 import shared from "../libs/shared";
 import fetchAllDashboardProjects from "../services/profile";
@@ -272,6 +273,31 @@ export const createProjectRequest = async (
 
     throw errorWithCode(message, 500);
   }
+};
+
+export const deleteProfileRequest = async (
+  { params, user }: { params: any; body: any; user: AuthenticatedUser },
+  res: Response
+) => {
+  const { profileId } = params;
+
+  try {
+    const requiresHumanAction = true;
+    await requestProjectProfileDelete(
+      Number(profileId),
+      user,
+      requiresHumanAction
+    );
+
+    res.status(201).end();
+  } catch (err) {
+    const message = `Unable to add contact to profile`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+
+  res.status(200);
 };
 
 export const fetchDashboardProjectProfiles = async (

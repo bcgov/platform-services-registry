@@ -366,6 +366,43 @@ export const contextForEditing = async (
   }
 };
 
+export const contextForDeletion = async (
+  profileId: number,
+  cluster: Cluster
+): Promise<NatsContext> => {
+  try {
+    const auoMergeFlag: string = MergeType.Auto;
+    const action = NatsContextAction.Delete;
+
+    const profile: ProjectProfile = await ProfileModel.findById(profileId);
+    const contacts: Contact[] = await ContactModel.findForProject(profileId);
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const quotas: ProjectSetQuotas =
+      await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
+
+    const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
+      makeNatsFormatQuotaSizeMessage(quotaSize);
+
+    const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
+      makeNatsFormatQuotasMessage(quotas);
+
+    return await buildContext(
+      action,
+      profile,
+      contacts,
+      provisonerPreferedFormatQuotasize,
+      provisonerPreferedFormatQuotas,
+      cluster,
+      auoMergeFlag
+    );
+  } catch (err) {
+    const message = `Unable to create context for provisioning ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
 const generateContext = async (
   request: Request,
   cluster: Cluster
@@ -383,6 +420,11 @@ const generateContext = async (
         request.editObject,
         cluster
       );
+    case RequestType.Delete:
+      if (!request.editType) {
+        throw new Error(`Invalid edit type for request ${request.id}`);
+      }
+      return contextForDeletion(request.profileId, cluster);
     default:
       throw new Error(`Invalid type for request ${request.id}`);
   }
@@ -457,6 +499,7 @@ export const fulfillRequest = async (request: Request): Promise<any> => {
     await createBotMessageSet(request, subjectPrefix);
     const botMessageSet = await fetchBotMessageRequests(Number(request.id));
     for (const botMessage of botMessageSet) {
+      console.log("what is bot message here:", botMessage.natsContext);
       await sendNatsMessage(request.profileId, {
         natsSubject: botMessage.natsSubject,
         natsContext: botMessage.natsContext,

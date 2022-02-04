@@ -154,7 +154,8 @@ export const createProjectProfile = async (
     throw errorWithCode(message, 500);
   }
 };
-export const updateProfileeDleteableStatus = async (
+
+export const updateProfileDeleteableStatus = async (
   { params }: { params: any },
   res: Response
 ) => {

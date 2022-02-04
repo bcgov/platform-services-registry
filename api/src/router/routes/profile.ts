@@ -32,6 +32,7 @@ import {
   fetchProfileQuotaSize,
   updateProfileContacts,
   updateProfileQuotaSize,
+  deleteProfileRequest,
 } from "../../controllers/profile";
 import {
   archiveProjectProfile,
@@ -39,7 +40,7 @@ import {
   fetchAllProjectProfiles,
   fetchProjectProfile,
   updateProjectProfile,
-  updateProfileeDleteableStatus,
+  updateProfileDeleteableStatus,
 } from "../../controllers/project-profile";
 import {
   authorize,
@@ -142,15 +143,22 @@ router.get(
   authorize(validateRequiredProfile),
   asyncMiddleware(fetchProfileEditRequests)
 );
+
 router.post(
   "/:profileId/request",
   authorize(validateRequiredProfile),
   asyncMiddleware(createProjectRequest)
 );
+
 router.put(
   "/:profileId/update-profile-deleteable-status",
   authorize(validateRequiredProfile),
-  asyncMiddleware(updateProfileeDleteableStatus)
+  asyncMiddleware(updateProfileDeleteableStatus)
 );
 
+router.post(
+  "/:profileId/deletion",
+  authorize(validateRequiredProfile),
+  asyncMiddleware(deleteProfileRequest)
+);
 export default router;

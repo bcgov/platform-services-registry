@@ -83,6 +83,12 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
   const { setOpenBackdrop } = useCommonState();
   const profileDetails = profiles.filter((p: any) => p.profileId === profileId).pop();
   const textCapitalized = { textTransform: 'capitalize' };
+  const typeTextStype =
+    profileDetails.type === 'delete'
+      ? { color: 'red', textTransform: 'capitalize' }
+      : textCapitalized;
+
+  console.log('hiahia', profileDetails);
   const editNamespace =
     profileDetails.type === 'edit'
       ? getLicencePlatePostFix(profileDetails.editObject.namespace)
@@ -132,7 +138,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       <Heading>Project Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
-        <InformationBox style={textCapitalized} displayText={profileDetails.type} />
+        <InformationBox style={typeTextStype} displayText={profileDetails.type} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-name">Project Name</Label>
@@ -163,7 +169,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-quota">Project Quota</Label>
-        {profileDetails.type === 'create' ? (
+        {profileDetails.type === 'create' || profileDetails.type === 'delete' ? (
           <>
             {Object.keys(profileDetails.quotaSize).map((key: string) => (
               <Flex flexDirection="column" paddingBottom="1" key={key}>

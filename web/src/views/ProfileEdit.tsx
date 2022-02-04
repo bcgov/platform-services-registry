@@ -337,7 +337,8 @@ const ProfileEdit: React.FC = (props: any) => {
                   </ShadowBox>
                 </Box>
               ))}
-            {profileState.isProvisioned && (
+            {console.log('what is the statues', profileState)}
+            {profileState.isProvisioned && !profileState.hasPendingEdit && (
               <StyledFormButton
                 style={{ backgroundColor: '#C70000', display: 'block', margin: '50px auto' }}
                 onClick={() => {

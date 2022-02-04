@@ -73,7 +73,11 @@ export const updateRequestHumanAction = async (
     // Step 3.a. If approved: fulfillRequest functionality => create bot_message, send NATS message
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
-      await fulfillRequest(request);
+      if (request.type === RequestType.Delete) {
+        await archiveProjectSet(request.profileId);
+      } else {
+        await fulfillRequest(request);
+      }
       await updateProfileStatus(
         Number(request.profileId),
         PROFILE_STATUS.APPROVED
@@ -81,9 +85,6 @@ export const updateRequestHumanAction = async (
       return res.status(204).end();
     }
 
-    logger.info(
-      `Sending CHES message Project Request Rejected for ${request.profileId}`
-    );
     await sendProvisioningMessage(
       request.profileId,
       MessageType.RequestRejected

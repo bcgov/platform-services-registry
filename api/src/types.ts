@@ -20,6 +20,7 @@ export const enum NatsContextAction {
   Create = "create",
   Edit = "edit",
   Sync = "sync",
+  Delete = "delete",
 }
 
 export const enum NatsContactRole {
