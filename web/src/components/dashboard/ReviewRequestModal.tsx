@@ -88,7 +88,6 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       ? { color: 'red', textTransform: 'capitalize' }
       : textCapitalized;
 
-  console.log('hiahia', profileDetails);
   const editNamespace =
     profileDetails.type === 'edit'
       ? getLicencePlatePostFix(profileDetails.editObject.namespace)

@@ -43,10 +43,8 @@ export const ProjectDeletionModal: React.FC<ProjectDeletionModalInterface> = (pr
   };
 
   const onSubmit = async () => {
-    // console.log('submit!!');
     try {
       const response = await api.deleteProjectByProfileId(profileId);
-      console.log('what is response', response);
     } catch (err: any) {
       const msg = 'Unable to Send deletion requets';
       throw new Error(`${msg}, reason = ${err.message}`);
