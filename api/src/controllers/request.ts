@@ -84,7 +84,9 @@ export const updateRequestHumanAction = async (
       );
       return res.status(204).end();
     }
-
+    logger.info(
+      `Sending CHES message Project Request Rejected for ${request.profileId}`
+    );
     await sendProvisioningMessage(
       request.profileId,
       MessageType.RequestRejected
