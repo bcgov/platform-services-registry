@@ -27,6 +27,7 @@ import shared from "./shared";
 
 export const enum AccessFlag {
   ProvisionOnTestCluster = "provision_on_test_clusters",
+  ReadAll = "read_all",
   EditAll = "edit_all",
   ApproveRequests = "approve_request",
   BotCallback = "bot_callback",
@@ -35,8 +36,14 @@ export const enum AccessFlag {
 export const AccessFlags = {};
 AccessFlags[USER_ROLES.ADMINISTRATOR] = [
   AccessFlag.ProvisionOnTestCluster,
+  AccessFlag.ReadAll,
   AccessFlag.EditAll,
   AccessFlag.ApproveRequests,
+];
+
+AccessFlags[USER_ROLES.READ_ONLY_ADMINISTRATOR] = [
+  AccessFlag.ProvisionOnTestCluster,
+  AccessFlag.ReadAll,
 ];
 
 AccessFlags[BOT_CLIENT_ID] = [AccessFlag.BotCallback];
@@ -119,7 +126,7 @@ export const validateRequiredProfile = async (req): Promise<Error | void> => {
     user,
   } = req;
 
-  if (user.accessFlags.includes(AccessFlag.EditAll)) {
+  if (user.accessFlags.includes(AccessFlag.ReadAll)) {
     return;
   }
 

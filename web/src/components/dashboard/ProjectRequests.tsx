@@ -27,7 +27,7 @@ import { ReviewRequestModal } from './ReviewRequestModal';
 import { useHandleSort } from '../../hooks/useHandleSort';
 
 const ProjectRequests: React.FC<any> = (props) => {
-  const { profileDetails } = props;
+  const { profileDetails, isAdminUser } = props;
 
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
@@ -74,20 +74,21 @@ const ProjectRequests: React.FC<any> = (props) => {
       {
         Header: 'Response',
         accessor: 'profileId',
-        Cell: ({ row: { values } }: any) => (
-          <Box>
-            <button
-              type="button"
-              value={values.profileId}
-              onClick={() => {
-                setProfileId(values.profileId);
-                toggle();
-              }}
-            >
-              Review
-            </button>
-          </Box>
-        ),
+        Cell: ({ row: { values } }: any) =>
+          isAdminUser && (
+            <Box>
+              <button
+                type="button"
+                value={values.profileId}
+                onClick={() => {
+                  setProfileId(values.profileId);
+                  toggle();
+                }}
+              >
+                Review
+              </button>
+            </Box>
+          ),
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps

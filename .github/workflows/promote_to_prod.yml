@@ -39,7 +39,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-      - name: Get the Test image IDs
+      - name: Get the Test image IDs and tag for Prod
         id: get-image-ids
         run: |
           export IMAGE_ID_DB="$(oc -n platform-registry-tools get imagestreamtag platsrv-registry-flyway:test -o custom-columns=id:tag.from.name --no-headers | cut -d '@' -f 2)"
@@ -48,6 +48,9 @@ jobs:
           echo "::set-output name=imagesha-db::$IMAGE_ID_DB"
           echo "::set-output name=imagesha-api::$IMAGE_ID_API"
           echo "::set-output name=imagesha-web::$IMAGE_ID_WEB"
+          oc -n platform-registry-tools tag platsrv-registry-flyway@$IMAGE_ID_DB platsrv-registry-flyway:prod
+          oc -n platform-registry-tools tag platsrv-registry-api@$IMAGE_ID_API platsrv-registry-api:prod
+          oc -n platform-registry-tools tag platsrv-registry-web@$IMAGE_ID_WEB platsrv-registry-web:prod
 
       - name: Set image IDs in Kustomize manifests
         run: |
@@ -55,6 +58,6 @@ jobs:
           kustomize edit set image "registry-flyway-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-flyway@${{ steps.get-image-ids.outputs.imagesha-db }}"
           kustomize edit set image "registry-api-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-api@${{ steps.get-image-ids.outputs.imagesha-api }}"
           kustomize edit set image "registry-web-image=image-registry.openshift-image-registry.svc:5000/platform-registry-tools/platsrv-registry-web@${{ steps.get-image-ids.outputs.imagesha-web }}"
-          git commit -am "Update image IDs for Test"
+          git commit -am "Update image IDs for Prod"
           git push origin
 

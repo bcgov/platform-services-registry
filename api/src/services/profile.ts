@@ -28,7 +28,7 @@ const { ProfileModel, ContactModel } = dm;
 const fetchAllDashboardProjects = async (userDetails: any): Promise<any> => {
   try {
     let profiles;
-    if (userDetails.accessFlags.includes(AccessFlag.EditAll)) {
+    if (userDetails.accessFlags.includes(AccessFlag.ReadAll)) {
       profiles = await ProfileModel.fetchAllDashboardProjects();
     } else {
       profiles = await ProfileModel.findProfilesByUserIdOrEmail(
@@ -56,7 +56,7 @@ const fetchAllDashboardProjects = async (userDetails: any): Promise<any> => {
         );
         profile.quotaSize = await getQuotaSize(profile);
 
-        if (!userDetails.accessFlags.includes(AccessFlag.EditAll)) {
+        if (!userDetails.accessFlags.includes(AccessFlag.ReadAll)) {
           const contacts = await ContactModel.findForProject(
             Number(profile.id)
           );
