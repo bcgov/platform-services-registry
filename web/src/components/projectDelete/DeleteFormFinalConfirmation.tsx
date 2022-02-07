@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import FormTitle from '../common/UI/FormTitle';
 import { Flex, Text } from 'rebass';
-import { StyledFormButton } from '../common/UI/Button';
 import { Input } from '@rebass/forms';
+import FormTitle from '../common/UI/FormTitle';
+import { StyledFormButton } from '../common/UI/Button';
 
 const DeleteFormFinalConfirmation: React.FC<any> = ({ licensePlate, onSubmit }) => {
   const [userConfirmation, setUserConfirmation] = useState(false);

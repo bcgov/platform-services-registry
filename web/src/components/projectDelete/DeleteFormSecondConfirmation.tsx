@@ -1,6 +1,6 @@
 import React from 'react';
-import FormTitle from '../common/UI/FormTitle';
 import { Text, Box, Flex } from 'rebass';
+import FormTitle from '../common/UI/FormTitle';
 import { StyledFormButton } from '../common/UI/Button';
 
 const DeleteFormSecondConfirmation: React.FC<any> = ({ licensePlate, nextPage, previousPage }) => {

@@ -1,6 +1,6 @@
 import React from 'react';
-import FormTitle from '../common/UI/FormTitle';
 import { Flex, Text, Box } from 'rebass';
+import FormTitle from '../common/UI/FormTitle';
 import { StyledFormButton } from '../common/UI/Button';
 
 const DeleteFormFirstConfirmation: React.FC<any> = ({ licensePlate, nextPage, closeModal }) => {

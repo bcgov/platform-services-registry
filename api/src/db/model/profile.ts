@@ -252,23 +252,32 @@ export default class ProfileModel extends Model {
     }
   }
 
-  async markProjectNotDeletable(profileId: number): Promise<any> {
+  async setProjectDeletableStatus(
+    profileId: number,
+    deletableField: any
+  ): Promise<any> {
     const values: any[] = [];
     const query = {
       text: `
         Update profile
         SET 
-        pvc_deletability=false,
-        namespace_deletability=false,
-        pods_deletability=false,
-        provisoner_deletion_checked=false
+        pvc_deletability=$2,
+        namespace_deletability=$3,
+        pods_deletability=$4,
+        provisoner_deletion_checked=$5
         WHERE id = $1 
         RETURNING provisoner_deletion_checked,pods_deletability,namespace_deletability,pvc_deletability;`,
       values,
     };
 
     try {
-      query.values = [profileId];
+      query.values = [
+        profileId,
+        deletableField.pvcDeletability,
+        deletableField.namespaceDeletability,
+        deletableField.podsDeletability,
+        deletableField.provisonerDeletionChecked,
+      ];
 
       const results = await this.runQuery(query);
 

@@ -17,7 +17,7 @@
 import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import { getLicencePlatePostFix } from '../utils/utils';
@@ -49,7 +49,7 @@ import theme from '../theme';
 import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
-import { ProjectDeletionModal } from '../views/ProjectDeletion';
+import { ProjectDeletionModal } from './ProjectDeletion';
 import {
   getClusterDisplayName,
   getLicensePlate,
@@ -121,6 +121,7 @@ const ProfileEdit: React.FC = (props: any) => {
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
   const [submitRefresh, setSubmitRefresh] = useState<any>(0);
+  const history = useHistory();
   const editNamespace = getLicencePlatePostFix(
     namespaceSearchQuery,
   ) as keyof typeof profileState.quotaDetails.quotaSize;
@@ -209,7 +210,12 @@ const ProfileEdit: React.FC = (props: any) => {
   const closeDeletionModal = async () => {
     const msg = 'Unable to mark project as undeletable';
     try {
-      const response = await api.updateProfileDeleteableStatus(profileId);
+      const response = await api.updateProfileDeleteableStatus(profileId, {
+        pvcDeletability: 'false',
+        podsDeletability: 'false',
+        namespaceDeletability: 'false',
+        provisonerDeletionChecked: 'false',
+      });
       const {
         pvcDeletability,
         podsDeletability,
@@ -222,8 +228,11 @@ const ProfileEdit: React.FC = (props: any) => {
         namespaceDeletability ||
         provisonerDeletionChecked
       ) {
-        throw new Error(`${msg}, it still mark as deletable`);
+        promptErrToastWithText(
+          `${msg}, it still marked as deletable, please contact platform admin for more detail.`,
+        );
       }
+      history.push(ROUTE_PATHS.DASHBOARD);
     } catch (err: any) {
       promptErrToastWithText('Something went wrong');
       throw new Error(`${msg}, reason = ${err.message}`);
@@ -337,7 +346,6 @@ const ProfileEdit: React.FC = (props: any) => {
                   </ShadowBox>
                 </Box>
               ))}
-            {console.log('what is the statues', profileState)}
             {profileState.isProvisioned && !profileState.hasPendingEdit && (
               <StyledFormButton
                 style={{ backgroundColor: '#C70000', display: 'block', margin: '50px auto' }}

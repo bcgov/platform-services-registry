@@ -103,11 +103,17 @@ export default function useRegistryApi() {
     return axiosInstance.current.put(`profile/${profileId}`, profile);
   };
 
-  const updateProfileDeleteableStatus = async (profileId: string): Promise<AxiosResponse<any>> => {
+  const updateProfileDeleteableStatus = async (
+    profileId: string,
+    statusDetails: any,
+  ): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     }
-    return axiosInstance.current.put(`profile/${profileId}/update-profile-deleteable-status`);
+    return axiosInstance.current.put(
+      `profile/${profileId}/update-profile-deleteable-status`,
+      statusDetails,
+    );
   };
 
   const deleteProjectByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {

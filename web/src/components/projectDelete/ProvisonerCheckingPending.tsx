@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import LoadingSpinner from '../common/UI/LoadingSpinner';
-import FormTitle from '../common/UI/FormTitle';
 import { Text, Box, Flex } from 'rebass';
 import { Field } from 'react-final-form';
+import LoadingSpinner from '../common/UI/LoadingSpinner';
+import FormTitle from '../common/UI/FormTitle';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText } from '../../utils/promptToastHelper';
 import useInterval from '../../hooks/useInterval';

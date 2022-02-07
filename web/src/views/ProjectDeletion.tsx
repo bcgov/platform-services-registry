@@ -1,15 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
+import { Redirect } from 'react-router-dom';
+import { async } from 'validate.js';
 import getDecodedToken from '../utils/getDecodedToken';
 import DeleteFormFirstConfirmation from '../components/projectDelete/DeleteFormFirstConfirmation';
 import DeleteFormSecondConfirmation from '../components/projectDelete/DeleteFormSecondConfirmation';
 import ProvisonerCheckingPending from '../components/projectDelete/ProvisonerCheckingPending';
 import DeleteFormFinalConfirmation from '../components/projectDelete/DeleteFormFinalConfirmation';
 import { ROUTE_PATHS } from '../constants';
-import { Redirect } from 'react-router-dom';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import useRegistryApi from '../hooks/useRegistryApi';
-import { async } from 'validate.js';
 
 interface ProjectDeletionModalInterface {
   licensePlate: string;

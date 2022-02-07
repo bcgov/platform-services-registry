@@ -156,16 +156,20 @@ export const createProjectProfile = async (
 };
 
 export const updateProfileDeleteableStatus = async (
-  { params }: { params: any },
+  { params, body }: { params: any; body: any },
   res: Response
 ) => {
   const { ProfileModel } = dm;
   const { profileId } = params;
+
   try {
-    const response = await ProfileModel.markProjectNotDeletable(profileId);
+    const response = await ProfileModel.setProjectDeletableStatus(
+      profileId,
+      body
+    );
     res.status(200).json(response);
   } catch (err) {
-    const message = `Unable to mark deletable to false to ${profileId}`;
+    const message = `Unable to change deletable filed for ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);
