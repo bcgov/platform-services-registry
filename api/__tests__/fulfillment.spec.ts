@@ -130,6 +130,7 @@ describe("Fulfillment utility", () => {
     const result = await contextForProvisioning(
       12345,
       profileCluster[0],
+      false,
       false
     );
 
@@ -147,7 +148,7 @@ describe("Fulfillment utility", () => {
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
 
     await expect(
-      contextForProvisioning(12345, profileCluster[0], false)
+      contextForProvisioning(12345, profileCluster[0], false, false)
     ).rejects.toThrow();
   });
 
@@ -157,7 +158,7 @@ describe("Fulfillment utility", () => {
     });
 
     await expect(
-      contextForProvisioning(12345, profileCluster[0], false)
+      contextForProvisioning(12345, profileCluster[0], false, false)
     ).rejects.toThrow();
   });
 

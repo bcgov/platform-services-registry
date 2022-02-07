@@ -77,10 +77,10 @@ export const updateRequestHumanAction = async (
     // Step 3.a. If approved: fulfillRequest functionality => create bot_message, send NATS message
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
+      await fulfillRequest(request);
+
       if (request.type === RequestType.Delete) {
         await archiveProjectSet(request.profileId);
-      } else {
-        await fulfillRequest(request);
       }
       await updateProfileStatus(
         Number(request.profileId),
