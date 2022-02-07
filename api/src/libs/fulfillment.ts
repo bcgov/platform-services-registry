@@ -499,7 +499,6 @@ export const fulfillRequest = async (request: Request): Promise<any> => {
     await createBotMessageSet(request, subjectPrefix);
     const botMessageSet = await fetchBotMessageRequests(Number(request.id));
     for (const botMessage of botMessageSet) {
-      console.log("what is bot message here:", botMessage.natsContext);
       await sendNatsMessage(request.profileId, {
         natsSubject: botMessage.natsSubject,
         natsContext: botMessage.natsContext,

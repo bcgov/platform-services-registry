@@ -40,11 +40,6 @@ const createRequest = async (
 ): Promise<Request> => {
   try {
     const existingRequests = await RequestModel.findForProfile(profileId);
-    console.log(
-      "hiahia I am createRequest",
-      requiresHumanAction,
-      existingRequests
-    );
     if (existingRequests.length > 0) {
       throw new Error("Cant proceed as the profile has existing request");
     }
@@ -329,7 +324,6 @@ export const requestProjectProfileDelete = async (
   requiresHumanAction: boolean = true
 ): Promise<Request> => {
   try {
-    console.log("what is profileId in requestProjectProfileDelete", profileId);
     return await createRequest(
       RequestType.Delete,
       user.id,
