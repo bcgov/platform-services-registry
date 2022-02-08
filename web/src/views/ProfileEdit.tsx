@@ -231,9 +231,10 @@ const ProfileEdit: React.FC = (props: any) => {
         promptErrToastWithText(
           `${msg}, it still marked as deletable, please contact platform admin for more detail.`,
         );
+        throw new Error(`Not all deletion field are set to false`);
       }
-      history.push(ROUTE_PATHS.DASHBOARD);
     } catch (err: any) {
+      history.push(ROUTE_PATHS.DASHBOARD);
       promptErrToastWithText('Something went wrong');
       throw new Error(`${msg}, reason = ${err.message}`);
     }

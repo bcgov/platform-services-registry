@@ -116,6 +116,13 @@ export default function useRegistryApi() {
     );
   };
 
+  const preDeletionCheck = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.get(`profile/${profileId}/pre-deletion-check-request`);
+  };
+
   const deleteProjectByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -264,5 +271,6 @@ export default function useRegistryApi() {
     getAllAvailableQuotaSize,
     updateProfileDeleteableStatus,
     deleteProjectByProfileId,
+    preDeletionCheck,
   };
 }

@@ -15,8 +15,18 @@ const ProvisonerCheckingPending: React.FC<any> = ({
   closeModal,
 }) => {
   const [showDeletionCheckError, setShowDeletionCheckError] = useState(false);
-
   const api = useRegistryApi();
+  useEffect(() => {
+    (async () => {
+      try {
+        await api.preDeletionCheck(profileId);
+      } catch (err: any) {
+        promptErrToastWithText('Provision check request failed');
+        // TDDO: add a redirect to dashboard
+      }
+    })();
+  }, []);
+
   useInterval(() => {
     async function wrap() {
       try {

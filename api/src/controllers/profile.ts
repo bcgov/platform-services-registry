@@ -18,13 +18,19 @@ import { errorWithCode, logger } from "@bcgov/common-nodejs-utils";
 import { Response } from "express";
 import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
+import config from "../config";
+import { NatsContext, NatsContextAction } from "../types";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile } from "../db/model/profile";
-import { ProjectQuotaSize } from "../db/model/quota";
+import { ProjectQuotaSize, ProjectSetQuotas } from "../db/model/quota";
 import { Request } from "../db/model/request";
 import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "../libs/authmware";
-import { fulfillRequest } from "../libs/fulfillment";
+import {
+  fulfillRequest,
+  sendNatsMessage,
+  buildNatsMessageFields,
+} from "../libs/fulfillment";
 import { getQuotaSize, updateProfileStatus } from "../libs/profile";
 import {
   requestProfileContactsEdit,
@@ -300,6 +306,51 @@ export const deleteProfileRequest = async (
   res.status(200);
 };
 
+export const sendNatsforDeletionCheck = async (
+  { params }: { params: any; body: any },
+  res: Response
+) => {
+  const { profileId } = params;
+  const subjectPrefix: string = config.get("nats:subjectPrefix");
+
+  try {
+    const { NamespaceModel, ProfileModel, QuotaModel } = dm;
+    const clusters = await NamespaceModel.findClustersForProfile(profileId);
+
+    const profile: ProjectProfile = await ProfileModel.findById(profileId);
+    const quotaSize: ProjectQuotaSize = await getQuotaSize(profile);
+    const quotas: ProjectSetQuotas =
+      await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
+    const namespaceInfoInNatsPreferedFormat = await buildNatsMessageFields(
+      profile,
+      quotaSize,
+      quotas
+    );
+
+    clusters.forEach(async (cluster) => {
+      const deletionCheckNatsContext: NatsContext = {
+        profile_id: Number(profileId),
+        cluster_id: Number(cluster.id),
+        cluster_name: cluster.name,
+        action: NatsContextAction.Check,
+        namespaces: namespaceInfoInNatsPreferedFormat,
+      };
+      await sendNatsMessage(profileId, {
+        natsSubject: subjectPrefix.concat(cluster.name),
+        natsContext: deletionCheckNatsContext,
+      });
+    });
+
+    res.status(201).end();
+  } catch (err) {
+    const message = `Unable to send deletion check request.`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+
+  res.status(200);
+};
 export const fetchDashboardProjectProfiles = async (
   { user }: { user: AuthenticatedUser },
   res: Response

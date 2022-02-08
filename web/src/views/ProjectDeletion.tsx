@@ -1,8 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { useKeycloak } from '@react-keycloak/web';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { async } from 'validate.js';
-import getDecodedToken from '../utils/getDecodedToken';
+
 import DeleteFormFirstConfirmation from '../components/projectDelete/DeleteFormFirstConfirmation';
 import DeleteFormSecondConfirmation from '../components/projectDelete/DeleteFormSecondConfirmation';
 import ProvisonerCheckingPending from '../components/projectDelete/ProvisonerCheckingPending';
@@ -22,18 +20,6 @@ export const ProjectDeletionModal: React.FC<ProjectDeletionModalInterface> = (pr
   const [currentPage, setPage] = useState(1);
   const [goBackToDashboard, setGoBackToDashboard] = useState<boolean>(false);
 
-  const { keycloak } = useKeycloak();
-
-  const decodedToken = getDecodedToken(`${keycloak?.token}`);
-  // @ts-ignore
-  const userRoles = decodedToken.resource_access['registry-web']
-    ? // @ts-ignore
-      decodedToken.resource_access['registry-web'].roles
-    : [];
-
-  const isUserAdmin = userRoles.includes('administrator');
-  const currentUserName = `${decodedToken.given_name} ${decodedToken.family_name}`;
-
   const nextPage = () => {
     setPage(currentPage + 1);
   };
@@ -44,7 +30,7 @@ export const ProjectDeletionModal: React.FC<ProjectDeletionModalInterface> = (pr
 
   const onSubmit = async () => {
     try {
-      const response = await api.deleteProjectByProfileId(profileId);
+      await api.deleteProjectByProfileId(profileId);
     } catch (err: any) {
       const msg = 'Unable to Send deletion requets';
       throw new Error(`${msg}, reason = ${err.message}`);

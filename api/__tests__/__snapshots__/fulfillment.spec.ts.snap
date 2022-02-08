@@ -158,18 +158,32 @@ Object {
   "cluster_name": "silver",
   "contacts": Array [
     Object {
-      "email": "jane@example.com",
+      "email": undefined,
       "provider": "github",
       "rocketchat_username": null,
       "role": "owner",
-      "user_id": "jane1100",
+      "user_id": undefined,
     },
     Object {
-      "email": "john@example.com",
+      "email": undefined,
       "provider": "github",
       "rocketchat_username": null,
-      "role": "lead",
-      "user_id": "john1100",
+      "role": "owner",
+      "user_id": undefined,
+    },
+    Object {
+      "email": undefined,
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": undefined,
+    },
+    Object {
+      "email": undefined,
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": undefined,
     },
   ],
   "description": "This is a cool edited project.",
@@ -178,124 +192,16 @@ Object {
   "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
-      "name": "4ea35c-tools",
-      "namespace_id": 13,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
+      "name": undefined,
+      "namespace_id": 1,
+      "quota": undefined,
+      "quotas": undefined,
     },
     Object {
-      "name": "4ea35c-test",
-      "namespace_id": 14,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-dev",
-      "namespace_id": 15,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-prod",
-      "namespace_id": 16,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
+      "name": undefined,
+      "namespace_id": 2,
+      "quota": undefined,
+      "quotas": undefined,
     },
   ],
   "profile_id": 4,
@@ -309,18 +215,32 @@ Object {
   "cluster_name": "silver",
   "contacts": Array [
     Object {
-      "email": "jane@example.com",
+      "email": undefined,
       "provider": "github",
       "rocketchat_username": null,
       "role": "owner",
-      "user_id": "jane1100",
+      "user_id": undefined,
     },
     Object {
-      "email": "john@example.com",
+      "email": undefined,
       "provider": "github",
       "rocketchat_username": null,
-      "role": "lead",
-      "user_id": "john1100",
+      "role": "owner",
+      "user_id": undefined,
+    },
+    Object {
+      "email": undefined,
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": undefined,
+    },
+    Object {
+      "email": undefined,
+      "provider": "github",
+      "rocketchat_username": null,
+      "role": "owner",
+      "user_id": undefined,
     },
   ],
   "description": "This is a cool project.",
@@ -329,124 +249,16 @@ Object {
   "ministry_id": "CITZ",
   "namespaces": Array [
     Object {
-      "name": "4ea35c-tools",
-      "namespace_id": 13,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
+      "name": undefined,
+      "namespace_id": 1,
+      "quota": undefined,
+      "quotas": undefined,
     },
     Object {
-      "name": "4ea35c-test",
-      "namespace_id": 14,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-dev",
-      "namespace_id": 15,
-      "quota": Object {
-        "cpu": "cpu-request-2-limit-4",
-        "memory": "memory-request-4-limit-8",
-        "snapshot": "snapshot-5",
-        "storage": "storage-16",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
-    },
-    Object {
-      "name": "4ea35c-prod",
-      "namespace_id": 16,
-      "quota": Object {
-        "cpu": "cpu-request-0.5-limit-1.5",
-        "memory": "memory-request-2-limit-4",
-        "snapshot": "snapshot-5",
-        "storage": "storage-1",
-      },
-      "quotas": Object {
-        "cpu": Object {
-          "limits": 8,
-          "requests": 4,
-        },
-        "memory": Object {
-          "limits": "32Gi",
-          "requests": "16Gi",
-        },
-        "snapshot": Object {
-          "count": 5,
-        },
-        "storage": Object {
-          "backup": "25Gi",
-          "block": "50Gi",
-          "capacity": "50Gi",
-          "file": "50Gi",
-          "pvc_count": 20,
-        },
-      },
+      "name": undefined,
+      "namespace_id": 2,
+      "quota": undefined,
+      "quotas": undefined,
     },
   ],
   "profile_id": 4,
