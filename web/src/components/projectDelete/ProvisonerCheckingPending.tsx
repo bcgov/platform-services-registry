@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Text, Box, Flex } from 'rebass';
 import { Field } from 'react-final-form';
+import { useHistory } from 'react-router-dom';
 import LoadingSpinner from '../common/UI/LoadingSpinner';
 import FormTitle from '../common/UI/FormTitle';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { promptErrToastWithText } from '../../utils/promptToastHelper';
 import useInterval from '../../hooks/useInterval';
 import { StyledFormButton } from '../common/UI/Button';
+import { ROUTE_PATHS } from '../../constants';
 
 const ProvisonerCheckingPending: React.FC<any> = ({
   licensePlate,
@@ -14,6 +16,7 @@ const ProvisonerCheckingPending: React.FC<any> = ({
   profileId,
   closeModal,
 }) => {
+  const history = useHistory();
   const [showDeletionCheckError, setShowDeletionCheckError] = useState(false);
   const api = useRegistryApi();
   useEffect(() => {
@@ -21,8 +24,8 @@ const ProvisonerCheckingPending: React.FC<any> = ({
       try {
         await api.preDeletionCheck(profileId);
       } catch (err: any) {
+        history.push(ROUTE_PATHS.DASHBOARD);
         promptErrToastWithText('Provision check request failed');
-        // TDDO: add a redirect to dashboard
       }
     })();
   }, []);
