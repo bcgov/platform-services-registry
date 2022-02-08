@@ -11,8 +11,8 @@ FROM
 WHERE 
 namespace.id = cluster_namespace.namespace_id
 AND namespace.name ~ '^[a-zA-Z0-9]*-tools' 
-AND  primary_cluster_name='silver'
-AND  profile.archived='false'
-AND profile.namespace_prefix ~* '^(?!75e61b|8878b4|77c02f).*';
+AND primary_cluster_name='silver'
+AND profile.archived='false'
+AND profile.namespace_prefix ~* '^(?!75e61b|8878b4|77c02f|0bd5ad|8ad0ea).*';
 
 END TRANSACTION;
