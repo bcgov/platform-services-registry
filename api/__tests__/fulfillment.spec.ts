@@ -170,8 +170,8 @@ describe("Fulfillment utility", () => {
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: quotas });
     client.query.mockReturnValueOnce({ rows: quotas });
-    client.query.mockReturnValueOnce({ rows: contacts });
     client.query.mockReturnValueOnce({ rows: profileClusterNamespaces });
+    client.query.mockReturnValueOnce({ rows: contacts });
 
     const result = await contextForEditing(
       12345,
