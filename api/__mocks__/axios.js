@@ -28,6 +28,9 @@ const fn = {
 const factory = {
   fn,
   create: () => fn,
-}
+  get: jest.fn(() => Promise.resolve()),
+  post: jest.fn(() => Promise.resolve()),
+};
+
 
 module.exports = factory;
