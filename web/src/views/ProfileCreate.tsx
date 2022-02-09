@@ -47,16 +47,13 @@ const ProfileCreate: React.FC = () => {
 
       // 1. Subscribe to communications
       const userEmails = technicalContacts.map((user) => user.email);
-
-      console.log('** subscribeCommunications **');
-      console.log(userEmails);
       await api.subscribeCommunications(userEmails);
 
-      // 1. Create the project profile.
+      // 2. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
 
-      // 2. Create contacts and link contacts to the profile.
+      // 3. Create contacts and link contacts to the profile.
       /* eslint-disable no-await-in-loop */
       for (const contact of technicalContacts) {
         const tc: any = await api.createContact(contact);

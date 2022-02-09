@@ -27,12 +27,9 @@ const communications = async (
       throw new Error("No email addresses to subscribe");
     }
 
-    console.log(" BODY ");
-    console.log(body);
-
     Promise.all(body.map((email) => subscribeUserToMessages(email)));
 
-    res.status(200);
+    res.status(200).json("Subscribed users to communications");
   } catch (err) {
     const message = `Unable to subscribe user to provisioner communications`;
     logger.error(`${message}, err = ${err.message}`);
