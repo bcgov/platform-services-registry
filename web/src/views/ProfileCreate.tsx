@@ -63,7 +63,7 @@ const ProfileCreate: React.FC = () => {
       // 4. Trigger provisioning
       await api.createNamespaceByProfileId(profileId, clusters);
 
-      // 4. Create Project Request
+      // 5. Create Project Request
       await api.createProjectRequestByProfileId(profileId);
 
       // 6. Invite technicalCOntact to bcgov repo, only invite in production environment
@@ -78,7 +78,7 @@ const ProfileCreate: React.FC = () => {
 
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
-      // 6. All good? Tell the user.
+      // 7. All good? Tell the user.
       promptSuccessToastWithText('Your namespace request was successful');
     } catch (err) {
       setOpenBackdrop(false);
