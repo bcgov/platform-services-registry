@@ -45,6 +45,13 @@ const ProfileCreate: React.FC = () => {
       const technicalContacts = [...technicalLeads, productOwner];
       const clusters = transformClusters(profile);
 
+      // 1. Subscribe to communications
+      const userEmails = technicalContacts.map((user) => user.email);
+
+      console.log('** subscribeCommunications **');
+      console.log(userEmails);
+      await api.subscribeCommunications(userEmails);
+
       // 1. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
@@ -62,7 +69,7 @@ const ProfileCreate: React.FC = () => {
       // 4. Create Project Request
       await api.createProjectRequestByProfileId(profileId);
 
-      // 5. Invite technicalCOntact to bcgov repo, only invite in production environment
+      // 6. Invite technicalCOntact to bcgov repo, only invite in production environment
       const invitationPromiss = technicalContacts.map((inviteUser) => {
         const inviteListPayload = {
           githubId: inviteUser.githubId,

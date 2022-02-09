@@ -27,6 +27,7 @@ import profile from "./routes/profile";
 import provision from "./routes/provision";
 import quota from "./routes/quota";
 import request from "./routes/request";
+import communications from "./routes/communications";
 
 const corsOptions = {
   origin:
@@ -49,4 +50,5 @@ export const router = (app) => {
   app.use("/api/v1/contact", contact);
   app.use("/api/v1/provision", provision);
   app.use("/api/v1/request", request);
+  app.use("/api/v1/communications", communications);
 };

@@ -18,8 +18,8 @@ import mockAxios from "axios";
 import {
   getToken,
   getContactId,
-  subscribeUsersToMesseges,
-} from "../src/services/subscribeCommunications";
+  subscribeUserToMautic,
+} from "../src/controllers/communications/helpers";
 
 describe("Subscribe user to communications", () => {
   beforeEach(() => {
@@ -56,7 +56,7 @@ describe("Subscribe user to communications", () => {
     // @ts-ignore
     mockAxios.post.mockResolvedValue({ status: 200 });
 
-    const response = await subscribeUsersToMesseges(mockContactId, mockToken);
+    const response = await subscribeUserToMautic(mockContactId, mockToken);
 
     expect(response).toBeDefined();
     expect(response.status).toBe(200);
