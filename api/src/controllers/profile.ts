@@ -302,8 +302,6 @@ export const deleteProfileRequest = async (
 
     throw errorWithCode(message, 500);
   }
-
-  res.status(200);
 };
 
 export const sendNatsforDeletionCheck = async (
@@ -348,9 +346,8 @@ export const sendNatsforDeletionCheck = async (
 
     throw errorWithCode(message, 500);
   }
-
-  res.status(200);
 };
+
 export const fetchDashboardProjectProfiles = async (
   { user }: { user: AuthenticatedUser },
   res: Response
