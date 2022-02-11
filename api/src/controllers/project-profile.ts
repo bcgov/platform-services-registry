@@ -169,7 +169,7 @@ export const updateProfileDeleteableStatus = async (
     );
     res.status(200).json(response);
   } catch (err) {
-    const message = `Unable to change deletable filed for ${profileId}`;
+    const message = `Unable to change deletable field for ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw errorWithCode(message, 500);

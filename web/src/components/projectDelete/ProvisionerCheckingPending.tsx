@@ -10,7 +10,7 @@ import useInterval from '../../hooks/useInterval';
 import { StyledFormButton } from '../common/UI/Button';
 import { ROUTE_PATHS } from '../../constants';
 
-const ProvisonerCheckingPending: React.FC<any> = ({
+const ProvisionerCheckingPending: React.FC<any> = ({
   licensePlate,
   nextPage,
   profileId,
@@ -38,17 +38,17 @@ const ProvisonerCheckingPending: React.FC<any> = ({
           pvcDeletability,
           podsDeletability,
           namespaceDeletability,
-          provisonerDeletionChecked,
+          provisionerDeletionChecked,
         } = projectDetails.data;
         if (
           pvcDeletability &&
           podsDeletability &&
           namespaceDeletability &&
-          provisonerDeletionChecked
+          provisionerDeletionChecked
         ) {
           nextPage();
         } else if (
-          provisonerDeletionChecked &&
+          provisionerDeletionChecked &&
           (!pvcDeletability || !podsDeletability || !namespaceDeletability)
         ) {
           setShowDeletionCheckError(true);
@@ -69,7 +69,7 @@ const ProvisonerCheckingPending: React.FC<any> = ({
           <FormTitle style={{ margin: 0, paddingBottom: '20px' }}>
             Project {licensePlate} health check Finished{' '}
           </FormTitle>
-          <Text pb="2">Provisoner check failed.</Text>
+          <Text pb="2">Provisioner check failed.</Text>
           <Text>Please do another self-check before delete this project.</Text>
           <Flex flexDirection="row" justifyContent="center" mb="15px">
             <StyledFormButton smallButton onClick={closeModal}>
@@ -91,4 +91,4 @@ const ProvisonerCheckingPending: React.FC<any> = ({
   );
 };
 
-export default ProvisonerCheckingPending;
+export default ProvisionerCheckingPending;

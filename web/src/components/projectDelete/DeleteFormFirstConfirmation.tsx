@@ -22,7 +22,7 @@ const DeleteFormFirstConfirmation: React.FC<any> = ({ licensePlate, nextPage, cl
       </Flex>
       <Flex flexDirection="row" justifyContent="space-between" mb="15px">
         <StyledFormButton smallButton onClick={closeModal}>
-          Cancle
+          Cancel
         </StyledFormButton>
         <StyledFormButton
           smallButton

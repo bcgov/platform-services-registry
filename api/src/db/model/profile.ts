@@ -264,9 +264,9 @@ export default class ProfileModel extends Model {
         pvc_deletability=$2,
         namespace_deletability=$3,
         pods_deletability=$4,
-        provisoner_deletion_checked=$5
+        provisioner_deletion_checked=$5
         WHERE id = $1 
-        RETURNING provisoner_deletion_checked,pods_deletability,namespace_deletability,pvc_deletability;`,
+        RETURNING provisioner_deletion_checked,pods_deletability,namespace_deletability,pvc_deletability;`,
       values,
     };
 
@@ -276,7 +276,7 @@ export default class ProfileModel extends Model {
         deletableField.pvcDeletability,
         deletableField.namespaceDeletability,
         deletableField.podsDeletability,
-        deletableField.provisonerDeletionChecked,
+        deletableField.provisionerDeletionChecked,
       ];
 
       const results = await this.runQuery(query);

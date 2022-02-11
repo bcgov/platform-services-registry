@@ -214,24 +214,24 @@ const ProfileEdit: React.FC = (props: any) => {
         pvcDeletability: 'false',
         podsDeletability: 'false',
         namespaceDeletability: 'false',
-        provisonerDeletionChecked: 'false',
+        provisionerDeletionChecked: 'false',
       });
       const {
         pvcDeletability,
         podsDeletability,
         namespaceDeletability,
-        provisonerDeletionChecked,
+        provisionerDeletionChecked,
       } = response.data;
       if (
         pvcDeletability ||
         podsDeletability ||
         namespaceDeletability ||
-        provisonerDeletionChecked
+        provisionerDeletionChecked
       ) {
         promptErrToastWithText(
-          `${msg}, it still marked as deletable, please contact platform admin for more detail.`,
+          `${msg}, it still marked as deletable, please contact platform admin for more details.`,
         );
-        throw new Error(`Not all deletion field are set to false`);
+        throw new Error(`Not all deletion fields are set to false`);
       }
     } catch (err: any) {
       history.push(ROUTE_PATHS.DASHBOARD);

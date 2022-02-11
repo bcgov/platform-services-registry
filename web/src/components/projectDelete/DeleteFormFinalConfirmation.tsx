@@ -19,7 +19,7 @@ const DeleteFormFinalConfirmation: React.FC<any> = ({ licensePlate, onSubmit }) 
 
   return (
     <>
-      <FormTitle style={{ margin: 0, paddingBottom: '20px' }}>Final confirmaton</FormTitle>
+      <FormTitle style={{ margin: 0, paddingBottom: '20px' }}>Final confirmation</FormTitle>
 
       <Flex mb={2}>
         Please type{' '}

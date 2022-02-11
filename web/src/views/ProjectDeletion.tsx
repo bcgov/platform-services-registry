@@ -3,10 +3,10 @@ import { Redirect } from 'react-router-dom';
 
 import DeleteFormFirstConfirmation from '../components/projectDelete/DeleteFormFirstConfirmation';
 import DeleteFormSecondConfirmation from '../components/projectDelete/DeleteFormSecondConfirmation';
-import ProvisonerCheckingPending from '../components/projectDelete/ProvisonerCheckingPending';
+import ProvisionerCheckingPending from '../components/projectDelete/ProvisionerCheckingPending';
 import DeleteFormFinalConfirmation from '../components/projectDelete/DeleteFormFinalConfirmation';
 import { ROUTE_PATHS } from '../constants';
-import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
+import { promptSuccessToastWithText } from '../utils/promptToastHelper';
 import useRegistryApi from '../hooks/useRegistryApi';
 
 interface ProjectDeletionModalInterface {
@@ -58,7 +58,7 @@ export const ProjectDeletionModal: React.FC<ProjectDeletionModalInterface> = (pr
         />
       )}
       {currentPage === 3 && (
-        <ProvisonerCheckingPending
+        <ProvisionerCheckingPending
           nextPage={() => nextPage()}
           closeModal={closeDeletionModal}
           licensePlate={licensePlate}
