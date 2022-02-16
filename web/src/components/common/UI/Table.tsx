@@ -44,6 +44,7 @@ interface ITableProps {
   linkedRows?: boolean;
   title: string;
   onSort: any;
+  getCsvData: any;
 }
 
 interface ProjectRole {
@@ -278,15 +279,14 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
 };
 
 const Table: React.FC<ITableProps> = (props) => {
-  const { columns, data, linkedRows, title, onSort } = props;
+  const { columns, data, linkedRows, title, onSort, getCsvData } = props;
   const { setOpenBackdrop } = useCommonState();
-  const api = useRegistryApi();
 
   const downloadCSV = async () => {
     setOpenBackdrop(true);
     try {
-      const csvDownloadData = await api.getDashboardProjects();
-      const flattened = [...csvDownloadData.data].map((profile: any) => flatten(profile));
+      const csvData = await getCsvData();
+      const flattened = csvData.map((profile: any) => flatten(profile));
       const csv = transformJsonToCsv(flattened);
       window.open(`data:text/csv;charset=utf-8,${escape(csv)}`);
     } catch (err) {
