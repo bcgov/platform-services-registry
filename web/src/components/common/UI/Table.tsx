@@ -35,6 +35,8 @@ import { promptErrToastWithText } from '../../../utils/promptToastHelper';
 import { flatten, transformJsonToCsv } from '../../../utils/transformDataHelper';
 import { BaseIcon } from './Icon';
 import Tooltip from './Tooltip';
+import useRegistryApi from '../../../hooks/useRegistryApi';
+
 
 interface ITableProps {
   columns: any;
@@ -278,11 +280,13 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
 const Table: React.FC<ITableProps> = (props) => {
   const { columns, data, linkedRows, title, onSort } = props;
   const { setOpenBackdrop } = useCommonState();
+  const api = useRegistryApi();
 
-  const downloadCSV = () => {
+  const downloadCSV = async () => {
     setOpenBackdrop(true);
     try {
-      const flattened = data.map((profile: any) => flatten(profile));
+      const csvDownloadData = await api.getDashboardProjects();
+      const flattened = [...csvDownloadData.data].map((profile: any) => flatten(profile));
       const csv = transformJsonToCsv(flattened);
       window.open(`data:text/csv;charset=utf-8,${escape(csv)}`);
     } catch (err) {
