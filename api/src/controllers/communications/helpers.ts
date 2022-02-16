@@ -1,10 +1,10 @@
 import { URLSearchParams } from "url";
 import axios from "axios";
-import { selectedCommunications } from "./constants";
+import { SELECTEDCOMMUNICATIONS } from "./constants";
 
 const suscribeData = (contactId) => ({
   ContactId: contactId,
-  SegmentsAndIds: selectedCommunications,
+  SegmentsAndIds: SELECTEDCOMMUNICATIONS,
 });
 
 export const getToken = async () => {

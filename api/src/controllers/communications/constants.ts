@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-export const selectedCommunications = [
+export const SELECTEDCOMMUNICATIONS = [
   {
     segmentID: "5",
     segmentName: "Pathfinder SSO Segment",
