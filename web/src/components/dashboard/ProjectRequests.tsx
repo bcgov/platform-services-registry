@@ -95,13 +95,13 @@ const ProjectRequests: React.FC<any> = (props) => {
     [],
   );
 
-  const getData = async (profileDetails: any) => {
+  const getData = async (profileDetailsData: any) => {
     try {
       // Step 1: GET all active requests requiring human action
       const humanActionRequests = await api.getHumanActionRequests();
 
       // Step 2: Filter profiles that have outstanding requests requiring human action
-      const results = profileDetails.filter((profile: any) =>
+      const results = profileDetailsData.filter((profile: any) =>
         humanActionRequests.data.some((request: any) => request.profileId === profile.id),
       );
 
@@ -133,11 +133,11 @@ const ProjectRequests: React.FC<any> = (props) => {
 
   const csvData = async () => {
     try {
-    const updatedProfiles = await api.getDashboardProjects();
-    const updatedProfileDetailsArray = updatedProfiles.data ? [...updatedProfiles.data] : [];
-    const data = await getData(updatedProfileDetailsArray);
+      const updatedProfiles = await api.getDashboardProjects();
+      const updatedProfileDetailsArray = updatedProfiles.data ? [...updatedProfiles.data] : [];
+      const res = await getData(updatedProfileDetailsArray);
 
-    return data;
+      return res;
     } catch (err) {
       console.log(err);
     }

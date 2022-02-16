@@ -26,7 +26,6 @@ const ProjectDetails: React.FC<any> = (props) => {
   const [data, setData] = useState([]);
   const api = useRegistryApi();
 
-
   const columns = useMemo(
     () => [
       {
@@ -71,8 +70,8 @@ const ProjectDetails: React.FC<any> = (props) => {
 
   const csvData = async () => {
     try {
-      const { data } = await api.getDashboardProjects();
-      const updatedProfileDetailsArray = data ? [...data] : [];
+      const dashboardProjects = await api.getDashboardProjects();
+      const updatedProfileDetailsArray = dashboardProjects.data ? [...dashboardProjects.data] : [];
 
       return updatedProfileDetailsArray;
     } catch (err) {

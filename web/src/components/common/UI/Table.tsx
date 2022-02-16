@@ -37,7 +37,6 @@ import { BaseIcon } from './Icon';
 import Tooltip from './Tooltip';
 import useRegistryApi from '../../../hooks/useRegistryApi';
 
-
 interface ITableProps {
   columns: any;
   data: Object[];
