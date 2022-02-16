@@ -10,6 +10,7 @@ const suscribeData = (contactId) => ({
 export const getToken = async () => {
   const keycloakClientSecret =
     process.env.MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET;
+  const url = process.env.MAUTIC_TOKEN_URL || "";
 
   const params = {
     client_id: "mautic-subscription-api",
@@ -20,16 +21,12 @@ export const getToken = async () => {
   const urlData = new URLSearchParams(params).toString();
 
   try {
-    const { data } = await axios.post(
-      "https://oidc.gov.bc.ca/auth/realms/devhub/protocol/openid-connect/token",
-      urlData,
-      {
-        headers: {
-          "Content-type": "application/x-www-form-urlencoded",
-        },
-        withCredentials: true,
-      }
-    );
+    const { data } = await axios.post(url, urlData, {
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+      },
+      withCredentials: true,
+    });
 
     return data.access_token;
   } catch (error) {
@@ -38,19 +35,18 @@ export const getToken = async () => {
 };
 
 export const getContactId = async (email, token) => {
+  const mauticSubscriptionUrl = process.env.MAUTIC_SUBSSCRIPTION_URL || "";
+
   try {
-    const { data: segments } = await axios.get(
-      "https://mautic-subscription-api-prod-de0974-prod.apps.silver.devops.gov.bc.ca/segments",
-      {
-        headers: {
-          Email: email,
-          Connection: "keep-alive",
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-          Authorization: `bearer ${token}`,
-        },
-      }
-    );
+    const { data: segments } = await axios.get(mauticSubscriptionUrl, {
+      headers: {
+        Email: email,
+        Connection: "keep-alive",
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+    });
 
     return segments.contactId;
   } catch (error) {
