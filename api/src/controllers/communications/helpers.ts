@@ -55,9 +55,11 @@ export const getContactId = async (email, token) => {
 };
 
 export const subscribeUserToMautic = async (contactId, token) => {
+  const mauticSubscribeUrlAddContact =
+    process.env.MAUTIC_SUBSCRIBE_URL_ADD_CONTACT || "";
   try {
     const response = await axios.post(
-      "https://mautic-subscription-api-prod-de0974-prod.apps.silver.devops.gov.bc.ca/segments/contact/add",
+      mauticSubscribeUrlAddContact,
       suscribeData(contactId),
       {
         headers: {
