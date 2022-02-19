@@ -82,6 +82,7 @@ const ProfileEdit: React.FC = (props: any) => {
       params: { profileId, viewName },
     },
   } = props;
+
   const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NamespaceQuotaOption = {
     quotaCpuSize: [],
     quotaMemorySize: [],
@@ -93,6 +94,8 @@ const ProfileEdit: React.FC = (props: any) => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
+
+  const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   const [profileState, setProfileState] = useState<IProfileState>({
     baseData: {
@@ -113,6 +116,26 @@ const ProfileEdit: React.FC = (props: any) => {
       quotaOptions: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
     },
   });
+
+  useEffect(() => {
+    async function projectBelongToUser() {
+      try {
+        const data = await keycloak?.loadUserProfile();
+        const userEmail = data?.email;
+
+        if (typeof userEmail !== 'undefined') {
+          const contactEmails = profileState.contactDetails.map((contact) => contact.email);
+          setIsEditDisabled(!contactEmails.includes(userEmail));
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    if (profileState.hasOwnProperty('contactDetails') && profileState.contactDetails.length > 0) {
+      projectBelongToUser();
+    }
+  }, [profileState]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
@@ -333,6 +356,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                isDisabled={isEditDisabled}
               />
             )}
             {viewName === PROFILE_EDIT_VIEW_NAMES.CONTACT && (
@@ -342,6 +366,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                isDisabled={isEditDisabled}
               />
             )}
 
@@ -360,6 +385,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 hasPendingEdit={profileState.hasPendingEdit}
                 namespace={namespaceSearchQuery}
                 primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
+                isDisabled={isEditDisabled}
               />
             )}
           </ShadowBox>
