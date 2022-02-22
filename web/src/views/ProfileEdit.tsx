@@ -132,10 +132,10 @@ const ProfileEdit: React.FC = (props: any) => {
       }
     }
 
-    if (profileState.hasOwnProperty('contactDetails') && profileState.contactDetails.length > 0) {
+    if (profileState.contactDetails !== undefined && profileState.contactDetails.length > 0) {
       projectBelongToUser();
     }
-  }, [profileState]);
+  }, [profileState, keycloak]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
