@@ -14,19 +14,21 @@
 // limitations under the License.
 //
 
-import React, { useEffect, useState } from 'react';
-import useCommonState from '../hooks/useCommonState';
-import { HOME_PAGE_URL, ROUTE_PATHS } from '../constants';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const ErrorPage: React.FC = () => {
+interface Props {
+    errorMessage: string
+}
 
-    return(
-        <div>
-            <h1>React Error</h1>
-            <p>Return to <a href={HOME_PAGE_URL}>Dashboard</a></p>
-        </div>
-    );
-
+const ErrorPage: React.FC<Props> = (props) => {
+    const [errorMessage, setErrorMessage] = useState<string>("");
+  return (
+    <div>
+      <h1>React Error</h1>
+      <Link to="/">Go back to the home page</Link>
+    </div>
+  );
 };
 
 export default ErrorPage;
