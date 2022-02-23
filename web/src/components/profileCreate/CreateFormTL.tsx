@@ -45,7 +45,9 @@ const CreateFormTL: React.FC = () => {
             {fields.map((name, index) => (
               <div key={name}>
                 <Flex flexDirection="row">
-                  <FormTitle style={{ margin: '14px 0 5px 0' }}>Technical Lead {index == 0 ? '(Primary)' : '(Secondary)'}</FormTitle>
+                  <FormTitle style={{ margin: '14px 0 5px 0' }}>
+                    Technical Lead {index === 0 ? '(Primary)' : '(Secondary)'}
+                  </FormTitle>
                   {fields.length! > MINIMUM_TECHNICAL_LEADS && (
                     <Box my="auto" ml="auto" className="buttons">
                       <SquareFormButton
