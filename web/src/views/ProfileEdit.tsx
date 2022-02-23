@@ -46,6 +46,7 @@ import theme from '../theme';
 import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
+import getDecodedToken from '../utils/getDecodedToken';
 import {
   getClusterDisplayName,
   getLicensePlate,
@@ -95,6 +96,14 @@ const ProfileEdit: React.FC = (props: any) => {
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
 
+  const decodedToken = getDecodedToken(`${keycloak?.token}`);
+  // @ts-ignore
+  const userRoles = decodedToken.resource_access['registry-web']
+    ? // @ts-ignore
+      decodedToken.resource_access['registry-web'].roles
+    : [];
+
+
   const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   const [profileState, setProfileState] = useState<IProfileState>({
@@ -120,10 +129,14 @@ const ProfileEdit: React.FC = (props: any) => {
   useEffect(() => {
     async function projectBelongToUser() {
       try {
+        // @ts-ignore
+        
         const data = await keycloak?.loadUserProfile();
         const userEmail = data?.email;
 
-        if (typeof userEmail !== 'undefined') {
+        if(userRoles.includes('administrator')) {
+          setIsEditDisabled(false);
+        } else if(typeof userEmail !== 'undefined') {
           const contactEmails = profileState.contactDetails.map((contact) => contact.email);
           setIsEditDisabled(!contactEmails.includes(userEmail));
         }
@@ -135,7 +148,7 @@ const ProfileEdit: React.FC = (props: any) => {
     if (profileState.contactDetails !== undefined && profileState.contactDetails.length > 0) {
       projectBelongToUser();
     }
-  }, [profileState, keycloak]);
+  }, [profileState, keycloak, userRoles]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
