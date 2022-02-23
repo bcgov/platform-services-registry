@@ -35,18 +35,22 @@ export const getToken = async () => {
 };
 
 export const getContactId = async (email, token) => {
-  const mauticSubscriptionUrl = process.env.MAUTIC_SUBSSCRIPTION_URL || "";
+  const mauticSubscriptionUrlBase =
+    process.env.MAUTIC_SUBSSCRIPTION_API_URL || "";
 
   try {
-    const { data: segments } = await axios.get(mauticSubscriptionUrl, {
-      headers: {
-        Email: email,
-        Connection: "keep-alive",
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-        Authorization: `bearer ${token}`,
-      },
-    });
+    const { data: segments } = await axios.get(
+      `${mauticSubscriptionUrlBase}/segments`,
+      {
+        headers: {
+          Email: email,
+          Connection: "keep-alive",
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+          Authorization: `bearer ${token}`,
+        },
+      }
+    );
 
     return segments.contactId;
   } catch (error) {
@@ -55,11 +59,12 @@ export const getContactId = async (email, token) => {
 };
 
 export const subscribeUserToMautic = async (contactId, token) => {
-  const mauticSubscribeUrlAddContact =
-    process.env.MAUTIC_SUBSCRIBE_URL_ADD_CONTACT || "";
+  const mauticSubscriptionUrlBase =
+    process.env.MAUTIC_SUBSSCRIPTION_API_URL || "";
+
   try {
     const response = await axios.post(
-      mauticSubscribeUrlAddContact,
+      `${mauticSubscriptionUrlBase}/segments/contact/add`,
       suscribeData(contactId),
       {
         headers: {
