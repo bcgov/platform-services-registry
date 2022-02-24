@@ -103,7 +103,6 @@ const ProfileEdit: React.FC = (props: any) => {
       decodedToken.resource_access['registry-web'].roles
     : [];
 
-
   const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   const [profileState, setProfileState] = useState<IProfileState>({
@@ -130,13 +129,13 @@ const ProfileEdit: React.FC = (props: any) => {
     async function projectBelongToUser() {
       try {
         // @ts-ignore
-        
+
         const data = await keycloak?.loadUserProfile();
         const userEmail = data?.email;
 
-        if(userRoles.includes('administrator')) {
+        if (userRoles.includes('administrator')) {
           setIsEditDisabled(false);
-        } else if(typeof userEmail !== 'undefined') {
+        } else if (typeof userEmail !== 'undefined') {
           const contactEmails = profileState.contactDetails.map((contact) => contact.email);
           setIsEditDisabled(!contactEmails.includes(userEmail));
         }
