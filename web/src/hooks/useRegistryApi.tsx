@@ -110,13 +110,6 @@ export default function useRegistryApi() {
     return axiosInstance.current.post('communications', emails);
   };
 
-  const subscribeCommunications = async (emails: any): Promise<AxiosResponse<any>> => {
-    if (!axiosInstance.current) {
-      throw new Error(errorMsg);
-    }
-    return axiosInstance.current.post('communications', emails);
-  };
-
   const createContact = async (contact: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
