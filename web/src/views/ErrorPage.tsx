@@ -14,18 +14,21 @@
 // limitations under the License.
 //
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface Props {
     errorMessage: string
 }
 
-const ErrorPage: React.FC<Props> = (props) => {
-    const [errorMessage, setErrorMessage] = useState<string>("");
+const ErrorPage: React.FC<Props> = ({errorMessage}) => {
   return (
     <div>
       <h1>React Error</h1>
+      Something seems to have gone wrong...
+      <div id="errorPageMessage">
+        Error message: {errorMessage}
+      </div>
       <Link to="/">Go back to the home page</Link>
     </div>
   );
