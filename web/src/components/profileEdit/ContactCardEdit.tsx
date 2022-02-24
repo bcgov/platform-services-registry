@@ -195,7 +195,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       <div key={name}>
                         <Flex flexDirection="row">
                           <FormTitle style={{ fontSize: '20px' }}>
-                            Technical Lead {index + 1}
+                            Technical Lead {index === 0 ? '(Primary)' : '(Secondary)'}
                           </FormTitle>
                           {/* TODO: (SB) implement the ability to delete contacts from edit page */}
                           {fields.length! > MINIMUM_TECHNICAL_LEADS && (
