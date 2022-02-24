@@ -102,7 +102,7 @@ export default function useRegistryApi() {
     }
     return axiosInstance.current.put(`profile/${profileId}`, profile);
   };
-  
+
   const subscribeCommunications = async (emails: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
