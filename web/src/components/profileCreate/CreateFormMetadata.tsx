@@ -38,6 +38,14 @@ const CreateFormMetadata: React.FC = () => {
         <Flex mt={3} key={item.inputValue}>
           <Label variant="adjacentLabel" m="auto">
             {item.displayName}
+            {item.documentationSource  ? (
+              <Flex flex="1 1 auto" justifyContent="flex-end" className="componentContextLink">
+                <a href={item.documentationSource} target="_blank">?</a>
+              </Flex>
+            ) :
+            (
+              ''
+            )}
           </Label>
           <Flex flex="1 1 auto" justifyContent="flex-end">
             <Field<boolean>

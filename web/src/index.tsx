@@ -60,6 +60,15 @@ ReactDOM.render(
             position: relative;
             top: 1px;
           }
+          .componentContextLink a{
+            background-color: #96c0e6;
+            color: #f8f9fa;
+            border-radius: 5px;
+            width: 20px;
+            text-align: center;
+            height: fit-content;
+            text-decoration: none;
+          },
         `}
       />
       <PersistGate persistor={persistor}>
