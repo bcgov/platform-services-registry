@@ -40,7 +40,7 @@ const CreateFormMetadata: React.FC = () => {
             {item.displayName}
             {item.documentationSource  ? (
               <Flex flex="1 1 auto" justifyContent="flex-end" className="componentContextLink">
-                <a href={item.documentationSource} target="_blank">?</a>
+                <a href={item.documentationSource} target="_blank" title="Open a new browser tab with info about this component">?</a>
               </Flex>
             ) :
             (
