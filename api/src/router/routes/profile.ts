@@ -33,7 +33,7 @@ import {
   updateProfileContacts,
   updateProfileQuotaSize,
   deleteProfileRequest,
-  sendNatsforDeletionCheck,
+  updateDeletionCheckStatus,
 } from "../../controllers/profile";
 import {
   archiveProjectProfile,
@@ -147,7 +147,7 @@ router.get(
 router.get(
   "/:profileId/pre-deletion-check-request",
   authorize(validateRequiredProfile),
-  asyncMiddleware(sendNatsforDeletionCheck)
+  asyncMiddleware(updateDeletionCheckStatus)
 );
 
 router.post(

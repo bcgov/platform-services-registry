@@ -19,6 +19,13 @@ import { Pool } from "pg";
 import { PROFILE_STATUS } from "../../constants";
 import { CommonFields, Model } from "./model";
 
+export interface DeletableField {
+  namespaceDeletability: boolean;
+  podsDeletability: boolean;
+  pvcDeletability: boolean;
+  provisionerDeletionChecked: boolean;
+}
+
 export interface ProjectProfile extends CommonFields {
   id: number;
   name: string;
@@ -254,7 +261,7 @@ export default class ProfileModel extends Model {
 
   async setProjectDeletableStatus(
     profileId: number,
-    deletableField: any
+    deletableField: DeletableField
   ): Promise<any> {
     const values: any[] = [];
     const query = {
