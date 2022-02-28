@@ -11,26 +11,16 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// Created by Jason Leach on 2020-07-21.
+// limitations under the License
 //
 
-/* eslint-disable no-unused-vars */
+import { asyncMiddleware } from "@bcgov/common-nodejs-utils";
+import express from "express";
+import subscribeCommunications from "../../controllers/communications";
 
-'use strict';
+const router = express.Router();
 
-const fn = {
-  get: jest.fn(() => Promise.resolve({ data: {} })),
-  post: jest.fn(() => Promise.resolve({ data: {} }))
-};
+// Cluster
+router.post("/", asyncMiddleware(subscribeCommunications));
 
-const factory = {
-  fn,
-  create: () => fn,
-  get: jest.fn(() => Promise.resolve()),
-  post: jest.fn(() => Promise.resolve()),
-};
-
-
-module.exports = factory;
+export default router;

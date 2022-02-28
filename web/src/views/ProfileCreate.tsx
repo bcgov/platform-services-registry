@@ -45,11 +45,15 @@ const ProfileCreate: React.FC = () => {
       const technicalContacts = [...technicalLeads, productOwner];
       const clusters = transformClusters(profile);
 
-      // 1. Create the project profile.
+      // 1. Subscribe to communications
+      const userEmails = technicalContacts.map((user) => user.email);
+      await api.subscribeCommunications(userEmails);
+
+      // 2. Create the project profile.
       const response: any = await api.createProfile(profile);
       const profileId = response.data.id;
 
-      // 2. Create contacts and link contacts to the profile.
+      // 3. Create contacts and link contacts to the profile.
       /* eslint-disable no-await-in-loop */
       for (const contact of technicalContacts) {
         const tc: any = await api.createContact(contact);
@@ -59,10 +63,10 @@ const ProfileCreate: React.FC = () => {
       // 4. Trigger provisioning
       await api.createNamespaceByProfileId(profileId, clusters);
 
-      // 4. Create Project Request
+      // 5. Create Project Request
       await api.createProjectRequestByProfileId(profileId);
 
-      // 5. Invite technicalCOntact to bcgov repo, only invite in production environment
+      // 6. Invite technicalCOntact to bcgov repo, only invite in production environment
       const invitationPromiss = technicalContacts.map((inviteUser) => {
         const inviteListPayload = {
           githubId: inviteUser.githubId,
@@ -74,7 +78,7 @@ const ProfileCreate: React.FC = () => {
 
       setOpenBackdrop(false);
       setGoBackToDashboard(true);
-      // 6. All good? Tell the user.
+      // 7. All good? Tell the user.
       promptSuccessToastWithText('Your namespace request was successful');
     } catch (err) {
       setOpenBackdrop(false);

@@ -47,7 +47,6 @@ const StyledLoading = styled.div`
 `;
 const LoadingSpinner = () => {
   return (
-    //   backgroundColor="#222"
     <Flex justifyContent="center" alignItems="center">
       <StyledLoading />
     </Flex>

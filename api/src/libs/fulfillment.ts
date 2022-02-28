@@ -405,6 +405,10 @@ export const sendNatsMessage = async (
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsMessage;
+    logger.info(
+      `NATS details are: 
+      ${JSON.stringify(natsMessage, null, 3)}`
+    );
     nc.on("error", () => {
       const errmsg = `NATS error sending order ${profileId} to ${natsSubject}`;
       throw new Error(errmsg);
