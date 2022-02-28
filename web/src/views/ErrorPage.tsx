@@ -15,7 +15,7 @@
 //
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface Props {
     errorMessage: string
@@ -29,7 +29,7 @@ const ErrorPage: React.FC<Props> = ({errorMessage}) => {
       <div id="errorPageMessage">
         Error message: {errorMessage}
       </div>
-      <Link to="/">Go back to the home page</Link>
+      <NavLink to="/">Go back to the home page</NavLink>
     </div>
   );
 };
