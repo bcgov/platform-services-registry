@@ -32,7 +32,7 @@ const CreateFormMetadata: React.FC = () => {
     <div>
       <FormTitle>Tell us about your project</FormTitle>
       <FormSubtitle>
-        Please indicate what services you expect to utilize as part of your project?
+        Please indicate what services you expect to utilize as part of your project.
       </FormSubtitle>
       {COMPONENT_METADATA.map((item) => (
         <Flex mt={3} key={item.inputValue}>
