@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex } from 'rebass';
+import { Flex } from 'rebass';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/core';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Text, Box } from 'rebass';
+import { Flex, Text } from 'rebass';
 import FormTitle from '../common/UI/FormTitle';
 import { StyledFormButton } from '../common/UI/Button';
 
