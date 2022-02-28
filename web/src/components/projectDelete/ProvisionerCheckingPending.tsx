@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Text, Box, Flex } from 'rebass';
-import { Field } from 'react-final-form';
 import { useHistory } from 'react-router-dom';
 import LoadingSpinner from '../common/UI/LoadingSpinner';
 import FormTitle from '../common/UI/FormTitle';
@@ -28,6 +27,7 @@ const ProvisionerCheckingPending: React.FC<any> = ({
         promptErrToastWithText('Provision check request failed');
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useInterval(() => {
