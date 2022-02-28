@@ -134,12 +134,13 @@ const ProjectRequests: React.FC<any> = (props) => {
   const csvData = async () => {
     try {
       const updatedProfiles = await api.getDashboardProjects();
-      const updatedProfileDetailsArray = updatedProfiles.data ? [...updatedProfiles.data] : [];
+      const updatedProfileDetailsArray = updatedProfiles.data ? updatedProfiles.data : [];
       const res = await getData(updatedProfileDetailsArray);
 
       return res;
     } catch (err) {
       console.log(err);
+      promptErrToastWithText(`${err}`);
     }
   };
 

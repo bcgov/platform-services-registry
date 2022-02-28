@@ -20,6 +20,7 @@ import { convertSnakeCaseToSentence, parseEmails } from '../../utils/transformDa
 import Table from '../common/UI/Table';
 import { useHandleSort } from '../../hooks/useHandleSort';
 import useRegistryApi from '../../hooks/useRegistryApi';
+import { promptErrToastWithText } from '../../utils/promptToastHelper';
 
 const ProjectDetails: React.FC<any> = (props) => {
   const { profileDetails } = props;
@@ -71,11 +72,12 @@ const ProjectDetails: React.FC<any> = (props) => {
   const csvData = async () => {
     try {
       const dashboardProjects = await api.getDashboardProjects();
-      const updatedProfileDetailsArray = dashboardProjects.data ? [...dashboardProjects.data] : [];
+      const updatedProfileDetailsArray = dashboardProjects.data ? dashboardProjects.data : [];
 
       return updatedProfileDetailsArray;
     } catch (err) {
       console.log(err);
+      promptErrToastWithText(`${err}`);
     }
   };
 
