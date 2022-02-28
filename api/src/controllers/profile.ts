@@ -19,22 +19,13 @@ import { Response } from "express";
 import axios from "axios";
 import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
-// import config from "../config";
-// import { NatsContext, NatsContextAction } from "../types";
 import { Contact } from "../db/model/contact";
 import { ProjectProfile, DeletableField } from "../db/model/profile";
-import {
-  ProjectQuotaSize,
-  //  ProjectSetQuotas
-} from "../db/model/quota";
+import { ProjectQuotaSize } from "../db/model/quota";
 import { Request } from "../db/model/request";
 import { comparerContact } from "../db/utils";
 import { AuthenticatedUser } from "../libs/authmware";
-import {
-  fulfillRequest,
-  // sendNatsMessage,
-  // buildNatsMessageFields,
-} from "../libs/fulfillment";
+import { fulfillRequest } from "../libs/fulfillment";
 import { getQuotaSize, updateProfileStatus } from "../libs/profile";
 import {
   requestProfileContactsEdit,
@@ -421,7 +412,6 @@ export const updateDeletionCheckStatus = async (
   res: Response
 ) => {
   const { profileId } = params;
-  // const subjectPrefix: string = config.get("nats:subjectPrefix");
   const DEFAULT_DELETION_STATUS: DeletableField = {
     pvcDeletability: false,
     namespaceDeletability: false,
@@ -429,11 +419,7 @@ export const updateDeletionCheckStatus = async (
     provisionerDeletionChecked: true,
   };
   try {
-    const {
-      NamespaceModel,
-      ProfileModel,
-      // QuotaModel
-    } = dm;
+    const { NamespaceModel, ProfileModel } = dm;
     const clusters = await NamespaceModel.findClustersForProfile(profileId);
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const promise: Promise<DeletableField>[] = [];
