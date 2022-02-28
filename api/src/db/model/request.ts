@@ -21,12 +21,14 @@ import { CommonFields, Model } from "./model";
 export const enum RequestType {
   Create = "create",
   Edit = "edit",
+  Delete = "delete",
 }
 
 export const enum RequestEditType {
   Contacts = "contacts",
   QuotaSize = "quotaSize",
   ProjectProfile = "projectProfile",
+  ProjectDeletion = "projectDeletion",
 }
 
 export const enum HumanActionType {

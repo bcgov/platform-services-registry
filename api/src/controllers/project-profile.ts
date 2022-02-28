@@ -155,6 +155,27 @@ export const createProjectProfile = async (
   }
 };
 
+export const updateProfileDeleteableStatus = async (
+  { params, body }: { params: any; body: any },
+  res: Response
+) => {
+  const { ProfileModel } = dm;
+  const { profileId } = params;
+
+  try {
+    const response = await ProfileModel.setProjectDeletableStatus(
+      profileId,
+      body
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const message = `Unable to change deletable field for ${profileId}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw errorWithCode(message, 500);
+  }
+};
+
 export const updateProjectProfile = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
   res: Response
