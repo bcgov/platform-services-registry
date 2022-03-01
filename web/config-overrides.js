@@ -10,11 +10,7 @@ const cspConfigPolicy = {
   'style-src': ["'self'", "'unsafe-inline'"],
   'img-src': ["'self'", 'https://avatars.githubusercontent.com/'],
   'object-src': "'self'",
-  'frame-src': [
-    "'self'",
-    'https://dev.oidc.gov.bc.ca/',
-    'https://oidc.gov.bc.ca',
-  ],
+  'frame-src': ["'self'", 'https://dev.oidc.gov.bc.ca/', 'https://oidc.gov.bc.ca'],
   'frame-ancestors': "'self'",
   'connect-src': [
     "'self'",
@@ -36,7 +32,6 @@ function addCspHtmlWebpackPlugin(config) {
   if (process.env.NODE_ENV === 'production') {
     config.plugins.push(new cspHtmlWebpackPlugin(cspConfigPolicy, additionalOps));
   }
-
   return config;
 }
 

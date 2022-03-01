@@ -5,8 +5,6 @@ import { PersistPartial } from 'redux-persist/lib/persistReducer';
 import thunk from 'redux-thunk';
 import rootReducer, { RootState } from './root-reducer';
 
-// TODO: thunk or saga?
-
 const middlewares = [];
 middlewares.push(thunk);
 if (process.env.NODE_ENV === 'development') {

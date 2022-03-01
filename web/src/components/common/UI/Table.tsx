@@ -139,10 +139,6 @@ const Styles = styled.div`
       text-align: left !important;
       font-weight: 600;
     }
-    /*
-	Label the data, hard coded for now.
-  TODO (sb): dynamically link the column heading to these Row titles
-	*/
     td:nth-of-type(1):before {
       content: 'Project Name';
     }
