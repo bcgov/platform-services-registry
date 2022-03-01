@@ -15,7 +15,7 @@ const DeleteFormFinalConfirmation: React.FC<any> = ({ licensePlate, onSubmit }) 
     } else if (userInput.length > 0) {
       setUserConfirmation(false);
     }
-  }, [userInput]);
+  }, [userInput, licensePlate]);
 
   return (
     <>
