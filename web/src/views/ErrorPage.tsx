@@ -16,21 +16,24 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { Box, Flex, Text } from 'rebass';
 
 interface Props {
-    errorMessage: string
+    errorMessage: string;
 }
 
-const ErrorPage: React.FC<Props> = ({errorMessage}) => {
+const ErrorPage: React.FC<Props> = ({ errorMessage }) => {
   return (
-    <div>
-      <h1>React Error</h1>
+    <Box>
+      <Text as="h1" mx={2}>
+        React Error
+      </Text>
       Something seems to have gone wrong...
-      <div id="errorPageMessage">
+      <Text mb={3} as="p" fontSize={[2, 3, 3]} mt={1}>
         Error message: {errorMessage}
-      </div>
+      </Text>
       <NavLink to="/">Go back to the home page</NavLink>
-    </div>
+    </Box>
   );
 };
 
