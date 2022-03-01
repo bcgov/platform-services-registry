@@ -405,7 +405,6 @@ export const sendNatsMessage = async (
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsMessage;
-    console.log(natsContext);
     logger.info(
       `NATS details are: 
       ${JSON.stringify(natsMessage, null, 3)}`
