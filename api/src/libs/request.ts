@@ -51,6 +51,12 @@ const createRequest = async (
           PROFILE_STATUS.PENDING_APPROVAL
         );
         break;
+      case RequestType.Delete:
+        await updateProfileStatus(
+          Number(profileId),
+          PROFILE_STATUS.PENDING_APPROVAL
+        );
+        break;
       case RequestType.Edit:
         await updateProfileStatus(
           Number(profileId),
@@ -306,6 +312,27 @@ export const processProfileQuotaSizeEdit = async (
     logger.info(`CHES message sent for ${profileId}`);
   } catch (err) {
     const message = `Unable to process quota-size edit for request ${request.id}`;
+    logger.error(`${message}, err = ${err.message}`);
+
+    throw err;
+  }
+};
+
+export const requestProjectProfileDelete = async (
+  profileId: number,
+  user: AuthenticatedUser,
+  requiresHumanAction: boolean = true
+): Promise<Request> => {
+  try {
+    return await createRequest(
+      RequestType.Delete,
+      user.id,
+      requiresHumanAction,
+      profileId,
+      RequestEditType.ProjectDeletion
+    );
+  } catch (err) {
+    const message = `Unable to request contacts edit for profile ${profileId}`;
     logger.error(`${message}, err = ${err.message}`);
 
     throw err;

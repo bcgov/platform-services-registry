@@ -62,8 +62,8 @@ export const validateRequiredFields = (
 export const replaceForDescription = (contextJson: any) => {
   const updatedContextJson = contextJson;
   const doubleQuoteReplaced = contextJson.description
-    .replace(/"/g, " ")
-    .replace(/\\/g, "");
+    ? contextJson.description.replace(/"/g, " ").replace(/\\/g, "")
+    : null;
 
   updatedContextJson.description = doubleQuoteReplaced;
   return updatedContextJson;

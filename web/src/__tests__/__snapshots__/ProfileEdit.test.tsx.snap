@@ -484,7 +484,7 @@ exports[`<QuotaCardEdit / > Card view should render 1`] = `
             </div>
           </div>
           <button
-            class="css-1hcj3z"
+            class="css-gev7cd"
             disabled=""
             style="display: block;"
           >
@@ -1017,7 +1017,7 @@ exports[`<QuotaCardEdit / > Card view should render 2`] = `
             </div>
           </div>
           <button
-            class="css-1hcj3z"
+            class="css-gev7cd"
             disabled=""
             style="display: block;"
           >
