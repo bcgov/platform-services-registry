@@ -82,8 +82,6 @@ const Nav: React.FC<INavProps> = (props) => {
   const history = useHistory();
 
   const handleCreateDesktop = () => {
-    //  newer versions of react uses useNavigate instead of useHistory from 'react-router-dom'
-    //  TODO Gordon Feng - Update react-router, change useHistory to useNavigate
     history.push(ROUTE_PATHS.PROFILE_CREATE);
   };
 
