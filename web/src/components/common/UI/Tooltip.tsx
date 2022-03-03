@@ -17,8 +17,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-// TODO:(sb) This styling is admittedly quite hacky. It should be revisited and optimized for greater re-usability
-// It could be good to explore a more robust solution such as react popper.js in the future
 const TooltipStyles = styled.div`
   .tooltip-container {
     position: relative;

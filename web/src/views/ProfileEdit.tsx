@@ -17,11 +17,13 @@
 import styled from '@emotion/styled';
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import { getLicencePlatePostFix } from '../utils/utils';
 import { useQuery } from '../utils/AppRoute';
+import { useModal } from '../hooks/useModal';
+import { StyledFormButton } from '../components/common/UI/Button';
 import { ShadowBox } from '../components/common/UI/ShadowContainer';
 import ContactCard, { ContactDetails } from '../components/profileEdit/ContactCard';
 import ContactCardEdit from '../components/profileEdit/ContactCardEdit';
@@ -33,6 +35,7 @@ import QuotaCard, {
 } from '../components/profileEdit/QuotaCard';
 import { QuotaCardEdit } from '../components/profileEdit/QuotaCardEdit';
 import { BaseIcon } from '../components/common/UI/Icon';
+import { Modal } from '../components/common/modal/modal';
 import {
   HOME_PAGE_URL,
   PROFILE_EDIT_VIEW_NAMES,
@@ -46,6 +49,8 @@ import theme from '../theme';
 import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
+import getDecodedToken from '../utils/getDecodedToken';
+import { ProjectDeletionModal } from './ProjectDeletion';
 import {
   getClusterDisplayName,
   getLicensePlate,
@@ -82,6 +87,7 @@ const ProfileEdit: React.FC = (props: any) => {
       params: { profileId, viewName },
     },
   } = props;
+
   const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NamespaceQuotaOption = {
     quotaCpuSize: [],
     quotaMemorySize: [],
@@ -93,6 +99,15 @@ const ProfileEdit: React.FC = (props: any) => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
+
+  const decodedToken = getDecodedToken(`${keycloak?.token}`);
+  // @ts-ignore
+  const userRoles = decodedToken.resource_access['registry-web']
+    ? // @ts-ignore
+      decodedToken.resource_access['registry-web'].roles
+    : [];
+
+  const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   const [profileState, setProfileState] = useState<IProfileState>({
     baseData: {
@@ -114,9 +129,35 @@ const ProfileEdit: React.FC = (props: any) => {
     },
   });
 
+  useEffect(() => {
+    async function projectBelongToUser() {
+      try {
+        // @ts-ignore
+
+        const data = await keycloak?.loadUserProfile();
+        const userEmail = data?.email;
+
+        if (userRoles.includes('administrator')) {
+          setIsEditDisabled(false);
+        } else if (typeof userEmail !== 'undefined') {
+          const contactEmails = profileState.contactDetails.map((contact) => contact.email);
+          setIsEditDisabled(!contactEmails.includes(userEmail));
+        }
+      } catch (err) {
+        console.log(err);
+        promptErrToastWithText(err);
+      }
+    }
+
+    if (profileState.contactDetails !== undefined && profileState.contactDetails.length > 0) {
+      projectBelongToUser();
+    }
+  }, [profileState, keycloak, userRoles]);
+
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
   const [submitRefresh, setSubmitRefresh] = useState<any>(0);
+  const history = useHistory();
   const editNamespace = getLicencePlatePostFix(
     namespaceSearchQuery,
   ) as keyof typeof profileState.quotaDetails.quotaSize;
@@ -169,7 +210,7 @@ const ProfileEdit: React.FC = (props: any) => {
       setOpenBackdrop(true);
       try {
         await updateProfileState();
-      } catch (err) {
+      } catch (err: any) {
         if (
           err.response &&
           err.response.status &&
@@ -192,7 +233,7 @@ const ProfileEdit: React.FC = (props: any) => {
     async function wrap() {
       try {
         await updateProfileState();
-      } catch (err) {
+      } catch (err: any) {
         const msg = 'Unable to update Profile State';
         throw new Error(`${msg}, reason = ${err.message}`);
       }
@@ -200,6 +241,41 @@ const ProfileEdit: React.FC = (props: any) => {
     wrap();
   }, 1000 * 30);
 
+  const { isShown, toggle } = useModal();
+
+  const closeDeletionModal = async () => {
+    const msg = 'Unable to mark project as undeletable';
+    try {
+      const response = await api.updateProfileDeleteableStatus(profileId, {
+        pvcDeletability: 'false',
+        podsDeletability: 'false',
+        namespaceDeletability: 'false',
+        provisionerDeletionChecked: 'false',
+      });
+      const {
+        pvcDeletability,
+        podsDeletability,
+        namespaceDeletability,
+        provisionerDeletionChecked,
+      } = response.data;
+      if (
+        pvcDeletability ||
+        podsDeletability ||
+        namespaceDeletability ||
+        provisionerDeletionChecked
+      ) {
+        promptErrToastWithText(
+          `${msg}, it still marked as deletable, please contact platform admin for more details.`,
+        );
+        throw new Error(`Not all deletion fields are set to false`);
+      }
+    } catch (err: any) {
+      history.push(ROUTE_PATHS.DASHBOARD);
+      promptErrToastWithText('Something went wrong');
+      throw new Error(`${msg}, reason = ${err.message}`);
+    }
+    toggle();
+  };
   if (initialRender) {
     return null;
   }
@@ -246,6 +322,18 @@ const ProfileEdit: React.FC = (props: any) => {
   if (viewName === PROFILE_EDIT_VIEW_NAMES.OVERVIEW) {
     return (
       <StyledDiv>
+        <Modal
+          isShown={isShown}
+          hide={closeDeletionModal}
+          headerText="Project Deletion"
+          modalContent={
+            <ProjectDeletionModal
+              licensePlate={profileState.quotaDetails.licensePlate || ''}
+              profileId={profileId}
+              closeDeletionModal={() => closeDeletionModal()}
+            />
+          }
+        />
         <Box
           sx={{
             display: 'grid',
@@ -295,6 +383,16 @@ const ProfileEdit: React.FC = (props: any) => {
                   </ShadowBox>
                 </Box>
               ))}
+            {profileState.isProvisioned && !profileState.hasPendingEdit && (
+              <StyledFormButton
+                style={{ backgroundColor: '#C70000', display: 'block', margin: '50px auto' }}
+                onClick={() => {
+                  toggle();
+                }}
+              >
+                Delete Project
+              </StyledFormButton>
+            )}
           </ShadowBox>
         </Box>
       </StyledDiv>
@@ -333,6 +431,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                isDisabled={isEditDisabled}
               />
             )}
             {viewName === PROFILE_EDIT_VIEW_NAMES.CONTACT && (
@@ -342,6 +441,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                isDisabled={isEditDisabled}
               />
             )}
 
@@ -360,6 +460,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 hasPendingEdit={profileState.hasPendingEdit}
                 namespace={namespaceSearchQuery}
                 primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
+                isDisabled={isEditDisabled}
               />
             )}
           </ShadowBox>

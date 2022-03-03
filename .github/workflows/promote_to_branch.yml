@@ -3,16 +3,15 @@ name: Run Test on push to branch
 on:
   push:
     branches:
-      - '*'
-      - '!master'
+      - "*"
+      - "!master"
 
 jobs:
-
   # This action (dorny/paths-filter) allows us to selectively run jobs based on
   # the files that have been updated, as in on.push.paths above.
   # Saves us from doing unnecessary builds.
   # ---------------------------------------------------------------------------
-  
+
   api_test:
     runs-on: ubuntu-latest
     defaults:
@@ -34,10 +33,9 @@ jobs:
 
       - name: Check test result
         if: ${{ failure() }}
-        env:
-          ROCKETCHAT_MESSAGE: "There was an error in the registry app API tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           exit 1
+
   web_test:
     runs-on: ubuntu-latest
     defaults:
@@ -59,7 +57,5 @@ jobs:
 
       - name: Check test result
         if: ${{ failure() }}
-        env:
-          ROCKETCHAT_MESSAGE: "There was an error in the registry app web tests during the ${{ github.workflow }} workflow.  See: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           exit 1

@@ -103,6 +103,33 @@ export default function useRegistryApi() {
     return axiosInstance.current.put(`profile/${profileId}`, profile);
   };
 
+  const updateProfileDeleteableStatus = async (
+    profileId: string,
+    statusDetails: any,
+  ): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.put(
+      `profile/${profileId}/update-profile-deleteable-status`,
+      statusDetails,
+    );
+  };
+
+  const preDeletionCheck = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.get(`profile/${profileId}/pre-deletion-check-request`);
+  };
+
+  const deleteProjectByProfileId = async (profileId: string): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.post(`profile/${profileId}/deletion`);
+  };
+
   const subscribeCommunications = async (emails: any): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
@@ -250,5 +277,8 @@ export default function useRegistryApi() {
     getHumanActionRequests,
     updateProjectRequest,
     getAllAvailableQuotaSize,
+    updateProfileDeleteableStatus,
+    deleteProjectByProfileId,
+    preDeletionCheck,
   };
 }

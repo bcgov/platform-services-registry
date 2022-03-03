@@ -49,6 +49,7 @@ const Dashboard: React.FC = () => {
         } else {
           profileDetailsArray = [];
         }
+
         setProfileDetails(profileDetailsArray);
       } catch (err) {
         promptErrToastWithText('Something went wrong');
