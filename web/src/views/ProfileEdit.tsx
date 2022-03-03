@@ -145,6 +145,7 @@ const ProfileEdit: React.FC = (props: any) => {
         }
       } catch (err) {
         console.log(err);
+        promptErrToastWithText(err);
       }
     }
 
