@@ -49,6 +49,7 @@ import theme from '../theme';
 import { Namespace, NamespaceQuotaOption } from '../types';
 import getProfileStatus from '../utils/getProfileStatus';
 import { promptErrToastWithText } from '../utils/promptToastHelper';
+import getDecodedToken from '../utils/getDecodedToken';
 import { ProjectDeletionModal } from './ProjectDeletion';
 import {
   getClusterDisplayName,
@@ -86,6 +87,7 @@ const ProfileEdit: React.FC = (props: any) => {
       params: { profileId, viewName },
     },
   } = props;
+
   const DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE: NamespaceQuotaOption = {
     quotaCpuSize: [],
     quotaMemorySize: [],
@@ -97,6 +99,15 @@ const ProfileEdit: React.FC = (props: any) => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
+
+  const decodedToken = getDecodedToken(`${keycloak?.token}`);
+  // @ts-ignore
+  const userRoles = decodedToken.resource_access['registry-web']
+    ? // @ts-ignore
+      decodedToken.resource_access['registry-web'].roles
+    : [];
+
+  const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   const [profileState, setProfileState] = useState<IProfileState>({
     baseData: {
@@ -117,6 +128,31 @@ const ProfileEdit: React.FC = (props: any) => {
       quotaOptions: DEFAULT_NAMESPACE_ALLOWED_QUOTA_SIZE,
     },
   });
+
+  useEffect(() => {
+    async function projectBelongToUser() {
+      try {
+        // @ts-ignore
+
+        const data = await keycloak?.loadUserProfile();
+        const userEmail = data?.email;
+
+        if (userRoles.includes('administrator')) {
+          setIsEditDisabled(false);
+        } else if (typeof userEmail !== 'undefined') {
+          const contactEmails = profileState.contactDetails.map((contact) => contact.email);
+          setIsEditDisabled(!contactEmails.includes(userEmail));
+        }
+      } catch (err) {
+        console.log(err);
+        promptErrToastWithText(err);
+      }
+    }
+
+    if (profileState.contactDetails !== undefined && profileState.contactDetails.length > 0) {
+      projectBelongToUser();
+    }
+  }, [profileState, keycloak, userRoles]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
@@ -395,6 +431,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                isDisabled={isEditDisabled}
               />
             )}
             {viewName === PROFILE_EDIT_VIEW_NAMES.CONTACT && (
@@ -404,6 +441,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 handleSubmitRefresh={handleSubmitRefresh}
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
+                isDisabled={isEditDisabled}
               />
             )}
 
@@ -422,6 +460,7 @@ const ProfileEdit: React.FC = (props: any) => {
                 hasPendingEdit={profileState.hasPendingEdit}
                 namespace={namespaceSearchQuery}
                 primaryClusterName={profileState.projectDetails?.primaryClusterName || ''}
+                isDisabled={isEditDisabled}
               />
             )}
           </ShadowBox>
