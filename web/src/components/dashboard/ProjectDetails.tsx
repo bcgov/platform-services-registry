@@ -19,10 +19,13 @@ import { Box } from 'rebass';
 import { convertSnakeCaseToSentence, parseEmails } from '../../utils/transformDataHelper';
 import Table from '../common/UI/Table';
 import { useHandleSort } from '../../hooks/useHandleSort';
+import useRegistryApi from '../../hooks/useRegistryApi';
+import { promptErrToastWithText } from '../../utils/promptToastHelper';
 
 const ProjectDetails: React.FC<any> = (props) => {
   const { profileDetails } = props;
   const [data, setData] = useState([]);
+  const api = useRegistryApi();
 
   const columns = useMemo(
     () => [
@@ -66,6 +69,18 @@ const ProjectDetails: React.FC<any> = (props) => {
     [],
   );
 
+  const csvData = async () => {
+    try {
+      const dashboardProjects = await api.getDashboardProjects();
+      const updatedProfileDetailsArray = dashboardProjects.data ? dashboardProjects.data : [];
+
+      return updatedProfileDetailsArray;
+    } catch (err) {
+      console.log(err);
+      promptErrToastWithText(`${err}`);
+    }
+  };
+
   return (
     <>
       <Box style={{ overflow: 'auto' }}>
@@ -75,6 +90,7 @@ const ProjectDetails: React.FC<any> = (props) => {
           linkedRows={true}
           title="Projects"
           onSort={useHandleSort(setData, profileDetails).ourHandleSort}
+          getCsvData={csvData}
         />
       </Box>
     </>
