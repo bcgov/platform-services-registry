@@ -348,7 +348,7 @@ export const openshiftDeletionCheck = async (
     );
   } catch (err) {
     const message = `Namespace check failed, can not fetch all namespaces in cluster`;
-    logger.error(`${message}, err = ${err.data.message}`);
+    logger.error(`${message}, err = ${err.message}`);
     checkResult.namespaceDeletability = false;
 
     return checkResult;
@@ -403,7 +403,6 @@ export const openshiftDeletionCheck = async (
       return checkResult;
     }
   }
-
   return checkResult;
 };
 
