@@ -165,6 +165,7 @@ const ProfileEdit: React.FC = (props: any) => {
         licensePlate: getLicensePlate(namespaces.data),
         quotaSize: quotaSize.data,
         quotaOptions: quotaOptions.data,
+        primaryClusterName: projectDetails.data.primaryClusterName,
       },
     }));
   }

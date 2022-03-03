@@ -36,6 +36,7 @@ export interface QuotaDetails {
   licensePlate?: string;
   quotaSize: ProjectSetResourceQuotaSize;
   quotaOptions: NamespaceQuotaOption;
+  primaryClusterName?: string;
 }
 
 interface SpecTextInterface {
@@ -61,6 +62,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
         tools: NAMESPACE_DEFAULT_QUOTA,
         prod: NAMESPACE_DEFAULT_QUOTA,
       },
+      primaryClusterName = '',
     },
     href,
   } = props;
@@ -68,25 +70,35 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     {
       displayName: 'Production',
       shortName: 'prod',
+      goldURL: process.env.PRODUCTION_NAMESPACE_GOLD_URL as string,
+      silverURL: process.env.PRODUCTION_NAMESPACE_SILVER_URL as string,
     },
     {
       displayName: 'Test',
       shortName: 'test',
+      goldURL: process.env.TEST_NAMESPACE_GOLD_URL as string,
+      silverURL: process.env.TEST_NAMESPACE_SILVER_URL as string,
     },
     {
       displayName: 'Development',
       shortName: 'dev',
+      goldURL: process.env.DEVELOPMENT_NAMESPACE_GOLD_URL as string,
+      silverURL: process.env.DEVELOPMENT_NAMESPACE_SILVER_URL as string,
     },
     {
       displayName: 'Tools',
       shortName: 'tools',
+      goldURL: process.env.TOOLS_NAMESPACE_GOLD_URL as string,
+      silverURL: process.env.TOOLS_NAMESPACE_SILVER_URL as string,
     },
   ];
 
   return (
     <Flex flexWrap="wrap">
-      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string }) => {
+      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string; goldURL: string; silverURL: string }) => {
         const index = namespaceText.shortName as keyof typeof quotaSize;
+        const url = primaryClusterName === 'gold' ? namespaceText.goldURL  : namespaceText.silverURL ;
+        console.log('primary cluster name: ' + primaryClusterName);
         const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
         return (
           <Aux key={namespaceText.displayName}>
@@ -110,6 +122,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                 </RouterLink>
               </Flex>
               <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                {url}
                 {`${namespaceFullName} namespace`}
               </Text>
             </Box>
