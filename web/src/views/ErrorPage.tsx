@@ -16,19 +16,21 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Box, Flex, Text } from 'rebass';
+import { Box, Text } from 'rebass';
 
 interface Props {
-    errorMessage: string;
+  errorMessage: string;
 }
 
 const ErrorPage: React.FC<Props> = ({ errorMessage }) => {
   return (
     <Box>
-      <Text as="h1" mx={2}>
+      <Text as="h1" mx={2} marginLeft="0">
         React Error
       </Text>
-      Something seems to have gone wrong...
+      <Text mb={3} as="p" fontSize={[2, 3, 3]} mt={1}>
+        Something seems to have gone wrong...
+      </Text>
       <Text mb={3} as="p" fontSize={[2, 3, 3]} mt={1}>
         Error message: {errorMessage}
       </Text>
