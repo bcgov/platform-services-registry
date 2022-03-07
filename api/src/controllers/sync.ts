@@ -142,7 +142,8 @@ export const getProvisionedProfileBotJson = async (
     const context = await contextForProvisioning(
       profileId,
       clusters.pop(),
-      true
+      true,
+      false
     );
 
     res.status(200).json(replaceForDescription(context));

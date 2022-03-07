@@ -48,6 +48,7 @@ interface IQuotaCardEditProps {
   hasPendingEdit: boolean;
   namespace: string;
   primaryClusterName: string;
+  isDisabled: boolean;
 }
 interface QuotaSizeDedetails {
   quotaCpuSize: CPUQuotaSizeDedetail[];
@@ -157,6 +158,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
     hasPendingEdit,
     namespace,
     primaryClusterName,
+    isDisabled,
   } = props;
   const api = useRegistryApi();
   const { setOpenBackdrop } = useCommonState();
@@ -512,40 +514,42 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
           );
           return (
             <form onSubmit={formProps.handleSubmit}>
-              <FormSpy
-                subscription={{ values: true }}
-                onChange={(change) => {
-                  // React-final-form bug: https://github.com/final-form/react-final-form/issues/809
-                  // Use setTimeout to Avoid error message
-                  setTimeout(() => {
-                    // fired during rendering, calling a `useState` setter fails
-                    const selectedResourceQuota: ProjectNamespaceResourceQuotaSize = {
-                      quotaCpuSize: change.values?.quotaCpuSize || '',
-                      quotaMemorySize: change.values?.quotaMemorySize || '',
-                      quotaStorageSize: change.values?.quotaStorageSize || '',
-                      quotaSnapshotSize: change.values?.quotaSnapshotSize || '',
-                    };
+              <fieldset disabled={isDisabled} style={{ border: 0 }}>
+                <FormSpy
+                  subscription={{ values: true }}
+                  onChange={(change) => {
+                    // React-final-form bug: https://github.com/final-form/react-final-form/issues/809
+                    // Use setTimeout to Avoid error message
+                    setTimeout(() => {
+                      // fired during rendering, calling a `useState` setter fails
+                      const selectedResourceQuota: ProjectNamespaceResourceQuotaSize = {
+                        quotaCpuSize: change.values?.quotaCpuSize || '',
+                        quotaMemorySize: change.values?.quotaMemorySize || '',
+                        quotaStorageSize: change.values?.quotaStorageSize || '',
+                        quotaSnapshotSize: change.values?.quotaSnapshotSize || '',
+                      };
 
-                    const selectedQuotaSpecs: QuotaSpecsInterface =
-                      Object.keys(quotaSizes).length !== 0
-                        ? getCorrespondingQuota(selectedResourceQuota)
-                        : DEFAULT_QUOTA_INFO;
+                      const selectedQuotaSpecs: QuotaSpecsInterface =
+                        Object.keys(quotaSizes).length !== 0
+                          ? getCorrespondingQuota(selectedResourceQuota)
+                          : DEFAULT_QUOTA_INFO;
 
-                    // setApplyingQuotaSpecs only when change.value is not empty
-                    if (
-                      !change.values ||
-                      Object.keys(change.values).length !== 0 ||
-                      Object.getPrototypeOf(change.values) !== Object.prototype
-                    ) {
-                      setApplyingQuotaSpecs(selectedQuotaSpecs);
-                    } else {
-                      setApplyingQuotaSpecs({});
-                    }
-                  }, 0);
-                }}
-              />
-              <>{DisplayQuotaForm}</>
-              <>{QuotaChangeComponent}</>
+                      // setApplyingQuotaSpecs only when change.value is not empty
+                      if (
+                        !change.values ||
+                        Object.keys(change.values).length !== 0 ||
+                        Object.getPrototypeOf(change.values) !== Object.prototype
+                      ) {
+                        setApplyingQuotaSpecs(selectedQuotaSpecs);
+                      } else {
+                        setApplyingQuotaSpecs({});
+                      }
+                    }, 0);
+                  }}
+                />
+                <>{DisplayQuotaForm}</>
+                <>{QuotaChangeComponent}</>
+              </fieldset>
             </form>
           );
         }}

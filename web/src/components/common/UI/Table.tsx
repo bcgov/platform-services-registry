@@ -42,6 +42,7 @@ interface ITableProps {
   linkedRows?: boolean;
   title: string;
   onSort: any;
+  getCsvData: any;
 }
 
 interface ProjectRole {
@@ -139,10 +140,6 @@ const Styles = styled.div`
       text-align: left !important;
       font-weight: 600;
     }
-    /*
-	Label the data, hard coded for now.
-  TODO (sb): dynamically link the column heading to these Row titles
-	*/
     td:nth-of-type(1):before {
       content: 'Project Name';
     }
@@ -276,13 +273,14 @@ const ColumnFilter: React.FC<any> = ({ allColumns }: any) => {
 };
 
 const Table: React.FC<ITableProps> = (props) => {
-  const { columns, data, linkedRows, title, onSort } = props;
+  const { columns, data, linkedRows, title, onSort, getCsvData } = props;
   const { setOpenBackdrop } = useCommonState();
 
-  const downloadCSV = () => {
+  const downloadCSV = async () => {
     setOpenBackdrop(true);
     try {
-      const flattened = data.map((profile: any) => flatten(profile));
+      const csvData = await getCsvData();
+      const flattened = csvData.map((profile: any) => flatten(profile));
       const csv = transformJsonToCsv(flattened);
       window.open(`data:text/csv;charset=utf-8,${escape(csv)}`);
     } catch (err) {

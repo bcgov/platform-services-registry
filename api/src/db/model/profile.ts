@@ -19,6 +19,13 @@ import { Pool } from "pg";
 import { PROFILE_STATUS } from "../../constants";
 import { CommonFields, Model } from "./model";
 
+export interface DeletableField {
+  namespaceDeletability: boolean;
+  podsDeletability: boolean;
+  pvcDeletability: boolean;
+  provisionerDeletionChecked: boolean;
+}
+
 export interface ProjectProfile extends CommonFields {
   id: number;
   name: string;
@@ -246,6 +253,44 @@ export default class ProfileModel extends Model {
       return results.pop();
     } catch (err) {
       const message = `Unable to link contact ${contactId} to profile ${profileId}`;
+      logger.error(`${message}, err = ${err.message}`);
+
+      throw err;
+    }
+  }
+
+  async setProjectDeletableStatus(
+    profileId: number,
+    deletableField: DeletableField
+  ): Promise<any> {
+    const values: any[] = [];
+    const query = {
+      text: `
+        Update profile
+        SET 
+        pvc_deletability=$2,
+        namespace_deletability=$3,
+        pods_deletability=$4,
+        provisioner_deletion_checked=$5
+        WHERE id = $1 
+        RETURNING provisioner_deletion_checked,pods_deletability,namespace_deletability,pvc_deletability;`,
+      values,
+    };
+
+    try {
+      query.values = [
+        profileId,
+        deletableField.pvcDeletability,
+        deletableField.namespaceDeletability,
+        deletableField.podsDeletability,
+        deletableField.provisionerDeletionChecked,
+      ];
+
+      const results = await this.runQuery(query);
+
+      return results.pop();
+    } catch (err) {
+      const message = `Unable to mark undeletable to profile ${profileId}`;
       logger.error(`${message}, err = ${err.message}`);
 
       throw err;
