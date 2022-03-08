@@ -59,10 +59,13 @@ export const validateRequiredFields = (
 
 // the function BELOW is to address such issue
 // in order to make sure the final manifest yaml file is valid to ocp
+
+// also removes trailing white space in profile description
 export const replaceForDescription = (contextJson: any) => {
   const updatedContextJson = contextJson;
+
   const doubleQuoteReplaced = contextJson.description
-    ? contextJson.description.replace(/"/g, " ").replace(/\\/g, "")
+    ? contextJson.description.replace(/"/g, " ").replace(/\\/g, "").trim()
     : null;
 
   updatedContextJson.description = doubleQuoteReplaced;
