@@ -63,6 +63,7 @@ services:
     depends_on:
       - api
     environment:
+      <<: *defaults
       PORT: 8101
       NODE_ENV: development
     command: >
