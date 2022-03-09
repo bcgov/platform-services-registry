@@ -19,7 +19,7 @@ import React from 'react';
 
 const StyledButton = styled.button`
   margin-top: 20px;
-  min-width: clamp(30%, 50%, 80%);
+  width: clamp(30%, 50%, 80%);
   height: 60px;
   border-radius: 5px;
   background-color: #036;
@@ -32,7 +32,7 @@ const StyledButton = styled.button`
 
 const StyledDisabledButton = styled.button`
   margin-top: 20px;
-  min-width: clamp(30%, 50%, 80%);
+  width: clamp(30%, 50%, 80%);
   height: 60px;
   border-radius: 5px;
   background-color: #d3d3d3;
@@ -52,10 +52,21 @@ const SquareButton = styled.button<IButtonProps>`
   font-size: 18px;
 `;
 
+const smallButtonStyle = {
+  maxHeight: '40px',
+  fontSize: '18px',
+  maxWidth: '40%',
+};
+
 export const StyledFormButton: React.FC<IButtonProps> = (props: any) => {
-  const { children, ...rest } = props;
+  const { children, smallButton, ...rest } = props;
+  const extraStyle = smallButton && smallButtonStyle;
+  const appliedStyle = {
+    ...extraStyle,
+    ...rest.style,
+  };
   return (
-    <StyledButton className="misc-class-m-form-submit-btn" {...rest}>
+    <StyledButton className="misc-class-m-form-submit-btn" {...rest} style={appliedStyle}>
       {children}
     </StyledButton>
   );
@@ -86,6 +97,7 @@ export interface IButtonProps {
   type?: any;
   disabled?: boolean;
   inversed?: boolean;
+  smallButton?: boolean;
 }
 
 const styles = {

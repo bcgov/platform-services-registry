@@ -52,6 +52,7 @@ interface IContactCardEditProps {
   isProvisioned?: boolean;
   hasPendingEdit: boolean;
   newTechnicalLeads: any;
+  isDisabled: boolean;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
@@ -62,6 +63,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     isProvisioned,
     hasPendingEdit,
     newTechnicalLeads,
+    isDisabled,
   } = props;
 
   const { setOpenBackdrop } = useCommonState();
@@ -131,156 +133,158 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     >
       {(formProps) => (
         <form onSubmit={formProps.handleSubmit}>
-          <FormTitle>Who is the product owner for this project?</FormTitle>
-          <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
-            {({ input }) => <input type="hidden" {...input} id="id" />}
-          </Field>
-          <Field name="updatedProductOwner.roleId" initialValue={productOwner.roleId}>
-            {({ input }) => <input type="hidden" {...input} id="roleId" />}
-          </Field>
-          <Flex flexDirection="column">
-            <Label htmlFor="updatedProductOwner.firstName">First Name</Label>
-            <Field<string>
-              name="updatedProductOwner.firstName"
-              component={TextInput}
-              validate={validator.mustBeValidName}
-              defaultValue=""
-              initialValue={productOwner.firstName}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="updatedProductOwner.lastName">Last Name</Label>
-            <Field<string>
-              name="updatedProductOwner.lastName"
-              component={TextInput}
-              validate={validator.mustBeValidName}
-              defaultValue=""
-              initialValue={productOwner.lastName}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="updatedProductOwner.email">Email Address</Label>
-            <Field<string>
-              name="updatedProductOwner.email"
-              component={TextInput}
-              validate={validator.mustBeValidEmail}
-              defaultValue=""
-              initialValue={productOwner.email}
-              sx={{ textTransform: 'none' }}
-            />
-          </Flex>
-          <Flex flexDirection="column">
-            <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
-            <GithubUserValidation
-              name="updatedProductOwner.githubId"
-              persona="productOwner"
-              defaultValue=""
-              initialValue={productOwner.githubId}
-              position={0}
-            />
-          </Flex>
-          <FormTitle>
-            {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
-              ? 'Who are the technical leads for this project?'
-              : 'Who is the technical lead for this project?'}
-          </FormTitle>
-          <FieldArray name="updatedTechnicalLeads" initialValue={existingTechnicalLeads}>
-            {({ fields }) => {
-              return fields.length && fields.length <= MAXIMUM_TECHNICAL_LEADS ? (
-                <>
-                  {fields.map((name, index) => (
-                    <div key={name}>
-                      <Flex flexDirection="row">
-                        <FormTitle style={{ fontSize: '20px' }}>
-                          Technical Lead {index + 1}
-                        </FormTitle>
-                        {/* TODO: (SB) implement the ability to delete contacts from edit page */}
-                        {fields.length! > MINIMUM_TECHNICAL_LEADS && (
-                          <Box my="auto" ml="auto" className="buttons">
-                            <SquareFormButton
-                              type="button"
-                              onClick={() => fields.remove(index)}
-                              style={{ cursor: 'pointer' }}
-                              inversed
-                            >
-                              X
-                            </SquareFormButton>
-                          </Box>
-                        )}
-                      </Flex>
-                      <Flex flexDirection="column">
-                        <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
-                          {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
-                        </Field>
-                        <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                        <Field<string>
-                          name={`${name}.firstName`}
-                          component={TextInput}
-                          validate={validator.mustBeValidName}
-                          placeholder="Jane"
-                        />
-                      </Flex>
-                      <Flex flexDirection="column">
-                        <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                        <Field<string>
-                          name={`${name}.lastName`}
-                          component={TextInput}
-                          validate={validator.mustBeValidName}
-                          placeholder="Doe"
-                        />
-                      </Flex>
-                      <Flex flexDirection="column">
-                        <Label htmlFor={`${name}.email`}>Email Address</Label>
-                        <Field<string>
-                          name={`${name}.email`}
-                          component={TextInput}
-                          validate={validator.mustBeValidEmail}
-                          placeholder="jane.doe@example.com"
-                          sx={{ textTransform: 'none' }}
-                        />
-                      </Flex>
-                      <Flex flexDirection="column">
-                        <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
-                        <GithubUserValidation
-                          name={`${name}.githubId`}
-                          persona="technicalLeads"
-                          position={index}
-                        />
-                      </Flex>
-                    </div>
-                  ))}
-                  {fields.length && fields.length < MAXIMUM_TECHNICAL_LEADS && (
-                    <Button
-                      type="button"
-                      onClick={async () => {
-                        fields.push({
-                          id: '',
-                          firstName: '',
-                          lastName: '',
-                          email: '',
-                          githubId: '',
-                          roleId: ROLES.TECHNICAL_LEAD,
-                        });
-                        await newTechnicalLeads();
-                      }}
-                    >
-                      Add Technical Lead
-                    </Button>
-                  )}
-                </>
-              ) : (
-                <Text as="h4" mt={2}>
-                  Loading...
-                </Text>
-              );
-            }}
-          </FieldArray>
+          <fieldset disabled={isDisabled} style={{ border: 0 }}>
+            <FormTitle>Who is the product owner for this project?</FormTitle>
+            <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
+              {({ input }) => <input type="hidden" {...input} id="id" />}
+            </Field>
+            <Field name="updatedProductOwner.roleId" initialValue={productOwner.roleId}>
+              {({ input }) => <input type="hidden" {...input} id="roleId" />}
+            </Field>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.firstName">First Name</Label>
+              <Field<string>
+                name="updatedProductOwner.firstName"
+                component={TextInput}
+                validate={validator.mustBeValidName}
+                defaultValue=""
+                initialValue={productOwner.firstName}
+              />
+            </Flex>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.lastName">Last Name</Label>
+              <Field<string>
+                name="updatedProductOwner.lastName"
+                component={TextInput}
+                validate={validator.mustBeValidName}
+                defaultValue=""
+                initialValue={productOwner.lastName}
+              />
+            </Flex>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.email">Email Address</Label>
+              <Field<string>
+                name="updatedProductOwner.email"
+                component={TextInput}
+                validate={validator.mustBeValidEmail}
+                defaultValue=""
+                initialValue={productOwner.email}
+                sx={{ textTransform: 'none' }}
+              />
+            </Flex>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
+              <GithubUserValidation
+                name="updatedProductOwner.githubId"
+                persona="productOwner"
+                defaultValue=""
+                initialValue={productOwner.githubId}
+                position={0}
+              />
+            </Flex>
+            <FormTitle>
+              {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
+                ? 'Who are the technical leads for this project?'
+                : 'Who is the technical lead for this project?'}
+            </FormTitle>
+            <FieldArray name="updatedTechnicalLeads" initialValue={existingTechnicalLeads}>
+              {({ fields }) => {
+                return fields.length && fields.length <= MAXIMUM_TECHNICAL_LEADS ? (
+                  <>
+                    {fields.map((name, index) => (
+                      <div key={name}>
+                        <Flex flexDirection="row">
+                          <FormTitle style={{ fontSize: '20px' }}>
+                            Technical Lead {index === 0 ? '(Primary)' : '(Secondary)'}
+                          </FormTitle>
+                          {/* TODO: (SB) implement the ability to delete contacts from edit page */}
+                          {fields.length! > MINIMUM_TECHNICAL_LEADS && (
+                            <Box my="auto" ml="auto" className="buttons">
+                              <SquareFormButton
+                                type="button"
+                                onClick={() => fields.remove(index)}
+                                style={{ cursor: 'pointer' }}
+                                inversed
+                              >
+                                X
+                              </SquareFormButton>
+                            </Box>
+                          )}
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
+                            {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
+                          </Field>
+                          <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                          <Field<string>
+                            name={`${name}.firstName`}
+                            component={TextInput}
+                            validate={validator.mustBeValidName}
+                            placeholder="Jane"
+                          />
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                          <Field<string>
+                            name={`${name}.lastName`}
+                            component={TextInput}
+                            validate={validator.mustBeValidName}
+                            placeholder="Doe"
+                          />
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Label htmlFor={`${name}.email`}>Email Address</Label>
+                          <Field<string>
+                            name={`${name}.email`}
+                            component={TextInput}
+                            validate={validator.mustBeValidEmail}
+                            placeholder="jane.doe@example.com"
+                            sx={{ textTransform: 'none' }}
+                          />
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                          <GithubUserValidation
+                            name={`${name}.githubId`}
+                            persona="technicalLeads"
+                            position={index}
+                          />
+                        </Flex>
+                      </div>
+                    ))}
+                    {fields.length && fields.length < MAXIMUM_TECHNICAL_LEADS && (
+                      <Button
+                        type="button"
+                        onClick={async () => {
+                          fields.push({
+                            id: '',
+                            firstName: '',
+                            lastName: '',
+                            email: '',
+                            githubId: '',
+                            roleId: ROLES.TECHNICAL_LEAD,
+                          });
+                          await newTechnicalLeads();
+                        }}
+                      >
+                        Add Technical Lead
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Text as="h4" mt={2}>
+                    Loading...
+                  </Text>
+                );
+              }}
+            </FieldArray>
 
-          <EditSubmitButton
-            hasPendingEdit={hasPendingEdit}
-            isProvisioned={isProvisioned}
-            pristine={formProps.pristine}
-          />
+            <EditSubmitButton
+              hasPendingEdit={hasPendingEdit}
+              isProvisioned={isProvisioned}
+              pristine={formProps.pristine}
+            />
+          </fieldset>
         </form>
       )}
     </Form>
