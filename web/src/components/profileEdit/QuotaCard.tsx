@@ -26,6 +26,7 @@ import {
   ProjectNamespaceResourceQuotaSize,
 } from '../../types';
 import { BaseIcon } from '../common/UI/Icon';
+import { NAMESPACE_URLS } from '../../constants';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
@@ -66,39 +67,40 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     },
     href,
   } = props;
+
   const NAMESPACE_TEXT = [
     {
       displayName: 'Production',
       shortName: 'prod',
-      goldURL: process.env.PRODUCTION_NAMESPACE_GOLD_URL as string,
-      silverURL: process.env.PRODUCTION_NAMESPACE_SILVER_URL as string,
+      goldUrl: NAMESPACE_URLS.PROD_GOLD as string,
+      silverUrl: NAMESPACE_URLS.PROD_SILVER as string,
     },
     {
       displayName: 'Test',
       shortName: 'test',
-      goldURL: process.env.TEST_NAMESPACE_GOLD_URL as string,
-      silverURL: process.env.TEST_NAMESPACE_SILVER_URL as string,
+      goldUrl: NAMESPACE_URLS.TEST_GOLD as string,
+      silverUrl: NAMESPACE_URLS.TEST_SILVER as string,
     },
     {
       displayName: 'Development',
       shortName: 'dev',
-      goldURL: process.env.DEVELOPMENT_NAMESPACE_GOLD_URL as string,
-      silverURL: process.env.DEVELOPMENT_NAMESPACE_SILVER_URL as string,
+      goldUrl: NAMESPACE_URLS.DEV_GOLD as string,
+      silverUrl: NAMESPACE_URLS.DEV_SILVER as string,
     },
     {
       displayName: 'Tools',
       shortName: 'tools',
-      goldURL: process.env.TOOLS_NAMESPACE_GOLD_URL as string,
-      silverURL: process.env.TOOLS_NAMESPACE_SILVER_URL as string,
+      goldUrl: NAMESPACE_URLS.TOOLS_GOLD as string,
+      silverUrl: NAMESPACE_URLS.TOOLS_SILVER as string,
     },
   ];
-
+  
   return (
     <Flex flexWrap="wrap">
-      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string; goldURL: string; silverURL: string }) => {
+      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string; goldUrl: string; silverUrl: string}) => {
         const index = namespaceText.shortName as keyof typeof quotaSize;
-        const url = primaryClusterName === 'gold' ? namespaceText.goldURL  : namespaceText.silverURL ;
         console.log('primary cluster name: ' + primaryClusterName);
+        console.log(process.env.REACT_APP_PRODUCTION_NAMESPACE_GOLD_URL);
         const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
         return (
           <Aux key={namespaceText.displayName}>
@@ -122,8 +124,9 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                 </RouterLink>
               </Flex>
               <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                {url}
+
                 {`${namespaceFullName} namespace`}
+                { `${primaryClusterName === 'gold' ? namespaceText.goldUrl : namespaceText.silverUrl } `}
               </Text>
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
