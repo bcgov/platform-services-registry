@@ -95,33 +95,54 @@ const ProjectRequests: React.FC<any> = (props) => {
     [],
   );
 
-  useEffect(() => {
-    async function wrap() {
-      setOpenBackdrop(true);
-      try {
-        // Step 1: GET all active requests requiring human action
-        const humanActionRequests = await api.getHumanActionRequests();
+  const getData = async (profileDetailsData: any) => {
+    try {
+      // Step 1: GET all active requests requiring human action
+      const humanActionRequests = await api.getHumanActionRequests();
 
-        // Step 2: Filter profiles that have outstanding requests requiring human action
-        const results = profileDetails.filter((profile: any) =>
-          humanActionRequests.data.some((request: any) => request.profileId === profile.id),
-        );
+      // Step 2: Filter profiles that have outstanding requests requiring human action
+      const results = profileDetailsData.filter((profile: any) =>
+        humanActionRequests.data.some((request: any) => request.profileId === profile.id),
+      );
 
-        // Step 3: Combine request details with profile details for review modal
-        const profileRequests = results.map((profile: any) => ({
-          ...profile,
-          ...humanActionRequests.data.find((request: any) => request.profileId === profile.id),
-        }));
-        setRequests(profileRequests);
-      } catch (err) {
-        promptErrToastWithText('Something went wrong');
-        console.log(err);
-      }
-      setOpenBackdrop(false);
+      // Step 3: Combine request details with profile details for review modal
+      const profileRequests = results.map((profile: any) => ({
+        ...profile,
+        ...humanActionRequests.data.find((request: any) => request.profileId === profile.id),
+      }));
+
+      return profileRequests;
+    } catch (err) {
+      promptErrToastWithText('Something went wrong');
+      console.log(err);
     }
-    wrap();
+  };
+
+  useEffect(() => {
+    const wrap = async () => {
+      setOpenBackdrop(true);
+      const profileRequests = await getData(profileDetails);
+      setRequests(profileRequests);
+      setOpenBackdrop(false);
+    };
+
+    wrap().catch(console.error);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileDetails, submitRefresh]);
+
+  const csvData = async () => {
+    try {
+      const updatedProfiles = await api.getDashboardProjects();
+      const updatedProfileDetailsArray = updatedProfiles.data ? updatedProfiles.data : [];
+      const res = await getData(updatedProfileDetailsArray);
+
+      return res;
+    } catch (err) {
+      console.log(err);
+      promptErrToastWithText(`${err}`);
+    }
+  };
 
   const { isShown, toggle } = useModal();
 
@@ -146,6 +167,7 @@ const ProjectRequests: React.FC<any> = (props) => {
           data={data}
           title="Project Requests"
           onSort={useHandleSort(setData, requests).ourHandleSort}
+          getCsvData={csvData}
         />
       </Box>
     </div>

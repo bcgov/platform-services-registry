@@ -85,7 +85,7 @@ describe("Utils", () => {
     const result = {
       profileId: 118,
       displayName: "Project X",
-      description: "test some  double quotes ",
+      description: "test some  double quotes",
     };
 
     expect(replaceForDescription(contextJson)).toEqual(result);

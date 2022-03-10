@@ -28,7 +28,6 @@ export const API = {
       : `${window.location.origin}/api/v1/`,
 };
 
-// TODO: (SB) Update logic to move from numbers to explicit role such as "owner", "lead"
 export const ROLES = {
   PRODUCT_OWNER: 1,
   TECHNICAL_LEAD: 2,
