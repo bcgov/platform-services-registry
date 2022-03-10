@@ -207,7 +207,9 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
                 </Flex>
                 ) :
                 (
-                  ''
+                  <Flex flex="1 1 auto" justifyContent="flex-end" className="componentContextLink-inactive" title="There is not yet any documentation linked for this component.">
+                    <div>?</div>
+                  </Flex>
                 )}
               </Label>
               <Flex flex="1 1 auto" justifyContent="flex-end">

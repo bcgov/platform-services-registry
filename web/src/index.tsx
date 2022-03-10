@@ -68,7 +68,22 @@ ReactDOM.render(
             text-align: center;
             height: fit-content;
             text-decoration: none;
+          }
+          .componentContextLink-inactive{
+            background-color: #bdc5cc;
+            color: #f8f9fa;
+            border-radius: 5px;
+            width: 20px;
+            max-width: 20px;
+            height: fit-content;
+            text-decoration: none;
+            margin-left: auto !important;
+          }
+          .componentContextLink-inactive div{
+            margin-left: auto;
+            margin-right: auto;
           },
+
         `}
       />
       <PersistGate persistor={persistor}>
