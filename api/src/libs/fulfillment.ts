@@ -203,12 +203,37 @@ const makeNatsFormatQuotasMessage = (
   return provisonerPreferedFormatQuotas;
 };
 
-const buildContext = async (
+// This function can build namespace field for Nats message
+export const buildNatsMessageFields = async (
+  profile: ProjectProfile,
+  quotaSize: ProjectQuotaSize,
+  quotas: ProjectSetQuotas
+) => {
+  const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
+    makeNatsFormatQuotaSizeMessage(quotaSize);
+
+  const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
+    makeNatsFormatQuotasMessage(quotas);
+
+  const namespacesDetails = await NamespaceModel.findNamespacesForProfile(
+    profile.id
+  );
+
+  const namespaces = namespacesDetails.map((n) => {
+    const namespacePostFix = getLicencePlatePostFix(n.name);
+    return formatNamespacesForNats(
+      n,
+      provisonerPreferedFormatQuotasize[namespacePostFix],
+      provisonerPreferedFormatQuotas[namespacePostFix]
+    );
+  });
+  return namespaces;
+};
+export const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
   profileContacts: Contact[],
-  quotaSize: ProjectSetQuotaSizeFormatInProvisonerFormat,
-  quotas: ProjectSetQuotasInNatsFormat,
+  namespaces: any,
   cluster: Cluster,
   auoMergeFlag: string
 ): Promise<NatsContext> => {
@@ -216,19 +241,6 @@ const buildContext = async (
     if (!profile.id) {
       throw new Error("Cant get profile id");
     }
-
-    const namespacesDetails = await NamespaceModel.findNamespacesForProfile(
-      profile.id
-    );
-
-    const namespaces = namespacesDetails.map((n) => {
-      const namespacePostFix = getLicencePlatePostFix(n.name);
-      return formatNamespacesForNats(
-        n,
-        quotaSize[namespacePostFix],
-        quotas[namespacePostFix]
-      );
-    });
 
     const contacts: NatsContact[] = profileContacts.map((contact) =>
       formatContactsForNats(contact)
@@ -262,13 +274,17 @@ const buildContext = async (
 export const contextForProvisioning = async (
   profileId: number,
   cluster: Cluster,
-  isForSync: boolean = false
+  isForSync: boolean = false,
+  isForDelete: boolean = false
 ): Promise<NatsContext> => {
   try {
     const auoMergeFlag: string = MergeType.Auto;
-    const action = isForSync
-      ? NatsContextAction.Sync
-      : NatsContextAction.Create;
+    let action = NatsContextAction.Create;
+    if (isForSync) {
+      action = NatsContextAction.Sync;
+    } else if (isForDelete) {
+      action = NatsContextAction.Delete;
+    }
 
     const profile: ProjectProfile = await ProfileModel.findById(profileId);
     const contacts: Contact[] = await ContactModel.findForProject(profileId);
@@ -276,18 +292,13 @@ export const contextForProvisioning = async (
     const quotas: ProjectSetQuotas =
       await QuotaModel.fetchProjectSetQuotaDetail(quotaSize);
 
-    const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
-      makeNatsFormatQuotaSizeMessage(quotaSize);
-
-    const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
-      makeNatsFormatQuotasMessage(quotas);
+    const namespaces = await buildNatsMessageFields(profile, quotaSize, quotas);
 
     return await buildContext(
       action,
       profile,
       contacts,
-      provisonerPreferedFormatQuotasize,
-      provisonerPreferedFormatQuotas,
+      namespaces,
       cluster,
       auoMergeFlag
     );
@@ -336,11 +347,7 @@ export const contextForEditing = async (
       }
     }
 
-    const provisonerPreferedFormatQuotasize: ProjectSetQuotaSizeFormatInProvisonerFormat =
-      makeNatsFormatQuotaSizeMessage(quotaSize);
-
-    const provisonerPreferedFormatQuotas: ProjectSetQuotasInNatsFormat =
-      makeNatsFormatQuotasMessage(quotas);
+    const namespaces = await buildNatsMessageFields(profile, quotaSize, quotas);
 
     if (requestEditType === RequestEditType.Contacts) {
       contacts = JSON.parse(requestEditObject);
@@ -352,8 +359,7 @@ export const contextForEditing = async (
       action,
       profile,
       contacts,
-      provisonerPreferedFormatQuotasize,
-      provisonerPreferedFormatQuotas,
+      namespaces,
       cluster,
       auoMergeFlag
     );
@@ -382,12 +388,17 @@ const generateContext = async (
         request.editObject,
         cluster
       );
+    case RequestType.Delete:
+      if (!request.editType) {
+        throw new Error(`Invalid edit type for request ${request.id}`);
+      }
+      return contextForProvisioning(request.profileId, cluster, false, true);
     default:
       throw new Error(`Invalid type for request ${request.id}`);
   }
 };
 
-const sendNatsMessage = async (
+export const sendNatsMessage = async (
   profileId: number,
   natsMessage: NatsMessage
 ): Promise<NatsMessage> => {
@@ -459,6 +470,7 @@ export const fulfillRequest = async (request: Request): Promise<any> => {
 
     await createBotMessageSet(request, subjectPrefix);
     const botMessageSet = await fetchBotMessageRequests(Number(request.id));
+
     for (const botMessage of botMessageSet) {
       await sendNatsMessage(request.profileId, {
         natsSubject: botMessage.natsSubject,

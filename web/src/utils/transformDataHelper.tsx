@@ -37,8 +37,6 @@ export function transformClusters(data: any) {
   return clusters;
 }
 
-// TODO (sb): Delete when Project Edit pages no longer rely on provisioned flag but use status
-// returns true if ALL namespaces under a profile in default cluster are provisioned true
 export function isProfileProvisioned(profile: any, namespaces: any[]): boolean {
   try {
     const { primaryClusterName } = profile;

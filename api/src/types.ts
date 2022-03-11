@@ -20,6 +20,8 @@ export const enum NatsContextAction {
   Create = "create",
   Edit = "edit",
   Sync = "sync",
+  Delete = "delete",
+  Check = "check",
 }
 
 export const enum NatsContactRole {
@@ -49,13 +51,13 @@ export interface NatsContext {
   action: NatsContextAction;
   profile_id: number;
   cluster_id: number;
-  cluster_name: string;
-  display_name: string;
-  description: string;
-  ministry_id: string;
+  cluster_name?: string;
+  display_name?: string;
+  description?: string;
+  ministry_id?: string;
   namespaces: NatsProjectNamespace[];
-  merge_type: string;
-  contacts: NatsContact[];
+  merge_type?: string;
+  contacts?: NatsContact[];
 }
 
 // TODO: a bit hacky to name data members off the actual tool name
