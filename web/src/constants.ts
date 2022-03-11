@@ -138,6 +138,7 @@ export const ROUTE_PATHS = {
   DASHBOARD: '/dashboard',
   PROFILE_CREATE: '/profile/create',
   PROFILE_EDIT: '/profile/:profileId/:viewName',
+  ERROR_PAGE: '/errorpage',
 };
 
 export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;
