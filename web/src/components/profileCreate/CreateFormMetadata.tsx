@@ -38,13 +38,24 @@ const CreateFormMetadata: React.FC = () => {
         <Flex mt={3} key={item.inputValue}>
           <Label variant="adjacentLabel" m="auto">
             {item.displayName}
-            {item.documentationSource  ? (
+            {item.documentationSource ? (
               <Flex flex="1 1 auto" justifyContent="flex-end" className="componentContextLink">
-                <a href={item.documentationSource} target="_blank" title="Open a new browser tab with info about this component">?</a>
+                <a
+                  href={item.documentationSource}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Open a new browser tab with info about this component"
+                >
+                  ?
+                </a>
               </Flex>
-            ) :
-            (
-              <Flex flex="1 1 auto" justifyContent="flex-end" className="componentContextLink-inactive" title="There is not yet any documentation linked for this component.">
+            ) : (
+              <Flex
+                flex="1 1 auto"
+                justifyContent="flex-end"
+                className="componentContextLink-inactive"
+                title="There is not yet any documentation linked for this component."
+              >
                 <div>?</div>
               </Flex>
             )}

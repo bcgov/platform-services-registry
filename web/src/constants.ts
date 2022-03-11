@@ -40,20 +40,78 @@ export const CREATE_COMMUNITY_ISSUE_URL =
   'https://github.com/bcgov/platform-services-registry/issues/new?&labels=community&template=platform-experience-general-issue.md';
 
 export const COMPONENT_METADATA = [
-  { displayName: 'Notification: Email', inputValue: 'notificationEmail', documentationSource: 'https://digital.gov.bc.ca/common-components/common-hosted-email-service' },
-  { displayName: 'Notification: SMS', inputValue: 'notificationSms', documentationSource: 'https://digital.gov.bc.ca/common-components/notify' },
-  { displayName: 'Notification: MS Teams', inputValue: 'notificationMsTeams', documentationSource: '' },
-  { displayName: 'Payment processing: Bambora', inputValue: 'paymentBambora', documentationSource: '' },
-  { displayName: 'Payment processing: PayBC', inputValue: 'paymentPayBc', documentationSource: 'https://digital.gov.bc.ca/common-components/bc-express-pay' },
-  { displayName: 'File Transfer', inputValue: 'fileTransfer', documentationSource: 'https://digital.gov.bc.ca/common-components/secure-file-transfer-service' },
-  { displayName: 'File Storage', inputValue: 'fileStorage', documentationSource: '' },
-  { displayName: 'Geo Mapping: Web-based', inputValue: 'geoMappingWeb', documentationSource: 'https://digital.gov.bc.ca/common-components/bc-address-geocoder' },
-  { displayName: 'Geo Mapping: Location Services', inputValue: 'geoMappingLocation', documentationSource: 'https://digital.gov.bc.ca/common-components/bc-address-geocoder' },
-  { displayName: 'Scheduling: Calendar', inputValue: 'schedulingCalendar', documentationSource: '' },
-  { displayName: 'Scheduling: Appointments', inputValue: 'schedulingAppointments', documentationSource: '' },
-  { displayName: 'Identity Management: SiteMinder', inputValue: 'idmSiteMinder', documentationSource: 'https://digital.gov.bc.ca/common-components/site-minder-sso' },
-  { displayName: 'Identity Management: KeyCloak', inputValue: 'idmKeycloak', documentationSource: 'https://digital.gov.bc.ca/common-components/pathfinder-sso' },
-  { displayName: 'Identity Management: Active Directory', inputValue: 'idmActiveDir', documentationSource: 'https://digital.gov.bc.ca/common-components/microsoft-active-directory-services' },
+  {
+    displayName: 'Notification: Email',
+    inputValue: 'notificationEmail',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/common-hosted-email-service',
+  },
+  {
+    displayName: 'Notification: SMS',
+    inputValue: 'notificationSms',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/notify',
+  },
+  {
+    displayName: 'Notification: MS Teams',
+    inputValue: 'notificationMsTeams',
+    documentationSource: '',
+  },
+  {
+    displayName: 'Payment processing: Bambora',
+    inputValue: 'paymentBambora',
+    documentationSource: '',
+  },
+  {
+    displayName: 'Payment processing: PayBC',
+    inputValue: 'paymentPayBc',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/bc-express-pay',
+  },
+  {
+    displayName: 'File Transfer',
+    inputValue: 'fileTransfer',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/secure-file-transfer-service',
+  },
+  {
+    displayName: 'File Storage',
+    inputValue: 'fileStorage',
+    documentationSource: '',
+  },
+  {
+    displayName: 'Geo Mapping: Web-based',
+    inputValue: 'geoMappingWeb',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/bc-address-geocoder',
+  },
+  {
+    displayName: 'Geo Mapping: Location Services',
+    inputValue: 'geoMappingLocation',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/bc-address-geocoder',
+  },
+
+  {
+    displayName: 'Scheduling: Calendar',
+    inputValue: 'schedulingCalendar',
+    documentationSource: '',
+  },
+  {
+    displayName: 'Scheduling: Appointments',
+    inputValue: 'schedulingAppointments',
+    documentationSource: '',
+  },
+  {
+    displayName: 'Identity Management: SiteMinder',
+    inputValue: 'idmSiteMinder',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/site-minder-sso',
+  },
+  {
+    displayName: 'Identity Management: KeyCloak',
+    inputValue: 'idmKeycloak',
+    documentationSource: 'https://digital.gov.bc.ca/common-components/pathfinder-sso',
+  },
+  {
+    displayName: 'Identity Management: Active Directory',
+    inputValue: 'idmActiveDir',
+    documentationSource:
+      'https://digital.gov.bc.ca/common-components/microsoft-active-directory-services',
+  },
 ];
 
 export const CSV_PROFILE_ATTRIBUTES = [
