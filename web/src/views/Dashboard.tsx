@@ -18,6 +18,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import ProjectDetails from '../components/dashboard/ProjectDetails';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
+import PSRDocumentationLink from '../components/dashboard/PSRDocumentationLink';
 import useCommonState from '../hooks/useCommonState';
 import useInterval from '../hooks/useInterval';
 import useRegistryApi from '../hooks/useRegistryApi';
@@ -77,6 +78,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
+      <PSRDocumentationLink />
       {(userRoles.includes('administrator') || userRoles.includes('read_only_administrator')) && (
         <ProjectRequests
           profileDetails={profileDetails}
