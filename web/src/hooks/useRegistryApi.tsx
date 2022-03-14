@@ -256,7 +256,6 @@ export default function useRegistryApi() {
     updateProfile,
     createContact,
     subscribeCommunications,
-    githubInvite,
     updateContactsByProfileId,
     linkContactToProfileById,
     createNamespaceByProfileId,
