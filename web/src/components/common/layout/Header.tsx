@@ -15,7 +15,7 @@
 //
 
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Text } from 'rebass';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -29,6 +29,8 @@ import DropdownMenuItem from '../UI/DropdownMenuItem';
 import GovLogo from '../UI/GovLogo';
 import { BaseIcon } from '../UI/Icon';
 import { ContainerDesktop, ContainerMobile } from '../UI/ResponsiveContainer';
+import { useKeycloak } from '@react-keycloak/web';
+import { IDIR_USER_FLAG } from '../../../constants';
 
 const StyledHeader = styled.header`
   background-color: ${theme.colors.primary};
@@ -78,6 +80,14 @@ interface INavProps {
 
 const Nav: React.FC<INavProps> = (props) => {
   const { isAuthenticated, handleDDMobile, isDDMobileOpen } = props;
+  const { keycloak } = useKeycloak();
+  const realmAccess = keycloak?.realmAccess?.roles || [];
+
+  useEffect(() => {
+    if (keycloak?.authenticated && !realmAccess.includes(IDIR_USER_FLAG)) {
+      keycloak.logout();
+    }
+  }, []);
 
   const history = useHistory();
 

@@ -142,7 +142,7 @@ export const ROUTE_PATHS = {
 };
 
 export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;
-
+export const IDIR_USER_FLAG = 'idir-user';
 export const PROFILE_EDIT_VIEW_NAMES = {
   OVERVIEW: 'overview',
   PROJECT: 'project',
