@@ -86,6 +86,8 @@ const Nav: React.FC<INavProps> = (props) => {
     if (keycloak?.authenticated && !realmAccess.includes(IDIR_USER_FLAG)) {
       keycloak.logout();
     }
+    // we only need this to run once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const history = useHistory();
