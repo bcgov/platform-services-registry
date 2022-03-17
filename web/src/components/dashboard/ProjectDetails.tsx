@@ -41,7 +41,6 @@ const ProjectDetails: React.FC<any> = (props) => {
         Header: 'Ministry',
         accessor: 'busOrgId',
       },
-      
       {
         Header: 'Cluster',
         accessor: 'clusters',

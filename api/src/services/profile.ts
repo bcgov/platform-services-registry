@@ -18,6 +18,7 @@ import { logger } from "@bcgov/common-nodejs-utils";
 import { GOLD_QUORUM_COUNT, ROLE_IDS } from "../constants";
 import DataManager from "../db";
 import { ProjectProfile } from "../db/model/profile";
+import { AuthenticatedUser } from "../libs/authmware";
 import { AccessFlag } from "../libs/authorization";
 import { getClusters, getQuotaSize } from "../libs/profile";
 import shared from "../libs/shared";
@@ -27,7 +28,7 @@ const dm = new DataManager(shared.pgPool);
 const { ProfileModel, ContactModel } = dm;
 
 const fetchAllDashboardProjects = async (
-  userDetails: any
+  userDetails: AuthenticatedUser
 ): Promise<ProjectProfile> => {
   try {
     let profiles;
