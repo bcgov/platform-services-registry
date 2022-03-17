@@ -41,6 +41,7 @@ const ProjectDetails: React.FC<any> = (props) => {
         Header: 'Ministry',
         accessor: 'busOrgId',
       },
+      
       {
         Header: 'Cluster',
         accessor: 'clusters',
@@ -62,7 +63,7 @@ const ProjectDetails: React.FC<any> = (props) => {
         Cell: ({ cell: { value } }: any) => convertSnakeCaseToSentence(value),
       },
       {
-        Header: 'Namespace',
+        Header: 'License Plate',
         accessor: 'namespacePrefix',
       },
     ],
