@@ -143,7 +143,7 @@ const formatNamespacesForNats = (
   quotas
 ): NatsProjectNamespace => ({
   namespace_id: namespace.id,
-  name: `7f8e79-${getLicencePlatePostFix(namespace.name)}`,
+  name: namespace.name,
   quota,
   quotas,
 });
