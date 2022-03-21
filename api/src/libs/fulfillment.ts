@@ -143,7 +143,7 @@ const formatNamespacesForNats = (
   quotas
 ): NatsProjectNamespace => ({
   namespace_id: namespace.id,
-  name: "7f8e79",
+  name: `7f8e79-${getLicencePlatePostFix(namespace.name)}`,
   quota,
   quotas,
 });
@@ -472,7 +472,6 @@ export const fulfillRequest = async (request: Request): Promise<any> => {
     const botMessageSet = await fetchBotMessageRequests(Number(request.id));
 
     for (const botMessage of botMessageSet) {
-      console.log("hiahia is", botMessage.natsContext.namespaces);
       await sendNatsMessage(request.profileId, {
         natsSubject: botMessage.natsSubject,
         natsContext: botMessage.natsContext,
