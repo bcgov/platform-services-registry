@@ -88,8 +88,10 @@ export const updateRequestHumanAction = async (
         });
         await Promise.all(invitationPromiss);
       }
+      // TODO This need to put in provision callback
       if (request.type === RequestType.Delete) {
         await archiveProjectSet(request.profileId);
+        await RequestModel.updateCompletionStatus(requestId);
       }
       await updateProfileStatus(
         Number(request.profileId),
