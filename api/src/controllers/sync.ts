@@ -166,10 +166,8 @@ export const getAllProfileIdsUnderPending = async (
   }
 
   try {
-    let profiles: ProjectProfile[] = (
-      await getProfilesUnderPendingEditOrCreate()
-    ).filter((e) => e !== undefined);
-
+    let profiles: ProjectProfile[] =
+      await getProfilesUnderPendingEditOrCreate();
     if (clusterName !== undefined) {
       profiles = await filterProfilesBySelectedClusterName(
         profiles,
