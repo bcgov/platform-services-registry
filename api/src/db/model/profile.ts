@@ -493,7 +493,7 @@ export default class ProfileModel extends Model {
 
     try {
       const results = await this.runQuery(query);
-      const profiles = results.pop() as ProjectProfile;
+      const { profiles } = results.pop();
       return profiles;
     } catch (err) {
       const message = `Unable to fetch Profile(s) with User Id `;
