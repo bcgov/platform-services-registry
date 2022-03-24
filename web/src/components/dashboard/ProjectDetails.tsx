@@ -62,7 +62,7 @@ const ProjectDetails: React.FC<any> = (props) => {
         Cell: ({ cell: { value } }: any) => convertSnakeCaseToSentence(value),
       },
       {
-        Header: 'Namespace',
+        Header: 'License Plate',
         accessor: 'namespacePrefix',
       },
     ],

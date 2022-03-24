@@ -23,6 +23,7 @@ import { HOME_PAGE_URL, ROUTE_PATHS } from './constants';
 import AppRoute from './utils/AppRoute';
 import { areQueryParamsForProfileValid } from './utils/checkQueryParamsHelper';
 import Dashboard from './views/Dashboard';
+import ErrorPage from './views/ErrorPage';
 import { NotFound } from './views/NotFound';
 import ProfileCreate from './views/ProfileCreate';
 import ProfileEdit from './views/ProfileEdit';
@@ -44,6 +45,7 @@ const AppRouter: React.FC = () => {
         <AppRoute path={ROUTE_PATHS.LANDING} component={PublicLanding} />
         <AppRoute protected exact path={ROUTE_PATHS.PROFILE_CREATE} component={ProfileCreate} />
         <AppRoute protected exact path={HOME_PAGE_URL} component={Dashboard} />
+        <AppRoute protected exact path={ROUTE_PATHS.ERROR_PAGE} component={ErrorPage} />
         <AppRoute
           protected
           exact

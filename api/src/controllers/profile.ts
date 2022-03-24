@@ -36,6 +36,7 @@ import {
 import shared from "../libs/shared";
 import fetchAllDashboardProjects from "../services/profile";
 import { ProjectSetNamespace } from "../db/model/namespace";
+import config from "../config";
 
 const dm = new DataManager(shared.pgPool);
 
@@ -419,37 +420,46 @@ export const updateDeletionCheckStatus = async (
   };
   try {
     const { NamespaceModel, ProfileModel } = dm;
-    const clusters = await NamespaceModel.findClustersForProfile(profileId);
-    const profile: ProjectProfile = await ProfileModel.findById(profileId);
-    const promise: Promise<DeletableField>[] = [];
-
-    // Go through all culster to do the deletion check.
-    clusters.forEach(async (cluster) => {
-      promise.push(
-        openshiftDeletionCheck(profile.namespacePrefix, cluster.name)
-      );
-    });
-    // project only lives on one cluster
-
-    const deletionCheckResult: DeletableField[] = await Promise.all(promise);
-
-    const isClusterDeletionStatusTheSame = deletionCheckResult.every(
-      (clustersResult) =>
-        Object.keys(clustersResult).every(
-          (key) => clustersResult[key] === deletionCheckResult[0][key]
-        )
-    );
-
-    if (deletionCheckResult.length === 1 || isClusterDeletionStatusTheSame) {
-      await ProfileModel.setProjectDeletableStatus(
-        profileId,
-        deletionCheckResult.shift() || DEFAULT_DELETION_STATUS
-      );
+    if (config.get("api:prefix") === "t") {
+      await ProfileModel.setProjectDeletableStatus(profileId, {
+        pvcDeletability: true,
+        namespaceDeletability: true,
+        podsDeletability: true,
+        provisionerDeletionChecked: true,
+      });
     } else {
-      await ProfileModel.setProjectDeletableStatus(
-        profileId,
-        DEFAULT_DELETION_STATUS
+      const clusters = await NamespaceModel.findClustersForProfile(profileId);
+      const profile: ProjectProfile = await ProfileModel.findById(profileId);
+      const promise: Promise<DeletableField>[] = [];
+
+      // Go through all culster to do the deletion check.
+      clusters.forEach(async (cluster) => {
+        promise.push(
+          openshiftDeletionCheck(profile.namespacePrefix, cluster.name)
+        );
+      });
+      // project only lives on one cluster
+
+      const deletionCheckResult: DeletableField[] = await Promise.all(promise);
+
+      const isClusterDeletionStatusTheSame = deletionCheckResult.every(
+        (clustersResult) =>
+          Object.keys(clustersResult).every(
+            (key) => clustersResult[key] === deletionCheckResult[0][key]
+          )
       );
+
+      if (deletionCheckResult.length === 1 || isClusterDeletionStatusTheSame) {
+        await ProfileModel.setProjectDeletableStatus(
+          profileId,
+          deletionCheckResult.shift() || DEFAULT_DELETION_STATUS
+        );
+      } else {
+        await ProfileModel.setProjectDeletableStatus(
+          profileId,
+          DEFAULT_DELETION_STATUS
+        );
+      }
     }
 
     res.status(201).end();

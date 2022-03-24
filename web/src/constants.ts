@@ -138,9 +138,12 @@ export const ROUTE_PATHS = {
   DASHBOARD: '/dashboard',
   PROFILE_CREATE: '/profile/create',
   PROFILE_EDIT: '/profile/:profileId/:viewName',
+  ERROR_PAGE: '/errorpage',
 };
 
 export const HOME_PAGE_URL = ROUTE_PATHS.DASHBOARD;
+
+export const IDIR_USER_FLAG = 'idir-user';
 
 export const PROFILE_EDIT_VIEW_NAMES = {
   OVERVIEW: 'overview',
