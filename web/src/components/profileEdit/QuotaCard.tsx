@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { Box, Flex, Text } from 'rebass';
-import { Link as RouterLink, Link, Route } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import Aux from '../../hoc/auxillary';
 import theme from '../../theme';
@@ -100,6 +100,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
       {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string; goldUrl: string; silverUrl: string}) => {
         const index = namespaceText.shortName as keyof typeof quotaSize;
         const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
+        let namespaceUrl = undefined;
         return (
           <Aux key={namespaceText.displayName}>
             <Box width={1 / 2} px={2} mt={3}>
@@ -121,13 +122,15 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                   />
                 </RouterLink>
               </Flex>
-              <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                {`${namespaceFullName} namespace`}
-              </Text>
-              <Route path='/privacy-policy' component={() => { 
-                  window.location.href=`${primaryClusterName === 'gold' ? namespaceText.goldUrl : namespaceText.silverUrl } `
-                  return null;
-              }}> boo</Route>
+              {primaryClusterName === 'gold' ? namespaceUrl = namespaceText.goldUrl : namespaceUrl = namespaceText.silverUrl }
+              {namespaceUrl ? <a href={namespaceUrl} target='_blank'>{`${namespaceFullName}`}</a> 
+              :
+       
+                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+
+                  {`${namespaceFullName} namespace`}
+                </Text>
+              }
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
               <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
