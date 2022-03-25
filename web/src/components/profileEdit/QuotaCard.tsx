@@ -94,61 +94,70 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
       silverUrl: NAMESPACE_URLS.TOOLS_SILVER as string,
     },
   ];
-  
   return (
     <Flex flexWrap="wrap">
-      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string; goldUrl: string; silverUrl: string}) => {
-        const index = namespaceText.shortName as keyof typeof quotaSize;
-        const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
-        let namespaceUrl = undefined;
-        return (
-          <Aux key={namespaceText.displayName}>
-            <Box width={1 / 2} px={2} mt={3}>
-              <Flex>
-                <Text as="h3" marginRight={2}>
-                  {namespaceText.displayName} Namespace
+      {NAMESPACE_TEXT.map(
+        (namespaceText: {
+          displayName: string;
+          shortName: string;
+          goldUrl: string;
+          silverUrl: string;
+        }) => {
+          const index = namespaceText.shortName as keyof typeof quotaSize;
+          const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
+          let namespaceUrl;
+          if (primaryClusterName === 'gold') {
+            namespaceUrl = namespaceText.goldUrl;
+          } else if (primaryClusterName === 'silver') {
+            namespaceUrl = namespaceText.silverUrl;
+          }
+          return (
+            <Aux key={namespaceText.displayName}>
+              <Box width={1 / 2} px={2} mt={3}>
+                <Flex>
+                  <Text as="h3" marginRight={2}>
+                    {namespaceText.displayName} Namespace
+                  </Text>
+                  <RouterLink
+                    className="misc-class-m-dropdown-link"
+                    to={`${href}?namespace=${namespaceFullName}`}
+                  >
+                    <BaseIcon
+                      name="edit"
+                      color="primary"
+                      hover
+                      width={1.5}
+                      height={1.5}
+                      displayIcon={faPen}
+                    />
+                  </RouterLink>
+                </Flex>
+                {namespaceUrl ? (
+                  <a href={namespaceUrl} target="_blank">{`${namespaceFullName}`}</a>
+                ) : (
+                  <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                    {`${namespaceFullName} namespace`}
+                  </Text>
+                )}
+              </Box>
+              <Box width={1 / 2} px={2} mt={3}>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                  CPU:{quotaSize[index].quotaCpuSize}
                 </Text>
-                <RouterLink
-                  className="misc-class-m-dropdown-link"
-                  to={`${href}?namespace=${namespaceFullName}`}
-                >
-                  <BaseIcon
-                    name="edit"
-                    color="primary"
-                    hover
-                    width={1.5}
-                    height={1.5}
-                    displayIcon={faPen}
-                  />
-                </RouterLink>
-              </Flex>
-              {primaryClusterName === 'gold' ? namespaceUrl = namespaceText.goldUrl : namespaceUrl = namespaceText.silverUrl }
-              {namespaceUrl ? <a href={namespaceUrl} target='_blank'>{`${namespaceFullName}`}</a> 
-              :
-       
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-
-                  {`${namespaceFullName} namespace`}
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                  Memory:{quotaSize[index].quotaMemorySize}
                 </Text>
-              }
-            </Box>
-            <Box width={1 / 2} px={2} mt={3}>
-              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                CPU:{quotaSize[index].quotaCpuSize}
-              </Text>
-              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Memory:{quotaSize[index].quotaMemorySize}
-              </Text>
-              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Storage:{quotaSize[index].quotaStorageSize}
-              </Text>
-              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                Snapshot:{quotaSize[index].quotaSnapshotSize}
-              </Text>
-            </Box>
-          </Aux>
-        );
-      })}
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                  Storage:{quotaSize[index].quotaStorageSize}
+                </Text>
+                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                  Snapshot:{quotaSize[index].quotaSnapshotSize}
+                </Text>
+              </Box>
+            </Aux>
+          );
+        },
+      )}
     </Flex>
   );
 };

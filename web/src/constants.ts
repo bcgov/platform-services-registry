@@ -162,7 +162,7 @@ export const MAXIMUM_TECHNICAL_LEADS = 2;
 export const PRODUCT_OWNER_SUBTITLE = 'This is typically the business owner of the application;';
 export const TECHNICAL_LEAD_SUBTITLE = 'This is typically the DevOps specialist;';
 
-export const NAMESPACE_URLS =  {
+export const NAMESPACE_URLS = {
   PROD_GOLD: process.env.REACT_APP_PRODUCTION_NAMESPACE_GOLD_URL,
   DEV_GOLD: process.env.REACT_APP_DEVELOPMENT_NAMESPACE_GOLD_URL,
   TEST_GOLD: process.env.REACT_APP_TEST_NAMESPACE_GOLD_URL,
