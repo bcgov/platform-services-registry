@@ -129,28 +129,3 @@ export const archiveProfileNamespace = async (
     throw errorWithCode(message, 500);
   }
 };
-
-export const getNamespaceUrls = async(
-  res: Response
-): Promise<String> => {
- 
-  try {
-    const results = {
-      'prodNamespaceGoldUrl': process.env.REACT_APP_PRODUCTION_NAMESPACE_GOLD_URL,
-      'devNamespaceGoldUrl': process.env.REACT_APP_DEVELOPMENT_NAMESPACE_GOLD_URL,
-      'testNamespaceGoldUrl': process.env.REACT_APP_TEST_NAMESPACE_GOLD_URL,
-      'toolsNamespaceGoldUrl': process.env.REACT_APP_TOOLS_NAMESPACE_GOLD_URL,
-      'prodNamespaceSilverUrl': process.env.REACT_APP_PRODUCTION_NAMESPACE_SILVER_URL,
-      'devNamespaceSilverUrl': process.env.REACT_APP_DEVELOPMENT_NAMESPACE_SILVER_URL,
-      'testNamespaceSilverUrl': process.env.REACT_APP_TEST_NAMESPACE_SILVER_URL,
-      'toolsNamespaceSilverUrl': process.env.REACT_APP_TOOLS_NAMESPACE_SILVER_URL,
-    };
-
-    res.status(200).json(results);
-  } catch (err) {
-    const message = `Unable fetch namespace links for Gold or Silver clusters`;
-    logger.error(`${message}, err = ${err.message}`);
-    throw errorWithCode(message, 500);
-  }
-  return ""
-};
