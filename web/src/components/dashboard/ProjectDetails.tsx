@@ -83,7 +83,7 @@ const ProjectDetails: React.FC<any> = (props) => {
 
   return (
     <>
-      <Box style={{}}>
+      <Box>
         <Table
           columns={columns}
           data={data}
