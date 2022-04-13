@@ -19,6 +19,7 @@ import { Response } from "express";
 import { PROFILE_STATUS } from "../constants";
 import DataManager from "../db";
 import { AccessFlag } from "../libs/authorization";
+import { inviteToOrg } from "./contact";
 import { HumanActionType, RequestType } from "../db/model/request";
 import { AuthenticatedUser } from "../libs/authmware";
 import { fulfillRequest } from "../libs/fulfillment";
@@ -53,7 +54,7 @@ export const updateRequestHumanAction = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
   res: Response
 ): Promise<void> => {
-  const { RequestModel } = dm;
+  const { RequestModel, ContactModel } = dm;
   const { requestId } = params;
   const { type, comment } = body;
 
@@ -78,9 +79,19 @@ export const updateRequestHumanAction = async (
     // Step 3.b. if rejected: updateRejectProject => archive ProjectSet, Email PO/TC with comment, complete request;
     if (type === HumanActionType.Approve) {
       await fulfillRequest(request);
+      if (request.type === RequestType.Create) {
+        // Invite user to github org
+        const contacts = await ContactModel.findForProject(request.profileId);
 
+        const invitationPromiss = contacts.map((contact) => {
+          return inviteToOrg(contact.githubId);
+        });
+        await Promise.all(invitationPromiss);
+      }
+      // TODO This need to put in provision callback
       if (request.type === RequestType.Delete) {
         await archiveProjectSet(request.profileId);
+        await RequestModel.updateCompletionStatus(requestId);
       }
       await updateProfileStatus(
         Number(request.profileId),

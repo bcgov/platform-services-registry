@@ -15,7 +15,7 @@
 //
 
 import React from 'react';
-import { Box, Link } from 'rebass';
+import { Box } from 'rebass';
 import { ContactDetails } from '../components/profileEdit/ContactCard';
 import { CSV_PROFILE_ATTRIBUTES, CSV_PROFILE_ATTRIBUTES_HEADER } from '../constants';
 import { Namespace, ProjectNamespaceResourceQuotaSize } from '../types';
@@ -193,7 +193,14 @@ export const parseEmails = (contacts: any) => {
         contacts.map((contact: any, index: number) => {
           return (
             <Box key={`${contact.email}.${index}`}>
-              <Link href={`mailto:${contact.email}`}>{contact.email}</Link>
+              <a
+                href={`mailto:${contact.email}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                {contact.email}
+              </a>
             </Box>
           );
         })}

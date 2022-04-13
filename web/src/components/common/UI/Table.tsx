@@ -351,7 +351,7 @@ const Table: React.FC<ITableProps> = (props) => {
       filterTypes,
       globalFilter: ourGlobalFilterFunction,
       initialState: {
-        hiddenColumns: ['namespacePrefix', 'quotaSize'],
+        hiddenColumns: ['quotaSize'],
       },
       manualSortBy: true,
     },
