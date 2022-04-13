@@ -62,7 +62,7 @@ const ProjectDetails: React.FC<any> = (props) => {
         Cell: ({ cell: { value } }: any) => convertSnakeCaseToSentence(value),
       },
       {
-        Header: 'Namespace',
+        Header: 'License Plate',
         accessor: 'namespacePrefix',
       },
     ],
@@ -83,7 +83,7 @@ const ProjectDetails: React.FC<any> = (props) => {
 
   return (
     <>
-      <Box style={{ overflow: 'auto' }}>
+      <Box>
         <Table
           columns={columns}
           data={data}
