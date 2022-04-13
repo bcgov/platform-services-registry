@@ -10,7 +10,7 @@ const PSRDocumentationLink: React.FC = () => {
         <a
           href="https://github.com/bcgov/platform-services-registry"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
         >
           here.
         </a>
