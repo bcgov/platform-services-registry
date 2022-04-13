@@ -15,11 +15,12 @@
 //
 
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Text } from 'rebass';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { HOME_PAGE_URL, ROUTE_PATHS } from '../../../constants';
+import { useKeycloak } from '@react-keycloak/web';
+import { HOME_PAGE_URL, ROUTE_PATHS, IDIR_USER_FLAG } from '../../../constants';
 import theme from '../../../theme';
 import { MenuItem } from '../../../types';
 import typography from '../../../typography';
@@ -78,6 +79,16 @@ interface INavProps {
 
 const Nav: React.FC<INavProps> = (props) => {
   const { isAuthenticated, handleDDMobile, isDDMobileOpen } = props;
+  const { keycloak } = useKeycloak();
+  const realmAccess = keycloak?.realmAccess?.roles || [];
+
+  useEffect(() => {
+    if (keycloak?.authenticated && !realmAccess.includes(IDIR_USER_FLAG)) {
+      keycloak.logout();
+    }
+    // we only need this to run once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const history = useHistory();
 
