@@ -103,7 +103,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
 
   const determineNamespaceUrl = (cluster: string, namespace: string) => {
     try {
-      if (! namespaces || ! Object.keys(namespaces).length ) {
+      if (!namespaces || !Object.keys(namespaces).length) {
         return '';
       }
       if (!cluster || !namespace) {
@@ -111,10 +111,10 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
           `missing cluster or namespace information to fetch URL link.  Cluster: ${cluster}. Namespace: ${namespace}`,
         );
       }
-      if (namespaces[cluster] === undefined || namespaces[cluster][namespace] === undefined){
-        throw new Error (
+      if (namespaces[cluster] === undefined || namespaces[cluster][namespace] === undefined) {
+        throw new Error(
           `the ${cluster} cluster does not exist, or has no entry for ${namespace} namespace`,
-        )
+        );
       }
 
       return namespaces[cluster][namespace];
