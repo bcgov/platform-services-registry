@@ -184,7 +184,7 @@ objects:
                   value: 
                 - name: TEST_NAMESPACE_GOLD_URL
                   value: 
-                - name: OOLS_NAMESPACE_GOLD_URL
+                - name: TOOLS_NAMESPACE_GOLD_URL
                   value: 
                 - name: PRODUCTION_NAMESPACE_SILVER_URL
                   value:
