@@ -58,21 +58,6 @@ nconf.overrides({
   nats: {
     host: process.env.NATS_HOST,
   },
-  clusterAndNamespaceURLs: {
-    gold: {
-      production: process.env.REACT_APP_PRODUCTION_NAMESPACE_GOLD_URL,
-      development: process.env.REACT_APP_DEVELOPMENT_NAMESPACE_GOLD_URL,
-      test: process.env.REACT_APP_TEST_NAMESPACE_GOLD_URL,
-      tools: process.env.REACT_APP_TOOLS_NAMESPACE_GOLD_URL,
-    },
-    silver: {
-      production: process.env.REACT_APP_PRODUCTION_NAMESPACE_SILVER_URL,
-      development: process.env.REACT_APP_DEVELOPMENT_NAMESPACE_SILVER_URL,
-      test: process.env.REACT_APP_TEST_NAMESPACE_SILVER_URL,
-      tools: process.env.REACT_APP_TOOLS_NAMESPACE_SILVER_URL,
-    },
-
-  },
 });
 
 // load other properties from file.

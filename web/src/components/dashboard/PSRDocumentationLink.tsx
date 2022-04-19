@@ -8,9 +8,7 @@ const PSRDocumentationLink: React.FC = () => {
       <Text>
         Git documentation for Platform Services Registry and a link to report issues can be found
         &nbsp;
-        <Link to="https://github.com/bcgov/platform-services-registry" target="_blank">
-          here.
-        </Link>
+        <Link to="https://github.com/bcgov/platform-services-registry"> here.</Link>
       </Text>
     </Box>
   );

@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Flex, Text } from 'rebass';
 import { Link as RouterLink } from 'react-router-dom';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
@@ -26,7 +26,7 @@ import {
   ProjectNamespaceResourceQuotaSize,
 } from '../../types';
 import { BaseIcon } from '../common/UI/Icon';
-import { NAMESPACE_URLS } from '../../constants';
+import useRegistryApi from '../../hooks/useRegistryApi';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
@@ -54,6 +54,20 @@ export const NAMESPACE_DEFAULT_QUOTA: ProjectNamespaceResourceQuotaSize = {
 };
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
+  const [namespaces, setNamespaces] = React.useState(Object);
+  const api = useRegistryApi();
+  useEffect(() => {
+    (async () => {
+      try {
+        const urlData = await api.getNamespaceUrls();
+        console.log(urlData);
+        await setNamespaces(JSON.parse(urlData.data));
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+    // eslint-disable-next-line
+  }, []);
   const {
     quotaDetails: {
       licensePlate = '',
@@ -72,92 +86,96 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     {
       displayName: 'Production',
       shortName: 'prod',
-      goldUrl: NAMESPACE_URLS.PROD_GOLD as string,
-      silverUrl: NAMESPACE_URLS.PROD_SILVER as string,
     },
     {
       displayName: 'Test',
       shortName: 'test',
-      goldUrl: NAMESPACE_URLS.TEST_GOLD as string,
-      silverUrl: NAMESPACE_URLS.TEST_SILVER as string,
     },
     {
       displayName: 'Development',
       shortName: 'dev',
-      goldUrl: NAMESPACE_URLS.DEV_GOLD as string,
-      silverUrl: NAMESPACE_URLS.DEV_SILVER as string,
     },
     {
       displayName: 'Tools',
       shortName: 'tools',
-      goldUrl: NAMESPACE_URLS.TOOLS_GOLD as string,
-      silverUrl: NAMESPACE_URLS.TOOLS_SILVER as string,
     },
   ];
+
+  const determineNamespaceUrl = (cluster: string, namespace: string) => {
+    try {
+      if (!namespaces) {
+        console.warn(
+          'No namespaces were fetched from the server. Have links to namespaces (production, development, etc.) been defined in the .env file?',
+        );
+        return '';
+      }
+      if (!cluster || !namespace) {
+        throw new Error(
+          `missing cluster or namespace information to fetch URL link.  Cluster: ${cluster}. Namespace: ${namespace}`,
+        );
+      }
+
+      return namespaces[cluster][namespace];
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <Flex flexWrap="wrap">
-      {NAMESPACE_TEXT.map(
-        (namespaceText: {
-          displayName: string;
-          shortName: string;
-          goldUrl: string;
-          silverUrl: string;
-        }) => {
-          const index = namespaceText.shortName as keyof typeof quotaSize;
-          const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
-          let namespaceUrl;
-          if (primaryClusterName === 'gold') {
-            namespaceUrl = namespaceText.goldUrl;
-          } else if (primaryClusterName === 'silver') {
-            namespaceUrl = namespaceText.silverUrl;
-          }
-          return (
-            <Aux key={namespaceText.displayName}>
-              <Box width={1 / 2} px={2} mt={3}>
-                <Flex>
-                  <Text as="h3" marginRight={2}>
-                    {namespaceText.displayName} Namespace
-                  </Text>
-                  <RouterLink
-                    className="misc-class-m-dropdown-link"
-                    to={`${href}?namespace=${namespaceFullName}`}
-                  >
-                    <BaseIcon
-                      name="edit"
-                      color="primary"
-                      hover
-                      width={1.5}
-                      height={1.5}
-                      displayIcon={faPen}
-                    />
-                  </RouterLink>
-                </Flex>
-                {namespaceUrl ? (
-                  <a href={namespaceUrl} target="_blank">{`${namespaceFullName}`}</a>
-                ) : (
-                  <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                    {`${namespaceFullName} namespace`}
-                  </Text>
-                )}
-              </Box>
-              <Box width={1 / 2} px={2} mt={3}>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                  CPU:{quotaSize[index].quotaCpuSize}
+      {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string }) => {
+        const index = namespaceText.shortName as keyof typeof quotaSize;
+        const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
+        const namespaceUrl = determineNamespaceUrl(primaryClusterName, namespaceText.shortName);
+
+        return (
+          <Aux key={namespaceText.displayName}>
+            <Box width={1 / 2} px={2} mt={3}>
+              <Flex>
+                <Text as="h3" marginRight={2}>
+                  {namespaceText.displayName} Namespace
                 </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                  Memory:{quotaSize[index].quotaMemorySize}
+                <RouterLink
+                  className="misc-class-m-dropdown-link"
+                  to={`${href}?namespace=${namespaceFullName}`}
+                >
+                  <BaseIcon
+                    name="edit"
+                    color="primary"
+                    hover
+                    width={1.5}
+                    height={1.5}
+                    displayIcon={faPen}
+                  />
+                </RouterLink>
+              </Flex>
+              {namespaceUrl ? (
+                <a href={namespaceUrl} rel="noopener noreferrer" target="_blank">
+                  {`${namespaceFullName}`}
+                </a>
+              ) : (
+                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
+                  {`${namespaceFullName} namespace`}
                 </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                  Storage:{quotaSize[index].quotaStorageSize}
-                </Text>
-                <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-                  Snapshot:{quotaSize[index].quotaSnapshotSize}
-                </Text>
-              </Box>
-            </Aux>
-          );
-        },
-      )}
+              )}
+            </Box>
+            <Box width={1 / 2} px={2} mt={3}>
+              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                CPU:{quotaSize[index].quotaCpuSize}
+              </Text>
+              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                Memory:{quotaSize[index].quotaMemorySize}
+              </Text>
+              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                Storage:{quotaSize[index].quotaStorageSize}
+              </Text>
+              <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
+                Snapshot:{quotaSize[index].quotaSnapshotSize}
+              </Text>
+            </Box>
+          </Aux>
+        );
+      })}
     </Flex>
   );
 };
