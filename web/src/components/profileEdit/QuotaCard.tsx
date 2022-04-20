@@ -60,7 +60,6 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     (async () => {
       try {
         const urlData = await api.getNamespaceUrls();
-        console.log(urlData);
         await setNamespaces(JSON.parse(urlData.data));
       } catch (err) {
         console.error(err);
