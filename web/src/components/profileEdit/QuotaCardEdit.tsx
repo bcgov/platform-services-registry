@@ -484,7 +484,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
               <Flex mt={3}>
                 <Label m="auto" width={3 / 4}>
                   <Text as="h3" fontSize="16px" my={0} lineHeight="normal">
-                    Important Information - By check this checkbox, you confirmed that you have read{' '}
+                    Important Information - By checking this checkbox, you are confirming that you have read{' '}
                     <a
                       rel="noopener noreferrer"
                       href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
