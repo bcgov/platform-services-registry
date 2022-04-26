@@ -70,6 +70,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   const api = useRegistryApi();
 
   const [goBackToProfileEditable, setGoBackToProfileEditable] = useState<boolean>(false);
+  const [addingTL, setAddingTL] = useState<boolean>(false);
 
   const productOwner = contactDetails
     .filter((contact) => contact.roleId === ROLES.PRODUCT_OWNER)
@@ -82,7 +83,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   const existingTechnicalLeads = contactDetails.filter(
     (contact) => contact.roleId === ROLES.TECHNICAL_LEAD,
   );
-
   const onSubmit = async (formData: any) => {
     setOpenBackdrop(true);
     try {
@@ -106,6 +106,20 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       console.log(err);
     }
     setOpenBackdrop(false);
+  };
+
+  const TL_ROLE = {
+    primary: 'Primary',
+    secondary: 'Secondary',
+  };
+
+  const newTL = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    githubId: '',
+    roleId: ROLES.TECHNICAL_LEAD,
   };
 
   if (goBackToProfileEditable && profileId) {
@@ -253,22 +267,43 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                       </div>
                     ))}
                     {fields.length && fields.length < MAXIMUM_TECHNICAL_LEADS && (
-                      <Button
-                        type="button"
-                        onClick={async () => {
-                          fields.push({
-                            id: '',
-                            firstName: '',
-                            lastName: '',
-                            email: '',
-                            githubId: '',
-                            roleId: ROLES.TECHNICAL_LEAD,
-                          });
-                          await newTechnicalLeads();
-                        }}
-                      >
-                        Add Technical Lead
-                      </Button>
+                      <Flex mt={3}>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setAddingTL(!addingTL);
+                          }}
+                        >
+                          Add Technical Lead
+                        </Button>
+                        {addingTL && (
+                          <Flex flex="1 1 auto" justifyContent="flex-end" name="project.busOrgId">
+                            <Button
+                              type="button"
+                              onClick={async () => {
+                                // UNSHIFT has a open issue in react-final-form which makes it unaviliable
+                                // fields.unshift(newTL);
+                                const temp = fields.value[0];
+                                fields.push(newTL);
+                                fields.update(0, newTL);
+                                fields.update(1, temp);
+                                await newTechnicalLeads();
+                              }}
+                            >
+                              {TL_ROLE.primary}
+                            </Button>
+                            <Button
+                              type="button"
+                              onClick={async () => {
+                                fields.push(newTL);
+                                await newTechnicalLeads();
+                              }}
+                            >
+                              {TL_ROLE.secondary}
+                            </Button>
+                          </Flex>
+                        )}
+                      </Flex>
                     )}
                   </>
                 ) : (

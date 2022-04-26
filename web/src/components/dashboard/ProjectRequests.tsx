@@ -161,7 +161,7 @@ const ProjectRequests: React.FC<any> = (props) => {
           />
         }
       />
-      <Box style={{ overflow: 'auto' }}>
+      <Box>
         <Table
           columns={requestColumns}
           data={data}
