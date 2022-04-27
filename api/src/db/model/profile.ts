@@ -51,7 +51,9 @@ export interface ProjectProfile extends CommonFields {
   idmKeycloak?: boolean;
   idmActiveDir?: boolean;
   other?: string;
-  primaryClusterName: string;
+  primaryClusterName?: string;
+  goldUrl?: string,
+  silverUrl?: string,
   migratingLicenseplate?: string;
   profileStatus?: string;
 }

@@ -60,6 +60,12 @@ export default function useRegistryApi() {
     }
     return axiosInstance.current.get('quota/sizes');
   };
+  const getNamespaceUrls = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    }
+    return axiosInstance.current.get('quota/namespaceUrls');
+  };
 
   const getAllAvailableQuotaSize = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
@@ -249,6 +255,7 @@ export default function useRegistryApi() {
   return {
     getMinistry,
     getQuotaSizes,
+    getNamespaceUrls,
     getCluster,
     getProfile,
     getDashboardProjects,

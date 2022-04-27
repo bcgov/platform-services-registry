@@ -102,6 +102,17 @@ oc process -f api/openshift/templates/deploy.yaml \
 | FLYWAY_IMAGE_NAME          | The URL for the NATS service.
 | FLYWAY_IMAGE_TAG          | The Flyway source image tag that will be deployed
 
+The following configuration points are used to provide links from a project's details to the namespace the project uses.
+| Name                                | Description |
+| :------------------------------- | :-----------|
+| PRODUCTION_NAMESPACE_GOLD_URL    | The URL to the Production Namespace in the Gold Cluster.
+| DEVELOPMENT_NAMESPACE_GOLD_URL   | The URL to the Development Namespace in the Gold Cluster.
+| TEST_NAMESPACE_GOLD_URL          | The URL to the Test Namespace in the Gold Cluster.
+| TOOLS_NAMESPACE_GOLD_URL         | The URL to the Tools Namespace in the Gold Cluster.
+| PRODUCTION_NAMESPACE_SILVER_URL  | The URL to the Production Namespace in the Silver Cluster.
+| DEVELOPMENT_NAMESPACE_SILVER_URL | The URL to the Development Namespace in the Silver Cluster.
+| TEST_NAMESPACE_SILVER_URL        | The URL to the Test Namespace in the Silver Cluster.
+| TOOLS_NAMESPACE_SILVER_URL       | The URL to the Tools Namespace in the Silver Cluster.
 
 ### ProTip 🤓
   
