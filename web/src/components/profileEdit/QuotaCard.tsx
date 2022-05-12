@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import { Link as RouterLink } from 'react-router-dom';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
@@ -26,7 +26,6 @@ import {
   ProjectNamespaceResourceQuotaSize,
 } from '../../types';
 import { BaseIcon } from '../common/UI/Icon';
-import useRegistryApi from '../../hooks/useRegistryApi';
 
 interface IQuotaCardProps {
   quotaDetails: QuotaDetails;
@@ -54,7 +53,6 @@ export const NAMESPACE_DEFAULT_QUOTA: ProjectNamespaceResourceQuotaSize = {
 };
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
-  const api = useRegistryApi();
   const {
     quotaDetails: {
       licensePlate = '',
