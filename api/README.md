@@ -102,13 +102,6 @@ oc process -f api/openshift/templates/deploy.yaml \
 | FLYWAY_IMAGE_NAME          | The URL for the NATS service.
 | FLYWAY_IMAGE_TAG          | The Flyway source image tag that will be deployed
 
-The following configuration points are used to provide links from a project's details to the namespace the project uses.
-| Name                                | Description |
-| :------------------------------- | :-----------|
-| GOLD_CLUSTER_URL    | The URL to the Gold Cluster.
-| SILVER_CLUSTER_URL   | The URL to the Silver Cluster.
-
-
 ### ProTip 🤓
   
 The deployment manifest assumes you're using image tags (or config changes) to trigger a deployment. Don't do your initial tag until you have created the database schema. If you have a running API pod, scale it down for now:

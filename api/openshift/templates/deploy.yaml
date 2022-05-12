@@ -178,22 +178,6 @@ objects:
                       name: ${GITHUB_APP_SECRET_NAME}
                 - name: PRIVATE_KEY_PATH
                   value: /opt/app-root/src/build/config
-                - name: PRODUCTION_NAMESPACE_GOLD_URL
-                  value: 
-                - name: DEVELOPMENT_NAMESPACE_GOLD_URL
-                  value:
-                - name: TEST_NAMESPACE_GOLD_URL
-                  value:
-                - name: TOOLS_NAMESPACE_GOLD_URL
-                  value:
-                - name: PRODUCTION_NAMESPACE_SILVER_URL
-                  value:
-                - name: DEVELOPMENT_NAMESPACE_SILVER_URL
-                  value:
-                - name: TEST_NAMESPACE_SILVER_URL
-                  value:
-                - name: TOOLS_NAMESPACE_SILVER_URL
-                  value:
               resources:
                 limits:
                   cpu: 300m

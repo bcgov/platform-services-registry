@@ -54,20 +54,7 @@ export const NAMESPACE_DEFAULT_QUOTA: ProjectNamespaceResourceQuotaSize = {
 };
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
-  const [clusterUrls, setClusterUrls] = React.useState(Object);
   const api = useRegistryApi();
-  useEffect(() => {
-    (async () => {
-      try {
-        const urlData = await api.getNamespaceUrls();
-        console.log(urlData);
-        await setClusterUrls(JSON.parse(urlData.data));
-      } catch (err) {
-        console.error(err);
-      }
-    })();
-    // eslint-disable-next-line
-  }, []);
   const {
     quotaDetails: {
       licensePlate = '',
@@ -100,35 +87,12 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
       shortName: 'tools',
     },
   ];
-
-  const determineNamespaceUrl = (cluster: string, namespace: string) => {
-    try {
-      if (!clusterUrls || !Object.keys(clusterUrls).length) {
-        return '';
-      }
-      if (!cluster || !namespace) {
-        console.warn(
-          `missing cluster or namespace information to fetch URL link.  Cluster: ${cluster}. Namespace: ${namespace}`,
-        );
-      }
-      if (clusterUrls[cluster] === undefined || clusterUrls[cluster][namespace] === undefined) {
-        console.warn(
-          `the ${cluster} cluster does not exist, or has no entry for ${namespace} namespace`,
-        );
-      }
-
-      return `${clusterUrls[cluster]}-${namespace}`;
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <Flex flexWrap="wrap">
       {NAMESPACE_TEXT.map((namespaceText: { displayName: string; shortName: string }) => {
         const index = namespaceText.shortName as keyof typeof quotaSize;
         const namespaceFullName = `${licensePlate}-${namespaceText.shortName}`;
-        const namespaceUrl = determineNamespaceUrl(primaryClusterName, namespaceText.shortName);
+        const linkURL = `https://console.apps.${primaryClusterName}.devops.gov.bc.ca/topology/ns/${namespaceFullName}`;
 
         return (
           <Aux key={namespaceText.displayName}>
@@ -151,15 +115,9 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
                   />
                 </RouterLink>
               </Flex>
-              {namespaceUrl ? (
-                <a href={namespaceUrl} rel="noopener noreferrer" target="_blank">
-                  {`${namespaceFullName}`}
-                </a>
-              ) : (
-                <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-                  {`${namespaceFullName} namespace`}
-                </Text>
-              )}
+              <a href={linkURL} rel="noopener noreferrer" target="_blank">
+                {`${namespaceFullName}`}
+              </a>
             </Box>
             <Box width={1 / 2} px={2} mt={3}>
               <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
