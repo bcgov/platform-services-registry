@@ -22,7 +22,7 @@ import {
   fetchQuota,
   fetchQuotaSizes,
   getAllAllowedQuotaSize,
-  fetchNamespaceUrls,
+  getClusterUrls,
 } from "../../controllers/quota";
 
 const router = express.Router();
@@ -31,7 +31,7 @@ const router = express.Router();
 // Fetches raw quota specifications from DB
 // This endpoint is not being utilized by the front end; implemented for future use
 router.get("/", asyncMiddleware(fetchQuota));
-router.get("/namespaceUrls", asyncMiddleware(fetchNamespaceUrls));
+router.get("/namespaceUrls", asyncMiddleware(getClusterUrls));
 // Utilizes raw data from DB
 // and transfroms to usable data for the front end
 router.get("/sizes", asyncMiddleware(fetchQuotaSizes));

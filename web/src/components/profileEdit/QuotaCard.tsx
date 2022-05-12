@@ -54,13 +54,14 @@ export const NAMESPACE_DEFAULT_QUOTA: ProjectNamespaceResourceQuotaSize = {
 };
 
 const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
-  const [namespaces, setNamespaces] = React.useState(Object);
+  const [clusterUrls, setClusterUrls] = React.useState(Object);
   const api = useRegistryApi();
   useEffect(() => {
     (async () => {
       try {
         const urlData = await api.getNamespaceUrls();
-        await setNamespaces(JSON.parse(urlData.data));
+        console.log(urlData);
+        await setClusterUrls(JSON.parse(urlData.data));
       } catch (err) {
         console.error(err);
       }
@@ -102,21 +103,21 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
 
   const determineNamespaceUrl = (cluster: string, namespace: string) => {
     try {
-      if (!namespaces || !Object.keys(namespaces).length) {
+      if (!clusterUrls || !Object.keys(clusterUrls).length) {
         return '';
       }
       if (!cluster || !namespace) {
-        throw new Error(
+        console.warn(
           `missing cluster or namespace information to fetch URL link.  Cluster: ${cluster}. Namespace: ${namespace}`,
         );
       }
-      if (namespaces[cluster] === undefined || namespaces[cluster][namespace] === undefined) {
-        throw new Error(
+      if (clusterUrls[cluster] === undefined || clusterUrls[cluster][namespace] === undefined) {
+        console.warn(
           `the ${cluster} cluster does not exist, or has no entry for ${namespace} namespace`,
         );
       }
 
-      return namespaces[cluster][namespace];
+      return `${clusterUrls[cluster]}-${namespace}`;
     } catch (err) {
       console.error(err);
     }
