@@ -67,7 +67,7 @@ const QuotaCard: React.FC<IQuotaCardProps> = (props) => {
     href,
   } = props;
 
-  const NAMESPACE_TEXT = [  
+  const NAMESPACE_TEXT = [
     {
       displayName: 'Production',
       shortName: 'prod',
