@@ -76,30 +76,3 @@ export const getAllAllowedQuotaSize = async (req: Request, res: Response) => {
     throw errorWithCode(message, 500);
   }
 };
-
-export const fetchNamespaceUrls = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    // gold
-    const prodGoldUrl = process.env.PRODUCTION_NAMESPACE_GOLD_URL || "";
-    const devGoldUrl = process.env.DEVELOPMENT_NAMESPACE_GOLD_URL || "";
-    const testGoldUrl = process.env.TEST_NAMESPACE_GOLD_URL || "";
-    const toolsGoldUrl = process.env.TOOLS_NAMESPACE_GOLD_URL || "";
-    // silver
-    const prodSilverUrl = process.env.PRODUCTION_NAMESPACE_SILVER_URL || "";
-    const devSilverUrl = process.env.DEVELOPMENT_NAMESPACE_SILVER_URL || "";
-    const testSilverUrl = process.env.TEST_NAMESPACE_SILVER_URL || "";
-    const toolsSilverUrl = process.env.TOOLS_NAMESPACE_SILVER_URL || "";
-
-    const results = `{"gold": {"prod": "${prodGoldUrl}", "dev": "${devGoldUrl}", "test": "${testGoldUrl}", "tools": "${toolsGoldUrl}"}, 
-    "silver": {"prod": "${prodSilverUrl}", "dev": "${devSilverUrl}", "test": "${testSilverUrl}", "tools": "${toolsSilverUrl}"}}`;
-    res.status(200).json(results);
-  } catch (err) {
-    const message = `either no namespace URLs have been added to the .env file, or there was a problem retrieving them`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
