@@ -76,21 +76,3 @@ export const getAllAllowedQuotaSize = async (req: Request, res: Response) => {
     throw errorWithCode(message, 500);
   }
 };
-
-export const getClusterUrls = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const goldUrl = process.env.GOLD_CLUSTER_URL || "";
-    const silverUrl = process.env.SILVER_CLUSTER_URL || "";
-
-    const results = `{"gold": "${goldUrl}", "silver": "${silverUrl}" }`;
-    res.status(200).json(results);
-  } catch (err) {
-    const message = `either no namespace URLs have been added to the .env file, or there was a problem retrieving them`;
-    logger.error(`${message}, err = ${err.message}`);
-
-    throw errorWithCode(message, 500);
-  }
-};
