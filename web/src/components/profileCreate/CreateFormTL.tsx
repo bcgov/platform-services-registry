@@ -33,7 +33,7 @@ const CreateFormTL: React.FC = () => {
 
   return (
     <Aux>
-      <FormTitle>Who is the technical lead for this project?</FormTitle>
+      <FormTitle>Who is the technical lead for this product?</FormTitle>
       <FormSubtitle>
         Tell us about the Technical Lead (TL). This is typically the DevOps specialist; we will use
         this information to contact them with technical questions or notify them about platform

@@ -7,10 +7,10 @@ const DeleteFormFirstConfirmation: React.FC<any> = ({ licensePlate, nextPage, cl
   return (
     <>
       <FormTitle style={{ margin: 0, paddingBottom: '20px' }}>
-        Delete Project {licensePlate}?
+        Delete Product {licensePlate}?
       </FormTitle>
       <Text mb={3}>
-        Delete this project, you will delete all namespaces under this project. We can't recouver
+        Delete this product, you will delete all namespaces under this product. We can't recouver
         them once you delete.
       </Text>
       <Flex mb={2}>
@@ -18,7 +18,7 @@ const DeleteFormFirstConfirmation: React.FC<any> = ({ licensePlate, nextPage, cl
         <Text px="1" color="red">
           permanently delete
         </Text>
-        this project
+        this product
       </Flex>
       <Flex flexDirection="row" justifyContent="space-between" mb="15px">
         <StyledFormButton smallButton onClick={closeModal}>

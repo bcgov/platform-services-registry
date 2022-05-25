@@ -287,8 +287,8 @@ const ProfileEdit: React.FC = (props: any) => {
 
   const cards = [
     {
-      name: 'project',
-      title: 'Project Information',
+      name: 'product',
+      title: 'Product Information',
       href: ROUTE_PATHS.PROFILE_EDIT.replace(':profileId', profileId).replace(
         ':viewName',
         PROFILE_EDIT_VIEW_NAMES.PROJECT,
@@ -326,7 +326,7 @@ const ProfileEdit: React.FC = (props: any) => {
         <Modal
           isShown={isShown}
           hide={closeDeletionModal}
-          headerText="Project Deletion"
+          headerText="Product Deletion"
           modalContent={
             <ProjectDeletionModal
               licensePlate={profileState.quotaDetails.licensePlate || ''}
@@ -391,7 +391,7 @@ const ProfileEdit: React.FC = (props: any) => {
                   toggle();
                 }}
               >
-                Delete Project
+                Delete Product
               </StyledFormButton>
             )}
           </ShadowBox>

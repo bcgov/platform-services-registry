@@ -124,7 +124,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
       // 2. All good? Hide modal and tell the user.
       hide();
       handleSubmitRefresh();
-      promptSuccessToastWithText('The project review was successful');
+      promptSuccessToastWithText('The product review was successful');
     } catch (err) {
       promptErrToastWithText(err.message);
       console.log(err);
@@ -134,23 +134,23 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
 
   return (
     <>
-      <Heading>Project Details</Heading>
+      <Heading>Product Details</Heading>
       <Flex flexDirection="column">
         <Label htmlFor="project-type">Type</Label>
         <InformationBox style={typeTextStype} displayText={profileDetails.type} />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project-name">Project Name</Label>
+        <Label htmlFor="project-name">Product Name</Label>
         <InformationBox style={textCapitalized} displayText={profileDetails.name} />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project-cluster">Project Cluster</Label>
+        <Label htmlFor="project-cluster">Product Cluster</Label>
         <InformationBox style={textCapitalized} displayText={profileDetails.clusters.join(', ')} />
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="project-description">Description</Label>
         <Textarea
-          name="project-description"
+          name="product-description"
           placeholder="A cutting edge web platform that enables Citizens to ..."
           rows={5}
           disabled
@@ -167,7 +167,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
         <InformationBoxes displayTexts={parseContacts(profileDetails.technicalLeads)} />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="project-quota">Project Quota</Label>
+        <Label htmlFor="project-quota">Product Quota</Label>
         {profileDetails.type === 'create' || profileDetails.type === 'delete' ? (
           <>
             {Object.keys(profileDetails.quotaSize).map((key: string) => (
@@ -220,7 +220,7 @@ export const ReviewRequestModal: React.FC<ReviewRequestModalProps> = (props) => 
               <Field
                 component={TextAreaInput}
                 name="comment"
-                placeholder="Provide feedback to the PO/TC regarding your decision for this project."
+                placeholder="Provide feedback to the PO/TC regarding your decision for this product."
                 rows="5"
               />
             </Flex>

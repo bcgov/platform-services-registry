@@ -14,7 +14,7 @@ exports[`matches the snapshot 1`] = `
             <h1
               class="css-k3emzi"
             >
-              Tell us about your project
+              Tell us about your product
             </h1>
             <h3
               class="css-ao0kz4"
@@ -46,7 +46,7 @@ exports[`matches the snapshot 1`] = `
                 <input
                   class="css-4y926w"
                   name="profile.name"
-                  placeholder="Project X"
+                  placeholder="Product X"
                   type="text"
                   value=""
                 />

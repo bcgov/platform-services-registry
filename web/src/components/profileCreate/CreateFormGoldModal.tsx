@@ -25,13 +25,13 @@ export const CreateFormGoldModal: React.FC<any> = (props) => {
           Gold / Gold DR Information
         </Text>
         <Text as="p" mt={3}>
-          All project sets provisioned in Gold Kamloops cluster will automatically get an identical
+          All product sets provisioned in Gold Kamloops cluster will automatically get an identical
           project set provisioned in the Gold Calgary for the purpose of setting up a geographic
           failover for the app.
         </Text>
         <Text as="p" my={3}>
           The link to the Openshift Consoles for Gold Kamloops and Gold Calgary will be included in
-          the confirmation email that will be sent out once provisioning of both project sets is
+          the confirmation email that will be sent out once provisioning of both product sets is
           complete
         </Text>
       </Flex>

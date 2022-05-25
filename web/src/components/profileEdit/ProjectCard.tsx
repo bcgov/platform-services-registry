@@ -48,7 +48,7 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
   return (
     <Flex flexWrap="wrap">
       <Box width={1 / 2} px={2} mt={3}>
-        <Text as="h3">Project Name</Text>
+        <Text as="h3">Product Name</Text>
         <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
           This is the public name of the application, please avoid acronyms;
         </Text>
@@ -59,9 +59,9 @@ const ProjectCard: React.FC<IProjectCardProps> = (props) => {
         </Text>
       </Box>
       <Box width={1 / 2} px={2} mt={3}>
-        <Text as="h3">Project Description</Text>
+        <Text as="h3">Product Description</Text>
         <Text as="p" color={theme.colors.grey} fontSize={[1, 2, 2]} mt={1}>
-          This is a brief description of your project;
+          This is a brief description of your product;
         </Text>
       </Box>
       <Box width={1 / 2} px={2} mt={3}>

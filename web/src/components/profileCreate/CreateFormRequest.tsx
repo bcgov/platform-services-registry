@@ -36,7 +36,7 @@ const CreateFormRequest: React.FC = () => {
       </FormSubtitle>
       <FormSubtitle>
         Also, look out for our Notification emails that will provide you with valuable information
-        regarding your project status and details.
+        regarding your product status and details.
       </FormSubtitle>
       <hr />
       <Flex mt={3}>

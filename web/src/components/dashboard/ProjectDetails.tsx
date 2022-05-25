@@ -88,7 +88,7 @@ const ProjectDetails: React.FC<any> = (props) => {
           columns={columns}
           data={data}
           linkedRows={true}
-          title="Projects"
+          title="Products"
           onSort={useHandleSort(setData, profileDetails).ourHandleSort}
           getCsvData={csvData}
         />

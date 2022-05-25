@@ -37,7 +37,7 @@ const CreateFormPO: React.FC = () => {
 
   return (
     <Aux>
-      <FormTitle>Who is the product owner for this project?</FormTitle>
+      <FormTitle>Who is the product owner for this product?</FormTitle>
       <FormSubtitle>
         Tell us about the Product Owner (PO). This is typically the business owner of the
         application; we will use this information to contact them with any non-technical questions.

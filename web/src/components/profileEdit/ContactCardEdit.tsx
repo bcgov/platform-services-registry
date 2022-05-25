@@ -148,7 +148,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       {(formProps) => (
         <form onSubmit={formProps.handleSubmit}>
           <fieldset disabled={isDisabled} style={{ border: 0 }}>
-            <FormTitle>Who is the product owner for this project?</FormTitle>
+            <FormTitle>Who is the product owner for this product?</FormTitle>
             <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
               {({ input }) => <input type="hidden" {...input} id="id" />}
             </Field>
@@ -198,8 +198,8 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             </Flex>
             <FormTitle>
               {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
-                ? 'Who are the technical leads for this project?'
-                : 'Who is the technical lead for this project?'}
+                ? 'Who are the technical leads for this product?'
+                : 'Who is the technical lead for this product?'}
             </FormTitle>
             <FieldArray name="updatedTechnicalLeads" initialValue={existingTechnicalLeads}>
               {({ fields }) => {

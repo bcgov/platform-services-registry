@@ -67,10 +67,10 @@ const ProvisionerCheckingPending: React.FC<any> = ({
       {showDeletionCheckError ? (
         <>
           <FormTitle style={{ margin: 0, paddingBottom: '20px' }}>
-            Project {licensePlate} health check Finished{' '}
+            Product {licensePlate} health check Finished{' '}
           </FormTitle>
           <Text pb="2">Provisioner check failed.</Text>
-          <Text>Please do another self-check before delete this project.</Text>
+          <Text>Please do another self-check before delete this product.</Text>
           <Flex flexDirection="row" justifyContent="center" mb="15px">
             <StyledFormButton smallButton onClick={closeModal}>
               Close
@@ -80,7 +80,7 @@ const ProvisionerCheckingPending: React.FC<any> = ({
       ) : (
         <>
           <FormTitle style={{ margin: 0, paddingBottom: '20px' }}>
-            Project {licensePlate} heath check in progress...{' '}
+            Product {licensePlate} heath check in progress...{' '}
           </FormTitle>
           <Box height="30%" mb="4">
             <LoadingSpinner />

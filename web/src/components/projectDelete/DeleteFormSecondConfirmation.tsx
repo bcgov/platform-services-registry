@@ -10,7 +10,7 @@ const DeleteFormSecondConfirmation: React.FC<any> = ({ licensePlate, nextPage, p
         Deletion check for {licensePlate}
       </FormTitle>
       <Box mb={3}>
-        <Text as="h3">To delete this project, you need to confirm:</Text>
+        <Text as="h3">To delete this product, you need to confirm:</Text>
 
         <Text mt="3" pl="3" as="li">
           All pods in all namespaces are scaled down.
