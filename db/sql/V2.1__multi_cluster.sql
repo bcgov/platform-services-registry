@@ -20,7 +20,6 @@ UPDATE ref_cluster SET display_name = 'Silver Kamloops' WHERE name = 'silver';
 UPDATE ref_cluster SET display_name = 'Gold Kamloops' WHERE name = 'gold';
 UPDATE ref_cluster SET display_name = 'Gold (DR) Calgary' WHERE name = 'golddr';
 UPDATE ref_cluster SET display_name = 'KLAB Kamloops' WHERE name = 'klab';
-UPDATE ref_cluster SET display_name = 'KLAB2: Kamloops' WHERE name = 'klab2';
 UPDATE ref_cluster SET display_name = 'CLAB Calgary' WHERE name = 'clab';
 
 END TRANSACTION;
