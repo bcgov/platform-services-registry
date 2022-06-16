@@ -8,9 +8,9 @@ Workflow Steps
 - Approval      <-- You are here.
 - Provisioning
 
-Project Details
+Product Details
 
-- Project Name: projectName
+- Product Name: projectName
 - Product Owner: POName (POEmail)
 - Technical Contact: TCName (TCEmail)
 
