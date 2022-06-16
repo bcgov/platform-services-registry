@@ -135,7 +135,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           </Flex>
         </Flex>
       </Condition>
-      <Condition when="profile.primaryClusterName" is="klab2"> // TODO: have a closer look: Can this be ORed into the block above? (probably)
+      <Condition when="profile.primaryClusterName" is="klab2">
         <Flex mt={3}>
           <Label variant="adjacentLabel" m="auto">
             Configure Disaster Recovery?
