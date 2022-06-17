@@ -15,7 +15,7 @@ ADD COLUMN IF NOT EXISTS is_prod BOOLEAN NOT NULL DEFAULT true,
 ADD COLUMN IF NOT EXISTS display_name VARCHAR(64);
 
 UPDATE ref_cluster SET archived = true WHERE name = 'aro' OR name = 'golddr';
-UPDATE ref_cluster SET is_prod = false WHERE name = 'clab' OR name = 'klab' OR name = 'klab2' OR name = 'gold' OR name = 'golddr';
+UPDATE ref_cluster SET is_prod = false WHERE name = 'clab' OR name = 'klab' OR name = 'gold' OR name = 'golddr';
 UPDATE ref_cluster SET display_name = 'Silver Kamloops' WHERE name = 'silver';
 UPDATE ref_cluster SET display_name = 'Gold Kamloops' WHERE name = 'gold';
 UPDATE ref_cluster SET display_name = 'Gold (DR) Calgary' WHERE name = 'golddr';
