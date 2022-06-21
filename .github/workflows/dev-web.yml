@@ -81,6 +81,7 @@ jobs:
           build: npm i -D cypress
           headless: true
           working-directory: ./web
+          config-file: cypress.config.ts
 
       - name: Save Cypress video files
         uses: actions/upload-artifact@v2
