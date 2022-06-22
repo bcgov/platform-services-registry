@@ -64,7 +64,7 @@ const ProfileCard: React.FC<IProfileCardProps> = (props) => {
         {ministry}
       </Text>
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
-        Project owner:
+        Product owner:
       </Text>
       <Text as="p" color={theme.colors.grey} fontSize={[2, 3, 3]} mt={1}>
         {PO}

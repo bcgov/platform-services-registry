@@ -11,7 +11,7 @@ exports[`<ProjectCard /> should render with Migration Licenseplate 1`] = `
       <h3
         class="css-vurnku"
       >
-        Project Name
+        Product Name
       </h3>
       <p
         class="css-18ja79e"
@@ -34,12 +34,12 @@ exports[`<ProjectCard /> should render with Migration Licenseplate 1`] = `
       <h3
         class="css-vurnku"
       >
-        Project Description
+        Product Description
       </h3>
       <p
         class="css-18ja79e"
       >
-        This is a brief description of your project;
+        This is a brief description of your product;
       </p>
     </div>
     <div
@@ -133,7 +133,7 @@ exports[`<ProjectCard /> should render without Migration Licenseplate 1`] = `
       <h3
         class="css-vurnku"
       >
-        Project Name
+        Product Name
       </h3>
       <p
         class="css-18ja79e"
@@ -156,12 +156,12 @@ exports[`<ProjectCard /> should render without Migration Licenseplate 1`] = `
       <h3
         class="css-vurnku"
       >
-        Project Description
+        Product Description
       </h3>
       <p
         class="css-18ja79e"
       >
-        This is a brief description of your project;
+        This is a brief description of your product;
       </p>
     </div>
     <div

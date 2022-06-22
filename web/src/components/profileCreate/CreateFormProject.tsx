@@ -52,7 +52,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
   const { isShown, toggle } = useModal();
   return (
     <div>
-      <FormTitle>Tell us about your project</FormTitle>
+      <FormTitle>Tell us about your product</FormTitle>
       <FormSubtitle>
         If this is your first time on the OpenShift platform you need to book an alignment meeting
         with the Platform Services team; Reach out to{' '}
@@ -66,7 +66,7 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
         <Field<string>
           name="profile.name"
           component={TextInput}
-          placeholder="Project X"
+          placeholder="Product X"
           validate={validator.mustBeValidProfileName}
         />
       </Flex>

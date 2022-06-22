@@ -71,10 +71,10 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
 
     setOpenBackdrop(true);
     try {
-      // 1. Prepare project edit request body.
+      // 1. Prepare product edit request body.
       const { profile } = formData;
 
-      // 2. Update the profile project.
+      // 2. Update the profile product.
       await api.updateProfile(projectDetails.id, profile);
 
       // 3. All good? Redirect back to overview and tell the user.
@@ -110,13 +110,13 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
       {({ handleSubmit, pristine }) => (
         <form onSubmit={handleSubmit}>
           <fieldset disabled={isDisabled} style={{ border: 0 }}>
-            <FormTitle>Tell us about your project</FormTitle>
+            <FormTitle>Tell us about your product</FormTitle>
             <Flex flexDirection="column">
               <Label htmlFor="profile.name">Name</Label>
               <Field<string>
                 name="profile.name"
                 component={TextInput}
-                placeholder="Project X"
+                placeholder="Product X"
                 validate={validator.mustBeValidProfileName}
                 defaultValue=""
                 initialValue={projectDetails.name}

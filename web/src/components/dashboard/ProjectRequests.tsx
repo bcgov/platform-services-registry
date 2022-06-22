@@ -165,7 +165,7 @@ const ProjectRequests: React.FC<any> = (props) => {
         <Table
           columns={requestColumns}
           data={data}
-          title="Project Requests"
+          title="Product Requests"
           onSort={useHandleSort(setData, requests).ourHandleSort}
           getCsvData={csvData}
         />

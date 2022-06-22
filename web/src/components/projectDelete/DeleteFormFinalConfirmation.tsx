@@ -46,7 +46,7 @@ const DeleteFormFinalConfirmation: React.FC<any> = ({ licensePlate, onSubmit }) 
           }}
           disabled={!userConfirmation}
         >
-          I understand the consequences, delete this project
+          I understand the consequences, delete this product.
         </StyledFormButton>
       </Flex>
     </>
