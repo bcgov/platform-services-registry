@@ -1,10 +1,7 @@
 BEGIN TRANSACTION;
 
-INSERT INTO ref_cluster (name, disaster_recovery, on_prem, on_hardware, is_default) VALUES
-  ('klab2', false, true, false, false)
+INSERT INTO ref_cluster (name, disaster_recovery, on_prem, on_hardware, is_default, is_prod, display_name) VALUES
+  ('klab2', false, true, false, false, false, 'KLAB2 Kamloops')
 ON CONFLICT (name) DO NOTHING;
-
-UPDATE ref_cluster SET is_prod = false WHERE name = 'klab2';
-UPDATE ref_cluster SET display_name = 'KLAB2 Kamloops' WHERE name = 'klab2';
 
 END TRANSACTION;
