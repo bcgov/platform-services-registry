@@ -23,8 +23,8 @@ const schema = {
       message: 'Invalid format',
     },
     length: {
-      maximum: 32,
-      tooLong: 'Max 32 characters',
+      maximum: 30,
+      tooLong: 'Max 30 characters',
     },
   },
   profileName: {
@@ -46,7 +46,7 @@ const schema = {
       tooLong: 'Max 512 characters',
     },
     format: {
-      pattern: '^[A-Za-z0-9\n ,)(.!?"\']+',
+      pattern: '^[A-Za-z0-9\n ,)(.!?"\':/-]+',
       flags: 'i',
       message: 'No special characters allowed',
     },
