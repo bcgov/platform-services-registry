@@ -39,7 +39,14 @@ export const STATUS_ERROR = {};
 STATUS_ERROR[401] = "Unauthorized";
 STATUS_ERROR[500] = "Internal Server Error";
 
-export const CLUSTER_NAMES = ["silver", "gold", "golddr", "klab", "clab"];
+export const CLUSTER_NAMES = [
+  "silver",
+  "gold",
+  "golddr",
+  "klab",
+  "klab2",
+  "clab",
+];
 
 export const GOLD_QUORUM_COUNT = 2;
 

@@ -135,6 +135,16 @@ const CreateFormProject: React.FC<ICreateFormProjectProps> = (props) => {
           </Flex>
         </Flex>
       </Condition>
+      <Condition when="profile.primaryClusterName" is="klab2">
+        <Flex mt={3}>
+          <Label variant="adjacentLabel" m="auto">
+            Configure Disaster Recovery?
+          </Label>
+          <Flex flex="1 1 auto" justifyContent="flex-end">
+            <Field<boolean> name="profile.clabDR" component={CheckboxInput} type="checkbox" />
+          </Flex>
+        </Flex>
+      </Condition>
       <Condition when="profile.primaryClusterName" is="gold">
         <Modal
           isShown={!isShown}

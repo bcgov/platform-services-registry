@@ -307,6 +307,7 @@ export const openshiftDeletionCheck = async (
   const CLUSTER_SERVICE_ACCOUNT_TOKEN = {
     clab: process.env.CLAB_SERVICE_ACCOUNT_TOKEN || "",
     klab: process.env.KLAB_SERVICE_ACCOUNT_TOKEN || "",
+    klab2: process.env.KLAB2_SERVICE_ACCOUNT_TOKEN || "",
     golddr: process.env.GOLDDR_SERVICE_ACCOUNT_TOKEN || "",
     gold: process.env.GOLD_SERVICE_ACCOUNT_TOKEN || "",
     silver: process.env.SILVER_SERVICE_ACCOUNT_TOKEN || "",

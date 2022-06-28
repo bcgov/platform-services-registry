@@ -40,6 +40,7 @@ enum ClusterID {
   Gold,
   GoldDR,
   Aro,
+  KLab2
 }
 
 const main = async () => {
