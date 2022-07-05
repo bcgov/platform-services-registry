@@ -38,3 +38,12 @@ This time we do not build images, instead, we tag the image that we used for _te
 
 Start a [new release](https://github.com/bcgov/platform-services-registry/releases/new) by creating a new tag first. I'd suggest we follow the current tag pattern like v3.7.1 (Major.Minor.Patch). Then give this release a meaningful title and description. Click publish release and wait until github action finishes. Auto-sync has **NOT** been enabled for prod in argoCD, so you will have to trigger it manually in ArgoCD [platform-registry-prod](https://argocd-shared.apps.silver.devops.gov.bc.ca/applications/platform-registry-prod). You are expecting an `out of sync` shown on the page.(if not, click refresh, because argocd does not scan resources on second base.) Click **Sync => Synchronize** and chill. When the "current sync status" becomes _Synced_
 again, your changes now are all in the Prod environment!
+
+###### Verify Release
+
+Once you've finsihed your release to prod, check that it was successful.
+If your release included changes to the database schema, verify that those changes are reflected in the patroni instance on OpenShift. From https://console.apps.silver.devops.gov.bc.ca/topology/ns/platform-registry-prod, click on the registry-api pod, and access its terminal. Change the "Connecting to" option at the top of the terminal window from "registry-api" to "flyway-migration". The command ```flyway info``` will show the history and status of each migration that has taken place. The command may take a few moments. Your most recent one should be at the bottom of the list, with its corrent version number, and a status of "Success".
+
+If your release does not appear, or its status is not good, see if the command ```flyway-migrate``` fixes things. 
+
+To double check that schema changes you've made are present, click on the registry-patroni pod from the topology view. From the terminal, access the postgres database by typing ```psql -U postgres registry```. Make sure your change is there. For example if you added an entry to the ref-cluster table, try ```select * from ref_cluster;```, and make sure your new entry is there. 
