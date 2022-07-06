@@ -41,8 +41,8 @@ again, your changes now are all in the Prod environment!
 
 ###### Verify Release
 
-Once you've finsihed your release to prod, check that it was successful.
-If your release included changes to the database schema, verify that those changes are reflected in the patroni instance on OpenShift. From https://console.apps.silver.devops.gov.bc.ca/topology/ns/platform-registry-prod, click on the registry-api pod, and access its terminal. Change the "Connecting to" option at the top of the terminal window from "registry-api" to "flyway-migration". The command ```flyway info``` will show the history and status of each migration that has taken place. The command may take a few moments. Your most recent one should be at the bottom of the list, with its corrent version number, and a status of "Success".
+Once you've finished your release to prod, check that it was successful.
+If your release included changes to the database schema, verify that those changes are reflected in the patroni instance on OpenShift. From https://console.apps.silver.devops.gov.bc.ca/topology/ns/platform-registry-prod, click on the registry-api pod, and access its terminal. Change the "Connecting to" option at the top of the terminal window from "registry-api" to "flyway-migration". The command ```flyway info``` will show the history and status of each migration that has taken place. The command may take a few moments. Your most recent one should be at the bottom of the list, with its current version number, and a status of "Success".
 
 If your release does not appear, or its status is not good, see if the command ```flyway-migrate``` fixes things. 
 
