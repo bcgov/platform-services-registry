@@ -23,8 +23,8 @@ const schema = {
       message: 'Invalid format',
     },
     length: {
-      maximum: 30,
-      tooLong: 'Max 30 characters',
+      maximum: 40,
+      tooLong: 'Max 40 characters',
     },
   },
   profileName: {
