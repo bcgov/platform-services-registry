@@ -10,7 +10,7 @@ const DeleteFormFirstConfirmation: React.FC<any> = ({ licensePlate, nextPage, cl
         Delete Product {licensePlate}?
       </FormTitle>
       <Text mb={3}>
-        Delete this product, you will delete all namespaces under this product. We can't recouver
+        Delete this product, you will delete all namespaces under this product. We can't recover
         them once you delete.
       </Text>
       <Flex mb={2}>
