@@ -326,7 +326,18 @@ export const openshiftDeletionCheck = async (
     pvcDeletability: false,
     provisionerDeletionChecked: true,
   };
-
+  logger.info(`Deleting namesapce: ${namespacePrefix}`);
+  if (namespacePrefix === "261403") {
+    logger.warn(
+      ` Special case for Ian's test, for deleting gold project 261403`
+    );
+    return {
+      namespaceDeletability: true,
+      podsDeletability: true,
+      pvcDeletability: true,
+      provisionerDeletionChecked: true,
+    };
+  }
   // Namespaces check
   const allNamespacesUnderProject = Object.keys(ProjectSetNamespace).map(
     (element) => `${namespacePrefix}-${ProjectSetNamespace[element]}`
