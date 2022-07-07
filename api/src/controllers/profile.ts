@@ -338,6 +338,7 @@ export const openshiftDeletionCheck = async (
       headers: OC_HEADER,
       withCredentials: true,
     });
+
     const allAvailableNamespacesOnCluster = data.items.map(
       (item) => item.metadata.name
     );
@@ -347,6 +348,9 @@ export const openshiftDeletionCheck = async (
     checkResult.namespaceDeletability = checker(
       allAvailableNamespacesOnCluster,
       allNamespacesUnderProject
+    );
+    logger.warn(
+      `namespace in  ${clusterName} existance is ${checkResult.namespaceDeletability}`
     );
   } catch (err) {
     const message = `Namespace check failed, can not fetch all namespaces in cluster`;
@@ -368,6 +372,7 @@ export const openshiftDeletionCheck = async (
           })
         )
       );
+      logger.warn(` pod response: ${podResponse}}`);
       podResponse.forEach((namespace) =>
         namespace.data.items.forEach((pod: any) =>
           allPodInProject.push(pod.status)
@@ -377,7 +382,9 @@ export const openshiftDeletionCheck = async (
       checkResult.podsDeletability = allPodInProject.every(
         (pod) => pod.phase !== "Running" && pod.phase !== "Pending"
       );
-
+      logger.warn(
+        `There's no running pod in  ${clusterName} is ${checkResult.podsDeletability}`
+      );
       const pvcResponse = await Promise.all(
         allNamespacesUnderProject.map(async (namespace) =>
           axios.get(
@@ -395,6 +402,10 @@ export const openshiftDeletionCheck = async (
 
       checkResult.pvcDeletability = allPVCInProject.every(
         (namespacePVC) => namespacePVC.length === 0
+      );
+      logger.warn(` PVC response: ${pvcResponse}}`);
+      logger.warn(
+        `There's no PVC in  ${clusterName} is ${checkResult.podsDeletability}`
       );
     } catch (err) {
       const message = `pod and pvc check failed, can not fetch info from namespaces`;
