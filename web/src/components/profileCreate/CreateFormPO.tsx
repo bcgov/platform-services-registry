@@ -16,7 +16,7 @@
 
 import { useKeycloak } from '@react-keycloak/web';
 import { Label } from '@rebass/forms';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { ROLES } from '../../constants';
@@ -27,13 +27,27 @@ import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
+import useRegistryApi from '../../hooks/useRegistryApi';
+import type { AxiosResponse } from 'axios';
 
 const CreateFormPO: React.FC = () => {
+  const [azureToken, setToken ] = useState<AxiosResponse<string>>();
   const validator = getValidator();
 
   const { keycloak } = useKeycloak();
 
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
+  console.error("Sanity Check!");
+  const api = useRegistryApi();
+  useEffect(() => {
+    //setToken(api.getAzureToken());
+    console.log("TOKEN: "  + azureToken);
+  },[]);
+  async function getToken(){
+    const token = await api.getAzureToken;
+    console.log(token);
+    return token;
+  };
 
   return (
     <Aux>
@@ -84,6 +98,7 @@ const CreateFormPO: React.FC = () => {
           initialValue=""
           persona="productOwner"
           position={0}
+          azureToken={getToken()}
         />
       </Flex>
     </Aux>

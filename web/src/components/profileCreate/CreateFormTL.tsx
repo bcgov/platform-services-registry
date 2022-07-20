@@ -102,6 +102,16 @@ const CreateFormTL: React.FC = () => {
                     position={index}
                   />
                 </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.idirId`}>Idir Id</Label>
+                  <GithubUserValidation
+                    name={`${name}.idirId`}
+                    defaultValue=""
+                    initialValue=""
+                    persona="technicalLeads"
+                    position={index}
+                  />
+                </Flex>
               </div>
             ))}
             {fields.length! < MAXIMUM_TECHNICAL_LEADS ? (

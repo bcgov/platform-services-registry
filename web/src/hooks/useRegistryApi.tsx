@@ -246,6 +246,14 @@ export default function useRegistryApi() {
     }
   };
 
+  const getAzureToken = async (): Promise<AxiosResponse<string>> => {
+    console.log("getAccess token")
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('azureOAuthToken');
+    }
+  };
   return {
     getMinistry,
     getQuotaSizes,
@@ -272,5 +280,6 @@ export default function useRegistryApi() {
     updateProfileDeleteableStatus,
     deleteProjectByProfileId,
     preDeletionCheck,
+    getAzureToken,
   };
 }

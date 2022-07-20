@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   createNewTechnicalLeads,
   searchGithubUsers,
+  searchIdirUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
@@ -21,6 +22,7 @@ interface GithubUserValidationInterface {
   selectedTechnicalLeads: GithubIdBaseInterface;
   productOwner: GithubIdBaseInterface;
   fetchUserStartAsync: any;
+  azureToken: string;
 }
 const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) => {
   const {
@@ -32,6 +34,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     selectedTechnicalLeads,
     productOwner,
     fetchUserStartAsync,
+    azureToken,
   } = props;
 
   const { inputKeyword, githubUser, notFound, everFetched } =
@@ -84,8 +87,10 @@ const mapStateToProps = (state: any, githubID: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, persona: string, position: number) =>
-    dispatch(searchGithubUsers(query, persona, position)),
+
+  fetchUserStartAsync: (query: string, persona: string, position: number, azureToken: string) =>
+    //dispatch(searchGithubUsers(query, persona, position)),
+    dispatch(searchIdirUsers(query, persona, position, azureToken)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 
