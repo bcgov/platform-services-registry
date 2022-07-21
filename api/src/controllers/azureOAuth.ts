@@ -4,20 +4,23 @@ import { Response } from "express";
 import qs from "qs";
 
 export const fetchAzureAccessToken = async (
-  // { body }: { body: any },
+  { body }: { body: any },
   res: Response
 ): Promise<void> => {
   logger.info("reached azure token endpoint");
   const options = {
     Host: "login.microsoftonline.com",
-    client_id: `${process.env.AZURE_CLIENT_ID}`,
+    // client_id: `${process.env.AZURE_CLIENT_ID}`,
     scope: "https://graph.microsoft.com/.default",
-    client_secret: process.env.AZURE_CLIENT_SECRET,
+    // client_secret: process.env.AZURE_CLIENT_SECRET,
     grant_type: "client_credentials",
+    client_id: "5afdfc62-637b-41cf-b186-b2de816faaf9",
+    client_secret: "V2B8Q~N_lpmtgvvh.fqXH6Khm_tFLTapEupKfcom",
   };
   await axios
     .post(
-      `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/oauth2/v2.0/token`,
+      // `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/oauth2/v2.0/token`,
+      `https://login.microsoftonline.com/6fdb5200-3d0d-4a8a-b036-d3685e359adc/oauth2/v2.0/token`,
       qs.stringify(options)
     )
     .then((response) => {
@@ -25,7 +28,7 @@ export const fetchAzureAccessToken = async (
       res.status(200).json(response.data);
     })
     .catch((error) => {
-      logger.error(error);
+      logger.error(`Error: ${error}`);
       throw error;
     });
 };
