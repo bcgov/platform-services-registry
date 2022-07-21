@@ -246,14 +246,15 @@ export default function useRegistryApi() {
     }
   };
 
-  const getAzureToken = async (): Promise<AxiosResponse<string>> => {
-    console.log("getAccess token")
+  const getAzureToken = async (): Promise<any> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return axiosInstance.current.get('azureOAuthToken');
+      const token: any =  axiosInstance.current.get('azureOAuthToken');
+      return token;
     }
   };
+  
   return {
     getMinistry,
     getQuotaSizes,

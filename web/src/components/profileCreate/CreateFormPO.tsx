@@ -31,23 +31,21 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import type { AxiosResponse } from 'axios';
 
 const CreateFormPO: React.FC = () => {
-  const [azureToken, setToken ] = useState<AxiosResponse<string>>();
+  const [azureToken, setToken ] = useState<any>("");
   const validator = getValidator();
-
   const { keycloak } = useKeycloak();
-
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
-  console.error("Sanity Check!");
   const api = useRegistryApi();
+  
   useEffect(() => {
-    //setToken(api.getAzureToken());
-    console.log("TOKEN: "  + azureToken);
-  },[]);
-  async function getToken(){
-    const token = await api.getAzureToken;
-    console.log(token);
-    return token;
-  };
+    async function fetchAzureToken() {
+      const response = await api.getAzureToken();
+      console.log('response: ', response);
+      setToken(response);
+    }
+
+    fetchAzureToken();
+  }, []);
 
   return (
     <Aux>
@@ -98,7 +96,7 @@ const CreateFormPO: React.FC = () => {
           initialValue=""
           persona="productOwner"
           position={0}
-          azureToken={getToken()}
+          azureToken={azureToken}
         />
       </Flex>
     </Aux>
