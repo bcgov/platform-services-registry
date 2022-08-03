@@ -191,3 +191,13 @@ After Docker Container finish creating, you can vist you local build at: http://
 ## License
 
 See the included [LICENSE](./LICENSE) file.
+
+## Microsoft Graph API
+Changes in this product to switch from selecting Technical Leads and Product Owners from GitHub's API in favour of IDIR user lookup through Microsoft's Graph API require some additional configuration. 
+Using the Graph API without requiring an additional user sign in means that the application accesses Graph, rather than the user directly. This means  that we have Platform Services Registry as an App registered on Azure with defined credentials that must be matched in order to make authorized calls to Graph. Parameters that must be set include:
+
+| Name                   | Description | 
+| :--------------------- | :-----------|
+| Application (client) ID | ID of application so Azure knows the application may request an access token |
+| Directory (tenant) ID   | Required for HTTP call for access token |
+| Client Secret (password)| This is hidden, and cannot be looked up on Azure. Contact the Dev Exchange for this value |

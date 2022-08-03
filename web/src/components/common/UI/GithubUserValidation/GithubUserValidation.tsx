@@ -53,12 +53,13 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
   };
 
   useEffect(() => {
+    console.warn(`azureToken: ${azureToken}`);
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
       // Third condition: Until there's a new input, it won't run again if there's a notfound result
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0 && !notFound) {
-        fetchUserStartAsync(inputKeyword, persona, position);
+        fetchUserStartAsync(inputKeyword, persona, position, azureToken);
       }
     }, 1500);
 

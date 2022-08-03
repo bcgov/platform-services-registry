@@ -9,10 +9,7 @@ export const fetchAzureAccessToken = async (
   { user }: { user: AuthenticatedUser },
   res: Response
 ): Promise<void> => {
-  logger.info("reached azure token endpoint with fun and love");
-
   try {
-    let results;
     const options = {
       Host: "login.microsoftonline.com",
       client_id: `${process.env.AZURE_CLIENT_ID}`,
@@ -26,15 +23,16 @@ export const fetchAzureAccessToken = async (
       .post(url, qs.stringify(options))
       .then((response) => {
         logger.info(`response.data: ${JSON.stringify(response.data)}`);
-        if (!results.data.access_token) {
-          throw Error(
-            "a result was returned from Microsoft's token endpoint, but it doesn't seem to have an access token included"
-          );
-        }
-        res.status(200).json(results.data.access_token);
+        // if (!results.data.access_token) {
+        //   throw Error(
+        //     "a result was returned from Microsoft's token endpoint, but it doesn't seem to have an access token included"
+        //   );
+        // }
+        res.status(200).json(response.data.access_token);
+        // return response.data.access_token;
       })
       .catch((error) => {
-        logger.info(`error!!!! ${error}`);
+        logger.info(`error: ${error}`);
       });
   } catch (err) {
     logger.error(`err = ${err.message}`);

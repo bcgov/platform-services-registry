@@ -28,7 +28,6 @@ import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 import useRegistryApi from '../../hooks/useRegistryApi';
-import type { AxiosResponse } from 'axios';
 
 const CreateFormPO: React.FC = () => {
   const [azureToken, setToken ] = useState<any>("");
@@ -40,10 +39,8 @@ const CreateFormPO: React.FC = () => {
   useEffect(() => {
     async function fetchAzureToken() {
       const response = await api.getAzureToken();
-      console.log('response: ', response);
-      setToken(response);
+      setToken(response.data);
     }
-
     fetchAzureToken();
   }, []);
 

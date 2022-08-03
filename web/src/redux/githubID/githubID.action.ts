@@ -63,6 +63,8 @@ export const searchIdirUsers = (query: string, persona: string, position: number
     dispatch(requestGithubUsers({persona, position }));
   console.warn("ACCESS TOKEN: " + azureToken);
   const headers = new Headers();
+  headers.append("Authorization", `bearer ${azureToken}`);
+  headers.append("ConsistencyLevel", `eventual`);
   const options = {
     method: "GET",
     headers: headers,

@@ -8,7 +8,7 @@ const router = express.Router();
 // Requests
 router.get(
   "/",
-
+  // authorize(validateRequiredProfile),
   asyncMiddleware(fetchAzureAccessToken)
 );
 
