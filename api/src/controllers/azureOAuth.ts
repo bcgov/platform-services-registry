@@ -3,12 +3,8 @@ import { logger } from "@bcgov/common-nodejs-utils";
 // import { Response } from "express";
 import qs from "qs";
 import { Response } from "express";
-import { AuthenticatedUser } from "../libs/authmware";
 
-export const fetchAzureAccessToken = async (
-  { user }: { user: AuthenticatedUser },
-  res: Response
-): Promise<void> => {
+export const fetchAzureAccessToken = async (res: Response): Promise<void> => {
   try {
     const options = {
       Host: "login.microsoftonline.com",
