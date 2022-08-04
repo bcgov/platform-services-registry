@@ -91,6 +91,10 @@ Using the Graph API without requiring an additional user sign in means that the 
 | Directory (tenant) ID   | Required for HTTP call for access token |
 | Client Secret (password)| This is hidden, and cannot be looked up on Azure. Contact the Dev Exchange for this value |
 
+#### Redirect URL
+Make sure that the URL to Platform Services Registry is added to the Platform Services Registry application as configured in Azure. This is necessary for getting an access token back, allowing users to use the Graph API.
+![Redirect URL used for feature development](./DocAsset/redirect_Uris.png)
+
 ### Database
 
 The build and deploy documents for PostgreSQL (Patroni) are located in the [db](./db) directory of this project.
