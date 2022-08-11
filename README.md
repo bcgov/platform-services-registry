@@ -1,26 +1,28 @@
- ![Test & Build](https://github.com/bcgov/platform-services-registry/workflows/Test%20&%20Build/badge.svg) [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+![Test & Build](https://github.com/bcgov/platform-services-registry/workflows/Test%20&%20Build/badge.svg) [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 
 # Platform Services Registry
 
 The Platform Services' Project Registry is a single entry point for the Platform Service intake process. It is where teams can submit requests for provisioning namespaces in OpenShift 4 (OCP4) clusters, as well as perform other tasks such as:
-* Update project contact details and other metadata;
-* Request their project namespace set be created additional clusters;
-* Request other resources be provisioned such as KeyCloak realms or Artifactory pull-through repositories.
+
+- Update project contact details and other metadata;
+- Request their project namespace set be created additional clusters;
+- Request other resources be provisioned such as KeyCloak realms or Artifactory pull-through repositories.
 
 ## TL;DR
 
 This repo contains all the components for the Platform Service Registry as well as all the OpenShift 4.x manifests to build and deploy said project. You can find more about each component here:
-* [Web](./web/README.md);
-* [API](./api/README.md); and
-* [Database](./db/README.md)
+
+- [Web](./web/README.md);
+- [API](./api/README.md); and
+- [Database](./db/README.md)
 
 ## Project Structure
 
 Find anything relevant to the project as a whole in the repo root such as OCP4 manifests; docker compose file; and development configuration. Each of the three main components to the project are listed below and have their own build and deployment documentation:
 
-* [Web](./web/README.md);
-* [API](./api/README.md); and
-* [Database](./db/README.md)
+- [Web](./web/README.md);
+- [API](./api/README.md); and
+- [Database](./db/README.md)
 
 ## Architecture
 
@@ -28,9 +30,9 @@ The registry is a typical web app with an API backed by persistent storage. This
 
 These smart robots include:
 
-| Name                   | Repo | Description | 
-| :--------------------- | :--- | :-----------|
-| Namespace Provisioning | [here](https://github.com/bcgov-c/devops-fulfillment-pipeline) |This automation implements a GitOps approach to provisioning a namespace set with quotas and various service accounts on our clusters | 
+| Name                   | Repo                                                           | Description                                                                                                                           |
+| :--------------------- | :------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| Namespace Provisioning | [here](https://github.com/bcgov-c/devops-fulfillment-pipeline) | This automation implements a GitOps approach to provisioning a namespace set with quotas and various service accounts on our clusters |
 
 ## How to Build & Deploy
 
@@ -75,11 +77,11 @@ oc process -f openshift/templates/nsp.yaml \
   oc apply -f -
 ```
 
-| Name                   | Description | 
-| :--------------------- | :-----------|
-| NAMESPACE              | The namespace where the NSP is being deployed. |
-| NATS_NAMESPACE         | The namespace where NATS exists. |
-| NATS_APO_IDENTIFIER    | The unique identifier used for NATS. |
+| Name                | Description                                    |
+| :------------------ | :--------------------------------------------- |
+| NAMESPACE           | The namespace where the NSP is being deployed. |
+| NATS_NAMESPACE      | The namespace where NATS exists.               |
+| NATS_APO_IDENTIFIER | The unique identifier used for NATS.           |
 
 ### Database
 
@@ -103,6 +105,22 @@ The build and deploy documents for the API are located in the [api](./api) direc
 
 The build and deploy documents for the Web are located in the [web](./web) directory of this project.
 
+### READ-ONLY ADMIN
+
+To effectively assist teams calling 7-7000 for application support after hours, we created read-only access to the Project Registry so that they can look up who the Technical Lead for the app in trouble as sometimes the caller may not know this information. Read-only admin access will allow the user to view all of the projects that the Registry App manages but can't make any changes to it.
+
+#### To add/remove a read-only admin
+
+Registry app is using keycloack devhub realm to to authentification, so we will need to navigate to the keycloack page to make this change to user profile. Here's how to do it.
+
+1.  Navigate to:
+    ```
+    https://oidc.gov.bc.ca/auth/admin/devhub/console/#/realms/devhub/users
+    ```
+2.  Search for the user idir in the search bar
+3.  Navigate to Role Mapping tab and search for and select `Registry web` under Clinet Roles
+4.  After select `Registry-web`, You will see two option in available Roles tab, and one of them is read_only_administrator, hight-light that option and click `Add Selected` button will do the job.
+
 ### NATS (Dev & Test Only)
 
 The API needs to connect to [NATS](https://nats.io) for messaging the "smart robots". In production a shared NATS exists, however, in dev and test there no such thing. Fire up a stand alone NATS instance to accept message from the API.
@@ -123,71 +141,82 @@ If you find issues with this application suite please create an [issue](https://
 
 ## How to Contribute
 
-Contributions are welcome. Please ensure they relate to an issue. See our 
-[Code of Conduct](./CODE-OF-CONDUCT.md) that is included with this repo for important details on contributing to Government of British Columbia projects. 
+Contributions are welcome. Please ensure they relate to an issue. See our
+[Code of Conduct](./CODE-OF-CONDUCT.md) that is included with this repo for important details on contributing to Government of British Columbia projects.
+
 ## How to setup Local development
+
 We suggest running this in a docker container, you can download docker [here](https://www.docker.com/get-started).
 
 This application has a function that will invite GitHub users to a specified GitHub organization, to make it locally, you will need to create your own test GitHub organization and GitHub App.
 
 **Step 1**
 Create a/two GitHub Organization(s) [here](https://github.com/account/organizations/new?coupon=&plan=team_free) or you can use any existing organization that you have full access permissions organization
-(ps*: API can invite the user into one or multiple GitHub org(s). for testing and development purpose, we suggest you at least create two GitHub orgs to make sure this function works properly)
+(ps\*: API can invite the user into one or multiple GitHub org(s). for testing and development purpose, we suggest you at least create two GitHub orgs to make sure this function works properly)
 
 **Step 2**
-* Under organization setting => Developer settings => GitHub Apps create a new GitHub app. (`https://github.com/organizations/[REPLACE_WITH_YOUR_ORG_NAME]ap/settings/apps`)
-* Give your app a meaningful name, and description.
-* Homepage URL can be anything, I recommend we can fill in with `http://localhost:8100/api`. 
-* Make sure **Expire user authorization tokens**, **Request user authorization (OAuth) during installation** and **Webhook:Active** boxes are unchecked.[]
-<img src="DocAsset/github_app_screen_shot1.png" width="500" height="600">
-* In your apps permissions configuration, ensure to add read/write to member.
-<img src="DocAsset/github_app_screen_shot2.png" width="500" height="80">
-* You can allow any account to installed this GitHub App.
+
+- Under organization setting => Developer settings => GitHub Apps create a new GitHub app. (`https://github.com/organizations/[REPLACE_WITH_YOUR_ORG_NAME]ap/settings/apps`)
+- Give your app a meaningful name, and description.
+- Homepage URL can be anything, I recommend we can fill in with `http://localhost:8100/api`.
+- Make sure **Expire user authorization tokens**, **Request user authorization (OAuth) during installation** and **Webhook:Active** boxes are unchecked.[]
+  <img src="DocAsset/github_app_screen_shot1.png" width="500" height="600">
+- In your apps permissions configuration, ensure to add read/write to member.
+  <img src="DocAsset/github_app_screen_shot2.png" width="500" height="80">
+- You can allow any account to installed this GitHub App.
 
 **Step 3**
-* Create and save a client secret, this will be needed as env variable
-* Create and save the GitHub App private key(.pem file), this will be needed to deploy the server
-* Click Install App in side bar, find the test organization created earlier, click Install to install application to organization
+
+- Create and save a client secret, this will be needed as env variable
+- Create and save the GitHub App private key(.pem file), this will be needed to deploy the server
+- Click Install App in side bar, find the test organization created earlier, click Install to install application to organization
 
 **Step 4**
-* In `api/src/config` run `cp config.json.example config.json` to copy `config.json.example` and create `config.json`. Update **orgs** and **primaryOrg** to the organization name that you have your GitHub App installed on.
 
-* copy the private key from the GitHub App you just downloaded to `api/src/config` and rename it to `github-private-key.pem`
+- In `api/src/config` run `cp config.json.example config.json` to copy `config.json.example` and create `config.json`. Update **orgs** and **primaryOrg** to the organization name that you have your GitHub App installed on.
+
+- copy the private key from the GitHub App you just downloaded to `api/src/config` and rename it to `github-private-key.pem`
 
 **Step 5**
-* Copy `.env.example` to create `.env`.
-* You can find the `Client ID` and `App ID` on the GitHub App page, copy those values to `GITHUB_CLIENT_ID` and `GITHUB_APP_ID`.
-* Copy the client secret that you saved in Step 3 to `GITHUB_CLIENT_SECRET`
-* Fill `GITHUB_ORGANIZATION` with Organization name that you have your GitHub App installed on.
+
+- Copy `.env.example` to create `.env`.
+- You can find the `Client ID` and `App ID` on the GitHub App page, copy those values to `GITHUB_CLIENT_ID` and `GITHUB_APP_ID`.
+- Copy the client secret that you saved in Step 3 to `GITHUB_CLIENT_SECRET`
+- Fill `GITHUB_ORGANIZATION` with Organization name that you have your GitHub App installed on.
 
 **Last Step**
-* In application root directory: run `mkdir pg_data`
-* In ***/api*** directory run 
+
+- In application root directory: run `mkdir pg_data`
+- In **_/api_** directory run
+
 ```
 npm install
 npm run build
 ```
-* In ***/web*** directory run 
+
+- In **_/web_** directory run
 
 ```
 npm install
 ```
+
 Now you are ready to go back to application root directory and run `docker-compose up -d`
 
 After Docker Container finish creating, you can vist you local build at: http://localhost:8101/public-landing
 
-
 ## Tips
-- Create an empty pg_data folder for the database: 
-`mkdir pg_data`
+
+- Create an empty pg_data folder for the database:
+  `mkdir pg_data`
 - Install and build the api dependencies and application:
-`cd api && npm install && npm run build && cd ..`
+  `cd api && npm install && npm run build && cd ..`
 - Install the web dependencies:
-`cd web && npm install && cd ..`
+  `cd web && npm install && cd ..`
 - Build the docker images:
-`docker-compose build`
+  `docker-compose build`
 - Start Platform Services Registry
-`docker-compose up -d`
+  `docker-compose up -d`
+
 ## License
 
 See the included [LICENSE](./LICENSE) file.
