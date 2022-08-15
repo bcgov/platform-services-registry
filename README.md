@@ -107,19 +107,19 @@ The build and deploy documents for the Web are located in the [web](./web) direc
 
 ### READ-ONLY ADMIN
 
-To effectively assist teams calling 7-7000 for application support after hours, we created read-only access to the Project Registry so that they can look up who the Technical Lead for the app in trouble as sometimes the caller may not know this information. Read-only admin access will allow the user to view all of the projects that the Registry App manages but can't make any changes to it.
+To effectively assist teams calling 7-7000 for application support after hours, we created read-only access to the Project Registry. This allows looking up information for the app's Technical Lead as sometimes the caller may not have this. Read-only admin access will allow the user to view all of the projects that the Registry App manages but can't make any changes to it.
 
 #### To add/remove a read-only admin
 
-Registry app is using keycloack devhub realm to to authentification, so we will need to navigate to the keycloack page to make this change to user profile. Here's how to do it.
+Registry app is using keycloack devhub realm to do authentication, so we will need to navigate to the keycloack page to make this change to the user's profile. Here's how to do it.
 
 1.  Navigate to:
     ```
     https://oidc.gov.bc.ca/auth/admin/devhub/console/#/realms/devhub/users
     ```
 2.  Search for the user idir in the search bar
-3.  Navigate to Role Mapping tab and search for and select `Registry web` under Clinet Roles
-4.  After select `Registry-web`, You will see two option in available Roles tab, and one of them is read_only_administrator, hight-light that option and click `Add Selected` button will do the job.
+3.  Navigate to Role Mapping tab and search for and select `Registry web` under Client Roles
+4.  After select `Registry-web`, You will see two options in the Available Roles tab. One of them is read_only_administrator; highlighting that option and clicking `Add Selected` will do the job.
 
 ### NATS (Dev & Test Only)
 
