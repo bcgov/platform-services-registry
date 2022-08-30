@@ -21,7 +21,7 @@ import { StyledFormButton, StyledFormDisabledButton } from './Button';
 export const EditSubmitButton = (props: any) => {
   const { hasPendingEdit, isProvisioned, pristine, touched } = props;
 
-if (pristine|| Object.values(touched).filter(Boolean).length===1) {
+  if (pristine || Object.values(touched).filter(Boolean).length === 1) {
     return (
       <>
         <StyledFormDisabledButton disabled style={{ display: 'block' }}>

@@ -328,7 +328,7 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
       handleSubmitRefresh();
       setGoBackToProfileEditable(true);
       promptSuccessToastWithText('Your quota request was successful');
-    } catch (err:any) {
+    } catch (err: any) {
       promptErrToastWithText(err.message);
       console.log(err);
     }
