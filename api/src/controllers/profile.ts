@@ -94,7 +94,7 @@ export const updateProfileContacts = async (
     user,
   }: { params: any; body: Contact[]; user: AuthenticatedUser },
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
   const { ContactModel, RequestModel } = dm;
   const { profileId } = params;
   const contacts = body;

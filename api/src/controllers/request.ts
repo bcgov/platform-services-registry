@@ -53,7 +53,7 @@ export const fetchHumanActionRequests = async (
 export const updateRequestHumanAction = async (
   { params, body, user }: { params: any; body: any; user: AuthenticatedUser },
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
   const { RequestModel, ContactModel } = dm;
   const { requestId } = params;
   const { type, comment } = body;

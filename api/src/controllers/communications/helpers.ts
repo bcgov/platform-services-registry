@@ -14,7 +14,7 @@ export const getToken = async () => {
 
   const params = {
     client_id: "mautic-subscription-api",
-    client_secret: keycloakClientSecret,
+    client_secret: keycloakClientSecret as string,
     grant_type: "client_credentials",
   };
 

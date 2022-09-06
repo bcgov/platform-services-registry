@@ -23,16 +23,17 @@ import app from "./index";
 const env = config.get("environment");
 const port = config.get("port");
 
-app.listen(port, "0.0.0.0", (err) => {
-  if (err) {
+app.listen(port, "0.0.0.0", 0, () => {
+  try {
+    if (env !== "production") {
+      return started(port);
+    }
+    return logger.info(`Production server running on port: ${port}`);
+  } catch(err) {
     return logger.error(
       `There was a problem starting the server, ${err.message}`
     );
   }
-  if (env !== "production") {
-    return started(port);
-  }
-  return logger.info(`Production server running on port: ${port}`);
 });
 
 module.exports = app;
