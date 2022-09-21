@@ -46,6 +46,7 @@ export const CLUSTER_NAMES = [
   "klab",
   "klab2",
   "clab",
+  "emerald",
 ];
 
 export const GOLD_QUORUM_COUNT = 2;
