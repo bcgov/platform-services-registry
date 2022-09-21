@@ -311,6 +311,7 @@ export const openshiftDeletionCheck = async (
     golddr: process.env.GOLDDR_SERVICE_ACCOUNT_TOKEN || "",
     gold: process.env.GOLD_SERVICE_ACCOUNT_TOKEN || "",
     silver: process.env.SILVER_SERVICE_ACCOUNT_TOKEN || "",
+    emerald: process.env.EMERALD_SERVICE_ACCOUNT_TOKEN || "",
   };
   const url = `https://api.${clusterName}.devops.gov.bc.ca:6443`;
   const BEARER_TOKEN = `Bearer ${CLUSTER_SERVICE_ACCOUNT_TOKEN[clusterName]}`;
