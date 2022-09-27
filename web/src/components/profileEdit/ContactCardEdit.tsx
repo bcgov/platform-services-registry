@@ -318,6 +318,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               hasPendingEdit={hasPendingEdit}
               isProvisioned={isProvisioned}
               pristine={formProps.pristine}
+              touched={formProps.touched}
             />
           </fieldset>
         </form>
