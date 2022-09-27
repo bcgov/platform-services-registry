@@ -509,7 +509,6 @@ export const QuotaCardEdit: React.FC<IQuotaCardEditProps> = (props) => {
                 hasPendingEdit={hasPendingEdit}
                 isProvisioned={isProvisioned}
                 pristine={formProps.pristine}
-                touched={formProps.touched}
               />
             </Flex>
           );
