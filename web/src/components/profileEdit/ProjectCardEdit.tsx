@@ -107,7 +107,7 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
         return errors;
       }}
     >
-      {({ handleSubmit, pristine, touched }) => (
+      {({ handleSubmit, pristine }) => (
         <form onSubmit={handleSubmit}>
           <fieldset disabled={isDisabled} style={{ border: 0 }}>
             <FormTitle>Tell us about your product</FormTitle>
@@ -244,7 +244,6 @@ const ProjectCardEdit: React.FC<IProjectCardEditProps> = (props) => {
               hasPendingEdit={hasPendingEdit}
               isProvisioned={isProvisioned}
               pristine={pristine}
-              touched={touched}
             />
           </fieldset>
         </form>
