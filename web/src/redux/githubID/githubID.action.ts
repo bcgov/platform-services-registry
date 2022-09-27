@@ -61,21 +61,21 @@ export const searchIdirUsers = (query: string, persona: string, position: number
   dispatch: Dispatch<GithubIDAction>,
   ) => {
     dispatch(requestGithubUsers({persona, position }));
-  console.warn("ACCESS TOKEN: " + azureToken);
   const headers = new Headers();
   headers.append("Authorization", `bearer ${azureToken}`);
   headers.append("ConsistencyLevel", `eventual`);
   const options = {
     method: "GET",
     headers: headers,
-    scope: "https://graph.microsoft.com/.default"
+    scope: "User.ReadBasic.All"
   };
-  fetch("https://graph.microsoft.com/v1.0/users/$count", options)
+  // https://graph.microsoft.com/v1.0/users/oamar.kanji@gov.bc.ca
+  fetch("https://graph.microsoft.com/v1.0/me", options)
     .then(async (response) => {
       if(response.ok) {
         console.log(response.text);
       } else {
-        console.log("handle errors better, genius.")
+        console.log(`TODO: A better error message should go here.`);
       }
     })
     .catch((err) => {

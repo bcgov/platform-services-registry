@@ -39,7 +39,7 @@ const CreateFormPO: React.FC = () => {
   useEffect(() => {
     async function fetchAzureToken() {
       const response = await api.getAzureToken();
-      setToken(response.data);
+      setToken(JSON.stringify(response.data));
     }
     fetchAzureToken();
   }, []);

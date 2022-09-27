@@ -246,12 +246,11 @@ export default function useRegistryApi() {
     }
   };
 
-  const getAzureToken = async (): Promise<any> => {
+  const getAzureToken = async (): Promise<AxiosResponse<any>> => {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      const token: any =  axiosInstance.current.get('azureOAuthToken');
-      return token;
+      return  axiosInstance.current.get('azureOAuthToken');
     }
   };
   
