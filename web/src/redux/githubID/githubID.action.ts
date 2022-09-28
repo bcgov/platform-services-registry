@@ -75,7 +75,7 @@ export const searchIdirUsers = (query: string, persona: string, position: number
       if(response.ok) {
         console.log(response.text);
       } else {
-        console.log(`TODO: A better error message should go here.`);
+        console.error(`${JSON.stringify(response)}`);
       }
     })
     .catch((err) => {

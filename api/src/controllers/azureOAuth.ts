@@ -17,11 +17,11 @@ export const fetchAzureAccessToken = async (req: Request, res: Response): Promis
     axios
       .post(url, qs.stringify(options))
       .then((response) => {
-        // if (!results.data.access_token) {
-        //   throw Error(
-        //     "a result was returned from Microsoft's token endpoint, but it doesn't seem to have an access token included"
-        //   );
-        // }
+        if (!response.data.access_token) {
+          throw Error(
+            "a result was returned from Microsoft's token endpoint, but it doesn't seem to have an access token included"
+          );
+        }
         res.status(200).json(response.data.access_token);
       })
       .catch((error) => {
