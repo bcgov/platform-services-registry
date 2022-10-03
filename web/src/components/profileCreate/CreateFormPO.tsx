@@ -28,24 +28,30 @@ import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 import useRegistryApi from '../../hooks/useRegistryApi';
+import  AzureSignInButton from '../../components/common/UI/GithubUserValidation/AzureSignInButton'; 
+import  AzureSignOutButton from '../../components/common/UI/GithubUserValidation/AzureSignOutButton'; 
+import { useMsal } from '@azure/msal-react';
 
 const CreateFormPO: React.FC = () => {
-  const [azureToken, setToken ] = useState<any>("");
+  //const [azureToken, setToken ] = useState<any>(""); // for app based permissions, not user delegate 
   const validator = getValidator();
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   const api = useRegistryApi();
-  
+  const { instance, accounts } = useMsal();
+ 
   useEffect(() => {
     async function fetchAzureToken() {
       const response = await api.getAzureToken();
-      setToken(JSON.stringify(response.data));
+      //setToken(JSON.stringify(response.data)); not getting an app permission, which would arguably be better
     }
     fetchAzureToken();
   }, []);
 
   return (
     <Aux>
+      <AzureSignInButton />
+      <AzureSignOutButton />
       <FormTitle>Who is the product owner for this product?</FormTitle>
       <FormSubtitle>
         Tell us about the Product Owner (PO). This is typically the business owner of the
@@ -93,7 +99,8 @@ const CreateFormPO: React.FC = () => {
           initialValue=""
           persona="productOwner"
           position={0}
-          azureToken={azureToken}
+          instance={instance}
+          accounts={accounts}
         />
       </Flex>
     </Aux>

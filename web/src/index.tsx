@@ -24,6 +24,12 @@ import * as serviceWorker from './serviceWorker';
 import theme from './theme';
 import { store, persistor } from './redux/store';
 import typography from './typography';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { MsalProvider } from "@azure/msal-react";
+import { msalConfig } from "./redux/githubID/graphAuthConfig";
+
+const msalInstance = new PublicClientApplication(msalConfig);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -63,7 +69,9 @@ ReactDOM.render(
         `}
       />
       <PersistGate persistor={persistor}>
+      <MsalProvider instance={msalInstance}>
         <App />,
+      </MsalProvider>
       </PersistGate>
     </React.StrictMode>
   </Provider>,
