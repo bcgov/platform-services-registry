@@ -62,14 +62,6 @@ export const searchIdirUsers = (query: string, persona: string, position: number
   dispatch: Dispatch<GithubIDAction>,
   ) => {
     dispatch(requestGithubUsers({persona, position }));
-  // const headers = new Headers();
-  // //headers.append("Authorization", `bearer ${azureToken}`);
-  // headers.append("ConsistencyLevel", `eventual`);
-  // const options = {
-  //   method: "GET",
-  //   headers: headers,
-  //   scope: "User.ReadBasic.All"
-  // };
   const request = {
     scopes: ["User.ReadBasic.All"],
     account: accounts[0],
@@ -79,16 +71,17 @@ export const searchIdirUsers = (query: string, persona: string, position: number
     console.log(`token: ${response.accessToken}`);
     //callMsGraph(response.accessToken).then(response => setGraphData(response));
     const headers = new Headers();
+    headers.append("ConsistencyLevel", "eventual");
     const bearer = `Bearer ${response.accessToken}`;
 
     headers.append("Authorization", bearer);
 
     const options = {
         method: "GET",
-        headers: headers
+        headers: headers,
     };
-
-    return fetch("https://graph.microsoft.com/v1.0/users/oamar.kanji@gov.bc.ca", options)
+    const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')&$orderby=displayName&$count=true&$top=1`;
+    return fetch(url, options)
         .then(async response => {
           if (response.ok) {
             // dispatch(userExists({ persona, position }));
@@ -119,19 +112,6 @@ export const searchIdirUsers = (query: string, persona: string, position: number
         .catch(error => console.log(error));
       });
   });
-  // https://graph.microsoft.com/v1.0/users/oamar.kanji@gov.bc.ca
-  // fetch("https://graph.microsoft.com/v1.0/me", options)
-  //   .then(async (response) => {
-  //     if(response.ok) {
-  //       console.log(response.text);
-  //     } else {
-  //       console.error(`${JSON.stringify(response)}`);
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     dispatch(noSuchUser({ persona, position }));
-  //     throw new Error('Something went wrong.');
-  //   });
 };
 
 export default githubIDSearchKeyword;
