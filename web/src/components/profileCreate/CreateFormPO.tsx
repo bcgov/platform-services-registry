@@ -40,13 +40,13 @@ const CreateFormPO: React.FC = () => {
   const api = useRegistryApi();
   const { instance, accounts } = useMsal();
  
-  useEffect(() => {
-    async function fetchAzureToken() {
-      const response = await api.getAzureToken();
-      //setToken(JSON.stringify(response.data)); not getting an app permission, which would arguably be better
-    }
-    fetchAzureToken();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchAzureToken() {
+  //     const response = await api.getAzureToken();
+  //     //setToken(JSON.stringify(response.data)); not getting an app permission, which would arguably be better
+  //   }
+  //   fetchAzureToken();
+  // }, []);
 
   return (
     <Aux>

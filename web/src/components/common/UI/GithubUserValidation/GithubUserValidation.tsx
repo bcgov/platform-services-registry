@@ -97,8 +97,8 @@ const mapStateToProps = (state: any, githubID: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
   fetchUserStartAsync: (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[]) =>
-    //dispatch(searchGithubUsers(query, persona, position)),
-    dispatch(searchIdirUsers(query, persona, position, instance, accounts)),
+    dispatch(searchGithubUsers(query, persona, position)),
+    //dispatch(searchIdirUsers(query, persona, position, instance, accounts)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 
