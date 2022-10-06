@@ -38,34 +38,38 @@ export const createNewTechnicalLeads = () => ({
   type: GithubIDActionTypes.NEW_GITHUB_ID_ENTRY,
 });
 
-export const searchGithubUsers = (query: string, persona: string, position: number) => (
-  dispatch: Dispatch<GithubIDAction>,
-) => {
-  dispatch(requestGithubUsers({ persona, position }));
-  fetch(`https://api.github.com/users/${query}`)
-    .then(async (response) => {
-      if (response.ok) {
-        dispatch(userExists({ persona, position }));
-        const data = await response.json();
-        dispatch(storeUser({ persona, position, data }));
-      } else {
-        dispatch(noSuchUser({ persona, position }));
-      }
-    })
-    .catch((err) => {
-      dispatch(noSuchUser({ persona, position }));
-      throw new Error('Error happened during fetching Github data!');
-    });
-};
+// export const searchGithubUsers = (query: string, persona: string, position: number) => (
+//   dispatch: Dispatch<GithubIDAction>,
+// ) => {
+//   dispatch(requestGithubUsers({ persona, position }));
+//   fetch(`https://api.github.com/users/${query}`)
+//     .then(async (response) => {
+//       if (response.ok) {
+//         dispatch(userExists({ persona, position }));
+//         const data = await response.json();
+//         dispatch(storeUser({ persona, position, data }));
+//       } else {
+//         dispatch(noSuchUser({ persona, position }));
+//       }
+//     })
+//     .catch((err) => {
+//       dispatch(noSuchUser({ persona, position }));
+//       throw new Error('Error happened during fetching Github data!');
+//     });
+// };
 
-const makeIdirDataFitExisitngModel = (data: any): any => {
-
+/* For future developers: we were originally using a GitHub API to get identities from, but switched to IDIR,
+based upon Microsoft's OpenID, and we now use the MS Graph API to get our identities (PO, TL) from IDIR */
+const makeIdirDataFitExisitngModel = (data: any) => {
+    console.log(`incoming data: ${JSON.stringify(data)}`);
      const ret = {
-      firstName: data.value.givenName,
-      lastName: data.value.surname,
+      person: data.persona,
+      position: data.position,
       email: data.value.mail,
-      //githubId: data.value.displayName,
+      name: `${data.value.givenName} ${data.value.surname}`,
+      avatar_url: "",
      }
+     console.log(`returning: ${JSON.stringify(ret)}`);
      return ret;
 };
 
@@ -96,7 +100,7 @@ export const searchIdirUsers = (query: string, persona: string, position: number
             dispatch(userExists({ persona, position }));
             const data = await response.json();
             console.log(`data: ${JSON.stringify(data)}`);
-            dispatch(storeUser({ persona, position, makeIdirDataFitExisitngModel(data:any){} }));
+            dispatch(storeUser({ persona, position, data })); // I have no clue why that empty "{}" is needed, but I get errors without it.
           } else {
             dispatch(noSuchUser({ persona, position }));
           }
@@ -117,9 +121,9 @@ export const searchIdirUsers = (query: string, persona: string, position: number
         .then(async response => {
           if (response.ok) {
             dispatch(userExists({ persona, position }));
-            const data = await response.json();
-            console.log(`data: ${JSON.stringify(data)}`);
-            dispatch(storeUser({ persona, position, makeIdirDataFitExisitngModel(data:any){} }));
+            let data = await response.json();
+            data = makeIdirDataFitExisitngModel(data);
+            dispatch(storeUser({ persona, position, data }));
           } else {
             dispatch(noSuchUser({ persona, position }));
           }

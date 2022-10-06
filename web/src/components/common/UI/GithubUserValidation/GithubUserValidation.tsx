@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import logger from 'redux-logger';
 import {
   createNewTechnicalLeads,
-  searchGithubUsers,
+ // searchGithubUsers,
   searchIdirUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
@@ -97,8 +97,8 @@ const mapStateToProps = (state: any, githubID: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
   fetchUserStartAsync: (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[]) =>
-    dispatch(searchGithubUsers(query, persona, position)),
-    //dispatch(searchIdirUsers(query, persona, position, instance, accounts)),
+    //dispatch(searchGithubUsers(query, persona, position)),
+    dispatch(searchIdirUsers(query, persona, position, instance, accounts)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 
