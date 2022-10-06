@@ -58,7 +58,7 @@ export const searchIdirUsers = (query: string, persona: string, position: number
   ) => {
     dispatch(requestGithubUsers({persona, position }));
   console.log(graphToken);
-  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(userPrincipalName,'${query}')&$orderby=userPrincipalName&$count=true&$top=1`;
+  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')&$orderby=displayName&$count=true&$top=1`;
   const headers = new Headers();
     headers.append("ConsistencyLevel", "eventual");
     const bearer = `Bearer ${graphToken}`;
