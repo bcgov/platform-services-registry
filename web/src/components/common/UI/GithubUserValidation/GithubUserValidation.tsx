@@ -13,7 +13,6 @@ import {
   selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
-import { useMsal } from "@azure/msal-react";
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 
 interface GithubUserValidationInterface {
@@ -27,7 +26,7 @@ interface GithubUserValidationInterface {
   fetchUserStartAsync: any;
   instance: IPublicClientApplication;
   accounts: AccountInfo[];
-  //azureToken: string;
+  graphToken: string;
   
 }
 const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) => {
@@ -42,6 +41,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     fetchUserStartAsync,
     instance,
     accounts,
+    graphToken,
     
   } = props;
 
@@ -67,7 +67,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
       // Second condition: only send api request if input change
       // Third condition: Until there's a new input, it won't run again if there's a notfound result
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0 && !notFound) {
-        fetchUserStartAsync(inputKeyword, persona, position, instance, accounts);
+        fetchUserStartAsync(inputKeyword, persona, position, instance, accounts, graphToken);
       }
     }, 1500);
 
@@ -96,9 +96,8 @@ const mapStateToProps = (state: any, githubID: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[]) =>
-    //dispatch(searchGithubUsers(query, persona, position)),
-    dispatch(searchIdirUsers(query, persona, position, instance, accounts)),
+  fetchUserStartAsync: (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[], graphToken: string) =>
+    dispatch(searchIdirUsers(query, persona, position, instance, accounts, graphToken)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 

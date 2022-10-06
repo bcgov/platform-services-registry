@@ -31,20 +31,30 @@ import useRegistryApi from '../../hooks/useRegistryApi';
 import { useMsal } from '@azure/msal-react';
 
 const CreateFormPO: React.FC = () => {
-  //const [azureToken, setToken ] = useState<any>(""); // for app based permissions, not user delegate 
+  const [graphToken, setToken ] = useState<any>(""); // for app based permissions, not user delegate 
   const validator = getValidator();
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   const api = useRegistryApi();
   const { instance, accounts } = useMsal();
  
-  // useEffect(() => {
-  //   async function fetchAzureToken() {
-  //     const response = await api.getAzureToken();
-  //     //setToken(JSON.stringify(response.data)); not getting an app permission, which would arguably be better
-  //   }
-  //   fetchAzureToken();
-  // }, []);
+  useEffect(() => {
+    async function fetchAzureToken() {
+      const request = {
+        scopes: ["User.ReadBasic.All"],
+        account: accounts[0],
+      }
+      instance.acquireTokenSilent(request).then((response) => {
+        console.log(response.accessToken);
+        setToken(response.accessToken);
+      }).catch((e) => {
+          instance.acquireTokenPopup(request).then((response) => {
+            setToken(response.accessToken);
+        });
+      });
+    };
+    fetchAzureToken();
+  }, []);
 
   return (
     <Aux>
@@ -97,6 +107,7 @@ const CreateFormPO: React.FC = () => {
           position={0}
           instance={instance}
           accounts={accounts}
+          graphToken={graphToken}
         />
       </Flex>
     </Aux>
