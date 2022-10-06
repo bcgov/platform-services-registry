@@ -1,3 +1,8 @@
+/* this is used by the (hopefully silent) OAuth flow to get a token to access Microsoft Graph's API assigning contacts 
+to project requests. It should not require editing. You can find the Azure project, where the Tenant and Client IDs are
+defined, here: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/5afdfc62-637b-41cf-b186-b2de816faaf9/isMSAApp~/false
+or look for "Platform Services Registry" on BC Gov's Azure environment. */
+
 export const msalConfig = {
     auth: {
       clientId: "5afdfc62-637b-41cf-b186-b2de816faaf9",
@@ -14,10 +19,4 @@ export const msalConfig = {
   export const loginRequest = {
    scopes: ["User.ReadBasic.All"]
   };
-  
-  // Add the endpoints here for Microsoft Graph API services you'd like to use.
-  export const graphConfig = {
-      graphMeEndpoint: "https://graph.microsoft.com/v1.0/users/oamar.kanji@gov.bc.ca"
-  };
-  
   

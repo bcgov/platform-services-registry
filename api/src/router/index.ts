@@ -28,7 +28,6 @@ import provision from "./routes/provision";
 import quota from "./routes/quota";
 import request from "./routes/request";
 import communications from "./routes/communications";
-import azureOAuthToken from "./routes/azureOAuthToken";
 
 const corsOptions = {
   origin:

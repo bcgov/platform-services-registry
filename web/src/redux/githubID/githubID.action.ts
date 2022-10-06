@@ -76,8 +76,6 @@ export const searchIdirUsers = (query: string, persona: string, position: number
             const data = await response.json();
             const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
             data.avatar_url = photoObjectURL;
-            console.log(JSON.stringify(data));
-            console.log(`photo object: ${photoObjectURL}`);
             dispatch(storeUser({ persona, position, data }));
           } else {
             dispatch(noSuchUser({ persona, position }));

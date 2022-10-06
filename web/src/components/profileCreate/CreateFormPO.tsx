@@ -39,13 +39,12 @@ const CreateFormPO: React.FC = () => {
   const { instance, accounts } = useMsal();
  
   useEffect(() => {
-    async function fetchAzureToken() {
+    async function fetchGraphUserDelegateToken() {
       const request = {
         scopes: ["User.ReadBasic.All"],
         account: accounts[0],
       }
       instance.acquireTokenSilent(request).then((response) => {
-        console.log(response.accessToken);
         setToken(response.accessToken);
       }).catch((e) => {
           instance.acquireTokenPopup(request).then((response) => {
@@ -53,7 +52,7 @@ const CreateFormPO: React.FC = () => {
         });
       });
     };
-    fetchAzureToken();
+    fetchGraphUserDelegateToken();
   }, []);
 
   return (
