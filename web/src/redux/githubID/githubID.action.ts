@@ -1,4 +1,6 @@
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
+import axios from 'axios';
+import { url } from 'inspector';
 import { Dispatch } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import { getClusterDisplayName } from '../../utils/transformDataHelper';
@@ -38,39 +40,27 @@ export const createNewTechnicalLeads = () => ({
   type: GithubIDActionTypes.NEW_GITHUB_ID_ENTRY,
 });
 
-// export const searchGithubUsers = (query: string, persona: string, position: number) => (
-//   dispatch: Dispatch<GithubIDAction>,
-// ) => {
-//   dispatch(requestGithubUsers({ persona, position }));
-//   fetch(`https://api.github.com/users/${query}`)
-//     .then(async (response) => {
-//       if (response.ok) {
-//         dispatch(userExists({ persona, position }));
-//         const data = await response.json();
-//         dispatch(storeUser({ persona, position, data }));
-//       } else {
-//         dispatch(noSuchUser({ persona, position }));
-//       }
-//     })
-//     .catch((err) => {
-//       dispatch(noSuchUser({ persona, position }));
-//       throw new Error('Error happened during fetching Github data!');
-//     });
-// };
+const getUserPhoto = async (bearer: string, userId: string) => {
+  const headers = new Headers();
+  headers.append("ConsistencyLevel", "eventual");
+  headers.append("Authorization", bearer);
 
-/* For future developers: we were originally using a GitHub API to get identities from, but switched to IDIR,
-based upon Microsoft's OpenID, and we now use the MS Graph API to get our identities (PO, TL) from IDIR */
-const makeIdirDataFitExisitngModel = (data: any) => {
-    console.log(`incoming data: ${JSON.stringify(data)}`);
-     const ret = {
-      person: data.persona,
-      position: data.position,
-      email: data.value.mail,
-      name: `${data.value.givenName} ${data.value.surname}`,
-      avatar_url: "",
-     }
-     console.log(`returning: ${JSON.stringify(ret)}`);
-     return ret;
+  const options = {
+      method: "GET",
+      headers: headers,
+  };
+  const url = `https://graph.microsoft.com/v1.0/users/${userId}/photo/$value`;
+  const data = await axios.request(
+    {
+    method: 'GET',
+    headers: headers, 
+    url: url,
+    responseType: 'blob',
+  }
+  );
+  console.log(`photData: ${JSON.stringify(data)}`);
+  
+  return window.URL.createObjectURL(data.data);
 };
 
 export const searchIdirUsers = (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[]) => async (
@@ -87,6 +77,7 @@ export const searchIdirUsers = (query: string, persona: string, position: number
     const headers = new Headers();
     headers.append("ConsistencyLevel", "eventual");
     const bearer = `Bearer ${response.accessToken}`;
+   // console.log(response.accessToken);
     headers.append("Authorization", bearer);
 
     const options = {
@@ -99,8 +90,11 @@ export const searchIdirUsers = (query: string, persona: string, position: number
           if (response.ok) {
             dispatch(userExists({ persona, position }));
             const data = await response.json();
-            console.log(`data: ${JSON.stringify(data)}`);
-            dispatch(storeUser({ persona, position, data })); // I have no clue why that empty "{}" is needed, but I get errors without it.
+            const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
+            data.avatar_url = photoObjectURL;
+            console.log(JSON.stringify(data));
+            console.log(`photo object: ${photoObjectURL}`);
+            dispatch(storeUser({ persona, position, data }));
           } else {
             dispatch(noSuchUser({ persona, position }));
           }
@@ -122,7 +116,6 @@ export const searchIdirUsers = (query: string, persona: string, position: number
           if (response.ok) {
             dispatch(userExists({ persona, position }));
             let data = await response.json();
-            data = makeIdirDataFitExisitngModel(data);
             dispatch(storeUser({ persona, position, data }));
           } else {
             dispatch(noSuchUser({ persona, position }));

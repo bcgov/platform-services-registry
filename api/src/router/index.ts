@@ -52,5 +52,4 @@ export const router = (app) => {
   app.use("/api/v1/provision", provision);
   app.use("/api/v1/request", request);
   app.use("/api/v1/communications", communications);
-  app.use("/api/v1/azureOAuthToken", azureOAuthToken);
 };

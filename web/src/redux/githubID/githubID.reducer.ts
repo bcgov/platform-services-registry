@@ -55,7 +55,6 @@ interface GithubIDUserStore {
 type Action = GithubUserInputAction & GithubIDUserBasicAction & GithubIDUserStore;
 
 const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
-  //console.log(`action.payload: ${JSON.stringify(action.payload)}`);
   switch (action.type) {
     case GithubIDActionTypes.GITHUBID_USERS_REQUEST:
       const { persona: userRequestPersona, position: userRequestPosition } = action.payload;
@@ -91,8 +90,6 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
         position: userStorePosition,
         data: userStoreData,
       } = action.payload;
-    //  console.log(`action.payload: ${JSON.stringify(action.payload)}`);
-    //  console.log(`userStoreData: ${JSON.stringify(userStoreData)}`);
       const newStateForStoreUser = { ...state };
       const newPersonaForStoreUser: GithubIdBaseInterface[] = newStateForStoreUser[
         userStorePersona
@@ -102,7 +99,7 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
         githubUser: userStoreData,
         isLoading: false,
       };
-      console.log(`newPersonaForStoreUser: ${JSON.stringify(newPersonaForStoreUser)}`);
+      
       return newStateForStoreUser;
 
     case GithubIDActionTypes.GITHUBID_USER_DOES_NOT_EXIST:

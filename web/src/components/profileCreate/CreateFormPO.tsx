@@ -28,8 +28,6 @@ import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 import useRegistryApi from '../../hooks/useRegistryApi';
-import  AzureSignInButton from '../../components/common/UI/GithubUserValidation/AzureSignInButton'; 
-import  AzureSignOutButton from '../../components/common/UI/GithubUserValidation/AzureSignOutButton'; 
 import { useMsal } from '@azure/msal-react';
 
 const CreateFormPO: React.FC = () => {
@@ -50,8 +48,6 @@ const CreateFormPO: React.FC = () => {
 
   return (
     <Aux>
-      <AzureSignInButton />
-      <AzureSignOutButton />
       <FormTitle>Who is the product owner for this product?</FormTitle>
       <FormSubtitle>
         Tell us about the Product Owner (PO). This is typically the business owner of the
