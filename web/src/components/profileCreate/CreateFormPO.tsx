@@ -19,6 +19,7 @@ import { Label } from '@rebass/forms';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import { useMsal } from '@azure/msal-react';
 import { ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
 import getDecodedToken from '../../utils/getDecodedToken';
@@ -27,31 +28,31 @@ import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
-import useRegistryApi from '../../hooks/useRegistryApi';
-import { useMsal } from '@azure/msal-react';
 
 const CreateFormPO: React.FC = () => {
-  const [graphToken, setToken ] = useState<any>(""); // for app based permissions, not user delegate 
+  const [graphToken, setToken] = useState<any>('');
   const validator = getValidator();
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
-  const api = useRegistryApi();
   const { instance, accounts } = useMsal();
- 
+
   useEffect(() => {
     async function fetchGraphUserDelegateToken() {
       const request = {
-        scopes: ["User.ReadBasic.All"],
+        scopes: ['User.ReadBasic.All'],
         account: accounts[0],
-      }
-      instance.acquireTokenSilent(request).then((response) => {
-        setToken(response.accessToken);
-      }).catch((e) => {
+      };
+      instance
+        .acquireTokenSilent(request)
+        .then((response) => {
+          setToken(response.accessToken);
+        })
+        .catch((e) => {
           instance.acquireTokenPopup(request).then((response) => {
             setToken(response.accessToken);
+          });
         });
-      });
-    };
+    }
     fetchGraphUserDelegateToken();
   }, []);
 
@@ -97,7 +98,7 @@ const CreateFormPO: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="productOwner.githubId">GitHub Id</Label>
+        <Label htmlFor="productOwner.githubId">Idir Id</Label>
         <GithubUserValidation
           name="productOwner.githubId"
           defaultValue=""

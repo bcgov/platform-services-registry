@@ -250,10 +250,9 @@ export default function useRegistryApi() {
     if (!axiosInstance.current) {
       throw new Error(errorMsg);
     } else {
-      return  axiosInstance.current.get('azureOAuthToken');
+      return axiosInstance.current.get('azureOAuthToken');
     }
   };
-  
   return {
     getMinistry,
     getQuotaSizes,

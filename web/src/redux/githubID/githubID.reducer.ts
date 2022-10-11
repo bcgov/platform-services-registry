@@ -99,7 +99,7 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
         githubUser: userStoreData,
         isLoading: false,
       };
-      
+
       return newStateForStoreUser;
 
     case GithubIDActionTypes.GITHUBID_USER_DOES_NOT_EXIST:

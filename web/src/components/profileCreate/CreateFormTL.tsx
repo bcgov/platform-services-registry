@@ -14,8 +14,9 @@
 // limitations under the License.
 //
 
+import { useMsal } from '@azure/msal-react';
 import { Label } from '@rebass/forms';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { Box, Flex } from 'rebass';
@@ -30,6 +31,28 @@ import TextInput from '../common/UI/TextInput';
 
 const CreateFormTL: React.FC = () => {
   const validator = getValidator();
+  const [graphToken, setToken] = useState<any>(''); // for app based permissions, not user delegate
+  const { instance, accounts } = useMsal();
+
+  useEffect(() => {
+    async function fetchGraphUserDelegateToken() {
+      const request = {
+        scopes: ['User.ReadBasic.All'],
+        account: accounts[0],
+      };
+      instance
+        .acquireTokenSilent(request)
+        .then((response) => {
+          setToken(response.accessToken);
+        })
+        .catch((e) => {
+          instance.acquireTokenPopup(request).then((response) => {
+            setToken(response.accessToken);
+          });
+        });
+    }
+    fetchGraphUserDelegateToken();
+  }, []);
 
   return (
     <Aux>
@@ -93,23 +116,16 @@ const CreateFormTL: React.FC = () => {
                   />
                 </Flex>
                 <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                  <Label htmlFor={`${name}.githubId`}>Idir Id</Label>
                   <GithubUserValidation
                     name={`${name}.githubId`}
                     defaultValue=""
                     initialValue=""
                     persona="technicalLeads"
                     position={index}
-                  />
-                </Flex>
-                <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.idirId`}>Idir Id</Label>
-                  <GithubUserValidation
-                    name={`${name}.idirId`}
-                    defaultValue=""
-                    initialValue=""
-                    persona="technicalLeads"
-                    position={index}
+                    instance={instance}
+                    accounts={accounts}
+                    graphToken={graphToken}
                   />
                 </Flex>
               </div>

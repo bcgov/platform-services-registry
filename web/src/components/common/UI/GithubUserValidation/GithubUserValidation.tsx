@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { Field } from 'react-final-form';
 import { connect } from 'react-redux';
 import logger from 'redux-logger';
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import {
   createNewTechnicalLeads,
- // searchGithubUsers,
+  // searchGithubUsers,
   searchIdirUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
@@ -13,7 +14,6 @@ import {
   selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import AdaptedGithubUserDisplay from './AdaptedGithubUserDisplay';
-import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 
 interface GithubUserValidationInterface {
   name: string;
@@ -27,7 +27,6 @@ interface GithubUserValidationInterface {
   instance: IPublicClientApplication;
   accounts: AccountInfo[];
   graphToken: string;
-  
 }
 const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) => {
   const {
@@ -42,7 +41,6 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     instance,
     accounts,
     graphToken,
-    
   } = props;
 
   const { inputKeyword, githubUser, notFound, everFetched } =
@@ -61,7 +59,6 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
   };
 
   useEffect(() => {
-
     const delayDebounceFn = setTimeout(() => {
       // first condition: prevent first time render trigger api call because we already use peresis store.
       // Second condition: only send api request if input change
@@ -96,8 +93,14 @@ const mapStateToProps = (state: any, githubID: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[], graphToken: string) =>
-    dispatch(searchIdirUsers(query, persona, position, instance, accounts, graphToken)),
+  fetchUserStartAsync: (
+    query: string,
+    persona: string,
+    position: number,
+    instance: IPublicClientApplication,
+    accounts: AccountInfo[],
+    graphToken: string,
+  ) => dispatch(searchIdirUsers(query, persona, position, instance, accounts, graphToken)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 

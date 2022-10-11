@@ -40,49 +40,53 @@ export const createNewTechnicalLeads = () => ({
 async function getUserPhoto(bearer: string, userId: string) {
   const url = `https://graph.microsoft.com/v1.0/users/${userId}/photo/$value`;
   const headers = new Headers();
-  headers.append("ConsistencyLevel", "eventual");
-  headers.append("Authorization", bearer);
+  headers.append('ConsistencyLevel', 'eventual');
+  headers.append('Authorization', bearer);
 
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers,
   });
-  if(response.ok){
+  if (response.ok) {
     return window.URL.createObjectURL(await response.blob());
   }
-  return "";
+  return '';
 }
 
-export const searchIdirUsers = (query: string, persona: string, position: number, instance: IPublicClientApplication, accounts: AccountInfo[], graphToken: string) => async (
-  dispatch: Dispatch<GithubIDAction>,
-  ) => {
-    dispatch(requestGithubUsers({persona, position }));
-  console.log(graphToken);
+export const searchIdirUsers = (
+  query: string,
+  persona: string,
+  position: number,
+  instance: IPublicClientApplication,
+  accounts: AccountInfo[],
+  graphToken: string,
+) => async (dispatch: Dispatch<GithubIDAction>) => {
+  dispatch(requestGithubUsers({ persona, position }));
+  // use this to search by email (future work): `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')&$orderby=userPrincipalName&$count=true&$top=1`;
   const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')&$orderby=displayName&$count=true&$top=1`;
   const headers = new Headers();
-    headers.append("ConsistencyLevel", "eventual");
-    const bearer = `Bearer ${graphToken}`;
-    headers.append("Authorization", bearer);
+  headers.append('ConsistencyLevel', 'eventual');
+  const bearer = `Bearer ${graphToken}`;
+  headers.append('Authorization', bearer);
 
-    const options = {
-        method: "GET",
-        headers: headers,
-    };
+  const options = {
+    method: 'GET',
+    headers,
+  };
 
-    return fetch(url, options)
-        .then(async response => {
-          if (response.ok) {
-            dispatch(userExists({ persona, position }));
-            const data = await response.json();
-            const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
-            data.avatar_url = photoObjectURL;
-            dispatch(storeUser({ persona, position, data }));
-          } else {
-            dispatch(noSuchUser({ persona, position }));
-          }
-        })
-        .catch(error => console.error(error));
-
+  return fetch(url, options)
+    .then(async (response) => {
+      if (response.ok) {
+        dispatch(userExists({ persona, position }));
+        const data = await response.json();
+        const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
+        data.avatar_url = photoObjectURL;
+        dispatch(storeUser({ persona, position, data }));
+      } else {
+        dispatch(noSuchUser({ persona, position }));
+      }
+    })
+    .catch((error) => console.error(error));
 };
 
 export default githubIDSearchKeyword;
