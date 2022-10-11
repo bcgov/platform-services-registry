@@ -64,7 +64,7 @@ const schema = {
       maximum: 32,
       tooLong: 'Max 32 characters',
     },
-    format: { pattern: '[A-Za-z]+', flags: 'i', message: 'Must be alphabetic' },
+    format: { pattern: '[A-Za-z -]+', flags: 'i', message: 'Must be alphabetic' },
   },
   githubName: {
     presence: { allowEmpty: false, message: 'Required' },
