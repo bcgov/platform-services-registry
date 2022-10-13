@@ -5,7 +5,6 @@ import logger from 'redux-logger';
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import {
   createNewTechnicalLeads,
-  // searchGithubUsers,
   searchIdirUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';

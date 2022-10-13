@@ -14,9 +14,9 @@
 // limitations under the License.
 //
 
-import { useMsal } from '@azure/msal-react';
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { Label } from '@rebass/forms';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { Box, Flex } from 'rebass';
@@ -29,30 +29,19 @@ import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 
-const CreateFormTL: React.FC = () => {
-  const validator = getValidator();
-  const [graphToken, setToken] = useState<any>(''); // for app based permissions, not user delegate
-  const { instance, accounts } = useMsal();
+interface ContactInterface{
+  instance: IPublicClientApplication;
+  accounts: AccountInfo[];
+  graphToken: string;
+}
 
-  useEffect(() => {
-    async function fetchGraphUserDelegateToken() {
-      const request = {
-        scopes: ['User.ReadBasic.All'],
-        account: accounts[0],
-      };
-      instance
-        .acquireTokenSilent(request)
-        .then((response) => {
-          setToken(response.accessToken);
-        })
-        .catch((e) => {
-          instance.acquireTokenPopup(request).then((response) => {
-            setToken(response.accessToken);
-          });
-        });
-    }
-    fetchGraphUserDelegateToken();
-  }, []);
+const CreateFormTL: React.FC<ContactInterface> = (props) => {
+  const {
+    instance,
+    accounts,
+    graphToken,
+  } = props;
+  const validator = getValidator();
 
   return (
     <Aux>

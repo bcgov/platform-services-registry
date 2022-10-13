@@ -14,12 +14,12 @@
 // limitations under the License.
 //
 
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { useKeycloak } from '@react-keycloak/web';
 import { Label } from '@rebass/forms';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
-import { useMsal } from '@azure/msal-react';
 import { ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
 import getDecodedToken from '../../utils/getDecodedToken';
@@ -29,32 +29,20 @@ import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 
-const CreateFormPO: React.FC = () => {
-  const [graphToken, setToken] = useState<any>('');
+interface ContactInterface{
+  instance: IPublicClientApplication;
+  accounts: AccountInfo[];
+  graphToken: string;
+}
+const CreateFormPO: React.FC<ContactInterface> = (props) => {
+  const {
+    instance,
+    accounts,
+    graphToken,
+  } = props;
   const validator = getValidator();
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
-  const { instance, accounts } = useMsal();
-
-  useEffect(() => {
-    async function fetchGraphUserDelegateToken() {
-      const request = {
-        scopes: ['User.ReadBasic.All'],
-        account: accounts[0],
-      };
-      instance
-        .acquireTokenSilent(request)
-        .then((response) => {
-          setToken(response.accessToken);
-        })
-        .catch((e) => {
-          instance.acquireTokenPopup(request).then((response) => {
-            setToken(response.accessToken);
-          });
-        });
-    }
-    fetchGraphUserDelegateToken();
-  }, []);
 
   return (
     <Aux>

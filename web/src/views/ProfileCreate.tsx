@@ -16,6 +16,7 @@
 
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
+import { useMsal } from '@azure/msal-react';
 import { Redirect } from 'react-router-dom';
 import CreateFormMetadata from '../components/profileCreate/CreateFormMetadata';
 import CreateFormPO from '../components/profileCreate/CreateFormPO';
@@ -37,7 +38,9 @@ const ProfileCreate: React.FC = () => {
   const [ministry, setMinistry] = useState<any>([]);
   const [cluster, setCluster] = useState<any>([]);
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
-
+  const [graphToken, setToken] = useState<any>('');
+  const { instance, accounts } = useMsal();
+  
   const onSubmit = async (formData: any) => {
     const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
@@ -87,6 +90,23 @@ const ProfileCreate: React.FC = () => {
     }
     wrap();
     // eslint-disable-next-line
+    async function fetchGraphUserDelegateToken() {
+      const request = {
+        scopes: ['User.ReadBasic.All'],
+        account: accounts[0],
+      };
+      instance
+        .acquireTokenSilent(request)
+        .then((response) => {
+          setToken(response.accessToken);
+        })
+        .catch((e) => {
+          instance.acquireTokenPopup(request).then((response) => {
+            setToken(response.accessToken);
+          });
+        });
+    }
+    fetchGraphUserDelegateToken();
   }, [keycloak]);
 
   if (goBackToDashboard) {
@@ -101,10 +121,18 @@ const ProfileCreate: React.FC = () => {
         <CreateFormMetadata />
       </WizardPage>
       <WizardPage>
-        <CreateFormPO />
+        <CreateFormPO 
+        graphToken={graphToken}
+        instance={instance}
+        accounts={accounts}
+        />
       </WizardPage>
       <WizardPage>
-        <CreateFormTL />
+        <CreateFormTL
+          graphToken={graphToken}
+          instance={instance}
+          accounts={accounts}
+        />
       </WizardPage>
       <WizardPage>
         <CreateFormRequest />
