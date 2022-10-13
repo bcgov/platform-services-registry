@@ -58,6 +58,7 @@ import {
   isProfileProvisioned,
   sortContacts,
 } from '../utils/transformDataHelper';
+import { useMsal } from '@azure/msal-react';
 
 const StyledDiv = styled.div`
   min-width: 80%;
@@ -99,7 +100,9 @@ const ProfileEdit: React.FC = (props: any) => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
-
+  const [graphToken, setToken] = useState<any>('');
+  const { instance, accounts } = useMsal();
+  
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   // @ts-ignore
   const userRoles = decodedToken.resource_access['registry-web']
@@ -153,6 +156,26 @@ const ProfileEdit: React.FC = (props: any) => {
       projectBelongToUser();
     }
   }, [profileState, keycloak, userRoles]);
+
+  useEffect(() => {
+    async function fetchGraphUserDelegateToken() {
+      const request = {
+        scopes: ['User.ReadBasic.All'],
+        account: accounts[0],
+      };
+      instance
+        .acquireTokenSilent(request)
+        .then((response) => {
+          setToken(response.accessToken);
+        })
+        .catch((e) => {
+          instance.acquireTokenPopup(request).then((response) => {
+            setToken(response.accessToken);
+          });
+        });
+    }
+    fetchGraphUserDelegateToken();
+  }, [keycloak]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
@@ -443,6 +466,9 @@ const ProfileEdit: React.FC = (props: any) => {
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
                 isDisabled={isEditDisabled}
+                instance={instance}
+                accounts={accounts}
+                graphToken={graphToken}
               />
             )}
 

@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { Label } from '@rebass/forms';
 import arrayMutators from 'final-form-arrays';
 import React, { useState } from 'react';
@@ -53,6 +54,9 @@ interface IContactCardEditProps {
   hasPendingEdit: boolean;
   newTechnicalLeads: any;
   isDisabled: boolean;
+  instance: IPublicClientApplication;
+  accounts: AccountInfo[];
+  graphToken: string;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
@@ -64,6 +68,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     hasPendingEdit,
     newTechnicalLeads,
     isDisabled,
+    instance,
+    accounts,
+    graphToken,
   } = props;
 
   const { setOpenBackdrop } = useCommonState();
@@ -194,6 +201,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 defaultValue=""
                 initialValue={productOwner.githubId}
                 position={0}
+                instance={instance}
+                accounts={accounts}
+                graphToken={graphToken}
               />
             </Flex>
             <FormTitle>
@@ -262,6 +272,9 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             name={`${name}.githubId`}
                             persona="technicalLeads"
                             position={index}
+                            instance={instance}
+                            accounts={accounts}
+                            graphToken={graphToken}
                           />
                         </Flex>
                       </div>

@@ -53,7 +53,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
       return 'Github User Not Found';
     }
     if (inputKeyword && !everFetched) {
-      return 'Still Loading Github User infomation';
+      return 'Still Loading IDIR User infomation';
     }
   };
 
