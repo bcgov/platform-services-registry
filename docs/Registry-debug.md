@@ -1,5 +1,17 @@
 Some bug/issues for Registry that you might see in production env:
 
+### Backup database:
+
+Registry is using backup-container to do database backup cronjob and we can also restore backup from there. Please read through this [documentataion](https://github.com/BCDevOps/backup-container#using-the-backup-script) of how to use backup-container.
+
+Example command to restore from backup:
+
+```
+./backup.sh -r registry-patroni-master:5432/registry -f /backups/daily/2022-09-20/registry-patroni-master-registry_******.sql.gz
+```
+
+This is required super-admin password for DB, you can find it in https://console.apps.silver.devops.gov.bc.ca/k8s/ns/platform-registry-prod/secrets/registry-patroni-creds
+
 ### User can not log in to dashboard: a user can log in, sees their dashboard momentarily, and then get logged out back to /public-landing?redirect=/dashboard
 
 This is related to a pull request that [Block GitHub keycloak token](https://github.com/bcgov/platform-services-registry/pull/665/files).
