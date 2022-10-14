@@ -1,43 +1,43 @@
-Some bug/issue for Registry that you might see in production env:
+Some bug/issues for Registry that you might see in production env:
 
-### User can not login to dashboard: a user can log in, sees their dashboard momentarily, and then gets logged out back to /public-landing?redirect=/dashboard
+### User can not log in to dashboard: a user can log in, sees their dashboard momentarily, and then get logged out back to /public-landing?redirect=/dashboard
 
-This is related to a pull request that [Block github keycloak token](https://github.com/bcgov/platform-services-registry/pull/665/files).
-Normally there are two reasons(or maybe three) that lead this issue:
+This is related to a pull request that [Block GitHub keycloak token](https://github.com/bcgov/platform-services-registry/pull/665/files).
+Normally there are two reasons(or maybe three) that lead to this issue:
 
-1. User is loged into the same realm with their github account, while the GitHub session still exist, they are trying to login to Registry.
+1. User is logged into the same realm with their GitHub account, while the GitHub session still exists, they are trying to log in to Registry.
 
-- To solve this situation, we just need them to completely loged out once, or to use other browser.
+- To solve this situation, we just need them to completely log out once, or use another browser.
 
-2. User's keyclock account have GitHub identity links.
+2. User's keycloack account has GitHub identity links.
 
-- To identify if is this case, we need to find user profile in https://oidc.gov.bc.ca/auth/admin/devhub/console/#/realms/devhub/users.
+- To identify if the issue is in this case, we need to find the user profile at https://oidc.gov.bc.ca/auth/admin/devhub/console/#/realms/devhub/users.
 
-- In their user page, selete **Identity Provider Links** tab and observe if there's a github account that linked to this account. If yes, remove it.
+- In their user page, select **Identity Provider Links** tab and observe if there's a GitHub account that is linked to this account. If yes, remove it.
 
-3. User only have one GitHub KeyCloack account and that one have their gov email binded so when they loged in with IDIR, KeyCloack always consider them login as GitHub.
+3. User only has one GitHub KeyCloack account and that one has their gov email bound so when they log in with IDIR, KeyCloack always consider them to log in as GitHub.
 
-- This case is really easy to identify, they in keycloack [user page](https://oidc.gov.bc.ca/auth/admin/devhub/console/#/realms/devhub/users), their idir user profile have github suffix.
+- This case is really easy to identify, they are in keycloack [user page](https://oidc.gov.bc.ca/auth/admin/devhub/console/#/realms/devhub/users), and their idir user profile has a GitHub suffix.
 
 - To solve this issue is also easy, delete this user profile and let them login back again to recreate their account with idir.
 
 ### Project stuck in pending edit or approved status:
 
-Under this situation, user are not able to update registry product. And there are serval reason that can lead this happen except registry internal bug
+Under this situation, users are not able to update the registry product. And there are serval reasons that can lead this to happen except the registry internal bug
 
-Normally provisioner url is been disabled, you can enable it by updating its route from `argo-server-DISABLE` to `argo-server`. And please remmber to disbale it again once you finish using provisioner because it doesn't have authentification.
+Normally provisioner URL is been disabled, you can enable it by updating its route from `Argo-server-DISABLE` to `Argo-server`. And please remember to disable it again once you finish using Provisioner because it doesn't have authentification.
 
-1.  provisioner job failed or not finished. look into provisioner workflow and you will find a red entry that shows the fail job. A failed job means provisioner has logic issue and provisioner repo is here: https://github.com/bcgov-c/devops-fulfillment-pipeline
+1.  provisioner job failed or not finished. look into the provisioner workflow and you will find a red entry that shows the failed job. A failed job means the provisioner has a logic issue and provisioner repo is here: https://github.com/bcgov-c/devops-fulfillment-pipeline
 
-2.  provisioner job successed, but pr is not been auto merged in request [repos](https://github.com/BC-Gov-PaaS-Platform-Services)(each cluster has it own repo).
+2.  provisioner job success, but pr is not been auto merged in request [repos](https://github.com/BC-Gov-PaaS-Platform-Services)(each cluster has its repo).
 
-in this case, we just need to manually merge the pull request and make sure the triggered github action finished for that project.
+in this case, we just need to manually merge the pull request and make sure the triggered github action is finished for that project.
 
-3.  provisioner did not recieve the request at all. Reason coule be vary, but we can debug/unblock the team by :
+3.  provisioner did not receive the request at all. The reason could be vary, but we can debug/unblock the team by :
 
-    - 1.  maunally cancle their last request and let them send out request again while we observe registry closely. The way to do this is through db change, so please **back up db** before any change happens.
+    - 1.  manually cancel their last request and let them send out the request again while we observe the registry closely. The way to do this is through DB change, so please **back up DB** before any change happens.
 
-          This method can also be use when provisioner is doing some test and development and unable to successfully send out pull request. Here's how to do it:
+          This method can also be used when the provisioner is doing some testing and development and is unable to successfully send out a pull request. Here's how to do it:
 
                     ```
                     oc -n platform-registry-prod rsh registry-patroni-0
@@ -56,32 +56,32 @@ in this case, we just need to manually merge the pull request and make sure the 
                     update profile set profile_status='provisioned' where id={request_ID};
                 ```
 
-    - 2. (**IMPORTANT**) Run a **sync pending** task on registry for cluster.
-         This will find which project that is stucked at pending Edit/approval status and run the provisioner job for them again.
+    - 2. (**IMPORTANT**) Run a **sync pending** task on the registry for the cluster.
+         This will find which project is stuck at pending Edit/approval status and run the provisioner job for them again.
 
-         Document can be found in here: https://github.com/bcgov-c/platform-services-docs/blob/b1b16f3c2a1483bb87d4b0e94467027055405583/provisioner/provisioner_management.md#manually-sync-pending-requests.
+         The document can be found here: https://github.com/bcgov-c/platform-services-docs/blob/b1b16f3c2a1483bb87d4b0e94467027055405583/provisioner/provisioner_management.md#manually-sync-pending-requests.
 
-4.  Ocassionaly Github action that send callback to registry will failed. In this case, the request repo already have the update.
+4.  Occasionally Github action that sends the callback to the registry will fail. In this case, the request repo already has the update.
 
-    So even if you re-run the provisioner task, the pr won't able to be made because there's no difference bewteen the pr and the master branch. So that the project will also stucked at approval status.
+    So even if you re-run the provisioner task, the pr won't able to be made because there's no difference between the pr and the master branch. So that the project will also be stuck at approval status.
 
-    - To solve this issue, we can send a pr to manually change that product in repo a little bit and let provisioner re-run the task(By click re-submit on provisioner UI, or run a `sync pending` to that cluster) **OR**
-    - (not recommand) We will need to maunally mark this project as provisioned just like upon mentioned (**REMEMBER TO BACKUP DB**).
+    - To solve this issue, we can send a pr to manually change that product in the repo a little bit and let provisioner re-run the task(By clicking re-submit on provisioner UI, or running a `sync pending` to that cluster) **OR**
+    - (not recommended) We will need to manually mark this project as provisioned just like upon mentioned (**REMEMBER TO BACKUP DB**).
 
 ### Registry failed to load the dashboard
 
-Its a front-end logic bug that needs to be fixed, it basically means that dashboard don't have any income data.
+It's a front-end logic bug that needs to be fixed, it basically means that the dashboard doesn't have any income data.
 
 1. check if api pod ran normally
 
-   - if not, check the log and events tab to fix the issue. Rocketchat Channel Devops-howto is a good place to ask those question.
+   - if not, check the log and events tab to fix the issue. Rocket chat Channel Devops-howto is a good place to ask those questions.
 
-2. check if database pod run normally
+2. check if the database pod runs normally
 
-   - check if migration script run successfully.(https://github.com/bcgov/platform-services-registry/blob/0d05d9013d1bf9f87b1980a5c14065f484bf1ac8/openshift/README.md#verify-release)
+   - check if the migration script runs successfully. (https://github.com/bcgov/platform-services-registry/blob/0d05d9013d1bf9f87b1980a5c14065f484bf1ac8/openshift/README.md#verify-release)
 
-   - check if database have any data, if not, recover data from lasted backup using `backup-container`.
+   - check if the database has any data, if not, recover data from lasted backup using `backup-container`.
 
-### Registry need cluster wide update
+### Registry needs cluster wide update
 
-This will happen if we want to add some new configuration to applied to all namespaces, please follow this instruction: https://github.com/bcgov-c/platform-services-docs/blob/b1b16f3c2a1483bb87d4b0e94467027055405583/provisioner/provisioner_management.md#manually-sync-all-project-sets
+This will happen if we want to add some new configuration to apply to all namespaces, please follow this instruction: https://github.com/bcgov-c/platform-services-docs/blob/b1b16f3c2a1483bb87d4b0e94467027055405583/provisioner/provisioner_management.md#manually-sync-all-project-sets
