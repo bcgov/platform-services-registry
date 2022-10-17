@@ -199,7 +199,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 name="updatedProductOwner.githubId"
                 persona="productOwner"
                 defaultValue=""
-                initialValue={productOwner.githubId}
+                initialValue={productOwner.email}
                 position={0}
                 instance={instance}
                 accounts={accounts}

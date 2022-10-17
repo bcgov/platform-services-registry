@@ -61,9 +61,16 @@ export const searchIdirUsers = (
   accounts: AccountInfo[],
   graphToken: string,
 ) => async (dispatch: Dispatch<GithubIDAction>) => {
+  console.log(`searching for ${query}`);
   dispatch(requestGithubUsers({ persona, position }));
   // use this to search by email (future work): `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')&$orderby=userPrincipalName&$count=true&$top=1`;
-  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')&$orderby=displayName&$count=true&$top=1`;
+  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')
+  &$orderby=displayName&$count=true
+  &$top=1
+  &$select=onPremisesSamAccountName,
+  id,
+  mail,
+  displayName`;
   const headers = new Headers();
   headers.append('ConsistencyLevel', 'eventual');
   const bearer = `Bearer ${graphToken}`;
@@ -79,6 +86,7 @@ export const searchIdirUsers = (
       if (response.ok) {
         dispatch(userExists({ persona, position }));
         const data = await response.json();
+       // console.log(JSON.stringify(data));
         const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
         data.avatar_url = photoObjectURL;
         dispatch(storeUser({ persona, position, data }));
