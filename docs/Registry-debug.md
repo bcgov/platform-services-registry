@@ -63,7 +63,7 @@ in this case, we just need to manually merge the pull request and make sure the 
                 find the latest request ID with that profile
 
                 ```
-                    update request set is_active=false where id={request_ID};
+                    update request set is_active=false where id={reques_ID};
 
                     update profile set profile_status='provisioned' where id={request_ID};
                 ```
@@ -71,7 +71,7 @@ in this case, we just need to manually merge the pull request and make sure the 
     - 2. (**IMPORTANT**) Run a **sync pending** task on the registry for the cluster.
          This will find which project is stuck at pending Edit/approval status and run the provisioner job for them again.
 
-         The document can be found here: https://github.com/bcgov-c/platform-services-docs/blob/b1b16f3c2a1483bb87d4b0e94467027055405583/provisioner/provisioner_management.md#manually-sync-pending-requests.
+         The document can be found here: https://github.com/bcgov-c/platform-services-docs/blob/main/provisioner/provisioner_management.md#manually-sync-pending-requests.
 
 4.  Occasionally Github action that sends the callback to the registry will fail. In this case, the request repo already has the update.
 
@@ -90,10 +90,10 @@ It's a front-end logic bug that needs to be fixed, it basically means that the d
 
 2. check if the database pod runs normally
 
-   - check if the migration script runs successfully. (https://github.com/bcgov/platform-services-registry/blob/0d05d9013d1bf9f87b1980a5c14065f484bf1ac8/openshift/README.md#verify-release)
+   - check if the migration script runs successfully. (https://github.com/bcgov/platform-services-registry/blob/master/openshift/README.md#verify-release)
 
    - check if the database has any data, if not, recover data from lasted backup using `backup-container`.
 
 ### Registry needs cluster wide update
 
-This will happen if we want to add some new configuration to apply to all namespaces, please follow this instruction: https://github.com/bcgov-c/platform-services-docs/blob/b1b16f3c2a1483bb87d4b0e94467027055405583/provisioner/provisioner_management.md#manually-sync-all-project-sets
+This will happen if we want to add some new configuration to apply to all namespaces, please follow this instruction: https://github.com/bcgov-c/platform-services-docs/blob/main/provisioner/provisioner_management.md#manually-sync-all-project-sets
