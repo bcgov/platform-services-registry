@@ -64,10 +64,11 @@ export const searchIdirUsers = (
   console.log(`searching for ${query}`);
   dispatch(requestGithubUsers({ persona, position }));
   // use this to search by email (future work): `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')&$orderby=userPrincipalName&$count=true&$top=1`;
+  // mailNickname is user's IDIR name
   const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')
   &$orderby=displayName&$count=true
   &$top=1
-  &$select=onPremisesSamAccountName,
+  &$select=mailNickname,
   id,
   mail,
   displayName`;
@@ -86,9 +87,12 @@ export const searchIdirUsers = (
       if (response.ok) {
         dispatch(userExists({ persona, position }));
         const data = await response.json();
-       // console.log(JSON.stringify(data));
-        const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
-        data.avatar_url = photoObjectURL;
+      //  console.log(JSON.stringify(data));
+        if(data.value[0].id){
+          const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
+          data.avatar_url = photoObjectURL;
+          data.value[0].githubId = data.value[0].mailNickname; // bit of an ugly hack, but it's hard to make sense of how this works. 
+        }
         dispatch(storeUser({ persona, position, data }));
       } else {
         dispatch(noSuchUser({ persona, position }));
