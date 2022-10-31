@@ -50,7 +50,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
       return 'Required';
     }
     if (everFetched && notFound) {
-      return 'Github User Not Found';
+      return 'IDIR User Not Found. \nMake sure you are using an email address associated with an IDIR account';
     }
     if (inputKeyword && !everFetched) {
       return 'Still Loading IDIR User infomation';

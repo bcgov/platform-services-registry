@@ -63,13 +63,10 @@ export const searchIdirUsers = (
 ) => async (dispatch: Dispatch<GithubIDAction>) => {
   console.log(`searching for ${query}`);
   dispatch(requestGithubUsers({ persona, position }));
-  // use this to search by email (future work): `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')&$orderby=userPrincipalName&$count=true&$top=1`;
-  // mailNickname is user's IDIR name
-  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'${query}')
+  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
   &$orderby=displayName&$count=true
   &$top=1
-  &$select=mailNickname,
-  id,
+  &$select=id,
   mail,
   displayName`;
   const headers = new Headers();
@@ -87,11 +84,12 @@ export const searchIdirUsers = (
       if (response.ok) {
         dispatch(userExists({ persona, position }));
         const data = await response.json();
-      //  console.log(JSON.stringify(data));
         if(data.value[0].id){
           const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
           data.avatar_url = photoObjectURL;
-          data.value[0].githubId = data.value[0].mailNickname; // bit of an ugly hack, but it's hard to make sense of how this works. 
+          data.githubId = data.value[0].id;
+          data.email = data.value[0].mail;
+          console.log(`fetch is passing user data: ${JSON.stringify(data)}`);
         }
         dispatch(storeUser({ persona, position, data }));
       } else {

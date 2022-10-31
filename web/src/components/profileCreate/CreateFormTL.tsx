@@ -96,15 +96,26 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.email`}>Email Address</Label>
-                  <Field<string>
+                  {/* <Field<string>
                     name={`${name}.email`}
                     component={TextInput}
                     validate={validator.mustBeValidEmail}
                     placeholder="jane.doe@example.com"
                     sx={{ textTransform: 'none' }}
+                  /> */}
+                  <GithubUserValidation
+                    name={`${name}.email`}
+                    defaultValue=""
+                    initialValue=""
+                    placeholder="jane.doe@example.com"
+                    persona="technicalLeads"
+                    position={index}
+                    instance={instance}
+                    accounts={accounts}
+                    graphToken={graphToken}
                   />
                 </Flex>
-                <Flex flexDirection="column">
+                {/* <Flex flexDirection="column">
                   <Label htmlFor={`${name}.githubId`}>Idir Id</Label>
                   <GithubUserValidation
                     name={`${name}.githubId`}
@@ -116,7 +127,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                     accounts={accounts}
                     graphToken={graphToken}
                   />
-                </Flex>
+                </Flex> */}
               </div>
             ))}
             {fields.length! < MAXIMUM_TECHNICAL_LEADS ? (
