@@ -75,22 +75,19 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <Label htmlFor="productOwner.email">Email Address</Label>
-        <Field<string>
+        <Label htmlFor="productOwner.email">IDIR Email Address</Label>
+        {/* <Field<string>
           name="productOwner.email"
           component={TextInput}
           validate={validator.mustBeValidEmail}
           defaultValue=""
           initialValue={decodedToken.email}
           sx={{ textTransform: 'none' }}
-        />
-      </Flex>
-      <Flex flexDirection="column">
-        <Label htmlFor="productOwner.githubId">Idir Id</Label>
-        <GithubUserValidation
-          name="productOwner.githubId"
+        /> */}
+         <GithubUserValidation
+          name="productOwner.email"
           defaultValue=""
-          initialValue=""
+          initialValue={decodedToken.email}
           persona="productOwner"
           position={0}
           instance={instance}
@@ -98,6 +95,7 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
           graphToken={graphToken}
         />
       </Flex>
+     
     </Aux>
   );
 };
