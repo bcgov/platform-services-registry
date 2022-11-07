@@ -68,7 +68,9 @@ export const searchIdirUsers = (
   &$top=1
   &$select=id,
   mail,
-  displayName`;
+  displayName,
+  givenName,
+  surname`;
   const headers = new Headers();
   headers.append('ConsistencyLevel', 'eventual');
   const bearer = `Bearer ${graphToken}`;
@@ -89,7 +91,6 @@ export const searchIdirUsers = (
           data.avatar_url = photoObjectURL;
           data.githubId = data.value[0].id;
           data.email = data.value[0].mail;
-          console.log(`fetch is passing user data: ${JSON.stringify(data)}`);
         }
         dispatch(storeUser({ persona, position, data }));
       } else {
