@@ -17,7 +17,7 @@
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { useKeycloak } from '@react-keycloak/web';
 import { Label } from '@rebass/forms';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
 import { ROLES } from '../../constants';
@@ -27,22 +27,37 @@ import getValidator from '../../utils/getValidator';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
-import TextInput from '../common/UI/TextInput';
+import { connect } from "react-redux";
+import { selectProductOwner } from '../../redux/githubID/githubID.selector';
+import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
+import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
 
 interface ContactInterface{
   instance: IPublicClientApplication;
   accounts: AccountInfo[];
   graphToken: string;
+  productOwner: GithubIdBaseInterface;
 }
 const CreateFormPO: React.FC<ContactInterface> = (props) => {
   const {
     instance,
     accounts,
     graphToken,
+    productOwner,
   } = props;
   const validator = getValidator();
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+
+  useEffect(() => {
+    mapDispatchToProps({productOwner});
+    setFirstName(productOwner.githubUser? productOwner.githubUser.value[0].givenName : '');
+    setLastName(productOwner.githubUser? productOwner.githubUser.value[0].surname : '');
+    setEmail(productOwner.githubUser? productOwner.githubUser.value[0].mail : '');
+  }, [productOwner]);
 
   return (
     <Aux>
@@ -55,37 +70,9 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
         {({ input }) => <input type="hidden" {...input} id="roleId" />}
       </Field>
       <Flex flexDirection="column">
-        <Label htmlFor="productOwner.firstName">First Name</Label>
-        <Field<string>
-          name="productOwner.firstName"
-          component={TextInput}
-          validate={validator.mustBeValidName}
-          defaultValue=""
-          initialValue={decodedToken.given_name}
-        />
-      </Flex>
-      <Flex flexDirection="column">
-        <Label htmlFor="productOwner.lastName">Last Name</Label>
-        <Field<string>
-          name="productOwner.lastName"
-          component={TextInput}
-          validate={validator.mustBeValidName}
-          defaultValue=""
-          initialValue={decodedToken.family_name}
-        />
-      </Flex>
-      <Flex flexDirection="column">
-        <Label htmlFor="productOwner.email">IDIR Email Address</Label>
-        {/* <Field<string>
-          name="productOwner.email"
-          component={TextInput}
-          validate={validator.mustBeValidEmail}
-          defaultValue=""
-          initialValue={decodedToken.email}
-          sx={{ textTransform: 'none' }}
-        /> */}
-         <GithubUserValidation
-          name="productOwner.email"
+        <Label htmlFor="productOwner.githubId">Search contact by their IDIR email address</Label>
+        <GithubUserValidation
+          name="productOwner.githubId"
           defaultValue=""
           initialValue={decodedToken.email}
           persona="productOwner"
@@ -95,9 +82,50 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
           graphToken={graphToken}
         />
       </Flex>
-     
+      <Flex flexDirection="column">
+        <Label htmlFor="productOwner.firstName">First Name</Label>
+        <Field<string> 
+        name="productOwner.firstName"
+        defaultValue=""
+        initialValue={`${firstName}`}
+        >
+          {({ input }) => <input type="text" value={`${firstName}`} readOnly={true}/>}
+        </Field>
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="productOwner.lastName">Last Name</Label>
+        <Field<string>
+          name="productOwner.lastName"
+          defaultValue=""
+          initialValue={lastName}
+          >
+            {({ input }) => <input type="text" value={`${lastName}`} readOnly={true}/>}
+        </Field>
+      </Flex>
+      <Flex flexDirection="column">
+        <Label htmlFor="productOwner.email">IDIR Email Address</Label>
+        <Field<string>
+          name="productOwner.email"
+          defaultValue=""
+          value={email}
+          sx={{ textTransform: 'none' }}
+        >
+         {({ input }) => <input type="text" value={`${email}`} onChange={() => {}}/>}
+        </Field>
+      </Flex>
     </Aux>
   );
 };
 
-export default CreateFormPO;
+const mapStateToProps = (state: any) => ({
+//   selectedTechnicalLeads: selectTechnicalLead(githubID.position)(state),
+  productOwner: selectProductOwner()(state),
+});
+const mapDispatchToProps = (dispatch: any) => ({
+  dispatchSearchGithubIDInput: (payload: {
+    persona: string;
+    inputValue: string;
+    position: number;
+  }) => dispatch(githubIDSearchKeyword(payload)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(CreateFormPO);

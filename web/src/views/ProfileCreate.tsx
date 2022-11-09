@@ -47,7 +47,7 @@ const ProfileCreate: React.FC = () => {
     try {
       const technicalContacts = [...technicalLeads, productOwner];
       const clusters = transformClusters(profile);
-
+      console.log(`product owner on form submit: \n ${JSON.stringify(productOwner)}`);
       // 1. Subscribe to communications
       const userEmails = technicalContacts.map((user) => user.email);
       await api.subscribeCommunications(userEmails);
