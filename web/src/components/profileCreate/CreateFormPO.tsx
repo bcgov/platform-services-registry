@@ -38,6 +38,7 @@ interface ContactInterface{
   graphToken: string;
   productOwner: GithubIdBaseInterface;
 }
+
 const CreateFormPO: React.FC<ContactInterface> = (props) => {
   const {
     instance,
@@ -51,7 +52,7 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-
+  
   useEffect(() => {
     mapDispatchToProps({productOwner});
     setFirstName(productOwner.githubUser? productOwner.githubUser.value[0].givenName : '');
@@ -87,7 +88,7 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
         <Field<string> 
         name="productOwner.firstName"
         defaultValue=""
-        initialValue={`${firstName}`}
+        initialValue=""
         >
           {({ input }) => <input type="text" value={`${firstName}`} readOnly={true}/>}
         </Field>
@@ -97,7 +98,7 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
         <Field<string>
           name="productOwner.lastName"
           defaultValue=""
-          initialValue={lastName}
+          initialValue=""
           >
             {({ input }) => <input type="text" value={`${lastName}`} readOnly={true}/>}
         </Field>
@@ -106,11 +107,11 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
         <Label htmlFor="productOwner.email">IDIR Email Address</Label>
         <Field<string>
           name="productOwner.email"
-          defaultValue=""
-          value={email}
+          defaultValue={email}
           sx={{ textTransform: 'none' }}
+          initialValue=""
         >
-         {({ input }) => <input type="text" value={`${email}`} onChange={() => {}}/>}
+       {({ input }) => <input type="text" value={`${email}`} readOnly={true}/>}
         </Field>
       </Flex>
     </Aux>
@@ -118,7 +119,6 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
 };
 
 const mapStateToProps = (state: any) => ({
-//   selectedTechnicalLeads: selectTechnicalLead(githubID.position)(state),
   productOwner: selectProductOwner()(state),
 });
 const mapDispatchToProps = (dispatch: any) => ({

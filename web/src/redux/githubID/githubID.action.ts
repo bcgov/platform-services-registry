@@ -61,7 +61,6 @@ export const searchIdirUsers = (
   accounts: AccountInfo[],
   graphToken: string,
 ) => async (dispatch: Dispatch<GithubIDAction>) => {
-  console.log(`searching for ${query}`);
   dispatch(requestGithubUsers({ persona, position }));
   const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
   &$orderby=displayName&$count=true

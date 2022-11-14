@@ -29,8 +29,17 @@ import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformClusters } from '../utils/transformDataHelper';
 import Wizard, { WizardPage } from '../utils/Wizard';
+import { connect } from 'react-redux';
+import { selectProductOwner, selectTechnicalLead } from '../redux/githubID/githubID.selector';
+import { GithubIdBaseInterface } from '../redux/githubID/githubID.reducer';
 
-const ProfileCreate: React.FC = () => {
+// contacts from redux state. We'll just jam in them as the form is submitted. 
+interface ProfileCreateInterface{
+  stateProductOwner: GithubIdBaseInterface;
+  stateTechnicalLeads: GithubIdBaseInterface;
+}
+
+const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
@@ -40,6 +49,7 @@ const ProfileCreate: React.FC = () => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
   const [graphToken, setToken] = useState<any>('');
   const { instance, accounts } = useMsal();
+  const { stateProductOwner, stateTechnicalLeads } = props;
   
   const onSubmit = async (formData: any) => {
     const { profile, technicalLeads, productOwner } = formData;
@@ -47,7 +57,11 @@ const ProfileCreate: React.FC = () => {
     try {
       const technicalContacts = [...technicalLeads, productOwner];
       const clusters = transformClusters(profile);
-      console.log(`product owner on form submit: \n ${JSON.stringify(productOwner)}`);
+      // here's an awful hack to get the Redux state mapped to the form data. 
+      formData.productOwner.firstName = stateProductOwner.githubUser.value[0].givenName;
+      formData.productOwner.lastName = stateProductOwner.githubUser.value[0].surname;
+      formData.productOwner.email = stateProductOwner.githubUser.value[0].mail;
+      formData.productOwner.githubId = stateProductOwner.githubUser.value[0].mail;
       // 1. Subscribe to communications
       const userEmails = technicalContacts.map((user) => user.email);
       await api.subscribeCommunications(userEmails);
@@ -141,4 +155,18 @@ const ProfileCreate: React.FC = () => {
   );
 };
 
-export default ProfileCreate;
+const mapStateToProps = (state: any, githubID: any) => ({
+    stateTechnicalLeads: selectTechnicalLead(githubID.position)(state),
+    stateProductOwner: selectProductOwner()(state),
+  });
+  // const mapDispatchToProps = (dispatch: any) => ({
+  //   dispatchSearchGithubIDInput: (payload: {
+  //     persona: string;
+  //     inputValue: string;
+  //     position: number;
+  //   }) => dispatch(githubIDSearchKeyword(payload)),
+  // });
+  
+export default connect(mapStateToProps)(ProfileCreate);
+
+//export default ProfileCreate;
