@@ -16,12 +16,16 @@
 
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { Label } from '@rebass/forms';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
+import { connect } from 'react-redux';
 import { Box, Flex } from 'rebass';
 import { MAXIMUM_TECHNICAL_LEADS, MINIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
+import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
+import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
+import { selectProductOwner, selectTechnicalLead } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
@@ -29,10 +33,12 @@ import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 
-interface ContactInterface{
+interface ContactInterface {
   instance: IPublicClientApplication;
   accounts: AccountInfo[];
   graphToken: string;
+  selectedTechnicalLeads: GithubIdBaseInterface;
+  position: number;
 }
 
 const CreateFormTL: React.FC<ContactInterface> = (props) => {
@@ -40,8 +46,18 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
     instance,
     accounts,
     graphToken,
+    selectedTechnicalLeads,
+    position,
   } = props;
   const validator = getValidator();
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  console.log(`${JSON.stringify(selectedTechnicalLeads)}`);
+  useEffect(() => {
+    mapDispatchToProps({ selectedTechnicalLeads });
+    console.log(`selected Technical Leads: ${JSON.stringify(selectedTechnicalLeads)}`);
+  }, [selectedTechnicalLeads]);
 
   return (
     <Aux>
@@ -77,6 +93,19 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                   {({ input }) => <input type="hidden" {...input} id={`${name}.roleId`} />}
                 </Field>
                 <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.githubId`}>Search contact by their IDIR email address</Label>
+                  <GithubUserValidation
+                    name={`${name}.githubId`}
+                    defaultValue=""
+                    initialValue=""
+                    persona="technicalLeads"
+                    position={index}
+                    instance={instance}
+                    accounts={accounts}
+                    graphToken={graphToken}
+                  />
+                </Flex>
+                {/* <Flex flexDirection="column">
                   <Label htmlFor={`${name}.firstName`}>First Name</Label>
                   <Field<string>
                     name={`${name}.firstName`}
@@ -84,8 +113,18 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                     validate={validator.mustBeValidName}
                     placeholder="Jane"
                   />
-                </Flex>
+                </Flex> */}
                 <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                  <Field<string>
+                    name={`${name}.firstName`}
+                    defaultValue=""
+                    initialValue=""
+                  >
+                    {({ input }) => <input type="text" value={`${firstName}`} readOnly={true} />}
+                  </Field>
+                </Flex>
+                {/* <Flex flexDirection="column">
                   <Label htmlFor={`${name}.lastName`}>Last Name</Label>
                   <Field<string>
                     name={`${name}.lastName`}
@@ -93,7 +132,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                     validate={validator.mustBeValidName}
                     placeholder="Doe"
                   />
-                </Flex>
+                </Flex> */}
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.email`}>Email Address</Label>
                   {/* <Field<string>
@@ -103,7 +142,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                     placeholder="jane.doe@example.com"
                     sx={{ textTransform: 'none' }}
                   /> */}
-                  <GithubUserValidation
+                  {/* <GithubUserValidation
                     name={`${name}.email`}
                     defaultValue=""
                     initialValue=""
@@ -113,7 +152,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                     instance={instance}
                     accounts={accounts}
                     graphToken={graphToken}
-                  />
+                  /> */}
                 </Flex>
                 {/* <Flex flexDirection="column">
                   <Label htmlFor={`${name}.githubId`}>Idir Id</Label>
@@ -149,4 +188,14 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
   );
 };
 
-export default CreateFormTL;
+const mapStateToProps = (state: any, githubID: any) => ({
+  selectedTechnicalLeads: selectTechnicalLead(githubID.position)(state),
+});
+const mapDispatchToProps = (dispatch: any) => ({
+  dispatchSearchGithubIDInput: (payload: {
+    persona: string;
+    inputValue: string;
+    position: number;
+  }) => dispatch(githubIDSearchKeyword(payload)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(CreateFormTL);
