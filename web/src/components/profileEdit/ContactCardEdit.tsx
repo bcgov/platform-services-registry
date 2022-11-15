@@ -17,7 +17,7 @@
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { Label } from '@rebass/forms';
 import arrayMutators from 'final-form-arrays';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
 import { connect } from 'react-redux';
@@ -34,6 +34,7 @@ import {
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
+import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
@@ -57,6 +58,7 @@ interface IContactCardEditProps {
   instance: IPublicClientApplication;
   accounts: AccountInfo[];
   graphToken: string;
+  allPersona: any;
 }
 
 const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
@@ -71,6 +73,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     instance,
     accounts,
     graphToken,
+    allPersona,
   } = props;
 
   const { setOpenBackdrop } = useCommonState();
@@ -100,7 +103,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       // 1. Prepare contact edit request body.
       const { updatedProductOwner, updatedTechnicalLeads } = formData;
       const updatedContacts = [...updatedTechnicalLeads, updatedProductOwner];
-
+      console.log(`formData: ${JSON.stringify(formData)}`);
       // 2. Request the profile contact edit.
       await api.updateContactsByProfileId(profileId, updatedContacts);
 
@@ -114,6 +117,48 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     }
     setOpenBackdrop(false);
   };
+  
+  /* Mapping Data from MS Graph API to fields */
+  const [POfirstName, setPOFirstName] = useState<string>('');
+  const [POLastName, setPOLastName] = useState<string>('');
+  const [POEmail, setPOEmail] = useState<string>('');
+
+  const [tl1FirstName, setTl1FirstName] = useState<string>('');
+  const [tl1LastName, setTl1LastName] = useState<string>('');
+  const [tl1Email, setTl1Email] = useState<string>('');
+
+  const [tl2FirstName, setTl2FirstName] = useState<string>('');
+  const [tl2LastName, setTl2LastName] = useState<string>('');
+  const [tl2Email, setTl2Email] = useState<string>('');
+
+
+  useEffect(() => {
+    mapDispatchToProps({ allPersona });
+    if(allPersona.productOwner[0] && allPersona.productOwner[0].githubUser && allPersona.productOwner[0].githubUser.value[0]){
+      const productOwner = allPersona.productOwner[0].githubUser.value[0];
+      if (productOwner ){
+        setPOFirstName(productOwner.givenName);
+        setPOLastName(productOwner.surname);
+        setPOEmail(productOwner.mail);
+      }
+    }
+    if(allPersona.technicalLeads[0] && allPersona.technicalLeads[0].githubUser){
+      const tl1 = allPersona.technicalLeads[0].githubUser.value[0];
+      if(tl1){
+        setTl1FirstName(tl1.givenName);
+        setTl1LastName(tl1.surname);
+        setTl1Email(tl1.mail);
+      }
+    }
+    if (allPersona.technicalLeads[1] && allPersona.technicalLeads[1].githubUser){
+      const tl2 = allPersona.technicalLeads[1].githubUser.value[0];
+      if(tl2){
+        setTl2FirstName(tl2.givenName);
+        setTl2LastName(tl2.surname);
+        setTl2Email(tl2.mail);
+      }
+    }
+  }, [allPersona]);
 
   const TL_ROLE = {
     primary: 'Primary',
@@ -159,40 +204,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
             <Field name="updatedProductOwner.id" initialValue={productOwner.id}>
               {({ input }) => <input type="hidden" {...input} id="id" />}
             </Field>
-            <Field name="updatedProductOwner.roleId" initialValue={productOwner.roleId}>
-              {({ input }) => <input type="hidden" {...input} id="roleId" />}
-            </Field>
-            <Flex flexDirection="column">
-              <Label htmlFor="updatedProductOwner.firstName">First Name</Label>
-              <Field<string>
-                name="updatedProductOwner.firstName"
-                component={TextInput}
-                validate={validator.mustBeValidName}
-                defaultValue=""
-                initialValue={productOwner.firstName}
-              />
-            </Flex>
-            <Flex flexDirection="column">
-              <Label htmlFor="updatedProductOwner.lastName">Last Name</Label>
-              <Field<string>
-                name="updatedProductOwner.lastName"
-                component={TextInput}
-                validate={validator.mustBeValidName}
-                defaultValue=""
-                initialValue={productOwner.lastName}
-              />
-            </Flex>
-            <Flex flexDirection="column">
-              <Label htmlFor="updatedProductOwner.email">Email Address</Label>
-              <Field<string>
-                name="updatedProductOwner.email"
-                component={TextInput}
-                validate={validator.mustBeValidEmail}
-                defaultValue=""
-                initialValue={productOwner.email}
-                sx={{ textTransform: 'none' }}
-              />
-            </Flex>
             <Flex flexDirection="column">
               <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
               <GithubUserValidation
@@ -206,6 +217,41 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 graphToken={graphToken}
               />
             </Flex>
+            <Field name="updatedProductOwner.roleId" initialValue={productOwner.roleId}>
+              {({ input }) => <input type="hidden" {...input} id="roleId" />}
+            </Field>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.firstName">First Name</Label>
+              <Field<string>
+                name="updatedProductOwner.firstName"
+                defaultValue=""
+                initialValue={productOwner.firstName}
+              >
+                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POfirstName}`} readOnly={true} />}  
+              </Field>
+            </Flex>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.lastName">Last Name</Label>
+              <Field<string>
+                name="updatedProductOwner.lastName"
+                defaultValue=""
+                initialValue={productOwner.lastName}
+              >
+                {({ input }) => <input type="text" name="updatedProductOwner.lastName" value={`${POLastName}`} readOnly={true} />} 
+              </Field>
+            </Flex>
+            <Flex flexDirection="column">
+              <Label htmlFor="updatedProductOwner.email">Email Address</Label>
+              <Field<string>
+                name="updatedProductOwner.email"
+                defaultValue=""
+                initialValue={productOwner.email}
+                sx={{ textTransform: 'none' }}
+              >
+                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POEmail}`} readOnly={true} />} 
+              </Field>
+            </Flex>
+            
             <FormTitle>
               {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
                 ? 'Who are the technical leads for this product?'
@@ -236,37 +282,6 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                           )}
                         </Flex>
                         <Flex flexDirection="column">
-                          <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
-                            {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
-                          </Field>
-                          <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                          <Field<string>
-                            name={`${name}.firstName`}
-                            component={TextInput}
-                            validate={validator.mustBeValidName}
-                            placeholder="Jane"
-                          />
-                        </Flex>
-                        <Flex flexDirection="column">
-                          <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                          <Field<string>
-                            name={`${name}.lastName`}
-                            component={TextInput}
-                            validate={validator.mustBeValidName}
-                            placeholder="Doe"
-                          />
-                        </Flex>
-                        <Flex flexDirection="column">
-                          <Label htmlFor={`${name}.email`}>Email Address</Label>
-                          <Field<string>
-                            name={`${name}.email`}
-                            component={TextInput}
-                            validate={validator.mustBeValidEmail}
-                            placeholder="jane.doe@example.com"
-                            sx={{ textTransform: 'none' }}
-                          />
-                        </Flex>
-                        <Flex flexDirection="column">
                           <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
                           <GithubUserValidation
                             name={`${name}.githubId`}
@@ -276,6 +291,37 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             accounts={accounts}
                             graphToken={graphToken}
                           />
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Field name={`${name}.id`} initialValue={`${name}.id` || ''}>
+                            {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
+                          </Field>
+                          <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                          <Field<string>
+                            name={`${name}.firstName`}
+                            placeholder="Jane"
+                          >
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1FirstName}` : `${tl2FirstName}`} readOnly={true} />} 
+                          </Field>
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                          <Field<string>
+                            name={`${name}.lastName`}
+                            placeholder="Doe"
+                          >
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1LastName}` : `${tl2LastName}`} readOnly={true} />} 
+                          </Field>
+                        </Flex>
+                        <Flex flexDirection="column">
+                          <Label htmlFor={`${name}.email`}>Email Address</Label>
+                          <Field<string>
+                            name={`${name}.email`}
+                            placeholder="jane.doe@example.com"
+                            sx={{ textTransform: 'none' }}
+                          >
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1Email}` : `${tl2Email}`} readOnly={true} />} 
+                          </Field>
                         </Flex>
                       </div>
                     ))}
