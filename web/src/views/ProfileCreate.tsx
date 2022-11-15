@@ -34,9 +34,10 @@ import { selectProductOwner, selectTechnicalLead } from '../redux/githubID/githu
 import { GithubIdBaseInterface } from '../redux/githubID/githubID.reducer';
 
 // contacts from redux state. We'll just jam in them as the form is submitted. 
-interface ProfileCreateInterface{
+interface ProfileCreateInterface {
   stateProductOwner: GithubIdBaseInterface;
-  stateTechnicalLeads: GithubIdBaseInterface;
+  technicalLead1: GithubIdBaseInterface;
+  technicalLead2: GithubIdBaseInterface;
 }
 
 const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
@@ -49,19 +50,33 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
   const [goBackToDashboard, setGoBackToDashboard] = useState(false);
   const [graphToken, setToken] = useState<any>('');
   const { instance, accounts } = useMsal();
-  const { stateProductOwner, stateTechnicalLeads } = props;
-  
+  const { stateProductOwner, technicalLead1, technicalLead2 } = props;
+
   const onSubmit = async (formData: any) => {
     const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
     try {
+      console.log(`formData: ${JSON.stringify(formData)}`);
       const technicalContacts = [...technicalLeads, productOwner];
+
       const clusters = transformClusters(profile);
       // here's an awful hack to get the Redux state mapped to the form data. 
       formData.productOwner.firstName = stateProductOwner.githubUser.value[0].givenName;
       formData.productOwner.lastName = stateProductOwner.githubUser.value[0].surname;
       formData.productOwner.email = stateProductOwner.githubUser.value[0].mail;
       formData.productOwner.githubId = stateProductOwner.githubUser.value[0].mail;
+
+      formData.technicalLeads[0].firstName = technicalLead1.githubUser.value[0].givenName;
+      formData.technicalLeads[0].lastName = technicalLead1.githubUser.value[0].surname;
+      formData.technicalLeads[0].email = technicalLead1.githubUser.value[0].mail;
+      formData.technicalLeads[0].githubId = technicalLead1.githubUser.value[0].mail;
+
+      if (technicalLead2 && technicalLead2.githubUser && formData.technicalLeads.length > 1) {
+        formData.technicalLeads[1].firstName = technicalLead2.githubUser.value[0].givenName;
+        formData.technicalLeads[1].lastName = technicalLead2.githubUser.value[0].surname;
+        formData.technicalLeads[1].email = technicalLead2.githubUser.value[0].mail;
+        formData.technicalLeads[1].githubId = technicalLead2.githubUser.value[0].mail;
+      }
       // 1. Subscribe to communications
       const userEmails = technicalContacts.map((user) => user.email);
       await api.subscribeCommunications(userEmails);
@@ -135,10 +150,10 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
         <CreateFormMetadata />
       </WizardPage>
       <WizardPage>
-        <CreateFormPO 
-        graphToken={graphToken}
-        instance={instance}
-        accounts={accounts}
+        <CreateFormPO
+          graphToken={graphToken}
+          instance={instance}
+          accounts={accounts}
         />
       </WizardPage>
       <WizardPage>
@@ -156,17 +171,18 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
 };
 
 const mapStateToProps = (state: any, githubID: any) => ({
-    stateTechnicalLeads: selectTechnicalLead(githubID.position)(state),
-    stateProductOwner: selectProductOwner()(state),
-  });
-  // const mapDispatchToProps = (dispatch: any) => ({
-  //   dispatchSearchGithubIDInput: (payload: {
-  //     persona: string;
-  //     inputValue: string;
-  //     position: number;
-  //   }) => dispatch(githubIDSearchKeyword(payload)),
-  // });
-  
+  technicalLead1: selectTechnicalLead(0)(state),
+  technicalLead2: selectTechnicalLead(1)(state),
+  stateProductOwner: selectProductOwner()(state),
+});
+// const mapDispatchToProps = (dispatch: any) => ({
+//   dispatchSearchGithubIDInput: (payload: {
+//     persona: string;
+//     inputValue: string;
+//     position: number;
+//   }) => dispatch(githubIDSearchKeyword(payload)),
+// });
+
 export default connect(mapStateToProps)(ProfileCreate);
 
 //export default ProfileCreate;

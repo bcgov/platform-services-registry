@@ -74,7 +74,6 @@ export const searchIdirUsers = (
   headers.append('ConsistencyLevel', 'eventual');
   const bearer = `Bearer ${graphToken}`;
   headers.append('Authorization', bearer);
-
   const options = {
     method: 'GET',
     headers,

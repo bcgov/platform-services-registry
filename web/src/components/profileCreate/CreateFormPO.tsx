@@ -32,7 +32,7 @@ import { selectProductOwner } from '../../redux/githubID/githubID.selector';
 import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
 import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
 
-interface ContactInterface{
+interface ContactInterface {
   instance: IPublicClientApplication;
   accounts: AccountInfo[];
   graphToken: string;
@@ -52,12 +52,12 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  
+
   useEffect(() => {
-    mapDispatchToProps({productOwner});
-    setFirstName(productOwner.githubUser? productOwner.githubUser.value[0].givenName : '');
-    setLastName(productOwner.githubUser? productOwner.githubUser.value[0].surname : '');
-    setEmail(productOwner.githubUser? productOwner.githubUser.value[0].mail : '');
+    mapDispatchToProps({ productOwner });
+    setFirstName(productOwner.githubUser ? productOwner.githubUser.value[0].givenName : '');
+    setLastName(productOwner.githubUser ? productOwner.githubUser.value[0].surname : '');
+    setEmail(productOwner.githubUser ? productOwner.githubUser.value[0].mail : '');
   }, [productOwner]);
 
   return (
@@ -85,12 +85,12 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="productOwner.firstName">First Name</Label>
-        <Field<string> 
-        name="productOwner.firstName"
-        defaultValue=""
-        initialValue=""
+        <Field<string>
+          name="productOwner.firstName"
+          defaultValue=""
+          initialValue=""
         >
-          {({ input }) => <input type="text" value={`${firstName}`} readOnly={true}/>}
+          {({ input }) => <input type="text" value={`${firstName}`} readOnly={true} />}
         </Field>
       </Flex>
       <Flex flexDirection="column">
@@ -99,8 +99,8 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
           name="productOwner.lastName"
           defaultValue=""
           initialValue=""
-          >
-            {({ input }) => <input type="text" value={`${lastName}`} readOnly={true}/>}
+        >
+          {({ input }) => <input type="text" value={`${lastName}`} readOnly={true} />}
         </Field>
       </Flex>
       <Flex flexDirection="column">
@@ -111,7 +111,7 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
           sx={{ textTransform: 'none' }}
           initialValue=""
         >
-       {({ input }) => <input type="text" value={`${email}`} readOnly={true}/>}
+          {({ input }) => <input type="text" value={`${email}`} readOnly={true} />}
         </Field>
       </Flex>
     </Aux>
