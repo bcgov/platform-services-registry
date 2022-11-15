@@ -25,7 +25,7 @@ import { MAXIMUM_TECHNICAL_LEADS, MINIMUM_TECHNICAL_LEADS, ROLES } from '../../c
 import Aux from '../../hoc/auxillary';
 import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
-import { selectProductOwner, selectTechnicalLead, selectTechnicalLeadsBoth } from '../../redux/githubID/githubID.selector';
+import { selectTechnicalLead } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
