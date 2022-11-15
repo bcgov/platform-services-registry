@@ -34,7 +34,6 @@ import {
 import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
-import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
 import { selectAllPersona } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
@@ -42,10 +41,7 @@ import { Button, SquareFormButton } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
-import TextInput from '../common/UI/TextInput';
 import { ContactDetails } from './ContactCard';
-
-const validator = getValidator();
 
 interface IContactCardEditProps {
   profileId?: string;
@@ -101,9 +97,26 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       }
 
       // 1. Prepare contact edit request body.
+      formData.updatedProductOwner.firstName = POfirstName;
+      formData.updatedProductOwner.lastName = POLastName;
+      formData.updatedProductOwner.email = POEmail;
+      formData.updatedProductOwner.githubId = POEmail;
+
+      formData.updatedTechnicalLeads[0].firstName = tl1FirstName;
+      formData.updatedTechnicalLeads[0].lastName = tl1LastName;
+      formData.updatedTechnicalLeads[0].email = tl1Email;
+      formData.updatedTechnicalLeads[0].githubId = tl1Email;
+
+      if (formData.updatedTechnicalLeads.length === 2) {
+        formData.updatedTechnicalLeads[1].firstName = tl2FirstName;
+        formData.updatedTechnicalLeads[1].lastName = tl2LastName;
+        formData.updatedTechnicalLeads[1].email = tl2Email;
+        formData.updatedTechnicalLeads[1].githubId = tl2Email;
+      }
+
       const { updatedProductOwner, updatedTechnicalLeads } = formData;
       const updatedContacts = [...updatedTechnicalLeads, updatedProductOwner];
-      console.log(`formData: ${JSON.stringify(formData)}`);
+
       // 2. Request the profile contact edit.
       await api.updateContactsByProfileId(profileId, updatedContacts);
 
@@ -117,7 +130,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
     }
     setOpenBackdrop(false);
   };
-  
+
   /* Mapping Data from MS Graph API to fields */
   const [POfirstName, setPOFirstName] = useState<string>('');
   const [POLastName, setPOLastName] = useState<string>('');
@@ -134,25 +147,25 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
 
   useEffect(() => {
     mapDispatchToProps({ allPersona });
-    if(allPersona.productOwner[0] && allPersona.productOwner[0].githubUser && allPersona.productOwner[0].githubUser.value[0]){
+    if (allPersona.productOwner[0] && allPersona.productOwner[0].githubUser && allPersona.productOwner[0].githubUser.value[0]) {
       const productOwner = allPersona.productOwner[0].githubUser.value[0];
-      if (productOwner ){
+      if (productOwner) {
         setPOFirstName(productOwner.givenName);
         setPOLastName(productOwner.surname);
         setPOEmail(productOwner.mail);
       }
     }
-    if(allPersona.technicalLeads[0] && allPersona.technicalLeads[0].githubUser){
+    if (allPersona.technicalLeads[0] && allPersona.technicalLeads[0].githubUser) {
       const tl1 = allPersona.technicalLeads[0].githubUser.value[0];
-      if(tl1){
+      if (tl1) {
         setTl1FirstName(tl1.givenName);
         setTl1LastName(tl1.surname);
         setTl1Email(tl1.mail);
       }
     }
-    if (allPersona.technicalLeads[1] && allPersona.technicalLeads[1].githubUser){
+    if (allPersona.technicalLeads[1] && allPersona.technicalLeads[1].githubUser) {
       const tl2 = allPersona.technicalLeads[1].githubUser.value[0];
-      if(tl2){
+      if (tl2) {
         setTl2FirstName(tl2.givenName);
         setTl2LastName(tl2.surname);
         setTl2Email(tl2.mail);
@@ -227,7 +240,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 defaultValue=""
                 initialValue={productOwner.firstName}
               >
-                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POfirstName}`} readOnly={true} />}  
+                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POfirstName}`} readOnly={true} />}
               </Field>
             </Flex>
             <Flex flexDirection="column">
@@ -237,7 +250,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 defaultValue=""
                 initialValue={productOwner.lastName}
               >
-                {({ input }) => <input type="text" name="updatedProductOwner.lastName" value={`${POLastName}`} readOnly={true} />} 
+                {({ input }) => <input type="text" name="updatedProductOwner.lastName" value={`${POLastName}`} readOnly={true} />}
               </Field>
             </Flex>
             <Flex flexDirection="column">
@@ -248,10 +261,10 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 initialValue={productOwner.email}
                 sx={{ textTransform: 'none' }}
               >
-                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POEmail}`} readOnly={true} />} 
+                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POEmail}`} readOnly={true} />}
               </Field>
             </Flex>
-            
+
             <FormTitle>
               {existingTechnicalLeads.length > MINIMUM_TECHNICAL_LEADS
                 ? 'Who are the technical leads for this product?'
@@ -301,7 +314,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             name={`${name}.firstName`}
                             placeholder="Jane"
                           >
-                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1FirstName}` : `${tl2FirstName}`} readOnly={true} />} 
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1FirstName}` : `${tl2FirstName}`} readOnly={true} />}
                           </Field>
                         </Flex>
                         <Flex flexDirection="column">
@@ -310,7 +323,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             name={`${name}.lastName`}
                             placeholder="Doe"
                           >
-                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1LastName}` : `${tl2LastName}`} readOnly={true} />} 
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1LastName}` : `${tl2LastName}`} readOnly={true} />}
                           </Field>
                         </Flex>
                         <Flex flexDirection="column">
@@ -320,7 +333,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             placeholder="jane.doe@example.com"
                             sx={{ textTransform: 'none' }}
                           >
-                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1Email}` : `${tl2Email}`} readOnly={true} />} 
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1Email}` : `${tl2Email}`} readOnly={true} />}
                           </Field>
                         </Flex>
                       </div>
