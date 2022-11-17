@@ -18,6 +18,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import CreateFormMetadata from '../components/profileCreate/CreateFormMetadata';
 import CreateFormPO from '../components/profileCreate/CreateFormPO';
 import CreateFormProject from '../components/profileCreate/CreateFormProject';
@@ -29,11 +30,10 @@ import useRegistryApi from '../hooks/useRegistryApi';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../utils/promptToastHelper';
 import { transformClusters } from '../utils/transformDataHelper';
 import Wizard, { WizardPage } from '../utils/Wizard';
-import { connect } from 'react-redux';
 import { selectProductOwner, selectTechnicalLead } from '../redux/githubID/githubID.selector';
 import { GithubIdBaseInterface } from '../redux/githubID/githubID.reducer';
 
-// contacts from redux state. We'll just jam in them as the form is submitted. 
+// contacts from redux state. We'll just jam in them as the form is submitted.
 interface ProfileCreateInterface {
   stateProductOwner: GithubIdBaseInterface;
   technicalLead1: GithubIdBaseInterface;
@@ -60,7 +60,7 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
       const technicalContacts = [...technicalLeads, productOwner];
 
       const clusters = transformClusters(profile);
-      // here's an awful hack to get the Redux state mapped to the form data. 
+      // here's an awful hack to get the Redux state mapped to the form data.
       formData.productOwner.firstName = stateProductOwner.githubUser.value[0].givenName;
       formData.productOwner.lastName = stateProductOwner.githubUser.value[0].surname;
       formData.productOwner.email = stateProductOwner.githubUser.value[0].mail;
@@ -136,7 +136,7 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
         });
     }
     fetchGraphUserDelegateToken();
-  }, [keycloak]);
+  }, [keycloak, accounts, instance, api]);
 
   if (goBackToDashboard) {
     return <Redirect to={ROUTE_PATHS.DASHBOARD} />;
@@ -150,18 +150,10 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
         <CreateFormMetadata />
       </WizardPage>
       <WizardPage>
-        <CreateFormPO
-          graphToken={graphToken}
-          instance={instance}
-          accounts={accounts}
-        />
+        <CreateFormPO graphToken={graphToken} instance={instance} accounts={accounts} />
       </WizardPage>
       <WizardPage>
-        <CreateFormTL
-          graphToken={graphToken}
-          instance={instance}
-          accounts={accounts}
-        />
+        <CreateFormTL graphToken={graphToken} instance={instance} accounts={accounts} />
       </WizardPage>
       <WizardPage>
         <CreateFormRequest />
@@ -175,14 +167,5 @@ const mapStateToProps = (state: any, githubID: any) => ({
   technicalLead2: selectTechnicalLead(1)(state),
   stateProductOwner: selectProductOwner()(state),
 });
-// const mapDispatchToProps = (dispatch: any) => ({
-//   dispatchSearchGithubIDInput: (payload: {
-//     persona: string;
-//     inputValue: string;
-//     position: number;
-//   }) => dispatch(githubIDSearchKeyword(payload)),
-// });
 
 export default connect(mapStateToProps)(ProfileCreate);
-
-//export default ProfileCreate;

@@ -20,6 +20,7 @@ import { Label } from '@rebass/forms';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { Flex } from 'rebass';
+import { connect } from 'react-redux';
 import { ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
 import getDecodedToken from '../../utils/getDecodedToken';
@@ -27,10 +28,9 @@ import getValidator from '../../utils/getValidator';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
-import { connect } from "react-redux";
 import { selectProductOwner } from '../../redux/githubID/githubID.selector';
 import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
-import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
+import { githubIDSearchKeyword } from '../../redux/githubID/githubID.action';
 
 interface ContactInterface {
   instance: IPublicClientApplication;
@@ -40,13 +40,7 @@ interface ContactInterface {
 }
 
 const CreateFormPO: React.FC<ContactInterface> = (props) => {
-  const {
-    instance,
-    accounts,
-    graphToken,
-    productOwner,
-  } = props;
-  const validator = getValidator();
+  const { instance, accounts, graphToken, productOwner } = props;
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   const [firstName, setFirstName] = useState<string>('');
@@ -85,21 +79,13 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="productOwner.firstName">First Name</Label>
-        <Field<string>
-          name="productOwner.firstName"
-          defaultValue=""
-          initialValue=""
-        >
+        <Field<string> name="productOwner.firstName" defaultValue="" initialValue="">
           {({ input }) => <input type="text" value={`${firstName}`} readOnly={true} />}
         </Field>
       </Flex>
       <Flex flexDirection="column">
         <Label htmlFor="productOwner.lastName">Last Name</Label>
-        <Field<string>
-          name="productOwner.lastName"
-          defaultValue=""
-          initialValue=""
-        >
+        <Field<string> name="productOwner.lastName" defaultValue="" initialValue="">
           {({ input }) => <input type="text" value={`${lastName}`} readOnly={true} />}
         </Field>
       </Flex>
