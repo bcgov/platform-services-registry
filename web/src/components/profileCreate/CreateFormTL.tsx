@@ -23,10 +23,9 @@ import { connect } from 'react-redux';
 import { Box, Flex } from 'rebass';
 import { MAXIMUM_TECHNICAL_LEADS, MINIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
-import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
+import { githubIDSearchKeyword } from '../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
 import { selectTechnicalLead } from '../../redux/githubID/githubID.selector';
-import getValidator from '../../utils/getValidator';
 import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
@@ -49,7 +48,6 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
     selectedTechnicalLeads1,
     selectedTechnicalLeads2,
   } = props;
-  const validator = getValidator();
   const [firstName1, setFirstName1] = useState<string>('');
   const [lastName1, setLastName1] = useState<string>('');
   const [email1, setEmail1] = useState<string>('');

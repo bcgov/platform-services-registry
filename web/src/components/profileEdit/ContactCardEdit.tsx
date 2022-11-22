@@ -35,7 +35,6 @@ import useCommonState from '../../hooks/useCommonState';
 import useRegistryApi from '../../hooks/useRegistryApi';
 import { createNewTechnicalLeads } from '../../redux/githubID/githubID.action';
 import { selectAllPersona } from '../../redux/githubID/githubID.selector';
-import getValidator from '../../utils/getValidator';
 import { promptErrToastWithText, promptSuccessToastWithText } from '../../utils/promptToastHelper';
 import { Button, SquareFormButton } from '../common/UI/Button';
 import { EditSubmitButton } from '../common/UI/EditSubmitButton';
@@ -151,11 +150,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
       allPersona.productOwner[0].githubUser &&
       allPersona.productOwner[0].githubUser.value[0]
     ) {
-      const productOwner = allPersona.productOwner[0].githubUser.value[0];
-      if (productOwner) {
-        setPOFirstName(productOwner.givenName);
-        setPOLastName(productOwner.surname);
-        setPOEmail(productOwner.mail);
+      const prodOwner = allPersona.productOwner[0].githubUser.value[0];
+      if (prodOwner) {
+        setPOFirstName(prodOwner.givenName);
+        setPOLastName(prodOwner.surname);
+        setPOEmail(prodOwner.mail);
       }
     }
     if (allPersona.technicalLeads[0] && allPersona.technicalLeads[0].githubUser) {

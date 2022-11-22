@@ -24,13 +24,12 @@ import { connect } from 'react-redux';
 import { ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
 import getDecodedToken from '../../utils/getDecodedToken';
-import getValidator from '../../utils/getValidator';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import { selectProductOwner } from '../../redux/githubID/githubID.selector';
 import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
-import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
+import { githubIDSearchKeyword } from '../../redux/githubID/githubID.action';
 
 interface ContactInterface {
   instance: IPublicClientApplication;
@@ -41,7 +40,6 @@ interface ContactInterface {
 
 const CreateFormPO: React.FC<ContactInterface> = (props) => {
   const { instance, accounts, graphToken, productOwner } = props;
-  const validator = getValidator();
   const { keycloak } = useKeycloak();
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   const [firstName, setFirstName] = useState<string>('');
