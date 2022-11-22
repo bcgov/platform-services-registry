@@ -20,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
+import { useMsal } from '@azure/msal-react';
 import { getLicencePlatePostFix } from '../utils/utils';
 import { useQuery } from '../utils/AppRoute';
 import { useModal } from '../hooks/useModal';
@@ -58,7 +59,6 @@ import {
   isProfileProvisioned,
   sortContacts,
 } from '../utils/transformDataHelper';
-import { useMsal } from '@azure/msal-react';
 
 const StyledDiv = styled.div`
   min-width: 80%;
@@ -102,7 +102,7 @@ const ProfileEdit: React.FC = (props: any) => {
   const { setOpenBackdrop } = useCommonState();
   const [graphToken, setToken] = useState<any>('');
   const { instance, accounts } = useMsal();
-  
+
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   // @ts-ignore
   const userRoles = decodedToken.resource_access['registry-web']

@@ -84,7 +84,7 @@ export const searchIdirUsers = (
       if (response.ok) {
         dispatch(userExists({ persona, position }));
         const data = await response.json();
-        if(data.value[0].id){
+        if (data.value[0].id) {
           const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
           data.avatar_url = photoObjectURL;
           data.githubId = data.value[0].id;
