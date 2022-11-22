@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import { Box, Flex } from 'rebass';
 import { MAXIMUM_TECHNICAL_LEADS, MINIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
-import { githubIDSearchKeyword } from '../../redux/githubID/githubID.action';
+import githubIDSearchKeyword from '../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
 import { selectTechnicalLead } from '../../redux/githubID/githubID.selector';
 import getValidator from '../../utils/getValidator';
@@ -49,7 +49,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
     selectedTechnicalLeads1,
     selectedTechnicalLeads2,
   } = props;
-
+  const validator = getValidator();
   const [firstName1, setFirstName1] = useState<string>('');
   const [lastName1, setLastName1] = useState<string>('');
   const [email1, setEmail1] = useState<string>('');
@@ -59,30 +59,15 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
 
   useEffect(() => {
     mapDispatchToProps({ selectedTechnicalLeads1 });
-    setFirstName1(
-      selectedTechnicalLeads1.githubUser
-        ? selectedTechnicalLeads1.githubUser.value[0].givenName
-        : '',
-    );
-    setLastName1(
-      selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].surname : '',
-    );
-    setEmail1(
-      selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].mail : '',
-    );
+    setFirstName1(selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].givenName : '');
+    setLastName1(selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].surname : '');
+    setEmail1(selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].mail : '');
 
     mapDispatchToProps({ selectedTechnicalLeads2 });
-    setFirstName2(
-      selectedTechnicalLeads2.githubUser
-        ? selectedTechnicalLeads2.githubUser.value[0].givenName
-        : '',
-    );
-    setLastName2(
-      selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].surname : '',
-    );
-    setEmail2(
-      selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].mail : '',
-    );
+    setFirstName2(selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].givenName : '');
+    setLastName2(selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].surname : '');
+    setEmail2(selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].mail : '');
+
   }, [selectedTechnicalLeads1, selectedTechnicalLeads2]);
 
   return (
@@ -119,9 +104,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                   {({ input }) => <input type="hidden" {...input} id={`${name}.roleId`} />}
                 </Field>
                 <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.githubId`}>
-                    Search contact by their IDIR email address
-                  </Label>
+                  <Label htmlFor={`${name}.githubId`}>Search contact by their IDIR email address</Label>
                   <GithubUserValidation
                     name={`${name}.githubId`}
                     defaultValue=""
@@ -135,26 +118,21 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                  <Field<string> name={`${name}.firstName`} defaultValue="" initialValue="">
-                    {({ input }) => (
-                      <input
-                        type="text"
-                        value={index === 0 ? `${firstName1}` : `${firstName2}`}
-                        readOnly={true}
-                      />
-                    )}
+                  <Field<string>
+                    name={`${name}.firstName`}
+                    defaultValue=""
+                    initialValue=""
+                  >
+                    {({ input }) => <input type="text" value={index === 0 ? `${firstName1}` : `${firstName2}`} readOnly={true} />}
                   </Field>
                 </Flex>
                 <Flex flexDirection="column">
                   <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                  <Field<string> name={`${name}.lastName`} placeholder="Doe">
-                    {({ input }) => (
-                      <input
-                        type="text"
-                        value={index === 0 ? `${lastName1}` : `${lastName2}`}
-                        readOnly={true}
-                      />
-                    )}
+                  <Field<string>
+                    name={`${name}.lastName`}
+                    placeholder="Doe"
+                  >
+                    {({ input }) => <input type="text" value={index === 0 ? `${lastName1}` : `${lastName2}`} readOnly={true} />}
                   </Field>
                 </Flex>
                 <Flex flexDirection="column">
@@ -165,13 +143,7 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
                     placeholder="jane.doe@example.com"
                     sx={{ textTransform: 'none' }}
                   >
-                    {({ input }) => (
-                      <input
-                        type="text"
-                        value={index === 0 ? `${email1}` : `${email2}`}
-                        readOnly={true}
-                      />
-                    )}
+                    {({ input }) => <input type="text" value={index === 0 ? `${email1}` : `${email2}`} readOnly={true} />}
                   </Field>
                 </Flex>
               </div>

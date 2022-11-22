@@ -144,18 +144,15 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
   const [tl2LastName, setTl2LastName] = useState<string>('');
   const [tl2Email, setTl2Email] = useState<string>('');
 
+
   useEffect(() => {
     mapDispatchToProps({ allPersona });
-    if (
-      allPersona.productOwner[0] &&
-      allPersona.productOwner[0].githubUser &&
-      allPersona.productOwner[0].githubUser.value[0]
-    ) {
-      const productOwnerValue = allPersona.productOwner[0].githubUser.value[0];
-      if (productOwnerValue) {
-        setPOFirstName(productOwnerValue.givenName);
-        setPOLastName(productOwnerValue.surname);
-        setPOEmail(productOwnerValue.mail);
+    if (allPersona.productOwner[0] && allPersona.productOwner[0].githubUser && allPersona.productOwner[0].githubUser.value[0]) {
+      const productOwner = allPersona.productOwner[0].githubUser.value[0];
+      if (productOwner) {
+        setPOFirstName(productOwner.givenName);
+        setPOLastName(productOwner.surname);
+        setPOEmail(productOwner.mail);
       }
     }
     if (allPersona.technicalLeads[0] && allPersona.technicalLeads[0].githubUser) {
@@ -243,14 +240,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 defaultValue=""
                 initialValue={productOwner.firstName}
               >
-                {({ input }) => (
-                  <input
-                    type="text"
-                    name="updatedProductOwner.firstName"
-                    value={`${POfirstName}`}
-                    readOnly={true}
-                  />
-                )}
+                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POfirstName}`} readOnly={true} />}
               </Field>
             </Flex>
             <Flex flexDirection="column">
@@ -260,14 +250,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 defaultValue=""
                 initialValue={productOwner.lastName}
               >
-                {({ input }) => (
-                  <input
-                    type="text"
-                    name="updatedProductOwner.lastName"
-                    value={`${POLastName}`}
-                    readOnly={true}
-                  />
-                )}
+                {({ input }) => <input type="text" name="updatedProductOwner.lastName" value={`${POLastName}`} readOnly={true} />}
               </Field>
             </Flex>
             <Flex flexDirection="column">
@@ -278,14 +261,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                 initialValue={productOwner.email}
                 sx={{ textTransform: 'none' }}
               >
-                {({ input }) => (
-                  <input
-                    type="text"
-                    name="updatedProductOwner.firstName"
-                    value={`${POEmail}`}
-                    readOnly={true}
-                  />
-                )}
+                {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={`${POEmail}`} readOnly={true} />}
               </Field>
             </Flex>
 
@@ -334,28 +310,20 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             {({ input }) => <input type="hidden" {...input} id={`${name}.id`} />}
                           </Field>
                           <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                          <Field<string> name={`${name}.firstName`} placeholder="Jane">
-                            {({ input }) => (
-                              <input
-                                type="text"
-                                name="updatedProductOwner.firstName"
-                                value={index === 0 ? `${tl1FirstName}` : `${tl2FirstName}`}
-                                readOnly={true}
-                              />
-                            )}
+                          <Field<string>
+                            name={`${name}.firstName`}
+                            placeholder="Jane"
+                          >
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1FirstName}` : `${tl2FirstName}`} readOnly={true} />}
                           </Field>
                         </Flex>
                         <Flex flexDirection="column">
                           <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                          <Field<string> name={`${name}.lastName`} placeholder="Doe">
-                            {({ input }) => (
-                              <input
-                                type="text"
-                                name="updatedProductOwner.firstName"
-                                value={index === 0 ? `${tl1LastName}` : `${tl2LastName}`}
-                                readOnly={true}
-                              />
-                            )}
+                          <Field<string>
+                            name={`${name}.lastName`}
+                            placeholder="Doe"
+                          >
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1LastName}` : `${tl2LastName}`} readOnly={true} />}
                           </Field>
                         </Flex>
                         <Flex flexDirection="column">
@@ -365,14 +333,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
                             placeholder="jane.doe@example.com"
                             sx={{ textTransform: 'none' }}
                           >
-                            {({ input }) => (
-                              <input
-                                type="text"
-                                name="updatedProductOwner.firstName"
-                                value={index === 0 ? `${tl1Email}` : `${tl2Email}`}
-                                readOnly={true}
-                              />
-                            )}
+                            {({ input }) => <input type="text" name="updatedProductOwner.firstName" value={index === 0 ? `${tl1Email}` : `${tl2Email}`} readOnly={true} />}
                           </Field>
                         </Flex>
                       </div>

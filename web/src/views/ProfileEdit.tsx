@@ -15,7 +15,6 @@
 //
 
 import styled from '@emotion/styled';
-import { useMsal } from '@azure/msal-react';
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
@@ -59,6 +58,7 @@ import {
   isProfileProvisioned,
   sortContacts,
 } from '../utils/transformDataHelper';
+import { useMsal } from '@azure/msal-react';
 
 const StyledDiv = styled.div`
   min-width: 80%;
@@ -102,6 +102,7 @@ const ProfileEdit: React.FC = (props: any) => {
   const { setOpenBackdrop } = useCommonState();
   const [graphToken, setToken] = useState<any>('');
   const { instance, accounts } = useMsal();
+  
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   // @ts-ignore
   const userRoles = decodedToken.resource_access['registry-web']
