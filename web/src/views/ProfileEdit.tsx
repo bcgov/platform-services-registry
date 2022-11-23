@@ -155,7 +155,7 @@ const ProfileEdit: React.FC = (props: any) => {
     if (profileState.contactDetails !== undefined && profileState.contactDetails.length > 0) {
       projectBelongToUser();
     }
-  }, [profileState, keycloak, userRoles]);
+  }, [profileState, keycloak, userRoles, instance, accounts]);
 
   useEffect(() => {
     async function fetchGraphUserDelegateToken() {

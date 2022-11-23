@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Field } from 'react-final-form';
 import { connect } from 'react-redux';
-import logger from 'redux-logger';
 import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import {
   createNewTechnicalLeads,
