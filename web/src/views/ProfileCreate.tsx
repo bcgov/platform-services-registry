@@ -134,7 +134,7 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
         });
     }
     fetchGraphUserDelegateToken();
-  }, [keycloak, api, instance, accounts]);
+  }, [keycloak]);
 
   if (goBackToDashboard) {
     return <Redirect to={ROUTE_PATHS.DASHBOARD} />;
