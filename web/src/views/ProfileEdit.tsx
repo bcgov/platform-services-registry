@@ -175,7 +175,7 @@ const ProfileEdit: React.FC = (props: any) => {
         });
     }
     fetchGraphUserDelegateToken();
-  }, [keycloak]);
+  }, [keycloak, accounts, instance]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);

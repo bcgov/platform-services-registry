@@ -56,9 +56,7 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
     const { profile, technicalLeads, productOwner } = formData;
     setOpenBackdrop(true);
     try {
-      console.log(`formData: ${JSON.stringify(formData)}`);
       const technicalContacts = [...technicalLeads, productOwner];
-
       const clusters = transformClusters(profile);
       // here's an awful hack to get the Redux state mapped to the form data.
       formData.productOwner.firstName = stateProductOwner.githubUser.value[0].givenName;
@@ -136,7 +134,7 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
         });
     }
     fetchGraphUserDelegateToken();
-  }, [keycloak]);
+  }, [keycloak, api, instance, accounts]);
 
   if (goBackToDashboard) {
     return <Redirect to={ROUTE_PATHS.DASHBOARD} />;
