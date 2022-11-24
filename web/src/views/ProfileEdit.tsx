@@ -175,6 +175,7 @@ const ProfileEdit: React.FC = (props: any) => {
         });
     }
     fetchGraphUserDelegateToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keycloak]);
 
   const [initialRender, setInitialRender] = useState(true);

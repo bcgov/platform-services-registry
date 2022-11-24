@@ -134,6 +134,7 @@ const ProfileCreate: React.FC<ProfileCreateInterface> = (props) => {
         });
     }
     fetchGraphUserDelegateToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keycloak]);
 
   if (goBackToDashboard) {
