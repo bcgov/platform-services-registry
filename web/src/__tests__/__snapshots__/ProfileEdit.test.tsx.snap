@@ -1,0 +1,1033 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<QuotaCardEdit / > Card view should render 1`] = `
+<div>
+  <div
+    class="css-r193c9"
+  >
+    <h1
+      class="css-k3emzi"
+    >
+       
+      Resource Quotas for 
+      473f50
+       project set in 
+      gold
+       cluster
+       
+    </h1>
+    <h3
+      class="css-ao0kz4"
+    >
+      All quota increase requests require Platform Services Team's approval and must have supporting information as per
+      <a
+        class="css-17sdwej"
+        href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+        target="_blank"
+      >
+         "Quota Increase Request Process". 
+      </a>
+      The Quota Requests without supporting information will NOT be processed.
+    </h3>
+    <div
+      class="css-tcumpn"
+    >
+      <div
+        class="css-1lohbqv"
+      >
+        * Attention: You are now viewing the resource quotas for the
+        <span
+          style="color: red;"
+        >
+           
+          473f50-dev
+           
+        </span>
+        namespace
+      </div>
+    </div>
+    <br />
+    <form>
+      <fieldset
+        style="border: 0px;"
+      >
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            CPU
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  name="quotaCpuSize"
+                >
+                  <option
+                    value="cpu-request-0.5-limit-1.5"
+                  >
+                    cpu-request-0.5-limit-1.5
+                  </option>
+                  <option
+                    value="cpu-request-1-limit-2"
+                  >
+                    cpu-request-1-limit-2
+                  </option>
+                  <option
+                    value="cpu-request-2-limit-4"
+                  >
+                    cpu-request-2-limit-4
+                  </option>
+                  <option
+                    value="cpu-request-4-limit-8"
+                  >
+                    cpu-request-4-limit-8
+                  </option>
+                  <option
+                    value="cpu-request-8-limit-16"
+                  >
+                    cpu-request-8-limit-16
+                  </option>
+                  <option
+                    value="cpu-request-16-limit-32"
+                  >
+                    cpu-request-16-limit-32
+                  </option>
+                  <option
+                    value="cpu-request-32-limit-64"
+                  >
+                    cpu-request-32-limit-64
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+          </div>
+          <div
+            class="css-wf4fqk"
+          />
+        </div>
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            Memory
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  name="quotaMemorySize"
+                >
+                  <option
+                    value="memory-request-2-limit-4"
+                  >
+                    memory-request-2-limit-4
+                  </option>
+                  <option
+                    value="memory-request-4-limit-8"
+                  >
+                    memory-request-4-limit-8
+                  </option>
+                  <option
+                    value="memory-request-8-limit-16"
+                  >
+                    memory-request-8-limit-16
+                  </option>
+                  <option
+                    value="memory-request-16-limit-32"
+                  >
+                    memory-request-16-limit-32
+                  </option>
+                  <option
+                    value="memory-request-32-limit-64"
+                  >
+                    memory-request-32-limit-64
+                  </option>
+                  <option
+                    value="memory-request-64-limit-128"
+                  >
+                    memory-request-64-limit-128
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+          </div>
+          <div
+            class="css-wf4fqk"
+          />
+        </div>
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            Storage
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  name="quotaStorageSize"
+                >
+                  <option
+                    value="storage-1"
+                  >
+                    storage-1
+                  </option>
+                  <option
+                    value="storage-2"
+                  >
+                    storage-2
+                  </option>
+                  <option
+                    value="storage-4"
+                  >
+                    storage-4
+                  </option>
+                  <option
+                    value="storage-16"
+                  >
+                    storage-16
+                  </option>
+                  <option
+                    value="storage-32"
+                  >
+                    storage-32
+                  </option>
+                  <option
+                    value="storage-64"
+                  >
+                    storage-64
+                  </option>
+                  <option
+                    value="storage-128"
+                  >
+                    storage-128
+                  </option>
+                  <option
+                    value="storage-256"
+                  >
+                    storage-256
+                  </option>
+                  <option
+                    value="storage-512"
+                  >
+                    storage-512
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+          </div>
+          <div
+            class="css-wf4fqk"
+          />
+        </div>
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            Snapshot
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-exclamation-triangle fa-w-18  css-8upjdz"
+              data-icon="exclamation-triangle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 576 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                fill="currentColor"
+              />
+            </svg>
+            <div
+              class="css-1dmm8rf"
+              style="visibility: hidden;"
+            >
+              Only 'snapshot-5' are supported right now.
+            </div>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  disabled=""
+                  name="quotaSnapshotSize"
+                >
+                  <option
+                    value="snapshot-5"
+                  >
+                    snapshot-5
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+          </div>
+        </div>
+        <div
+          class="css-17pvsr"
+        >
+          <h1
+            class="css-k3emzi"
+          >
+            Upgrade/Downgrade Quota
+          </h1>
+          <div
+            class="css-18m6ozg"
+          >
+            <label
+              class="css-v3m57q"
+            >
+              <h3
+                class="css-ystn37"
+              >
+                Important Information - By check this checkbox, you confirmed that you have read
+                 
+                <a
+                  href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  this document
+                </a>
+                 
+                before submitting your quota increase requirement
+              </h3>
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <label
+                  class="css-qqz2al"
+                >
+                  <div
+                    class="css-vurnku"
+                  >
+                    <input
+                      class="css-p19g2b"
+                      name="project-acceptUsage"
+                      type="checkbox"
+                    />
+                    <svg
+                      aria-hidden="true"
+                      class="css-1orewpb"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                      />
+                    </svg>
+                    <svg
+                      aria-hidden="true"
+                      class="css-6gju6b"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                      />
+                    </svg>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <button
+            class="css-gev7cd"
+            disabled=""
+            style="display: block;"
+          >
+            Request Update
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+`;
+
+exports[`<QuotaCardEdit / > Card view should render 2`] = `
+<div>
+  <div
+    class="css-r193c9"
+  >
+    <h1
+      class="css-k3emzi"
+    >
+       
+      Resource Quotas for 
+      473f50
+       project set in 
+      gold
+       cluster
+       
+    </h1>
+    <h3
+      class="css-ao0kz4"
+    >
+      All quota increase requests require Platform Services Team's approval and must have supporting information as per
+      <a
+        class="css-17sdwej"
+        href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+        target="_blank"
+      >
+         "Quota Increase Request Process". 
+      </a>
+      The Quota Requests without supporting information will NOT be processed.
+    </h3>
+    <div
+      class="css-tcumpn"
+    >
+      <div
+        class="css-1lohbqv"
+      >
+        * Attention: You are now viewing the resource quotas for the
+        <span
+          style="color: red;"
+        >
+           
+          473f50-dev
+           
+        </span>
+        namespace
+      </div>
+    </div>
+    <br />
+    <form>
+      <fieldset
+        style="border: 0px;"
+      >
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            CPU
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  name="quotaCpuSize"
+                >
+                  <option
+                    value="cpu-request-0.5-limit-1.5"
+                  >
+                    cpu-request-0.5-limit-1.5
+                  </option>
+                  <option
+                    value="cpu-request-1-limit-2"
+                  >
+                    cpu-request-1-limit-2
+                  </option>
+                  <option
+                    value="cpu-request-2-limit-4"
+                  >
+                    cpu-request-2-limit-4
+                  </option>
+                  <option
+                    value="cpu-request-4-limit-8"
+                  >
+                    cpu-request-4-limit-8
+                  </option>
+                  <option
+                    value="cpu-request-8-limit-16"
+                  >
+                    cpu-request-8-limit-16
+                  </option>
+                  <option
+                    value="cpu-request-16-limit-32"
+                  >
+                    cpu-request-16-limit-32
+                  </option>
+                  <option
+                    value="cpu-request-32-limit-64"
+                  >
+                    cpu-request-32-limit-64
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+            <label
+              class="css-4hpp4k"
+            >
+              <div
+                class="css-1p4nx4e"
+              >
+                Request: undefined core, Limit: undefined core
+              </div>
+            </label>
+          </div>
+          <div
+            class="css-wf4fqk"
+          />
+        </div>
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            Memory
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  name="quotaMemorySize"
+                >
+                  <option
+                    value="memory-request-2-limit-4"
+                  >
+                    memory-request-2-limit-4
+                  </option>
+                  <option
+                    value="memory-request-4-limit-8"
+                  >
+                    memory-request-4-limit-8
+                  </option>
+                  <option
+                    value="memory-request-8-limit-16"
+                  >
+                    memory-request-8-limit-16
+                  </option>
+                  <option
+                    value="memory-request-16-limit-32"
+                  >
+                    memory-request-16-limit-32
+                  </option>
+                  <option
+                    value="memory-request-32-limit-64"
+                  >
+                    memory-request-32-limit-64
+                  </option>
+                  <option
+                    value="memory-request-64-limit-128"
+                  >
+                    memory-request-64-limit-128
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+            <label
+              class="css-4hpp4k"
+            >
+              <div
+                class="css-1p4nx4e"
+              >
+                Request: , Limit: 
+              </div>
+            </label>
+          </div>
+          <div
+            class="css-wf4fqk"
+          />
+        </div>
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            Storage
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  name="quotaStorageSize"
+                >
+                  <option
+                    value="storage-1"
+                  >
+                    storage-1
+                  </option>
+                  <option
+                    value="storage-2"
+                  >
+                    storage-2
+                  </option>
+                  <option
+                    value="storage-4"
+                  >
+                    storage-4
+                  </option>
+                  <option
+                    value="storage-16"
+                  >
+                    storage-16
+                  </option>
+                  <option
+                    value="storage-32"
+                  >
+                    storage-32
+                  </option>
+                  <option
+                    value="storage-64"
+                  >
+                    storage-64
+                  </option>
+                  <option
+                    value="storage-128"
+                  >
+                    storage-128
+                  </option>
+                  <option
+                    value="storage-256"
+                  >
+                    storage-256
+                  </option>
+                  <option
+                    value="storage-512"
+                  >
+                    storage-512
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+            <label
+              class="css-4hpp4k"
+            >
+              <div
+                class="css-1p4nx4e"
+              >
+                PVC: undefined, Overall Storage: , Backup: 
+              </div>
+            </label>
+          </div>
+          <div
+            class="css-wf4fqk"
+          />
+        </div>
+        <div
+          class="css-vurnku"
+        >
+          <h3
+            class="css-vurnku"
+          >
+            Snapshot
+          </h3>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Quota Size
+            </label>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-exclamation-triangle fa-w-18  css-8upjdz"
+              data-icon="exclamation-triangle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 576 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+                fill="currentColor"
+              />
+            </svg>
+            <div
+              class="css-1dmm8rf"
+              style="visibility: hidden;"
+            >
+              Only 'snapshot-5' are supported right now.
+            </div>
+            <div
+              class=""
+              style="flex: 1;"
+            >
+              <div
+                class="css-4cffwv"
+              >
+                <select
+                  class="css-4y926w"
+                  disabled=""
+                  name="quotaSnapshotSize"
+                >
+                  <option
+                    value="snapshot-5"
+                  >
+                    snapshot-5
+                  </option>
+                </select>
+                <svg
+                  class="css-6ibwe0"
+                  fill="currentcolor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-wf4fqk"
+          >
+            <label
+              class="css-toc01s"
+              for="project-quota"
+            >
+              Current
+            </label>
+            <label
+              class="css-4hpp4k"
+            >
+              <div
+                class="css-1p4nx4e"
+              >
+                Request: undefined snapshot
+              </div>
+            </label>
+          </div>
+        </div>
+        <div
+          class="css-17pvsr"
+        >
+          <h1
+            class="css-k3emzi"
+          >
+            Upgrade/Downgrade Quota
+          </h1>
+          <div
+            class="css-18m6ozg"
+          >
+            <label
+              class="css-v3m57q"
+            >
+              <h3
+                class="css-ystn37"
+              >
+                Important Information - By check this checkbox, you confirmed that you have read
+                 
+                <a
+                  href="https://developer.gov.bc.ca/Need-more-quota-for-OpenShift-project-set"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  this document
+                </a>
+                 
+                before submitting your quota increase requirement
+              </h3>
+            </label>
+            <div
+              class="css-xtali0"
+            >
+              <div
+                class="css-vurnku"
+              >
+                <label
+                  class="css-qqz2al"
+                >
+                  <div
+                    class="css-vurnku"
+                  >
+                    <input
+                      class="css-p19g2b"
+                      name="project-acceptUsage"
+                      type="checkbox"
+                    />
+                    <svg
+                      aria-hidden="true"
+                      class="css-1orewpb"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                      />
+                    </svg>
+                    <svg
+                      aria-hidden="true"
+                      class="css-6gju6b"
+                      fill="currentcolor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                      />
+                    </svg>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <button
+            class="css-gev7cd"
+            disabled=""
+            style="display: block;"
+          >
+            Request Update
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+`;
+
+exports[`matches the snapshot 1`] = `<div />`;
