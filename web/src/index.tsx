@@ -27,7 +27,6 @@ import * as serviceWorker from './serviceWorker';
 import theme from './theme';
 import { store, persistor } from './redux/store';
 import typography from './typography';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
