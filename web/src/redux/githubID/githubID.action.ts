@@ -53,16 +53,18 @@ async function getUserPhoto(bearer: string, userId: string) {
   return '';
 }
 
-export const searchIdirUsers = (
-  query: string,
-  persona: string,
-  position: number,
-  instance: IPublicClientApplication,
-  accounts: AccountInfo[],
-  graphToken: string,
-) => async (dispatch: Dispatch<GithubIDAction>) => {
-  dispatch(requestGithubUsers({ persona, position }));
-  const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
+export const searchIdirUsers =
+  (
+    query: string,
+    persona: string,
+    position: number,
+    instance: IPublicClientApplication,
+    accounts: AccountInfo[],
+    graphToken: string,
+  ) =>
+  async (dispatch: Dispatch<GithubIDAction>) => {
+    dispatch(requestGithubUsers({ persona, position }));
+    const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
   &$orderby=displayName&$count=true
   &$top=1
   &$select=id,
@@ -70,32 +72,32 @@ export const searchIdirUsers = (
   displayName,
   givenName,
   surname`;
-  const headers = new Headers();
-  headers.append('ConsistencyLevel', 'eventual');
-  const bearer = `Bearer ${graphToken}`;
-  headers.append('Authorization', bearer);
-  const options = {
-    method: 'GET',
-    headers,
-  };
+    const headers = new Headers();
+    headers.append('ConsistencyLevel', 'eventual');
+    const bearer = `Bearer ${graphToken}`;
+    headers.append('Authorization', bearer);
+    const options = {
+      method: 'GET',
+      headers,
+    };
 
-  return fetch(url, options)
-    .then(async (response) => {
-      if (response.ok) {
-        dispatch(userExists({ persona, position }));
-        const data = await response.json();
-        if (data.value[0].id) {
-          const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
-          data.avatar_url = photoObjectURL;
-          data.githubId = data.value[0].id;
-          data.email = data.value[0].mail;
+    return fetch(url, options)
+      .then(async (response) => {
+        if (response.ok) {
+          dispatch(userExists({ persona, position }));
+          const data = await response.json();
+          if (data.value[0].id) {
+            const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
+            data.avatar_url = photoObjectURL;
+            data.githubId = data.value[0].id;
+            data.email = data.value[0].mail;
+          }
+          dispatch(storeUser({ persona, position, data }));
+        } else {
+          dispatch(noSuchUser({ persona, position }));
         }
-        dispatch(storeUser({ persona, position, data }));
-      } else {
-        dispatch(noSuchUser({ persona, position }));
-      }
-    })
-    .catch((error) => console.error(error));
-};
+      })
+      .catch((error) => console.error(error));
+  };
 
 export default githubIDSearchKeyword;

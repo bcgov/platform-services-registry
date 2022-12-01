@@ -41,13 +41,8 @@ interface ContactInterface {
 }
 
 const CreateFormTL: React.FC<ContactInterface> = (props) => {
-  const {
-    instance,
-    accounts,
-    graphToken,
-    selectedTechnicalLeads1,
-    selectedTechnicalLeads2,
-  } = props;
+  const { instance, accounts, graphToken, selectedTechnicalLeads1, selectedTechnicalLeads2 } =
+    props;
   const [firstName1, setFirstName1] = useState<string>('');
   const [lastName1, setLastName1] = useState<string>('');
   const [email1, setEmail1] = useState<string>('');
