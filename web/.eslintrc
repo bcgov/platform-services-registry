@@ -26,6 +26,8 @@
       "warn",
       "always"
     ],
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
     "no-unused-vars": [
       "warn",
       {
