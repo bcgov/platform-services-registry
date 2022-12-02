@@ -35,8 +35,8 @@ jobs:
       - name: LINTing
         run: npm run lint -- --quiet -f codeframe
 
-      - name: Prettier
-        run: npm run format -- --check
+      #- name: Prettier
+        #run: npm run format -- --check
 
   build:
     runs-on: ubuntu-latest
@@ -47,9 +47,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+      #- uses: actions/setup-node@v1
+        #with:
+          #node-version: ${{ matrix.node-version }}
 
       - name: Cache node modules
         uses: actions/cache@v1
