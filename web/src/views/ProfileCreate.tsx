@@ -166,14 +166,5 @@ const mapStateToProps = (state: any, githubID: any) => ({
   technicalLead2: selectTechnicalLead(1)(state),
   stateProductOwner: selectProductOwner()(state),
 });
-// const mapDispatchToProps = (dispatch: any) => ({
-//   dispatchSearchGithubIDInput: (payload: {
-//     persona: string;
-//     inputValue: string;
-//     position: number;
-//   }) => dispatch(githubIDSearchKeyword(payload)),
-// });
 
 export default connect(mapStateToProps)(ProfileCreate);
-
-// export default ProfileCreate;

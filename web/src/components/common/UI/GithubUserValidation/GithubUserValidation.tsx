@@ -74,7 +74,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     <Field<string>
       name={name}
       component={AdaptedGithubUserDisplay}
-      placeholder="Write a github username"
+      placeholder="Search by IDIR display name (email address)"
       initialValue={initialValue}
       defaultValue={defaultValue}
       sx={{ textTransform: 'none' }}

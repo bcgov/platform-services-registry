@@ -220,7 +220,7 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
               {({ input }) => <input type="hidden" {...input} id="id" />}
             </Field>
             <Flex flexDirection="column">
-              <Label htmlFor="updatedProductOwner.githubId">GitHub Id</Label>
+              <Label htmlFor="updatedProductOwner.githubId">Search by IDIR Email Address</Label>
               <GithubUserValidation
                 name="updatedProductOwner.githubId"
                 persona="productOwner"
