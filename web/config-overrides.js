@@ -8,7 +8,7 @@ const cspConfigPolicy = {
   'manifest-src': "'self'",
   'font-src': "'self'",
   'style-src': ["'self'", "'unsafe-inline'"],
-  'img-src': ["'self'", '*.gov.bc.ca'],
+  'img-src': ["'self'", "blob:"],
   'object-src': "'self'",
   'frame-src': ["'self'", 'https://dev.oidc.gov.bc.ca/', 'https://oidc.gov.bc.ca'],
   'frame-ancestors': "'self'",
