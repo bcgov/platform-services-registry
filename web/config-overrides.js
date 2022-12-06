@@ -17,6 +17,7 @@ const cspConfigPolicy = {
     'https://api.github.com/users/',
     'https://dev.oidc.gov.bc.ca/',
     'https://oidc.gov.bc.ca',
+    'https://graph.microsoft.com/v1.0/',
     '*.gov.bc.ca/api/',
   ],
   'form-action': ["'self'"],
