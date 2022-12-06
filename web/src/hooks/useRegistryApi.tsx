@@ -28,7 +28,6 @@ const useAxios = () => {
   useEffect(() => {
     axiosInstance.current = axios.create({
       baseURL: API.BASE_URL(),
-      timeout: 2 * 60 * 1000, // give it a minute to load, normally won't need, just for dashboard-project
       headers: {
         Accept: 'application/json',
         Authorization: initialized ? `Bearer ${kcToken}` : undefined,
