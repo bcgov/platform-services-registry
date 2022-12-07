@@ -105,6 +105,14 @@ oc process -f api/openshift/templates/deploy.yaml \
 | FLYWAY_IMAGE_NAME      | Image name being used to run flyway pre hook pod.
 | FLYWAY_IMAGE_TAG       | Image tag being used to run flyway pre hook pod.
 
+Parameters involving Microsoft Azure are used to map Platform Services Registry to an application registered on Azure Portal. This is necessary for some API calls involving IDIR users.
+
+| Name                   | Description |
+| :--------------------- | :-----------|
+| AZURE_CLIENT_ID        | Must match the ID of the application registered on Azure Portal
+| AZURE_CLIENT_SECRET    | Used to get OAuth tokens for Graph API. Keep close track of this when you register the application on Azure
+| Azure_TENANT_ID        | Used for HTTP requests to get OAuth Tokens
+
 
 ### ProTip 🤓
   

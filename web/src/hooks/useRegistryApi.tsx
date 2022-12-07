@@ -28,7 +28,6 @@ const useAxios = () => {
   useEffect(() => {
     axiosInstance.current = axios.create({
       baseURL: API.BASE_URL(),
-      timeout: 2 * 60 * 1000, // give it a minute to load, normally won't need, just for dashboard-project
       headers: {
         Accept: 'application/json',
         Authorization: initialized ? `Bearer ${kcToken}` : undefined,
@@ -247,6 +246,13 @@ export default function useRegistryApi() {
     }
   };
 
+  const getAzureToken = async (): Promise<AxiosResponse<any>> => {
+    if (!axiosInstance.current) {
+      throw new Error(errorMsg);
+    } else {
+      return axiosInstance.current.get('azureOAuthToken');
+    }
+  };
   return {
     getMinistry,
     getQuotaSizes,
@@ -273,5 +279,6 @@ export default function useRegistryApi() {
     updateProfileDeleteableStatus,
     deleteProjectByProfileId,
     preDeletionCheck,
+    getAzureToken,
   };
 }

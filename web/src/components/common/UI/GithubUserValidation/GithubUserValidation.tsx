@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Field } from 'react-final-form';
 import { connect } from 'react-redux';
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import {
   createNewTechnicalLeads,
-  searchGithubUsers,
+  searchIdirUsers,
 } from '../../../../redux/githubID/githubID.action';
 import { GithubIdBaseInterface } from '../../../../redux/githubID/githubID.reducer';
 import {
@@ -21,6 +22,9 @@ interface GithubUserValidationInterface {
   selectedTechnicalLeads: GithubIdBaseInterface;
   productOwner: GithubIdBaseInterface;
   fetchUserStartAsync: any;
+  instance: IPublicClientApplication;
+  accounts: AccountInfo[];
+  graphToken: string;
 }
 const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) => {
   const {
@@ -32,6 +36,9 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     selectedTechnicalLeads,
     productOwner,
     fetchUserStartAsync,
+    instance,
+    accounts,
+    graphToken,
   } = props;
 
   const { inputKeyword, githubUser, notFound, everFetched } =
@@ -42,10 +49,10 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
       return 'Required';
     }
     if (everFetched && notFound) {
-      return 'Github User Not Found';
+      return 'IDIR User Not Found. \nMake sure you are using an email address associated with an IDIR account';
     }
     if (inputKeyword && !everFetched) {
-      return 'Still Loading Github User infomation';
+      return 'Still Loading IDIR User infomation';
     }
   };
 
@@ -55,7 +62,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
       // Second condition: only send api request if input change
       // Third condition: Until there's a new input, it won't run again if there's a notfound result
       if (githubUser?.login !== inputKeyword && inputKeyword.length !== 0 && !notFound) {
-        fetchUserStartAsync(inputKeyword, persona, position);
+        fetchUserStartAsync(inputKeyword, persona, position, instance, accounts, graphToken);
       }
     }, 1500);
 
@@ -67,7 +74,7 @@ const GithubUserValidation: React.FC<GithubUserValidationInterface> = (props) =>
     <Field<string>
       name={name}
       component={AdaptedGithubUserDisplay}
-      placeholder="Write a github username"
+      placeholder="Search by IDIR display name (email address)"
       initialValue={initialValue}
       defaultValue={defaultValue}
       sx={{ textTransform: 'none' }}
@@ -84,8 +91,14 @@ const mapStateToProps = (state: any, githubID: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserStartAsync: (query: string, persona: string, position: number) =>
-    dispatch(searchGithubUsers(query, persona, position)),
+  fetchUserStartAsync: (
+    query: string,
+    persona: string,
+    position: number,
+    instance: IPublicClientApplication,
+    accounts: AccountInfo[],
+    graphToken: string,
+  ) => dispatch(searchIdirUsers(query, persona, position, instance, accounts, graphToken)),
   createNewTechnicalLeads: () => dispatch(createNewTechnicalLeads()),
 });
 

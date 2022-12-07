@@ -20,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
 import { Box, Flex, Text } from 'rebass';
 import { faArrowLeft, faPen } from '@fortawesome/free-solid-svg-icons';
+import { useMsal } from '@azure/msal-react';
 import { getLicencePlatePostFix } from '../utils/utils';
 import { useQuery } from '../utils/AppRoute';
 import { useModal } from '../hooks/useModal';
@@ -99,6 +100,8 @@ const ProfileEdit: React.FC = (props: any) => {
   const api = useRegistryApi();
   const { keycloak } = useKeycloak();
   const { setOpenBackdrop } = useCommonState();
+  const [graphToken, setToken] = useState<any>('');
+  const { instance, accounts } = useMsal();
 
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   // @ts-ignore
@@ -152,7 +155,28 @@ const ProfileEdit: React.FC = (props: any) => {
     if (profileState.contactDetails !== undefined && profileState.contactDetails.length > 0) {
       projectBelongToUser();
     }
-  }, [profileState, keycloak, userRoles]);
+  }, [profileState, keycloak, userRoles, instance, accounts]);
+
+  useEffect(() => {
+    async function fetchGraphUserDelegateToken() {
+      const request = {
+        scopes: ['User.ReadBasic.All'],
+        account: accounts[0],
+      };
+      instance
+        .acquireTokenSilent(request)
+        .then((response) => {
+          setToken(response.accessToken);
+        })
+        .catch((e) => {
+          instance.acquireTokenPopup(request).then((response) => {
+            setToken(response.accessToken);
+          });
+        });
+    }
+    fetchGraphUserDelegateToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keycloak]);
 
   const [initialRender, setInitialRender] = useState(true);
   const [unauthorizedToAccess, setUnauthorizedToAccess] = useState(false);
@@ -443,6 +467,9 @@ const ProfileEdit: React.FC = (props: any) => {
                 isProvisioned={profileState.isProvisioned}
                 hasPendingEdit={profileState.hasPendingEdit}
                 isDisabled={isEditDisabled}
+                instance={instance}
+                accounts={accounts}
+                graphToken={graphToken}
               />
             )}
 

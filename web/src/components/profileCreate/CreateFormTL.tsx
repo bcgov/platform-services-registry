@@ -14,22 +14,69 @@
 // limitations under the License.
 //
 
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { Label } from '@rebass/forms';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
+import { connect } from 'react-redux';
 import { Box, Flex } from 'rebass';
 import { MAXIMUM_TECHNICAL_LEADS, MINIMUM_TECHNICAL_LEADS, ROLES } from '../../constants';
 import Aux from '../../hoc/auxillary';
-import getValidator from '../../utils/getValidator';
+import { githubIDSearchKeyword } from '../../redux/githubID/githubID.action';
+import { GithubIdBaseInterface } from '../../redux/githubID/githubID.reducer';
+import { selectTechnicalLead } from '../../redux/githubID/githubID.selector';
 import { Button, SquareFormButton } from '../common/UI/Button';
 import FormSubtitle from '../common/UI/FormSubtitle';
 import FormTitle from '../common/UI/FormTitle';
 import GithubUserValidation from '../common/UI/GithubUserValidation/GithubUserValidation';
 import TextInput from '../common/UI/TextInput';
 
-const CreateFormTL: React.FC = () => {
-  const validator = getValidator();
+interface ContactInterface {
+  instance: IPublicClientApplication;
+  accounts: AccountInfo[];
+  graphToken: string;
+  selectedTechnicalLeads1: GithubIdBaseInterface;
+  selectedTechnicalLeads2: GithubIdBaseInterface;
+}
+
+const CreateFormTL: React.FC<ContactInterface> = (props) => {
+  const { instance, accounts, graphToken, selectedTechnicalLeads1, selectedTechnicalLeads2 } =
+    props;
+  const [firstName1, setFirstName1] = useState<string>('');
+  const [lastName1, setLastName1] = useState<string>('');
+  const [email1, setEmail1] = useState<string>('');
+  const [firstName2, setFirstName2] = useState<string>('');
+  const [lastName2, setLastName2] = useState<string>('');
+  const [email2, setEmail2] = useState<string>('');
+
+  useEffect(() => {
+    mapDispatchToProps({ selectedTechnicalLeads1 });
+    setFirstName1(
+      selectedTechnicalLeads1.githubUser
+        ? selectedTechnicalLeads1.githubUser.value[0].givenName
+        : '',
+    );
+    setLastName1(
+      selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].surname : '',
+    );
+    setEmail1(
+      selectedTechnicalLeads1.githubUser ? selectedTechnicalLeads1.githubUser.value[0].mail : '',
+    );
+
+    mapDispatchToProps({ selectedTechnicalLeads2 });
+    setFirstName2(
+      selectedTechnicalLeads2.githubUser
+        ? selectedTechnicalLeads2.githubUser.value[0].givenName
+        : '',
+    );
+    setLastName2(
+      selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].surname : '',
+    );
+    setEmail2(
+      selectedTechnicalLeads2.githubUser ? selectedTechnicalLeads2.githubUser.value[0].mail : '',
+    );
+  }, [selectedTechnicalLeads1, selectedTechnicalLeads2]);
 
   return (
     <Aux>
@@ -65,42 +112,60 @@ const CreateFormTL: React.FC = () => {
                   {({ input }) => <input type="hidden" {...input} id={`${name}.roleId`} />}
                 </Field>
                 <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.firstName`}>First Name</Label>
-                  <Field<string>
-                    name={`${name}.firstName`}
-                    component={TextInput}
-                    validate={validator.mustBeValidName}
-                    placeholder="Jane"
-                  />
-                </Flex>
-                <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.lastName`}>Last Name</Label>
-                  <Field<string>
-                    name={`${name}.lastName`}
-                    component={TextInput}
-                    validate={validator.mustBeValidName}
-                    placeholder="Doe"
-                  />
-                </Flex>
-                <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.email`}>Email Address</Label>
-                  <Field<string>
-                    name={`${name}.email`}
-                    component={TextInput}
-                    validate={validator.mustBeValidEmail}
-                    placeholder="jane.doe@example.com"
-                    sx={{ textTransform: 'none' }}
-                  />
-                </Flex>
-                <Flex flexDirection="column">
-                  <Label htmlFor={`${name}.githubId`}>GitHub Id</Label>
+                  <Label htmlFor={`${name}.githubId`}>
+                    Search contact by their IDIR email address
+                  </Label>
                   <GithubUserValidation
                     name={`${name}.githubId`}
                     defaultValue=""
                     initialValue=""
                     persona="technicalLeads"
                     position={index}
+                    instance={instance}
+                    accounts={accounts}
+                    graphToken={graphToken}
                   />
+                </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.firstName`}>First Name</Label>
+                  <Field<string> name={`${name}.firstName`} defaultValue="" initialValue="">
+                    {({ input }) => (
+                      <input
+                        type="text"
+                        value={index === 0 ? `${firstName1}` : `${firstName2}`}
+                        readOnly={true}
+                      />
+                    )}
+                  </Field>
+                </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.lastName`}>Last Name</Label>
+                  <Field<string> name={`${name}.lastName`} placeholder="Doe">
+                    {({ input }) => (
+                      <input
+                        type="text"
+                        value={index === 0 ? `${lastName1}` : `${lastName2}`}
+                        readOnly={true}
+                      />
+                    )}
+                  </Field>
+                </Flex>
+                <Flex flexDirection="column">
+                  <Label htmlFor={`${name}.email`}>Email Address</Label>
+                  <Field<string>
+                    name={`${name}.email`}
+                    component={TextInput}
+                    placeholder="jane.doe@example.com"
+                    sx={{ textTransform: 'none' }}
+                  >
+                    {({ input }) => (
+                      <input
+                        type="text"
+                        value={index === 0 ? `${email1}` : `${email2}`}
+                        readOnly={true}
+                      />
+                    )}
+                  </Field>
                 </Flex>
               </div>
             ))}
@@ -123,4 +188,15 @@ const CreateFormTL: React.FC = () => {
   );
 };
 
-export default CreateFormTL;
+const mapStateToProps = (state: any, githubID: any) => ({
+  selectedTechnicalLeads1: selectTechnicalLead(0)(state),
+  selectedTechnicalLeads2: selectTechnicalLead(1)(state),
+});
+const mapDispatchToProps = (dispatch: any) => ({
+  dispatchSearchGithubIDInput: (payload: {
+    persona: string;
+    inputValue: string;
+    position: number;
+  }) => dispatch(githubIDSearchKeyword(payload)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(CreateFormTL);

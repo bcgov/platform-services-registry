@@ -45,6 +45,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.3.0",
+    "qs": "^6.11.0",
     "transform-runtime": "0.0.0"
   },
   "devDependencies": {

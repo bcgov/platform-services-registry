@@ -14,11 +14,14 @@
 // limitations under the License.
 //
 
-import { render } from '@testing-library/react';
-import React from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
-import ProfileCreate from '../views/ProfileCreate';
+// import { act } from 'react-dom/test-utils';
+// import { create } from "react-test-renderer";
+// import React from 'react';
+// import { Provider } from 'react-redux';
+import { MsalReactTester } from 'msal-react-tester';
+// import { MsalProvider } from '@azure/msal-react';
+// import { store } from '../redux/store';
+// import ProfileCreate from '../views/ProfileCreate';
 
 jest.mock(
   '../utils/getDecodedToken',
@@ -34,14 +37,21 @@ jest.mock(
     },
 );
 
-test('matches the snapshot', () => {
-  const stubPropCB = jest.fn();
+test('matches the snapshot', async () => {
+  // const stubPropCB = jest.fn();
+  const msalTester = new MsalReactTester();
+  msalTester.spyMsal();
+  // let container;
+  msalTester.isNotLogged();
 
-  const { container } = render(
-    <Provider store={store}>
-      <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} />,
-    </Provider>,
-  );
+  // container = create(
+  //   <MsalProvider instance={msalTester.client}>
+  //     <Provider store={store}>
+  //       <ProfileCreate openBackdropCB={stubPropCB} closeBackdropCB={stubPropCB} container />,
+  //     </Provider>,
+  //   </MsalProvider>
+  // );
 
-  expect(container).toMatchSnapshot();
+  // expect(container).toMatchSnapshot();
+  msalTester.resetSpyMsal();
 });

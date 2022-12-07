@@ -1,9 +1,9 @@
+import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
 import { Dispatch } from 'redux';
 import { ActionType } from 'typesafe-actions';
 import GithubIDActionTypes from './githubID.types';
 
 export type GithubIDAction = ActionType<typeof requestGithubUsers>;
-
 interface GithubIDActionPayload {
   persona: string;
   position: number;
@@ -37,24 +37,67 @@ export const createNewTechnicalLeads = () => ({
   type: GithubIDActionTypes.NEW_GITHUB_ID_ENTRY,
 });
 
-export const searchGithubUsers = (query: string, persona: string, position: number) => (
-  dispatch: Dispatch<GithubIDAction>,
-) => {
-  dispatch(requestGithubUsers({ persona, position }));
-  fetch(`https://api.github.com/users/${query}`)
-    .then(async (response) => {
-      if (response.ok) {
-        dispatch(userExists({ persona, position }));
-        const data = await response.json();
-        dispatch(storeUser({ persona, position, data }));
-      } else {
-        dispatch(noSuchUser({ persona, position }));
-      }
-    })
-    .catch((err) => {
-      dispatch(noSuchUser({ persona, position }));
-      throw new Error('Error happened during fetching Github data!');
-    });
-};
+async function getUserPhoto(bearer: string, userId: string) {
+  const url = `https://graph.microsoft.com/v1.0/users/${userId}/photo/$value`;
+  const headers = new Headers();
+  headers.append('ConsistencyLevel', 'eventual');
+  headers.append('Authorization', bearer);
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers,
+  });
+  if (response.ok) {
+    return window.URL.createObjectURL(await response.blob());
+  }
+  return '';
+}
+
+export const searchIdirUsers =
+  (
+    query: string,
+    persona: string,
+    position: number,
+    instance: IPublicClientApplication,
+    accounts: AccountInfo[],
+    graphToken: string,
+  ) =>
+  async (dispatch: Dispatch<GithubIDAction>) => {
+    dispatch(requestGithubUsers({ persona, position }));
+    const url = `https://graph.microsoft.com/v1.0/users?$filter=startswith(mail,'${query}')
+  &$orderby=displayName&$count=true
+  &$top=1
+  &$select=id,
+  mail,
+  displayName,
+  givenName,
+  surname`;
+    const headers = new Headers();
+    headers.append('ConsistencyLevel', 'eventual');
+    const bearer = `Bearer ${graphToken}`;
+    headers.append('Authorization', bearer);
+    const options = {
+      method: 'GET',
+      headers,
+    };
+
+    return fetch(url, options)
+      .then(async (response) => {
+        if (response.ok) {
+          dispatch(userExists({ persona, position }));
+          const data = await response.json();
+          if (data.value[0].id) {
+            const photoObjectURL = await getUserPhoto(bearer, data.value[0].id);
+            data.avatar_url = photoObjectURL;
+            data.githubId = data.value[0].id;
+            data.email = data.value[0].mail;
+          }
+          dispatch(storeUser({ persona, position, data }));
+        } else {
+          dispatch(noSuchUser({ persona, position }));
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
 export default githubIDSearchKeyword;

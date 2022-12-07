@@ -157,7 +157,7 @@ export const PublicLanding = () => {
           </Text>
           <Text as="li">A descriptive product name (no acronyms)</Text>
           <Text as="li">
-            Contact details and Github IDs for a product owner and up to 2 technical leads
+            Contact details and IDIR IDs for a product owner and up to 2 technical leads
           </Text>
           <Text as="li">
             An idea of which common components you will use (see common components list)
