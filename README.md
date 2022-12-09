@@ -83,19 +83,17 @@ oc process -f openshift/templates/nsp.yaml \
 | NATS_NAMESPACE      | The namespace where NATS exists.               |
 | NATS_APO_IDENTIFIER | The unique identifier used for NATS.           |
 
-### Microsoft Graph API
-Changes in this product to switch from selecting Technical Leads and Product Owners through GitHub's API in favour of IDIR user lookup through Microsoft's Graph API require some additional configuration. 
-Using the Graph API without requiring an additional user sign in means that the application accesses Graph, rather than the user directly. This means  that we have Platform Services Registry as an App registered on Azure with defined credentials that must be matched in order to make authorized calls to Graph. Parameters that must be set include:
-
-| Name                   | Description | 
-| :--------------------- | :-----------|
-| Application (client) ID | ID of application so Azure knows the application may request an access token |
-| Directory (tenant) ID   | Required for HTTP call for access token |
-| Client Secret (password)| This is hidden, and cannot be looked up on Azure. Contact the Dev Exchange for this value |
+### Microsoft Graph API and Azure
+Changes have been made to this product in terms of how PO and TL contacts are searched for and added to request profiles. Instead of adding Git users through the Git API, we will now use IDIR identities fetched via Microsoft's Graph API. API documentation can be found [here](https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http).
+#### Project on Azure
+The OAuth flow for calls to the Graph API requires an application registered on the Government of BC Azure domain. The registered application can be found [here](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/5afdfc62-637b-41cf-b186-b2de816faaf9/isMSAApp~/false), and lists the Client ID and Azure Tenant ID needed to receive the authorization token to make calls to the Graph API. These values are unchanging, and need not be configured in Platform Services Registry to make this authorization flow work. The values are hardcoded in web/src/redux/githubID/graphAuthConfig.js.
 
 #### Redirect URL
 Make sure that the URL to Platform Services Registry is added to the Platform Services Registry application as configured in Azure. This is necessary for getting an access token back, allowing users to use the Graph API.
 ![Redirect URL used for feature development](./DocAsset/redirect_Uris.png)
+
+#### User Delegate Permission Scope
+API permission for Graph calls is based on user delegate scopes, or in other words, calls are made on behalf of the signed in user rather than the application. This makes no difference to user experience other than that a constent dialog box may flash on screen for a split second, or if using a browser in incongnito mode, you will be required to go through Microsoft's sign in process via the BC gov signin page. 
 
 ### Database
 
