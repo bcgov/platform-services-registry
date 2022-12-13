@@ -216,9 +216,11 @@ const ContactCardEdit: React.FC<IContactCardEditProps> = (props) => {
         <form onSubmit={formProps.handleSubmit}>
           <Flex flexDirection="column">
             <h4>Updating Exisitng Contacts to IDIR Accounts</h4>
-            Please note that Product Owner and Technical Lead contacts that were added based on Git Identities must be updated to use
-            IDIR identities. This is for security purposes.<br/>
-            To update a contact, begin by writing their IDIR associated email address in the corresponding search box. Their IDIR information will auto-fill.
+            Please note that Product Owner and Technical Lead contacts that were added based on Git
+            Identities must be updated to use IDIR identities. This is for security purposes.
+            <br />
+            To update a contact, begin by writing their IDIR associated email address in the
+            corresponding search box. Their IDIR information will auto-fill.
           </Flex>
           <fieldset disabled={isDisabled} style={{ border: 0 }}>
             <FormTitle>Who is the product owner for this product?</FormTitle>
