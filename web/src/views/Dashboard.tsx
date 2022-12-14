@@ -16,6 +16,7 @@
 
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
+import { Bool } from 'reselect/es/types';
 import ProjectDetails from '../components/dashboard/ProjectDetails';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import PSRDocumentationLink from '../components/dashboard/PSRDocumentationLink';
@@ -31,6 +32,7 @@ const Dashboard: React.FC = () => {
   const { setOpenBackdrop } = useCommonState();
 
   const [profileDetails, setProfileDetails] = useState<any>([]);
+  const [profilesFetched, setProfilesFetched] = useState<Boolean>(false);
 
   const decodedToken = getDecodedToken(`${keycloak?.token}`);
   // @ts-ignore
@@ -52,6 +54,7 @@ const Dashboard: React.FC = () => {
         }
 
         setProfileDetails(profileDetailsArray);
+        setProfilesFetched(true);
       } catch (err) {
         promptErrToastWithText('Something went wrong');
         console.log(err);
@@ -78,6 +81,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
+      {profilesFetched && <div className="UptimeTestHelper" />}
       <PSRDocumentationLink />
       {(userRoles.includes('administrator') || userRoles.includes('read_only_administrator')) && (
         <ProjectRequests
@@ -85,7 +89,6 @@ const Dashboard: React.FC = () => {
           isAdminUser={userRoles.includes('administrator')}
         />
       )}
-
       <ProjectDetails profileDetails={profileDetails} linkedRows={true} />
     </>
   );
