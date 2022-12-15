@@ -16,7 +16,6 @@
 
 import { useKeycloak } from '@react-keycloak/web';
 import React, { useEffect, useState } from 'react';
-import { Bool } from 'reselect/es/types';
 import ProjectDetails from '../components/dashboard/ProjectDetails';
 import ProjectRequests from '../components/dashboard/ProjectRequests';
 import PSRDocumentationLink from '../components/dashboard/PSRDocumentationLink';
