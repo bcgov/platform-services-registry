@@ -7,6 +7,7 @@ import {
   selectTechnicalLead,
 } from '../../../../redux/githubID/githubID.selector';
 import TextInput from '../TextInput';
+import notFoundPlaceholder from '../../../../assets/images/no-image-icon.png';
 
 interface GithubUserInterface {
   avatar: string;
@@ -29,6 +30,10 @@ const User: React.FC<GithubUserInterface> = (props) => {
           alt={name}
           sx={{
             borderRadius: '50%',
+          }}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = notFoundPlaceholder;
           }}
         />
       </Box>
