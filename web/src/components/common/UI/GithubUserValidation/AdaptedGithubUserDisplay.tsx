@@ -80,7 +80,7 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
           User was not found! :(
         </Text>
       )}
-      {githubUser && githubUser.value[0] && (
+      {githubUser && githubUser.value && githubUser.value[0] && (
         <User name={githubUser.value[0].displayName} avatar={githubUser.avatar_url} />
       )}
     </>
