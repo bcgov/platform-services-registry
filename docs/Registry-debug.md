@@ -97,3 +97,46 @@ It's a front-end logic bug that needs to be fixed, it basically means that the d
 ### Registry needs cluster wide update
 
 This will happen if we want to add some new configuration to apply to all namespaces, please follow this instruction: https://github.com/bcgov-c/platform-services-docs/blob/main/provisioner/provisioner_management.md#manually-sync-all-project-sets
+
+### Copy production db to local:
+
+In project environment that you want to copy db from
+
+```
+oc exec registry-patroni-0 -- bash -c 'pg_dump registry >  ~/backup/registry.sql'
+```
+
+Create a folder to put the backup file:
+
+```
+mkdir ~/databaseBackup
+```
+
+Copy it over from pod:
+
+```
+oc rsync registry-patroni-0:/home/postgres/backup/registry.sql ~/databaseBackup/
+```
+
+Apply file in docker’s db. Make sure remove and mkdir `pg_data` in app root:
+In docker db shell, run:
+
+```
+dropdb -U postgres registry
+createdb -U postgres registry
+```
+
+Now, apply the backup dumpfile back to db in docker, run this in your localhost terminal(PS: may need to make sure to create a new user for local dev or change local env variable to be the same from where you copy the db):
+
+```
+cd  ~/databaseBackup
+cat registry.sql | docker exec -i registry-pg psql -U postgres registry
+```
+
+If you registry db user don't have access to this new db that gets created from dump, you will need to grant it access by run this cmd in docker registry_pg cmd:
+
+```
+ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO <YOUR_LOCAL_REGISTRY_DB_USERNAME>;
+```
+
+And you should be all set
