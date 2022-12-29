@@ -53,28 +53,36 @@ const CreateFormTL: React.FC<ContactInterface> = (props) => {
   useEffect(() => {
     mapDispatchToProps({ selectedTechnicalLeads1 });
     setFirstName1(
-      (selectedTechnicalLeads1.githubUser && selectedTechnicalLeads1.githubUser.value)
+      selectedTechnicalLeads1.githubUser && selectedTechnicalLeads1.githubUser.value
         ? selectedTechnicalLeads1.githubUser.value[0].givenName
         : '',
     );
     setLastName1(
-      (selectedTechnicalLeads1.githubUser && selectedTechnicalLeads1.githubUser.value) ? selectedTechnicalLeads1.githubUser.value[0].surname : '',
+      selectedTechnicalLeads1.githubUser && selectedTechnicalLeads1.githubUser.value
+        ? selectedTechnicalLeads1.githubUser.value[0].surname
+        : '',
     );
     setEmail1(
-      (selectedTechnicalLeads1.githubUser && selectedTechnicalLeads1.githubUser.value) ? selectedTechnicalLeads1.githubUser.value[0].mail : '',
+      selectedTechnicalLeads1.githubUser && selectedTechnicalLeads1.githubUser.value
+        ? selectedTechnicalLeads1.githubUser.value[0].mail
+        : '',
     );
 
     mapDispatchToProps({ selectedTechnicalLeads2 });
     setFirstName2(
-      (selectedTechnicalLeads2.githubUser && selectedTechnicalLeads2.githubUser.value)
+      selectedTechnicalLeads2.githubUser && selectedTechnicalLeads2.githubUser.value
         ? selectedTechnicalLeads2.githubUser.value[0].givenName
         : '',
     );
     setLastName2(
-      (selectedTechnicalLeads2.githubUser && selectedTechnicalLeads2.githubUser.value) ? selectedTechnicalLeads2.githubUser.value[0].surname : '',
+      selectedTechnicalLeads2.githubUser && selectedTechnicalLeads2.githubUser.value
+        ? selectedTechnicalLeads2.githubUser.value[0].surname
+        : '',
     );
     setEmail2(
-      (selectedTechnicalLeads2.githubUser && selectedTechnicalLeads2.githubUser.value) ? selectedTechnicalLeads2.githubUser.value[0].mail : '',
+      selectedTechnicalLeads2.githubUser && selectedTechnicalLeads2.githubUser.value
+        ? selectedTechnicalLeads2.githubUser.value[0].mail
+        : '',
     );
   }, [selectedTechnicalLeads1, selectedTechnicalLeads2]);
 
