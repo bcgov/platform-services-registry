@@ -43,7 +43,7 @@
     "nats": "^1.4.12",
     "nconf": "^0.11.4",
     "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
+    "passport-jwt": "^4.0.1",
     "pg": "^8.3.0",
     "qs": "^6.11.0",
     "transform-runtime": "0.0.0"
