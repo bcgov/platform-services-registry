@@ -48,7 +48,7 @@ const CreateFormPO: React.FC<ContactInterface> = (props) => {
 
   useEffect(() => {
     mapDispatchToProps({ productOwner });
-    if(productOwner){
+    if (productOwner) {
       setFirstName(productOwner.githubUser ? productOwner.githubUser.value[0].givenName : '');
       setLastName(productOwner.githubUser ? productOwner.githubUser.value[0].surname : '');
       setEmail(productOwner.githubUser ? productOwner.githubUser.value[0].mail : '');

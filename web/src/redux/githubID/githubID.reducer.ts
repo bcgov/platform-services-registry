@@ -113,7 +113,7 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
         githubUser: null,
         isLoading: false,
         everFetched: false,
-        notFound: true, 
+        notFound: true,
       };
       return newStateForNoneExistUser;
 
