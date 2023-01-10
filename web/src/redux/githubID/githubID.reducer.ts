@@ -112,8 +112,8 @@ const githubIDReducer = (state = INITIAL_STATE, action: Action) => {
         ...newPersonaForNoneExistUser[userNotExistPosition],
         githubUser: null,
         isLoading: false,
-        everFetched: true,
-        notFound: false, // true, Alex C flipped this as it seemed to break things when switching over to IDIR based identities
+        everFetched: false,
+        notFound: true, 
       };
       return newStateForNoneExistUser;
 
