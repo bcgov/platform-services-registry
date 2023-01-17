@@ -77,7 +77,8 @@ const AdaptedGithubUserDisplay: React.FC<any> = (props) => {
       )}
       {notFound && (
         <Text as="h4" mt={2}>
-          User was not found! :(
+          User was not found! <br />
+          Please search by an email address associated with a valid IDIR user account.
         </Text>
       )}
       {githubUser && githubUser.value && githubUser.value[0] && (
