@@ -418,7 +418,6 @@ export const sendNatsMessage = async (
   try {
     const nc = shared.nats;
     const { natsSubject, natsContext } = natsMessage;
-    logger.info("Bot message! OOOOH, YEEEEAHHH!");
     logger.info(
       `NATS details are: 
       ${JSON.stringify(natsMessage, null, 3)}`
