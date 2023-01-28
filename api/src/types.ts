@@ -57,6 +57,7 @@ export interface NatsContext {
   ministry_id?: string;
   namespaces: NatsProjectNamespace[];
   merge_type?: string;
+  alliance?: string;
   contacts?: NatsContact[];
 }
 
