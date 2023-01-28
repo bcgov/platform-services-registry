@@ -230,7 +230,6 @@ export const buildNatsMessageFields = async (
   return namespaces;
 };
 
-
 export const buildContext = async (
   action: NatsContextAction,
   profile: ProjectProfile,
@@ -252,17 +251,17 @@ export const buildContext = async (
       throw new Error("Missing arguments to build nats context");
     }
     let allianceLabel = "";
-      switch ((profile.busOrgId).toLocaleLowerCase()) {
-        case 'ag':
-        case 'pssg':
-        case 'embc':
-        case 'mah':
-          allianceLabel =  'JAG';
-          break;
-        default:
-          allianceLabel = 'none';
-          break;
-      };
+    switch (profile.busOrgId.toLocaleLowerCase()) {
+      case "ag":
+      case "pssg":
+      case "embc":
+      case "mah":
+        allianceLabel = "JAG";
+        break;
+      default:
+        allianceLabel = "none";
+        break;
+    }
     return {
       action,
       profile_id: profile.id,
