@@ -1,0 +1,14 @@
+policy:
+  approval:
+  - one member of the appdev team
+
+approval_rules:
+- name: one member of the appdev team
+  options:
+    allow_contributor: true
+  requires:
+    count: 1
+    users:
+    - "w8896699"
+    - "okanji"
+    - "Kolezhanchik"

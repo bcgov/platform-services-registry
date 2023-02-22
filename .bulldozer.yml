@@ -1,0 +1,16 @@
+version: 1
+
+merge:
+  trigger:
+    labels: []
+  ignore:
+    labels: ["do not merge"]
+    comment_substrings: ["==DO_NOT_MERGE=="]
+  method: squash
+  options:
+    squash:
+      body: summarize_commits
+  required_statuses:
+    - "BC-Ruler-bcgov: main"
+  delete_after_merge: true
+
