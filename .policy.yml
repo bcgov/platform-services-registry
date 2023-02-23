@@ -1,6 +1,8 @@
 policy:
   approval:
-  - one-reviewer
+    - or:
+      - one-reviewer
+      - auto-merge
 
 approval_rules:
 - name: one-reviewer
@@ -10,3 +12,10 @@ approval_rules:
     - "w8896699"
     - "okanji"
     - "Kolezhanchik"
+- name: auto-merge
+  description: Automatic merge with auto-merge label
+  if:
+    has_labels:
+      - "auto-merge"
+  requires:
+    count: 0
