@@ -11,6 +11,6 @@ merge:
     squash:
       body: summarize_commits
   required_statuses:
-    - "BC-Ruler-bcgov: master"
+    - "BC-Ruler-bcgov: main"
   delete_after_merge: true
 
