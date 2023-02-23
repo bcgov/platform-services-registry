@@ -1,11 +1,9 @@
 policy:
   approval:
-  - one member of the appdev team
+  - one-reviewer
 
 approval_rules:
-- name: one member of the appdev team
-  options:
-    allow_contributor: true
+- name: one-reviewer
   requires:
     count: 1
     users:
