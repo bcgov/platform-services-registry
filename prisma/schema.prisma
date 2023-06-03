@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                                                 String                         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                                          String?
+  lastName                                           String?
+  email                                              String                         @unique
+  ministry                                           String?
+  archived                                           Boolean                        @default(false)
+  created                                            DateTime                       @default(now())
+  lastSeen                                           DateTime                       @updatedAt
+  privateCloudProjectOwner                           PrivateCloudProject[]          @relation("projectOwner")
+  privateCloudProjectPrimaryTechnicalLead            PrivateCloudProject[]          @relation("primaryTechnicalLead")
+  privateCloudProjectSecondaryTechnicalLead          PrivateCloudProject[]          @relation("secondaryTechnicalLead")
+  privateCloudRequestedProjectOwner                  PrivateCloudRequestedProject[] @relation("requestedProjectOwner")
+  privateCloudRequestedProjectPrimaryTechnicalLead   PrivateCloudRequestedProject[] @relation("requestedPrimaryTechnicalLead")
+  privateCloudRequestedProjectSecondaryTechnicalLead PrivateCloudRequestedProject[] @relation("requestedSecondaryTechnicalLead")
+}
+
+model PrivateCloudRequest {
+  id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate       String
+  createdByEmail     String
+  decisionMakerEmail String?
+  type               RequestType
+  decisionStatus     DecisionStatus
+  humanComment       String?
+  active             Boolean                      @default(true)
+  created            DateTime                     @default(now())
+  decisionDate       DateTime?
+  projectId          String?                      @db.ObjectId
+  project            PrivateCloudProject?         @relation("project", fields: [projectId], references: [id])
+  requestedProjectId String                       @unique @db.ObjectId
+  requestedProject   PrivateCloudRequestedProject @relation("requestedProject", fields: [requestedProjectId], references: [id])
+}
+
+model PrivateCloudProject {
+  id                       String                @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate             String                @unique
+  name                     String
+  description              String
+  status                   ProjectStatus
+  created                  DateTime              @default(now())
+  projectOwnerId           String                @db.ObjectId
+  projectOwner             User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId   String                @db.ObjectId
+  primaryTechnicalLead     User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId String?               @db.ObjectId
+  secondaryTechnicalLead   User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  ministry                 Ministry
+  cluster                  Cluster
+  productionQuota          Quota
+  testQuota                Quota
+  developmentQuota         Quota
+  toolsQuota               Quota
+  commonComponents         CommonComponents
+  profileId                String?
+  requests                 PrivateCloudRequest[] @relation("project")
+
+}
+
+model PrivateCloudRequestedProject {
+  id                       String               @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String
+  description              String
+  status                   ProjectStatus
+  licencePlate             String
+  created                  DateTime             @default(now())
+  projectOwnerId           String               @db.ObjectId
+  projectOwner             User                 @relation("requestedProjectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId   String               @db.ObjectId
+  primaryTechnicalLead     User                 @relation("requestedPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId String?              @db.ObjectId
+  secondaryTechnicalLead   User?                @relation("requestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  ministry                 Ministry
+  cluster                  Cluster
+  productionQuota          Quota
+  testQuota                Quota
+  developmentQuota         Quota
+  toolsQuota               Quota
+  commonComponents         CommonComponents
+  profileId                String?
+  requestedProject         PrivateCloudRequest? @relation("requestedProject")
+}
+
+type Quota {
+  cpu     DefaultCpuOptions
+  memory  DefaultMemoryOptions
+  storage DefaultStorageOptions
+}
+
+type CommonComponents {
+  addressAndGeolocation              CommonComponentsOptions?
+  workflowManagement                 CommonComponentsOptions?
+  formDesignAndSubmission            CommonComponentsOptions?
+  identityManagement                 CommonComponentsOptions?
+  paymentServices                    CommonComponentsOptions?
+  documentManagement                 CommonComponentsOptions?
+  endUserNotificationAndSubscription CommonComponentsOptions?
+  publishing                         CommonComponentsOptions?
+  businessIntelligence               CommonComponentsOptions?
+  other                              String?
+  noServices                         Boolean
+}
+
+enum ProjectStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum DecisionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PROVISIONED
+}
+
+enum RequestDecision {
+  APPROVED
+  REJECTED
+}
+
+enum RequestType {
+  CREATE
+  EDIT
+  DELETE
+}
+
+enum Ministry {
+  AEST
+  AG
+  AGRI
+  ALC
+  BCPC
+  CITZ
+  DBC
+  EAO
+  EDUC
+  EMBC
+  EMPR
+  ENV
+  FIN
+  FLNR
+  HLTH
+  IRR
+  JEDC
+  LBR
+  LDB
+  MAH
+  MCF
+  MMHA
+  PSA
+  PSSG
+  SDPR
+  TCA
+  TRAN
+}
+
+enum Cluster {
+  CLAB
+  KLAB
+  SILVER
+  GOLD
+  GOLDDR
+  KLAB2
+  EMERALD
+}
+
+enum Environment {
+  PRODUCTION
+  TEST
+  DEVELOPMENT
+  TOOLS
+}
+
+enum Platform {
+  PRIVATE_CLOUD
+  PUBLIC_CLOUD
+}
+
+enum PublicCloudPlatform {
+  GOOGLE
+  AWS
+}
+
+enum DefaultCpuOptions {
+  CPU_REQUEST_0_5_LIMIT_1_5
+  CPU_REQUEST_1_LIMIT_2
+  CPU_REQUEST_2_LIMIT_4
+  CPU_REQUEST_4_LIMIT_8
+  CPU_REQUEST_8_LIMIT_16
+  CPU_REQUEST_16_LIMIT_32
+  CPU_REQUEST_32_LIMIT_64
+  CPU_REQUEST_64_LIMIT_128
+}
+
+enum CommonComponentsOptions {
+  IMPLEMENTED
+  PLANNING_TO_USE
+}
+
+enum DefaultMemoryOptions {
+  MEMORY_REQUEST_2_LIMIT_4
+  MEMORY_REQUEST_4_LIMIT_8
+  MEMORY_REQUEST_8_LIMIT_16
+  MEMORY_REQUEST_16_LIMIT_32
+  MEMORY_REQUEST_32_LIMIT_64
+  MEMORY_REQUEST_64_LIMIT_128
+}
+
+enum DefaultStorageOptions {
+  STORAGE_1
+  STORAGE_2
+  STORAGE_4
+  STORAGE_16
+  STORAGE_32
+  STORAGE_64
+  STORAGE_128
+  STORAGE_256
+  STORAGE_512
+}
