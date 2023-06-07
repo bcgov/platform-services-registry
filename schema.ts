@@ -1,11 +1,22 @@
-import { CommonComponentsOptions, Ministry } from "@prisma/client";
-import { z } from "zod";
+import {
+  ProjectStatus,
+  RequestType,
+  DecisionStatus,
+  DefaultCpuOptions,
+  DefaultMemoryOptions,
+  DefaultStorageOptions,
+  Cluster,
+  Ministry,
+  CommonComponentsOptions,
+  User
+} from "@prisma/client";
+import { string, number, z } from "zod";
 
-const CommonComponentsOptionsSchema = z.optional(
+export const CommonComponentsOptionsSchema = z.optional(
   z.nativeEnum(CommonComponentsOptions)
 );
 
-export const CommonComponentsSchema = z.object({
+export const CommonComponentsInputSchema = z.object({
   addressAndGeolocation: CommonComponentsOptionsSchema,
   workflowManagement: CommonComponentsOptionsSchema,
   formDesignAndSubmission: CommonComponentsOptionsSchema,
@@ -19,9 +30,41 @@ export const CommonComponentsSchema = z.object({
   noServices: z.boolean()
 });
 
-export const UserSchema = z.object({
+export const UserInputSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),
   ministry: z.nativeEnum(Ministry)
 });
+
+export const CreateRequestBodySchema = z.object({
+  name: string(),
+  description: string(),
+  cluster: z.nativeEnum(Cluster),
+  ministry: z.nativeEnum(Ministry),
+  commonComponents: CommonComponentsInputSchema,
+  projectOwner: UserInputSchema,
+  primaryTechnicalLead: UserInputSchema,
+  secondaryTechnicalLead: UserInputSchema.optional()
+});
+
+export const QuotaInputSchema = z.object({
+  cpu: z.nativeEnum(DefaultCpuOptions),
+  memory: z.nativeEnum(DefaultMemoryOptions),
+  storage: z.nativeEnum(DefaultStorageOptions)
+});
+
+export const EditRequestBodySchema = CreateRequestBodySchema.merge(
+  z.object({
+    productionQuota: QuotaInputSchema,
+    testQuota: QuotaInputSchema,
+    toolsQuota: QuotaInputSchema,
+    developmentQuota: QuotaInputSchema
+  })
+);
+
+export type CreateRequestBody = z.infer<typeof CreateRequestBodySchema>;
+export type UserInput = z.infer<typeof UserInputSchema>;
+export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
+export type QuotaInput = z.infer<typeof QuotaInputSchema>;
+export type EditRequestBody = z.infer<typeof EditRequestBodySchema>;
