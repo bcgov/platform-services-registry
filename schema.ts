@@ -1,14 +1,10 @@
 import {
-  ProjectStatus,
-  RequestType,
-  DecisionStatus,
   DefaultCpuOptions,
   DefaultMemoryOptions,
   DefaultStorageOptions,
   Cluster,
   Ministry,
-  CommonComponentsOptions,
-  User
+  CommonComponentsOptions
 } from "@prisma/client";
 import { string, number, z } from "zod";
 
