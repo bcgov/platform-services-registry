@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import {
   ProjectStatus,
   RequestType,
@@ -6,38 +8,46 @@ import {
   DefaultCpuOptions,
   DefaultMemoryOptions,
   DefaultStorageOptions,
-  Cluster,
-  Ministry,
-  User
+  PrivateCloudRequest
 } from "@prisma/client";
-import { CommonComponentsSchema, UserSchema } from "@/schema";
+import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import generateLicensePlate from "@/lib/generateLicencePlate";
-import { string, number, z } from "zod";
+import {
+  CreateRequestBodySchema,
+  CreateRequestBody,
+  UserInput
+} from "@/schema";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
-const BodySchema = z.object({
-  name: string(),
-  description: string(),
-  cluster: z.nativeEnum(Cluster),
-  ministry: z.nativeEnum(Ministry),
-  commonComponents: CommonComponentsSchema,
-  projectOwner: UserSchema,
-  primaryTechnicalLead: UserSchema,
-  secondaryTechnicalLead: UserSchema.optional()
-});
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
 
-type Body = z.infer<typeof BodySchema>;
+  if (!session) {
+    return NextResponse.json({
+      message: "You do not have the required credentials."
+    });
+  }
 
-export async function POST(req: NextRequest, { params }: { params: Params }) {
-  const parsedBody = BodySchema.safeParse(req.body);
+  const { email: authEmail, roles: authRoles } = session.user;
+
+  const parsedBody = CreateRequestBodySchema.safeParse(req.body);
 
   if (!parsedBody.success) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead } =
-    parsedBody.data;
+  const data: CreateRequestBody = parsedBody.data;
+
+  const {
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead
+  }: {
+    projectOwner: UserInput;
+    primaryTechnicalLead: UserInput;
+    secondaryTechnicalLead?: UserInput;
+  } = data;
 
   if (
     ![
@@ -55,30 +65,30 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const licencePlate = generateLicensePlate();
 
   const defaultQuota = {
-    cpu: DefaultCpuOptions.CpuRequest_0_5Limit_1_5,
-    memory: DefaultMemoryOptions.MemoryRequest_2Limit_4,
-    storage: DefaultStorageOptions.Storage_1
+    cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
+    memory: DefaultMemoryOptions.MEMORY_REQUEST_2_LIMIT_4,
+    storage: DefaultStorageOptions.STORAGE_1
   };
 
-  let createRequest;
+  let createRequest: PrivateCloudRequest;
 
   try {
     createRequest = await prisma.privateCloudRequest.create({
       data: {
-        type: RequestType.Create,
-        decisionStatus: DecisionStatus.Pending,
+        type: RequestType.CREATE,
+        decisionStatus: DecisionStatus.PENDING,
         active: true,
         createdByEmail: authEmail,
         licencePlate,
         requestedProject: {
           create: {
-            name: args.name,
-            description: args.description,
-            cluster: args.cluster,
-            ministry: args.ministry,
-            status: ProjectStatus.Active,
+            name: data.name,
+            description: data.description,
+            cluster: data.cluster,
+            ministry: data.ministry,
+            status: ProjectStatus.ACTIVE,
             licencePlate: licencePlate,
-            commonComponents: args.commonComponents,
+            commonComponents: data.commonComponents,
             productionQuota: defaultQuota,
             testQuota: defaultQuota,
             toolsQuota: defaultQuota,
@@ -86,26 +96,26 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
             projectOwner: {
               connectOrCreate: {
                 where: {
-                  email: args.projectOwner.email
+                  email: projectOwner.email
                 },
-                create: args.projectOwner
+                create: projectOwner
               }
             },
             primaryTechnicalLead: {
               connectOrCreate: {
                 where: {
-                  email: args.primaryTechnicalLead.email
+                  email: primaryTechnicalLead.email
                 },
-                create: args.primaryTechnicalLead
+                create: primaryTechnicalLead
               }
             },
-            secondaryTechnicalLead: args.secondaryTechnicalLead
+            secondaryTechnicalLead: secondaryTechnicalLead
               ? {
                   connectOrCreate: {
                     where: {
-                      email: args.secondaryTechnicalLead.email
+                      email: secondaryTechnicalLead.email
                     },
-                    create: args.secondaryTechnicalLead
+                    create: secondaryTechnicalLead
                   }
                 }
               : undefined
@@ -129,9 +139,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw e;
   }
 
-  sendCreateRequestEmails(createRequest.requestedProject);
+  // sendCreateRequestEmails(createRequest.requestedProject);
 
   return createRequest;
 }
-
-export default privateCloudProjectRequest;
