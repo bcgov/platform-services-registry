@@ -14,7 +14,7 @@ export default function Tabs(props: any) {
           ${
             selected === "Products"
               ? "bg-bcblue text-white"
-              : "bg-white text-gray-900"
+              : "bg-white text-gray-900 hover:bg-gray-100"
           }`}
         onClick={() => setSelected("Products")}
       >
@@ -27,7 +27,7 @@ export default function Tabs(props: any) {
           ${
             selected === "Requests"
               ? "bg-bcblue text-white"
-              : "bg-white text-gray-900"
+              : "bg-white text-gray-900 hover:bg-gray-100"
           }`}
         onClick={() => setSelected("Requests")}
       >
