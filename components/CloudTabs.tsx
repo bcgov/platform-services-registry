@@ -5,7 +5,7 @@ const tabs = [
   { name: "PUBLIC CLOUD LANDING ZONES", href: "#", current: false }
 ];
 
-export default function Tabs() {
+export default function Tabs({ className }: { className?: string }) {
   return (
     <div>
       <div className="sm:hidden">
@@ -26,7 +26,7 @@ export default function Tabs() {
       </div>
       <div className="hidden sm:block">
         <div className="border-b border-gray-200">
-          <nav className="-mb-px flex" aria-label="Tabs">
+          <nav className="-mb-px flex ml-11" aria-label="Tabs">
             {tabs.map((tab) => (
               <a
                 key={tab.name}
@@ -34,8 +34,8 @@ export default function Tabs() {
                 style={{ height: 68 }}
                 className={classNames(
                   tab.current
-                    ? "relative text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
-                    : "relative text-gray-300 hover:text-gray-500 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-400 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
+                    ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
+                    : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
                   "w-1/4 px-1 py-5 text-center font-bcsans text-lg font-bold"
                 )}
                 aria-current={tab.current ? "page" : undefined}
