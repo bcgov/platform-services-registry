@@ -2,13 +2,16 @@ import NextAuth, { NextAuthOptions, User, Account } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
+import prisma from "@/lib/prisma";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import jwt from "jsonwebtoken";
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     KeycloakProvider({
-      clientId: process.env.AUTH_RESOURCE || "",
-      clientSecret: process.env.AUTH_SECRET || "",
+      clientId: process.env.AUTH_RESOURCE!,
+      clientSecret: process.env.AUTH_SECRET!,
       issuer: `${process.env.AUTH_SERVER_URL}/realms/${process.env.AUTH_RELM}`,
       profile(profile) {
         return {
@@ -39,17 +42,13 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async session({
-      session,
-      token
-    }: {
-      session: Session;
-      token: JWT;
-      user: User;
-    }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
-      session.user.roles = token.roles || []; // Adding roles to session.user here
+      if (token) {
+        session.accessToken = token.accessToken;
+        session.user.roles = token.roles || []; // Adding roles to session.user here
+      }
+
       return session;
     }
   }
