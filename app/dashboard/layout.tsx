@@ -5,10 +5,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <CloudTabs />
-      <div
-        style={{ marginLeft: 74, marginRight: 74 }}
-        className="mt-8 mb-8 h-full mx-auto "
-      >
+      <div className="mt-8 mb-8 h-full mx-4 sm:mx-20">
         <ProductsRequestsTabs />
         {children}
       </div>

@@ -13,13 +13,14 @@ const headers = [
 ];
 
 export default async function Page() {
-  const products = await prisma.privateCloudProject.findMany({
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true
-    }
-  });
+  const projects: PrivateCloudProject[] =
+    await prisma.privateCloudProject.findMany({
+      include: {
+        projectOwner: true,
+        primaryTechnicalLead: true,
+        secondaryTechnicalLead: true
+      }
+    });
 
   return <Table headers={headers} rows={[]} />;
 }
