@@ -46,11 +46,11 @@ export default function SearchFilterSort() {
             height: "auto"
           }}
         />
-        Filters
+        <span className="md:inline hidden">Filters</span>
       </button>
       <button
         type="button"
-        className=" inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+        className="inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
       >
         <Image
           alt="Vercel logo"
@@ -62,7 +62,7 @@ export default function SearchFilterSort() {
             height: "auto"
           }}
         />
-        Export
+        <span className="md:inline hidden">Export</span>
       </button>
     </div>
   );

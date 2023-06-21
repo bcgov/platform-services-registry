@@ -7,9 +7,6 @@ interface TableProps {
   rows: Record<string, string>[];
 }
 
-const capitalized = (word: string) =>
-  word.charAt(0).toUpperCase() + word.slice(1);
-
 export default function Table({ headers, rows }: TableProps) {
   return (
     <div className="border-2 rounded-xl">
@@ -36,18 +33,18 @@ export default function Table({ headers, rows }: TableProps) {
               <tr>
                 <th
                   scope="col"
-                  className="relative isolate py-3.5 pr-3 text-left text-sm font-medium text-mediumgrey"
+                  className="font-bcsans relative isolate py-3.5 pr-3 text-left text-sm font-normal text-mediumgrey"
                 >
-                  {capitalized(headers[0])}
+                  {headers[0]}
                   <div className="absolute inset-y-0 right-full -z-10 w-screen border-b border-b-gray-200" />
                   <div className="absolute inset-y-0 left-0 -z-10 w-screen border-b border-b-gray-200" />
                 </th>
                 {headers.slice(1, headers.length).map((header) => (
                   <th
                     scope="col"
-                    className="hidden px-3 py-3.5 text-left text-sm font-medium  sm:table-cell text-mediumgrey"
+                    className="font-bcsans hidden px-3 py-3.5 text-left text-sm font-normal  sm:table-cell text-mediumgrey"
                   >
-                    {capitalized(header)}
+                    {header}
                   </th>
                 ))}
                 <th scope="col" className="relative py-3.5 pl-3">
