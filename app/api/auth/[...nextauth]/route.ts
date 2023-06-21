@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions, User, Account } from "next-auth";
+import NextAuth, { User, Account } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import jwt from "jsonwebtoken";
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     KeycloakProvider({
@@ -54,6 +54,9 @@ export const authOptions: NextAuthOptions = {
   }
 };
 
+// @ts-ignore
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+// // export { handler as GET, handler as POST };
+export const GET = handler.handlers.GET;
+export const POST = handler.handlers.POST;

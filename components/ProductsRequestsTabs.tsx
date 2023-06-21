@@ -6,7 +6,7 @@ export default function Tabs(props: any) {
   const [selected, setSelected] = useState("Products");
 
   return (
-    <span className="isolate inline-flex rounded-md h-10 mt-8">
+    <span className="isolate inline-flex rounded-md h-10 mb-8">
       <button
         style={{ width: 97 }}
         type="button"

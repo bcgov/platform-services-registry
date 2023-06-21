@@ -13,9 +13,12 @@ datasource db {
 
 model User {
   id                                                 String                         @id @default(auto()) @map("_id") @db.ObjectId
+  name                                               String?
   firstName                                          String?
   lastName                                           String?
   email                                              String                         @unique
+  emailVerified                                      DateTime?                      @map("email_verified")
+  image                                              String?
   ministry                                           String?
   archived                                           Boolean                        @default(false)
   created                                            DateTime                       @default(now())
@@ -39,20 +42,21 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.String
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String  @db.ObjectId
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.String
+  access_token       String? @db.String
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.String
+  session_state      String?
+  refresh_expires_in Int?
+  not_before_policy  Int?
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }

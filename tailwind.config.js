@@ -15,7 +15,9 @@ module.exports = {
       },
       colors: {
         bcblue: "#003366",
-        bcorange: "#FCBA19"
+        bcorange: "#FCBA19",
+        darkergrey: "#344054",
+        mediumgrey: "#475467"
       },
       borderWidth: {
         3: "3px"
