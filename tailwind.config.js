@@ -19,7 +19,8 @@ module.exports = {
         darkergrey: "#344054",
         mediumgrey: "#475467",
         tableheadergrey: "rgba(214, 216, 213, 0.15)",
-        tablebordergrey: "#EAECF0"
+        tablebordergrey: "#EAECF0",
+        disabledborder: "D0D5DD"
       },
       borderWidth: {
         1: "1px",
