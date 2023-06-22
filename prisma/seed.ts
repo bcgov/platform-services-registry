@@ -48,7 +48,7 @@ async function main() {
           projectOwnerId: user.id,
           primaryTechnicalLeadId: user.id,
           secondaryTechnicalLeadId: user.id,
-          ministry: user.ministry,
+          ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
           productionQuota: {
             cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
