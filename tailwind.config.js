@@ -17,9 +17,12 @@ module.exports = {
         bcblue: "#003366",
         bcorange: "#FCBA19",
         darkergrey: "#344054",
-        mediumgrey: "#475467"
+        mediumgrey: "#475467",
+        tableheadergrey: "rgba(214, 216, 213, 0.15)",
+        tablebordergrey: "#EAECF0"
       },
       borderWidth: {
+        1: "1px",
         3: "3px"
       },
       textColor: {
