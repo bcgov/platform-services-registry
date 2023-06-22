@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Search from "@/components/assets/search.svg";
 import Filter from "@/components/assets/filter.svg";
-import Export from "@/components/assets/Export.svg";
+import Export from "@/components/assets/export.svg";
 import { useState, useTransition, useCallback, useEffect } from "react";
 import {
   usePathname,
