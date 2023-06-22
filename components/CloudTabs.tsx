@@ -1,4 +1,4 @@
-import classNames from "@/components/utilites/classnames";
+import classNames from "@/components/utils/classnames";
 
 const tabs = [
   { name: "PRIVATE CLOUD OPENSHIFT", href: "#", current: true },
@@ -8,7 +8,7 @@ const tabs = [
 export default function Tabs({ className }: { className?: string }) {
   return (
     <div className="w-full">
-      <div className="sm:hidden">
+      <div className="md:hidden">
         <label htmlFor="tabs" className="sr-only">
           Select a tab
         </label>
@@ -24,7 +24,7 @@ export default function Tabs({ className }: { className?: string }) {
           ))}
         </select>
       </div>
-      <div className="hidden sm:block  justify-start">
+      <div className="hidden md:block  justify-start">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex justify-start" aria-label="Tabs">
             {tabs.map((tab) => (
@@ -36,7 +36,7 @@ export default function Tabs({ className }: { className?: string }) {
                   tab.current
                     ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                     : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
-                  "w-50 px-1 py-5 text-center font-bcsans text-lg font-bold"
+                  "lg:mx-20 w-50 px-1 py-5 text-center font-bcsans text-lg font-bold"
                 )}
                 aria-current={tab.current ? "page" : undefined}
               >

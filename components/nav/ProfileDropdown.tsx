@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
-import classNames from "@/components/utilites/classnames";
+import classNames from "@/components/utils/classnames";
 
 export default function ProfileDropdown() {
   return (
