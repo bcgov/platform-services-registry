@@ -40,6 +40,7 @@ export default function Table({ headers, rows }: TableProps) {
                   <tr key={row.licencePlate + i}>
                     {headers.map((value, index) => (
                       <td
+                        key={value["field"] + index}
                         className={`hidden px-3 py-4 text-sm text-mediumgrey md:table-cell border-b-1 ${
                           index === 0 ? "pl-4 sm:pl-6 lg:pl-8" : ""
                         } ${
