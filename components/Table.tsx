@@ -40,30 +40,28 @@ export default function Table({ headers, rows }: TableProps) {
             </thead>
 
             <tbody>
-              <Suspense fallback={<div>Loading...</div>}>
-                {rows.map((row, i) => (
-                  <tr key={row.licencePlate + i}>
-                    <td className="relative py-4 pr-3 text-sm  text-mediumgrey">
-                      {row[headers[0]["field"]]}
-                      <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
-                      <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
+              {rows.map((row, i) => (
+                <tr key={row.licencePlate + i}>
+                  <td className="relative py-4 pr-3 text-sm  text-mediumgrey">
+                    {row[headers[0]["field"]]}
+                    <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
+                    <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
+                  </td>
+                  {headers.slice(1, headers.length).map((value) => (
+                    <td className="hidden px-3 py-4 text-sm text-mediumgrey md:table-cell">
+                      {row[value["field"]]}
                     </td>
-                    {headers.slice(1, headers.length).map((value) => (
-                      <td className="hidden px-3 py-4 text-sm text-mediumgrey md:table-cell">
-                        {row[value["field"]]}
-                      </td>
-                    ))}
-                    <td>
-                      <Image
-                        alt="Vercel logo"
-                        src={Edit}
-                        width={16}
-                        height={12.5}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </Suspense>
+                  ))}
+                  <td>
+                    <Image
+                      alt="Vercel logo"
+                      src={Edit}
+                      width={16}
+                      height={12.5}
+                    />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
