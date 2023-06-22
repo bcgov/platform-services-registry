@@ -66,9 +66,9 @@ export default async function Page({
       >
         <div className="hidden sm:block">
           <p className="text-sm text-gray-700">
-            Showing <span className="font-medium">{page}</span> to{" "}
-            <span className="font-medium">{pageSize || 10}</span> of{" "}
-            <span className="font-medium">{projects.total}</span> results
+            Showing <span className="font-bold">{page || 1}</span> to{" "}
+            <span className="font-bold">{pageSize || 10}</span> of{" "}
+            <span className="font-bold">{projects.total}</span> results
           </p>
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
