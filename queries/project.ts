@@ -65,14 +65,34 @@ export const userPrivateCloudProjectsByIds = async (
     }
   });
 
+interface PrivateCloudProject {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  projectOwnerDetails: User;
+  primaryTechnicalLeadDetails: User;
+  secondaryTechnicalLeadDetails: User;
+  // and any other fields that might be relevant
+}
+
+interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  // and any other fields that might be relevant
+}
+
 export async function userPrivateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
   searchTerm?: string,
   ministry?: string,
   cluster?: string
-) {
-  console.log(pageSize, pageNumber, searchTerm, ministry, cluster);
+): Promise<{
+  data: any[];
+  total: number;
+}> {
   // Initialize the search/filter query
   const searchQuery: any = {
     status: "ACTIVE"
@@ -124,7 +144,10 @@ export async function userPrivateCloudProjectsPaginated(
       },
       { name: { $regex: searchTerm, $options: "i" } },
       { description: { $regex: searchTerm, $options: "i" } },
-      { licencePlate: { $regex: searchTerm, $options: "i" } }
+      { licencePlate: { $regex: searchTerm, $options: "i" } },
+      { cluster: { $regex: searchTerm, $options: "i" } },
+      { ministry: { $regex: searchTerm, $options: "i" } }
+
       // include other fields as necessary
     ];
   }
@@ -220,7 +243,7 @@ export async function userPrivateCloudProjectsPaginated(
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
   return {
-    data: result,
-    total: totalCount
+    data: result as unknown as any[],
+    total: totalCount || 0
   };
 }
