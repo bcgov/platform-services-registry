@@ -5,6 +5,7 @@ import SearchFilterSort from "@/components/SearchFilterSort";
 import { userPrivateCloudProjectsPaginated } from "@/queries/project";
 import Link from "next/link";
 import TableTop from "@/components/TableTop";
+import formatDate from "@/components/utils/formatdates";
 
 const headers = [
   { field: "name", headerName: "Name" },
@@ -29,7 +30,7 @@ export default async function Page({
 
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
 
-  const projects = await userPrivateCloudProjectsPaginated(
+  const { data, total } = await userPrivateCloudProjectsPaginated(
     10,
     currentPage,
     search,
@@ -37,7 +38,7 @@ export default async function Page({
     cluster
   );
 
-  const rows = projects.data.map((project: any) => {
+  const rows = data.map((project: any) => {
     return {
       name: project.name,
       description: project.description,
@@ -45,7 +46,7 @@ export default async function Page({
       cluster: project.cluster,
       projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
       technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}, ${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
-      created: new Date(project.$date).toDateString(),
+      created: formatDate(project.created["$date"]),
       licencePlate: project.licencePlate
     };
   });
@@ -68,7 +69,7 @@ export default async function Page({
           <p className="text-sm text-gray-700">
             Showing <span className="font-bold">{page || 1}</span> to{" "}
             <span className="font-bold">{pageSize || 10}</span> of{" "}
-            <span className="font-bold">{projects.total}</span> results
+            <span className="font-bold">{total}</span> results
           </p>
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
@@ -90,7 +91,7 @@ export default async function Page({
             }}
             passHref
           >
-            <button disabled={currentPage * (pageSize || 10) >= projects.total}>
+            <button disabled={currentPage * (pageSize || 10) >= total}>
               Next
             </button>
           </Link>
