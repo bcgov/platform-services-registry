@@ -6,6 +6,8 @@ import { userPrivateCloudProjectsPaginated } from "@/queries/project";
 import Link from "next/link";
 import TableTop from "@/components/TableTop";
 import formatDate from "@/components/utils/formatdates";
+import Image from "next/image";
+import Edit from "@/components/assets/edit.svg";
 
 const headers = [
   { field: "name", headerName: "Name" },
@@ -15,7 +17,8 @@ const headers = [
   { field: "projectOwner", headerName: "Project Owner" },
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
-  { field: "licencePlate", headerName: "Licence Plate" }
+  { field: "licencePlate", headerName: "Licence Plate" },
+  { field: "edit", headerName: "" }
 ];
 
 export default async function Page({
@@ -47,20 +50,38 @@ export default async function Page({
       projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
       technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}, ${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
       created: formatDate(project.created["$date"]),
-      licencePlate: project.licencePlate
+      licencePlate: project.licencePlate,
+      edit: (
+        <div
+          className="pr-4 sm:pr-6 lg:pr-8
+        >"
+        >
+          <div
+            className=" w-4 h-3 "
+            // pr-4 sm:pr-6 lg:pr-8
+          >
+            <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
+          </div>
+        </div>
+      )
     };
   });
 
+  const disablePrevious = currentPage <= 1;
+  const disableNext = currentPage * (pageSize || 10) >= total;
+
   return (
     <div className="border-2 rounded-xl overflow-hidden">
-      <TableTop
-        title="Products in Private Cloud OpenShift Platform"
-        description="These are your products hosted on Private Cloud OpenShift platform"
-      />
-      <div className="border-b-2 px-4 py-2 w-full">
-        <SearchFilterSort />
+      <div className="">
+        <TableTop
+          title="Products in Private Cloud OpenShift Platform"
+          description="These are your products hosted on Private Cloud OpenShift platform"
+        />
+        <div className="border-b-2 px-4 py-2 w-full">
+          <SearchFilterSort />
+        </div>
+        <Table headers={headers} rows={rows} />
       </div>
-      <Table headers={headers} rows={rows} />
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
         aria-label="Pagination"
@@ -81,19 +102,25 @@ export default async function Page({
             }}
             passHref
           >
-            <button disabled={currentPage === 1}>Previous</button>
+            <button disabled={disablePrevious}>Previous</button>
           </Link>
           <Link
-            className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-            href={{
-              pathname: "/dashboard/private-cloud/products",
-              query: { page: currentPage + 1, pageSize: pageSize, search }
-            }}
+            className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 ${
+              disableNext
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0"
+            }`}
+            href={
+              disableNext
+                ? "#"
+                : {
+                    pathname: "/dashboard/private-cloud/products",
+                    query: { page: currentPage + 1, pageSize: pageSize, search }
+                  }
+            }
             passHref
           >
-            <button disabled={currentPage * (pageSize || 10) >= total}>
-              Next
-            </button>
+            <button disabled={disableNext}>Next</button>
           </Link>
         </div>
       </nav>

@@ -75,7 +75,7 @@ export default function SearchFilterSort() {
   }, [debouncedValue]);
 
   return (
-    <div className="flex justify-end space-x-2.5">
+    <div className="flex justify-end space-x-2.5 ">
       <form className="flex-grow flex-shrink max-w-sm">
         <label htmlFor="simple-search" className="sr-only">
           Search
@@ -112,7 +112,7 @@ export default function SearchFilterSort() {
       </form>
       <button
         type="button"
-        className=" inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+        className="inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
       >
         <Image
           alt="Filter"
