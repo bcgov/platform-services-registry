@@ -11,7 +11,8 @@ module.exports = {
     extend: {
       height: {
         18: "4.35rem",
-        17: "4.3rem"
+        17: "4.3rem",
+        "screen-60": "80vh"
       },
       colors: {
         bcblue: "#003366",
