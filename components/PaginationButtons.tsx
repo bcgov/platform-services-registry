@@ -39,14 +39,15 @@ export default function PaginationButton({
         }`}
         onClick={() => {
           startTransition(() => {
-            router.push(
+            router.replace(
               `${pathname}?${createQueryString(
                 {
                   page: Number(page) - 1,
                   pageSize: pageSize ?? null,
                 },
                 searchParams
-              )}`
+              )}`,
+              { scroll: false }
             );
           });
         }}
@@ -63,14 +64,15 @@ export default function PaginationButton({
         }`}
         onClick={() => {
           startTransition(() => {
-            router.push(
+            router.replace(
               `${pathname}?${createQueryString(
                 {
                   page: Number(page) + 1,
                   pageSize: pageSize ?? null,
                 },
                 searchParams
-              )}`
+              )}`,
+              { scroll: false }
             );
           });
         }}

@@ -1,15 +1,11 @@
 import Table from "@/components/Table";
-import prisma from "@/lib/prisma";
-import { PrivateCloudProject } from "@prisma/client";
 import SearchFilterSort from "@/components/SearchFilterSort";
 import { userPrivateCloudProjectsPaginated } from "@/queries/project";
-import Link from "next/link";
 import TableTop from "@/components/TableTop";
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
 import PagninationButtons from "@/components/PaginationButtons";
-import NavButton from "@/components/NavButton";
 
 const headers = [
   { field: "name", headerName: "Name" },
