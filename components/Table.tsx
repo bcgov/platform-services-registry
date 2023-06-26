@@ -34,7 +34,7 @@ export default function Table({ headers, rows }: TableProps) {
 
               <tbody>
                 {rows.map((row, i) => (
-                  <tr key={row.licencePlate + i}>
+                  <tr key={row.licencePlate + i} className="hover:bg-tableheadergrey">
                     {headers.map((value, index) => (
                       <td
                         key={value["field"] + index}
