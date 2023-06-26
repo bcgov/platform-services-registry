@@ -8,8 +8,8 @@ import createQueryString from "@/components/utils/createQueryString";
 interface PaginationButtonProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   pageCount: number;
-  page: string;
-  pageSize?: string;
+  page: number;
+  pageSize?: number;
   // isPending: boolean;
   // startTransition: React.TransitionStartFunction;
 }
@@ -48,7 +48,7 @@ export default function PaginationButton({
         }}
         disabled={Number(page) === 1 || isPending}
       >
-        <span className="sr-only">Previous page</span>
+        Previous
       </button>
       <button
         className="relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300"
@@ -68,7 +68,7 @@ export default function PaginationButton({
         }}
         disabled={Number(page) === (pageCount ?? 10) || isPending}
       >
-        <span className="sr-only">Next page</span>
+        Next
       </button>
     </div>
   );
