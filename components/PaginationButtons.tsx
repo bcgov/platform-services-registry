@@ -18,8 +18,6 @@ export default function PaginationButton({
   pageCount,
   page,
   pageSize,
-  // isPending,
-  // startTransition,
   className,
   ...props
 }: PaginationButtonProps) {
@@ -27,11 +25,18 @@ export default function PaginationButton({
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const isPrevDisabled = Number(page) === 1 || isPending;
+  const isNextDisabled = Number(page) === (pageCount ?? 10) || isPending;
 
   return (
     <div {...props}>
       <button
-        className="relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300"
+        className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 
+        ${
+          isPrevDisabled
+            ? "text-gray-500 border-gray-500"
+            : "text-black border-black"
+        }`}
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -39,19 +44,23 @@ export default function PaginationButton({
                 {
                   page: Number(page) - 1,
                   pageSize: pageSize ?? null,
-                  // sort,
                 },
                 searchParams
               )}`
             );
           });
         }}
-        disabled={Number(page) === 1 || isPending}
+        disabled={isPrevDisabled}
       >
         Previous
       </button>
       <button
-        className="relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300"
+        className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 
+        ${
+          isNextDisabled
+            ? "text-gray-500 border-gray-500"
+            : "text-black border-black"
+        }`}
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -59,14 +68,13 @@ export default function PaginationButton({
                 {
                   page: Number(page) + 1,
                   pageSize: pageSize ?? null,
-                  // sort,
                 },
                 searchParams
               )}`
             );
           });
         }}
-        disabled={Number(page) === (pageCount ?? 10) || isPending}
+        disabled={isNextDisabled}
       >
         Next
       </button>
