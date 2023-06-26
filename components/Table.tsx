@@ -1,11 +1,17 @@
+"use client"
+
+import Link from "next/link";
+
 interface TableProps {
   headers: Record<string, string>[];
   rows: Record<string, any>[];
+  cloud: string;
 }
 
-export default function Table({ headers, rows }: TableProps) {
+export default function Table({ headers, rows, cloud }: TableProps) {
   const pageSize = rows.length;
 
+  console.log("TABLE");
   return (
     <>
       <div className="flow-root h-[700px] overflow-y-auto ">
@@ -31,10 +37,13 @@ export default function Table({ headers, rows }: TableProps) {
                   ))}
                 </tr>
               </thead>
-
               <tbody>
                 {rows.map((row, i) => (
-                  <tr key={row.licencePlate + i} className="hover:bg-tableheadergrey">
+                  <tr
+                    key={row.licencePlate + i}
+                    className="hover:bg-tableheadergrey"
+                    onClick={() => console.log("clicked")}
+                  >
                     {headers.map((value, index) => (
                       <td
                         key={value["field"] + index}
@@ -54,4 +63,11 @@ export default function Table({ headers, rows }: TableProps) {
       </div>
     </>
   );
+}
+{
+  /* <Link
+href={{
+  pathname: `/dashboard/${cloud}/products/${row.licencePlate}`,
+}}
+> */
 }

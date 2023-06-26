@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 export const privateCloudProjects = async () => {
   return await prisma.privateCloudProject.findMany({
     where: {
-      status: "ACTIVE"
-    }
+      status: "ACTIVE",
+    },
   });
 };
 
@@ -14,23 +14,23 @@ export const privateCloudProjectById = async (projectId: string) =>
   await prisma.privateCloudProject.findUnique({
     where: {
       id: projectId,
-      status: "ACTIVE"
-    }
+      status: "ACTIVE",
+    },
   });
 
 export const userPrivateCloudProjects = async (authEmail: string) =>
   await prisma.privateCloudProject.findMany({
     orderBy: {
-      name: "asc"
+      name: "asc",
     },
     where: {
       status: "ACTIVE",
       OR: [
         { projectOwner: { email: authEmail } },
         { primaryTechnicalLead: { email: authEmail } },
-        { secondaryTechnicalLead: { email: authEmail } }
-      ]
-    }
+        { secondaryTechnicalLead: { email: authEmail } },
+      ],
+    },
   });
 
 export const userPrivateCloudProjectById = async (
@@ -44,9 +44,9 @@ export const userPrivateCloudProjectById = async (
       OR: [
         { projectOwner: { email: authEmail } },
         { primaryTechnicalLead: { email: authEmail } },
-        { secondaryTechnicalLead: { email: authEmail } }
-      ]
-    }
+        { secondaryTechnicalLead: { email: authEmail } },
+      ],
+    },
   });
 
 export const userPrivateCloudProjectsByIds = async (
@@ -60,9 +60,9 @@ export const userPrivateCloudProjectsByIds = async (
       OR: [
         { projectOwner: { email: authEmail } },
         { primaryTechnicalLead: { email: authEmail } },
-        { secondaryTechnicalLead: { email: authEmail } }
-      ]
-    }
+        { secondaryTechnicalLead: { email: authEmail } },
+      ],
+    },
   });
 
 interface PrivateCloudProject {
@@ -95,7 +95,7 @@ export async function userPrivateCloudProjectsPaginated(
 }> {
   // Initialize the search/filter query
   const searchQuery: any = {
-    status: "ACTIVE"
+    status: "ACTIVE",
   };
 
   // Construct search/filter conditions based on provided parameters
@@ -103,50 +103,50 @@ export async function userPrivateCloudProjectsPaginated(
     searchQuery.$or = [
       { "projectOwnerDetails.email": { $regex: searchTerm, $options: "i" } },
       {
-        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" }
+        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" },
       },
       { "projectOwnerDetails.lastName": { $regex: searchTerm, $options: "i" } },
       {
         "primaryTechnicalLeadDetails.email": {
           $regex: searchTerm,
-          $options: "i"
-        }
+          $options: "i",
+        },
       },
       {
         "primaryTechnicalLeadDetails.firstName": {
           $regex: searchTerm,
-          $options: "i"
-        }
+          $options: "i",
+        },
       },
       {
         "primaryTechnicalLeadDetails.lastName": {
           $regex: searchTerm,
-          $options: "i"
-        }
+          $options: "i",
+        },
       },
       {
         "secondaryTechnicalLeadDetails.email": {
           $regex: searchTerm,
-          $options: "i"
-        }
+          $options: "i",
+        },
       },
       {
         "secondaryTechnicalLeadDetails.firstName": {
           $regex: searchTerm,
-          $options: "i"
-        }
+          $options: "i",
+        },
       },
       {
         "secondaryTechnicalLeadDetails.lastName": {
           $regex: searchTerm,
-          $options: "i"
-        }
+          $options: "i",
+        },
       },
       { name: { $regex: searchTerm, $options: "i" } },
       { description: { $regex: searchTerm, $options: "i" } },
       { licencePlate: { $regex: searchTerm, $options: "i" } },
       { cluster: { $regex: searchTerm, $options: "i" } },
-      { ministry: { $regex: searchTerm, $options: "i" } }
+      { ministry: { $regex: searchTerm, $options: "i" } },
 
       // include other fields as necessary
     ];
@@ -168,29 +168,29 @@ export async function userPrivateCloudProjectsPaginated(
           from: "User",
           localField: "projectOwnerId",
           foreignField: "_id",
-          as: "projectOwnerDetails"
-        }
+          as: "projectOwnerDetails",
+        },
       },
       {
         $lookup: {
           from: "User",
           localField: "primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLeadDetails"
-        }
+          as: "primaryTechnicalLeadDetails",
+        },
       },
       {
         $lookup: {
           from: "User",
           localField: "secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLeadDetails"
-        }
+          as: "secondaryTechnicalLeadDetails",
+        },
       },
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
-      { $count: "totalCount" }
-    ]
+      { $count: "totalCount" },
+    ],
   });
 
   // Then, get the actual page of data
@@ -201,24 +201,24 @@ export async function userPrivateCloudProjectsPaginated(
           from: "User",
           localField: "projectOwnerId",
           foreignField: "_id",
-          as: "projectOwnerDetails"
-        }
+          as: "projectOwnerDetails",
+        },
       },
       {
         $lookup: {
           from: "User",
           localField: "primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLeadDetails"
-        }
+          as: "primaryTechnicalLeadDetails",
+        },
       },
       {
         $lookup: {
           from: "User",
           localField: "secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLeadDetails"
-        }
+          as: "secondaryTechnicalLeadDetails",
+        },
       },
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
@@ -228,15 +228,15 @@ export async function userPrivateCloudProjectsPaginated(
       { $limit: pageSize },
       {
         $addFields: {
-          id: { $toString: "$_id" } // Convert _id to string
-        }
+          id: { $toString: "$_id" }, // Convert _id to string
+        },
       },
       {
         $project: {
-          _id: 0 // Exclude _id field from the result
-        }
-      }
-    ]
+          _id: 0, // Exclude _id field from the result
+        },
+      },
+    ],
   });
 
   // @ts-ignore
@@ -244,6 +244,6 @@ export async function userPrivateCloudProjectsPaginated(
 
   return {
     data: result as unknown as any[],
-    total: totalCount || 0
+    total: totalCount || 0,
   };
 }

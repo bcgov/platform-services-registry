@@ -6,6 +6,7 @@ import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
 import PagninationButtons from "@/components/PaginationButtons";
+import { Suspense } from "react";
 
 const headers = [
   { field: "name", headerName: "Name" },
@@ -23,11 +24,17 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { page: number; ministry: string; cluster: string };
-  searchParams: { search: string; page: number; pageSize: number };
+  params: { cloud: string };
+  searchParams: {
+    search: string;
+    page: number;
+    pageSize: number;
+    ministry: string;
+    cluster: string;
+  };
 }) {
-  const { search, page, pageSize } = searchParams;
-  const { ministry, cluster } = params;
+  const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { cloud } = params;
 
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
@@ -69,14 +76,23 @@ export default async function Page({
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div className="">
-        <TableTop
-          title="Products in Private Cloud OpenShift Platform"
-          description="These are your products hosted on Private Cloud OpenShift platform"
-        />
+        {cloud === "private-cloud" ? (
+          <TableTop
+            title="Products in Private Cloud OpenShift Platform"
+            description="These are your products hosted on Private Cloud OpenShift platform"
+          />
+        ) : (
+          <TableTop
+            title="Products in the Public Cloud Landing Zones"
+            description="These are your products hosted using the Public Cloud Landing Zones"
+          />
+        )}
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort />
         </div>
-        <Table headers={headers} rows={rows} />
+        {/* <Suspense fallback={<div>Loading...</div>}> */}
+          <Table headers={headers} rows={rows} cloud={cloud} />
+        {/* </Suspense> */}
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
