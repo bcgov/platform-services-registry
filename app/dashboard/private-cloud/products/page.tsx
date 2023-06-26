@@ -8,6 +8,8 @@ import TableTop from "@/components/TableTop";
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
+import PagninationButtons from "@/components/PaginationButtons";
+import NavButton from "@/components/NavButton";
 
 const headers = [
   { field: "name", headerName: "Name" },
@@ -18,14 +20,14 @@ const headers = [
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
   { field: "licencePlate", headerName: "Licence Plate" },
-  { field: "edit", headerName: "" }
+  { field: "edit", headerName: "" },
 ];
 
 export default async function Page({
   params,
-  searchParams
+  searchParams,
 }: {
-  params: { page: string; ministry: string; cluster: string };
+  params: { page: number; ministry: string; cluster: string };
   searchParams: { search: string; page: number; pageSize: number };
 }) {
   const { search, page, pageSize } = searchParams;
@@ -63,12 +65,15 @@ export default async function Page({
             <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
           </div>
         </div>
-      )
+      ),
     };
   });
 
+  const defaultPageSize = 10;
+  const defaultPage = 1;
+
   const disablePrevious = currentPage <= 1;
-  const disableNext = currentPage * (pageSize || 10) >= total;
+  const disableNext = currentPage * (pageSize || defaultPageSize) >= total;
 
   return (
     <div className="border-2 rounded-xl overflow-hidden">
@@ -88,40 +93,60 @@ export default async function Page({
       >
         <div className="hidden sm:block">
           <p className="text-sm text-gray-700">
-            Showing <span className="font-bold">{page || 1}</span> to{" "}
-            <span className="font-bold">{pageSize || 10}</span> of{" "}
-            <span className="font-bold">{total}</span> results
+            Showing{" "}
+            <span className="font-bold">
+              {(pageSize || defaultPageSize) * (page - 1)}
+            </span>{" "}
+            to <span className="font-bold">{pageSize || defaultPageSize}</span>{" "}
+            of <span className="font-bold">{total}</span> results
           </p>
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
-          <Link
-            className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-            href={{
-              pathname: "/dashboard/private-cloud/products",
-              query: { page: currentPage - 1, pageSize: pageSize, search }
-            }}
-            passHref
-          >
-            <button disabled={disablePrevious}>Previous</button>
-          </Link>
-          <Link
+          <div
             className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 ${
               disableNext
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0"
             }`}
-            href={
-              disableNext
-                ? "#"
-                : {
-                    pathname: "/dashboard/private-cloud/products",
-                    query: { page: currentPage + 1, pageSize: pageSize, search }
-                  }
-            }
-            passHref
           >
-            <button disabled={disableNext}>Next</button>
-          </Link>
+            <PagninationButtons
+              pageCount={total}
+              page={currentPage}
+              pageSize={10}
+            />
+            {/* <Link
+              href={{
+                pathname: "/dashboard/private-cloud/products",
+                query: {
+                  page: currentPage - 1,
+                  pageSize: pageSize || defaultPageSize,
+                  search,
+                },
+              }}
+            >
+              Previous
+            </Link>
+          </div>
+          <div
+            className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 ${
+              disableNext
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0"
+            }`}
+          >
+            <Link
+              href={{
+                pathname: "/dashboard/private-cloud/products",
+                query: {
+                  page: currentPage + 1,
+                  pageSize: pageSize || defaultPageSize,
+                  search,
+                },
+              }}
+            >
+              Next
+            </Link> */}
+          </div>
         </div>
       </nav>
     </div>

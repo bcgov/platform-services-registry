@@ -1,9 +1,18 @@
-// export default const createQueryString = useCallback(
-//   (name: string, value: string) => {
-//     const params = new URLSearchParams(searchParams?.toString());
-//     params.set(name, value);
+import { ReadonlyURLSearchParams } from "next/navigation";
 
-//     return params.toString();
-//   },
-//   [searchParams]
-// );
+export default function createQueryString(
+  params: Record<string, string | number | null>,
+  searchParams: ReadonlyURLSearchParams
+) {
+  const newSearchParams = new URLSearchParams(searchParams?.toString());
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value === null) {
+      newSearchParams.delete(key);
+    } else {
+      newSearchParams.set(key, String(value));
+    }
+  }
+
+  return newSearchParams.toString();
+}
