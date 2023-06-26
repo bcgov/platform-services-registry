@@ -34,9 +34,10 @@ export default async function Page({
   const { ministry, cluster } = params;
 
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
+  const defaultPageSize = 10;
 
   const { data, total } = await userPrivateCloudProjectsPaginated(
-    10,
+    defaultPageSize,
     currentPage,
     search,
     ministry,
@@ -69,12 +70,6 @@ export default async function Page({
     };
   });
 
-  const defaultPageSize = 10;
-  const defaultPage = 1;
-
-  const disablePrevious = currentPage <= 1;
-  const disableNext = currentPage * (pageSize || defaultPageSize) >= total;
-
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div className="">
@@ -95,57 +90,22 @@ export default async function Page({
           <p className="text-sm text-gray-700">
             Showing{" "}
             <span className="font-bold">
-              {(pageSize || defaultPageSize) * (page - 1)}
+              {(pageSize || defaultPageSize) * (currentPage - 1)}
             </span>{" "}
-            to <span className="font-bold">{pageSize || defaultPageSize}</span>{" "}
+            to{" "}
+            <span className="font-bold">
+              {(pageSize || defaultPageSize) * currentPage}
+            </span>{" "}
             of <span className="font-bold">{total}</span> results
           </p>
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
-          <div
-            className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 ${
-              disableNext
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0"
-            }`}
-          >
+          <div>
             <PagninationButtons
-              pageCount={total}
+              pageCount={total / (pageSize || defaultPageSize)}
               page={currentPage}
-              pageSize={10}
+              pageSize={defaultPageSize}
             />
-            {/* <Link
-              href={{
-                pathname: "/dashboard/private-cloud/products",
-                query: {
-                  page: currentPage - 1,
-                  pageSize: pageSize || defaultPageSize,
-                  search,
-                },
-              }}
-            >
-              Previous
-            </Link>
-          </div>
-          <div
-            className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 ${
-              disableNext
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0"
-            }`}
-          >
-            <Link
-              href={{
-                pathname: "/dashboard/private-cloud/products",
-                query: {
-                  page: currentPage + 1,
-                  pageSize: pageSize || defaultPageSize,
-                  search,
-                },
-              }}
-            >
-              Next
-            </Link> */}
           </div>
         </div>
       </nav>
