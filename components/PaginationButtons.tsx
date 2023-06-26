@@ -46,8 +46,7 @@ export default function PaginationButton({
                   pageSize: pageSize ?? null,
                 },
                 searchParams
-              )}`,
-              { scroll: false }
+              )}`
             );
           });
         }}
@@ -71,8 +70,7 @@ export default function PaginationButton({
                   pageSize: pageSize ?? null,
                 },
                 searchParams
-              )}`,
-              { scroll: false }
+              )}`
             );
           });
         }}
