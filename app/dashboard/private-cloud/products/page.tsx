@@ -90,9 +90,7 @@ export default async function Page({
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort />
         </div>
-        {/* <Suspense fallback={<div>Loading...</div>}> */}
-          <Table headers={headers} rows={rows} cloud={cloud} />
-        {/* </Suspense> */}
+        <Table headers={headers} rows={rows} cloud={cloud} />
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
@@ -101,14 +99,9 @@ export default async function Page({
         <div className="hidden sm:block">
           <p className="text-sm text-gray-700">
             Showing{" "}
-            <span className="font-bold">
-              {(pageSize || defaultPageSize) * (currentPage - 1)}
-            </span>{" "}
-            to{" "}
-            <span className="font-bold">
-              {(pageSize || defaultPageSize) * currentPage}
-            </span>{" "}
-            of <span className="font-bold">{total}</span> results
+            <span>{(pageSize || defaultPageSize) * (currentPage - 1)}</span> to{" "}
+            <span>{(pageSize || defaultPageSize) * currentPage}</span> of{" "}
+            <span>{total}</span> results
           </p>
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
