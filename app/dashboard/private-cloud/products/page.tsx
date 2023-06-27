@@ -34,7 +34,6 @@ export default async function Page({
   };
 }) {
   const { search, page, pageSize, ministry, cluster } = searchParams;
-  const { cloud } = params;
 
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
@@ -76,21 +75,18 @@ export default async function Page({
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div className="">
-        {cloud === "private-cloud" ? (
-          <TableTop
-            title="Products in Private Cloud OpenShift Platform"
-            description="These are your products hosted on Private Cloud OpenShift platform"
-          />
-        ) : (
-          <TableTop
+        <TableTop
+          title="Products in Private Cloud OpenShift Platform"
+          description="These are your products hosted on Private Cloud OpenShift platform"
+        />
+        {/* <TableTop
             title="Products in the Public Cloud Landing Zones"
             description="These are your products hosted using the Public Cloud Landing Zones"
-          />
-        )}
+          /> */}
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort />
         </div>
-        <Table headers={headers} rows={rows} cloud={cloud} />
+        <Table headers={headers} rows={rows} />
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
