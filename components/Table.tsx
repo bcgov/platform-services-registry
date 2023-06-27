@@ -1,17 +1,16 @@
-"use client"
-
-import Link from "next/link";
+"use client";
+import { useRouter, usePathname } from "next/navigation";
+import path from "path";
 
 interface TableProps {
   headers: Record<string, string>[];
   rows: Record<string, any>[];
-  cloud: string;
 }
 
-export default function Table({ headers, rows, cloud }: TableProps) {
-  const pageSize = rows.length;
+export default function Table({ headers, rows }: TableProps) {
+  const router = useRouter();
+  const pathname = usePathname();
 
-  console.log("TABLE");
   return (
     <>
       <div className="flow-root h-[700px] overflow-y-auto ">
@@ -42,7 +41,9 @@ export default function Table({ headers, rows, cloud }: TableProps) {
                   <tr
                     key={row.licencePlate + i}
                     className="hover:bg-tableheadergrey"
-                    onClick={() => console.log("clicked")}
+                    onClick={() =>
+                      router.push(path.join(pathname, row.licencePlate))
+                    }
                   >
                     {headers.map((value, index) => (
                       <td
@@ -63,11 +64,4 @@ export default function Table({ headers, rows, cloud }: TableProps) {
       </div>
     </>
   );
-}
-{
-  /* <Link
-href={{
-  pathname: `/dashboard/${cloud}/products/${row.licencePlate}`,
-}}
-> */
 }
