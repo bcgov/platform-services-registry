@@ -1,9 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+  useParams,
+} from "next/navigation";
 
-export default function Tabs(props: any) {
+export default function Tabs({ baseUrl }: { baseUrl: string }) {
   const [selected, setSelected] = useState("Products");
+  const { push } = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+
+  // useEffect(() => {
+  //   push(`${baseUrl}/${selected}`);
+  // }, [selected]);
+
+  const onClickHandler = () => {};
 
   return (
     <span className="isolate inline-flex rounded-md h-10 mb-8">

@@ -1,11 +1,11 @@
-import Table from "@/components/Table";
-import SearchFilterSort from "@/components/SearchFilterSort";
+import Table from "@/components/table/Table";
+import SearchFilterSort from "@/components/table/SearchFilterSort";
 import { userPrivateCloudProjectsPaginated } from "@/queries/project";
-import TableTop from "@/components/TableTop";
+import TableTop from "@/components/table/TableTop";
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
-import PagninationButtons from "@/components/PaginationButtons";
+import PagninationButtons from "@/components/buttons/PaginationButtons";
 import { Suspense } from "react";
 
 const headers = [
