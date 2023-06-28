@@ -1,18 +1,31 @@
 import Table from "@/components/table/Table";
 import SearchFilterSort from "@/components/table/SearchFilterSort";
-import { userPrivateCloudProjectsPaginated } from "@/queries/project";
+import { getProjectsPaginated } from "@/queries/project";
 import TableTop from "@/components/table/TableTop";
-import formatDate from "@/components/utils/formatdates";
-import Image from "next/image";
-import Edit from "@/components/assets/edit.svg";
-import PagninationButtons from "@/components/buttons/PaginationButtons";
-import { Suspense } from "react";
+import {
+  privateCloudDataToRow,
+  publicCloudDataToRow,
+} from "@/helpers/rowMapper";
 
-const headers = [
+import PagninationButtons from "@/components/buttons/PaginationButtons";
+
+const privateCloudHeaders = [
   { field: "name", headerName: "Name" },
   { field: "description", headerName: "Description" },
   { field: "ministry", headerName: "Ministry" },
   { field: "cluster", headerName: "Cluster" },
+  { field: "projectOwner", headerName: "Project Owner" },
+  { field: "technicalLeads", headerName: "Technical Leads" },
+  { field: "created", headerName: "Created" },
+  { field: "licencePlate", headerName: "Licence Plate" },
+  { field: "edit", headerName: "" },
+];
+
+const publicCloudHeaders = [
+  { field: "name", headerName: "Name" },
+  { field: "csp", headerName: "csp" },
+  { field: "description", headerName: "Description" },
+  { field: "ministry", headerName: "Ministry" },
   { field: "projectOwner", headerName: "Project Owner" },
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
@@ -34,11 +47,13 @@ export default async function Page({
   };
 }) {
   const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { cloud } = params;
 
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total } = await userPrivateCloudProjectsPaginated(
+  const { data, total } = await getProjectsPaginated(
+    cloud,
     defaultPageSize,
     currentPage,
     search,
@@ -46,31 +61,13 @@ export default async function Page({
     cluster
   );
 
-  const rows = data.map((project: any) => {
-    return {
-      name: project.name,
-      description: project.description,
-      ministry: project.ministry,
-      cluster: project.cluster,
-      projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-      technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}, ${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
-      created: formatDate(project.created["$date"]),
-      licencePlate: project.licencePlate,
-      edit: (
-        <div
-          className="pr-4 sm:pr-6 lg:pr-8
-        >"
-        >
-          <div
-            className=" w-4 h-3 "
-            // pr-4 sm:pr-6 lg:pr-8
-          >
-            <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
-          </div>
-        </div>
-      ),
-    };
-  });
+  let rows: any = [];
+
+  if (cloud === "private-cloud") {
+    rows = data.map(privateCloudDataToRow);
+  } else if (cloud === "public-cloud") {
+    rows = data.map(publicCloudDataToRow);
+  }
 
   return (
     <div className="border-2 rounded-xl overflow-hidden">
@@ -86,7 +83,12 @@ export default async function Page({
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort />
         </div>
-        <Table headers={headers} rows={rows} />
+        <Table
+          headers={
+            cloud === "private-cloud" ? privateCloudHeaders : publicCloudHeaders
+          }
+          rows={rows}
+        />
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"

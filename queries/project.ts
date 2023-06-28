@@ -10,61 +10,6 @@ export const privateCloudProjects = async () => {
   });
 };
 
-export const privateCloudProjectById = async (projectId: string) =>
-  await prisma.privateCloudProject.findUnique({
-    where: {
-      id: projectId,
-      status: "ACTIVE",
-    },
-  });
-
-export const userPrivateCloudProjects = async (authEmail: string) =>
-  await prisma.privateCloudProject.findMany({
-    orderBy: {
-      name: "asc",
-    },
-    where: {
-      status: "ACTIVE",
-      OR: [
-        { projectOwner: { email: authEmail } },
-        { primaryTechnicalLead: { email: authEmail } },
-        { secondaryTechnicalLead: { email: authEmail } },
-      ],
-    },
-  });
-
-export const userPrivateCloudProjectById = async (
-  projectId: string,
-  authEmail: string
-) =>
-  await prisma.privateCloudProject.findUnique({
-    where: {
-      id: projectId,
-      status: "ACTIVE",
-      OR: [
-        { projectOwner: { email: authEmail } },
-        { primaryTechnicalLead: { email: authEmail } },
-        { secondaryTechnicalLead: { email: authEmail } },
-      ],
-    },
-  });
-
-export const userPrivateCloudProjectsByIds = async (
-  projectIds: string[],
-  authEmail: string
-) =>
-  await prisma.privateCloudProject.findMany({
-    where: {
-      id: { in: projectIds },
-      status: "ACTIVE",
-      OR: [
-        { projectOwner: { email: authEmail } },
-        { primaryTechnicalLead: { email: authEmail } },
-        { secondaryTechnicalLead: { email: authEmail } },
-      ],
-    },
-  });
-
 interface PrivateCloudProject {
   id: string;
   name: string;
@@ -83,7 +28,7 @@ interface User {
   // and any other fields that might be relevant
 }
 
-export async function userPrivateCloudProjectsPaginated(
+export async function privateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
   searchTerm?: string,
@@ -246,4 +191,54 @@ export async function userPrivateCloudProjectsPaginated(
     data: result as unknown as any[],
     total: totalCount || 0,
   };
+}
+
+export async function publicCloudProjectsPaginated(
+  pageSize: number,
+  pageNumber: number,
+  searchTerm?: string,
+  ministry?: string,
+  cluster?: string
+): Promise<{
+  data: any[];
+  total: number;
+}> {
+  const projects = await prisma.publicCloudProject.findMany();
+  return {
+    data: projects,
+    total: projects.length,
+  };
+}
+
+export async function getProjectsPaginated(
+  cloud: string,
+  pageSize: number,
+  pageNumber: number,
+  searchTerm?: string,
+  ministry?: string,
+  cluster?: string
+): Promise<{
+  data: any[];
+  total: number;
+}> {
+  // Fetch from privateCloudProjectsPaginated or publicCloudProjectsPaginated based on cloud
+  if (cloud === "private-cloud") {
+    return await privateCloudProjectsPaginated(
+      pageSize,
+      pageNumber,
+      searchTerm,
+      ministry,
+      cluster
+    );
+  } else if (cloud === "public-cloud") {
+    return await publicCloudProjectsPaginated(
+      pageSize,
+      pageNumber,
+      searchTerm,
+      ministry,
+      cluster
+    );
+  } else {
+    throw new Error("Invalid cloud type");
+  }
 }
