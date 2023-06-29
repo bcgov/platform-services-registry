@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { ObjectId } from "bson";
 
 const prisma = new PrismaClient();
 
@@ -33,7 +34,8 @@ export async function privateCloudProjectsPaginated(
   pageNumber: number,
   searchTerm?: string,
   ministry?: string,
-  cluster?: string
+  cluster?: string,
+  userId?: string
 ): Promise<{
   data: any[];
   total: number;
@@ -103,6 +105,15 @@ export async function privateCloudProjectsPaginated(
 
   if (cluster) {
     searchQuery.cluster = cluster;
+  }
+
+  if (userId) {
+    searchQuery.$or = searchQuery.$or || [];
+    searchQuery.$or.push(
+      { projectOwnerId: new ObjectId(userId) },
+      { primaryTechnicalLeadId: new ObjectId(userId) },
+      { secondaryTechnicalLeadId: new ObjectId(userId) }
+    );
   }
 
   // First, get the total count of matching documents
@@ -185,6 +196,133 @@ export async function privateCloudProjectsPaginated(
   });
 
   // @ts-ignore
+  const totalCount = totalCountResult[0]?.totalCount || 0;
+
+  return {
+    data: result as unknown as any[],
+    total: totalCount || 0,
+  };
+}
+
+export async function privateCloudRequestsPaginated(
+  pageSize: number,
+  pageNumber: number,
+  searchTerm?: string,
+  ministry?: string,
+  cluster?: string,
+  userId?: string
+): Promise<{
+  data: any[];
+  total: number;
+}> {
+  const searchQuery: any = {
+    status: "ACTIVE",
+  };
+
+  if (searchTerm) {
+    searchQuery.$or = [
+      { "requesterDetails.email": { $regex: searchTerm, $options: "i" } },
+      { "requesterDetails.firstName": { $regex: searchTerm, $options: "i" } },
+      { "requesterDetails.lastName": { $regex: searchTerm, $options: "i" } },
+      { "cluster.name": { $regex: searchTerm, $options: "i" } },
+      { "ministry.name": { $regex: searchTerm, $options: "i" } },
+      { name: { $regex: searchTerm, $options: "i" } },
+      { description: { $regex: searchTerm, $options: "i" } },
+    ];
+  }
+
+  if (ministry) {
+    searchQuery["ministry.name"] = ministry;
+  }
+
+  if (cluster) {
+    searchQuery["cluster.name"] = cluster;
+  }
+
+  if (userId) {
+    searchQuery.$or = searchQuery.$or || [];
+    searchQuery.$or.push({ requesterId: new ObjectId(userId) });
+  }
+
+  const totalCountResult = await prisma.privateCloudRequest.aggregateRaw({
+    pipeline: [
+      {
+        $lookup: {
+          from: "User",
+          localField: "requesterId",
+          foreignField: "_id",
+          as: "requesterDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "Cluster",
+          localField: "clusterId",
+          foreignField: "_id",
+          as: "cluster",
+        },
+      },
+      {
+        $lookup: {
+          from: "Ministry",
+          localField: "ministryId",
+          foreignField: "_id",
+          as: "ministry",
+        },
+      },
+      { $match: searchQuery },
+      { $unwind: "$requesterDetails" },
+      { $unwind: "$cluster" },
+      { $unwind: "$ministry" },
+      { $count: "totalCount" },
+    ],
+  });
+
+  const result = await prisma.privateCloudRequest.aggregateRaw({
+    pipeline: [
+      {
+        $lookup: {
+          from: "User",
+          localField: "requesterId",
+          foreignField: "_id",
+          as: "requesterDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "Cluster",
+          localField: "clusterId",
+          foreignField: "_id",
+          as: "cluster",
+        },
+      },
+      {
+        $lookup: {
+          from: "Ministry",
+          localField: "ministryId",
+          foreignField: "_id",
+          as: "ministry",
+        },
+      },
+      { $match: searchQuery },
+      { $unwind: "$requesterDetails" },
+      { $unwind: "$cluster" },
+      { $unwind: "$ministry" },
+      { $skip: (pageNumber - 1) * pageSize },
+      { $limit: pageSize },
+      {
+        $addFields: {
+          id: { $toString: "$_id" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ],
+  });
+
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
   return {

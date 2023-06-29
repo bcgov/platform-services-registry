@@ -1,8 +1,8 @@
 import Table from "@/components/table/Table";
 import { privateCloudProjectsPaginated } from "@/queries/project";
-import { privateCloudDataToRow } from "@/helpers/rowMapper";
+import { privateCloudProjectDataToRow } from "@/helpers/rowMapper";
 
-const privateCloudHeaders = [
+const headers = [
   { field: "name", headerName: "Name" },
   { field: "description", headerName: "Description" },
   { field: "ministry", headerName: "Ministry" },
@@ -39,13 +39,13 @@ export default async function Page({
     cluster
   );
 
-  const rows = data.map(privateCloudDataToRow);
+  const rows = data.map(privateCloudProjectDataToRow);
 
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="These are your products hosted on Private Cloud OpenShift platform"
-      headers={privateCloudHeaders}
+      headers={headers}
       rows={rows}
       total={total}
       currentPage={currentPage}
