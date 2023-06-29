@@ -323,6 +323,7 @@ export async function privateCloudRequestsPaginated(
     ],
   });
 
+  // @ts-ignore
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
   return {

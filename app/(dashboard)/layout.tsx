@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div>
       <CloudTabs />
       <div className="mt-8 mb-8 h-full mx-4 lg:mx-20">
-        <ProductsRequestsTabs baseUrl={"#"} />
+        <ProductsRequestsTabs />
         {children}
       </div>
     </div>

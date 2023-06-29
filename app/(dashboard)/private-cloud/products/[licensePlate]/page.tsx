@@ -5,7 +5,5 @@ export default function Product({
 }) {
   const { licensePlate } = params;
 
-  console.log(licensePlate);
-
   return <div>Product</div>;
 }
