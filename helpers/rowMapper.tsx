@@ -2,7 +2,7 @@ import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
 
-export const privateCloudDataToRow = (project: any) => {
+export const privateCloudProjectDataToRow = (project: any) => {
   return {
     name: project.name,
     description: project.description,
@@ -28,7 +28,7 @@ export const privateCloudDataToRow = (project: any) => {
   };
 };
 
-export const publicCloudDataToRow = (project: any) => {
+export const publicCloudProjectDataToRow = (project: any) => {
   return {
     name: project.name,
     csp: project.provider,
@@ -51,5 +51,18 @@ export const publicCloudDataToRow = (project: any) => {
         </div>
       </div>
     ),
+  };
+};
+
+export const privateCloudRequestDataToRow = (request: any) => {
+  return {
+    type: request.type,
+    name: request.requestedProject.name,
+    ministry: request.requestedProject.ministry,
+    cluster: request.requestedProject.cluster,
+    projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    created: formatDate(request.created["$date"]),
+    licencePlate: request.licencePlate,
   };
 };
