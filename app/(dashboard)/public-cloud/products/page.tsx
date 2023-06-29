@@ -4,7 +4,7 @@ import { publicCloudProjectDataToRow } from "@/helpers/rowMapper";
 
 const headers = [
   { field: "name", headerName: "Name" },
-  { field: "csp", headerName: "csp" },
+  { field: "csp", headerName: "Csp" },
   { field: "description", headerName: "Description" },
   { field: "ministry", headerName: "Ministry" },
   { field: "projectOwner", headerName: "Project Owner" },
@@ -17,7 +17,6 @@ const headers = [
 export default async function Page({
   searchParams,
 }: {
-  params: { cloud: string };
   searchParams: {
     search: string;
     page: number;

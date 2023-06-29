@@ -18,11 +18,13 @@ export const authOptions = {
           id: profile.sub,
           name: profile.name,
           email: profile.email,
-          image: null
+          image: null,
         };
-      }
-    })
+      },
+    }),
   ],
+  secret: process.env.AUTH_SECRET,
+
   // pages: {
   //   signIn: "/auth/signin",
   //   signOut: "/auth/signout",
@@ -50,8 +52,8 @@ export const authOptions = {
       }
 
       return session;
-    }
-  }
+    },
+  },
 };
 
 // @ts-ignore

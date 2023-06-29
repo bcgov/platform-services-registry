@@ -16,7 +16,6 @@ const headers = [
 export default async function Page({
   searchParams,
 }: {
-  params: { cloud: string };
   searchParams: {
     search: string;
     page: number;
