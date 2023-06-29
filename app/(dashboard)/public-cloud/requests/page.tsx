@@ -1,6 +1,6 @@
 import Table from "@/components/table/Table";
-import { privateCloudRequestsPaginated } from "@/queries/project";
-import { privateCloudRequestDataToRow } from "@/helpers/rowMapper";
+import { publicCloudRequestsPaginated } from "@/queries/project";
+import { publicCloudRequestDataToRow } from "@/helpers/rowMapper";
 
 const headers = [
   { field: "type", headerName: "Type" },
@@ -16,7 +16,6 @@ const headers = [
 export default async function Page({
   searchParams,
 }: {
-  params: { cloud: string };
   searchParams: {
     search: string;
     page: number;
@@ -30,14 +29,14 @@ export default async function Page({
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total } = await privateCloudRequestsPaginated(
+  const { data, total } = await publicCloudRequestsPaginated(
     defaultPageSize,
     currentPage,
     search,
     ministry,
     cluster
   );
-  const rows = data.map(privateCloudRequestDataToRow);
+  const rows = data.map(publicCloudRequestDataToRow);
 
   return (
     <Table

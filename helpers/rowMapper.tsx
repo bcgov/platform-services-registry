@@ -66,3 +66,16 @@ export const privateCloudRequestDataToRow = (request: any) => {
     licencePlate: request.licencePlate,
   };
 };
+
+export const publicCloudRequestDataToRow = (request: any) => {
+  return {
+    type: request.type,
+    name: request.requestedProject.name,
+    csp: request.requestedProject.provider,
+    ministry: request.requestedProject.ministry,
+    projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    created: formatDate(request.created["$date"]),
+    licencePlate: request.licencePlate,
+  };
+}
