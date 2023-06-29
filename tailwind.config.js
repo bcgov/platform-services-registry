@@ -24,6 +24,7 @@ module.exports = {
         disabledborder: "D0D5DD",
         cloudgrey: "#667085",
         divider: "#0000001f",
+        linkblue: "#155EEF",
       },
       borderWidth: {
         1: "1px",
