@@ -1,67 +1,55 @@
-"use client";
-import { useRouter, usePathname } from "next/navigation";
-import path from "path";
+import TableBody from "@/components/table/TableBody";
+import SearchFilterSort from "@/components/table/SearchFilterSort";
+import TableTop from "@/components/table/TableTop";
+import PagninationButtons from "@/components/buttons/PaginationButtons";
 
-interface TableProps {
-  headers: Record<string, string>[];
-  rows: Record<string, any>[];
-}
-
-export default function Table({ headers, rows }: TableProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-
+export default function Table({
+  title,
+  description,
+  headers,
+  rows,
+  currentPage,
+  pageSize,
+  total,
+}: {
+  title: string;
+  description: string;
+  headers: any;
+  rows: any;
+  currentPage: number;
+  pageSize: number;
+  total: number;
+}) {
   return (
-    <>
-      <div className="flow-root h-[700px] overflow-y-auto ">
-        <div className="w-full overflow-auto">
-          <div className="inline-block min-w-full align-middle">
-            <table className="w-full text-left">
-              <thead className="bg-tableheadergrey border-b-1">
-                <tr>
-                  {headers.map(({ headerName }, index) => (
-                    <th
-                      key={headerName + index}
-                      scope="col"
-                      className={`font-bcsans relative isolate py-3.5 text-left text-sm font-normal text-mediumgrey md:w-auto ${
-                        index === 0 ? "pl-4 sm:pl-6 lg:pl-8" : "px-3"
-                      } ${
-                        index === headers.length - 1
-                          ? "pr-4 sm:pr-6 lg:pr-8"
-                          : ""
-                      }`}
-                    >
-                      {headerName}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, i) => (
-                  <tr
-                    key={row.licencePlate + i}
-                    className="hover:bg-tableheadergrey"
-                    onClick={() =>
-                      router.push(path.join(pathname, row.licencePlate))
-                    }
-                  >
-                    {headers.map((value, index) => (
-                      <td
-                        key={value["field"] + index}
-                        className={` px-3 py-4 text-sm text-mediumgrey md:table-cell border-b-1 ${
-                          index === 0 ? "pl-4 sm:pl-6 lg:pl-8" : ""
-                        } `}
-                      >
-                        {row[value["field"]]}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <div className="border-2 rounded-xl overflow-hidden">
+      <div>
+        <TableTop title={title} description={description} />
+        <div className="border-b-2 px-4 py-2 w-full">
+          <SearchFilterSort />
+        </div>
+        <TableBody headers={headers} rows={rows} />
+      </div>
+      <nav
+        className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+        aria-label="Pagination"
+      >
+        <div className="hidden sm:block">
+          <p className="text-sm text-gray-700">
+            Showing <span>{pageSize * (currentPage - 1)}</span> to{" "}
+            <span>{pageSize * currentPage}</span> of <span>{total}</span>{" "}
+            results
+          </p>
+        </div>
+        <div className="flex flex-1 justify-between sm:justify-end">
+          <div>
+            <PagninationButtons
+              pageCount={total / pageSize}
+              page={currentPage}
+              pageSize={pageSize}
+            />
           </div>
         </div>
-      </div>
-    </>
+      </nav>
+    </div>
   );
 }
