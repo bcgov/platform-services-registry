@@ -2,11 +2,6 @@ import Image from "next/image";
 import Arrow from "@/components/assets/arrow.svg";
 import Link from "next/link";
 
-const pages = [
-  { name: "Projects", href: "#", current: false },
-  { name: "Project Nero", href: "#", current: true },
-];
-
 export default function Crumbs({
   backUrl,
   previousLabel,

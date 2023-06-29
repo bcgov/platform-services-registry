@@ -1,15 +1,51 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
 import path from "path";
+import Image from "next/image";
+import Empty from "@/components/assets/empty.svg";
+import Link from "next/link";
 
 interface TableProps {
   headers: Record<string, string>[];
   rows: Record<string, any>[];
 }
 
+function EmptyBody() {
+  return (
+    <div className="flex flex-col items-center justify-center h-[700px]">
+      <Image
+        alt="Empty"
+        src={Empty}
+        width={172}
+        height={128}
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+        }}
+      />
+      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">
+        There are no requests to be displayed
+      </span>
+      <span className="font-bcsans text-lg font-extralight text-mediumgrey mt-2">
+        You currently have no provisioning requests for the
+      </span>
+      <span className="font-bcsans text-lg font-extralight text-mediumgrey">
+        Private Cloud Openshift Platform
+      </span>
+      <Link className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2" href="/private-cloud/products">
+        REQUEST A NEW PROJECT SET
+      </Link>
+    </div>
+  );
+}
+
 export default function TableBody({ headers, rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
+
+  if (rows.length === 0) {
+    return <EmptyBody />;
+  }
 
   return (
     <>
