@@ -209,36 +209,3 @@ export async function publicCloudProjectsPaginated(
     total: projects.length,
   };
 }
-
-export async function getProjectsPaginated(
-  cloud: string,
-  pageSize: number,
-  pageNumber: number,
-  searchTerm?: string,
-  ministry?: string,
-  cluster?: string
-): Promise<{
-  data: any[];
-  total: number;
-}> {
-  // Fetch from privateCloudProjectsPaginated or publicCloudProjectsPaginated based on cloud
-  if (cloud === "private-cloud") {
-    return await privateCloudProjectsPaginated(
-      pageSize,
-      pageNumber,
-      searchTerm,
-      ministry,
-      cluster
-    );
-  } else if (cloud === "public-cloud") {
-    return await publicCloudProjectsPaginated(
-      pageSize,
-      pageNumber,
-      searchTerm,
-      ministry,
-      cluster
-    );
-  } else {
-    throw new Error("Invalid cloud type");
-  }
-}
