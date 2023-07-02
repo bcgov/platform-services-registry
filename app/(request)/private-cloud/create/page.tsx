@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Autocomplete from "@/components/form/Autocomplete";
+import AsyncAutocomplete from "@/components/form/AsyncAutocomplete";
 
 export default function Page() {
   return (
@@ -105,79 +104,26 @@ export default function Page() {
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <h1 className="text-base font-semibold leading-7 text-gray-900">
             2. Team Contacts
-          </h2>
-          <Autocomplete />
+          </h1>
 
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
-              <label
-                htmlFor="first-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Ministry
-              </label>
-              <div className="mt-2">
-                <select
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option>CITZ</option>
-                  <option>PSA</option>
-                  <option>HLTH</option>
-                </select>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Select your cluster Select CLAB or KLAB for testing purposes
-                </p>
-              </div>
-              <label
-                htmlFor="first-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Ministry
-              </label>
-              <div className="mt-2">
-                <select
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option>CITZ</option>
-                  <option>PSA</option>
-                  <option>HLTH</option>
-                </select>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Select your cluster Select CLAB or KLAB for testing purposes
-                </p>
-              </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="last-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Cluster
-              </label>
-              <div className="mt-2">
-                <select
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option>SILVER</option>
-                  <option>GOLD</option>
-                  <option>KLAB</option>
-                </select>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Select your cluster Select CLAB or KLAB for testing purposes
-                </p>
-              </div>
+              <h3 className="text-base font-semibold leading-7 text-gray-900">
+                Product Owner (PO)
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-gray-600">
+                Product Owner (PO) Tell us about the Product Owner (PO). This is
+                typically the business owner of the application. We will use
+                this information to contact them with any non-technical
+                questions. Please use only IDIR linked email address below.
+              </p>
+              <AsyncAutocomplete
+                className="mt-8"
+                label="Product Owner Email"
+                placeHolder="Search project owner's IDIR email address"
+              />
             </div>
           </div>
         </div>
