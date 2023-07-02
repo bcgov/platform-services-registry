@@ -2,6 +2,10 @@ import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
+type Person = {
+  name: string;
+};
+
 const people = [
   { id: 1, name: "Wade Cooper" },
   { id: 2, name: "Arlene Mccoy" },
@@ -33,7 +37,7 @@ export default function Example() {
             <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
               <Combobox.Input
                 className="rounded-md border-slate-300 w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-                displayValue={(person) => person.name}
+                displayValue={(person: Person) => person?.name}
                 onChange={(event) => setQuery(event.target.value)}
               />
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">

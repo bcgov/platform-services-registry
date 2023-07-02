@@ -72,7 +72,7 @@ export default function SearchFilterSort() {
     if (debouncedValue !== undefined) {
       handleSearch(debouncedValue);
     }
-  }, [debouncedValue]);
+  }, [debouncedValue, handleSearch]);
 
   return (
     <div className="flex justify-end space-x-2.5 ">
