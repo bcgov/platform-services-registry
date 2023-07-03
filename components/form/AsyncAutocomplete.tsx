@@ -95,7 +95,7 @@ export default function AsyncAutocomplete({
                 </div>
               ) : people && people.length === 0 && query !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                  Nothing found.
+                No IDIR linked email address found. 
                 </div>
               ) : (
                 people &&

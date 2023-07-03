@@ -9,7 +9,7 @@ import {
   usePathname,
   useRouter,
   useSearchParams,
-  useParams
+  useParams,
 } from "next/navigation";
 import { useDebounce } from "@/components/utils/useDebounce";
 
@@ -55,18 +55,34 @@ export default function SearchFilterSort() {
 
   // handle search with debounce
 
-  const handleSearch = (term: string) => {
-    const params = new URLSearchParams(searchParams?.toString());
+  // const handleSearch = (term: string) => {
+  //   const params = new URLSearchParams(searchParams?.toString());
 
-    if (term) {
-      params.set("search", term);
-    } else {
-      params.delete("search");
-    }
-    params.delete("page");
+  //   if (term) {
+  //     params.set("search", term);
+  //   } else {
+  //     params.delete("search");
+  //   }
+  //   params.delete("page");
 
-    replace(`${pathname}?${params.toString()}`);
-  };
+  //   replace(`${pathname}?${params.toString()}`);
+  // };
+
+  const handleSearch = useCallback(
+    (term: string) => {
+      const params = new URLSearchParams(searchParams?.toString());
+
+      if (term) {
+        params.set("search", term);
+      } else {
+        params.delete("search");
+      }
+      params.delete("page");
+
+      replace(`${pathname}?${params.toString()}`);
+    },
+    [searchParams, replace, pathname]
+  );
 
   useEffect(() => {
     if (debouncedValue !== undefined) {
@@ -89,7 +105,7 @@ export default function SearchFilterSort() {
               height={15}
               style={{
                 maxWidth: "100%",
-                height: "auto"
+                height: "auto",
               }}
             />
           </div>
@@ -121,7 +137,7 @@ export default function SearchFilterSort() {
           height={10}
           style={{
             maxWidth: "100%",
-            height: "auto"
+            height: "auto",
           }}
         />
         <span className="md:inline hidden">Filters</span>
@@ -137,7 +153,7 @@ export default function SearchFilterSort() {
           height={12.5}
           style={{
             maxWidth: "100%",
-            height: "auto"
+            height: "auto",
           }}
         />
         <span className="md:inline hidden">Export</span>
