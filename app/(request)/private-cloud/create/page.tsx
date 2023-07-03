@@ -1,8 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import AsyncAutocomplete from "@/components/form/AsyncAutocomplete";
+import SecondTechLeadButton from "@/components/buttons/SecondTechLeadButton";
 
 export default function Page() {
+  const [secondTechLead, setSecondTechLead] = useState(false);
+
+  const secondTechLeadOnClick = () => {
+    setSecondTechLead(!secondTechLead);
+  };
+
   return (
     <form>
       <div className="space-y-12">
@@ -108,22 +116,73 @@ export default function Page() {
             2. Team Contacts
           </h1>
 
-          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <h3 className="text-base font-semibold leading-7 text-gray-900">
-                Product Owner (PO)
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-gray-600">
-                Product Owner (PO) Tell us about the Product Owner (PO). This is
-                typically the business owner of the application. We will use
-                this information to contact them with any non-technical
-                questions. Please use only IDIR linked email address below.
-              </p>
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+            <div className="flex flex-col justify-between">
+              <div>
+                <h3 className="text-base font-semibold leading-7 text-gray-900">
+                  Product Owner (PO)
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600">
+                  Tell us about the Product Owner (PO). This is typically the
+                  business owner of the application. We will use this
+                  information to contact them with any non-technical questions.
+                  Please use only IDIR linked email address below.
+                </p>
+              </div>
               <AsyncAutocomplete
                 className="mt-8"
                 label="Product Owner Email"
                 placeHolder="Search project owner's IDIR email address"
               />
+            </div>
+
+            <div className="flex flex-col justify-between">
+              <div>
+                <h3 className="text-base font-semibold leading-7 text-gray-900">
+                  Technical Lead (TL)
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600">
+                  This is typically the DevOps specialist. We use this
+                  information to contact them with technical questions or notify
+                  them about platform events. You require a Primary Technical
+                  Lead, a Secondary Technical Lead is optional. Please use only
+                  IDIR linked email address below.
+                </p>
+              </div>
+              <AsyncAutocomplete
+                className="mt-8"
+                label="Technical Lead Email"
+                placeHolder="Search project owner's IDIR email address"
+              />
+            </div>
+
+            <div className="mt-6 flex flex-col justify-between sm:col-start-2">
+              <SecondTechLeadButton
+                clicked={secondTechLead}
+                onClick={secondTechLeadOnClick}
+              />
+
+              {secondTechLead ? (
+                <div className="mt-6">
+                  <div>
+                    <h3 className="text-base font-semibold leading-7 text-gray-900">
+                      Technical Lead (TL)
+                    </h3>
+                    <p className="mt-3 text-sm leading-6 text-gray-600">
+                      This is typically the DevOps specialist. We use this
+                      information to contact them with technical questions or
+                      notify them about platform events. You require a Primary
+                      Technical Lead, a Secondary Technical Lead is optional.
+                      Please use only IDIR linked email address below.
+                    </p>
+                  </div>
+                  <AsyncAutocomplete
+                    className="mt-8"
+                    label="Technical Lead Email"
+                    placeHolder="Search project owner's IDIR email address"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -133,8 +192,8 @@ export default function Page() {
             Notifications
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">
-            We&apos;sll always let you know about important changes, but you pick what
-            else you want to hear about
+            We&apos;sll always let you know about important changes, but you
+            pick what else you want to hear about
           </p>
 
           <div className="mt-10 space-y-10">
