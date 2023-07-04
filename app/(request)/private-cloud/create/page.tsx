@@ -3,16 +3,42 @@
 import { useState } from "react";
 import AsyncAutocomplete from "@/components/form/AsyncAutocomplete";
 import SecondTechLeadButton from "@/components/buttons/SecondTechLeadButton";
+import { useForm, useFormContext, UseFormRegister } from "react-hook-form";
+import { CreateRequestBodySchema } from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import classNames from "@/components/utils/classnames";
 
 export default function Page() {
   const [secondTechLead, setSecondTechLead] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+    setValue,
+    setError,
+    clearErrors,
+    unregister,
+  } = useForm({
+    resolver: zodResolver(CreateRequestBodySchema),
+  });
+
+  const onSubmit = (data: any) => {
+    console.log("DATA SUBMITTED");
+    console.log(data);
+  };
+
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
+    if (secondTechLead) {
+      unregister("secondaryTechnicalLead");
+    }
   };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -30,13 +56,16 @@ export default function Page() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="product-name"
-                  id="product-name"
-                  autoComplete="product-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {...register("name")}
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-600">
+              <p
+                className={classNames(
+                  errors.name ? "text-red-400" : "",
+                  "mt-3 text-sm leading-6 text-gray-600"
+                )}
+              >
                 Please provide a descriptibe product name with no acronyms
               </p>
             </div>
@@ -51,36 +80,49 @@ export default function Page() {
               <div className="mt-2">
                 <textarea
                   id="about"
-                  name="about"
+                  {...register("description")}
                   rows={3}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  defaultValue={""}
+                  // defaultValue={""}
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-600">
+              <p
+                className={classNames(
+                  errors.ministry ? "text-red-400" : "",
+                  "mt-3 text-sm leading-6 text-gray-600"
+                )}
+              >
                 Tell us more about your product
               </p>
             </div>
             <div className="sm:col-span-3">
               <label
-                htmlFor="first-name"
+                htmlFor="ministry"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Ministry
               </label>
               <div className="mt-2">
                 <select
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
+                  // name="ministry"
+                  // id="first-name"
+                  // autoComplete="given-name"
+                  {...register("ministry")}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
+                  <option value="">Select Ministry</option>
                   <option>CITZ</option>
                   <option>PSA</option>
                   <option>HLTH</option>
                 </select>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Select your cluster Select CLAB or KLAB for testing purposes
+
+                <p
+                  className={classNames(
+                    errors.ministry ? "text-red-400" : "",
+                    "mt-3 text-sm leading-6 text-gray-600"
+                  )}
+                >
+                  Select the government ministry that this product belongs to
                 </p>
               </div>
             </div>
@@ -94,16 +136,23 @@ export default function Page() {
               </label>
               <div className="mt-2">
                 <select
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
+                  // name="last-name"
+                  // id="last-name"
+                  // autoComplete="family-name"
+                  {...register("cluster")}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
+                  <option value="">Select Cluster</option>
                   <option>SILVER</option>
                   <option>GOLD</option>
                   <option>KLAB</option>
                 </select>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p
+                  className={classNames(
+                    errors.ministry ? "text-red-400" : "",
+                    "mt-3 text-sm leading-6 text-gray-600"
+                  )}
+                >
                   Select your cluster Select CLAB or KLAB for testing purposes
                 </p>
               </div>
@@ -130,9 +179,16 @@ export default function Page() {
                 </p>
               </div>
               <AsyncAutocomplete
+                name="projectOwner"
                 className="mt-8"
                 label="Product Owner Email"
                 placeHolder="Search project owner's IDIR email address"
+                control={control}
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                setError={setError}
+                clearErrors={clearErrors}
               />
             </div>
 
@@ -150,9 +206,16 @@ export default function Page() {
                 </p>
               </div>
               <AsyncAutocomplete
+                name="primaryTechnicalLead"
                 className="mt-8"
                 label="Technical Lead Email"
                 placeHolder="Search project owner's IDIR email address"
+                control={control}
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                setError={setError}
+                clearErrors={clearErrors}
               />
             </div>
 
@@ -177,9 +240,16 @@ export default function Page() {
                     </p>
                   </div>
                   <AsyncAutocomplete
+                    name="secondaryTechnicalLead"
                     className="mt-8"
                     label="Technical Lead Email"
                     placeHolder="Search project owner's IDIR email address"
+                    control={control}
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    setError={setError}
+                    clearErrors={clearErrors}
                   />
                 </div>
               ) : null}
@@ -187,7 +257,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="border-b border-gray-900/10 pb-12">
+        {/* <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             3. Common Components
           </h2>
@@ -258,15 +328,17 @@ export default function Page() {
               </div>
             </fieldset>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
+        {/* <input type="submit" /> */}
+
         <button
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Save
+          Submit
         </button>
       </div>
     </form>

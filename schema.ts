@@ -4,7 +4,7 @@ import {
   DefaultStorageOptions,
   Cluster,
   Ministry,
-  CommonComponentsOptions
+  CommonComponentsOptions,
 } from "@prisma/client";
 import { string, number, z } from "zod";
 
@@ -23,31 +23,31 @@ export const CommonComponentsInputSchema = z.object({
   publishing: CommonComponentsOptionsSchema,
   businessIntelligence: CommonComponentsOptionsSchema,
   other: z.optional(z.string()),
-  noServices: z.boolean()
+  noServices: z.boolean(),
 });
 
 export const UserInputSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email(),
-  ministry: z.nativeEnum(Ministry)
+  ministry: z.nativeEnum(Ministry),
 });
 
 export const CreateRequestBodySchema = z.object({
-  name: string(),
-  description: string(),
+  name: z.string().nonempty({ message: "Name is required." }),
+  description: z.string().nonempty({ message: "Description is required." }),
   cluster: z.nativeEnum(Cluster),
   ministry: z.nativeEnum(Ministry),
-  commonComponents: CommonComponentsInputSchema,
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional()
+  secondaryTechnicalLead: UserInputSchema.optional(),
+  // commonComponents: CommonComponentsInputSchema,
 });
 
 export const QuotaInputSchema = z.object({
   cpu: z.nativeEnum(DefaultCpuOptions),
   memory: z.nativeEnum(DefaultMemoryOptions),
-  storage: z.nativeEnum(DefaultStorageOptions)
+  storage: z.nativeEnum(DefaultStorageOptions),
 });
 
 export const EditRequestBodySchema = CreateRequestBodySchema.merge(
@@ -55,7 +55,7 @@ export const EditRequestBodySchema = CreateRequestBodySchema.merge(
     productionQuota: QuotaInputSchema,
     testQuota: QuotaInputSchema,
     toolsQuota: QuotaInputSchema,
-    developmentQuota: QuotaInputSchema
+    developmentQuota: QuotaInputSchema,
   })
 );
 

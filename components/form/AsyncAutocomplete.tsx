@@ -2,6 +2,8 @@ import { Fragment, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useQuery } from "@tanstack/react-query";
+import { UserInputSchema } from "@/schema";
+import classNames from "@/components/utils/classnames";
 
 type Person = {
   id: number;
@@ -30,13 +32,27 @@ const parseMinistryFromDisplayName = (displayName: string | null) => {
 };
 
 export default function AsyncAutocomplete({
+  name,
   label,
   placeHolder,
   className,
+  register,
+  control,
+  errors,
+  setValue,
+  setError,
+  clearErrors,
 }: {
+  name: string;
   label: string;
   placeHolder: string;
   className?: string;
+  register: any;
+  control: any;
+  errors: any;
+  setValue: any;
+  setError: any;
+  clearErrors: any;
 }) {
   const [selected, setSelected] = useState<Person | null>(null);
   const [query, setQuery] = useState<string | null>(null);
@@ -53,6 +69,49 @@ export default function AsyncAutocomplete({
     }
   );
 
+  const autocompleteOnChangeHandler = (value: Person) => {
+    setSelected(value);
+
+    const {
+      givenName: firstName,
+      surname: lastName,
+      mail: email,
+      displayName,
+    } = value;
+
+    const ministry = parseMinistryFromDisplayName(displayName);
+
+    const parsedParams = UserInputSchema.safeParse({
+      firstName,
+      lastName,
+      email,
+      ministry,
+    });
+
+
+    if (!parsedParams.success) {
+      // Corner case where the user does not have a properly formatted IDIR account
+      // do something with the error
+
+      console.log("ERROR WITH " + name);
+
+      setError(name, {
+        type: "manual",
+        message:
+          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry",
+      });
+    } else {
+      clearErrors(name);
+    }
+
+    setValue(name, {
+      firstName,
+      lastName,
+      email,
+      ministry,
+    });
+  };
+
   return (
     <div className={className}>
       <label
@@ -61,7 +120,7 @@ export default function AsyncAutocomplete({
       >
         {label}
       </label>
-      <Combobox value={selected} onChange={setSelected}>
+      <Combobox value={selected} onChange={autocompleteOnChangeHandler}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
@@ -70,12 +129,6 @@ export default function AsyncAutocomplete({
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}
             />
-            {/* <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
-            </Combobox.Button> */}
           </div>
           <Transition
             as={Fragment}
@@ -95,7 +148,7 @@ export default function AsyncAutocomplete({
                 </div>
               ) : people && people.length === 0 && query !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                No IDIR linked email address found. 
+                  No IDIR linked email address found.
                 </div>
               ) : (
                 people &&
@@ -136,6 +189,17 @@ export default function AsyncAutocomplete({
           </Transition>
         </div>
       </Combobox>
+      {errors[name] ? (
+        <p className={"text-red-400 mt-3 text-sm leading-6"}>
+          {errors[name].message}
+        </p>
+      ) : null}
+       {errors?.[name]?.["email"] ? (
+        <p className={"text-red-400 mt-3 text-sm leading-6"}>
+          {errors?.[name]?.["email"].message}
+        </p>
+      ) : null}
+
       <div className="mt-8 col-span-full">
         <label
           htmlFor="description"
@@ -149,9 +213,9 @@ export default function AsyncAutocomplete({
             value={selected?.givenName}
             placeholder="Autofilled from IDIR"
             type="text"
-            name="first-name"
             id="first-name"
             autoComplete="first-name"
+            {...register(name + ".firstName")}
             className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>
@@ -169,9 +233,9 @@ export default function AsyncAutocomplete({
             value={selected?.surname}
             placeholder="Autofilled from IDIR"
             type="text"
-            name="first-name"
-            id="first-name"
-            autoComplete="first-name"
+            id="last-name"
+            autoComplete="last-name"
+            {...register(name + ".lastName")}
             className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>
@@ -189,9 +253,9 @@ export default function AsyncAutocomplete({
             value={parseMinistryFromDisplayName(selected?.displayName || "")}
             placeholder="Autofilled from IDIR"
             type="text"
-            name="first-name"
-            id="first-name"
-            autoComplete="first-name"
+            id="ministry"
+            autoComplete="ministry"
+            {...register(name + ".ministry")}
             className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>
