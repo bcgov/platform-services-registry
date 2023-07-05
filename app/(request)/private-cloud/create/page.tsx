@@ -27,10 +27,10 @@ export default function Page() {
   });
 
   const onSubmit = async (data: any) => {
-    console.log("SUBMIT")
+    console.log("SUBMIT");
     console.log(data);
     try {
-      const response = await fetch("/api/requests/create", {
+      const response = await fetch("/api/requests/private-cloud/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
