@@ -17,8 +17,6 @@ const MyAdapter = {
   },
 };
 
-
-
 export const authOptions = {
   adapter: MyAdapter,
   providers: [
