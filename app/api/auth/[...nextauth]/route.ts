@@ -6,8 +6,21 @@ import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import jwt from "jsonwebtoken";
 
+const prismaAdapter = PrismaAdapter(prisma);
+
+const MyAdapter = {
+  ...prismaAdapter,
+  linkAccount: (account: any) => {
+    account["not_before_policy"] = account["not-before-policy"];
+    delete account["not-before-policy"];
+    return prismaAdapter.linkAccount(account);
+  },
+};
+
+
+
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: MyAdapter,
   providers: [
     KeycloakProvider({
       clientId: process.env.AUTH_RESOURCE!,

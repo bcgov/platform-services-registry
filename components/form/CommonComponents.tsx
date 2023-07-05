@@ -106,7 +106,7 @@ export default function CommonComponents({
           htmlFor="none"
           className="ml-8 block text-sm font-medium leading-6 text-red-400"
         >
-          Please select "The app does not use any of these services" if you are
+          Please select The app does not use any of these services if you are
           not using any of common components below
         </label>
         {commonComponents.map(({ name, label }) => (
