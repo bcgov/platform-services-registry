@@ -7,6 +7,7 @@ import { useForm, useFormContext, UseFormRegister } from "react-hook-form";
 import { CreateRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "@/components/utils/classnames";
+import CommonComponents from "@/components/form/CommonComponents";
 
 export default function Page() {
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -25,9 +26,26 @@ export default function Page() {
     resolver: zodResolver(CreateRequestBodySchema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log("DATA SUBMITTED");
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      const response = await fetch("/api/requests/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+
+      console.log("Success:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const secondTechLeadOnClick = () => {
@@ -36,6 +54,11 @@ export default function Page() {
       unregister("secondaryTechnicalLead");
     }
   };
+
+  console.log("VALUES");
+  console.log(watch());
+  console.log("ERRORS");
+  console.log(errors);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -136,9 +159,6 @@ export default function Page() {
               </label>
               <div className="mt-2">
                 <select
-                  // name="last-name"
-                  // id="last-name"
-                  // autoComplete="family-name"
                   {...register("cluster")}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
@@ -257,7 +277,7 @@ export default function Page() {
           </div>
         </div>
 
-        {/* <div className="border-b border-gray-900/10 pb-12">
+        <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             3. Common Components
           </h2>
@@ -265,70 +285,17 @@ export default function Page() {
             Please indicate what services you expect to utilize as part of your
             product.
           </p>
-          <div className="flex items-center mt-8">
-            <input
-              id={"test"}
-              name="notification-method"
-              type="radio"
-              // defaultChecked={notificationMethod.id === "email"}
-              className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-            />
-            <label
-              htmlFor={"test"}
-              className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-            >
-              The app does not use any of these services
-            </label>
-          </div>
+
           <div className="mt-10 space-y-10 ">
-            <fieldset>
-              <div className="space-y-5">
-                <div className="relative flex flex-col">
-                  <div className="text-sm leading-6">
-                    <label
-                      htmlFor="comments"
-                      className="font-medium text-gray-900"
-                    >
-                      Address and Geolocation
-                    </label>
-                  </div>
-                  <div className="flex items-center mt-1 w-full sm:w-4/12 justify-between flex-wrap">
-                    <div className="flex items-center">
-                      <input
-                        id={"test"}
-                        name="notification-method"
-                        type="radio"
-                        // defaultChecked={notificationMethod.id === "email"}
-                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                      />
-                      <label
-                        htmlFor={"test"}
-                        className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Implemented
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        id={"test"}
-                        name="notification-method"
-                        type="radio"
-                        // defaultChecked={notificationMethod.id === "email"}
-                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                      />
-                      <label
-                        htmlFor={"test"}
-                        className="ml-3 block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Planning to use
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
+            <CommonComponents
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              setError={setError}
+              clearErrors={clearErrors}
+            />
           </div>
-        </div> */}
+        </div>
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">

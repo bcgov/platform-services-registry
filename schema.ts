@@ -41,7 +41,7 @@ export const CreateRequestBodySchema = z.object({
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional(),
-  // commonComponents: CommonComponentsInputSchema,
+  commonComponents: CommonComponentsInputSchema,
 });
 
 export const QuotaInputSchema = z.object({
