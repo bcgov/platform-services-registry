@@ -85,7 +85,12 @@ export default function SearchFilterSort() {
   );
 
   useEffect(() => {
-    if (debouncedValue !== undefined) {
+    if (debouncedValue == "") {
+      // remove search param
+      const params = new URLSearchParams(searchParams?.toString());
+      params.delete("search");
+      replace(`${pathname}?${params.toString()}`);
+    } else {
       handleSearch(debouncedValue);
     }
   }, [debouncedValue, handleSearch]);

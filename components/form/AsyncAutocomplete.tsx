@@ -88,7 +88,6 @@ export default function AsyncAutocomplete({
       ministry,
     });
 
-
     if (!parsedParams.success) {
       // Corner case where the user does not have a properly formatted IDIR account
       // do something with the error
@@ -116,7 +115,10 @@ export default function AsyncAutocomplete({
     <div className={className}>
       <label
         htmlFor="first-name"
-        className="block text-sm font-medium leading-6 text-gray-900"
+        className={classNames(
+          errors.ministry ? "text-red-400" : "",
+          "block text-sm font-medium leading-6 text-gray-900"
+        )}
       >
         {label}
       </label>
@@ -194,11 +196,11 @@ export default function AsyncAutocomplete({
           {errors[name].message}
         </p>
       ) : null}
-       {errors?.[name]?.["email"] ? (
+      {/* {errors?.[name]?.["email"] ? (
         <p className={"text-red-400 mt-3 text-sm leading-6"}>
           {errors?.[name]?.["email"].message}
         </p>
-      ) : null}
+      ) : null} */}
 
       <div className="mt-8 col-span-full">
         <label

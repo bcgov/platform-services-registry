@@ -21,6 +21,9 @@ import {
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
+  console.log("CREATE");
+  console.log("POST /api/requests/private-cloud/create/route.ts");
+
   const session = await getServerSession(authOptions);
 
   if (!session) {

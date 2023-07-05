@@ -6,6 +6,7 @@ import {
   UseFormSetError,
   UseFormClearErrors,
 } from "react-hook-form";
+import classNames from "@/components/utils/classnames";
 
 interface Props {
   register: UseFormRegister<any>;
@@ -35,6 +36,7 @@ export default function CommonComponents({
   errors,
   setError,
   clearErrors,
+  register,
 }: Props) {
   const [checkedState, setCheckedState] = useState<Record<string, string>>({});
   const [noneSelected, setNoneSelected] = useState<boolean>(false);
@@ -60,7 +62,7 @@ export default function CommonComponents({
     Object.entries(checkedState).forEach(([name, value]) => {
       setValue(`commonComponents.${name}`, value);
     });
-    setValue("noneSelected", noneSelected);
+    setValue("commonComponents.noServices", noneSelected);
   }, [checkedState, noneSelected, setValue]);
 
   // Validation check
@@ -72,12 +74,12 @@ export default function CommonComponents({
       ) &&
       !noneSelected
     ) {
-      setError("noSelection", {
+      setError("commonComponents.noServices", {
         type: "manual",
         message: "Please select an option or 'no services'",
       });
     } else {
-      clearErrors("noSelection");
+      clearErrors("commonComponents.noServices");
     }
   }, [checkedState, noneSelected, setError, clearErrors]);
 
@@ -100,6 +102,13 @@ export default function CommonComponents({
             The app does not use any of these services
           </label>
         </div>
+        <label
+          htmlFor="none"
+          className="ml-8 block text-sm font-medium leading-6 text-red-400"
+        >
+          Please select "The app does not use any of these services" if you are
+          not using any of common components below
+        </label>
         {commonComponents.map(({ name, label }) => (
           <div className="relative flex flex-col" key={name}>
             <div className="text-sm leading-6">
@@ -143,6 +152,24 @@ export default function CommonComponents({
             </div>
           </div>
         ))}
+      </div>
+      <div className="col-span-full">
+        <label
+          htmlFor="street-address"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Other
+        </label>
+        <div className="mt-2">
+          <input
+            type="text"
+            placeholder="Please specify any other common components used"
+
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            {...register("commonComponents.other")}
+          />
+        </div>
+   
       </div>
     </fieldset>
   );
