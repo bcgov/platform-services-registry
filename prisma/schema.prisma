@@ -302,6 +302,7 @@ enum DefaultCpuOptions {
 enum CommonComponentsOptions {
   IMPLEMENTED
   PLANNING_TO_USE
+  NOT_USING
 }
 
 enum DefaultMemoryOptions {

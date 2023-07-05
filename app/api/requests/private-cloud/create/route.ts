@@ -8,7 +8,7 @@ import {
   DefaultCpuOptions,
   DefaultMemoryOptions,
   DefaultStorageOptions,
-  PrivateCloudRequest
+  PrivateCloudRequest,
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
@@ -16,7 +16,7 @@ import generateLicensePlate from "@/lib/generateLicencePlate";
 import {
   CreateRequestBodySchema,
   CreateRequestBody,
-  UserInput
+  UserInput,
 } from "@/schema";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   if (!session) {
     return NextResponse.json({
-      message: "You do not have the required credentials."
+      message: "You do not have the required credentials.",
     });
   }
 
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   const {
     projectOwner,
     primaryTechnicalLead,
-    secondaryTechnicalLead
+    secondaryTechnicalLead,
   }: {
     projectOwner: UserInput;
     primaryTechnicalLead: UserInput;
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     ![
       projectOwner.email,
       primaryTechnicalLead.email,
-      secondaryTechnicalLead?.email
+      secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
     !authRoles.includes("admin")
   ) {
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
   const defaultQuota = {
     cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
     memory: DefaultMemoryOptions.MEMORY_REQUEST_2_LIMIT_4,
-    storage: DefaultStorageOptions.STORAGE_1
+    storage: DefaultStorageOptions.STORAGE_1,
   };
 
   let createRequest: PrivateCloudRequest;
@@ -96,41 +96,41 @@ export async function POST(req: NextRequest) {
             projectOwner: {
               connectOrCreate: {
                 where: {
-                  email: projectOwner.email
+                  email: projectOwner.email,
                 },
-                create: projectOwner
-              }
+                create: projectOwner,
+              },
             },
             primaryTechnicalLead: {
               connectOrCreate: {
                 where: {
-                  email: primaryTechnicalLead.email
+                  email: primaryTechnicalLead.email,
                 },
-                create: primaryTechnicalLead
-              }
+                create: primaryTechnicalLead,
+              },
             },
             secondaryTechnicalLead: secondaryTechnicalLead
               ? {
                   connectOrCreate: {
                     where: {
-                      email: secondaryTechnicalLead.email
+                      email: secondaryTechnicalLead.email,
                     },
-                    create: secondaryTechnicalLead
-                  }
+                    create: secondaryTechnicalLead,
+                  },
                 }
-              : undefined
-          }
-        }
+              : undefined,
+          },
+        },
       },
       include: {
         requestedProject: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
-            secondaryTechnicalLead: true
-          }
-        }
-      }
+            secondaryTechnicalLead: true,
+          },
+        },
+      },
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
