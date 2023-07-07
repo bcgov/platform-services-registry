@@ -57,8 +57,6 @@ export default function Page() {
     }
   };
 
-  console.log(errors);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-12">
