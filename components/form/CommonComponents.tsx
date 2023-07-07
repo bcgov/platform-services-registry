@@ -102,13 +102,13 @@ export default function CommonComponents({
             The app does not use any of these services
           </label>
         </div>
-        <label
+        {/* <label
           htmlFor="none"
           className="ml-8 block text-sm font-medium leading-6 text-red-400"
         >
           Please select The app does not use any of these services if you are
           not using any of common components below
-        </label>
+        </label> */}
         {commonComponents.map(({ name, label }) => (
           <div className="relative flex flex-col" key={name}>
             <div className="text-sm leading-6">
