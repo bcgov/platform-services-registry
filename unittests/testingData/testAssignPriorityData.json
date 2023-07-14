@@ -1,0 +1,13 @@
+{
+    "correctCluster1": "SILVER",
+    "correctCluster2": "GOLD",
+    "correctMinistry1": "FLNR",
+    "correctMinistry2": "CITZ",
+    "lowerCaseCorrectCluster1": "Silver",
+    "lowerCaseCorrectCluster2": "Gold",
+    "lowerCaseCorrectMinistry1": "Flnr",
+    "lowerCaseCorrectMinistry2": "CitZ",
+    "realNonSuitableMinistry": "EAO",
+    "realNonSuitableCluster": "GOLDDR"
+
+}

@@ -4,6 +4,7 @@ import { privateCloudProjectDataToRow } from "@/components/table/helpers/rowMapp
 
 const headers = [
   { field: "name", headerName: "Name" },
+  { field: "priority", headerName: "Priority" },
   { field: "description", headerName: "Description" },
   { field: "ministry", headerName: "Ministry" },
   { field: "cluster", headerName: "Cluster" },
