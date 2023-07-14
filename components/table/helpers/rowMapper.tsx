@@ -3,17 +3,9 @@ import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
 import { Project } from "@/queries/project";
 
-export function isPriority(cluster: string, ministry: string) {
-  const priorityClusters = ["SILVER", "GOLD"];
-  const priorityMinistries = ["FLNR", "CITZ"];
-
-  return priorityClusters.includes(cluster) && priorityMinistries.includes(ministry);
-}
-
 export const privateCloudProjectDataToRow = (project: Project) => {
   return {
     name: project.name,
-    priority: isPriority(project.cluster, project.ministry) ? "Yes" : "No",
     description: project.description,
     ministry: project.ministry,
     cluster: project.cluster,
