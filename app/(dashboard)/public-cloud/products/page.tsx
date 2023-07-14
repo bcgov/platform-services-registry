@@ -1,6 +1,6 @@
 import Table from "@/components/table/Table";
 import { publicCloudProjectsPaginated } from "@/queries/project";
-import { publicCloudProjectDataToRow } from "@/helpers/rowMapper";
+import { publicCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
 
 const headers = [
   { field: "name", headerName: "Name" },
