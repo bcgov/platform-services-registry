@@ -18,8 +18,6 @@ npm run dev
 
 Note that the home path is `http://localhost:3000/private-cloud/projects`. The repo does not yet automatically redirect you to this path (as it is a work in progress), so you will need to manually navigate to it.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
 To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
