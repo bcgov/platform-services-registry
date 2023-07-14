@@ -31,13 +31,14 @@ export default async function Page({
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total } = await privateCloudProjectsPaginated(
-    defaultPageSize,
-    currentPage,
-    search,
-    ministry,
-    cluster
-  );
+  const { data, total }: { data: Project[]; total: number } =
+    await privateCloudProjectsPaginated(
+      defaultPageSize,
+      currentPage,
+      search,
+      ministry,
+      cluster
+    );
 
   const rows = data.map(privateCloudProjectDataToRow);
 

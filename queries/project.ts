@@ -332,6 +332,29 @@ export async function publicCloudRequestsPaginated(
   };
 }
 
+export interface ProjectOwnerDetails {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  created: string;
+  licencePlate: string;
+  cluster: string;
+  ministry: string;
+  status: string;
+  projectOwnerId: string;
+  primaryTechnicalLeadId: string;
+  secondaryTechnicalLeadId: string;
+  projectOwnerDetails: ProjectOwnerDetails;
+  primaryTechnicalLeadDetails: ProjectOwnerDetails;
+  secondaryTechnicalLeadDetails: ProjectOwnerDetails;
+}
+
 export async function privateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
@@ -340,7 +363,7 @@ export async function privateCloudProjectsPaginated(
   cluster?: string,
   userId?: string
 ): Promise<{
-  data: any[];
+  data: Project[];
   total: number;
 }> {
   // Initialize the search/filter query
@@ -502,7 +525,7 @@ export async function privateCloudProjectsPaginated(
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
   return {
-    data: result as unknown as any[],
+    data: result as unknown as Project[],
     total: totalCount || 0,
   };
 }
