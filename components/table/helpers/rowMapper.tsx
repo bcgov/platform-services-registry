@@ -1,11 +1,17 @@
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
+import { assignPriority } from "@/components/utils/assignPriority";
 import { Project } from "@/queries/project";
 
 export const privateCloudProjectDataToRow = (project: Project) => {
+  console.log("name: " + project.name,
+    "priority: " + assignPriority(project.ministry, project.cluster),
+    "ministry: "+ project.ministry,
+    "cluster: "+ project.cluster,); 
   return {
     name: project.name,
+    priority: assignPriority(project.ministry, project.cluster),
     description: project.description,
     ministry: project.ministry,
     cluster: project.cluster,
@@ -34,6 +40,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
   return {
     name: project.name,
     csp: project.provider,
+    priority: assignPriority(project.ministry, project.cluster),
     description: project.description,
     ministry: project.ministry,
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
