@@ -1,8 +1,9 @@
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
+import { Project } from "@/queries/project";
 
-export const privateCloudProjectDataToRow = (project: any) => {
+export const privateCloudProjectDataToRow = (project: Project) => {
   return {
     name: project.name,
     description: project.description,
@@ -10,6 +11,7 @@ export const privateCloudProjectDataToRow = (project: any) => {
     cluster: project.cluster,
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
     technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}, ${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
+    // @ts-ignore
     created: formatDate(project.created["$date"]),
     licencePlate: project.licencePlate,
     edit: (
@@ -78,4 +80,4 @@ export const publicCloudRequestDataToRow = (request: any) => {
     created: formatDate(request.created["$date"]),
     licencePlate: request.licencePlate,
   };
-}
+};
