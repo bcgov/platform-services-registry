@@ -9,7 +9,6 @@ import {
   usePathname,
   useRouter,
   useSearchParams,
-  useParams,
 } from "next/navigation";
 import { useDebounce } from "@/components/utils/useDebounce";
 import FilterPanel from "./FilterPanel";
