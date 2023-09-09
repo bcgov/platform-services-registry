@@ -31,25 +31,14 @@ export default async function Page({
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
 
-  // const { data, total }: { data: Project[]; total: number } =
-  //   await privateCloudProjectsPaginated(
-  //     defaultPageSize,
-  //     currentPage,
-  //     search,
-  //     ministry,
-  //     cluster
-  //   );
-
   const { data, total }: { data: Project[]; total: number } =
-  // time out so that we can see the loading state
-    await new Promise((resolve) => setTimeout(resolve, 3000)).then(() => privateCloudProjectsPaginated(
+    await privateCloudProjectsPaginated(
       defaultPageSize,
       currentPage,
       search,
       ministry,
       cluster
-    ));
-
+    );
 
   const rows = data.map(privateCloudProjectDataToRow);
 
