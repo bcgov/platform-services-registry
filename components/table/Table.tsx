@@ -6,19 +6,17 @@ import PagninationButtons from "@/components/buttons/PaginationButtons";
 export default function Table({
   title,
   description,
-  headers,
-  rows,
   currentPage,
   pageSize,
   total,
+  tableBody,
 }: {
   title: string;
   description: string;
-  headers: any;
-  rows: any;
   currentPage: number;
   pageSize: number;
   total: number;
+  tableBody: React.ReactNode;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
@@ -27,7 +25,8 @@ export default function Table({
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort />
         </div>
-        <TableBody headers={headers} rows={rows} />
+        {/* <TableBody headers={headers} rows={rows} /> */}
+        {tableBody}
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
