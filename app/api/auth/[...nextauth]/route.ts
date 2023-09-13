@@ -1,33 +1,3 @@
-// import NextAuth from "next-auth";
-// import GoogleProvider from "next-auth/providers/google";
-// import { PrismaAdapter } from "@auth/prisma-adapter";
-// import { PrismaClient } from "@prisma/client";
-// import KeycloakProvider from "next-auth/providers/keycloak";
-
-// const prisma = new PrismaClient();
-
-// const handler = NextAuth({
-//   adapter: PrismaAdapter(prisma),
-//   providers: [
-//     KeycloakProvider({
-//       clientId: process.env.AUTH_RESOURCE!,
-//       clientSecret: process.env.AUTH_SECRET!,
-//       issuer: `${process.env.AUTH_SERVER_URL}/realms/${process.env.AUTH_RELM}`,
-//       profile(profile) {
-//         return {
-//           id: profile.sub,
-//           name: profile.name,
-//           email: profile.email,
-//           image: null,
-//         };
-//       },
-//     }),
-//   ],
-// });
-
-// export { handler as GET, handler as POST };
-
-
 import NextAuth, { User, Account } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
@@ -43,11 +13,13 @@ const MyAdapter = {
   linkAccount: (account: any) => {
     account["not_before_policy"] = account["not-before-policy"];
     delete account["not-before-policy"];
+    // @ts-ignore
     return prismaAdapter.linkAccount(account);
   },
 };
 
 export const authOptions = {
+  debugger: true,
   adapter: MyAdapter,
   providers: [
     KeycloakProvider({
