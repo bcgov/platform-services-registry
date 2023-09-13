@@ -3,6 +3,7 @@
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "@/components/utils/classnames";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function ProfileDropdown() {
   return (
