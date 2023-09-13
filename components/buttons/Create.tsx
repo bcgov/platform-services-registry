@@ -9,7 +9,7 @@ export default function Tabs() {
   const pathname = usePathname();
 
   return (
-    <span className=" flex mr-20 rounded-md bg-bcorange px-4 py-2 h-10  text-bcsans text-bcblue text-base font-light tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    <span className=" flex mr-20 rounded-md bg-bcorange px-4 py-2 h-10  font-bcsans text-bcblue text-base font-light tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
       <Image src={Plus} alt="plus" width={20} height={20} className="mr-2" />
       <Link type="button" href={`/${pathname.split("/")[1]}/create`}>
         REQUEST A NEW PROJECT SET

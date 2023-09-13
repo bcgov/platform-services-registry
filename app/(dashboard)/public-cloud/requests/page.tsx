@@ -14,7 +14,7 @@ const headers = [
   { field: "licencePlate", headerName: "Licence Plate" },
 ];
 
-export default async function Page({
+export default async function RequestsTable({
   searchParams,
 }: {
   searchParams: {
@@ -41,8 +41,8 @@ export default async function Page({
 
   return (
     <Table
-      title="Products in Private Cloud OpenShift Platform"
-      description="These are your products hosted on Private Cloud OpenShift platform"
+      title="Requests for Public Cloud Landing Zones"
+      description="These are the submitted requests for your products the Public Cloud Landing Zones"
       tableBody={<TableBody headers={headers} rows={rows} />}
       total={total}
       currentPage={currentPage}

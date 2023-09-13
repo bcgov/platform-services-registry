@@ -1,4 +1,3 @@
-import TableBody from "@/components/table/TableBody";
 import SearchFilterSort from "@/components/table/SearchFilterSort";
 import TableTop from "@/components/table/TableTop";
 import PagninationButtons from "@/components/buttons/PaginationButtons";
@@ -25,7 +24,6 @@ export default function Table({
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort />
         </div>
-        {/* <TableBody headers={headers} rows={rows} /> */}
         {tableBody}
       </div>
       <nav

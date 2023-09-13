@@ -12,19 +12,35 @@ export const CommonComponentsOptionsSchema = z.optional(
   z.nativeEnum(CommonComponentsOptions)
 );
 
-export const CommonComponentsInputSchema = z.object({
-  addressAndGeolocation: CommonComponentsOptionsSchema,
-  workflowManagement: CommonComponentsOptionsSchema,
-  formDesignAndSubmission: CommonComponentsOptionsSchema,
-  identityManagement: CommonComponentsOptionsSchema,
-  paymentServices: CommonComponentsOptionsSchema,
-  documentManagement: CommonComponentsOptionsSchema,
-  endUserNotificationAndSubscription: CommonComponentsOptionsSchema,
-  publishing: CommonComponentsOptionsSchema,
-  businessIntelligence: CommonComponentsOptionsSchema,
-  other: z.optional(z.string()),
-  noServices: z.boolean(),
-});
+export const CommonComponentsInputSchema = z
+  .object({
+    addressAndGeolocation: CommonComponentsOptionsSchema,
+    workflowManagement: CommonComponentsOptionsSchema,
+    formDesignAndSubmission: CommonComponentsOptionsSchema,
+    identityManagement: CommonComponentsOptionsSchema,
+    paymentServices: CommonComponentsOptionsSchema,
+    documentManagement: CommonComponentsOptionsSchema,
+    endUserNotificationAndSubscription: CommonComponentsOptionsSchema,
+    publishing: CommonComponentsOptionsSchema,
+    businessIntelligence: CommonComponentsOptionsSchema,
+    other: z.optional(z.string()),
+    noServices: z.boolean(),
+  })
+  .refine(
+    (data) => {
+      // Use Array.some() to check if at least one field has a value
+      const checkBoxIsChecked = Object.values(data).some(
+        (value) => value === "PLANNING_TO_USE" || value === "IMPLEMENTED"
+      );
+      const otherFieldHasValue = data.other !== undefined && data.other !== "";
+      const noServicesIsChecked = data.noServices === true;
+
+      return checkBoxIsChecked || otherFieldHasValue || noServicesIsChecked;
+    },
+    {
+      message: "At least one common component option must be selected.",
+    }
+  );
 
 export const UserInputSchema = z.object({
   firstName: z.string(),

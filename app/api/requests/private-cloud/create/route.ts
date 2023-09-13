@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return NextResponse.json({
-      message: "You do not have the required credentials.",
+    return new NextResponse("You do not have the required credentials.", {
+      status: 403,
     });
   }
 

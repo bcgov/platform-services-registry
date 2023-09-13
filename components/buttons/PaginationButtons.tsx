@@ -2,7 +2,6 @@
 
 import { useTransition, DetailedHTMLProps, HTMLAttributes } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import createQueryString from "@/components/utils/createQueryString";
 
 interface PaginationButtonProps

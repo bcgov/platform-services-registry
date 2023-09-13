@@ -116,7 +116,7 @@ export default function AsyncAutocomplete({
       <label
         htmlFor="first-name"
         className={classNames(
-          errors.ministry ? "text-red-400" : "",
+          errors[name] ? "text-red-400" : "",
           "block text-sm font-medium leading-6 text-gray-900"
         )}
       >
@@ -126,6 +126,7 @@ export default function AsyncAutocomplete({
         <div className="relative mt-1">
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
+              autoComplete="off"
               className="rounded-md border-slate-300 w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={(person: Person) => person?.mail}
               onChange={(event) => setQuery(event.target.value)}

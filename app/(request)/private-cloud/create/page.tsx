@@ -8,6 +8,8 @@ import { CreateRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "@/components/utils/classnames";
 import CommonComponents from "@/components/form/CommonComponents";
+import SubmitButton from "@/components/buttons/Submit";
+import PreviousButton from "@/components/buttons/Previous";
 
 export default function Page() {
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -25,6 +27,8 @@ export default function Page() {
   } = useForm({
     resolver: zodResolver(CreateRequestBodySchema),
   });
+
+  console.log(watch());
 
   const onSubmit = async (data: any) => {
     console.log("SUBMIT");
@@ -60,17 +64,17 @@ export default function Page() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-12">
-        <div className="border-b border-gray-900/10 pb-12">
-          <h1 className="text-base font-semibold leading-7 text-gray-900 mb-8">
+        <div className="border-b border-gray-900/10 pb-14">
+          <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
             Private Cloud OpenShift Platform - Project Set Provisioning Request
           </h1>
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
             1. Product Description
           </h2>
-          <p className="mt-2 text-sm leading-6 ">
-            If this is your first time on the OpenShift platform you need to
-            book an alignment meeting with the Platform Services team. Reach out
-            to Olena Mitovska to get started.
+          <p className="font-bcsans text-base leading-6 mt-5">
+            If this is your first time on the <b>OpenShift platform</b> you need
+            to book an alignment meeting with the Platform Services team. Reach
+            out to <b>Faisal Hamood</b> to get started.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -118,7 +122,7 @@ export default function Page() {
               </div>
               <p
                 className={classNames(
-                  errors.ministry ? "text-red-400" : "",
+                  errors.description ? "text-red-400" : "",
                   "mt-3 text-sm leading-6 text-gray-600"
                 )}
               >
@@ -177,7 +181,7 @@ export default function Page() {
                 </select>
                 <p
                   className={classNames(
-                    errors.ministry ? "text-red-400" : "",
+                    errors.cluster ? "text-red-400" : "",
                     "mt-3 text-sm leading-6 text-gray-600"
                   )}
                 >
@@ -189,17 +193,17 @@ export default function Page() {
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h1 className="text-base font-semibold leading-7 text-gray-900">
+          <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
             2. Team Contacts
-          </h1>
+          </h2>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+          <div className="mt-6 2xl:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
             <div className="flex flex-col justify-between">
               <div>
-                <h3 className="text-base font-semibold leading-7 text-gray-900">
+                <h3 className="font-bcsans text-base 2xl:text-xl font-semibold leading-7 text-gray-900">
                   Product Owner (PO)
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
                   Tell us about the Product Owner (PO). This is typically the
                   business owner of the application. We will use this
                   information to contact them with any non-technical questions.
@@ -222,10 +226,10 @@ export default function Page() {
 
             <div className="flex flex-col justify-between">
               <div>
-                <h3 className="text-base font-semibold leading-7 text-gray-900">
+                <h3 className="font-bcsans text-base 2xl:text-xl font-semibold leading-7 text-gray-900">
                   Technical Lead (TL)
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
                   This is typically the DevOps specialist. We use this
                   information to contact them with technical questions or notify
                   them about platform events. You require a Primary Technical
@@ -256,10 +260,10 @@ export default function Page() {
               {secondTechLead ? (
                 <div className="mt-6">
                   <div>
-                    <h3 className="text-base font-semibold leading-7 text-gray-900">
+                    <h3 className="font-bcsans text-base 2xl:text-xl font-semibold leading-7 text-gray-900">
                       Technical Lead (TL)
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-gray-600">
+                    <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
                       This is typically the DevOps specialist. We use this
                       information to contact them with technical questions or
                       notify them about platform events. You require a Primary
@@ -285,16 +289,16 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
+        <div className="">
+          <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
             3. Common Components
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
             Please indicate what services you expect to utilize as part of your
             product.
           </p>
 
-          <div className="mt-10 space-y-10 ">
+          <div className="mt-12 space-y-10 ">
             <CommonComponents
               register={register}
               errors={errors}
@@ -306,13 +310,9 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Submit
-        </button>
+      <div className="mt-16 flex items-center justify-start gap-x-6">
+        <PreviousButton />
+        <SubmitButton />
       </div>
     </form>
   );
