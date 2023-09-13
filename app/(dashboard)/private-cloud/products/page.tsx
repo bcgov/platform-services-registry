@@ -15,7 +15,7 @@ const headers = [
   { field: "edit", headerName: "" },
 ];
 
-export default async function Page({
+export default async function ProductsTable({
   searchParams,
 }: {
   searchParams: {
