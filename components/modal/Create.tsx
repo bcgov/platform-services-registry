@@ -82,13 +82,13 @@ export default function Modal({
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    className="inline-flex justify-center mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                    className="inline-flex w-full justify-center mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                   >
                     SUBMIT REQUEST
                   </button>
                   <button
                     type="button"
-                    className="mt-3 inline-flex items-center justify-center rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >
