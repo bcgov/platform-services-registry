@@ -1,10 +1,11 @@
-import NextAuth, { User, Account } from "next-auth";
+import NextAuth, { User, Account, NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import jwt from "jsonwebtoken";
+import AzureADProvider from "next-auth/providers/azure-ad";
 
 // const prismaAdapter = PrismaAdapter(prisma);
 
@@ -18,14 +19,14 @@ import jwt from "jsonwebtoken";
 //   },
 // };
 
-export const authOptions = {
-  debugger: true,
-  // adapter: MyAdapter,
-  session: {
-    stratagy: "jwt",
-    jwt: true,
-  },
+export const authOptions: NextAuthOptions = {
   providers: [
+    // AzureADProvider({
+    //   clientId: process.env.AZURE_AD_CLIENT_ID!,
+    //   clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+    //   tenantId: process.env.AZURE_AD_TENANT_ID!,
+    // }),
+
     KeycloakProvider({
       clientId: process.env.AUTH_RESOURCE!,
       clientSecret: process.env.AUTH_SECRET!,
@@ -34,12 +35,32 @@ export const authOptions = {
         return {
           id: profile.sub,
           name: profile.name,
-          email: profile.email,
+          email: profile.email.toLowerCase(),
           image: null,
         };
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
+
+  // callbacks: {
+  // async jwt({ token, account }) {
+  //   // IMPORTANT: Persist the access_token to the token right after sign in
+  //   if (account) {
+  //     token.idToken = account.id_token;
+  //   }
+  //   return token;
+  // },
+  // async session({ session, token }) {
+  //   session.idToken = token.idToken;
+  //   return session;
+  // },
+  // redirect({ baseUrl }) {
+  //   return baseUrl;
+  // },
+  // },
   secret: process.env.AUTH_SECRET,
 
   // pages: {

@@ -21,9 +21,6 @@ import {
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
-  console.log("CREATE");
-  console.log("POST /api/requests/private-cloud/create/route.ts");
-
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -34,7 +31,8 @@ export async function POST(req: NextRequest) {
 
   const { email: authEmail, roles: authRoles } = session.user;
 
-  const parsedBody = CreateRequestBodySchema.safeParse(req.body);
+  const body = await req.json();
+  const parsedBody = CreateRequestBodySchema.safeParse(body);
 
   if (!parsedBody.success) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
@@ -144,5 +142,7 @@ export async function POST(req: NextRequest) {
 
   // sendCreateRequestEmails(createRequest.requestedProject);
 
-  return createRequest;
+  return NextResponse.json(createRequest, {
+    status: 200,
+  });
 }

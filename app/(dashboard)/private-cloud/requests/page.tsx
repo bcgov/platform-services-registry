@@ -2,6 +2,10 @@ import Table from "@/components/table/Table";
 import TableBody from "@/components/table/TableBody";
 import { privateCloudRequestsPaginated } from "@/queries/project";
 import { privateCloudRequestDataToRow } from "@/components/table/helpers/rowMapper";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import { PrivateCloudRequest } from "@prisma/client";
 
 const headers = [
   { field: "type", headerName: "Type" },
@@ -25,18 +29,35 @@ export default async function RequestsTable({
     cluster: string;
   };
 }) {
+  // Authenticate the user
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    console.log("No session found");
+    redirect("/login?callbackUrl=/private-cloud/products");
+  }
+
   const { search, page, pageSize, ministry, cluster } = searchParams;
 
+  // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total } = await privateCloudRequestsPaginated(
-    defaultPageSize,
-    currentPage,
-    search,
-    ministry,
-    cluster
-  );
+  // If not an admin, we need to provide the user's email to the query
+  const userEmail = session?.user?.roles?.includes("admin")
+    ? undefined
+    : session?.user?.email;
+
+  const { data, total }: { data: PrivateCloudRequest[]; total: number } =
+    await privateCloudRequestsPaginated(
+      defaultPageSize,
+      currentPage,
+      search,
+      ministry,
+      cluster,
+      userEmail
+    );
+
   const rows = data.map(privateCloudRequestDataToRow);
 
   return (

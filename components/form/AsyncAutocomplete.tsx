@@ -14,7 +14,7 @@ type Person = {
 };
 
 async function fetchPeople(email: string): Promise<Person[]> {
-  const res = await fetch(`/api/msal?email=${email}`);
+  const res = await fetch(`/api/msal/userAutocomplete?email=${email}`);
   if (!res.ok) {
     throw new Error("Network response was not ok");
   }

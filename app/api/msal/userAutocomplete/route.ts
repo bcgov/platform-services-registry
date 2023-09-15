@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { callMsGraph, getAccessToken } from "@/lib//msal";
+import { callMsGraph, getAccessToken } from "@/lib/msal";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

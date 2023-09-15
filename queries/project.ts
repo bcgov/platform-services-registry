@@ -542,64 +542,43 @@ export async function privateCloudRequestsPaginated(
   total: number;
 }> {
   const searchQuery: any = {
-    status: "ACTIVE",
+    active: true,
   };
 
   if (searchTerm) {
     searchQuery.$or = [
-      { "requesterDetails.email": { $regex: searchTerm, $options: "i" } },
-      { "requesterDetails.firstName": { $regex: searchTerm, $options: "i" } },
-      { "requesterDetails.lastName": { $regex: searchTerm, $options: "i" } },
-      { "cluster.name": { $regex: searchTerm, $options: "i" } },
-      { "ministry.name": { $regex: searchTerm, $options: "i" } },
-      { name: { $regex: searchTerm, $options: "i" } },
-      { description: { $regex: searchTerm, $options: "i" } },
+      { "requestedProject.name": { $regex: searchTerm, $options: "i" } },
+      { "requestedProject.ministry": { $regex: searchTerm, $options: "i" } },
     ];
   }
 
   if (ministry) {
-    searchQuery["ministry.name"] = ministry;
+    searchQuery["requestedProject.ministry"] = ministry;
   }
 
   if (cluster) {
-    searchQuery["cluster.name"] = cluster;
+    searchQuery["requestedProject.cluster"] = cluster;
   }
 
   if (userId) {
-    searchQuery.$or = searchQuery.$or || [];
-    searchQuery.$or.push({ requesterId: new ObjectId(userId) });
+    searchQuery.$or = [
+      { "requestedProject.projectOwnerId": new ObjectId(userId) },
+      { "requestedProject.teamMemberIds": new ObjectId(userId) },
+    ];
   }
 
   const totalCountResult = await prisma.privateCloudRequest.aggregateRaw({
     pipeline: [
       {
         $lookup: {
-          from: "User",
-          localField: "requesterId",
+          from: "PrivateCloudRequestedProject",
+          localField: "requestedProjectId",
           foreignField: "_id",
-          as: "requesterDetails",
+          as: "requestedProject",
         },
       },
-      {
-        $lookup: {
-          from: "Cluster",
-          localField: "clusterId",
-          foreignField: "_id",
-          as: "cluster",
-        },
-      },
-      {
-        $lookup: {
-          from: "Ministry",
-          localField: "ministryId",
-          foreignField: "_id",
-          as: "ministry",
-        },
-      },
+      { $unwind: "$requestedProject" },
       { $match: searchQuery },
-      { $unwind: "$requesterDetails" },
-      { $unwind: "$cluster" },
-      { $unwind: "$ministry" },
       { $count: "totalCount" },
     ],
   });
@@ -608,32 +587,46 @@ export async function privateCloudRequestsPaginated(
     pipeline: [
       {
         $lookup: {
+          from: "PrivateCloudRequestedProject",
+          localField: "requestedProjectId",
+          foreignField: "_id",
+          as: "requestedProject",
+        },
+      },
+      { $unwind: "$requestedProject" },
+      {
+        $lookup: {
           from: "User",
-          localField: "requesterId",
+          localField: "requestedProject.projectOwnerId",
           foreignField: "_id",
-          as: "requesterDetails",
+          as: "projectOwner",
+        },
+      },
+      { $unwind: "$projectOwner" },
+      {
+        $lookup: {
+          from: "User",
+          localField: "requestedProject.primaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "primaryTechnicalLead",
+        },
+      },
+      { $unwind: "$primaryTechnicalLead" },
+      {
+        $lookup: {
+          from: "User",
+          localField: "requestedProject.secondaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "secondaryTechnicalLead",
         },
       },
       {
-        $lookup: {
-          from: "Cluster",
-          localField: "clusterId",
-          foreignField: "_id",
-          as: "cluster",
-        },
-      },
-      {
-        $lookup: {
-          from: "Ministry",
-          localField: "ministryId",
-          foreignField: "_id",
-          as: "ministry",
+        $unwind: {
+          path: "$secondaryTechnicalLead",
+          preserveNullAndEmptyArrays: true,
         },
       },
       { $match: searchQuery },
-      { $unwind: "$requesterDetails" },
-      { $unwind: "$cluster" },
-      { $unwind: "$ministry" },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {
@@ -653,7 +646,7 @@ export async function privateCloudRequestsPaginated(
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
   return {
-    data: result as unknown as any[],
-    total: totalCount || 0,
+    data: result as any,
+    total: totalCount,
   };
 }

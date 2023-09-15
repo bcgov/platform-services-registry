@@ -3,14 +3,16 @@
 import { useSession } from "next-auth/react";
 
 export default function Page() {
-  const { data } = useSession();
+  const { data: session, status } = useSession();
 
-  if (data?.user?.roles?.includes("admin")) {
+  console.log("SESSION: ", session);
+
+  if (session?.user?.roles?.includes("admin")) {
     return (
       <div>
         <p>You are an admin, welcome!</p>
-        <p>These are your roles: {data?.user?.roles}</p>
-        <p>Email: {data?.user?.email}</p>
+        <p>These are your roles: {session?.user?.roles}</p>
+        <p>Email: {session?.user?.email}</p>
       </div>
     );
   }

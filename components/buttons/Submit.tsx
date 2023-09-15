@@ -1,6 +1,6 @@
 "use client";
 
-export default function Tabs() {
+export default function SubmitButton() {
   return (
     <button
       type="submit"

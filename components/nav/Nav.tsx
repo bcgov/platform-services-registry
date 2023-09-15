@@ -16,7 +16,7 @@ export default function NavBar() {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
               <Image
-                alt="Vercel logo"
+                alt="BC Platform Services Product Registry"
                 src={Logo}
                 width={56}
                 height={50}

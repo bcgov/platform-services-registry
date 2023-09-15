@@ -105,8 +105,6 @@ export default function CommonComponents({
   //   }
   // }, [checkedState, noneSelected, setError, clearErrors]);
 
-  console.log("Errors: ", errors.commonComponents)
-
   return (
     <fieldset>
       <div className="space-y-9">
@@ -127,14 +125,14 @@ export default function CommonComponents({
               The app does not use any of these services
             </label>
           </div>
-         { errors.commonComponents ? (
-          <label
-            htmlFor="none"
-            className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2"
-          >
-            Please select "The app does not use any of these services" if you
-            are not using any of common components below
-          </label>
+          {errors.commonComponents ? (
+            <label
+              htmlFor="none"
+              className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2"
+            >
+              Please select "The app does not use any of these services" if you
+              are not using any of common components below
+            </label>
           ) : null}
         </div>
         {commonComponents.map(({ name, label }) => (

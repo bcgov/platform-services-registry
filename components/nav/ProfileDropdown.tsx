@@ -4,8 +4,36 @@ import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "@/components/utils/classnames";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+
+async function fetchUserImage(email: string): Promise<string> {
+  const res = await fetch(`/api/msal/userImage?email=${email}`);
+  if (!res.ok) {
+    throw new Error("Network response was not ok for fetch user image");
+  }
+
+  // Assuming server returns a blob of image data
+  const blob = await res.blob();
+
+  // Create a URL from the blob
+  const imageUrl = URL.createObjectURL(blob);
+
+  return imageUrl;
+}
 
 export default function ProfileDropdown() {
+  const { data: session, status } = useSession();
+  const email = session?.user?.email;
+
+  const { data, isLoading, error } = useQuery<string, Error>(
+    ["userImage", email],
+    () => fetchUserImage(email),
+    {
+      enabled: !!email,
+    }
+  );
+
   return (
     <Menu as="div" className="relative ml-3">
       <div>
@@ -13,7 +41,7 @@ export default function ProfileDropdown() {
           <span className="sr-only">Open user menu</span>
           <img
             className="h-10 w-10 rounded-full"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            src={data || "http://www.gravatar.com/avatar/?d=identicon"}
             alt=""
           />
         </Menu.Button>
@@ -30,7 +58,7 @@ export default function ProfileDropdown() {
         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <Menu.Item>
             {({ active }) => (
-              <a
+              <Link
                 href="#"
                 className={classNames(
                   active ? "bg-gray-100" : "",
@@ -38,12 +66,12 @@ export default function ProfileDropdown() {
                 )}
               >
                 Your Profile
-              </a>
+              </Link>
             )}
           </Menu.Item>
           <Menu.Item>
             {({ active }) => (
-              <a
+              <Link
                 href="#"
                 className={classNames(
                   active ? "bg-gray-100" : "",
@@ -51,20 +79,40 @@ export default function ProfileDropdown() {
                 )}
               >
                 Settings
-              </a>
+              </Link>
             )}
           </Menu.Item>
           <Menu.Item>
             {({ active }) => (
-              <a
-                href="#"
-                className={classNames(
-                  active ? "bg-gray-100" : "",
-                  "block px-4 py-2 text-sm text-gray-700"
+              <div>
+                {status !== "authenticated" ? (
+                  <Link
+                    href="#"
+                    onClick={() =>
+                      signIn("keycloak", {
+                        callbackUrl: "/private-cloud/products",
+                      })
+                    }
+                    className={classNames(
+                      active ? "bg-gray-100" : "",
+                      "block px-4 py-2 text-sm text-gray-700"
+                    )}
+                  >
+                    Sign In
+                  </Link>
+                ) : (
+                  <Link
+                    href="#"
+                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    className={classNames(
+                      active ? "bg-gray-100" : "",
+                      "block px-4 py-2 text-sm text-gray-700"
+                    )}
+                  >
+                    Sign out
+                  </Link>
                 )}
-              >
-                Sign out
-              </a>
+              </div>
             )}
           </Menu.Item>
         </Menu.Items>

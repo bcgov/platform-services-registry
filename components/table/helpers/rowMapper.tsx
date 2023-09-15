@@ -62,8 +62,8 @@ export const privateCloudRequestDataToRow = (request: any) => {
     name: request.requestedProject.name,
     ministry: request.requestedProject.ministry,
     cluster: request.requestedProject.cluster,
-    projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
-    technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
+    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${request?.secondaryTechnicalLead ? "," : ""} ${request?.secondaryTechnicalLead?.firstName || ""} ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
     licencePlate: request.licencePlate,
   };
