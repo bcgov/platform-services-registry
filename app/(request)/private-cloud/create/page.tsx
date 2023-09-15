@@ -11,12 +11,14 @@ import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/Create";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { data: session, status } = useSession({
     required: true,
   });
+
+  const { push } = useRouter();
 
   const [open, setOpen] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -64,7 +66,7 @@ export default function Page() {
     }
 
     setIsLoading(false);
-    redirect("/private-cloud/requests");
+    push("/private-cloud/products");
   };
 
   const secondTechLeadOnClick = () => {
