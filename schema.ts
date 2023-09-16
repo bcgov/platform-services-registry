@@ -66,6 +66,13 @@ export const QuotaInputSchema = z.object({
   storage: z.nativeEnum(DefaultStorageOptions),
 });
 
+// Since quota needs to support custom input, it is not an enum
+// export const QuotaInputSchema = z.object({
+//   cpu: z.string(),
+//   memory: z.string(),
+//   storage: z.string(),
+// });
+
 export const EditRequestBodySchema = CreateRequestBodySchema.merge(
   z.object({
     productionQuota: QuotaInputSchema,

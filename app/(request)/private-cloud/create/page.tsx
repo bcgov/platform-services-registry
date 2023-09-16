@@ -15,7 +15,7 @@ import TeamContacts from "@/components/form/TeamContacts";
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
 
   const { push } = useRouter();
@@ -35,9 +35,9 @@ export default function Page() {
     setFocus,
     clearErrors,
     unregister,
-    trigger
+    trigger,
   } = useForm({
-    resolver: zodResolver(CreateRequestBodySchema)
+    resolver: zodResolver(CreateRequestBodySchema),
   });
 
   const onSubmit = async (data: any) => {
@@ -47,9 +47,9 @@ export default function Page() {
       const response = await fetch("/api/requests/private-cloud/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       console.log("response", response);
@@ -99,7 +99,6 @@ export default function Page() {
             clearErrors={clearErrors}
           />
         </div>
-
         <div className="mt-16 flex items-center justify-start gap-x-6">
           <PreviousButton />
           <button

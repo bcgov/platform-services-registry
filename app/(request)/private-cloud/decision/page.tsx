@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { useForm } from "react-hook-form";
-import { CreateRequestBodySchema } from "@/schema";
+import { EditRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
@@ -12,10 +12,11 @@ import CreateModal from "@/components/modal/Create";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
+import Quotas from "@/components/form/Quotas";
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
 
   const { push } = useRouter();
@@ -35,10 +36,13 @@ export default function Page() {
     setFocus,
     clearErrors,
     unregister,
-    trigger
+    trigger,
   } = useForm({
-    resolver: zodResolver(CreateRequestBodySchema)
+    resolver: zodResolver(EditRequestBodySchema),
   });
+
+  console.log("WATCH")
+  console.log(watch());
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -47,9 +51,9 @@ export default function Page() {
       const response = await fetch("/api/requests/private-cloud/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       console.log("response", response);
@@ -91,15 +95,15 @@ export default function Page() {
             secondTechLeadOnClick={secondTechLeadOnClick}
             control={control}
           />
+          <Quotas register={register} errors={errors} licensePlate="ac4r5" />
         </div>
-
         <div className="mt-16 flex items-center justify-start gap-x-6">
           <PreviousButton />
           <button
             type="submit"
             className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            SUBMIT REQUEST
+            APPROVE REQUEST
           </button>
         </div>
       </form>

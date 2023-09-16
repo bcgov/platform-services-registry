@@ -26,7 +26,7 @@ export default function TeamContacts({
         2. Team Contacts
       </h2>
 
-      <div className="mt-6 2xl:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+      <div className="mt-6 2xl:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-8 lg:gap-x-24 gap-y-8">
         <div className="flex flex-col justify-between">
           <div>
             <h3 className="font-bcsans text-base 2xl:text-xl font-semibold leading-7 text-gray-900">
