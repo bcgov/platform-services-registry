@@ -139,7 +139,7 @@ export default function CommonComponents({
                   htmlFor="none"
                   className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2"
                 >
-                  Please select "The app does not use any of these services" if
+                  Please select &quot;The app does not use any of these services&quot; if
                   you are not using any of common components below
                 </label>
               ) : null}

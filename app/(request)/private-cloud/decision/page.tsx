@@ -40,15 +40,12 @@ export default function Page() {
   } = useForm({
     resolver: zodResolver(EditRequestBodySchema),
   });
-
-  console.log("WATCH")
-  console.log(watch());
-
+ 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/requests/private-cloud/create", {
+      const response = await fetch("/api/requests/private-cloud/decision", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
