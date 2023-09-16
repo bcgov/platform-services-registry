@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { set, useForm, useFormContext, UseFormRegister } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { CreateRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
@@ -80,8 +80,6 @@ export default function Page() {
     <div>
       <form onSubmit={handleSubmit(() => setOpen(true))}>
         <div className="space-y-12">
-          {/* apply boarder below each  className="border-b border-gray-900/10 */}
-
           <ProjectDescription register={register} errors={errors} />
           <TeamContacts
             register={register}
@@ -104,7 +102,6 @@ export default function Page() {
 
         <div className="mt-16 flex items-center justify-start gap-x-6">
           <PreviousButton />
-          {/* <SubmitButton /> */}
           <button
             type="submit"
             className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

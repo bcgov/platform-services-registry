@@ -21,10 +21,11 @@ export default function TeamContacts({
   secondTechLeadOnClick: () => void;
 }) {
   return (
-    <div className="pb-14">
+    <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         2. Team Contacts
       </h2>
+
       <div className="mt-6 2xl:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
         <div className="flex flex-col justify-between">
           <div>
