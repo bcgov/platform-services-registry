@@ -8,7 +8,7 @@ export default function ProjectDescription({
   errors: any;
 }) {
   return (
-    <div className="border-b border-gray-900/10 pb-14">
+    <div className="pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
         Private Cloud OpenShift Platform - Project Set Provisioning Request
       </h1>

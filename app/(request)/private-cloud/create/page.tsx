@@ -80,6 +80,8 @@ export default function Page() {
     <div>
       <form onSubmit={handleSubmit(() => setOpen(true))}>
         <div className="space-y-12">
+          {/* apply boarder below each  className="border-b border-gray-900/10 */}
+
           <ProjectDescription register={register} errors={errors} />
           <TeamContacts
             register={register}
