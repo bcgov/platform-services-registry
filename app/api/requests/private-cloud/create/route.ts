@@ -52,10 +52,10 @@ export async function POST(req: NextRequest) {
 
   if (
     ![
-      projectOwner.email,
-      primaryTechnicalLead.email,
-      secondaryTechnicalLead?.email,
-    ].includes(authEmail) &&
+      projectOwner.email.toUpperCase(),
+      primaryTechnicalLead.email.toUpperCase(),
+      secondaryTechnicalLead?.email.toUpperCase(),
+    ].includes(authEmail.toUpperCase()) &&
     !authRoles.includes("admin")
   ) {
     throw new Error(
