@@ -11,13 +11,15 @@ import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/Create";
+import ReturnModal from "@/components/modal/Return";
 
 export default function Page() {
   const { data: session, status } = useSession({
     required: true,
   });
 
-  const [open, setOpen] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,8 +58,10 @@ export default function Page() {
       }
 
       const result = await response.json();
-
       console.log("Success:", result);
+
+      setOpenCreate(false)
+      setOpenReturn(true)
     } catch (error) {
       console.error("Error:", error);
     }
@@ -74,7 +78,7 @@ export default function Page() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(() => setOpen(true))}>
+      <form onSubmit={handleSubmit(() => setOpenCreate(true))}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-14">
             <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
@@ -335,10 +339,14 @@ export default function Page() {
         </div>
       </form>
       <CreateModal
-        open={open}
-        setOpen={setOpen}
+        open={openCreate}
+        setOpen={setOpenCreate}
         handleSubmit={handleSubmit(onSubmit)}
         isLoading={isLoading}
+      />
+      <ReturnModal
+        open={openReturn}
+        setOpen={setOpenReturn}
       />
     </div>
   );
