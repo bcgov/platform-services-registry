@@ -14,6 +14,7 @@ Please use this epic to create various tickets for onboarding a new team member 
 - [ ] Computer and machine set up 
 - [ ] Gov email
 - [ ] Building pass (if applicable)
+
 2. Onboarding to the Platform Services Team
 **Assignee:** scrum master and/or a mentor/supervisor
 - [ ] Create a bcdevexchange Google account
@@ -22,3 +23,11 @@ Please use this epic to create various tickets for onboarding a new team member 
 - [ ] Send the meeting invitations for all the scrum and team meeting series
 - [ ] Add a new team member to the GitHub orgs and repos
 - [ ] Add a new team member to the ZenHub board
+- [ ] Add to Rocket Chat team channels
+
+3. Onboarding with the subject matter expert/supervisor 
+
+4. Training and technical onboarding that a new team member has to do:
+- for the app dev team (please use this document on the shared drive for more info)
+- for the platform admin team (please use this document on the shared drive for more info)
+- for the security team (please use this document on the shared drive for more info)
