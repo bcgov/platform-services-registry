@@ -1,6 +1,5 @@
-import { clear } from "console";
 import React, { useEffect, useState } from "react";
-import { useFormContext, Controller } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 const commonComponents = [
   { name: "addressAndGeolocation", label: "Address and Geolocation" },
@@ -44,72 +43,77 @@ export default function CommonComponents() {
     register,
     formState: { errors },
     setValue,
-    control,
-    clearErrors,
-    watch,
+    unregister,
   } = useFormContext();
 
-  const noServices = watch("commonComponents.noServices");
+  const [checkedState, setCheckedState] = useState<Record<string, string>>({});
+  const [noneSelected, setNoneSelected] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (noServices) {
-      // set every common component to false
-      commonComponents.forEach(({ name }) => {
-        setValue(`commonComponents.${name}.implemented`, false);
-        setValue(`commonComponents.${name}.planningToUse`, false);
-      });
-    }
-  }, [noServices, setValue]);
-
-  // const handleCheckboxChange = (name, field) => {
-  //   setValue(`commonComponents.${name}.${field}`, true);
-  //   setValue(
-  //     `commonComponents.${name}.${
-  //       field === "implemented" ? "planningToUse" : "implemented"
-  //     }`,
-  //     false
-  //   );
-  // };
-
-  const handleCheckboxChange = (
-    name: string,
-    field: string,
-    checked: boolean
-  ) => {
-    setValue(`commonComponents.${name}.${field}`, checked);
-    // Uncheck the other checkbox if this one is checked
-    if (checked) {
-      setValue(
-        `commonComponents.${name}.${
-          field === "implemented" ? "planningToUse" : "implemented"
-        }`,
-        false
-      );
-    }
-    setValue("commonComponents.noServices", false);
-    clearErrors("commonComponents.noServices");
+  const onClickHandler = (name: string, value: string) => {
+    // console.log("onClickHandler", name, value);
+    setCheckedState((prevState) => ({
+      ...prevState,
+      [name]: prevState[name] === value ? "NOT_USING" : value,
+    }));
+    setNoneSelected(false); // Whenever an option is clicked, make sure noneSelected is turned off
   };
 
-  // const watchedCommonComponents = watch("commonComponents");
+  const onNoneSelected = () => {
+    if (noneSelected) {
+      setNoneSelected(false); // If already selected, deselect it
+    } else {
+      setCheckedState({}); // Clear all other selections
+      setNoneSelected(true); // Set noneSelected to true
+    }
+  };
 
-  // // Check whether "planningToUse" or "implemented" is checked and uncheck the other
+  useEffect(() => {
+    // Object.entries(checkedState).forEach(([name, value]) => {
+    //   if (value !== "NOT_USING") {
+    //     setValue(`commonComponents.${name}`, value);
+    //   } else {
+    //     // Completely remove the property from form data
+    //     setValue(`commonComponents.${name}`, null);
+    //     // unregister it
+    //     unregister(`commonComponents.${name}`);
+    //   }
+    // });
+
+    // For noneSelected, you can either set it to `true` or `null` based on whether it is checked
+    if (noneSelected) {
+      setValue("commonComponents.noServices", true);
+    } else {
+      setValue("commonComponents.noServices", false);
+      // unregister("commonComponents.noServices");
+    }
+  }, [checkedState, noneSelected, setValue, unregister]);
+
+  // useEffect(() => {}, [register]);
+
   // useEffect(() => {
-  //   commonComponents.forEach(({ name }) => {
-  //     const componentState = watchedCommonComponents?.[name];
-
-  //     console.log("componentState");
-  //     console.log(componentState);
-
-  //     if (componentState) {
-  //       if (componentState.planningToUse) {
-  //         setValue(`commonComponents.${name}.implemented`, false);
-  //       }
-  //       if (componentState.implemented) {
-  //         setValue(`commonComponents.${name}.planningToUse`, false);
-  //       }
-  //     }
+  //   Object.entries(checkedState).forEach(([name, value]) => {
+  //     setValue(`commonComponents.${name}`, value);
   //   });
-  // }, [watchedCommonComponents, setValue]);
+  //   setValue("commonComponents.noServices", noneSelected);
+  // }, [checkedState, noneSelected, setValue]);
+
+  // // Validation check
+  // useEffect(() => {
+  //   // If all checkboxes are not selected and noneSelected is also false
+  //   if (
+  //     Object.values(checkedState).every(
+  //       (value) => value !== "IMPLEMENTED" && value !== "PLANNING_TO_USE"
+  //     ) &&
+  //     !noneSelected
+  //   ) {
+  //     setError("commonComponents.noServices", {
+  //       type: "manual",
+  //       message: "Please select an option or 'no services'",
+  //     });
+  //   } else {
+  //     clearErrors("commonComponents.noServices");
+  //   }
+  // }, [checkedState, noneSelected, setError, clearErrors]);
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -127,8 +131,10 @@ export default function CommonComponents() {
               <div className="flex items-center">
                 <input
                   id="none"
+                  name="none"
                   type="checkbox"
-                  {...register("commonComponents.noServices")}
+                  checked={noneSelected}
+                  onChange={onNoneSelected}
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
                 <label
@@ -161,30 +167,14 @@ export default function CommonComponents() {
                 </div>
                 <div className="flex items-center w-full sm:w-4/12 justify-between flex-wrap mt-3">
                   <div className="flex items-center">
-                    <Controller
-                      name={`commonComponents.${name}.implemented`}
-                      control={control}
-                      defaultValue={false}
-                      render={({ field }) => (
-                        <input
-                          type="checkbox"
-                          checked={field.value}
-                          onChange={(e) =>
-                            handleCheckboxChange(
-                              name,
-                              "implemented",
-                              e.target.checked
-                            )
-                          }
-                        />
-                      )}
-                    />
-                    {/* <input
+                    <input
                       id={name}
+                      name={name}
                       type="checkbox"
-                      {...register(`commonComponents.${name}.implemented`)}
+                      checked={checkedState[name] === "IMPLEMENTED"}
+                      onChange={() => onClickHandler(name, "IMPLEMENTED")}
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    /> */}
+                    />
                     <label
                       htmlFor={`${name}-implemented`}
                       className="font-bcsans text-base ml-3 block font-medium leading-6 text-gray-900"
@@ -193,23 +183,13 @@ export default function CommonComponents() {
                     </label>
                   </div>
                   <div className="flex items-center">
-                    <Controller
-                      name={`commonComponents.${name}.planningToUse`}
-                      control={control}
-                      defaultValue={false}
-                      render={({ field }) => (
-                        <input
-                          type="checkbox"
-                          checked={field.value}
-                          onChange={(e) =>
-                            handleCheckboxChange(
-                              name,
-                              "planningToUse",
-                              e.target.checked
-                            )
-                          }
-                        />
-                      )}
+                    <input
+                      id={name}
+                      name={name}
+                      type="checkbox"
+                      checked={checkedState[name] === "PLANNING_TO_USE"}
+                      onChange={() => onClickHandler(name, "PLANNING_TO_USE")}
+                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                     <label
                       htmlFor={`${name}-planning`}

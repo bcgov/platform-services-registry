@@ -3,7 +3,7 @@
 import Link from "next/link";
 import classNames from "@/components/utils/classnames";
 import { usePathname } from "next/navigation";
-import Create from "@/components/buttons/Create";
+import CreateButton from "@/components/buttons/CreateButton";
 
 const tabs = [
   {
@@ -60,7 +60,7 @@ export default function Tabs({ className }: { className?: string }) {
                 </Link>
               ))}
             </div>
-            <Create />
+            <CreateButton />
           </div>
         </div>
       </div>

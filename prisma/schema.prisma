@@ -17,7 +17,6 @@ model User {
   firstName                                          String?
   lastName                                           String?
   email                                              String                         @unique
-  emailVerified                                      DateTime?                      @map("email_verified")
   image                                              String?
   ministry                                           String?
   archived                                           Boolean                        @default(false)
@@ -53,6 +52,8 @@ model PrivateCloudRequest {
   project            PrivateCloudProject?         @relation("privateCloudProject", fields: [projectId], references: [id])
   requestedProjectId String                       @unique @db.ObjectId
   requestedProject   PrivateCloudRequestedProject @relation("privateCloudRequestedProject", fields: [requestedProjectId], references: [id])
+
+  @@unique([licencePlate, active])
 }
 
 model PrivateCloudProject {
@@ -75,7 +76,6 @@ model PrivateCloudProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
-  profileId                String?
   requests                 PrivateCloudRequest[] @relation("privateCloudProject")
 }
 
@@ -99,7 +99,6 @@ model PrivateCloudRequestedProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
-  profileId                String?
   requestedProject         PrivateCloudRequest? @relation("privateCloudRequestedProject")
 }
 
@@ -118,6 +117,8 @@ model PublicCloudRequest {
   project            PublicCloudProject?         @relation("publicCloudProject", fields: [projectId], references: [id])
   requestedProjectId String                      @unique @db.ObjectId
   requestedProject   PublicCloudRequestedProject @relation("publicCloudRequestedProject", fields: [requestedProjectId], references: [id])
+
+  @@unique([licencePlate, active])
 }
 
 model PublicCloudProject {
@@ -175,17 +176,22 @@ type Budget {
   tools Int
 }
 
+type CommonComponentsOptions {
+  planningToUse Boolean
+  implemented   Boolean
+}
+
 type CommonComponents {
-  addressAndGeolocation              CommonComponentsOptions?
-  workflowManagement                 CommonComponentsOptions?
-  formDesignAndSubmission            CommonComponentsOptions?
-  identityManagement                 CommonComponentsOptions?
-  paymentServices                    CommonComponentsOptions?
-  documentManagement                 CommonComponentsOptions?
-  endUserNotificationAndSubscription CommonComponentsOptions?
-  publishing                         CommonComponentsOptions?
-  businessIntelligence               CommonComponentsOptions?
-  other                              String?
+  addressAndGeolocation              CommonComponentsOptions
+  workflowManagement                 CommonComponentsOptions
+  formDesignAndSubmission            CommonComponentsOptions
+  identityManagement                 CommonComponentsOptions
+  paymentServices                    CommonComponentsOptions
+  documentManagement                 CommonComponentsOptions
+  endUserNotificationAndSubscription CommonComponentsOptions
+  publishing                         CommonComponentsOptions
+  businessIntelligence               CommonComponentsOptions
+  other                              String
   noServices                         Boolean
 }
 
@@ -266,12 +272,6 @@ enum DefaultCpuOptions {
   CPU_REQUEST_16_LIMIT_32
   CPU_REQUEST_32_LIMIT_64
   CPU_REQUEST_64_LIMIT_128
-}
-
-enum CommonComponentsOptions {
-  IMPLEMENTED
-  PLANNING_TO_USE
-  NOT_USING
 }
 
 enum DefaultMemoryOptions {

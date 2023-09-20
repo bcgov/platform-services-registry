@@ -8,9 +8,10 @@ import {
 } from "@prisma/client";
 import { string, number, z } from "zod";
 
-export const CommonComponentsOptionsSchema = z.optional(
-  z.nativeEnum(CommonComponentsOptions)
-);
+const CommonComponentsOptionsSchema = z.object({
+  planningToUse: z.boolean().optional(),
+  implemented: z.boolean().optional(),
+});
 
 export const CommonComponentsInputSchema = z
   .object({
@@ -28,10 +29,15 @@ export const CommonComponentsInputSchema = z
   })
   .refine(
     (data) => {
-      // Use Array.some() to check if at least one field has a value
-      const checkBoxIsChecked = Object.values(data).some(
-        (value) => value === "PLANNING_TO_USE" || value === "IMPLEMENTED"
-      );
+      const checkBoxIsChecked = Object.values(data)
+        .filter(
+          (
+            value
+          ): value is { planningToUse?: boolean; implemented?: boolean } =>
+            typeof value === "object" && value !== null
+        )
+        .some((options) => options.planningToUse || options.implemented);
+
       const otherFieldHasValue = data.other !== undefined && data.other !== "";
       const noServicesIsChecked = data.noServices === true;
 
@@ -66,11 +72,11 @@ export const QuotaInputSchema = z.object({
   storage: z.nativeEnum(DefaultStorageOptions),
 });
 
-// Since quota needs to support custom input, it is not an enum
+// // Since quota needs to support custom input, it is not an enum
 // export const QuotaInputSchema = z.object({
-//   cpu: z.string(),
-//   memory: z.string(),
-//   storage: z.string(),
+//   cpu: z.string().nonempty("CPU cannot be empty"),
+//   memory: z.string().nonempty("Memory cannot be empty"),
+//   storage: z.string().nonempty("Storage cannot be empty"),
 // });
 
 export const EditRequestBodySchema = CreateRequestBodySchema.merge(
@@ -79,6 +85,13 @@ export const EditRequestBodySchema = CreateRequestBodySchema.merge(
     testQuota: QuotaInputSchema,
     toolsQuota: QuotaInputSchema,
     developmentQuota: QuotaInputSchema,
+  })
+);
+
+export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
+  z.object({
+    decision: z.enum(["APPROVED", "REJECTED"]),
+    comment: string().optional(),
   })
 );
 

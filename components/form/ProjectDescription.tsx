@@ -1,12 +1,12 @@
+import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";
 
-export default function ProjectDescription({
-  register,
-  errors,
-}: {
-  register: any;
-  errors: any;
-}) {
+export default function ProjectDescription() {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
@@ -82,7 +82,6 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <select
-              name="ministry"
               id="ministry"
               {...register("ministry")}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -113,7 +112,6 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <select
-              name="cluster"
               id="cluster"
               {...register("cluster")}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

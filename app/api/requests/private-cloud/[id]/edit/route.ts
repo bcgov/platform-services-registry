@@ -5,7 +5,7 @@ import {
   RequestType,
   PrivateCloudRequest,
   DecisionStatus,
-  PrivateCloudProject
+  PrivateCloudProject,
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
@@ -14,7 +14,7 @@ import { string, z } from "zod";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
-  id: string()
+  id: string(),
 });
 
 type Params = z.infer<typeof ParamsSchema>;
@@ -24,7 +24,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   if (!session) {
     return NextResponse.json({
-      message: "You do not have the required credentials."
+      message: "You do not have the required credentials.",
+      status: 400,
     });
   }
 
@@ -47,7 +48,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const {
     projectOwner,
     primaryTechnicalLead,
-    secondaryTechnicalLead
+    secondaryTechnicalLead,
+    ...rest
   }: {
     projectOwner: UserInput;
     primaryTechnicalLead: UserInput;
@@ -58,7 +60,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     ![
       projectOwner.email,
       primaryTechnicalLead.email,
-      secondaryTechnicalLead?.email
+      secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
     !authRoles.includes("admin")
   ) {
@@ -67,33 +69,33 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     );
   }
 
+  const existingRequest: PrivateCloudRequest | null =
+    await prisma.privateCloudRequest.findFirst({
+      where: {
+        AND: [{ projectId: projectId }, { active: true }],
+      },
+    });
+
+  if (existingRequest !== null) {
+    throw new Error(
+      "This project already has an active request or it does not exist."
+    );
+  }
+
   let editRequest: PrivateCloudRequest;
   let decisionStatus: DecisionStatus;
 
   try {
-    const existingRequest: PrivateCloudRequest | null =
-      await prisma.privateCloudRequest.findFirst({
-        where: {
-          AND: [{ projectId: projectId }, { active: true }]
-        }
-      });
-
-    if (existingRequest !== null) {
-      throw new Error(
-        "This project already has an active request or it does not exist."
-      );
-    }
-
     const project: PrivateCloudProject | null =
       await prisma.privateCloudProject.findUnique({
         where: {
-          id: projectId
+          id: projectId,
         },
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
-          secondaryTechnicalLead: true
-        }
+          secondaryTechnicalLead: true,
+        },
       });
 
     if (!project) {
@@ -101,45 +103,37 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     }
 
     const requestedProject = {
-      name: data.name,
-      description: data.description,
-      cluster: project.cluster,
-      ministry: data.ministry,
-      status: project.status,
       licencePlate: project.licencePlate,
-      commonComponents: data.commonComponents,
-      productionQuota: data.productionQuota,
-      testQuota: data.testQuota,
-      toolsQuota: data.toolsQuota,
-      developmentQuota: data.developmentQuota,
-      profileId: project.profileId || null,
+      status: project.status,
+      cluster: project.cluster,
       created: project.created,
+      ...rest,
       projectOwner: {
         connectOrCreate: {
           where: {
-            email: data.projectOwner.email
+            email: projectOwner.email,
           },
-          create: data.projectOwner
-        }
+          create: projectOwner,
+        },
       },
       primaryTechnicalLead: {
         connectOrCreate: {
           where: {
-            email: primaryTechnicalLead.email
+            email: primaryTechnicalLead.email,
           },
-          create: primaryTechnicalLead
-        }
+          create: primaryTechnicalLead,
+        },
       },
       secondaryTechnicalLead: secondaryTechnicalLead
         ? {
             connectOrCreate: {
               where: {
-                email: secondaryTechnicalLead.email
+                email: secondaryTechnicalLead.email,
               },
-              create: secondaryTechnicalLead
-            }
+              create: secondaryTechnicalLead,
+            },
           }
-        : undefined
+        : undefined,
     };
 
     const isQuotaChanged = !(
@@ -166,30 +160,30 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         createdByEmail: authEmail,
         licencePlate: project.licencePlate,
         requestedProject: {
-          create: requestedProject
+          create: requestedProject,
         },
         project: {
           connect: {
-            id: projectId
-          }
-        }
+            id: projectId,
+          },
+        },
       },
       include: {
         project: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
-            secondaryTechnicalLead: true
-          }
+            secondaryTechnicalLead: true,
+          },
         },
         requestedProject: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
-            secondaryTechnicalLead: true
-          }
-        }
-      }
+            secondaryTechnicalLead: true,
+          },
+        },
+      },
     });
 
     // await sendEditRequestEmails(

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { CreateRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
@@ -24,21 +23,15 @@ export default function Page() {
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-    watch,
-    setValue,
-    setError,
-    setFocus,
-    clearErrors,
-    unregister,
-    trigger,
-  } = useForm({
+  const methods = useForm({
     resolver: zodResolver(CreateRequestBodySchema),
   });
+
+  console.log("VALUES");
+  console.log(methods.watch());
+
+  console.log("ERRORS");
+  console.log(methods.formState.errors);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -72,47 +65,37 @@ export default function Page() {
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
-      unregister("secondaryTechnicalLead");
+      methods.unregister("secondaryTechnicalLead");
     }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit(() => setOpen(true))}>
-        <div className="space-y-12">
-          <ProjectDescription register={register} errors={errors} />
-          <TeamContacts
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
-            secondTechLead={secondTechLead}
-            secondTechLeadOnClick={secondTechLeadOnClick}
-            control={control}
-          />
-          <CommonComponents
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
-          />
-        </div>
-        <div className="mt-16 flex items-center justify-start gap-x-6">
-          <PreviousButton />
-          <button
-            type="submit"
-            className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            SUBMIT REQUEST
-          </button>
-        </div>
-      </form>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
+          <div className="space-y-12">
+            <ProjectDescription />
+            <TeamContacts
+              secondTechLead={secondTechLead}
+              secondTechLeadOnClick={secondTechLeadOnClick}
+            />
+            <CommonComponents />
+          </div>
+          <div className="mt-16 flex items-center justify-start gap-x-6">
+            <PreviousButton />
+            <button
+              type="submit"
+              className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              SUBMIT REQUEST
+            </button>
+          </div>
+        </form>
+      </FormProvider>
       <CreateModal
         open={open}
         setOpen={setOpen}
-        handleSubmit={handleSubmit(onSubmit)}
+        handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
     </div>

@@ -1,4 +1,5 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useQuery } from "@tanstack/react-query";
@@ -36,26 +37,24 @@ export default function AsyncAutocomplete({
   label,
   placeHolder,
   className,
-  register,
-  control,
-  errors,
-  setValue,
-  setError,
-  clearErrors,
+  defaultEmail,
 }: {
   name: string;
   label: string;
   placeHolder: string;
   className?: string;
-  register: any;
-  control: any;
-  errors: any;
-  setValue: any;
-  setError: any;
-  clearErrors: any;
+  defaultEmail?: string;
 }) {
-  const [selected, setSelected] = useState<Person | null>(null);
-  const [query, setQuery] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Person | "">("");
+  const [query, setQuery] = useState<string>("");
+
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    setError,
+    clearErrors,
+  } = useFormContext();
 
   const {
     data: people,
@@ -70,7 +69,9 @@ export default function AsyncAutocomplete({
   );
 
   const autocompleteOnChangeHandler = (value: Person) => {
+    console.log("ON CHANGE HANDLER");
     setSelected(value);
+    setQuery(value.mail);
 
     const {
       givenName: firstName,
@@ -111,6 +112,12 @@ export default function AsyncAutocomplete({
     });
   };
 
+  useEffect(() => {
+    if (defaultEmail) {
+      setQuery(defaultEmail);
+    }
+  }, [defaultEmail]);
+
   return (
     <div className={className}>
       <label
@@ -131,6 +138,7 @@ export default function AsyncAutocomplete({
               displayValue={(person: Person) => person?.mail}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}
+              value={query}
             />
           </div>
           <Transition
@@ -138,7 +146,7 @@ export default function AsyncAutocomplete({
             leave="transition ease-in duration-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            afterLeave={() => setQuery(null)}
+            // afterLeave={() => setQuery(null)}
           >
             <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {isLoading ? (

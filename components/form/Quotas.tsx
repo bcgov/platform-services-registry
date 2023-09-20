@@ -1,6 +1,5 @@
 import Link from "next/link";
-import classNames from "@/components/utils/classnames";
-import { name } from "@azure/msal-node/dist/packageMetadata";
+import { useFormContext } from "react-hook-form";
 
 type QuotaOptions = {
   [key: string]: string;
@@ -54,16 +53,17 @@ function QuotaInput({
   nameSpace,
   licensePlate,
   selectOptions,
-  register,
-  errors,
 }: {
   quotaName: "cpu" | "memory" | "storage";
   nameSpace: "production" | "test" | "development" | "tools";
   licensePlate: string;
   selectOptions: QuotaOptions;
-  register: any;
-  errors: any;
 }) {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
   // Make quotaName start with uppercase letter
   const quotaNameStartUpperCase =
     quotaName.charAt(0).toUpperCase() + quotaName.slice(1);
@@ -78,8 +78,7 @@ function QuotaInput({
       </label>
       <div className="mt-2">
         <select
-        defaultValue={""}
-          name={nameSpace + "Quota." + quotaName}
+          defaultValue={""}
           id="cpu"
           {...register(nameSpace + "Quota." + quotaName)}
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -110,15 +109,7 @@ function QuotaInput({
   );
 }
 
-export default function Quotas({
-  register,
-  errors,
-  licensePlate,
-}: {
-  register: any;
-  errors: any;
-  licensePlate: string;
-}) {
+export default function Quotas({ licensePlate }: { licensePlate: string }) {
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -143,11 +134,9 @@ export default function Quotas({
                 <QuotaInput
                   key={quotaName}
                   quotaName={quotaName}
-                  register={register}
                   selectOptions={quotaOptionsLookup[quotaName]}
                   licensePlate={licensePlate}
                   nameSpace={nameSpace}
-                  errors={errors}
                 />
               ))}
             </div>

@@ -2,23 +2,17 @@ import AsyncAutocomplete from "@/components/form/AsyncAutocomplete";
 import SecondTechLeadButton from "@/components/buttons/SecondTechLeadButton";
 
 export default function TeamContacts({
-  control,
-  register,
-  errors,
-  setValue,
-  setError,
-  clearErrors,
   secondTechLead,
-  secondTechLeadOnClick
+  secondTechLeadOnClick,
+  projectOwnerDefaultEmail,
+  primaryTechnicalLeadDefaultEmail,
+  secondaryTechnicalLeadDefaultEmail,
 }: {
-  control: any;
-  register: any;
-  errors: any;
-  setValue: any;
-  setError: any;
-  clearErrors: any;
   secondTechLead: boolean;
   secondTechLeadOnClick: () => void;
+  projectOwnerDefaultEmail?: string;
+  primaryTechnicalLeadDefaultEmail?: string;
+  secondaryTechnicalLeadDefaultEmail?: string;
 }) {
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -41,15 +35,10 @@ export default function TeamContacts({
           </div>
           <AsyncAutocomplete
             name="projectOwner"
+            defaultEmail={projectOwnerDefaultEmail}
             className="mt-8"
             label="Product Owner Email"
             placeHolder="Search project owner's IDIR email address"
-            control={control}
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
           />
         </div>
 
@@ -68,15 +57,10 @@ export default function TeamContacts({
           </div>
           <AsyncAutocomplete
             name="primaryTechnicalLead"
+            defaultEmail={primaryTechnicalLeadDefaultEmail}
             className="mt-8"
             label="Technical Lead Email"
             placeHolder="Search project owner's IDIR email address"
-            control={control}
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
           />
         </div>
 
@@ -102,15 +86,10 @@ export default function TeamContacts({
               </div>
               <AsyncAutocomplete
                 name="secondaryTechnicalLead"
+                defaultEmail={secondaryTechnicalLeadDefaultEmail}
                 className="mt-8"
                 label="Technical Lead Email"
                 placeHolder="Search project owner's IDIR email address"
-                control={control}
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                setError={setError}
-                clearErrors={clearErrors}
               />
             </div>
           ) : null}

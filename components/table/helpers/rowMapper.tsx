@@ -5,6 +5,7 @@ import { Project } from "@/queries/project";
 
 export const privateCloudProjectDataToRow = (project: Project) => {
   return {
+    id: project.id,
     name: project.name,
     description: project.description,
     ministry: project.ministry,
@@ -32,6 +33,7 @@ export const privateCloudProjectDataToRow = (project: Project) => {
 
 export const publicCloudProjectDataToRow = (project: any) => {
   return {
+    id: project.id,
     name: project.name,
     csp: project.provider,
     description: project.description,
@@ -58,12 +60,17 @@ export const publicCloudProjectDataToRow = (project: any) => {
 
 export const privateCloudRequestDataToRow = (request: any) => {
   return {
+    id: request.id,
     type: request.type,
     name: request.requestedProject.name,
     ministry: request.requestedProject.ministry,
     cluster: request.requestedProject.cluster,
     projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${request?.secondaryTechnicalLead ? "," : ""} ${request?.secondaryTechnicalLead?.firstName || ""} ${request?.secondaryTechnicalLead?.lastName || ""}`,
+    technicalLeads: `${request.primaryTechnicalLead.firstName} ${
+      request.primaryTechnicalLead.lastName
+    } ${request?.secondaryTechnicalLead ? "," : ""} ${
+      request?.secondaryTechnicalLead?.firstName || ""
+    } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
     licencePlate: request.licencePlate,
   };
@@ -71,6 +78,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
 
 export const publicCloudRequestDataToRow = (request: any) => {
   return {
+    id: request.id,
     type: request.type,
     name: request.requestedProject.name,
     csp: request.requestedProject.provider,
