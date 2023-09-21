@@ -11,6 +11,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { EditRequestBodySchema, EditRequestBody, UserInput } from "@/schema";
 import { string, z } from "zod";
+import editRequest from "@/app/requestActions/private-cloud/editRequest";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -25,7 +26,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   if (!session) {
     return NextResponse.json({
       message: "You do not have the required credentials.",
-      status: 400,
     });
   }
 
@@ -42,25 +42,14 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const data: EditRequestBody = parsedBody.data;
+  const formData: EditRequestBody = parsedBody.data;
   const { id: projectId } = parsedParams.data;
-
-  const {
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    ...rest
-  }: {
-    projectOwner: UserInput;
-    primaryTechnicalLead: UserInput;
-    secondaryTechnicalLead?: UserInput;
-  } = data;
 
   if (
     ![
-      projectOwner.email,
-      primaryTechnicalLead.email,
-      secondaryTechnicalLead?.email,
+      formData.projectOwner.email,
+      formData.primaryTechnicalLead.email,
+      formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
     !authRoles.includes("admin")
   ) {
@@ -69,122 +58,23 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     );
   }
 
-  const existingRequest: PrivateCloudRequest | null =
-    await prisma.privateCloudRequest.findFirst({
-      where: {
-        AND: [{ projectId: projectId }, { active: true }],
-      },
-    });
-
-  if (existingRequest !== null) {
-    throw new Error(
-      "This project already has an active request or it does not exist."
-    );
-  }
-
-  let editRequest: PrivateCloudRequest;
-  let decisionStatus: DecisionStatus;
+  let request: PrivateCloudRequest;
 
   try {
-    const project: PrivateCloudProject | null =
-      await prisma.privateCloudProject.findUnique({
+    const existingRequest: PrivateCloudRequest | null =
+      await prisma.privateCloudRequest.findFirst({
         where: {
-          id: projectId,
-        },
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
+          AND: [{ projectId: projectId }, { active: true }],
         },
       });
 
-    if (!project) {
-      throw new Error("Project does not exist.");
+    if (existingRequest !== null) {
+      throw new Error(
+        "This project already has an active request or it does not exist."
+      );
     }
 
-    const requestedProject = {
-      licencePlate: project.licencePlate,
-      status: project.status,
-      cluster: project.cluster,
-      created: project.created,
-      ...rest,
-      projectOwner: {
-        connectOrCreate: {
-          where: {
-            email: projectOwner.email,
-          },
-          create: projectOwner,
-        },
-      },
-      primaryTechnicalLead: {
-        connectOrCreate: {
-          where: {
-            email: primaryTechnicalLead.email,
-          },
-          create: primaryTechnicalLead,
-        },
-      },
-      secondaryTechnicalLead: secondaryTechnicalLead
-        ? {
-            connectOrCreate: {
-              where: {
-                email: secondaryTechnicalLead.email,
-              },
-              create: secondaryTechnicalLead,
-            },
-          }
-        : undefined,
-    };
-
-    const isQuotaChanged = !(
-      JSON.stringify(data.productionQuota) ===
-        JSON.stringify(data.productionQuota) &&
-      JSON.stringify(data.testQuota) === JSON.stringify(data.testQuota) &&
-      JSON.stringify(data.developmentQuota) ===
-        JSON.stringify(data.developmentQuota) &&
-      JSON.stringify(data.toolsQuota) === JSON.stringify(data.toolsQuota)
-    );
-
-    // If any of the quotas are being changed, the request needs admin approval
-    if (isQuotaChanged) {
-      decisionStatus = DecisionStatus.PENDING;
-    } else {
-      decisionStatus = DecisionStatus.APPROVED;
-    }
-
-    editRequest = await prisma.privateCloudRequest.create({
-      data: {
-        type: RequestType.EDIT,
-        decisionStatus: decisionStatus,
-        active: true,
-        createdByEmail: authEmail,
-        licencePlate: project.licencePlate,
-        requestedProject: {
-          create: requestedProject,
-        },
-        project: {
-          connect: {
-            id: projectId,
-          },
-        },
-      },
-      include: {
-        project: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-        requestedProject: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-      },
-    });
+    request = await editRequest(projectId, formData, authEmail);
 
     // await sendEditRequestEmails(
     //   editRequest.project,
@@ -209,5 +99,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   //   }
   // }
 
-  return editRequest;
+  return request;
 }

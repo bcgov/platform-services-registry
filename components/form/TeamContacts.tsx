@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import AsyncAutocomplete from "@/components/form/AsyncAutocomplete";
 import SecondTechLeadButton from "@/components/buttons/SecondTechLeadButton";
+import { useFormContext } from "react-hook-form";
 
 export default function TeamContacts({
   secondTechLead,
@@ -14,6 +16,16 @@ export default function TeamContacts({
   primaryTechnicalLeadDefaultEmail?: string;
   secondaryTechnicalLeadDefaultEmail?: string;
 }) {
+  const { register } = useFormContext();
+
+  // useEffect(() => {
+  //   register("secondaryTechnicalLead", {
+  //     firstName: undefined,
+  //     lastName: undefined,
+  //     ministry: undefined,
+  //   });
+  // }, [register]);
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">

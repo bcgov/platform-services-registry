@@ -9,8 +9,8 @@ import {
 import { string, number, z } from "zod";
 
 const CommonComponentsOptionsSchema = z.object({
-  planningToUse: z.boolean().optional(),
-  implemented: z.boolean().optional(),
+  planningToUse: z.boolean(),
+  implemented: z.boolean(),
 });
 
 export const CommonComponentsInputSchema = z
@@ -24,7 +24,7 @@ export const CommonComponentsInputSchema = z
     endUserNotificationAndSubscription: CommonComponentsOptionsSchema,
     publishing: CommonComponentsOptionsSchema,
     businessIntelligence: CommonComponentsOptionsSchema,
-    other: z.optional(z.string()),
+    other: z.string(),
     noServices: z.boolean(),
   })
   .refine(
@@ -88,10 +88,12 @@ export const EditRequestBodySchema = CreateRequestBodySchema.merge(
   })
 );
 
+export const DecisionOptionsSchema = z.enum(["APPROVED", "REJECTED"]);
+
 export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
   z.object({
-    decision: z.enum(["APPROVED", "REJECTED"]),
-    comment: string().optional(),
+    decision: DecisionOptionsSchema,
+    humanComment: string().optional(),
   })
 );
 
@@ -100,3 +102,5 @@ export type UserInput = z.infer<typeof UserInputSchema>;
 export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
 export type QuotaInput = z.infer<typeof QuotaInputSchema>;
 export type EditRequestBody = z.infer<typeof EditRequestBodySchema>;
+export type DecisionRequestBody = z.infer<typeof DecisionRequestBodySchema>;
+export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;

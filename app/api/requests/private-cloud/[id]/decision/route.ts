@@ -11,7 +11,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { string, z } from "zod";
 import { DecisionRequestBodySchema } from "@/schema";
-import { deepStrictEqual } from "assert";
+import { checkObjectEquality } from "@/lib/isProjectEqual";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -54,16 +54,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const { id: requestId } = parsedParams.data;
-
-  // const {
-  //   decision,
-  //   comment,
-  //   projectOwner,
-  //   primaryTechnicalLead,
-  //   secondaryTechnicalLead,
-  //   ...rest
-  // } = parsedBody.data;
-
   const { decision, comment, ...requestedProjectFormData } = parsedBody.data;
 
   const request = await prisma.privateCloudRequest.findUnique({
@@ -117,51 +107,94 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     ...currentRequestedProject
   } = request?.requestedProject;
 
-  console.log("REQUEST");
-  console.log(request?.requestedProject);
+  // Normalize form data to include secondaryTechnicalLead if it is null
+  if (!requestedProjectFormData.secondaryTechnicalLead) {
+    (requestedProjectFormData as any).secondaryTechnicalLead = null;
+  }
 
-  console.log("REQUESTED PROJECT FORM DATA");
-  console.log(requestedProjectFormData);
-
-  // comapre the two objects requestedProjectFormData and  currentRequestedProject making sure that all of the values for the keys in requestedProjectFormData are the same as the ones in currentRequestedProject
-
-  const isEqual = deepStrictEqual(
+  const isRequestedProjectAndFormDataEqual = checkObjectEquality(
     currentRequestedProject,
     requestedProjectFormData
   );
 
-  console.log("IS EQUAL");
-  console.log(isEqual);
+  try {
+    await prisma.privateCloudRequest.update({
+      where: {
+        id: requestId,
+        decisionStatus: DecisionStatus.PENDING,
+      },
+      data: {
+        decisionStatus: decision,
+        comment,
+        active: decision === DecisionStatus.APPROVED,
+        decisionDate: new Date(),
+        decisionMakerEmail: authEmail,
+      },
+      include: {
+        project: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
+        requestedProject: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
+      },
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        return new NextResponse(
+          "Request not found or already has a decision.",
+          { status: 400 }
+        );
+      }
+    }
+  }
 
-  // const requestedProjectData = {
-  //   ...rest,
-  //   projectOwner: {
-  //     connectOrCreate: {
-  //       where: {
-  //         email: projectOwner.email,
-  //       },
-  //       create: projectOwner,
-  //     },
-  //   },
-  //   primaryTechnicalLead: {
-  //     connectOrCreate: {
-  //       where: {
-  //         email: primaryTechnicalLead.email,
-  //       },
-  //       create: primaryTechnicalLead,
-  //     },
-  //   },
-  //   secondaryTechnicalLead: secondaryTechnicalLead
-  //     ? {
-  //         connectOrCreate: {
-  //           where: {
-  //             email: secondaryTechnicalLead.email,
-  //           },
-  //           create: secondaryTechnicalLead,
-  //         },
-  //       }
-  //     : undefined,
-  // };
+  // Reject the current request, create a new updated request with the form data as the requested project, approve it
+  const {
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    ...rest
+  } = requestedProjectFormData;
+
+  const requestedProjectDataFromForm = {
+    ...rest,
+    projectOwner: {
+      connectOrCreate: {
+        where: {
+          email: projectOwner.email,
+        },
+        create: projectOwner,
+      },
+    },
+    primaryTechnicalLead: {
+      connectOrCreate: {
+        where: {
+          email: primaryTechnicalLead.email,
+        },
+        create: primaryTechnicalLead,
+      },
+    },
+    secondaryTechnicalLead: secondaryTechnicalLead
+      ? {
+          connectOrCreate: {
+            where: {
+              email: secondaryTechnicalLead.email,
+            },
+            create: secondaryTechnicalLead,
+          },
+        }
+      : undefined,
+  };
 
   // let request: PrivateCloudRequest;
 
