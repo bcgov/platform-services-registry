@@ -6,12 +6,17 @@ import {
   DecisionStatus,
   PrivateCloudRequestedProject,
   PrivateCloudRequestedProjectPayload,
+  Cluster,
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { string, z } from "zod";
 import { DecisionRequestBodySchema } from "@/schema";
 import { checkObjectEquality } from "@/lib/isProjectEqual";
+import decisionRequest, {
+  PrivateCloudRequestWithAdminRequestedProject,
+} from "@/requestActions/private-cloud/decisionRequest";
+import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -54,209 +59,62 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const { id: requestId } = parsedParams.data;
-  const { decision, comment, ...requestedProjectFormData } = parsedBody.data;
-
-  const request = await prisma.privateCloudRequest.findUnique({
-    where: {
-      id: requestId,
-    },
-    include: {
-      requestedProject: {
-        include: {
-          projectOwner: {
-            select: {
-              email: true,
-              firstName: true,
-              lastName: true,
-              ministry: true,
-            },
-          },
-          primaryTechnicalLead: {
-            select: {
-              email: true,
-              firstName: true,
-              lastName: true,
-              ministry: true,
-            },
-          },
-          secondaryTechnicalLead: {
-            select: {
-              email: true,
-              firstName: true,
-              lastName: true,
-              ministry: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (!request) {
-    return new NextResponse("Request not found.", { status: 404 });
-  }
-
-  const {
-    id,
-    licencePlate,
-    status,
-    created,
-    projectOwnerId,
-    primaryTechnicalLeadId,
-    secondaryTechnicalLeadId,
-    ...currentRequestedProject
-  } = request?.requestedProject;
-
-  // Normalize form data to include secondaryTechnicalLead if it is null
-  if (!requestedProjectFormData.secondaryTechnicalLead) {
-    (requestedProjectFormData as any).secondaryTechnicalLead = null;
-  }
-
-  const isRequestedProjectAndFormDataEqual = checkObjectEquality(
-    currentRequestedProject,
-    requestedProjectFormData
-  );
+  const { decision, humanComment, ...requestedProjectFormData } =
+    parsedBody.data;
 
   try {
-    await prisma.privateCloudRequest.update({
-      where: {
-        id: requestId,
-        decisionStatus: DecisionStatus.PENDING,
-      },
-      data: {
-        decisionStatus: decision,
-        comment,
-        active: decision === DecisionStatus.APPROVED,
-        decisionDate: new Date(),
-        decisionMakerEmail: authEmail,
-      },
-      include: {
-        project: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-        requestedProject: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-      },
-    });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2025") {
-        return new NextResponse(
-          "Request not found or already has a decision.",
-          { status: 400 }
+    const request: PrivateCloudRequestWithAdminRequestedProject =
+      await decisionRequest(
+        requestId,
+        decision,
+        humanComment,
+        requestedProjectFormData,
+        authEmail
+      );
+
+    if (!request.adminRequestedProject) {
+      return new NextResponse(
+        `Error creating decision request for ${request.licencePlate}.`,
+        {
+          status: 200,
+        }
+      );
+    }
+
+    const contactChanged =
+      requestedProjectFormData.projectOwner.email !==
+        request.adminRequestedProject.projectOwner.email ||
+      requestedProjectFormData.primaryTechnicalLead.email !==
+        request.adminRequestedProject.primaryTechnicalLead.email ||
+      requestedProjectFormData.secondaryTechnicalLead?.email !==
+        request.adminRequestedProject?.secondaryTechnicalLead?.email;
+
+    if (request.decisionStatus === DecisionStatus.APPROVED) {
+      await sendPrivateCloudNatsMessage(
+        request.id,
+        request.type,
+        request.adminRequestedProject,
+        contactChanged
+      );
+
+      // For GOLD requests, we create an identical request for GOLDDR
+      if (request.adminRequestedProject.cluster === Cluster.GOLD) {
+        await sendPrivateCloudNatsMessage(
+          request.id,
+          request.type,
+          { ...request.adminRequestedProject, cluster: Cluster.GOLDDR },
+          contactChanged
         );
       }
     }
+    return new NextResponse(
+      `Decision request for ${request.licencePlate} succesfully created.`,
+      {
+        status: 200,
+      }
+    );
+  } catch (e) {
+    console.log(e);
+    return new NextResponse("Error creating decision request", { status: 400 });
   }
-
-  // Reject the current request, create a new updated request with the form data as the requested project, approve it
-  const {
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    ...rest
-  } = requestedProjectFormData;
-
-  const requestedProjectDataFromForm = {
-    ...rest,
-    projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: projectOwner.email,
-        },
-        create: projectOwner,
-      },
-    },
-    primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: primaryTechnicalLead.email,
-        },
-        create: primaryTechnicalLead,
-      },
-    },
-    secondaryTechnicalLead: secondaryTechnicalLead
-      ? {
-          connectOrCreate: {
-            where: {
-              email: secondaryTechnicalLead.email,
-            },
-            create: secondaryTechnicalLead,
-          },
-        }
-      : undefined,
-  };
-
-  // let request: PrivateCloudRequest;
-
-  // try {
-  //   request = await prisma.privateCloudRequest.update({
-  //     where: {
-  //       id: requestId,
-  //       decisionStatus: DecisionStatus.PENDING,
-  //     },
-  //     data: {
-  //       decisionStatus: decision,
-  //       comment,
-  //       active: decision === DecisionStatus.APPROVED,
-  //       decisionDate: new Date(),
-  //       decisionMakerEmail: authEmail,
-  //       requestedProject: {
-  //         update: requestedProjectData,
-  //       },
-  //     },
-  //     include: {
-  //       project: {
-  //         include: {
-  //           projectOwner: true,
-  //           primaryTechnicalLead: true,
-  //           secondaryTechnicalLead: true,
-  //         },
-  //       },
-  //       requestedProject: {
-  //         include: {
-  //           projectOwner: true,
-  //           primaryTechnicalLead: true,
-  //           secondaryTechnicalLead: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // } catch (e) {
-  //   if (e instanceof Prisma.PrismaClientKnownRequestError) {
-  //     if (e.code === "P2025") {
-  //       throw new Error("Request not found or already has a decision.");
-  //     }
-  //   }
-  //   throw e;
-  // }
-
-  // if (request.type === "DELETE") {
-  //   throw Error("Delete is dissabled");
-  //   return;
-  // }
-
-  // if (request.decisionStatus === RequestDecision.APPROVED) {
-  //   await sendNatsMessage(request.type, request.requestedProject);
-
-  //   if (request.requestedProject.cluster === Cluster.GOLD) {
-  //     const goldDrRequest = { ...request };
-  //     goldDrRequest.requestedProject.cluster = Cluster.GOLDDR;
-  //     await sendNatsMessage(goldDrRequest.type, goldDrRequest.requestedProject);
-  //   }
-  // }
-  // if (request.decisionStatus === RequestDecision.Rejected) {
-  //   sendRejectEmail(request);
-  // }
-
-  // return request;
 }

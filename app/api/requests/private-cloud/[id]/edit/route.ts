@@ -11,7 +11,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { EditRequestBodySchema, EditRequestBody, UserInput } from "@/schema";
 import { string, z } from "zod";
-import editRequest from "@/app/requestActions/private-cloud/editRequest";
+import editRequest from "@/requestActions/private-cloud/editRequest";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({

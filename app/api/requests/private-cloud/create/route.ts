@@ -4,7 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Prisma } from "@prisma/client";
 import { CreateRequestBodySchema, CreateRequestBody } from "@/schema";
 import { PrivateCloudRequest } from "@prisma/client";
-import createRequest from "@/app/requestActions/private-cloud/createRequest";
+import createRequest from "@/requestActions/private-cloud/createRequest";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
