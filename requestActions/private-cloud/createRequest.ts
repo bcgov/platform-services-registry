@@ -8,13 +8,8 @@ import {
   PrivateCloudRequest,
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 import generateLicensePlate from "@/lib/generateLicencePlate";
-import {
-  CreateRequestBodySchema,
-  CreateRequestBody,
-  UserInput,
-} from "@/schema";
+import { CreateRequestBody } from "@/schema";
 
 const defaultQuota = {
   cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,

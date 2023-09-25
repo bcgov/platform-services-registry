@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import {
-  PrivateCloudRequest,
-  DecisionStatus,
-  PrivateCloudRequestedProject,
-  PrivateCloudRequestedProjectPayload,
-  Cluster,
-} from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { DecisionStatus, Cluster } from "@prisma/client";
 import { string, z } from "zod";
 import { DecisionRequestBodySchema } from "@/schema";
-import { checkObjectEquality } from "@/lib/isProjectEqual";
-import decisionRequest, {
+import makeDecisionRequest, {
   PrivateCloudRequestWithAdminRequestedProject,
 } from "@/requestActions/private-cloud/decisionRequest";
 import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
@@ -64,7 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   try {
     const request: PrivateCloudRequestWithAdminRequestedProject =
-      await decisionRequest(
+      await makeDecisionRequest(
         requestId,
         decision,
         humanComment,

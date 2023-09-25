@@ -1,7 +1,6 @@
 import { ProjectStatus, DecisionStatus, Cluster } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { EditRequestBody } from "@/schema";
-import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
 import { Prisma } from "@prisma/client";
 
 export type PrivateCloudRequestWithRequestedProject =
@@ -31,7 +30,7 @@ export type PrivateCloudRequestWithAdminRequestedProject =
     };
   }>;
 
-export default async function decisionRequest(
+export default async function makeDecisionRequest(
   requestId: string,
   decision: DecisionStatus,
   comment: string | undefined,
