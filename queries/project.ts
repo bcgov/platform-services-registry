@@ -241,7 +241,7 @@ export async function publicCloudRequestsPaginated(
 
   if (userId) {
     searchQuery.$or = searchQuery.$or || [];
-    searchQuery.$or.push({ requesterId: userId });
+    searchQuery.$or.push({ requesterId: new ObjectId(userId) });
   }
 
   const totalCountResult = await prisma.publicCloudRequest.aggregateRaw({
@@ -437,9 +437,9 @@ export async function privateCloudProjectsPaginated(
 
     searchQuery.$or = searchQuery.$or || [];
     searchQuery.$or.push(
-      { projectOwnerId: userId },
-      { primaryTechnicalLeadId: userId },
-      { secondaryTechnicalLeadId: userId }
+      { projectOwnerId: new ObjectId(userId) },
+      { primaryTechnicalLeadId: new ObjectId(userId) },
+      { secondaryTechnicalLeadId: new ObjectId(userId) }
     );
   }
   
@@ -564,8 +564,8 @@ export async function privateCloudRequestsPaginated(
 
   if (userId) {
     searchQuery.$or = [
-      { "requestedProject.projectOwnerId": userId },
-      { "requestedProject.teamMemberIds": userId },
+      { "requestedProject.projectOwnerId": new ObjectId(userId) },
+      { "requestedProject.teamMemberIds": new ObjectId(userId) },
     ];
   }
 
