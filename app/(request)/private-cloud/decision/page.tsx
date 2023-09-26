@@ -9,7 +9,6 @@ import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/Create";
-import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
@@ -20,9 +19,8 @@ export default function Page() {
   });
 
   const { push } = useRouter();
-  
-  const [openCreate, setOpenCreate] = useState(false);
-  const [openReturn, setOpenReturn] = useState(false);
+
+  const [open, setOpen] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,10 +59,8 @@ export default function Page() {
       }
 
       const result = await response.json();
-      console.log("Success:", result);
 
-      setOpenCreate(false)
-      setOpenReturn(true)
+      console.log("Success:", result);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -82,7 +78,7 @@ export default function Page() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(() => setOpenCreate(true))}>
+      <form onSubmit={handleSubmit(() => setOpen(true))}>
         <div className="space-y-12">
           <ProjectDescription register={register} errors={errors} />
           <TeamContacts
@@ -94,13 +90,6 @@ export default function Page() {
             secondTechLead={secondTechLead}
             secondTechLeadOnClick={secondTechLeadOnClick}
             control={control}
-          />
-          <CommonComponents
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
           />
         </div>
 
@@ -115,14 +104,10 @@ export default function Page() {
         </div>
       </form>
       <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
+        open={open}
+        setOpen={setOpen}
         handleSubmit={handleSubmit(onSubmit)}
         isLoading={isLoading}
-      />
-      <ReturnModal
-        open={openReturn}
-        setOpen={setOpenReturn}
       />
     </div>
   );

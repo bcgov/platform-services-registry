@@ -21,7 +21,7 @@ function EmptyBody() {
         height={128}
         style={{
           maxWidth: "100%",
-          height: "auto",
+          height: "auto"
         }}
       />
       <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">
@@ -33,7 +33,10 @@ function EmptyBody() {
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">
         Private Cloud Openshift Platform
       </span>
-      <Link className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2" href="/private-cloud/products">
+      <Link
+        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
+        href="/private-cloud/products"
+      >
         REQUEST A NEW PROJECT SET
       </Link>
     </div>
@@ -79,7 +82,9 @@ export default function TableBody({ headers, rows }: TableProps) {
                     key={row.licencePlate + i}
                     className="hover:bg-tableheadergrey"
                     onClick={() =>
-                      router.push(path.join(pathname, row.licencePlate))
+                      router.push(
+                        path.join(pathname as string, row.licencePlate)
+                      )
                     }
                   >
                     {headers.map((value, index) => (
