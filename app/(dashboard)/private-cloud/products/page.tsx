@@ -15,11 +15,11 @@ const headers = [
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
   { field: "licencePlate", headerName: "Licence Plate" },
-  { field: "edit", headerName: "" },
+  { field: "edit", headerName: "" }
 ];
 
 export default async function ProductsTable({
-  searchParams,
+  searchParams
 }: {
   searchParams: {
     search: string;

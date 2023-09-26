@@ -7,7 +7,7 @@ export default async function ProductsTableSkeleton() {
       title="Products in Private Cloud OpenShift Platform"
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={[...new Array(10)].map((_, i) => (
-        <TableRowSkeleton key={i}/>
+        <TableRowSkeleton key={i} />
       ))}
       total={10}
       currentPage={1}

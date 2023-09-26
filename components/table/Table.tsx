@@ -8,7 +8,7 @@ export default function Table({
   currentPage,
   pageSize,
   total,
-  tableBody,
+  tableBody
 }: {
   title: string;
   description: string;
