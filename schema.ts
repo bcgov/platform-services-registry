@@ -4,7 +4,6 @@ import {
   DefaultStorageOptions,
   Cluster,
   Ministry,
-  CommonComponentsOptions,
 } from "@prisma/client";
 import { string, number, z } from "zod";
 
