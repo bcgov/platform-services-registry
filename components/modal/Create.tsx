@@ -13,7 +13,12 @@ export default function Modal({
   handleSubmit: any;
   isLoading: boolean;
 }) {
+  const [confirm, setConfirm] = useState(true)
   const cancelButtonRef = useRef(null);
+
+  const handleCheck = () => {
+    setConfirm(!confirm)
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -47,54 +52,113 @@ export default function Modal({
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:p-6">
-                <div>
-                  <div className="mt-3 sm:mt-5">
-                    <Dialog.Title
-                      as="h3"
-                      className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
-                    >
-                      All Set?
-                    </Dialog.Title>
-                    <div className="mt-2">
-                      <p className="font-bcsans text-sm text-gray-900">
-                        After hitting request, our smart robots will start
-                        working hard behind the scenes. There is one step, the
-                        approval process, where a human is involved. They'll
-                        take the opportunity, if needed, to reach out and have
-                        an on-boarding conversation with you.
+                <div className="mt-3 sm:mt-5">
+                  <Dialog.Title
+                    as="h3"
+                    className="font-bcsans text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
+                  >
+                    All Set?
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="font-bcsans text-sm text-gray-900">
+                      After hitting request, our smart robots will start
+                      working hard behind the scenes. There is one step, the
+                      approval process, where a human is involved. They'll
+                      take the opportunity, if needed, to reach out and have
+                      an on-boarding conversation with you.
+                    </p>
+                    <p className="font-bcsans text-sm text-gray-900 mt-4">
+                      Also, look out for our Notification emails that will
+                      provide you with valuable information regarding your
+                      product status and details.
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
+                    <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
+                      <span className="font-bold text-blue-700 font-sans text-xs">
+                        i
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">
+                        Note: 
                       </p>
-                      <p className="font-bcsans text-sm text-gray-900 mt-4">
-                        Also, look out for our Notification emails that will
-                        provide you with valuable information regarding your
-                        product status and details.
+                      <p className="font-bcsans text-sm text-blue-700 mt-1">
+                        The approval of new project set creation request 
+                        is subject to having a signed Memorandum of 
+                        Understanding (MoU) with the Public Cloud Team. If 
+                        you do not have a MoU in place, please email us at 
+                        <span> </span>
+                        <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
+                          cloud.pathfinder@gov.bc.ca
+                        </a>
+                        .
+                      </p>
+                      <p className="font-bcsans text-sm text-blue-700 mt-4">
+                        In order to request a project deletion, please email 
+                        us at
+                        <span> </span>
+                        <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
+                          cloud.pathfinder@gov.bc.ca
+                        </a>
+                        .
                       </p>
                     </div>
                   </div>
+                  <div className="flex border-t-1 mt-8 pt-4">
+                    <input
+                      id="none"
+                      name="none"
+                      type="checkbox"
+                      checked={confirm}
+                      onChange={handleCheck}
+                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 mt-4 mr-4"
+                    />
+                    <p className="font-bcsans text-sm text-gray-900 mt-4"> 
+                      By checking this box, I confirm that I have read and understood 
+                      the roles and responsibilities as described in the <span> </span>
+                      <a href="" className="underline text-blue-700">Onboarding Guide.</a>
+                    </p>
+                  </div>
                 </div>
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  {/* <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                    onClick={() => setOpen(false)}
-                  >
-                    Deactivate
-                  </button> */}
                   <button
                     type="button"
-                    onClick={handleSubmit}
-                    className="inline-flex w-full justify-center mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                  >
-                    SUBMIT REQUEST
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full items-center justify-center rounded-md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
+                    // "mt-3 inline-flex items-center justify-center -md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >
-                    Cancel
+                    PREVIOUS
                   </button>
-                  {isLoading ? <div>Loading...</div> : null}
+                  {isLoading ? 
+                    <button disabled type="button" className="inline-flex justify-center rounded-md bg-bcorange/50 px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2">
+                      <div className="mr-2 mt-1 inline-block h-3 w-3 animate-spin rounded-full border-3 border-solid border-current border-r-transparent align-[-0.125em] text-primary motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                        <span
+                          className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                        </span>
+                      </div>
+                      Loading...
+                    </button>
+                  : 
+                    confirm ? 
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
+                      >
+                        SUBMIT REQUEST
+                      </button>
+                    :
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled
+                        className="inline-flex justify-center rounded-md bg-bcorange/50 px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
+                      >
+                        SUBMIT REQUEST
+                      </button>
+                  }
                 </div>
               </Dialog.Panel>
             </Transition.Child>

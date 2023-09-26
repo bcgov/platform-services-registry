@@ -434,6 +434,7 @@ export async function privateCloudProjectsPaginated(
   }
 
   if (userId) {
+
     searchQuery.$or = searchQuery.$or || [];
     searchQuery.$or.push(
       { projectOwnerId: userId },
@@ -441,6 +442,7 @@ export async function privateCloudProjectsPaginated(
       { secondaryTechnicalLeadId: userId }
     );
   }
+  
 
   // First, get the total count of matching documents
   const totalCountResult = await prisma.privateCloudProject.aggregateRaw({
