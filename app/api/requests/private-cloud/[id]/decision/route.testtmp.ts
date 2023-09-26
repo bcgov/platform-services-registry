@@ -5,8 +5,10 @@ import { POST } from "@/app/api/requests/private-cloud/create/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
 
+const id = "123";
+
 const BASE_URL = "http://localhost:3000";
-const API_URL = `${BASE_URL}/api/requests/private-cloud/create`;
+const API_URL = `${BASE_URL}/api/requests/private-cloud/${id}/decision`;
 
 const createRequestBody = {
   name: "Sample Project",
@@ -17,54 +19,54 @@ const createRequestBody = {
     firstName: "John",
     lastName: "Doe",
     email: "oamar.kanji@gov.bc.ca",
-    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
+    ministry: "AGRI" // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
+    ministry: "AGRI" // Assuming AGRI is a valid enum value for Ministry
   },
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     workflowManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     formDesignAndSubmission: {
       planningToUse: true,
-      implemented: true,
+      implemented: true
     },
     identityManagement: {
       planningToUse: false,
-      implemented: false,
+      implemented: false
     },
     paymentServices: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     documentManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     endUserNotificationAndSubscription: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     publishing: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     businessIntelligence: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     other: "Some other services",
-    noServices: false,
-  },
+    noServices: false
+  }
 };
 
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<
@@ -72,17 +74,17 @@ const mockedGetServerSession = getServerSession as unknown as MockedFunction<
 >;
 
 jest.mock("next-auth/next", () => ({
-  getServerSession: jest.fn(),
+  getServerSession: jest.fn()
 }));
 
 jest.mock("next-auth", () => ({
   default: jest.fn(), // for default export
-  NextAuth: jest.fn(), // for named export
+  NextAuth: jest.fn() // for named export
 }));
 
 jest.mock("../../../auth/[...nextauth]/route", () => ({
   GET: jest.fn(),
-  POST: jest.fn(),
+  POST: jest.fn()
 }));
 
 describe("Create Private Cloud Request Route", () => {
@@ -96,7 +98,7 @@ describe("Create Private Cloud Request Route", () => {
 
     const req = new NextRequest(API_URL, {
       method: "POST",
-      body: JSON.stringify(createRequestBody),
+      body: JSON.stringify(createRequestBody)
     });
 
     const response = await POST(req);
@@ -107,13 +109,13 @@ describe("Create Private Cloud Request Route", () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: "oamar.kanji@gov.bc.ca",
-        roles: [],
-      },
+        roles: []
+      }
     });
 
     const req = new NextRequest(API_URL, {
       method: "POST",
-      body: JSON.stringify(createRequestBody),
+      body: JSON.stringify(createRequestBody)
     });
 
     const response = await POST(req);
@@ -136,13 +138,13 @@ describe("Create Private Cloud Request Route", () => {
     const requestedProject =
       await prisma.privateCloudRequestedProject.findUnique({
         where: {
-          id: request.requestedProjectId,
+          id: request.requestedProjectId
         },
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
+          secondaryTechnicalLead: true
+        }
       });
 
     if (!requestedProject) {
