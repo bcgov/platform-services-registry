@@ -8,12 +8,6 @@ export default function SignInPage() {
   const router = useRouter();
 
   return (
-    // <section className="py-24">
-    //   <div className="container">
-    //     <h1 className="text-2xl font-bold">This is the login page</h1>
-    //     <LoginButton />
-    //   </div>
-    // </section>
     <div className="flex flex-col m-12">
       <h1 className="font-bcsans text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
         Welcome to BC Gov's Product Registry
@@ -69,7 +63,29 @@ export default function SignInPage() {
           </li>
       </ul>
 
-
+      <div className="bg-blue-50 mt-8 p-4 rounded-md flex">
+        <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
+          <span className="font-bold text-blue-700 font-sans text-xs">
+            i
+          </span>
+        </div>
+        <div>
+          <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">
+            Note: 
+          </p>
+          <p className="font-bcsans text-sm text-blue-700 mt-1">
+            The approval of new project set creation request 
+            is subject to having a signed Memorandum of 
+            Understanding (MoU) with the Public Cloud Team. If 
+            you do not have a MoU in place, please email us at 
+            <span> </span>
+            <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
+              cloud.pathfinder@gov.bc.ca
+            </a>
+            .
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Logo from "@/components/assets/logo.svg";
 import ProfileDropdown from "@/components/nav/ProfileDropdown";
+import Link from "next/link";
 
 export default function NavBar() {
   return (
