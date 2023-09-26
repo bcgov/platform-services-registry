@@ -8,23 +8,25 @@ import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/Create";
+import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true,
+    required: true
   });
 
   const { push } = useRouter();
 
-  const [open, setOpen] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(CreateRequestBodySchema),
+    resolver: zodResolver(CreateRequestBodySchema)
   });
 
   console.log("VALUES");
@@ -40,9 +42,9 @@ export default function Page() {
       const response = await fetch("/api/requests/private-cloud/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
 
       console.log("response", response);
@@ -52,8 +54,10 @@ export default function Page() {
       }
 
       const result = await response.json();
-
       console.log("Success:", result);
+
+      setOpenCreate(false);
+      setOpenReturn(true);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -93,11 +97,12 @@ export default function Page() {
         </form>
       </FormProvider>
       <CreateModal
-        open={open}
-        setOpen={setOpen}
+        open={openCreate}
+        setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} />
     </div>
   );
 }

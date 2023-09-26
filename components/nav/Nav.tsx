@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Logo from "@/components/assets/logo.svg";
 import ProfileDropdown from "@/components/nav/ProfileDropdown";
+import Link from "next/link";
 
 export default function NavBar() {
   return (
@@ -15,16 +16,19 @@ export default function NavBar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
-              <Image
-                alt="BC Platform Services Product Registry"
-                src={Logo}
-                width={56}
-                height={50}
-                style={{
-                  maxWidth: "100%",
-                  height: "auto"
-                }}
-              />
+             <Link href="/private-cloud/products">
+
+                <Image
+                  alt="BC Platform Services Product Registry"
+                  src={Logo}
+                  width={56}
+                  height={50}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }}
+                />
+              </Link>
               <span className="ml-5 hidden items-center text-2xl leading-none text-white md:inline">
                 <span className="mr-2 font-roboto font-thin">
                   BC Plaftorm Services
