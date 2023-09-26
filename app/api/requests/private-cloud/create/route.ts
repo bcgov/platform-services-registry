@@ -53,7 +53,12 @@ export async function POST(req: NextRequest) {
 
   // sendCreateRequestEmails(createRequest.requestedProject);
 
-  return NextResponse.json(request, {
+  // return NextResponse.json(request, {
+  //   status: 200,
+  // });
+
+  return new NextResponse(JSON.stringify(request), {
     status: 200,
+    headers: { "content-type": "application/json" },
   });
 }

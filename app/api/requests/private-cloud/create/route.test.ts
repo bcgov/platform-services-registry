@@ -12,18 +12,18 @@ const createRequestBody = {
   name: "Sample Project",
   description: "This is a sample project description.",
   cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: "CITZ", // Assuming MINISTRY_X is a valid enum value for Ministry
+  ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
   projectOwner: {
     firstName: "John",
     lastName: "Doe",
-    email: "john.doe@example.com",
-    ministry: "CITZ", // Assuming MINISTRY_X is a valid enum value for Ministry
+    email: "oamar.kanji@gov.bc.ca",
+    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: "CITZ", // Assuming MINISTRY_Y is a valid enum value for Ministry
+    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
   },
   commonComponents: {
     addressAndGeolocation: {
@@ -36,17 +36,32 @@ const createRequestBody = {
     },
     formDesignAndSubmission: {
       planningToUse: true,
-      implemented: false,
+      implemented: true,
     },
     identityManagement: {
-      planningToUse: true,
+      planningToUse: false,
       implemented: false,
     },
     paymentServices: {
       planningToUse: true,
       implemented: false,
     },
-
+    documentManagement: {
+      planningToUse: false,
+      implemented: true,
+    },
+    endUserNotificationAndSubscription: {
+      planningToUse: true,
+      implemented: false,
+    },
+    publishing: {
+      planningToUse: false,
+      implemented: true,
+    },
+    businessIntelligence: {
+      planningToUse: true,
+      implemented: false,
+    },
     other: "Some other services",
     noServices: false,
   },
@@ -89,9 +104,13 @@ describe("Create Private Cloud Request Route", () => {
     });
 
     const response = await POST(req);
+    expect(response.status).toBe(200);
+  });
 
-    console.log(await response.json());
-
-    expect(response.status).toBe(400);
+  // test to check if a request is created in the database
+  test("should create a request in the database", async () => {
+    const requests = await prisma.privateCloudRequest.findMany();
+    console.log(requests);
+    expect(requests.length).toBe(1);
   });
 });

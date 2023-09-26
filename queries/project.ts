@@ -361,11 +361,25 @@ export async function privateCloudProjectsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
-  userId?: string
+  userEmail?: string | undefined // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: Project[];
   total: number;
 }> {
+  let userId: string | undefined = undefined;
+
+  if (userEmail) {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: userEmail,
+      },
+    });
+
+    if (user) {
+      userId = user.id;
+    }
+  }
+
   // Initialize the search/filter query
   const searchQuery: any = {
     status: "ACTIVE",
