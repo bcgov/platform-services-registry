@@ -37,13 +37,13 @@ export default function AsyncAutocomplete({
   label,
   placeHolder,
   className,
-  defaultEmail,
+  disabled
 }: {
   name: string;
   label: string;
   placeHolder: string;
   className?: string;
-  defaultEmail?: string;
+  disabled?: boolean;
 }) {
   const [selected, setSelected] = useState<Person | "">("");
   const [query, setQuery] = useState<string>("");
@@ -54,17 +54,21 @@ export default function AsyncAutocomplete({
     setValue,
     setError,
     clearErrors,
+    watch
   } = useFormContext();
+
+  const email = watch(name + ".email");
+  console.log("EMAIL", email);
 
   const {
     data: people,
     isLoading,
-    error,
+    error
   } = useQuery<Person[], Error>(
     ["people", query],
     () => fetchPeople(query || ""),
     {
-      enabled: !!query,
+      enabled: !!query
     }
   );
 
@@ -77,7 +81,7 @@ export default function AsyncAutocomplete({
       givenName: firstName,
       surname: lastName,
       mail: email,
-      displayName,
+      displayName
     } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
@@ -86,7 +90,7 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry,
+      ministry
     });
 
     if (!parsedParams.success) {
@@ -98,7 +102,7 @@ export default function AsyncAutocomplete({
       setError(name, {
         type: "manual",
         message:
-          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry",
+          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry"
       });
     } else {
       clearErrors(name);
@@ -108,15 +112,15 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry,
+      ministry
     });
   };
 
   useEffect(() => {
-    if (defaultEmail) {
-      setQuery(defaultEmail);
+    if (email) {
+      setQuery(email);
     }
-  }, [defaultEmail]);
+  }, [email]);
 
   return (
     <div className={className}>
@@ -129,16 +133,25 @@ export default function AsyncAutocomplete({
       >
         {label}
       </label>
-      <Combobox value={selected} onChange={autocompleteOnChangeHandler}>
+      <Combobox
+        value={selected}
+        onChange={autocompleteOnChangeHandler}
+        disabled={disabled}
+      >
         <div className="relative mt-1">
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
               autoComplete="off"
-              className="rounded-md border-slate-300 w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={(person: Person) => person?.mail}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}
               value={query}
+              className={classNames(
+                "rounded-md border-slate-300 w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             />
           </div>
           <Transition

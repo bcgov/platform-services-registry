@@ -12,7 +12,7 @@ const defaultCpuOptionsLookup: QuotaOptions = {
   CPU_REQUEST_4_LIMIT_8: "4 CPU Request, 8 CPU Limit",
   CPU_REQUEST_8_LIMIT_16: "8 CPU Request, 16 CPU Limit",
   CPU_REQUEST_16_LIMIT_32: "16 CPU Request, 32 CPU Limit",
-  CPU_REQUEST_32_LIMIT_64: "32 CPU Request, 64 CPU Limit",
+  CPU_REQUEST_32_LIMIT_64: "32 CPU Request, 64 CPU Limit"
 };
 
 const defaultMemoryOptionsLookup: QuotaOptions = {
@@ -21,7 +21,7 @@ const defaultMemoryOptionsLookup: QuotaOptions = {
   MEMORY_REQUEST_8_LIMIT_16: "8 GB Request, 16 GB Limit",
   MEMORY_REQUEST_16_LIMIT_32: "16 GB Request, 32 GB Limit",
   MEMORY_REQUEST_32_LIMIT_64: "32 GB Request, 64 GB Limit",
-  MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit",
+  MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit"
 };
 
 const defaultStorageOptionsLookup: QuotaOptions = {
@@ -33,7 +33,7 @@ const defaultStorageOptionsLookup: QuotaOptions = {
   STORAGE_64: "64 GB",
   STORAGE_128: "128 GB",
   STORAGE_256: "256 GB",
-  STORAGE_512: "512 GB",
+  STORAGE_512: "512 GB"
 };
 
 type QuotaOptionsLookup = {
@@ -45,14 +45,14 @@ type QuotaOptionsLookup = {
 const quotaOptionsLookup: QuotaOptionsLookup = {
   cpu: defaultCpuOptionsLookup,
   memory: defaultMemoryOptionsLookup,
-  storage: defaultStorageOptionsLookup,
+  storage: defaultStorageOptionsLookup
 };
 
 function QuotaInput({
   quotaName,
   nameSpace,
   licensePlate,
-  selectOptions,
+  selectOptions
 }: {
   quotaName: "cpu" | "memory" | "storage";
   nameSpace: "production" | "test" | "development" | "tools";
@@ -62,6 +62,7 @@ function QuotaInput({
   const {
     register,
     formState: { errors },
+    values
   } = useFormContext();
 
   // Make quotaName start with uppercase letter
@@ -69,7 +70,7 @@ function QuotaInput({
     quotaName.charAt(0).toUpperCase() + quotaName.slice(1);
 
   return (
-    <div className="mb-12">
+    <div className="mb-4">
       <label
         htmlFor={quotaName}
         className="block text-sm leading-6 font-bold text-gray-900 mt-8"

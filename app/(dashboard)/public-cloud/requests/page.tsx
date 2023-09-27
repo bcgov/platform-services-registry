@@ -8,17 +8,18 @@ import { redirect } from "next/navigation";
 
 const headers = [
   { field: "type", headerName: "Type" },
+  { field: "status", headerName: "Status" },
   { field: "name", headerName: "Name" },
   { field: "ministry", headerName: "Ministry" },
   { field: "cluster", headerName: "Cluster" },
   { field: "projectOwner", headerName: "Project Owner" },
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
-  { field: "licencePlate", headerName: "Licence Plate" },
+  { field: "licencePlate", headerName: "Licence Plate" }
 ];
 
 export default async function RequestsTable({
-  searchParams,
+  searchParams
 }: {
   searchParams: {
     search: string;

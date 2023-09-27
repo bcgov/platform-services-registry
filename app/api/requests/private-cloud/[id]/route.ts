@@ -5,12 +5,12 @@ import { Prisma } from "@prisma/client";
 import { string, z } from "zod";
 
 const GetParamsSchema = z.object({
-  id: string(),
+  id: string()
 });
 
 type Params = z.infer<typeof GetParamsSchema>;
 
-type PrivateCloudRequestWithCurrentAndRequestedProject =
+export type PrivateCloudRequestWithCurrentAndRequestedProject =
   Prisma.PrivateCloudRequestGetPayload<{
     include: {
       requestedProject: {
@@ -46,29 +46,29 @@ export async function GET(
     const request: PrivateCloudRequestWithCurrentAndRequestedProject | null =
       await prisma.privateCloudRequest.findUnique({
         where: {
-          id,
+          id
         },
         include: {
           project: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-            },
+              secondaryTechnicalLead: true
+            }
           },
           requestedProject: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-            },
-          },
-        },
+              secondaryTechnicalLead: true
+            }
+          }
+        }
       });
 
     if (!request) {
-      return new NextResponse("No project found for this licece plate.", {
-        status: 404,
+      return new NextResponse("No project found with this licece plate.", {
+        status: 404
       });
     }
 

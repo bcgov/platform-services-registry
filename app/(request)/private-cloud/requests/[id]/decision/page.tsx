@@ -1,71 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { DecisionRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/Create";
+import CreateModal from "@/components/modal/CreatePublicCloud";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
 import Quotas from "@/components/form/Quotas";
 import { useQuery } from "@tanstack/react-query";
 import SubmitButton from "@/components/buttons/SubmitButton";
+import { PrivateCloudRequestWithCurrentAndRequestedProject } from "@/app/api/requests/private-cloud/[id]/route";
 import CommonComponents from "@/components/form/CommonComponents";
 
-async function fetchRequestedProject(id: string): Promise<object> {
+async function fetchRequestedProject(
+  id: string
+): Promise<PrivateCloudRequestWithCurrentAndRequestedProject> {
   const res = await fetch(`/api/requests/private-cloud/${id}`);
   if (!res.ok) {
     throw new Error("Network response was not ok for fetch user image");
   }
 
   // Re format data to work with form
-  const { requestedProject } = await res.json();
+  const data = await res.json();
 
   // Secondaty technical lead should only be included if it exists
-  if (requestedProject.secondaryTechnicalLead === null) {
-    delete requestedProject.secondaryTechnicalLead;
+  if (data.requestedProject.secondaryTechnicalLead === null) {
+    delete data.requestedProject.secondaryTechnicalLead;
   }
 
-  // Remove null values from common components
-  for (const component of Object.entries(requestedProject.commonComponents)) {
-    if (component[1] === null) {
-      delete requestedProject.commonComponents[component[0]];
-    }
-  }
-
-  return requestedProject;
+  return data;
 }
 
 export default function RequestDecision({
-  params,
+  params
 }: {
   params: { id: string };
 }) {
   const { data: session, status } = useSession({
-    required: true,
+    required: true
   });
 
   const { push } = useRouter();
 
   const [open, setOpen] = useState(false);
+  const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data } = useQuery<any, Error>(
-    ["requestedProject", params.id],
-    () => fetchRequestedProject(params.id),
-    {
-      enabled: !!params.id,
-    }
-  );
+  const { data } = useQuery<
+    PrivateCloudRequestWithCurrentAndRequestedProject,
+    Error
+  >(["requestedProject", params.id], () => fetchRequestedProject(params.id), {
+    enabled: !!params.id
+  });
 
   const methods = useForm({
     resolver: zodResolver(DecisionRequestBodySchema),
-    values: { comment: "", decision: "", ...data },
+    values: { comment: "", decision: "", ...data?.requestedProject }
   });
+
+  useEffect(() => {
+    if (data && data.decisionStatus !== "PENDING") {
+      setDisabled(true);
+    }
+  }, [data]);
 
   console.log("watch", methods.watch());
 
@@ -80,9 +82,9 @@ export default function RequestDecision({
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(data)
         }
       );
 
@@ -106,7 +108,7 @@ export default function RequestDecision({
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
-      methods.unregister("secondaryTechnicalLead");
+      methods.unregister("requestedProject.secondaryTechnicalLead");
     }
   };
 
@@ -115,16 +117,19 @@ export default function RequestDecision({
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="space-y-12">
-            <ProjectDescription />
+            <ProjectDescription disabled={isDisabled} />
             <TeamContacts
+              disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
-              projectOwnerDefaultEmail={data?.projectOwner?.email}
+              projectOwnerDefaultEmail={
+                data?.requestedProject?.projectOwner?.email
+              }
               primaryTechnicalLeadDefaultEmail={
-                data?.primaryTechnicalLead?.email
+                data?.requestedProject?.primaryTechnicalLead?.email
               }
               secondaryTechnicalLeadDefaultEmail={
-                data?.secondaryTechnicalLead?.email
+                data?.requestedProject?.secondaryTechnicalLead?.email
               }
             />
             <Quotas licensePlate="ac4r5" />

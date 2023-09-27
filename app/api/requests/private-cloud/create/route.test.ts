@@ -1,14 +1,20 @@
 import { prisma } from "@/jest.setup";
+import {
+  Prisma,
+  PrivateCloudRequest,
+  PrivateCloudRequestedProject
+} from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import NextAuth from "next-auth";
 import { POST } from "@/app/api/requests/private-cloud/create/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
+import { CreateRequestBody } from "@/schema";
 
 const BASE_URL = "http://localhost:3000";
 const API_URL = `${BASE_URL}/api/requests/private-cloud/create`;
 
-const createRequestBody = {
+const createRequestBody: CreateRequestBody = {
   name: "Sample Project",
   description: "This is a sample project description.",
   cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster
@@ -17,54 +23,54 @@ const createRequestBody = {
     firstName: "John",
     lastName: "Doe",
     email: "oamar.kanji@gov.bc.ca",
-    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
+    ministry: "AGRI" // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
+    ministry: "AGRI" // Assuming AGRI is a valid enum value for Ministry
   },
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     workflowManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     formDesignAndSubmission: {
       planningToUse: true,
-      implemented: true,
+      implemented: true
     },
     identityManagement: {
       planningToUse: false,
-      implemented: false,
+      implemented: false
     },
     paymentServices: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     documentManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     endUserNotificationAndSubscription: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     publishing: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     businessIntelligence: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     other: "Some other services",
-    noServices: false,
-  },
+    noServices: false
+  }
 };
 
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<
@@ -72,31 +78,26 @@ const mockedGetServerSession = getServerSession as unknown as MockedFunction<
 >;
 
 jest.mock("next-auth/next", () => ({
-  getServerSession: jest.fn(),
+  getServerSession: jest.fn()
 }));
 
 jest.mock("next-auth", () => ({
   default: jest.fn(), // for default export
-  NextAuth: jest.fn(), // for named export
+  NextAuth: jest.fn() // for named export
 }));
 
 jest.mock("../../../auth/[...nextauth]/route", () => ({
   GET: jest.fn(),
-  POST: jest.fn(),
+  POST: jest.fn()
 }));
 
 describe("Create Private Cloud Request Route", () => {
-  beforeAll(async () => {
-    await prisma.privateCloudRequest.deleteMany();
-  });
-
-  // test to check if an error is thrown if the user is not authenticated
   test("should return 403 if user is not authenticated", async () => {
     mockedGetServerSession.mockResolvedValue(null);
 
     const req = new NextRequest(API_URL, {
       method: "POST",
-      body: JSON.stringify(createRequestBody),
+      body: JSON.stringify(createRequestBody)
     });
 
     const response = await POST(req);
@@ -107,42 +108,41 @@ describe("Create Private Cloud Request Route", () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: "oamar.kanji@gov.bc.ca",
-        roles: [],
-      },
+        roles: []
+      }
     });
 
     const req = new NextRequest(API_URL, {
       method: "POST",
-      body: JSON.stringify(createRequestBody),
+      body: JSON.stringify(createRequestBody)
     });
 
     const response = await POST(req);
     expect(response.status).toBe(200);
   });
 
-  // test to check if a request is created in the database
   test("should create a request in the database", async () => {
-    const requests = await prisma.privateCloudRequest.findMany();
-    console.log(requests);
+    const requests: PrivateCloudRequest[] =
+      await prisma.privateCloudRequest.findMany();
     expect(requests.length).toBe(1);
   });
 
-  // test to check if the request created in the database has the correct data
   test("should create a request with the correct data", async () => {
-    const requests = await prisma.privateCloudRequest.findMany();
+    const requests: PrivateCloudRequest[] =
+      await prisma.privateCloudRequest.findMany();
 
-    const request = requests[0];
+    const request: PrivateCloudRequest = requests[0];
 
     const requestedProject =
       await prisma.privateCloudRequestedProject.findUnique({
         where: {
-          id: request.requestedProjectId,
+          id: request.requestedProjectId
         },
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
+          secondaryTechnicalLead: true
+        }
       });
 
     if (!requestedProject) {

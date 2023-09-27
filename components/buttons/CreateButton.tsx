@@ -10,7 +10,7 @@ export default function Tabs() {
 
   return (
     <Link
-      className=" flex mr-20 rounded-md bg-bcorange px-4 py-2 h-10  font-bcsans text-bcblue text-base font-light tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      className="flex justify-center items-center mr-20 rounded-md bg-bcorange px-4 py-2 h-10 font-bcsans text-bcblue text-base font-light tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm sm:px-3 sm:tracking-[.1em]"
       type="button"
       href={`/${pathname.split("/")[1]}/products/create`}
     >

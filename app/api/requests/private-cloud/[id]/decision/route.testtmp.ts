@@ -1,7 +1,8 @@
 import { prisma } from "@/jest.setup";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import NextAuth from "next-auth";
-import { POST } from "@/app/api/requests/private-cloud/create/route";
+import { POST as createRequest } from "@/app/api/requests/private-cloud/create/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -88,8 +89,19 @@ jest.mock("../../../auth/[...nextauth]/route", () => ({
 }));
 
 describe("Create Private Cloud Request Route", () => {
+  let createRequestId;
+
   beforeAll(async () => {
-    await prisma.privateCloudRequest.deleteMany();
+    const req = new NextRequest(API_URL, {
+      method: "POST",
+      body: JSON.stringify(createRequestBody)
+    });
+
+    await createRequest(req);
+
+    const request = await prisma.privateCloudRequest.findFirst({});
+
+    createRequestId = request.id;
   });
 
   // test to check if an error is thrown if the user is not authenticated

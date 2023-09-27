@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/Create";
+import CreateModal from "@/components/modal/CreatePrivateCloud";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
@@ -18,7 +18,7 @@ export default function Page() {
     required: true
   });
 
-  const { push } = useRouter();
+  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -63,7 +63,8 @@ export default function Page() {
     }
 
     setIsLoading(false);
-    push("/private-cloud/products");
+    // router.back();
+    router.push("/private-cloud/requests");
   };
 
   const secondTechLeadOnClick = () => {
@@ -76,7 +77,7 @@ export default function Page() {
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
+        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription />
             <TeamContacts
