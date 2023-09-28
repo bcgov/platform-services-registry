@@ -14,7 +14,6 @@ import Quotas from "@/components/form/Quotas";
 import { useQuery } from "@tanstack/react-query";
 import SubmitButton from "@/components/buttons/SubmitButton";
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from "@/app/api/requests/private-cloud/[id]/route";
-import CommonComponents from "@/components/form/CommonComponents";
 
 async function fetchRequestedProject(
   id: string
@@ -26,6 +25,8 @@ async function fetchRequestedProject(
 
   // Re format data to work with form
   const data = await res.json();
+
+  console.log("DATA!", data);
 
   // Secondaty technical lead should only be included if it exists
   if (data.requestedProject.secondaryTechnicalLead === null) {
@@ -108,9 +109,11 @@ export default function RequestDecision({
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
-      methods.unregister("requestedProject.secondaryTechnicalLead");
+      methods.unregister("secondaryTechnicalLead");
     }
   };
+
+  console.log("DATA", data);
 
   return (
     <div>
@@ -122,17 +125,12 @@ export default function RequestDecision({
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
-              projectOwnerDefaultEmail={
-                data?.requestedProject?.projectOwner?.email
-              }
-              primaryTechnicalLeadDefaultEmail={
-                data?.requestedProject?.primaryTechnicalLead?.email
-              }
-              secondaryTechnicalLeadDefaultEmail={
-                data?.requestedProject?.secondaryTechnicalLead?.email
-              }
             />
-            <Quotas licensePlate="ac4r5" />
+            <Quotas
+              licensePlate="ac4r5"
+              disabled={isDisabled}
+              currentProject={data?.project}
+            />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />

@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { useFormContext } from "react-hook-form";
+import classNames from "@/components/utils/classnames";
+import { PrivateCloudProject } from "@prisma/client";
+import { name } from "@azure/msal-node/dist/packageMetadata";
 
 type QuotaOptions = {
   [key: string]: string;
@@ -52,17 +55,20 @@ function QuotaInput({
   quotaName,
   nameSpace,
   licensePlate,
-  selectOptions
+  selectOptions,
+  disabled,
+  quota
 }: {
   quotaName: "cpu" | "memory" | "storage";
   nameSpace: "production" | "test" | "development" | "tools";
   licensePlate: string;
   selectOptions: QuotaOptions;
+  disabled: boolean;
+  quota: any;
 }) {
   const {
     register,
-    formState: { errors },
-    values
+    formState: { errors }
   } = useFormContext();
 
   // Make quotaName start with uppercase letter
@@ -80,9 +86,15 @@ function QuotaInput({
       <div className="mt-2">
         <select
           defaultValue={""}
-          id="cpu"
+          id={quotaName + nameSpace}
           {...register(nameSpace + "Quota." + quotaName)}
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          disabled={disabled}
+          className={classNames(
+            "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+            disabled
+              ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+              : ""
+          )}
         >
           <option value="" disabled>
             Select {quotaNameStartUpperCase}
@@ -100,17 +112,26 @@ function QuotaInput({
           </p>
         )}
         <p className="mt-3 text-sm leading-6 text-gray-700">
-          <b>Current CPU:</b>
+          <b>Current {quotaName}:</b> {quota[quotaName]}
         </p>
         <p className="mt-3 text-sm leading-6 text-gray-700">
-          <b>Requested CPU:</b>
+          <b>Requested {quotaName}:</b> {quota[quotaName]}
         </p>
       </div>
     </div>
   );
 }
 
-export default function Quotas({ licensePlate }: { licensePlate: string }) {
+export default function Quotas({
+  licensePlate,
+  disabled,
+  currentProject
+}: {
+  licensePlate: string;
+  disabled: boolean;
+  currentProject: PrivateCloudProject;
+}) {
+  console.log("currentProject", currentProject);
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -138,6 +159,8 @@ export default function Quotas({ licensePlate }: { licensePlate: string }) {
                   selectOptions={quotaOptionsLookup[quotaName]}
                   licensePlate={licensePlate}
                   nameSpace={nameSpace}
+                  disabled={disabled}
+                  quota={""}
                 />
               ))}
             </div>
