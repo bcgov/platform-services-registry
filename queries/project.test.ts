@@ -5,7 +5,8 @@ import {
   ProjectStatus,
   DefaultCpuOptions,
   DefaultMemoryOptions,
-  DefaultStorageOptions
+  DefaultStorageOptions,
+  PrivateCloudProjectPayload
 } from "@prisma/client";
 
 const quota = {
@@ -14,7 +15,7 @@ const quota = {
   storage: DefaultStorageOptions.STORAGE_1
 };
 
-const createRequestBody = {
+const createProject: PrivateCloudProjectPayload = {
   name: "Sample Project",
   description: "This is a sample project description.",
   cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster
