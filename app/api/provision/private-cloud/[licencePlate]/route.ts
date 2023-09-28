@@ -5,10 +5,38 @@ import {
   PrivateCloudRequestedProject
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { string, z } from "zod";
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
+
+export type PrivateCloudRequestWithAllRelations =
+  Prisma.PrivateCloudRequestGetPayload<{
+    include: {
+      project: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+      adminRequestedProject: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+      requestedProject: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+    };
+  }>;
 
 const GetParamsSchema = z.object({
   licencePlate: string()
@@ -26,15 +54,24 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
   const { licencePlate } = params;
 
   try {
-    const request: PrivateCloudRequest | null =
-      await prisma.privateCloudRequest.findFirst({
+    const request: PrivateCloudRequestWithAllRelations | null =
+      await prisma.privateCloudRequest.findUnique({
         where: {
-          licencePlate: licencePlate,
-          active: true,
-          decisionStatus: DecisionStatus.APPROVED
+          decisionStatus: DecisionStatus.APPROVED,
+          licencePlate_active: {
+            licencePlate: licencePlate,
+            active: true
+          }
         },
         include: {
           project: {
+            include: {
+              projectOwner: true,
+              primaryTechnicalLead: true,
+              secondaryTechnicalLead: true
+            }
+          },
+          adminRequestedProject: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
@@ -58,21 +95,20 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
       });
     }
 
-    const requestedProject: PrivateCloudRequestedProject | null =
-      await prisma.privateCloudRequestedProject.findFirst({
-        where: {
-          id: request.requestedProjectId
-        }
-      });
-
-    if (!requestedProject) {
-      // Handle this case: return an error or create some default data
-      return new NextResponse("Requested project not found.", { status: 404 });
+    if (!request.requestedProject || !request.adminRequestedProject) {
+      console.log(
+        "Requested project or admin requested project not found for project: " +
+          licencePlate
+      );
+      return new NextResponse(
+        "Requested project or admin requested project not found.",
+        { status: 404 }
+      );
     }
 
     const updateRequest = prisma.privateCloudRequest.update({
       where: {
-        requestedProjectId: requestedProject.id
+        id: request.id
       },
       data: {
         decisionStatus: DecisionStatus.PROVISIONED,
@@ -80,12 +116,17 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
       }
     });
 
+    // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
     const upsertProject = prisma.privateCloudProject.upsert({
       where: {
         licencePlate: licencePlate
       },
-      update: requestedProject,
-      create: requestedProject
+      update: (request.adminRequestedProject
+        ? request.adminRequestedProject
+        : request.requestedProject) as Prisma.PrivateCloudProjectUpdateInput,
+      create: (request.adminRequestedProject
+        ? request.adminRequestedProject
+        : request.requestedProject) as Prisma.PrivateCloudProjectCreateInput
     });
 
     await prisma.$transaction([updateRequest, upsertProject]);

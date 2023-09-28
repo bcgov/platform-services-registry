@@ -13,12 +13,12 @@ import TeamContacts from "@/components/form/TeamContacts";
 import Quotas from "@/components/form/Quotas";
 import { useQuery } from "@tanstack/react-query";
 import SubmitButton from "@/components/buttons/SubmitButton";
-import { PrivateCloudRequestWithCurrentAndRequestedProject } from "@/app/api/requests/private-cloud/[id]/route";
+import { PrivateCloudRequestWithCurrentAndRequestedProject } from "@/app/api/request/private-cloud/[id]/route";
 
 async function fetchRequestedProject(
   id: string
 ): Promise<PrivateCloudRequestWithCurrentAndRequestedProject> {
-  const res = await fetch(`/api/requests/private-cloud/${id}`);
+  const res = await fetch(`/api/request/private-cloud/${id}`);
   if (!res.ok) {
     throw new Error("Network response was not ok for fetch user image");
   }
@@ -78,16 +78,13 @@ export default function RequestDecision({
     setIsLoading(true);
     console.log("on submit data", data);
     try {
-      const response = await fetch(
-        `/api/requests/private-cloud/${params.id}/decision`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        }
-      );
+      const response = await fetch(`/api/decision/private-cloud/${params.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
 
       console.log("response", response);
 

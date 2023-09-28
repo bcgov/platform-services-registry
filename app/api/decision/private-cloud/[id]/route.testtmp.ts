@@ -1,20 +1,17 @@
 import { prisma } from "@/jest.setup";
-import {
-  Prisma,
-  PrivateCloudRequest,
-  PrivateCloudRequestedProject
-} from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import NextAuth from "next-auth";
-import { POST } from "@/app/api/requests/private-cloud/create/route";
+import { POST as createRequest } from "@/app/api/create/private-cloud/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
-import { CreateRequestBody } from "@/schema";
+
+const id = "123";
 
 const BASE_URL = "http://localhost:3000";
-const API_URL = `${BASE_URL}/api/requests/private-cloud/create`;
+const API_URL = `${BASE_URL}/api/requests/private-cloud/${id}/decision`;
 
-const createRequestBody: CreateRequestBody = {
+const createRequestBody = {
   name: "Sample Project",
   description: "This is a sample project description.",
   cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster
@@ -92,6 +89,22 @@ jest.mock("../../../auth/[...nextauth]/route", () => ({
 }));
 
 describe("Create Private Cloud Request Route", () => {
+  let createRequestId;
+
+  beforeAll(async () => {
+    const req = new NextRequest(API_URL, {
+      method: "POST",
+      body: JSON.stringify(createRequestBody)
+    });
+
+    await createRequest(req);
+
+    const request = await prisma.privateCloudRequest.findFirst({});
+
+    createRequestId = request.id;
+  });
+
+  // test to check if an error is thrown if the user is not authenticated
   test("should return 403 if user is not authenticated", async () => {
     mockedGetServerSession.mockResolvedValue(null);
 
@@ -121,17 +134,18 @@ describe("Create Private Cloud Request Route", () => {
     expect(response.status).toBe(200);
   });
 
+  // test to check if a request is created in the database
   test("should create a request in the database", async () => {
-    const requests: PrivateCloudRequest[] =
-      await prisma.privateCloudRequest.findMany();
+    const requests = await prisma.privateCloudRequest.findMany();
+    console.log(requests);
     expect(requests.length).toBe(1);
   });
 
+  // test to check if the request created in the database has the correct data
   test("should create a request with the correct data", async () => {
-    const requests: PrivateCloudRequest[] =
-      await prisma.privateCloudRequest.findMany();
+    const requests = await prisma.privateCloudRequest.findMany();
 
-    const request: PrivateCloudRequest = requests[0];
+    const request = requests[0];
 
     const requestedProject =
       await prisma.privateCloudRequestedProject.findUnique({
