@@ -3,13 +3,11 @@ import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import NextAuth from "next-auth";
 import { POST as createRequest } from "@/app/api/create/private-cloud/route";
+import { POST } from "@/app/api/decision/private-cloud/[id]/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
 
-const id = "123";
-
 const BASE_URL = "http://localhost:3000";
-const API_URL = `${BASE_URL}/api/requests/private-cloud/${id}/decision`;
 
 const createRequestBody = {
   name: "Sample Project",
@@ -70,6 +68,24 @@ const createRequestBody = {
   }
 };
 
+const adminChanges = {
+  name: "New name from admin",
+  description: "New description from admin",
+  projectOwner: {
+    firstName: "James",
+    lastName: "Tim",
+    email: "jamestim@gov.bc.ca",
+    ministry: "AGRI"
+  },
+  testQuota: {
+    cpu: "CPU_REQUEST_8_LIMIT_16",
+    memory: "MEMORY_REQUEST_4_LIMIT_8",
+    storage: "STORAGE_2"
+  }
+};
+
+const adminRequestedProject = { ...createRequestBody, ...adminChanges };
+
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<
   typeof getServerSession
 >;
@@ -89,35 +105,52 @@ jest.mock("../../../auth/[...nextauth]/route", () => ({
 }));
 
 describe("Create Private Cloud Request Route", () => {
-  let createRequestId;
+  let createRequestId: string;
+  let API_URL: string;
 
   beforeAll(async () => {
-    const req = new NextRequest(API_URL, {
+    mockedGetServerSession.mockResolvedValue({
+      user: {
+        email: "oamar.kanji@gov.bc.ca",
+        roles: []
+      }
+    });
+
+    const req = new NextRequest(`${BASE_URL}/api/create/private-cloud`, {
       method: "POST",
       body: JSON.stringify(createRequestBody)
     });
 
     await createRequest(req);
 
-    const request = await prisma.privateCloudRequest.findFirst({});
+    const request = await prisma.privateCloudRequest.findFirst();
+    console.log(request);
 
-    createRequestId = request.id;
+    if (!request) {
+      throw new Error("Request not created. Issue in beforeAll");
+    }
+
+    createRequestId = request?.id;
+    API_URL = `${BASE_URL}/api/decision/private-cloud/${createRequestId}`;
   });
 
-  // test to check if an error is thrown if the user is not authenticated
   test("should return 403 if user is not authenticated", async () => {
     mockedGetServerSession.mockResolvedValue(null);
 
     const req = new NextRequest(API_URL, {
       method: "POST",
-      body: JSON.stringify(createRequestBody)
+      body: JSON.stringify({
+        decision: "APPROVED",
+        humanComment: "Approved by admin",
+        ...adminRequestedProject
+      })
     });
 
-    const response = await POST(req);
+    const response = await POST(req, { params: { id: createRequestId } });
     expect(response.status).toBe(403);
   });
 
-  test("should return 200 if request is created", async () => {
+  test("should return 401 if not an admin", async () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: "oamar.kanji@gov.bc.ca",
@@ -130,15 +163,29 @@ describe("Create Private Cloud Request Route", () => {
       body: JSON.stringify(createRequestBody)
     });
 
-    const response = await POST(req);
-    expect(response.status).toBe(200);
+    const response = await POST(req, { params: { id: createRequestId } });
+    expect(response.status).toBe(401);
   });
 
-  // test to check if a request is created in the database
-  test("should create a request in the database", async () => {
-    const requests = await prisma.privateCloudRequest.findMany();
-    console.log(requests);
-    expect(requests.length).toBe(1);
+  test("should return 200 if decision request is successful", async () => {
+    mockedGetServerSession.mockResolvedValue({
+      user: {
+        email: "oamar.kanji@gov.bc.ca",
+        roles: ["admin"]
+      }
+    });
+
+    const req = new NextRequest(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        decision: "APPROVED",
+        humanComment: "Approved by admin",
+        ...adminRequestedProject
+      })
+    });
+
+    const response = await POST(req, { params: { id: createRequestId } });
+    expect(response.status).toBe(200);
   });
 
   // test to check if the request created in the database has the correct data
@@ -163,112 +210,131 @@ describe("Create Private Cloud Request Route", () => {
       throw new Error("Requested project not found.");
     }
 
-    expect(requestedProject.name).toBe(createRequestBody.name);
-    expect(requestedProject.description).toBe(createRequestBody.description);
-    expect(requestedProject.cluster).toBe(createRequestBody.cluster);
-    expect(requestedProject.ministry).toBe(createRequestBody.ministry);
+    expect(requestedProject.name).toBe(adminRequestedProject.name);
+    expect(requestedProject.description).toBe(
+      adminRequestedProject.description
+    );
+    expect(requestedProject.cluster).toBe(adminRequestedProject.cluster);
+    expect(requestedProject.ministry).toBe(adminRequestedProject.ministry);
     expect(requestedProject.projectOwner.firstName).toBe(
-      createRequestBody.projectOwner.firstName
+      adminRequestedProject.projectOwner.firstName
     );
     expect(requestedProject.projectOwner.lastName).toBe(
-      createRequestBody.projectOwner.lastName
+      adminRequestedProject.projectOwner.lastName
     );
     expect(requestedProject.projectOwner.email).toBe(
-      createRequestBody.projectOwner.email
+      adminRequestedProject.projectOwner.email
     );
     expect(requestedProject.projectOwner.ministry).toBe(
-      createRequestBody.projectOwner.ministry
+      adminRequestedProject.projectOwner.ministry
     );
     expect(requestedProject.primaryTechnicalLead.firstName).toBe(
-      createRequestBody.primaryTechnicalLead.firstName
+      adminRequestedProject.primaryTechnicalLead.firstName
     );
     expect(requestedProject.primaryTechnicalLead.lastName).toBe(
-      createRequestBody.primaryTechnicalLead.lastName
+      adminRequestedProject.primaryTechnicalLead.lastName
     );
     expect(requestedProject.primaryTechnicalLead.email).toBe(
-      createRequestBody.primaryTechnicalLead.email
+      adminRequestedProject.primaryTechnicalLead.email
     );
     expect(requestedProject.primaryTechnicalLead.ministry).toBe(
-      createRequestBody.primaryTechnicalLead.ministry
+      adminRequestedProject.primaryTechnicalLead.ministry
     );
     expect(requestedProject.secondaryTechnicalLead).toBeNull();
     expect(
       requestedProject.commonComponents.addressAndGeolocation.planningToUse
     ).toBe(
-      createRequestBody.commonComponents.addressAndGeolocation.planningToUse
+      adminRequestedProject.commonComponents.addressAndGeolocation.planningToUse
     );
     expect(
       requestedProject.commonComponents.addressAndGeolocation.implemented
     ).toBe(
-      createRequestBody.commonComponents.addressAndGeolocation.implemented
+      adminRequestedProject.commonComponents.addressAndGeolocation.implemented
     );
     expect(
       requestedProject.commonComponents.workflowManagement.planningToUse
-    ).toBe(createRequestBody.commonComponents.workflowManagement.planningToUse);
+    ).toBe(
+      adminRequestedProject.commonComponents.workflowManagement.planningToUse
+    );
     expect(
       requestedProject.commonComponents.workflowManagement.implemented
-    ).toBe(createRequestBody.commonComponents.workflowManagement.implemented);
+    ).toBe(
+      adminRequestedProject.commonComponents.workflowManagement.implemented
+    );
     expect(
       requestedProject.commonComponents.formDesignAndSubmission.planningToUse
     ).toBe(
-      createRequestBody.commonComponents.formDesignAndSubmission.planningToUse
+      adminRequestedProject.commonComponents.formDesignAndSubmission
+        .planningToUse
     );
     expect(
       requestedProject.commonComponents.formDesignAndSubmission.implemented
     ).toBe(
-      createRequestBody.commonComponents.formDesignAndSubmission.implemented
+      adminRequestedProject.commonComponents.formDesignAndSubmission.implemented
     );
     expect(
       requestedProject.commonComponents.identityManagement.planningToUse
-    ).toBe(createRequestBody.commonComponents.identityManagement.planningToUse);
+    ).toBe(
+      adminRequestedProject.commonComponents.identityManagement.planningToUse
+    );
     expect(
       requestedProject.commonComponents.identityManagement.implemented
-    ).toBe(createRequestBody.commonComponents.identityManagement.implemented);
+    ).toBe(
+      adminRequestedProject.commonComponents.identityManagement.implemented
+    );
     expect(
       requestedProject.commonComponents.paymentServices.planningToUse
-    ).toBe(createRequestBody.commonComponents.paymentServices.planningToUse);
+    ).toBe(
+      adminRequestedProject.commonComponents.paymentServices.planningToUse
+    );
     expect(requestedProject.commonComponents.paymentServices.implemented).toBe(
-      createRequestBody.commonComponents.paymentServices.implemented
+      adminRequestedProject.commonComponents.paymentServices.implemented
     );
     expect(
       requestedProject.commonComponents.documentManagement.planningToUse
-    ).toBe(createRequestBody.commonComponents.documentManagement.planningToUse);
+    ).toBe(
+      adminRequestedProject.commonComponents.documentManagement.planningToUse
+    );
     expect(
       requestedProject.commonComponents.documentManagement.implemented
-    ).toBe(createRequestBody.commonComponents.documentManagement.implemented);
+    ).toBe(
+      adminRequestedProject.commonComponents.documentManagement.implemented
+    );
     expect(
       requestedProject.commonComponents.endUserNotificationAndSubscription
         .planningToUse
     ).toBe(
-      createRequestBody.commonComponents.endUserNotificationAndSubscription
+      adminRequestedProject.commonComponents.endUserNotificationAndSubscription
         .planningToUse
     );
     expect(
       requestedProject.commonComponents.endUserNotificationAndSubscription
         .implemented
     ).toBe(
-      createRequestBody.commonComponents.endUserNotificationAndSubscription
+      adminRequestedProject.commonComponents.endUserNotificationAndSubscription
         .implemented
     );
     expect(requestedProject.commonComponents.publishing.planningToUse).toBe(
-      createRequestBody.commonComponents.publishing.planningToUse
+      adminRequestedProject.commonComponents.publishing.planningToUse
     );
     expect(requestedProject.commonComponents.publishing.implemented).toBe(
-      createRequestBody.commonComponents.publishing.implemented
+      adminRequestedProject.commonComponents.publishing.implemented
     );
     expect(
       requestedProject.commonComponents.businessIntelligence.planningToUse
     ).toBe(
-      createRequestBody.commonComponents.businessIntelligence.planningToUse
+      adminRequestedProject.commonComponents.businessIntelligence.planningToUse
     );
     expect(
       requestedProject.commonComponents.businessIntelligence.implemented
-    ).toBe(createRequestBody.commonComponents.businessIntelligence.implemented);
+    ).toBe(
+      adminRequestedProject.commonComponents.businessIntelligence.implemented
+    );
     expect(requestedProject.commonComponents.other).toBe(
-      createRequestBody.commonComponents.other
+      adminRequestedProject.commonComponents.other
     );
     expect(requestedProject.commonComponents.noServices).toBe(
-      createRequestBody.commonComponents.noServices
+      adminRequestedProject.commonComponents.noServices
     );
   });
 });

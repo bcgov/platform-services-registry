@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { CreateRequestBody } from "@/schema";
 
 const BASE_URL = "http://localhost:3000";
-const API_URL = `${BASE_URL}/api/requests/private-cloud/create`;
+const API_URL = `${BASE_URL}/api/create/private-cloud`;
 
 const createRequestBody: CreateRequestBody = {
   name: "Sample Project",
@@ -86,7 +86,7 @@ jest.mock("next-auth", () => ({
   NextAuth: jest.fn() // for named export
 }));
 
-jest.mock("../../../auth/[...nextauth]/route", () => ({
+jest.mock("../../auth/[...nextauth]/route", () => ({
   GET: jest.fn(),
   POST: jest.fn()
 }));
