@@ -134,7 +134,7 @@ describe("Create Private Cloud Request Route", () => {
     API_URL = `${BASE_URL}/api/decision/private-cloud/${createRequestId}`;
   });
 
-  test("should return 403 if user is not authenticated", async () => {
+  test("should return 401 if user is not authenticated", async () => {
     mockedGetServerSession.mockResolvedValue(null);
 
     const req = new NextRequest(API_URL, {
@@ -147,10 +147,10 @@ describe("Create Private Cloud Request Route", () => {
     });
 
     const response = await POST(req, { params: { id: createRequestId } });
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(401);
   });
 
-  test("should return 401 if not an admin", async () => {
+  test("should return 403 if not an admin", async () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: "oamar.kanji@gov.bc.ca",
@@ -164,7 +164,7 @@ describe("Create Private Cloud Request Route", () => {
     });
 
     const response = await POST(req, { params: { id: createRequestId } });
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   test("should return 200 if decision request is successful", async () => {

@@ -8,7 +8,9 @@
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "test": "dotenv -e .env.test -- jest"
+    "test": "dotenv -e .env.test -- jest",
+    "prisma-generate-test": "dotenv -e .env.test -- npx prisma generate",
+    "prisma-migrate-test": "dotenv -e .env.test -- npx prisma generate && dotenv -e .env.test -- npx prisma db push"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

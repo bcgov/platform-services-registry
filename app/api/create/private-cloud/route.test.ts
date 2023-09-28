@@ -92,7 +92,7 @@ jest.mock("../../auth/[...nextauth]/route", () => ({
 }));
 
 describe("Create Private Cloud Request Route", () => {
-  test("should return 403 if user is not authenticated", async () => {
+  test("should return 401 if user is not authenticated", async () => {
     mockedGetServerSession.mockResolvedValue(null);
 
     const req = new NextRequest(API_URL, {
@@ -101,7 +101,7 @@ describe("Create Private Cloud Request Route", () => {
     });
 
     const response = await POST(req);
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(401);
   });
 
   test("should return 200 if request is created", async () => {

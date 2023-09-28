@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   if (!session) {
     return new NextResponse("You do not have the required credentials.", {
-      status: 403,
+      status: 401
     });
   }
 
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     ![
       formData.projectOwner.email,
       formData.primaryTechnicalLead.email,
-      formData.secondaryTechnicalLead?.email,
+      formData.secondaryTechnicalLead?.email
     ].includes(authEmail) &&
     !authRoles.includes("admin")
   ) {
@@ -59,6 +59,6 @@ export async function POST(req: NextRequest) {
 
   return new NextResponse(JSON.stringify(request), {
     status: 200,
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json" }
   });
 }
