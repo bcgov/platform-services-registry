@@ -5,13 +5,13 @@ import { DecisionStatus, Cluster } from "@prisma/client";
 import { string, z } from "zod";
 import { DecisionRequestBodySchema } from "@/schema";
 import makeDecisionRequest, {
-  PrivateCloudRequestWithAdminRequestedProject
+  PrivateCloudRequestWithAdminRequestedProject,
 } from "@/requestActions/private-cloud/decisionRequest";
 import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
-  id: string()
+  id: string(),
 });
 
 type Params = z.infer<typeof ParamsSchema>;
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   if (!session) {
     return new NextResponse("You do not have the required credentials.", {
-      status: 401
+      status: 401,
     });
   }
 
@@ -37,15 +37,18 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   const body = await req.json();
 
+
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
   const parsedBody = DecisionRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
+    console.log(parsedParams.error.message);
     return new NextResponse(parsedParams.error.message, { status: 400 });
   }
 
   if (!parsedBody.success) {
+    console.log(parsedBody.error.message);
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
@@ -63,11 +66,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         authEmail
       );
 
+
     if (!request.adminRequestedProject) {
       return new NextResponse(
         `Error creating decision request for ${request.licencePlate}.`,
         {
-          status: 200
+          status: 200,
         }
       );
     }
@@ -101,7 +105,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     return new NextResponse(
       `Decision request for ${request.licencePlate} succesfully created.`,
       {
-        status: 200
+        status: 200,
       }
     );
   } catch (e) {

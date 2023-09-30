@@ -6,31 +6,40 @@ import {
   DefaultCpuOptions,
   DefaultMemoryOptions,
   DefaultStorageOptions,
-  PrivateCloudProjectPayload
+  PrivateCloudProject,
+  Ministry,
+  Cluster,
 } from "@prisma/client";
+// import { cleanUp } from "@/jest.setup";
 
 const quota = {
   cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
   memory: DefaultMemoryOptions.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptions.STORAGE_1
+  storage: DefaultStorageOptions.STORAGE_1,
 };
 
-const createProject: PrivateCloudProjectPayload = {
+const projectData = {
   name: "Sample Project",
   description: "This is a sample project description.",
-  cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
+  cluster: Cluster.SILVER, // Assuming CLUSTER_A is a valid enum value for Cluster
+  ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   projectOwner: {
-    firstName: "John",
-    lastName: "Doe",
+    firstName: "Oamar",
+    lastName: "Kanji",
     email: "oamar.kanji@gov.bc.ca",
-    ministry: "AGRI" // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: "AGRI" // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+  },
+  secondaryTechnicalLead: {
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   },
   productionQuota: quota,
   testQuota: quota,
@@ -39,130 +48,154 @@ const createProject: PrivateCloudProjectPayload = {
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
-      implemented: false
+      implemented: false,
     },
     workflowManagement: {
       planningToUse: false,
-      implemented: true
+      implemented: true,
     },
     formDesignAndSubmission: {
       planningToUse: true,
-      implemented: true
+      implemented: true,
     },
     identityManagement: {
       planningToUse: false,
-      implemented: false
+      implemented: false,
     },
     paymentServices: {
       planningToUse: true,
-      implemented: false
+      implemented: false,
     },
     documentManagement: {
       planningToUse: false,
-      implemented: true
+      implemented: true,
     },
     endUserNotificationAndSubscription: {
       planningToUse: true,
-      implemented: false
+      implemented: false,
     },
     publishing: {
       planningToUse: false,
-      implemented: true
+      implemented: true,
     },
     businessIntelligence: {
       planningToUse: true,
-      implemented: false
+      implemented: false,
     },
     other: "Some other services",
-    noServices: false
-  }
+    noServices: false,
+  },
 };
 
-const test = {
-  create: {
-    name: "Sample Project",
-    description: "This is a sample project description.",
-    cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster
-    ministry: "AGRI", // Assuming AGRI is a valid enum value for Ministry
-    status: ProjectStatus.ACTIVE,
-    licencePlate: "123456",
-    productionQuota: defaultQuota,
-    testQuota: defaultQuota,
-    toolsQuota: defaultQuota,
-    developmentQuota: defaultQuota,
-    projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: formData.projectOwner.email
-        },
-        create: formData.projectOwner
-      }
+const createProject = {
+  name: projectData.name,
+  description: projectData.description,
+  cluster: projectData.cluster, // Assuming CLUSTER_A is a valid enum value for Cluster
+  ministry: projectData.ministry, // Assuming AGRI is a valid enum value for Ministry
+  status: ProjectStatus.ACTIVE,
+  licencePlate: "654321",
+  productionQuota: quota,
+  testQuota: quota,
+  toolsQuota: quota,
+  developmentQuota: quota,
+  projectOwner: {
+    connectOrCreate: {
+      where: {
+        email: projectData.projectOwner.email,
+      },
+      create: projectData.projectOwner,
     },
-    primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: formData.primaryTechnicalLead.email
-        },
-        create: formData.primaryTechnicalLead
-      }
-    },
-    secondaryTechnicalLead: formData.secondaryTechnicalLead
-      ? {
-          connectOrCreate: {
-            where: {
-              email: formData.secondaryTechnicalLead.email
-            },
-            create: formData.secondaryTechnicalLead
-          }
-        }
-      : undefined
   },
-  commonComponents: {
-    addressAndGeolocation: {
-      planningToUse: true,
-      implemented: false
+  primaryTechnicalLead: {
+    connectOrCreate: {
+      where: {
+        email: projectData.primaryTechnicalLead.email,
+      },
+      create: projectData.primaryTechnicalLead,
     },
-    workflowManagement: {
-      planningToUse: false,
-      implemented: true
+  },
+  secondaryTechnicalLead: {
+    connectOrCreate: {
+      where: {
+        email: projectData.secondaryTechnicalLead.email,
+      },
+      create: projectData.secondaryTechnicalLead,
     },
-    formDesignAndSubmission: {
-      planningToUse: true,
-      implemented: true
-    },
-    identityManagement: {
-      planningToUse: false,
-      implemented: false
-    },
-    paymentServices: {
-      planningToUse: true,
-      implemented: false
-    },
-    documentManagement: {
-      planningToUse: false,
-      implemented: true
-    },
-    endUserNotificationAndSubscription: {
-      planningToUse: true,
-      implemented: false
-    },
-    publishing: {
-      planningToUse: false,
-      implemented: true
-    },
-    businessIntelligence: {
-      planningToUse: true,
-      implemented: false
-    },
-    other: "Some other services",
-    noServices: false
-  }
+  },
+  commonComponents: projectData.commonComponents,
 };
 
 describe("Query projects with filter and search and pagination", () => {
-  beforeAll(async () => {});
+  beforeAll(async () => {
+    // Create 10 more projects without secondary technical lead
+    for (let i = 0; i < 10; i++) {
+      await prisma.privateCloudProject.create({
+        data: {
+          ...createProject,
+          name: createProject.name + i,
+          licencePlate: "123456" + i,
+          secondaryTechnicalLead: undefined,
+        },
+      });
+    }
+  });
 
-  test("Should return all projects", async () => {
-    expect("").toBe("");
+  test("Should return all projects even though there is no secondary technical lead", async () => {
+    const projects = await privateCloudProjectsPaginated(10, 1);
+
+    expect(projects.data.length).toBe(10);
+  });
+
+  test("Should return all projects with secondary technical lead", async () => {
+    // Create 10 more projects with secondary technical lead
+    for (let i = 10; i < 20; i++) {
+      await prisma.privateCloudProject.create({
+        data: {
+          ...createProject,
+          name: createProject.name + i,
+          licencePlate: "123456" + i,
+        },
+      });
+    }
+
+    const projects = await privateCloudProjectsPaginated(20, 1);
+
+    expect(projects.data.length).toBe(20);
+  });
+
+  test("Should return only projects belonging to specific user when userEmail is passed", async () => {
+    // Create 10 more projects with secondary technical lead
+    for (let i = 20; i < 30; i++) {
+      await prisma.privateCloudProject.create({
+        data: {
+          ...createProject,
+          name: createProject.name + i,
+          licencePlate: "123456" + i,
+          primaryTechnicalLead: {
+            connectOrCreate: {
+              where: {
+                email: "testUser@test.com",
+              },
+              create: {
+                firstName: "Test",
+                lastName: "User",
+                email: "testUser@test.com",
+                ministry: Ministry.CITZ,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    const projects = await privateCloudProjectsPaginated(
+      30,
+      1,
+      undefined,
+      undefined,
+      "testUser@test.com"
+    );
+
+    expect(projects.data.length).toBe(10);
   });
 });
