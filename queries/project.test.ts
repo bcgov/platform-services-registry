@@ -188,9 +188,18 @@ describe("Query projects with filter and search and pagination", () => {
       });
     }
 
+    const allProjects = await privateCloudProjectsPaginated(30, 1);
+    expect(
+      allProjects.data.some(
+        (project) =>
+          project.primaryTechnicalLeadDetails.email === "testUser@test.com"
+      )
+    ).toBe(true);
+
     const projects = await privateCloudProjectsPaginated(
       30,
       1,
+      undefined,
       undefined,
       undefined,
       "testUser@test.com"
