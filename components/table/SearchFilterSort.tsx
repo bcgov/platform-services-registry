@@ -5,11 +5,7 @@ import Search from "@/components/assets/search.svg";
 import Filter from "@/components/assets/filter.svg";
 import Export from "@/components/assets/export.svg";
 import { useState, useTransition, useCallback, useEffect } from "react";
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@/components/utils/useDebounce";
 import FilterPanel from "./FilterPanel";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
@@ -19,7 +15,7 @@ export default function SearchFilterSort() {
   const { replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
- 
+
   const [isPending, startTransition] = useTransition();
 
   const [searchTerm, setSearchTerm] = useState<string>("");

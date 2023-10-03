@@ -4,13 +4,13 @@ import {
   DefaultStorageOptions,
   Cluster,
   Ministry,
-  CommonComponentsOptions,
 } from "@prisma/client";
 import { string, number, z } from "zod";
 
-export const CommonComponentsOptionsSchema = z.optional(
-  z.nativeEnum(CommonComponentsOptions)
-);
+const CommonComponentsOptionsSchema = z.object({
+  planningToUse: z.boolean(),
+  implemented: z.boolean(),
+});
 
 export const CommonComponentsInputSchema = z
   .object({
@@ -23,15 +23,20 @@ export const CommonComponentsInputSchema = z
     endUserNotificationAndSubscription: CommonComponentsOptionsSchema,
     publishing: CommonComponentsOptionsSchema,
     businessIntelligence: CommonComponentsOptionsSchema,
-    other: z.optional(z.string()),
+    other: z.string(),
     noServices: z.boolean(),
   })
   .refine(
     (data) => {
-      // Use Array.some() to check if at least one field has a value
-      const checkBoxIsChecked = Object.values(data).some(
-        (value) => value === "PLANNING_TO_USE" || value === "IMPLEMENTED"
-      );
+      const checkBoxIsChecked = Object.values(data)
+        .filter(
+          (
+            value
+          ): value is { planningToUse?: boolean; implemented?: boolean } =>
+            typeof value === "object" && value !== null
+        )
+        .some((options) => options.planningToUse || options.implemented);
+
       const otherFieldHasValue = data.other !== undefined && data.other !== "";
       const noServicesIsChecked = data.noServices === true;
 
@@ -66,6 +71,13 @@ export const QuotaInputSchema = z.object({
   storage: z.nativeEnum(DefaultStorageOptions),
 });
 
+// // Since quota needs to support custom input, it is not an enum
+// export const QuotaInputSchema = z.object({
+//   cpu: z.string().nonempty("CPU cannot be empty"),
+//   memory: z.string().nonempty("Memory cannot be empty"),
+//   storage: z.string().nonempty("Storage cannot be empty"),
+// });
+
 export const EditRequestBodySchema = CreateRequestBodySchema.merge(
   z.object({
     productionQuota: QuotaInputSchema,
@@ -75,8 +87,19 @@ export const EditRequestBodySchema = CreateRequestBodySchema.merge(
   })
 );
 
+export const DecisionOptionsSchema = z.enum(["APPROVED", "REJECTED"]);
+
+export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
+  z.object({
+    decision: DecisionOptionsSchema,
+    humanComment: string().optional(),
+  })
+);
+
 export type CreateRequestBody = z.infer<typeof CreateRequestBodySchema>;
 export type UserInput = z.infer<typeof UserInputSchema>;
 export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
 export type QuotaInput = z.infer<typeof QuotaInputSchema>;
 export type EditRequestBody = z.infer<typeof EditRequestBodySchema>;
+export type DecisionRequestBody = z.infer<typeof DecisionRequestBodySchema>;
+export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
