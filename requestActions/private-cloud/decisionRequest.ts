@@ -6,21 +6,7 @@ import { Prisma } from "@prisma/client";
 export type PrivateCloudRequestWithRequestedProject =
   Prisma.PrivateCloudRequestGetPayload<{
     include: {
-      project: true;
       requestedProject: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
-      };
-    };
-  }>;
-
-export type PrivateCloudRequestWithAdminRequestedProject =
-  Prisma.PrivateCloudRequestGetPayload<{
-    include: {
-      adminRequestedProject: {
         include: {
           projectOwner: true;
           primaryTechnicalLead: true;
@@ -36,7 +22,7 @@ export default async function makeDecisionRequest(
   comment: string | undefined,
   formData: EditRequestBody,
   authEmail: string
-): Promise<PrivateCloudRequestWithAdminRequestedProject> {
+): Promise<PrivateCloudRequestWithRequestedProject> {
   // Get the request
   const request: PrivateCloudRequestWithRequestedProject | null =
     await prisma.privateCloudRequest.findUnique({
@@ -59,18 +45,25 @@ export default async function makeDecisionRequest(
     throw new Error("Request not found.");
   }
 
+  const {
+    id: _,
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    secondaryTechnicalLeadId,
+    ...userRequestedProject
+  } = request.requestedProject;
   // Update the request with the data passed in from the form.
   // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject model
   // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
   // project if the admin did not change anything.
-  const decisionRequest: PrivateCloudRequestWithAdminRequestedProject | null =
+  const decisionRequest: PrivateCloudRequestWithRequestedProject | null =
     await prisma.privateCloudRequest.update({
       where: {
         id: requestId,
         decisionStatus: DecisionStatus.PENDING,
       },
       include: {
-        adminRequestedProject: {
+        requestedProject: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
@@ -84,8 +77,30 @@ export default async function makeDecisionRequest(
         active: decision === DecisionStatus.APPROVED,
         decisionDate: new Date(),
         decisionMakerEmail: authEmail,
-        adminRequestedProject: {
+        userRequestedProject: {
           create: {
+            ...userRequestedProject,
+            projectOwner: {
+              connect: {
+                id: projectOwnerId,
+              },
+            },
+            primaryTechnicalLead: {
+              connect: {
+                id: primaryTechnicalLeadId,
+              },
+            },
+            secondaryTechnicalLead: secondaryTechnicalLeadId
+              ? {
+                  connect: {
+                    id: secondaryTechnicalLeadId,
+                  },
+                }
+              : undefined,
+          },
+        },
+        requestedProject: {
+          update: {
             ...formData,
             status: ProjectStatus.ACTIVE,
             licencePlate: request.licencePlate,
@@ -120,10 +135,7 @@ export default async function makeDecisionRequest(
       },
     });
 
-  if (
-    decisionRequest === null ||
-    decisionRequest.adminRequestedProject === null
-  ) {
+  if (decisionRequest === null) {
     throw new Error("Unable to update request.");
   }
 

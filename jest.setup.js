@@ -28,6 +28,6 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-beforeAll(async () => {
-  await cleanUp();
-});
+// beforeAll(async () => {
+//   await cleanUp();
+// });

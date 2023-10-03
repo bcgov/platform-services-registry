@@ -8,6 +8,7 @@ import createRequest from "@/requestActions/private-cloud/createRequest";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
+  // Authentication
   const session = await getServerSession(authOptions);
 
   if (!session) {

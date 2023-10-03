@@ -37,22 +37,22 @@ model User {
 }
 
 model PrivateCloudRequest {
-  id                      String                        @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate            String
-  createdByEmail          String
-  decisionMakerEmail      String?
-  type                    RequestType
-  decisionStatus          DecisionStatus
-  humanComment            String?
-  active                  Boolean                       @default(true)
-  created                 DateTime                      @default(now())
-  decisionDate            DateTime?
-  projectId               String?                       @db.ObjectId
-  project                 PrivateCloudProject?          @relation("privateCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
-  requestedProjectId      String                        @unique @db.ObjectId
-  requestedProject        PrivateCloudRequestedProject  @relation("privateCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
-  adminRequestedProjectId String?                       @db.ObjectId
-  adminRequestedProject   PrivateCloudRequestedProject? @relation("adminRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  id                     String                        @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate           String
+  createdByEmail         String
+  decisionMakerEmail     String?
+  type                   RequestType
+  decisionStatus         DecisionStatus
+  humanComment           String?
+  active                 Boolean                       @default(true)
+  created                DateTime                      @default(now())
+  decisionDate           DateTime?
+  projectId              String?                       @db.ObjectId
+  project                PrivateCloudProject?          @relation("privateCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
+  requestedProjectId     String                        @unique @db.ObjectId
+  requestedProject       PrivateCloudRequestedProject  @relation("privateCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  userRequestedProjectId String?                       @unique @db.ObjectId
+  userRequestedProject   PrivateCloudRequestedProject? @relation("privateCloudUserRequestedProject", fields: [userRequestedProjectId], references: [id], onDelete: Cascade)
 
   @@unique([licencePlate, active])
 }
@@ -101,7 +101,7 @@ model PrivateCloudRequestedProject {
   toolsQuota               Quota
   commonComponents         CommonComponents
   requestedProject         PrivateCloudRequest? @relation("privateCloudRequestedProject")
-  adminRequestedProject    PrivateCloudRequest? @relation("adminRequestedProject")
+  userRequestedProject     PrivateCloudRequest? @relation("privateCloudUserRequestedProject")
 }
 
 model PublicCloudRequest {

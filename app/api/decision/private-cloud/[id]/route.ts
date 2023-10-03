@@ -5,7 +5,7 @@ import { DecisionStatus, Cluster } from "@prisma/client";
 import { string, z } from "zod";
 import { DecisionRequestBodySchema } from "@/schema";
 import makeDecisionRequest, {
-  PrivateCloudRequestWithAdminRequestedProject,
+  PrivateCloudRequestWithRequestedProject,
 } from "@/requestActions/private-cloud/decisionRequest";
 import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
@@ -37,7 +37,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   const body = await req.json();
 
-
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
   const parsedBody = DecisionRequestBodySchema.safeParse(body);
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     parsedBody.data;
 
   try {
-    const request: PrivateCloudRequestWithAdminRequestedProject =
+    const request: PrivateCloudRequestWithRequestedProject =
       await makeDecisionRequest(
         requestId,
         decision,
@@ -66,8 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         authEmail
       );
 
-
-    if (!request.adminRequestedProject) {
+    if (!request.requestedProject) {
       return new NextResponse(
         `Error creating decision request for ${request.licencePlate}.`,
         {
@@ -78,26 +76,26 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
     const contactChanged =
       requestedProjectFormData.projectOwner.email !==
-        request.adminRequestedProject.projectOwner.email ||
+        request.requestedProject.projectOwner.email ||
       requestedProjectFormData.primaryTechnicalLead.email !==
-        request.adminRequestedProject.primaryTechnicalLead.email ||
+        request.requestedProject.primaryTechnicalLead.email ||
       requestedProjectFormData.secondaryTechnicalLead?.email !==
-        request.adminRequestedProject?.secondaryTechnicalLead?.email;
+        request.requestedProject?.secondaryTechnicalLead?.email;
 
     if (request.decisionStatus === DecisionStatus.APPROVED) {
       await sendPrivateCloudNatsMessage(
         request.id,
         request.type,
-        request.adminRequestedProject,
+        request.requestedProject,
         contactChanged
       );
 
       // For GOLD requests, we create an identical request for GOLDDR
-      if (request.adminRequestedProject.cluster === Cluster.GOLD) {
+      if (request.requestedProject.cluster === Cluster.GOLD) {
         await sendPrivateCloudNatsMessage(
           request.id,
           request.type,
-          { ...request.adminRequestedProject, cluster: Cluster.GOLDDR },
+          { ...request.requestedProject, cluster: Cluster.GOLDDR },
           contactChanged
         );
       }
