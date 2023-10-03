@@ -210,8 +210,6 @@ describe("Create Private Cloud Request Route", () => {
       params: { id: createRequestId },
     });
 
-    console.log("RESPONSE");
-    console.log(response.status);
     expect(response.status).toBe(200);
   });
 
