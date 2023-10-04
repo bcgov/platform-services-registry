@@ -3,21 +3,23 @@
 import Link from "next/link";
 import classNames from "@/components/utils/classnames";
 import { usePathname } from "next/navigation";
-import Create from "@/components/buttons/Create";
+import CreateButton from "@/components/buttons/CreateButton";
 
 const tabs = [
   {
     name: "PRIVATE CLOUD OPENSHIFT",
-    href: "private-cloud",
+    href: "private-cloud"
   },
   {
     name: "PUBLIC CLOUD LANDING ZONES",
-    href: "public-cloud",
-  },
+    href: "public-cloud"
+  }
 ];
 
 export default function Tabs({ className }: { className?: string }) {
   const pathname = usePathname();
+
+  console.log(pathname);
 
   return (
     <div className="w-full">
@@ -48,7 +50,6 @@ export default function Tabs({ className }: { className?: string }) {
                 <Link
                   key={tab.name}
                   href={`/${tab.href}/${pathname.split("/")[2]}`}
-               
                   className={classNames(
                     pathname.split("/")[1] === tab.href
                       ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
@@ -60,7 +61,7 @@ export default function Tabs({ className }: { className?: string }) {
                 </Link>
               ))}
             </div>
-            <Create />
+            <CreateButton />
           </div>
         </div>
       </div>

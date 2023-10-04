@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ObjectId } from "bson";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export const privateCloudProjects = async () => {
   return await prisma.privateCloudProject.findMany({
@@ -361,11 +360,28 @@ export async function privateCloudProjectsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
-  userId?: string
+  userEmail?: string | undefined // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: Project[];
   total: number;
 }> {
+
+  let userId: string | undefined = undefined;
+
+  if (userEmail) {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: userEmail,
+      },
+    });
+
+    if (user) {
+      userId = user.id;
+    }
+  }
+
+  console.log("userId", userId)
+
   // Initialize the search/filter query
   const searchQuery: any = {
     status: "ACTIVE",
@@ -434,7 +450,6 @@ export async function privateCloudProjectsPaginated(
   }
 
   if (userId) {
-
     searchQuery.$or = searchQuery.$or || [];
     searchQuery.$or.push(
       { projectOwnerId: userId },
@@ -442,7 +457,6 @@ export async function privateCloudProjectsPaginated(
       { secondaryTechnicalLeadId: userId }
     );
   }
-  
 
   // First, get the total count of matching documents
   const totalCountResult = await prisma.privateCloudProject.aggregateRaw({
@@ -507,7 +521,12 @@ export async function privateCloudProjectsPaginated(
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
       { $unwind: "$primaryTechnicalLeadDetails" },
-      { $unwind: "$secondaryTechnicalLeadDetails" },
+      {
+        $unwind: {
+          path: "$secondaryTechnicalLeadDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {

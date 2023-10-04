@@ -1,4 +1,5 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useQuery } from "@tanstack/react-query";
@@ -36,47 +37,51 @@ export default function AsyncAutocomplete({
   label,
   placeHolder,
   className,
-  register,
-  control,
-  errors,
-  setValue,
-  setError,
-  clearErrors,
+  disabled
 }: {
   name: string;
   label: string;
   placeHolder: string;
   className?: string;
-  register: any;
-  control: any;
-  errors: any;
-  setValue: any;
-  setError: any;
-  clearErrors: any;
+  disabled?: boolean;
 }) {
-  const [selected, setSelected] = useState<Person | null>(null);
-  const [query, setQuery] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Person | "">("");
+  const [query, setQuery] = useState<string>("");
+
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    setError,
+    clearErrors,
+    watch
+  } = useFormContext();
+
+  const email = watch(name + ".email");
+  console.log("EMAIL", email);
 
   const {
     data: people,
     isLoading,
-    error,
+    error
   } = useQuery<Person[], Error>(
     ["people", query],
     () => fetchPeople(query || ""),
     {
-      enabled: !!query,
+      enabled: !!query
     }
   );
 
   const autocompleteOnChangeHandler = (value: Person) => {
+    console.log("ON CHANGE HANDLER");
     setSelected(value);
+    setQuery(value.mail);
 
     const {
       givenName: firstName,
       surname: lastName,
       mail: email,
-      displayName,
+      displayName
     } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
@@ -85,7 +90,7 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry,
+      ministry
     });
 
     if (!parsedParams.success) {
@@ -97,7 +102,7 @@ export default function AsyncAutocomplete({
       setError(name, {
         type: "manual",
         message:
-          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry",
+          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry"
       });
     } else {
       clearErrors(name);
@@ -107,9 +112,15 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry,
+      ministry
     });
   };
+
+  useEffect(() => {
+    if (email) {
+      setQuery(email);
+    }
+  }, [email]);
 
   return (
     <div className={className}>
@@ -122,15 +133,25 @@ export default function AsyncAutocomplete({
       >
         {label}
       </label>
-      <Combobox value={selected} onChange={autocompleteOnChangeHandler}>
+      <Combobox
+        value={selected}
+        onChange={autocompleteOnChangeHandler}
+        disabled={disabled}
+      >
         <div className="relative mt-1">
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
               autoComplete="off"
-              className="rounded-md border-slate-300 w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={(person: Person) => person?.mail}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}
+              value={query}
+              className={classNames(
+                "rounded-md border-slate-300 w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             />
           </div>
           <Transition
@@ -138,7 +159,7 @@ export default function AsyncAutocomplete({
             leave="transition ease-in duration-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            afterLeave={() => setQuery(null)}
+            // afterLeave={() => setQuery(null)}
           >
             <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {isLoading ? (

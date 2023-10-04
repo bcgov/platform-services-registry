@@ -1,12 +1,16 @@
+import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";
 
 export default function ProjectDescriptionPrivate({
-  register,
-  errors
+  disabled
 }: {
-  register: any;
-  errors: any;
+  disabled: boolean;
 }) {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext();
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
@@ -31,12 +35,19 @@ export default function ProjectDescriptionPrivate({
           </label>
           <div className="mt-2">
             <input
+              disabled={disabled}
               type="text"
               placeholder="Enter product name"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
               {...register("name")}
             />
           </div>
+
           <p
             className={classNames(
               errors.name ? "text-red-400" : "",
@@ -56,12 +67,17 @@ export default function ProjectDescriptionPrivate({
           </label>
           <div className="mt-2">
             <textarea
+              disabled={disabled}
               id="about"
               placeholder="Enter a description..."
               {...register("description")}
               rows={3}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              // defaultValue={""}
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )} // defaultValue={""}
             />
           </div>
           <p
@@ -73,7 +89,7 @@ export default function ProjectDescriptionPrivate({
             Tell us more about your product
           </p>
         </div>
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-3 sm:mr-10">
           <label
             htmlFor="ministry"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -82,12 +98,15 @@ export default function ProjectDescriptionPrivate({
           </label>
           <div className="mt-2">
             <select
-              // name="ministry"
-              // id="first-name"
-              // autoComplete="given-name"
-
+              disabled={disabled}
+              id="ministry"
               {...register("ministry")}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             >
               <option value="">Select Ministry</option>
               <option>CITZ</option>
@@ -106,7 +125,7 @@ export default function ProjectDescriptionPrivate({
           </div>
         </div>
 
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-3 sm:ml-10">
           <label
             htmlFor="last-name"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -115,8 +134,15 @@ export default function ProjectDescriptionPrivate({
           </label>
           <div className="mt-2">
             <select
+              disabled={disabled}
+              id="cluster"
               {...register("cluster")}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             >
               <option value="">Select Cluster</option>
               <option>SILVER</option>

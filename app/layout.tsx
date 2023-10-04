@@ -7,16 +7,16 @@ import Footer from "@/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap",
+  display: "swap"
 });
 
 export const metadata = {
   title: "Platform Services Registry",
-  description: "Created by the Platform Services team",
+  description: "Created by the Platform Services team"
 };
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {

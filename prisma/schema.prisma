@@ -13,11 +13,9 @@ datasource db {
 
 model User {
   id                                                 String                         @id @default(auto()) @map("_id") @db.ObjectId
-  name                                               String?
   firstName                                          String?
   lastName                                           String?
   email                                              String                         @unique
-  emailVerified                                      DateTime?                      @map("email_verified")
   image                                              String?
   ministry                                           String?
   archived                                           Boolean                        @default(false)
@@ -39,20 +37,24 @@ model User {
 }
 
 model PrivateCloudRequest {
-  id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate       String
-  createdByEmail     String
-  decisionMakerEmail String?
-  type               RequestType
-  decisionStatus     DecisionStatus
-  comment            String?
-  active             Boolean                      @default(true)
-  created            DateTime                     @default(now())
-  decisionDate       DateTime?
-  projectId          String?                      @db.ObjectId
-  project            PrivateCloudProject?         @relation("privateCloudProject", fields: [projectId], references: [id])
-  requestedProjectId String                       @unique @db.ObjectId
-  requestedProject   PrivateCloudRequestedProject @relation("privateCloudRequestedProject", fields: [requestedProjectId], references: [id])
+  id                     String                        @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate           String
+  createdByEmail         String
+  decisionMakerEmail     String?
+  type                   RequestType
+  decisionStatus         DecisionStatus
+  humanComment           String?
+  active                 Boolean                       @default(true)
+  created                DateTime                      @default(now())
+  decisionDate           DateTime?
+  projectId              String?                       @db.ObjectId
+  project                PrivateCloudProject?          @relation("privateCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
+  requestedProjectId     String                        @unique @db.ObjectId
+  requestedProject       PrivateCloudRequestedProject  @relation("privateCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  userRequestedProjectId String?                       @unique @db.ObjectId
+  userRequestedProject   PrivateCloudRequestedProject? @relation("privateCloudUserRequestedProject", fields: [userRequestedProjectId], references: [id], onDelete: Cascade)
+
+  @@unique([licencePlate, active])
 }
 
 model PrivateCloudProject {
@@ -63,11 +65,11 @@ model PrivateCloudProject {
   status                   ProjectStatus
   created                  DateTime              @default(now())
   projectOwnerId           String                @db.ObjectId
-  projectOwner             User                  @relation("privateCloudProjectOwner", fields: [projectOwnerId], references: [id])
+  projectOwner             User                  @relation("privateCloudProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String                @db.ObjectId
-  primaryTechnicalLead     User                  @relation("privateCloudPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  primaryTechnicalLead     User                  @relation("privateCloudPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
   secondaryTechnicalLeadId String?               @db.ObjectId
-  secondaryTechnicalLead   User?                 @relation("privateCloudSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLead   User?                 @relation("privateCloudSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   cluster                  Cluster
   productionQuota          Quota
@@ -75,7 +77,6 @@ model PrivateCloudProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
-  profileId                String?
   requests                 PrivateCloudRequest[] @relation("privateCloudProject")
 }
 
@@ -87,11 +88,11 @@ model PrivateCloudRequestedProject {
   licencePlate             String
   created                  DateTime             @default(now())
   projectOwnerId           String               @db.ObjectId
-  projectOwner             User                 @relation("privateCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id])
+  projectOwner             User                 @relation("privateCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String               @db.ObjectId
-  primaryTechnicalLead     User                 @relation("privateCloudRequestedPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  primaryTechnicalLead     User                 @relation("privateCloudRequestedPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
   secondaryTechnicalLeadId String?              @db.ObjectId
-  secondaryTechnicalLead   User?                @relation("privateCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLead   User?                @relation("privateCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   cluster                  Cluster
   productionQuota          Quota
@@ -99,8 +100,8 @@ model PrivateCloudRequestedProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
-  profileId                String?
   requestedProject         PrivateCloudRequest? @relation("privateCloudRequestedProject")
+  userRequestedProject     PrivateCloudRequest? @relation("privateCloudUserRequestedProject")
 }
 
 model PublicCloudRequest {
@@ -115,9 +116,11 @@ model PublicCloudRequest {
   created            DateTime                    @default(now())
   decisionDate       DateTime?
   projectId          String?                     @db.ObjectId
-  project            PublicCloudProject?         @relation("publicCloudProject", fields: [projectId], references: [id])
+  project            PublicCloudProject?         @relation("publicCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
   requestedProjectId String                      @unique @db.ObjectId
-  requestedProject   PublicCloudRequestedProject @relation("publicCloudRequestedProject", fields: [requestedProjectId], references: [id])
+  requestedProject   PublicCloudRequestedProject @relation("publicCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+
+  @@unique([licencePlate, active])
 }
 
 model PublicCloudProject {
@@ -130,11 +133,11 @@ model PublicCloudProject {
   billingGroup             String
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
-  projectOwner             User                 @relation("publicCloudProjectOwner", fields: [projectOwnerId], references: [id])
+  projectOwner             User                 @relation("publicCloudProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String               @db.ObjectId
-  primaryTechnicalLead     User                 @relation("publicCloudPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  primaryTechnicalLead     User                 @relation("publicCloudPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
   secondaryTechnicalLeadId String?              @db.ObjectId
-  secondaryTechnicalLead   User?                @relation("publicCloudSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLead   User?                @relation("publicCloudSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
   commonComponents         CommonComponents
@@ -151,11 +154,11 @@ model PublicCloudRequestedProject {
   billingGroup             String
   budget                   Budget
   projectOwnerId           String              @db.ObjectId
-  projectOwner             User                @relation("publicCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id])
+  projectOwner             User                @relation("publicCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String              @db.ObjectId
-  primaryTechnicalLead     User                @relation("publicCloudRequestedPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  primaryTechnicalLead     User                @relation("publicCloudRequestedPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
   secondaryTechnicalLeadId String?             @db.ObjectId
-  secondaryTechnicalLead   User?               @relation("publicCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLead   User?               @relation("publicCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
   commonComponents         CommonComponents
@@ -175,17 +178,22 @@ type Budget {
   tools Float
 }
 
+type CommonComponentsOptions {
+  planningToUse Boolean
+  implemented   Boolean
+}
+
 type CommonComponents {
-  addressAndGeolocation              CommonComponentsOptions?
-  workflowManagement                 CommonComponentsOptions?
-  formDesignAndSubmission            CommonComponentsOptions?
-  identityManagement                 CommonComponentsOptions?
-  paymentServices                    CommonComponentsOptions?
-  documentManagement                 CommonComponentsOptions?
-  endUserNotificationAndSubscription CommonComponentsOptions?
-  publishing                         CommonComponentsOptions?
-  businessIntelligence               CommonComponentsOptions?
-  other                              String?
+  addressAndGeolocation              CommonComponentsOptions
+  workflowManagement                 CommonComponentsOptions
+  formDesignAndSubmission            CommonComponentsOptions
+  identityManagement                 CommonComponentsOptions
+  paymentServices                    CommonComponentsOptions
+  documentManagement                 CommonComponentsOptions
+  endUserNotificationAndSubscription CommonComponentsOptions
+  publishing                         CommonComponentsOptions
+  businessIntelligence               CommonComponentsOptions
+  other                              String
   noServices                         Boolean
 }
 
@@ -261,12 +269,6 @@ enum DefaultCpuOptions {
   CPU_REQUEST_16_LIMIT_32
   CPU_REQUEST_32_LIMIT_64
   CPU_REQUEST_64_LIMIT_128
-}
-
-enum CommonComponentsOptions {
-  IMPLEMENTED
-  PLANNING_TO_USE
-  NOT_USING
 }
 
 enum DefaultMemoryOptions {
