@@ -6,7 +6,7 @@ export default function TeamContacts({
   secondTechLead,
   secondTechLeadOnClick
 }: {
-  disabled: boolean;
+  disabled?: boolean;
   secondTechLead: boolean;
   secondTechLeadOnClick: () => void;
 }) {

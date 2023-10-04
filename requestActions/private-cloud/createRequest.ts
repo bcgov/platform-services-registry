@@ -23,6 +23,46 @@ export default async function createRequest(
 ): Promise<PrivateCloudRequest> {
   const licencePlate = generateLicensePlate();
 
+  const createRequestedProject = {
+    name: formData.name,
+    description: formData.description,
+    cluster: formData.cluster,
+    ministry: formData.ministry,
+    status: ProjectStatus.ACTIVE,
+    licencePlate: licencePlate,
+    commonComponents: formData.commonComponents,
+    productionQuota: defaultQuota,
+    testQuota: defaultQuota,
+    toolsQuota: defaultQuota,
+    developmentQuota: defaultQuota,
+    projectOwner: {
+      connectOrCreate: {
+        where: {
+          email: formData.projectOwner.email,
+        },
+        create: formData.projectOwner,
+      },
+    },
+    primaryTechnicalLead: {
+      connectOrCreate: {
+        where: {
+          email: formData.primaryTechnicalLead.email,
+        },
+        create: formData.primaryTechnicalLead,
+      },
+    },
+    secondaryTechnicalLead: formData.secondaryTechnicalLead
+      ? {
+          connectOrCreate: {
+            where: {
+              email: formData.secondaryTechnicalLead.email,
+            },
+            create: formData.secondaryTechnicalLead,
+          },
+        }
+      : undefined,
+  };
+
   return prisma.privateCloudRequest.create({
     data: {
       type: RequestType.CREATE,
@@ -31,45 +71,10 @@ export default async function createRequest(
       createdByEmail: authEmail,
       licencePlate,
       requestedProject: {
-        create: {
-          name: formData.name,
-          description: formData.description,
-          cluster: formData.cluster,
-          ministry: formData.ministry,
-          status: ProjectStatus.ACTIVE,
-          licencePlate: licencePlate,
-          commonComponents: formData.commonComponents,
-          productionQuota: defaultQuota,
-          testQuota: defaultQuota,
-          toolsQuota: defaultQuota,
-          developmentQuota: defaultQuota,
-          projectOwner: {
-            connectOrCreate: {
-              where: {
-                email: formData.projectOwner.email,
-              },
-              create: formData.projectOwner,
-            },
-          },
-          primaryTechnicalLead: {
-            connectOrCreate: {
-              where: {
-                email: formData.primaryTechnicalLead.email,
-              },
-              create: formData.primaryTechnicalLead,
-            },
-          },
-          secondaryTechnicalLead: formData.secondaryTechnicalLead
-            ? {
-                connectOrCreate: {
-                  where: {
-                    email: formData.secondaryTechnicalLead.email,
-                  },
-                  create: formData.secondaryTechnicalLead,
-                },
-              }
-            : undefined,
-        },
+        create: createRequestedProject,
+      },
+      userRequestedProject: {
+        create: createRequestedProject,
       },
     },
     include: {

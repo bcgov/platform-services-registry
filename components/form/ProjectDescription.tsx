@@ -4,7 +4,7 @@ import classNames from "@/components/utils/classnames";
 export default function ProjectDescription({
   disabled
 }: {
-  disabled: boolean;
+  disabled?: boolean;
 }) {
   const {
     register,

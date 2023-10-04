@@ -29,12 +29,6 @@ export default function Page() {
     resolver: zodResolver(CreateRequestBodySchema),
   });
 
-  console.log("VALUES");
-  console.log(methods.watch());
-
-  console.log("ERRORS");
-  console.log(methods.formState.errors);
-
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     console.log(data);
@@ -64,7 +58,7 @@ export default function Page() {
 
     setIsLoading(false);
     // router.back();
-    router.push("/private-cloud/requests");
+    router.replace("/private-cloud/requests");
   };
 
   const secondTechLeadOnClick = () => {

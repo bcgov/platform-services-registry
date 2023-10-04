@@ -77,28 +77,6 @@ export default async function makeDecisionRequest(
         active: decision === DecisionStatus.APPROVED,
         decisionDate: new Date(),
         decisionMakerEmail: authEmail,
-        userRequestedProject: {
-          create: {
-            ...userRequestedProject,
-            projectOwner: {
-              connect: {
-                id: projectOwnerId,
-              },
-            },
-            primaryTechnicalLead: {
-              connect: {
-                id: primaryTechnicalLeadId,
-              },
-            },
-            secondaryTechnicalLead: secondaryTechnicalLeadId
-              ? {
-                  connect: {
-                    id: secondaryTechnicalLeadId,
-                  },
-                }
-              : undefined,
-          },
-        },
         requestedProject: {
           update: {
             ...formData,
