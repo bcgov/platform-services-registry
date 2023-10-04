@@ -50,7 +50,7 @@ export const CommonComponentsInputSchema = z
 export const UserInputSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
-  email: z.string().email(),
+  email: z.string().email().toLowerCase(),
   ministry: z.nativeEnum(Ministry),
 });
 
