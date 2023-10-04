@@ -15,7 +15,7 @@ import TeamContacts from "@/components/form/TeamContacts";
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
 
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(CreateRequestBodySchema)
+    resolver: zodResolver(CreateRequestBodySchema),
   });
 
   console.log("VALUES");
@@ -39,12 +39,12 @@ export default function Page() {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/requests/private-cloud/create", {
+      const response = await fetch("/api/create/private-cloud", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       console.log("response", response);
