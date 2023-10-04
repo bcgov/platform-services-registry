@@ -13,12 +13,13 @@ export async function POST(req: NextRequest) {
 
   if (!session) {
     return new NextResponse("You do not have the required credentials.", {
-      status: 401
+      status: 401,
     });
   }
 
   const { email: authEmail, roles: authRoles } = session.user;
 
+  // Validation
   const body = await req.json();
   const parsedBody = CreateRequestBodySchema.safeParse(body);
 
@@ -28,11 +29,12 @@ export async function POST(req: NextRequest) {
 
   const formData: CreateRequestBody = parsedBody.data;
 
+  // Authorization
   if (
     ![
       formData.projectOwner.email,
       formData.primaryTechnicalLead.email,
-      formData.secondaryTechnicalLead?.email
+      formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
     !authRoles.includes("admin")
   ) {
@@ -41,6 +43,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Action
   let request: PrivateCloudRequest;
 
   try {
@@ -60,6 +63,6 @@ export async function POST(req: NextRequest) {
 
   return new NextResponse(JSON.stringify(request), {
     status: 200,
-    headers: { "content-type": "application/json" }
+    headers: { "content-type": "application/json" },
   });
 }
