@@ -14,8 +14,8 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import generateLicensePlate from "@/lib/generateLicencePlate";
 import {
-  CreateRequestBodySchema,
-  CreateRequestBody,
+  CreateRequestPrivateBodySchema,
+  CreateRequestPrivateBody,
   UserInput,
 } from "@/schema";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
@@ -32,13 +32,13 @@ export async function POST(req: NextRequest) {
   const { email: authEmail, roles: authRoles } = session.user;
 
   const body = await req.json();
-  const parsedBody = CreateRequestBodySchema.safeParse(body);
+  const parsedBody = CreateRequestPrivateBodySchema.safeParse(body);
 
   if (!parsedBody.success) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const data: CreateRequestBody = parsedBody.data;
+  const data: CreateRequestPrivateBody = parsedBody.data;
 
   const {
     projectOwner,

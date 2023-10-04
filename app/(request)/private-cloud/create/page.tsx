@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { useForm } from "react-hook-form";
-import { CreateRequestBodySchema } from "@/schema";
+import { CreateRequestPrivateBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/Create";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
-import ProjectDescription from "@/components/form/ProjectDescription";
+import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
 import TeamContacts from "@/components/form/TeamContacts";
 
 export default function Page() {
@@ -39,7 +39,7 @@ export default function Page() {
     unregister,
     trigger
   } = useForm({
-    resolver: zodResolver(CreateRequestBodySchema)
+    resolver: zodResolver(CreateRequestPrivateBodySchema)
   });
 
   const onSubmit = async (data: any) => {

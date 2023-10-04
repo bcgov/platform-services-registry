@@ -5,6 +5,7 @@ import {
   Cluster,
   Ministry,
   CommonComponentsOptions,
+  Provider,
 } from "@prisma/client";
 import { string, number, z } from "zod";
 
@@ -49,7 +50,14 @@ export const UserInputSchema = z.object({
   ministry: z.nativeEnum(Ministry),
 });
 
-export const CreateRequestBodySchema = z.object({
+export const BudgetInputSchema = z.object({
+  dev: z.number(),
+  test: z.number(),
+  prod: z.number(),
+  tools: z.number(),
+});
+
+export const CreateRequestPrivateBodySchema = z.object({
   name: z.string().nonempty({ message: "Name is required." }),
   description: z.string().nonempty({ message: "Description is required." }),
   cluster: z.nativeEnum(Cluster),
@@ -66,7 +74,7 @@ export const QuotaInputSchema = z.object({
   storage: z.nativeEnum(DefaultStorageOptions),
 });
 
-export const EditRequestBodySchema = CreateRequestBodySchema.merge(
+export const EditRequestBodySchema = CreateRequestPrivateBodySchema.merge(
   z.object({
     productionQuota: QuotaInputSchema,
     testQuota: QuotaInputSchema,
@@ -75,7 +83,19 @@ export const EditRequestBodySchema = CreateRequestBodySchema.merge(
   })
 );
 
-export type CreateRequestBody = z.infer<typeof CreateRequestBodySchema>;
+export const CreateRequestPublicBodySchema = z.object({
+  name: z.string().nonempty({ message: "Name is required." }),
+  description: z.string().nonempty({ message: "Description is required." }),
+  provider: z.nativeEnum(Provider),
+  budget: BudgetInputSchema,
+  ministry: z.nativeEnum(Ministry),
+  projectOwner: UserInputSchema,
+  primaryTechnicalLead: UserInputSchema,
+  secondaryTechnicalLead: UserInputSchema.optional(),
+  commonComponents: CommonComponentsInputSchema,
+});
+
+export type CreateRequestPrivateBody = z.infer<typeof CreateRequestPrivateBodySchema>;
 export type UserInput = z.infer<typeof UserInputSchema>;
 export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
 export type QuotaInput = z.infer<typeof QuotaInputSchema>;

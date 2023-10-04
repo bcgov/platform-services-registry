@@ -1,6 +1,6 @@
 import classNames from "@/components/utils/classnames";
 
-export default function ProjectDescription({
+export default function ProjectDescriptionPrivate({
   register,
   errors
 }: {
