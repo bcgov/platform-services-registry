@@ -42,12 +42,12 @@ export default function SignInPage() {
       </p>
       <ul>
         <li>
-        <a href="URL_FOR_PRIVATE_CLOUD" className="text-blue-500 hover:text-blue-700">
+        <a href="https://digital.gov.bc.ca/cloud/services/private/intro/" className="text-blue-500 hover:text-blue-700">
             Private cloud hosting
         </a>
         </li>
         <li>
-        <a href="URL_FOR_PUBLIC_CLOUD" className="text-blue-500 hover:text-blue-700">
+        <a href="https://digital.gov.bc.ca/cloud/services/public/intro/" className="text-blue-500 hover:text-blue-700">
             Public cloud hosting
         </a>
         </li>
@@ -66,10 +66,10 @@ export default function SignInPage() {
       </p>
       <ul>
           <li>
-            Private Cloud Platform Adminstrators <a href="mailto:PlatformServicesTeam@gov.bc.ca" className="text-blue-500 hover:text-blue-700">PlatformServicesTeam@gov.bc.ca</a> to book an <a href="URL_FOR_ONBOARDING" className="text-blue-500 hover:text-blue-700">onboarding session for the (Openshift 4 Platform)</a>
+            Private Cloud Platform Adminstrators <a href="mailto:PlatformServicesTeam@gov.bc.ca" className="text-blue-500 hover:text-blue-700">PlatformServicesTeam@gov.bc.ca</a> to book an <a href="https://digital.gov.bc.ca/cloud/services/private/onboard/" className="text-blue-500 hover:text-blue-700">onboarding session for the (Openshift 4 Platform)</a>
           </li>
           <li>
-            Public Cloud Platform Adminstrators <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">Cloud.Pathfinder@gov.bc.ca</a> to book an <a href="URL_FOR_ONBOARDING" className="text-blue-500 hover:text-blue-700">onboarding session for the (B.C. Government landing zone in AWS)</a>
+            Public Cloud Platform Adminstrators <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">Cloud.Pathfinder@gov.bc.ca</a> to book an <a href="https://digital.gov.bc.ca/cloud/services/public/onboard/" className="text-blue-500 hover:text-blue-700">onboarding session for the (B.C. Government landing zone in AWS)</a>
           </li>
       </ul>
 
