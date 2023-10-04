@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";
-import { PrivateCloudProject } from "@prisma/client";
+import { PrivateCloudProject, Quota } from "@prisma/client";
 import { name } from "@azure/msal-node/dist/packageMetadata";
 
 type QuotaOptions = {
@@ -15,7 +15,7 @@ const defaultCpuOptionsLookup: QuotaOptions = {
   CPU_REQUEST_4_LIMIT_8: "4 CPU Request, 8 CPU Limit",
   CPU_REQUEST_8_LIMIT_16: "8 CPU Request, 16 CPU Limit",
   CPU_REQUEST_16_LIMIT_32: "16 CPU Request, 32 CPU Limit",
-  CPU_REQUEST_32_LIMIT_64: "32 CPU Request, 64 CPU Limit"
+  CPU_REQUEST_32_LIMIT_64: "32 CPU Request, 64 CPU Limit",
 };
 
 const defaultMemoryOptionsLookup: QuotaOptions = {
@@ -24,7 +24,7 @@ const defaultMemoryOptionsLookup: QuotaOptions = {
   MEMORY_REQUEST_8_LIMIT_16: "8 GB Request, 16 GB Limit",
   MEMORY_REQUEST_16_LIMIT_32: "16 GB Request, 32 GB Limit",
   MEMORY_REQUEST_32_LIMIT_64: "32 GB Request, 64 GB Limit",
-  MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit"
+  MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit",
 };
 
 const defaultStorageOptionsLookup: QuotaOptions = {
@@ -36,7 +36,7 @@ const defaultStorageOptionsLookup: QuotaOptions = {
   STORAGE_64: "64 GB",
   STORAGE_128: "128 GB",
   STORAGE_256: "256 GB",
-  STORAGE_512: "512 GB"
+  STORAGE_512: "512 GB",
 };
 
 type QuotaOptionsLookup = {
@@ -48,7 +48,7 @@ type QuotaOptionsLookup = {
 const quotaOptionsLookup: QuotaOptionsLookup = {
   cpu: defaultCpuOptionsLookup,
   memory: defaultMemoryOptionsLookup,
-  storage: defaultStorageOptionsLookup
+  storage: defaultStorageOptionsLookup,
 };
 
 function QuotaInput({
@@ -57,18 +57,18 @@ function QuotaInput({
   licensePlate,
   selectOptions,
   disabled,
-  quota
+  quota,
 }: {
   quotaName: "cpu" | "memory" | "storage";
   nameSpace: "production" | "test" | "development" | "tools";
   licensePlate: string;
   selectOptions: QuotaOptions;
   disabled: boolean;
-  quota: any;
+  quota: Quota | null;
 }) {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
   } = useFormContext();
 
   // Make quotaName start with uppercase letter
@@ -111,12 +111,16 @@ function QuotaInput({
             Select the {quotaName} for the {nameSpace} namespace
           </p>
         )}
-        <p className="mt-3 text-sm leading-6 text-gray-700">
-          <b>Current {quotaName}:</b> {quota[quotaName]}
-        </p>
-        <p className="mt-3 text-sm leading-6 text-gray-700">
-          <b>Requested {quotaName}:</b> {quota[quotaName]}
-        </p>
+        {quota ? (
+          <div>
+            <p className="mt-3 text-sm leading-6 text-gray-700">
+              <b>Current {quotaName}:</b> {quota[quotaName]}
+            </p>
+            <p className="mt-3 text-sm leading-6 text-gray-700">
+              <b>Requested {quotaName}:</b> {quota[quotaName]}
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -125,11 +129,11 @@ function QuotaInput({
 export default function Quotas({
   licensePlate,
   disabled,
-  currentProject
+  currentProject,
 }: {
   licensePlate: string;
   disabled: boolean;
-  currentProject: PrivateCloudProject;
+  currentProject: PrivateCloudProject | null | undefined;
 }) {
   console.log("currentProject", currentProject);
   return (
@@ -160,7 +164,8 @@ export default function Quotas({
                   licensePlate={licensePlate}
                   nameSpace={nameSpace}
                   disabled={disabled}
-                  quota={""}
+                  // @ts-ignore
+                  quota={currentProject?.[nameSpace + "Quota"]}
                 />
               ))}
             </div>

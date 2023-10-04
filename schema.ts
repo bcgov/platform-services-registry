@@ -51,15 +51,8 @@ export const CommonComponentsInputSchema = z
 export const UserInputSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
-  email: z.string().email(),
+  email: z.string().email().toLowerCase(),
   ministry: z.nativeEnum(Ministry),
-});
-
-export const BudgetInputSchema = z.object({
-  dev: z.number(),
-  test: z.number(),
-  prod: z.number(),
-  tools: z.number(),
 });
 
 export const CreateRequestPrivateBodySchema = z.object({
@@ -95,6 +88,22 @@ export const EditRequestBodySchema = CreateRequestPrivateBodySchema.merge(
   })
 );
 
+export const DecisionOptionsSchema = z.enum(["APPROVED", "REJECTED"]);
+
+export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
+  z.object({
+    decision: DecisionOptionsSchema,
+    humanComment: string().optional(),
+  })
+);
+
+export const BudgetInputSchema = z.object({
+  dev: z.number(),
+  test: z.number(),
+  prod: z.number(),
+  tools: z.number(),
+});
+
 export const CreateRequestPublicBodySchema = z.object({
   name: z.string().nonempty({ message: "Name is required." }),
   description: z.string().nonempty({ message: "Description is required." }),
@@ -106,19 +115,10 @@ export const CreateRequestPublicBodySchema = z.object({
   secondaryTechnicalLead: UserInputSchema.optional(),
 });
 
-export const DecisionOptionsSchema = z.enum(["APPROVED", "REJECTED"]);
-
-export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
-  z.object({
-    decision: DecisionOptionsSchema,
-    humanComment: string().optional(),
-  })
-);
-
-export type CreateRequestPrivateBody = z.infer<typeof CreateRequestPrivateBodySchema>;
+export type CreateRequestBody = z.infer<typeof CreateRequestPrivateBodySchema>;
 export type UserInput = z.infer<typeof UserInputSchema>;
 export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
 export type QuotaInput = z.infer<typeof QuotaInputSchema>;
 export type EditRequestBody = z.infer<typeof EditRequestBodySchema>;
-export type DecisionRequestBody = z.infer<typeof CreateRequestPrivateBodySchema>;
+export type DecisionRequestBody = z.infer<typeof DecisionRequestBodySchema>;
 export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;

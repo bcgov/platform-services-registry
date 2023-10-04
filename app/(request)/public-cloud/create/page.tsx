@@ -7,7 +7,6 @@ import { CreateRequestPublicBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/Create";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescriptionPublic from "@/components/form/ProjectDescriptionPublic";
@@ -86,14 +85,9 @@ export default function Page() {
         <div className="space-y-12">
           <ProjectDescriptionPublic register={register} errors={errors} />
           <TeamContacts
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
+          disabled={false}
             secondTechLead={secondTechLead}
             secondTechLeadOnClick={secondTechLeadOnClick}
-            control={control}
           />
           <Budget register={register} errors={errors} />
         </div>
@@ -108,12 +102,6 @@ export default function Page() {
           </button>
         </div>
       </form>
-      <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={handleSubmit(onSubmit)}
-        isLoading={isLoading}
-      />
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
