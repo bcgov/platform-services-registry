@@ -30,6 +30,13 @@
   font-style: normal;
 }
 
+ol, ul, menu {
+  list-style: disc;
+  margin: 0;
+  padding-left: 2em;
+}
+
+
 /* body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
