@@ -14,6 +14,7 @@ import Quotas from "@/components/form/Quotas";
 import { useQuery } from "@tanstack/react-query";
 import SubmitButton from "@/components/buttons/SubmitButton";
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from "@/app/api/request/private-cloud/[id]/route";
+import { PrivateCloudProject } from "@prisma/client";
 
 async function fetchRequestedProject(
   id: string
@@ -37,15 +38,15 @@ async function fetchRequestedProject(
 }
 
 export default function RequestDecision({
-  params
+  params,
 }: {
   params: { id: string };
 }) {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
 
-  const { push } = useRouter();
+  const { replace } = useRouter();
 
   const [open, setOpen] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
@@ -56,12 +57,12 @@ export default function RequestDecision({
     PrivateCloudRequestWithCurrentAndRequestedProject,
     Error
   >(["requestedProject", params.id], () => fetchRequestedProject(params.id), {
-    enabled: !!params.id
+    enabled: !!params.id,
   });
 
   const methods = useForm({
     resolver: zodResolver(DecisionRequestBodySchema),
-    values: { comment: "", decision: "", ...data?.requestedProject }
+    values: { comment: "", decision: "", ...data?.requestedProject },
   });
 
   useEffect(() => {
@@ -81,9 +82,9 @@ export default function RequestDecision({
       const response = await fetch(`/api/decision/private-cloud/${params.id}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       console.log("response", response);
@@ -100,7 +101,7 @@ export default function RequestDecision({
     }
 
     setIsLoading(false);
-    push("/private-cloud/requests");
+    replace("/private-cloud/requests");
   };
 
   const secondTechLeadOnClick = () => {
@@ -109,8 +110,6 @@ export default function RequestDecision({
       methods.unregister("secondaryTechnicalLead");
     }
   };
-
-  console.log("DATA", data);
 
   return (
     <div>
@@ -126,19 +125,24 @@ export default function RequestDecision({
             <Quotas
               licensePlate="ac4r5"
               disabled={isDisabled}
-              currentProject={data?.project}
+              currentProject={data?.project as PrivateCloudProject}
             />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            <SubmitButton
-              text="REJECT REQUEST"
-              onClick={() => methods.setValue("decision", "REJECTED")}
-            />
-            <SubmitButton
-              text="APPROVE REQUEST"
-              onClick={() => methods.setValue("decision", "APPROVED")}
-            />
+
+            {!isDisabled ? (
+              <div className="flex items-center justify-start gap-x-6">
+                <SubmitButton
+                  text="REJECT REQUEST"
+                  onClick={() => methods.setValue("decision", "REJECTED")}
+                />
+                <SubmitButton
+                  text="APPROVE REQUEST"
+                  onClick={() => methods.setValue("decision", "APPROVED")}
+                />{" "}
+              </div>
+            ) : null}
           </div>
         </form>
       </FormProvider>
