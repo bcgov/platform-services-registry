@@ -79,7 +79,6 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     await prisma.$transaction([updateRequest, upsertProject]);
 
     // sendProvisionedEmails(request);
-    console.log("Provisioned project: " + licencePlate);
     return new NextResponse(
       `Successfuly marked ${licencePlate} as provisioned.`,
       { status: 200 }
