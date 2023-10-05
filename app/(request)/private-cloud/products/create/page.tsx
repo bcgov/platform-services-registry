@@ -12,6 +12,7 @@ import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
+import createQueryString from "@/components/utils/createQueryString";
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -58,7 +59,7 @@ export default function Page() {
 
     setIsLoading(false);
     // router.back();
-    router.replace("/private-cloud/requests");
+    router.push("/private-cloud/requests");
   };
 
   const secondTechLeadOnClick = () => {

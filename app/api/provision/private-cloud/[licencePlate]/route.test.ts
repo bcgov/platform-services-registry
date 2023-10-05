@@ -10,7 +10,7 @@ import { POST as decisionRequest } from "@/app/api/decision/private-cloud/[id]/r
 import { PUT } from "@/app/api/provision/private-cloud/[licencePlate]/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
-// import { cleanUp } from "@/jest.setup";
+import exp from "constants";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -172,7 +172,6 @@ describe("Create Private Cloud Request Route", () => {
       params: { id: createRequestId },
     });
 
-
     // Create the proviiion request url
     API_URL = `${BASE_URL}/api/provision/private-cloud/${createRequestLicenceplate}`;
   });
@@ -226,13 +225,56 @@ describe("Create Private Cloud Request Route", () => {
       method: "PUT",
     });
 
-    console.log("API_URL: ", API_URL);
-    console.log("createRequestLicenceplate: ", createRequestLicenceplate);
     const response = await PUT(req, {
       params: { licencePlate: createRequestLicenceplate },
     });
     expect(response.status).toBe(200);
   });
 
-  // test("should be a project in the db", async () => {});
+  test("should be a project in the db", async () => {
+    const project = await prisma.privateCloudProject.findFirst({
+      where: { licencePlate: createRequestLicenceplate },
+      include: {
+        projectOwner: true,
+        primaryTechnicalLead: true,
+        secondaryTechnicalLead: true,
+      },
+    });
+
+    if (!project) {
+      throw new Error("Project not found in db");
+    }
+
+    expect(project).toBeTruthy();
+    expect(project.licencePlate).toBe(createRequestLicenceplate);
+    expect(project.name).toBe(decisionBody.name);
+    expect(project.description).toBe(decisionBody.description);
+    expect(project.cluster).toBe(decisionBody.cluster);
+    expect(project.ministry).toBe(decisionBody.ministry);
+    expect(project.projectOwner.email).toBe(decisionBody.projectOwner.email);
+    expect(project.primaryTechnicalLead.email).toBe(
+      decisionBody.primaryTechnicalLead.email
+    );
+    expect(project.secondaryTechnicalLead).toBe(null);
+    expect(project.commonComponents).toBeTruthy();
+    expect(project.testQuota).toStrictEqual(decisionBody.testQuota);
+    expect(project.productionQuota).toStrictEqual(decisionBody.productionQuota);
+    expect(project.toolsQuota).toStrictEqual(decisionBody.toolsQuota);
+    expect(project.developmentQuota).toStrictEqual(
+      decisionBody.developmentQuota
+    );
+  });
+
+  test("the request should be marked as provisioned and not be active", async () => {
+    const request = await prisma.privateCloudRequest.findFirst({
+      where: { licencePlate: createRequestLicenceplate },
+    });
+
+    if (!request) {
+      throw new Error("Request not found in db");
+    }
+
+    expect(request.decisionStatus).toBe("PROVISIONED");
+    expect(request.active).toBe(false);
+  });
 });
