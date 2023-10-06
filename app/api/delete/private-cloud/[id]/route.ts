@@ -7,7 +7,7 @@ import {
   DecisionStatus,
   PrivateCloudProject,
   User,
-  PrivateCloudRequest
+  PrivateCloudRequest,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
@@ -15,7 +15,7 @@ import { string, z } from "zod";
 // import { sendDeleteRequestEmails } from "../../ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
-  id: string()
+  id: string(),
 });
 
 type Params = z.infer<typeof ParamsSchema>;
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return NextResponse.json({
-      message: "You do not have the required credentials."
+    return new Response("You do not have the required credentials.", {
+      status: 401,
     });
   }
 
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const parsedParams = ParamsSchema.safeParse(params);
 
   if (!parsedParams.success) {
-    return new NextResponse(parsedParams.error.message, { status: 400 });
+    return new Response(parsedParams.error.message, { status: 400 });
   }
 
   const { id: projectId } = parsedParams.data;
@@ -45,8 +45,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     const project: PrivateCloudProject | null =
       await prisma.privateCloudProject.findUnique({
         where: {
-          id: projectId
-        }
+          id: projectId,
+        },
       });
 
     if (!project) {
@@ -59,10 +59,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
           in: [
             project.projectOwnerId,
             project.primaryTechnicalLeadId,
-            project.secondaryTechnicalLeadId
-          ].filter(Boolean) as string[]
-        }
-      }
+            project.secondaryTechnicalLeadId,
+          ].filter(Boolean) as string[],
+        },
+      },
     });
 
     if (
@@ -84,23 +84,23 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         createdByEmail: authEmail,
         licencePlate: project.licencePlate,
         requestedProject: {
-          create: project
+          create: project,
         },
         project: {
           connect: {
-            id: projectId
-          }
-        }
+            id: projectId,
+          },
+        },
       },
       include: {
         project: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
-            secondaryTechnicalLead: true
-          }
-        }
-      }
+            secondaryTechnicalLead: true,
+          },
+        },
+      },
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -113,5 +113,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   // sendDeleteRequestEmails(createRequest.project);
 
-  return createRequest;
+  return  new Response("Success", { status: 200 });;
 }

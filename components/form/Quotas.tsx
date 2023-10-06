@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Link from "next/link";
 import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";

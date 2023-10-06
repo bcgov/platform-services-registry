@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Fragment, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Combobox, Transition } from "@headlessui/react";
@@ -37,7 +39,7 @@ export default function AsyncAutocomplete({
   label,
   placeHolder,
   className,
-  disabled
+  disabled,
 }: {
   name: string;
   label: string;
@@ -54,7 +56,7 @@ export default function AsyncAutocomplete({
     setValue,
     setError,
     clearErrors,
-    watch
+    watch,
   } = useFormContext();
 
   const email = watch(name + ".email");
@@ -63,12 +65,12 @@ export default function AsyncAutocomplete({
   const {
     data: people,
     isLoading,
-    error
+    error,
   } = useQuery<Person[], Error>(
     ["people", query],
     () => fetchPeople(query || ""),
     {
-      enabled: !!query
+      enabled: !!query,
     }
   );
 
@@ -81,7 +83,7 @@ export default function AsyncAutocomplete({
       givenName: firstName,
       surname: lastName,
       mail: email,
-      displayName
+      displayName,
     } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
@@ -90,7 +92,7 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry
+      ministry,
     });
 
     if (!parsedParams.success) {
@@ -102,7 +104,7 @@ export default function AsyncAutocomplete({
       setError(name, {
         type: "manual",
         message:
-          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry"
+          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry",
       });
     } else {
       clearErrors(name);
@@ -112,7 +114,7 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry
+      ministry,
     });
   };
 

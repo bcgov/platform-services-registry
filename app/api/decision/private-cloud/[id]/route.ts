@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return new NextResponse("You do not have the required credentials.", {
+    return new Response("You do not have the required credentials.", {
       status: 401,
     });
   }
@@ -29,10 +29,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { email: authEmail, roles: authRoles } = session.user;
 
   if (!authRoles.includes("admin")) {
-    return (
-      new NextResponse("You must be an admin to make a request decision."),
-      { status: 403 }
-    );
+    return new Response("You must be an admin to make a request decision.", {
+      status: 403,
+    });
   }
 
   const body = await req.json();
@@ -43,12 +42,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   if (!parsedParams.success) {
     console.log(parsedParams.error.message);
-    return new NextResponse(parsedParams.error.message, { status: 400 });
+    return new Response(parsedParams.error.message, { status: 400 });
   }
 
   if (!parsedBody.success) {
     console.log(parsedBody.error.message);
-    return new NextResponse(parsedBody.error.message, { status: 400 });
+    return new Response(parsedBody.error.message, { status: 400 });
   }
 
   const { id: requestId } = parsedParams.data;
@@ -66,7 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       );
 
     if (!request.requestedProject) {
-      return new NextResponse(
+      return new Response(
         `Error creating decision request for ${request.licencePlate}.`,
         {
           status: 200,
@@ -100,7 +99,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         );
       }
     }
-    return new NextResponse(
+    return new Response(
       `Decision request for ${request.licencePlate} succesfully created.`,
       {
         status: 200,
@@ -108,6 +107,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     );
   } catch (e) {
     console.log(e);
-    return new NextResponse("Error creating decision request", { status: 400 });
+    return new Response("Error creating decision request", { status: 400 });
   }
 }

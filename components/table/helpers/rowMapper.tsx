@@ -23,6 +23,7 @@ function TypeBadge({ status }: { status: string }) {
     // ... add other colors here
   };
 
+  //@ts-ignore
   const classes = tailwindColors[colour] || [];
 
   return (

@@ -357,15 +357,14 @@ export interface Project {
 export async function privateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
-  searchTerm?: string,
-  ministry?: string,
-  cluster?: string,
-  userEmail?: string | undefined // Non admins will be required to pass this field that will filter projects for thier user
+  searchTerm?: string | null,
+  ministry?: string | null,
+  cluster?: string | null,
+  userEmail?: string | null // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: Project[];
   total: number;
 }> {
-
   let userId: string | undefined = undefined;
 
   if (userEmail) {
@@ -380,7 +379,7 @@ export async function privateCloudProjectsPaginated(
     }
   }
 
-  console.log("userId", userId)
+  console.log("userId", userId);
 
   // Initialize the search/filter query
   const searchQuery: any = {
@@ -554,10 +553,10 @@ export async function privateCloudProjectsPaginated(
 export async function privateCloudRequestsPaginated(
   pageSize: number,
   pageNumber: number,
-  searchTerm?: string,
-  ministry?: string,
-  cluster?: string,
-  userId?: string
+  searchTerm?: string | null,
+  ministry?: string | null,
+  cluster?: string | null,
+  userId?: string | null
 ): Promise<{
   data: any[];
   total: number;

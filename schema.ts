@@ -32,9 +32,10 @@ export const CommonComponentsInputSchema = z
         .filter(
           (
             value
+            // @ts-ignore
           ): value is { planningToUse?: boolean; implemented?: boolean } =>
             typeof value === "object" && value !== null
-        )
+        ) // @ts-ignore
         .some((options) => options.planningToUse || options.implemented);
 
       const otherFieldHasValue = data.other !== undefined && data.other !== "";

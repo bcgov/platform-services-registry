@@ -99,5 +99,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   //   }
   // }
 
-  return request;
+  return new NextResponse("success", { status: 200 });
 }
