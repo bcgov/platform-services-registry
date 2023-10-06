@@ -61,19 +61,11 @@ export default function Modal({
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="font-bcsans text-sm text-gray-900">
-<<<<<<< HEAD:components/modal/Create.tsx
-                      After hitting request, our smart robots will start
-                      working hard behind the scenes. There is one step, the
-                      approval process, where a human is involved. They&apos;ll
-                      take the opportunity, if needed, to reach out and have
-                      an on-boarding conversation with you.
-=======
                       After hitting request, our smart robots will start working
                       hard behind the scenes. There is one step, the approval
                       process, where a human is involved. They'll take the
                       opportunity, if needed, to reach out and have an
                       on-boarding conversation with you.
->>>>>>> c95d0ac79a9f510fa0792d9cb7a823e86cbc8bdc:components/modal/CreatePrivateCloud.tsx
                     </p>
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
                       Also, look out for our Notification emails that will
