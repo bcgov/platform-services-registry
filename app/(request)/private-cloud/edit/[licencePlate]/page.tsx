@@ -98,13 +98,13 @@ export default function EditProject({
     values: data,
   });
 
-  console.log(methods.watch());
+  console.log("Request data", requestData);
 
   useEffect(() => {
     if (requestData) {
       setDisabled(true);
     }
-  }, [data]);
+  }, [requestData]);
 
   const onSubmit = async (data: any) => {
     console.log("SUBMIT", data);
@@ -160,7 +160,7 @@ export default function EditProject({
               disabled={isDisabled}
               // currentProject={data as PrivateCloudProject}
             />
-            <CommonComponents />
+            <CommonComponents disabled={isDisabled} />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />

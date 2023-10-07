@@ -27,8 +27,6 @@ async function fetchRequestedProject(
   // Re format data to work with form
   const data = await res.json();
 
-  console.log("DECISION data", data);
-
   // Secondaty technical lead should only be included if it exists
   if (data.requestedProject.secondaryTechnicalLead === null) {
     delete data.requestedProject.secondaryTechnicalLead;
@@ -46,7 +44,7 @@ export default function RequestDecision({
     required: true,
   });
 
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
@@ -79,7 +77,7 @@ export default function RequestDecision({
     setIsLoading(true);
     try {
       const response = await fetch(
-        `/api/decision/private-cloud/${params.licencePlate}`,
+        `/api/private-cloud/decision/${params.licencePlate}`,
         {
           method: "POST",
           headers: {
@@ -101,7 +99,8 @@ export default function RequestDecision({
     }
 
     setIsLoading(false);
-    replace("/private-cloud/requests");
+    router.replace("/private-cloud/requests");
+    router.refresh();
   };
 
   const secondTechLeadOnClick = () => {
