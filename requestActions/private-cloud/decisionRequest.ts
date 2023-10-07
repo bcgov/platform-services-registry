@@ -1,6 +1,6 @@
 import { ProjectStatus, DecisionStatus, Cluster } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { EditRequestBody } from "@/schema";
+import { PrivateCloudEditRequestBody } from "@/schema";
 import { Prisma } from "@prisma/client";
 
 export type PrivateCloudRequestWithRequestedProject =
@@ -20,7 +20,7 @@ export default async function makeDecisionRequest(
   licencePlate: string,
   decision: DecisionStatus,
   comment: string | undefined,
-  formData: EditRequestBody,
+  formData: PrivateCloudEditRequestBody,
   authEmail: string
 ): Promise<PrivateCloudRequestWithRequestedProject> {
   // Get the request

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { DecisionRequestBodySchema } from "@/schema";
+import { PrivateCloudDecisionRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
@@ -63,7 +63,7 @@ export default function RequestDecision({
   );
 
   const methods = useForm({
-    resolver: zodResolver(DecisionRequestBodySchema),
+    resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
     values: { comment: "", decision: "", ...data?.requestedProject },
   });
 

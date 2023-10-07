@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { EditRequestBodySchema } from "@/schema";
+import { PrivateCloudEditRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
@@ -92,7 +92,7 @@ export default function EditProject({
   );
 
   const methods = useForm({
-    resolver: zodResolver(EditRequestBodySchema),
+    resolver: zodResolver(PrivateCloudEditRequestBodySchema),
     values: data,
   });
 

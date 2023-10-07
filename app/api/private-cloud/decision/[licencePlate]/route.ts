@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { DecisionStatus, Cluster } from "@prisma/client";
 import { string, z } from "zod";
-import { DecisionRequestBodySchema } from "@/schema";
+import { PrivateCloudDecisionRequestBodySchema } from "@/schema";
 import makeDecisionRequest, {
   PrivateCloudRequestWithRequestedProject,
 } from "@/requestActions/private-cloud/decisionRequest";
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = DecisionRequestBodySchema.safeParse(body);
+  const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
     console.log(parsedParams.error.message);

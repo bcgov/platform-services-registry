@@ -9,13 +9,13 @@ import NextAuth from "next-auth";
 import { POST } from "@/app/api/private-cloud/create/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";
-import { CreateRequestBody } from "@/schema";
+import { PrivateCloudCreateRequestBody } from "@/schema";
 // import { cleanUp } from "@/jest.setup";
 
 const BASE_URL = "http://localhost:3000";
 const API_URL = `${BASE_URL}/api/create/private-cloud`;
 
-const createRequestBody: CreateRequestBody = {
+const createRequestBody: PrivateCloudCreateRequestBody = {
   name: "Sample Project",
   description: "This is a sample project description.",
   cluster: "SILVER", // Assuming CLUSTER_A is a valid enum value for Cluster

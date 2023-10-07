@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { CreateRequestBodySchema } from "@/schema";
+import { PrivateCloudCreateRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
@@ -27,7 +27,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(CreateRequestBodySchema),
+    resolver: zodResolver(PrivateCloudCreateRequestBodySchema),
   });
 
   const onSubmit = async (data: any) => {
@@ -60,7 +60,7 @@ export default function Page() {
     setIsLoading(false);
     // router.back();
     // revalidatePath("/", "page");
-    router.push("/private-cloud/requests", { scroll: true });
+    router.push("/private-cloud/requests");
     router.refresh();
   };
 

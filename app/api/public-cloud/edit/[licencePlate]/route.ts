@@ -4,8 +4,10 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import {
   RequestType,
   PrivateCloudRequest,
+  PublicCloudRequest,
   DecisionStatus,
   PrivateCloudProject,
+  PublicCloudProject,
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";

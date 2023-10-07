@@ -55,7 +55,7 @@ export const UserInputSchema = z.object({
   ministry: z.nativeEnum(Ministry),
 });
 
-export const CreateRequestBodySchema = z.object({
+export const PrivateCloudCreateRequestBodySchema = z.object({
   name: z.string().nonempty({ message: "Name is required." }),
   description: z.string().nonempty({ message: "Description is required." }),
   cluster: z.nativeEnum(Cluster),
@@ -79,28 +79,36 @@ export const QuotaInputSchema = z.object({
 //   storage: z.string().nonempty("Storage cannot be empty"),
 // });
 
-export const EditRequestBodySchema = CreateRequestBodySchema.merge(
-  z.object({
-    productionQuota: QuotaInputSchema,
-    testQuota: QuotaInputSchema,
-    toolsQuota: QuotaInputSchema,
-    developmentQuota: QuotaInputSchema,
-  })
-);
+export const PrivateCloudEditRequestBodySchema =
+  PrivateCloudCreateRequestBodySchema.merge(
+    z.object({
+      productionQuota: QuotaInputSchema,
+      testQuota: QuotaInputSchema,
+      toolsQuota: QuotaInputSchema,
+      developmentQuota: QuotaInputSchema,
+    })
+  );
 
 export const DecisionOptionsSchema = z.enum(["APPROVED", "REJECTED"]);
 
-export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
-  z.object({
-    decision: DecisionOptionsSchema,
-    humanComment: string().optional(),
-  })
-);
+export const PrivateCloudDecisionRequestBodySchema =
+  PrivateCloudEditRequestBodySchema.merge(
+    z.object({
+      decision: DecisionOptionsSchema,
+      humanComment: string().optional(),
+    })
+  );
 
-export type CreateRequestBody = z.infer<typeof CreateRequestBodySchema>;
+export type PrivateCloudCreateRequestBody = z.infer<
+  typeof PrivateCloudCreateRequestBodySchema
+>;
 export type UserInput = z.infer<typeof UserInputSchema>;
 export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
 export type QuotaInput = z.infer<typeof QuotaInputSchema>;
-export type EditRequestBody = z.infer<typeof EditRequestBodySchema>;
-export type DecisionRequestBody = z.infer<typeof DecisionRequestBodySchema>;
+export type PrivateCloudEditRequestBody = z.infer<
+  typeof PrivateCloudEditRequestBodySchema
+>;
+export type PrivateCloudDecisionRequestBody = z.infer<
+  typeof PrivateCloudDecisionRequestBodySchema
+>;
 export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;

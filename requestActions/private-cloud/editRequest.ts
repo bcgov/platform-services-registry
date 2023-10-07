@@ -1,6 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import {
   RequestType,
   PrivateCloudRequest,
@@ -9,12 +6,11 @@ import {
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import { EditRequestBodySchema, EditRequestBody, UserInput } from "@/schema";
-import { string, z } from "zod";
+import { PrivateCloudEditRequestBody } from "@/schema";
 
 export default async function editRequest(
   licencePlate: string,
-  formData: EditRequestBody,
+  formData: PrivateCloudEditRequestBody,
   authEmail: string
 ): Promise<PrivateCloudRequest> {
   // Get the current project that we are creating an edit request for

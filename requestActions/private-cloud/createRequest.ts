@@ -9,7 +9,7 @@ import {
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import generateLicensePlate from "@/lib/generateLicencePlate";
-import { CreateRequestBody } from "@/schema";
+import { PrivateCloudCreateRequestBody } from "@/schema";
 
 const defaultQuota = {
   cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
@@ -18,7 +18,7 @@ const defaultQuota = {
 };
 
 export default async function createRequest(
-  formData: CreateRequestBody,
+  formData: PrivateCloudCreateRequestBody,
   authEmail: string
 ): Promise<PrivateCloudRequest> {
   const licencePlate = generateLicensePlate();
