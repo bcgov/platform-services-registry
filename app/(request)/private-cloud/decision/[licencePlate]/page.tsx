@@ -115,7 +115,10 @@ export default function RequestDecision({
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="space-y-12">
-            <ProjectDescription disabled={isDisabled} />
+            <ProjectDescription
+              disabled={isDisabled}
+              clusterDisabled={data?.type !== "CREATE"}
+            />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}

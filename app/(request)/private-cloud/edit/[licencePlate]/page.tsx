@@ -28,8 +28,6 @@ async function fetchProject(
   // Re format data to work with form
   const data = await res.json();
 
-  console.log("data", data);
-
   // Secondaty technical lead should only be included if it exists
   if (data.secondaryTechnicalLead === null) {
     delete data.secondaryTechnicalLead;
@@ -98,8 +96,6 @@ export default function EditProject({
     values: data,
   });
 
-  console.log("Request data", requestData);
-
   useEffect(() => {
     if (requestData) {
       setDisabled(true);
@@ -149,7 +145,7 @@ export default function EditProject({
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="space-y-12">
-            <ProjectDescription disabled={isDisabled} />
+            <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
