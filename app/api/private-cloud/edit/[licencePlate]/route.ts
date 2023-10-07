@@ -47,9 +47,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const formData: EditRequestBody = parsedBody.data;
   const { licencePlate } = parsedParams.data;
 
-  console.log("FORM DATA");
-  console.log(formData);
-
   if (
     ![
       formData.projectOwner.email,
