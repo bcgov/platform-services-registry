@@ -13,7 +13,7 @@ import { EditRequestBodySchema, EditRequestBody, UserInput } from "@/schema";
 import { string, z } from "zod";
 
 export default async function editRequest(
-  projectId: string,
+  licencePlate: string,
   formData: EditRequestBody,
   authEmail: string
 ): Promise<PrivateCloudRequest> {
@@ -21,7 +21,7 @@ export default async function editRequest(
   const project: PrivateCloudProject | null =
     await prisma.privateCloudProject.findUnique({
       where: {
-        id: projectId,
+        licencePlate: licencePlate,
       },
       include: {
         projectOwner: true,
@@ -98,9 +98,12 @@ export default async function editRequest(
       requestedProject: {
         create: requestedProject,
       },
+      userRequestedProject: {
+        create: requestedProject,
+      },
       project: {
         connect: {
-          id: projectId,
+          licencePlate: licencePlate,
         },
       },
     },

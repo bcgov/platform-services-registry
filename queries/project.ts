@@ -379,8 +379,6 @@ export async function privateCloudProjectsPaginated(
     }
   }
 
-  console.log("userId", userId);
-
   // Initialize the search/filter query
   const searchQuery: any = {
     status: "ACTIVE",

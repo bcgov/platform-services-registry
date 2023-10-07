@@ -116,10 +116,7 @@ function QuotaInput({
         {quota ? (
           <div>
             <p className="mt-3 text-sm leading-6 text-gray-700">
-              <b>Current {quotaName}:</b> {quota[quotaName]}
-            </p>
-            <p className="mt-3 text-sm leading-6 text-gray-700">
-              <b>Requested {quotaName}:</b> {quota[quotaName]}
+              <b>Current {quotaName}:</b> {selectOptions[quota[quotaName]]}
             </p>
           </div>
         ) : null}
@@ -135,9 +132,8 @@ export default function Quotas({
 }: {
   licensePlate: string;
   disabled: boolean;
-  currentProject: PrivateCloudProject | null | undefined;
+  currentProject?: PrivateCloudProject | null | undefined;
 }) {
-  console.log("currentProject", currentProject);
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
