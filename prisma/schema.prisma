@@ -53,8 +53,6 @@ model PrivateCloudRequest {
   requestedProject       PrivateCloudRequestedProject  @relation("privateCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
   userRequestedProjectId String                        @unique @db.ObjectId
   userRequestedProject   PrivateCloudRequestedProject? @relation("privateCloudUserRequestedProject", fields: [userRequestedProjectId], references: [id], onDelete: Cascade)
-
-  @@unique([licencePlate, active])
 }
 
 model PrivateCloudProject {
@@ -119,8 +117,6 @@ model PublicCloudRequest {
   project            PublicCloudProject?         @relation("publicCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
   requestedProjectId String                      @unique @db.ObjectId
   requestedProject   PublicCloudRequestedProject @relation("publicCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
-
-  @@unique([licencePlate, active])
 }
 
 model PublicCloudProject {

@@ -157,11 +157,11 @@ describe("Create Private Cloud Request Route", () => {
       throw new Error("Request not found for provision test.");
     }
 
-    const createRequestId: string = request.id;
+    const createRequestLicencePlate: string = request.licencePlate;
     createRequestLicenceplate = request.licencePlate;
 
     // Make a decision request
-    const DECISION_API_URL = `${BASE_URL}/api/decision/private-cloud/${createRequestId}`;
+    const DECISION_API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestLicencePlate}`;
 
     const decisionRequestObject = new NextRequest(DECISION_API_URL, {
       method: "POST",
@@ -169,7 +169,7 @@ describe("Create Private Cloud Request Route", () => {
     });
 
     await decisionRequest(decisionRequestObject, {
-      params: { id: createRequestId },
+      params: { licencePlate: createRequestLicencePlate },
     });
 
     // Create the proviiion request url

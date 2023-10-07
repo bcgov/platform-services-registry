@@ -35,13 +35,11 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
 
   try {
     const request: PrivateCloudRequestWithRequestedProject | null =
-      await prisma.privateCloudRequest.findUnique({
+      await prisma.privateCloudRequest.findFirst({
         where: {
           decisionStatus: DecisionStatus.APPROVED,
-          licencePlate_active: {
-            licencePlate: licencePlate,
-            active: true,
-          },
+          licencePlate,
+          active: true,
         },
         include: {
           requestedProject: true,

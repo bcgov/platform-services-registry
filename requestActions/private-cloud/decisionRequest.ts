@@ -25,12 +25,10 @@ export default async function makeDecisionRequest(
 ): Promise<PrivateCloudRequestWithRequestedProject> {
   // Get the request
   const request: PrivateCloudRequestWithRequestedProject | null =
-    await prisma.privateCloudRequest.findUnique({
+    await prisma.privateCloudRequest.findFirst({
       where: {
-        licencePlate_active: {
-          licencePlate,
-          active: true,
-        },
+        licencePlate,
+        active: true,
       },
       include: {
         project: true,
@@ -62,10 +60,9 @@ export default async function makeDecisionRequest(
   const decisionRequest: PrivateCloudRequestWithRequestedProject | null =
     await prisma.privateCloudRequest.update({
       where: {
-        licencePlate_active: {
-          licencePlate,
-          active: true,
-        },
+        id: request.id,
+        licencePlate,
+        active: true,
         decisionStatus: DecisionStatus.PENDING,
       },
       include: {

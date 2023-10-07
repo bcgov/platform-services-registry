@@ -47,12 +47,10 @@ export async function GET(
 
   try {
     const request: PrivateCloudRequestWithCurrentAndRequestedProject | null =
-      await prisma.privateCloudRequest.findUnique({
+      await prisma.privateCloudRequest.findFirst({
         where: {
-          licencePlate_active: {
-            licencePlate,
-            active: true,
-          },
+          licencePlate,
+          active: true,
         },
         include: {
           project: {
