@@ -7,18 +7,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import jwt from "jsonwebtoken";
 import AzureADProvider from "next-auth/providers/azure-ad";
 
-// const prismaAdapter = PrismaAdapter(prisma);
-
-// const MyAdapter = {
-//   ...prismaAdapter,
-//   linkAccount: (account: any) => {
-//     account["not_before_policy"] = account["not-before-policy"];
-//     delete account["not-before-policy"];
-//     // @ts-ignore
-//     return prismaAdapter.linkAccount(account);
-//   },
-// };
-
 export const authOptions: NextAuthOptions = {
   providers: [
     // AzureADProvider({

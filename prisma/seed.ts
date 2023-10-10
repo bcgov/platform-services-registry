@@ -1,14 +1,9 @@
+import { PrismaClient, Ministry, Cluster, Provider } from "@prisma/client";
 import {
-  PrismaClient,
-  Ministry,
-  Cluster,
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
-  CommonComponentsOptions,
-  Provider,
-  ProjectStatus,
-} from "@prisma/client";
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
 const prisma = new PrismaClient();
 import { faker } from "@faker-js/faker";
 
@@ -117,39 +112,39 @@ async function main() {
           ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
           productionQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           testQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           developmentQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           toolsQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           commonComponents,

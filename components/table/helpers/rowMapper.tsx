@@ -19,10 +19,11 @@ function TypeBadge({ status }: { status: string }) {
     red: ["bg-red-100", "text-red-700", "fill-red-500"],
     blue: ["bg-blue-100", "text-blue-700", "fill-blue-500"],
     green: ["bg-green-100", "text-green-700", "fill-green-500"],
-    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"]
+    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"],
     // ... add other colors here
   };
 
+  //@ts-ignore
   const classes = tailwindColors[colour] || [];
 
   return (
@@ -64,7 +65,11 @@ export const privateCloudProjectDataToRow = (project: Project) => {
     ministry: project.ministry,
     cluster: project.cluster,
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}, ${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
+    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${
+      project.primaryTechnicalLeadDetails.lastName
+    } ${project.secondaryTechnicalLeadDetails?.firstName || ""} ${
+      project.secondaryTechnicalLeadDetails ? "," : ""
+    } ${project.secondaryTechnicalLeadDetails?.lastName || ""}`,
     // @ts-ignore
     created: formatDate(project.created["$date"]),
     licencePlate: project.licencePlate,
@@ -80,7 +85,7 @@ export const privateCloudProjectDataToRow = (project: Project) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    )
+    ),
   };
 };
 
@@ -92,7 +97,11 @@ export const publicCloudProjectDataToRow = (project: any) => {
     description: project.description,
     ministry: project.ministry,
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}, ${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
+    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${
+      project.primaryTechnicalLeadDetails.lastName
+    } ${project.secondaryTechnicalLeadDetails ? "," : ""} ${
+      project.secondaryTechnicalLeadDetails?.firstName || ""
+    } ${project.secondaryTechnicalLeadDetails?.lastName}`,
     created: formatDate(project.created["$date"]),
     licencePlate: project.licencePlate,
     edit: (
@@ -107,7 +116,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    )
+    ),
   };
 };
 
@@ -126,7 +135,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
       request?.secondaryTechnicalLead?.firstName || ""
     } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate
+    licencePlate: request.licencePlate,
   };
 };
 
@@ -141,6 +150,6 @@ export const publicCloudRequestDataToRow = (request: any) => {
     projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
     technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate
+    licencePlate: request.licencePlate,
   };
 };
