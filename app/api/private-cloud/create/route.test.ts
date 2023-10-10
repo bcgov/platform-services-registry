@@ -1,11 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import {
-  Prisma,
-  PrivateCloudRequest,
-  PrivateCloudRequestedProject,
-} from "@prisma/client";
+import { PrivateCloudRequest } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
-import NextAuth from "next-auth";
 import { POST } from "@/app/api/private-cloud/create/route";
 import { MockedFunction } from "jest-mock";
 import { NextRequest, NextResponse } from "next/server";

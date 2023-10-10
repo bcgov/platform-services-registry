@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PublicCloudProject } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { string, z } from "zod";
@@ -43,7 +42,7 @@ export async function GET(
   const { id } = params;
 
   try {
-    const request: PrivateCloudRequestWithCurrentAndRequestedProject | null =
+    const request: PublicCloudRequestWithCurrentAndRequestedProject | null =
       await prisma.publicCloudRequest.findUnique({
         where: {
           id,
