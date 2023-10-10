@@ -8,20 +8,22 @@ import {
   RequestType,
   DecisionStatus,
   ProjectStatus,
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
   PrivateCloudProject,
   Ministry,
   Cluster,
   User
 } from "@prisma/client";
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
 // import { cleanUp } from "@/jest.setup";
 
 const quota = {
-  cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptions.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptions.STORAGE_1,
+  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
+  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
 };
 
 const projectData = {

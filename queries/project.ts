@@ -367,14 +367,15 @@ export interface Project {
 export async function privateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
-  searchTerm?: string,
-  ministry?: string,
-  cluster?: string,
-  userEmail?: string | undefined // Non admins will be required to pass this field that will filter projects for thier user
+  searchTerm?: string | null,
+  ministry?: string | null,
+  cluster?: string | null,
+  userEmail?: string | null // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: Project[];
   total: number;
 }> {
+
   // Initialize the search/filter query
   const searchQuery: any = {
     status: "ACTIVE",
