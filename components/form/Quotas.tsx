@@ -75,7 +75,7 @@ function QuotaInput({
   licensePlate: string;
   selectOptions: QuotaOptions;
   disabled: boolean;
-  quota: Quota | null;
+  quota: string | null;
 }) {
   const {
     register,
@@ -116,8 +116,8 @@ function QuotaInput({
           <option value="" disabled>
             Select {quotaNameStartUpperCase}
           </option>
-          {Object.entries(selectOptions).map(([value, label]) => (
-            <option key={value} value={value}>
+          {Object.entries(selectOptions).map(([key, label]) => (
+            <option key={key} value={key}>
               {label}
             </option>
           ))}
@@ -126,7 +126,6 @@ function QuotaInput({
               {currentQuota}
             </option>
           )}
-          {/* <option value="CUSTOM">Custom</option> */}
         </select>
         {errors?.[nameSpace + "Quota"]?.[quotaName] && (
           <p className="text-red-400 mt-3 text-sm leading-6">
@@ -137,7 +136,7 @@ function QuotaInput({
           <div>
             <p className="mt-3 text-sm leading-6 text-gray-700">
               <b>Current {quotaName}: </b>
-              {quotaOptionsLookup[quotaName][currentQuota] || currentQuota}
+              {selectOptions[quota] || currentQuota}
             </p>
           </div>
         ) : null}
@@ -184,7 +183,7 @@ export default function Quotas({
                   nameSpace={nameSpace}
                   disabled={disabled}
                   // @ts-ignore
-                  quota={currentProject?.[nameSpace + "Quota"]}
+                  quota={currentProject?.[nameSpace + "Quota"][quotaName]}
                 />
               ))}
             </div>
