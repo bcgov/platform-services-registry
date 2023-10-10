@@ -1,11 +1,37 @@
-import {
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
-  Cluster,
-  Ministry,
-} from "@prisma/client";
+import { Cluster, Ministry } from "@prisma/client";
 import { string, number, z } from "zod";
+
+export const DefaultCpuOptionsSchema = z.enum([
+  "CPU_REQUEST_0_5_LIMIT_1_5",
+  "CPU_REQUEST_1_LIMIT_2",
+  "CPU_REQUEST_2_LIMIT_4",
+  "CPU_REQUEST_4_LIMIT_8",
+  "CPU_REQUEST_8_LIMIT_16",
+  "CPU_REQUEST_16_LIMIT_32",
+  "CPU_REQUEST_32_LIMIT_64",
+  "CPU_REQUEST_64_LIMIT_128",
+]);
+
+export const DefaultMemoryOptionsSchema = z.enum([
+  "MEMORY_REQUEST_2_LIMIT_4",
+  "MEMORY_REQUEST_4_LIMIT_8",
+  "MEMORY_REQUEST_8_LIMIT_16",
+  "MEMORY_REQUEST_16_LIMIT_32",
+  "MEMORY_REQUEST_32_LIMIT_64",
+  "MEMORY_REQUEST_64_LIMIT_128",
+]);
+
+export const DefaultStorageOptionsSchema = z.enum([
+  "STORAGE_1",
+  "STORAGE_2",
+  "STORAGE_4",
+  "STORAGE_16",
+  "STORAGE_32",
+  "STORAGE_64",
+  "STORAGE_128",
+  "STORAGE_256",
+  "STORAGE_512",
+]);
 
 const CommonComponentsOptionsSchema = z.object({
   planningToUse: z.boolean(),
@@ -67,9 +93,18 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
 });
 
 export const QuotaInputSchema = z.object({
-  cpu: z.nativeEnum(DefaultCpuOptions),
-  memory: z.nativeEnum(DefaultMemoryOptions),
-  storage: z.nativeEnum(DefaultStorageOptions),
+  cpu: z.union([
+    DefaultCpuOptionsSchema,
+    z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/),
+  ]),
+  memory: z.union([
+    DefaultMemoryOptionsSchema,
+    z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/),
+  ]),
+  storage: z.union([
+    DefaultStorageOptionsSchema,
+    z.string().regex(/STORAGE_\d+/),
+  ]),
 });
 
 // // Since quota needs to support custom input, it is not an enum
@@ -112,3 +147,7 @@ export type PrivateCloudDecisionRequestBody = z.infer<
   typeof PrivateCloudDecisionRequestBodySchema
 >;
 export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
+
+export type DefaultCpuOptions = z.infer<typeof DefaultCpuOptionsSchema>;
+export type DefaultMemoryOptions = z.infer<typeof DefaultMemoryOptionsSchema>;
+export type DefaultStorageOptions = z.infer<typeof DefaultStorageOptionsSchema>;

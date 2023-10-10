@@ -61,9 +61,6 @@ export default async function makeDecisionRequest(
     await prisma.privateCloudRequest.update({
       where: {
         id: request.id,
-        licencePlate,
-        active: true,
-        decisionStatus: DecisionStatus.PENDING,
       },
       include: {
         requestedProject: {

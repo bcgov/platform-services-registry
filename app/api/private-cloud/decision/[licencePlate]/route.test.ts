@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import {
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
-} from "@prisma/client";
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
 import { getServerSession } from "next-auth/next";
 import { POST as createRequest } from "@/app/api/private-cloud/create/route";
 import { POST } from "@/app/api/private-cloud/decision/[licencePlate]/route";
@@ -73,9 +73,9 @@ const createRequestBody = {
 };
 
 const quota = {
-  cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptions.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptions.STORAGE_1,
+  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
+  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
 };
 
 const adminChanges = {
@@ -90,7 +90,7 @@ const adminChanges = {
   testQuota: {
     cpu: "CPU_REQUEST_8_LIMIT_16",
     memory: "MEMORY_REQUEST_4_LIMIT_8",
-    storage: "STORAGE_2",
+    storage: "STORAGE_3", // Custom Quota
   },
 };
 
