@@ -6,8 +6,8 @@ export const getPrivateCloudActiveRequests = (): Promise<
 > =>
   prisma.privateCloudRequest.findMany({
     where: {
-      active: true
-    }
+      active: true,
+    },
   });
 
 export const getPrivateCloudActiveRequestById = (
@@ -16,8 +16,7 @@ export const getPrivateCloudActiveRequestById = (
   prisma.privateCloudRequest.findUnique({
     where: {
       id: requestId,
-      active: true
-    }
+    },
   });
 
 export const getPrivateCloudRequestById = (
@@ -25,8 +24,8 @@ export const getPrivateCloudRequestById = (
 ): Promise<PrivateCloudRequest | null> =>
   prisma.privateCloudRequest.findUnique({
     where: {
-      id: requestId
-    }
+      id: requestId,
+    },
   });
 
 export const getUserPrivateCloudRequestById = (
@@ -36,27 +35,7 @@ export const getUserPrivateCloudRequestById = (
   prisma.privateCloudRequest.findUnique({
     where: {
       id: requestId,
-      OR: [
-        {
-          requestedProject: {
-            OR: [
-              { projectOwner: { email: authEmail } },
-              { primaryTechnicalLead: { email: authEmail } },
-              { secondaryTechnicalLead: { email: authEmail } }
-            ]
-          }
-        },
-        {
-          project: {
-            OR: [
-              { projectOwner: { email: authEmail } },
-              { primaryTechnicalLead: { email: authEmail } },
-              { secondaryTechnicalLead: { email: authEmail } }
-            ]
-          }
-        }
-      ]
-    }
+    },
   });
 
 export const getUserPrivateCloudRequests = (
@@ -70,21 +49,21 @@ export const getUserPrivateCloudRequests = (
             OR: [
               { projectOwner: { email: authEmail } },
               { primaryTechnicalLead: { email: authEmail } },
-              { secondaryTechnicalLead: { email: authEmail } }
-            ]
-          }
+              { secondaryTechnicalLead: { email: authEmail } },
+            ],
+          },
         },
         {
           project: {
             OR: [
               { projectOwner: { email: authEmail } },
               { primaryTechnicalLead: { email: authEmail } },
-              { secondaryTechnicalLead: { email: authEmail } }
-            ]
-          }
-        }
-      ]
-    }
+              { secondaryTechnicalLead: { email: authEmail } },
+            ],
+          },
+        },
+      ],
+    },
   });
 
 export const getUserPrivateCloudActiveRequests = (
@@ -99,21 +78,21 @@ export const getUserPrivateCloudActiveRequests = (
             OR: [
               { projectOwner: { email: authEmail } },
               { primaryTechnicalLead: { email: authEmail } },
-              { secondaryTechnicalLead: { email: authEmail } }
-            ]
-          }
+              { secondaryTechnicalLead: { email: authEmail } },
+            ],
+          },
         },
         {
           project: {
             OR: [
               { projectOwner: { email: authEmail } },
               { primaryTechnicalLead: { email: authEmail } },
-              { secondaryTechnicalLead: { email: authEmail } }
-            ]
-          }
-        }
-      ]
-    }
+              { secondaryTechnicalLead: { email: authEmail } },
+            ],
+          },
+        },
+      ],
+    },
   });
 
 export const getUserPrivateCloudActiveRequestById = (
@@ -123,8 +102,7 @@ export const getUserPrivateCloudActiveRequestById = (
   prisma.privateCloudRequest.findUnique({
     where: {
       id: requestId,
-      active: true
-    }
+    },
   });
 
 // export const getUserPrivateCloudActiveRequestsByIds = (

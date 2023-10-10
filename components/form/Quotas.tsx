@@ -26,6 +26,7 @@ const defaultCpuOptionsLookup: QuotaOptions<CpuOptionKeys> = {
   CPU_REQUEST_8_LIMIT_16: "8 CPU Request, 16 CPU Limit",
   CPU_REQUEST_16_LIMIT_32: "16 CPU Request, 32 CPU Limit",
   CPU_REQUEST_32_LIMIT_64: "32 CPU Request, 64 CPU Limit",
+  CPU_REQUEST_64_LIMIT_128: "64 CPU Request, 128 CPU Limit",
 };
 
 const defaultMemoryOptionsLookup: QuotaOptions<MemoryOptionKeys> = {
