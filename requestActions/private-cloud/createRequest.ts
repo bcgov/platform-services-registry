@@ -2,23 +2,25 @@ import {
   ProjectStatus,
   RequestType,
   DecisionStatus,
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
   PrivateCloudRequest,
 } from "@prisma/client";
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
 import prisma from "@/lib/prisma";
 import generateLicensePlate from "@/lib/generateLicencePlate";
-import { CreateRequestBody } from "@/schema";
+import { PrivateCloudCreateRequestBody } from "@/schema";
 
 const defaultQuota = {
-  cpu: DefaultCpuOptions.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptions.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptions.STORAGE_1,
+  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
+  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
 };
 
 export default async function createRequest(
-  formData: CreateRequestBody,
+  formData: PrivateCloudCreateRequestBody,
   authEmail: string
 ): Promise<PrivateCloudRequest> {
   const licencePlate = generateLicensePlate();

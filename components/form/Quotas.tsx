@@ -1,14 +1,24 @@
+// @ts-nocheck
+
 import Link from "next/link";
 import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";
 import { PrivateCloudProject, Quota } from "@prisma/client";
-import { name } from "@azure/msal-node/dist/packageMetadata";
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
 
-type QuotaOptions = {
-  [key: string]: string;
+type CpuOptionKeys = z.infer<typeof DefaultCpuOptionsSchema>;
+type MemoryOptionKeys = z.infer<typeof DefaultMemoryOptionsSchema>;
+type StorageOptionKeys = z.infer<typeof DefaultStorageOptionsSchema>;
+
+type QuotaOptions<K extends string> = {
+  [key in K]: string;
 };
 
-const defaultCpuOptionsLookup: QuotaOptions = {
+const defaultCpuOptionsLookup: QuotaOptions<CpuOptionKeys> = {
   CPU_REQUEST_0_5_LIMIT_1_5: "0.5 CPU Request, 1.5 CPU Limit",
   CPU_REQUEST_1_LIMIT_2: "1 CPU Request, 2 CPU Limit",
   CPU_REQUEST_2_LIMIT_4: "2 CPU Request, 4 CPU Limit",
@@ -16,9 +26,10 @@ const defaultCpuOptionsLookup: QuotaOptions = {
   CPU_REQUEST_8_LIMIT_16: "8 CPU Request, 16 CPU Limit",
   CPU_REQUEST_16_LIMIT_32: "16 CPU Request, 32 CPU Limit",
   CPU_REQUEST_32_LIMIT_64: "32 CPU Request, 64 CPU Limit",
+  CPU_REQUEST_64_LIMIT_128: "64 CPU Request, 128 CPU Limit",
 };
 
-const defaultMemoryOptionsLookup: QuotaOptions = {
+const defaultMemoryOptionsLookup: QuotaOptions<MemoryOptionKeys> = {
   MEMORY_REQUEST_2_LIMIT_4: "2 GB Request, 4 GB Limit",
   MEMORY_REQUEST_4_LIMIT_8: "4 GB Request, 8 GB Limit",
   MEMORY_REQUEST_8_LIMIT_16: "8 GB Request, 16 GB Limit",
@@ -27,7 +38,7 @@ const defaultMemoryOptionsLookup: QuotaOptions = {
   MEMORY_REQUEST_64_LIMIT_128: "64 GB Request, 128 GB Limit",
 };
 
-const defaultStorageOptionsLookup: QuotaOptions = {
+const defaultStorageOptionsLookup: QuotaOptions<StorageOptionKeys> = {
   STORAGE_1: "1 GB",
   STORAGE_2: "2 GB",
   STORAGE_4: "4 GB",
@@ -64,12 +75,18 @@ function QuotaInput({
   licensePlate: string;
   selectOptions: QuotaOptions;
   disabled: boolean;
-  quota: Quota | null;
+  quota: string | null;
 }) {
   const {
     register,
     formState: { errors },
+    getValues,
   } = useFormContext();
+
+  // Get the current quota value
+  const initialValues = getValues();
+  const initialQuota = initialValues[nameSpace + "Quota"];
+  const currentQuota = initialQuota?.[quotaName];
 
   // Make quotaName start with uppercase letter
   const quotaNameStartUpperCase =
@@ -99,12 +116,16 @@ function QuotaInput({
           <option value="" disabled>
             Select {quotaNameStartUpperCase}
           </option>
-          {Object.entries(selectOptions).map(([value, label]) => (
-            <option key={value} value={value}>
+          {Object.entries(selectOptions).map(([key, label]) => (
+            <option key={key} value={key}>
               {label}
             </option>
           ))}
-          {/* <option value="CUSTOM">Custom</option> */}
+          {!Object.keys(selectOptions).includes(currentQuota) && (
+            <option key={currentQuota} value={currentQuota}>
+              {currentQuota}
+            </option>
+          )}
         </select>
         {errors?.[nameSpace + "Quota"]?.[quotaName] && (
           <p className="text-red-400 mt-3 text-sm leading-6">
@@ -114,10 +135,8 @@ function QuotaInput({
         {quota ? (
           <div>
             <p className="mt-3 text-sm leading-6 text-gray-700">
-              <b>Current {quotaName}:</b> {quota[quotaName]}
-            </p>
-            <p className="mt-3 text-sm leading-6 text-gray-700">
-              <b>Requested {quotaName}:</b> {quota[quotaName]}
+              <b>Current {quotaName}: </b>
+              {selectOptions[quota] || currentQuota}
             </p>
           </div>
         ) : null}
@@ -133,9 +152,8 @@ export default function Quotas({
 }: {
   licensePlate: string;
   disabled: boolean;
-  currentProject: PrivateCloudProject | null | undefined;
+  currentProject?: PrivateCloudProject | null | undefined;
 }) {
-  console.log("currentProject", currentProject);
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -165,7 +183,7 @@ export default function Quotas({
                   nameSpace={nameSpace}
                   disabled={disabled}
                   // @ts-ignore
-                  quota={currentProject?.[nameSpace + "Quota"]}
+                  quota={currentProject?.[nameSpace + "Quota"][quotaName]}
                 />
               ))}
             </div>

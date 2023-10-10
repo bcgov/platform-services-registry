@@ -1,6 +1,6 @@
 import { ProjectStatus, DecisionStatus, Cluster } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { EditRequestBody } from "@/schema";
+import { PrivateCloudEditRequestBody } from "@/schema";
 import { Prisma } from "@prisma/client";
 
 export type PrivateCloudRequestWithRequestedProject =
@@ -17,17 +17,18 @@ export type PrivateCloudRequestWithRequestedProject =
   }>;
 
 export default async function makeDecisionRequest(
-  requestId: string,
+  licencePlate: string,
   decision: DecisionStatus,
   comment: string | undefined,
-  formData: EditRequestBody,
+  formData: PrivateCloudEditRequestBody,
   authEmail: string
 ): Promise<PrivateCloudRequestWithRequestedProject> {
   // Get the request
   const request: PrivateCloudRequestWithRequestedProject | null =
-    await prisma.privateCloudRequest.findUnique({
+    await prisma.privateCloudRequest.findFirst({
       where: {
-        id: requestId,
+        licencePlate,
+        active: true,
       },
       include: {
         project: true,
@@ -59,8 +60,7 @@ export default async function makeDecisionRequest(
   const decisionRequest: PrivateCloudRequestWithRequestedProject | null =
     await prisma.privateCloudRequest.update({
       where: {
-        id: requestId,
-        decisionStatus: DecisionStatus.PENDING,
+        id: request.id,
       },
       include: {
         requestedProject: {
