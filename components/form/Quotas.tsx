@@ -80,7 +80,13 @@ function QuotaInput({
   const {
     register,
     formState: { errors },
+    getValues,
   } = useFormContext();
+
+  // Get the current quota value
+  const initialValues = getValues();
+  const initialQuota = initialValues[nameSpace + "Quota"];
+  const currentQuota = initialQuota?.[quotaName];
 
   // Make quotaName start with uppercase letter
   const quotaNameStartUpperCase =
@@ -115,6 +121,11 @@ function QuotaInput({
               {label}
             </option>
           ))}
+          {!Object.keys(selectOptions).includes(currentQuota) && (
+            <option key={currentQuota} value={currentQuota}>
+              {currentQuota}
+            </option>
+          )}
           {/* <option value="CUSTOM">Custom</option> */}
         </select>
         {errors?.[nameSpace + "Quota"]?.[quotaName] && (
@@ -125,7 +136,8 @@ function QuotaInput({
         {quota ? (
           <div>
             <p className="mt-3 text-sm leading-6 text-gray-700">
-              <b>Current {quotaName}:</b> {selectOptions[quota[quotaName]]}
+              <b>Current {quotaName}: </b>
+              {quotaOptionsLookup[quotaName][currentQuota] || currentQuota}
             </p>
           </div>
         ) : null}
