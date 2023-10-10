@@ -593,17 +593,6 @@ export async function privateCloudRequestsPaginated(
     searchQuery["requestedProject.cluster"] = cluster;
   }
 
-  // if (userEmail) {
-  //   searchQuery.$and = [
-  //     {
-  //       $or: [
-  //         { "requestedProject.projectOwnerId.email": userId},
-  //       ],
-  //     }
-  //   ];
-  // }
-  
-
   if (userEmail) {
     searchQuery.$and = [
       {
@@ -727,7 +716,6 @@ export async function privateCloudRequestsPaginated(
   // @ts-ignore
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
-  // console.log(result)
   return {
     data: result as any,
     total: totalCount,
