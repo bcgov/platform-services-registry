@@ -1,12 +1,16 @@
 import classNames from "@/components/utils/classnames";
+import { useFormContext } from "react-hook-form";
 
 export default function ProjectDescriptionPublic({
-  register,
-  errors
+  disabled
 }: {
-  register: any;
-  errors: any;
+  disabled: boolean;
 }) {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext();
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
@@ -72,7 +76,7 @@ Please provide a descriptive product name (No Acronyms)
 Please include high level consideration for the technical architecture of the solution if available
           </p>
         </div>
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-3 sm:mr-10">
           <label
             htmlFor="ministry"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -81,10 +85,15 @@ Please include high level consideration for the technical architecture of the so
           </label>
           <div className="mt-2">
             <select
-              name="ministry"
+              disabled={disabled}
               id="ministry"
               {...register("ministry")}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             >
               <option value="">Select Ministry</option>
               <option>CITZ</option>
@@ -112,7 +121,7 @@ Please include high level consideration for the technical architecture of the so
           </label>
           <div className="mt-2">
             <select
-              {...register("cluster")}
+              {...register("provider")}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Select Provider</option>

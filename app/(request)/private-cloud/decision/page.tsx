@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/Create";
+import CreateModal from "@/components/modal/CreatePrivateCloud";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
 import TeamContacts from "@/components/form/TeamContacts";
@@ -80,16 +80,11 @@ export default function Page() {
     <div>
       <form onSubmit={handleSubmit(() => setOpen(true))}>
         <div className="space-y-12">
-          <ProjectDescription register={register} errors={errors} />
+          <ProjectDescription disabled={true} />
           <TeamContacts
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            setError={setError}
-            clearErrors={clearErrors}
+            disabled={true}
             secondTechLead={secondTechLead}
             secondTechLeadOnClick={secondTechLeadOnClick}
-            control={control}
           />
         </div>
 

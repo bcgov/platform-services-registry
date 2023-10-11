@@ -113,6 +113,7 @@ export const CreateRequestPublicBodySchema = z.object({
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional(),
+  accountCoding:z.string().nonempty({ message: "Account Coding is required." }),
 });
 
 export type CreateRequestBody = z.infer<typeof CreateRequestPrivateBodySchema>;

@@ -151,7 +151,7 @@ model PublicCloudRequestedProject {
   description              String
   status                   ProjectStatus
   created                  DateTime            @default(now())
-  billingGroup             String
+  accountCoding            String
   budget                   Budget
   projectOwnerId           String              @db.ObjectId
   projectOwner             User                @relation("publicCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
@@ -161,7 +161,6 @@ model PublicCloudRequestedProject {
   secondaryTechnicalLead   User?               @relation("publicCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
-  commonComponents         CommonComponents
   requestedProject         PublicCloudRequest? @relation("publicCloudRequestedProject")
 }
 
