@@ -447,9 +447,9 @@ export async function privateCloudProjectsPaginated(
     searchQuery.$and = [
       {
         $or: [
-          { "projectOwner.email": { $regex: userEmail, $options: "i" } },
-          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+          { "projectOwnerDetails.email": { $regex: userEmail, $options: "i" } },
+          { "primaryTechnicalLeadDetails.email": { $regex: userEmail, $options: "i" } },
+          { "secondaryTechnicalLeadDetails.email": { $regex: userEmail, $options: "i" } },
         ]
       }
     ];

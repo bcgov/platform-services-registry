@@ -132,7 +132,7 @@ export default function RequestDecision({
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {!isDisabled ? (
+            {!isDisabled && session?.user?.roles?.includes("admin") ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
