@@ -12,7 +12,7 @@ export default function SignInPage() {
   return (
     <div className="flex flex-col m-12">
       <h1 className="font-bcsans text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
-        Welcome to B.C. Government's Platform Product Registry
+        Welcome to B.C. Government&apos;s Platform Product Registry
       </h1>
 
       <h1 className="font-bcsans text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
@@ -38,20 +38,21 @@ export default function SignInPage() {
       </h2>
 
       <p className="mb-4 max-w-7xl">
-        If you are a Product Owner for a new cloud-native application and are interested in hosting the application please review the available options below: 
+    If you are a Product Owner for a new cloud-native application and are interested in hosting the application please review the available options below: 
       </p>
-      <ul>
-        <li>
-        <a href="https://digital.gov.bc.ca/cloud/services/private/intro/" className="text-blue-500 hover:text-blue-700">
+        <ul className="list-disc m-0 pl-8">
+    <     li className="mb-2">
+            <a href="https://digital.gov.bc.ca/cloud/services/private/intro/" className="text-blue-500 hover:text-blue-700">
             Private cloud hosting
-        </a>
-        </li>
-        <li>
-        <a href="https://digital.gov.bc.ca/cloud/services/public/intro/" className="text-blue-500 hover:text-blue-700">
+            </a>
+          </li>
+          <li className="mb-2">
+           <a href="https://digital.gov.bc.ca/cloud/services/public/intro/" className="text-blue-500 hover:text-blue-700">
             Public cloud hosting
-        </a>
-        </li>
+            </a>
+          </li>
       </ul>
+
 
       <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">
         Before you start:
