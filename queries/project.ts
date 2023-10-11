@@ -559,18 +559,6 @@ export async function privateCloudRequestsPaginated(
   data: any[];
   total: number;
 }> {
-  let userId: string | undefined = undefined;
-  if (userEmail) {
-    const user = await prisma.user.findFirst({
-      where: {
-        email: userEmail,
-      },
-    });
-
-    if (user){
-      userId=user.id;
-    }
-  }
   const searchQuery: any = {
     active: true,
   };
