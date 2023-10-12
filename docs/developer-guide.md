@@ -19,7 +19,6 @@ For the installation instructions of WSL, please refer to the following link: [G
    ```sh
    cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
    asdf plugin-add docker-compose https://github.com/virtualstaticvoid/asdf-docker-compose.git || true
-   asdf plugin-add mongodb https://github.com/junminahn/asdf-mongodb.git || true
    asdf plugin-update --all
    asdf install
    asdf reshim
