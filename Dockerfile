@@ -10,10 +10,9 @@ COPY . .
 
 RUN npm run build
 
-# # A multi-stage build to create a smaller final image
+# A multi-stage build to create a smaller final image
 FROM node:16-alpine
 
-# # Set the working directory
 WORKDIR /app
 
 # Copy the built application from the builder stage
