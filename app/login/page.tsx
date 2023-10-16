@@ -17,6 +17,7 @@ export default function SignInPage() {
 
       <h1 className="font-bcsans text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
         Private Cloud OpenShift Platform and Public Cloud AWS
+
       </h1>
 
       <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mb-4">
@@ -29,9 +30,10 @@ export default function SignInPage() {
 
       <p className="mb-4 max-w-7xl">
         You can update/change all product details and request product resource quota increases and downgrades (including CPU/RAM/Storage.) 
+
       </p>
 
-      <LoginButton/>
+      <LoginButton />
 
       <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">
         Register a new product
@@ -120,24 +122,22 @@ export default function SignInPage() {
               Provide an estimate for your project's projected budget if using AWS
               </span>
           </li>
+
       </ul>
       <br></br>
       <RegisterProductButton />
       <div className="bg-blue-50 mt-8 p-4 rounded-md flex">
         <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
-          <span className="font-bold text-blue-700 font-sans text-xs">
-            i
-          </span>
+          <span className="font-bold text-blue-700 font-sans text-xs">i</span>
         </div>
         <div>
           <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">
-            Note: 
+            Note:
           </p>
           <p className="font-bcsans text-sm text-blue-700 mt-1">
-            The approval of new project set creation request 
-            is subject to having a signed Memorandum of 
-            Understanding (MoU) with the Public Cloud Team. If 
-            you do not have a MoU in place, please email us at 
+            The approval of new project set creation request is subject to
+            having a signed Memorandum of Understanding \(MoU\) with the Public
+            Cloud Team. If you do not have a MoU in place, please email us at
             <span> </span>
             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
               cloud.pathfinder@gov.bc.ca

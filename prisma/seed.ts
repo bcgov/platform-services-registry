@@ -1,16 +1,52 @@
+import { PrismaClient, Ministry, Cluster, Provider } from "@prisma/client";
 import {
-  PrismaClient,
-  Ministry,
-  Cluster,
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
-  CommonComponentsOptions,
-  Provider,
-  ProjectStatus,
-} from "@prisma/client";
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
 const prisma = new PrismaClient();
 import { faker } from "@faker-js/faker";
+
+const commonComponents = {
+  addressAndGeolocation: {
+    planningToUse: true,
+    implemented: false,
+  },
+  workflowManagement: {
+    planningToUse: false,
+    implemented: true,
+  },
+  formDesignAndSubmission: {
+    planningToUse: true,
+    implemented: true,
+  },
+  identityManagement: {
+    planningToUse: false,
+    implemented: false,
+  },
+  paymentServices: {
+    planningToUse: true,
+    implemented: false,
+  },
+  documentManagement: {
+    planningToUse: false,
+    implemented: true,
+  },
+  endUserNotificationAndSubscription: {
+    planningToUse: true,
+    implemented: false,
+  },
+  publishing: {
+    planningToUse: false,
+    implemented: true,
+  },
+  businessIntelligence: {
+    planningToUse: true,
+    implemented: false,
+  },
+  other: "Some other services",
+  noServices: false,
+};
 
 async function main() {
   const numOfUsers = 10; // Number of users to create
@@ -24,11 +60,9 @@ async function main() {
     // Create fake user
     const user = await prisma.user.create({
       data: {
-        name: fullName,
         email: faker.internet.email(),
         firstName: firstName,
         lastName: firstName,
-        emailVerified: faker.date.past(),
         image: "avatar.png",
         ministry: faker.helpers.arrayElement(Object.values(Ministry)),
         archived: false,
@@ -58,37 +92,7 @@ async function main() {
             prod: +faker.commerce.price(),
             tools: +faker.commerce.price(),
           },
-          commonComponents: {
-            addressAndGeolocation: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            workflowManagement: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            formDesignAndSubmission: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            identityManagement: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            paymentServices: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            documentManagement: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            endUserNotificationAndSubscription: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            publishing: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            businessIntelligence: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            other: faker.lorem.sentence(),
-            noServices: false,
-          },
+          commonComponents,
         },
       });
     }
@@ -108,72 +112,42 @@ async function main() {
           ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
           productionQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           testQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           developmentQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
           toolsQuota: {
-            cpu: faker.helpers.arrayElement(Object.values(DefaultCpuOptions)),
+            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              Object.values(DefaultMemoryOptions)
+              DefaultMemoryOptionsSchema.options
             ),
             storage: faker.helpers.arrayElement(
-              Object.values(DefaultStorageOptions)
+              DefaultStorageOptionsSchema.options
             ),
           },
-          commonComponents: {
-            addressAndGeolocation: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            workflowManagement: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            formDesignAndSubmission: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            identityManagement: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            paymentServices: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            documentManagement: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            endUserNotificationAndSubscription: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            publishing: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            businessIntelligence: faker.helpers.arrayElement(
-              Object.values(CommonComponentsOptions)
-            ),
-            other: faker.lorem.sentence(),
-            noServices: false,
-          },
+          commonComponents,
         },
       });
     }

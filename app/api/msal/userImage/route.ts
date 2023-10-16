@@ -5,8 +5,6 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const email = searchParams.get("email");
 
-  console.log(searchParams);
-
   const url = `https://graph.microsoft.com/v1.0/users/${email}/photo/$value`;
 
   try {

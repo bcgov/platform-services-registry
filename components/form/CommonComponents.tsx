@@ -1,109 +1,115 @@
+import { clear } from "console";
 import React, { useEffect, useState } from "react";
-import {
-  FieldErrors,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormSetError,
-  UseFormClearErrors
-} from "react-hook-form";
-import classNames from "@/components/utils/classnames";
-
-interface Props {
-  register: UseFormRegister<any>;
-  setValue: UseFormSetValue<any>;
-  setError: UseFormSetError<any>;
-  clearErrors: UseFormClearErrors<any>;
-  errors: FieldErrors;
-}
+import { useFormContext, Controller } from "react-hook-form";
 
 const commonComponents = [
   { name: "addressAndGeolocation", label: "Address and Geolocation" },
   {
     name: "workflowManagement",
-    label: "Workflow Management (similar to Camunda)"
+    label: "Workflow Management (similar to Camunda)",
   },
   {
     name: "formDesignAndSubmission",
-    label: "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)"
+    label: "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
   },
   {
     name: "identityManagement",
-    label: "Identity management (user authentication and authorization)"
+    label: "Identity management (user authentication and authorization)",
   },
   {
     name: "paymentServices",
     label:
-      "Payment services (i.e. collection, processing, reconciliation, ledger management)"
+      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
   },
   {
     name: "documentManagement",
     label:
-      "Document Management (file storage and transfer, PDF and other document generation)"
+      "Document Management (file storage and transfer, PDF and other document generation)",
   },
   {
     name: "endUserNotificationAndSubscription",
     label:
-      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)"
+      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
   },
   { name: "publishing", label: "Publishing (web content management)" },
   {
     name: "businessIntelligence",
     label:
-      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)"
-  }
+      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
+  },
 ];
 
-export default function CommonComponents({
-  setValue,
-  errors,
-  setError,
-  clearErrors,
-  register
-}: Props) {
-  const [checkedState, setCheckedState] = useState<Record<string, string>>({});
-  const [noneSelected, setNoneSelected] = useState<boolean>(false);
+export default function CommonComponents({ disabled }: { disabled?: boolean }) {
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    control,
+    clearErrors,
+    watch,
+  } = useFormContext();
 
-  const onClickHandler = (name: string, value: string) => {
-    setCheckedState((prevState) => ({
-      ...prevState,
-      [name]: prevState[name] === value ? "NOT_USING" : value
-    }));
-    setNoneSelected(false); // Whenever an option is clicked, make sure noneSelected is turned off
-  };
-
-  const onNoneSelected = () => {
-    if (noneSelected) {
-      setNoneSelected(false); // If already selected, deselect it
-    } else {
-      setCheckedState({}); // Clear all other selections
-      setNoneSelected(true); // Set noneSelected to true
-    }
-  };
+  const noServices = watch("commonComponents.noServices");
 
   useEffect(() => {
-    Object.entries(checkedState).forEach(([name, value]) => {
-      setValue(`commonComponents.${name}`, value);
-    });
-    setValue("commonComponents.noServices", noneSelected);
-  }, [checkedState, noneSelected, setValue]);
+    if (noServices) {
+      // set every common component to false
+      commonComponents.forEach(({ name }) => {
+        setValue(`commonComponents.${name}.implemented`, false);
+        setValue(`commonComponents.${name}.planningToUse`, false);
+      });
+    }
+  }, [noServices, setValue]);
 
-  // // Validation check
+  // const handleCheckboxChange = (name, field) => {
+  //   setValue(`commonComponents.${name}.${field}`, true);
+  //   setValue(
+  //     `commonComponents.${name}.${
+  //       field === "implemented" ? "planningToUse" : "implemented"
+  //     }`,
+  //     false
+  //   );
+  // };
+
+  const handleCheckboxChange = (
+    name: string,
+    field: string,
+    checked: boolean
+  ) => {
+    setValue(`commonComponents.${name}.${field}`, checked);
+    // Uncheck the other checkbox if this one is checked
+    if (checked) {
+      setValue(
+        `commonComponents.${name}.${
+          field === "implemented" ? "planningToUse" : "implemented"
+        }`,
+        false
+      );
+    }
+    setValue("commonComponents.noServices", false);
+    clearErrors("commonComponents.noServices");
+  };
+
+  // const watchedCommonComponents = watch("commonComponents");
+
+  // // Check whether "planningToUse" or "implemented" is checked and uncheck the other
   // useEffect(() => {
-  //   // If all checkboxes are not selected and noneSelected is also false
-  //   if (
-  //     Object.values(checkedState).every(
-  //       (value) => value !== "IMPLEMENTED" && value !== "PLANNING_TO_USE"
-  //     ) &&
-  //     !noneSelected
-  //   ) {
-  //     setError("commonComponents.noServices", {
-  //       type: "manual",
-  //       message: "Please select an option or 'no services'",
-  //     });
-  //   } else {
-  //     clearErrors("commonComponents.noServices");
-  //   }
-  // }, [checkedState, noneSelected, setError, clearErrors]);
+  //   commonComponents.forEach(({ name }) => {
+  //     const componentState = watchedCommonComponents?.[name];
+
+  //     console.log("componentState");
+  //     console.log(componentState);
+
+  //     if (componentState) {
+  //       if (componentState.planningToUse) {
+  //         setValue(`commonComponents.${name}.implemented`, false);
+  //       }
+  //       if (componentState.implemented) {
+  //         setValue(`commonComponents.${name}.planningToUse`, false);
+  //       }
+  //     }
+  //   });
+  // }, [watchedCommonComponents, setValue]);
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -120,11 +126,10 @@ export default function CommonComponents({
             <div className="flex flex-col">
               <div className="flex items-center">
                 <input
+                  disabled={disabled}
                   id="none"
-                  name="none"
                   type="checkbox"
-                  checked={noneSelected}
-                  onChange={onNoneSelected}
+                  {...register("commonComponents.noServices")}
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
                 <label
@@ -139,8 +144,9 @@ export default function CommonComponents({
                   htmlFor="none"
                   className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2"
                 >
-                  Please select "The app does not use any of these services" if
-                  you are not using any of common components below
+                  Please select &quot;The app does not use any of these
+                  services&quot; if you are not using any of common components
+                  below
                 </label>
               ) : null}
             </div>
@@ -156,14 +162,31 @@ export default function CommonComponents({
                 </div>
                 <div className="flex items-center w-full sm:w-4/12 justify-between flex-wrap mt-3">
                   <div className="flex items-center">
-                    <input
-                      id={name}
-                      name={name}
-                      type="checkbox"
-                      checked={checkedState[name] === "IMPLEMENTED"}
-                      onChange={() => onClickHandler(name, "IMPLEMENTED")}
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    <Controller
+                      name={`commonComponents.${name}.implemented`}
+                      control={control}
+                      defaultValue={false}
+                      render={({ field }) => (
+                        <input
+                          disabled={disabled}
+                          type="checkbox"
+                          checked={field.value}
+                          onChange={(e) =>
+                            handleCheckboxChange(
+                              name,
+                              "implemented",
+                              e.target.checked
+                            )
+                          }
+                        />
+                      )}
                     />
+                    {/* <input
+                      id={name}
+                      type="checkbox"
+                      {...register(`commonComponents.${name}.implemented`)}
+                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    /> */}
                     <label
                       htmlFor={`${name}-implemented`}
                       className="font-bcsans text-base ml-3 block font-medium leading-6 text-gray-900"
@@ -172,13 +195,25 @@ export default function CommonComponents({
                     </label>
                   </div>
                   <div className="flex items-center">
-                    <input
-                      id={name}
-                      name={name}
-                      type="checkbox"
-                      checked={checkedState[name] === "PLANNING_TO_USE"}
-                      onChange={() => onClickHandler(name, "PLANNING_TO_USE")}
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    <Controller
+                      name={`commonComponents.${name}.planningToUse`}
+                      control={control}
+                      defaultValue={false}
+                      disabled={disabled}
+                      render={({ field }) => (
+                        <input
+                          disabled={disabled}
+                          type="checkbox"
+                          checked={field.value}
+                          onChange={(e) =>
+                            handleCheckboxChange(
+                              name,
+                              "planningToUse",
+                              e.target.checked
+                            )
+                          }
+                        />
+                      )}
                     />
                     <label
                       htmlFor={`${name}-planning`}
@@ -200,6 +235,7 @@ export default function CommonComponents({
             </label>
             <div className="mt-2">
               <input
+                disabled={disabled}
                 type="text"
                 placeholder="Please specify any other common components used"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

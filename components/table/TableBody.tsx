@@ -21,7 +21,7 @@ function EmptyBody() {
         height={128}
         style={{
           maxWidth: "100%",
-          height: "auto"
+          height: "auto",
         }}
       />
       <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">
@@ -50,6 +50,23 @@ export default function TableBody({ headers, rows }: TableProps) {
   if (rows.length === 0) {
     return <EmptyBody />;
   }
+
+  const onRowClickHandler = (row: any) => {
+    switch (pathname) {
+      case "/private-cloud/products":
+        router.push(path.join("/private-cloud", "edit", row.licencePlate));
+        break;
+      case "/private-cloud/requests":
+        router.push(path.join("/private-cloud", "decision", row.licencePlate));
+        break;
+      case "/public-cloud/products":
+        router.push(path.join("/private-cloud", "edit", row.licencePlate));
+        break;
+      case "/public-cloud/requests":
+        router.push(path.join("/private-cloud", "decision", row.licencePlate));
+        break;
+    }
+  };
 
   return (
     <>
@@ -81,11 +98,7 @@ export default function TableBody({ headers, rows }: TableProps) {
                   <tr
                     key={row.licencePlate + i}
                     className="hover:bg-tableheadergrey"
-                    onClick={() =>
-                      router.push(
-                        path.join(pathname as string, row.licencePlate)
-                      )
-                    }
+                    onClick={() => onRowClickHandler(row)}
                   >
                     {headers.map((value, index) => (
                       <td
