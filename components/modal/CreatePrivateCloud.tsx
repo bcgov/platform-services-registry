@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
@@ -13,8 +13,14 @@ export default function Modal({
   handleSubmit: any;
   isLoading: boolean;
 }) {
-  const [confirm, setConfirm] = useState(true);
+  const [confirm, setConfirm] = useState(false);
   const cancelButtonRef = useRef(null);
+
+  useEffect(() => {
+    if(open){
+      setConfirm(false)
+    }
+  }, [open])
 
   const handleCheck = () => {
     setConfirm(!confirm);
