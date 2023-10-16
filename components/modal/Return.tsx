@@ -10,12 +10,13 @@ export default function Modal({
   setOpen: any;
 }) {
   const cancelButtonRef = useRef(null);
-  const { push } = useRouter();
-  
+  const router = useRouter();
+
   const handleReturn = () => {
-    setOpen(false)
-    push('/private-cloud/products')
-  }
+    setOpen(false);
+    router.push("/private-cloud/requests");
+    router.refresh();
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -59,8 +60,8 @@ export default function Modal({
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
-                        We have received your request for a new project set, the 
-                        Product Owner and Technical Lead will receive the 
+                        We have received your request for a new project set, the
+                        Product Owner and Technical Lead will receive the
                         approval/denial decision via email.
                       </p>
                       <p className="font-bcsans text-sm text-gray-900 mt-4">
@@ -76,24 +77,30 @@ export default function Modal({
                       </div>
                       <div>
                         <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">
-                          Note: 
+                          Note:
                         </p>
                         <p className="font-bcsans text-sm text-blue-700 mt-1">
-                          The approval of new project set creation request 
-                          is subject to having a signed Memorandum of 
-                          Understanding (MoU) with the Public Cloud Team. If 
-                          you do not have a MoU in place, please email us at 
+                          The approval of new project set creation request is
+                          subject to having a signed Memorandum of Understanding
+                          (MoU) with the Public Cloud Team. If you do not have a
+                          MoU in place, please email us at
                           <span> </span>
-                          <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
+                          <a
+                            href="mailto:cloud.pathfinder@gov.bc.ca"
+                            className="underline"
+                          >
                             cloud.pathfinder@gov.bc.ca
                           </a>
                           .
                         </p>
                         <p className="font-bcsans text-sm text-blue-700 mt-4">
-                          In order to request a project deletion, please email 
+                          In order to request a project deletion, please email
                           us at
                           <span> </span>
-                          <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
+                          <a
+                            href="mailto:cloud.pathfinder@gov.bc.ca"
+                            className="underline"
+                          >
                             cloud.pathfinder@gov.bc.ca
                           </a>
                           .
@@ -111,7 +118,6 @@ export default function Modal({
                   >
                     Return to Dashboard
                   </button>
-                  
                 </div>
               </Dialog.Panel>
             </Transition.Child>

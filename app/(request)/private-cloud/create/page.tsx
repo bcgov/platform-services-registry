@@ -54,14 +54,9 @@ export default function Page() {
       setOpenCreate(false);
       setOpenReturn(true);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error:", error);
     }
-
-    setIsLoading(false);
-    // router.back();
-    // revalidatePath("/", "page");
-    router.push("/private-cloud/requests");
-    router.refresh();
   };
 
   const secondTechLeadOnClick = () => {

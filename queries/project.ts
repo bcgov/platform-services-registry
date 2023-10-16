@@ -34,7 +34,7 @@ export async function publicCloudProjectsPaginated(
   searchTerm?: string,
   ministry?: string,
   provider?: string,
-  userId?: string
+  userEmail?: string
 ): Promise<{
   data: any[];
   total: number;
@@ -106,13 +106,16 @@ export async function publicCloudProjectsPaginated(
     searchQuery.provider = provider;
   }
 
-  if (userId) {
-    searchQuery.$or = searchQuery.$or || [];
-    searchQuery.$or.push(
-      { projectOwnerId: userId },
-      { primaryTechnicalLeadId: userId },
-      { secondaryTechnicalLeadId: userId }
-    );
+  if (userEmail) {
+    searchQuery.$and = [
+      {
+        $or: [
+          { "projectOwner.email": { $regex: userEmail, $options: "i" } },
+          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+        ]
+      }
+    ];
   }
 
   // First, get the total count of matching documents
@@ -209,7 +212,7 @@ export async function publicCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   provider?: string,
-  userId?: string
+  userEmail?: string
 ): Promise<{
   data: any[];
   total: number;
@@ -238,9 +241,16 @@ export async function publicCloudRequestsPaginated(
     searchQuery["provider.name"] = provider;
   }
 
-  if (userId) {
-    searchQuery.$or = searchQuery.$or || [];
-    searchQuery.$or.push({ requesterId: userId });
+  if (userEmail) {
+    searchQuery.$and = [
+      {
+        $or: [
+          { "projectOwner.email": { $regex: userEmail, $options: "i" } },
+          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+        ]
+      }
+    ];
   }
 
   const totalCountResult = await prisma.publicCloudRequest.aggregateRaw({
@@ -365,19 +375,6 @@ export async function privateCloudProjectsPaginated(
   data: Project[];
   total: number;
 }> {
-  let userId: string | undefined = undefined;
-
-  if (userEmail) {
-    const user = await prisma.user.findFirst({
-      where: {
-        email: userEmail,
-      },
-    });
-
-    if (user) {
-      userId = user.id;
-    }
-  }
 
   // Initialize the search/filter query
   const searchQuery: any = {
@@ -446,13 +443,16 @@ export async function privateCloudProjectsPaginated(
     searchQuery.cluster = cluster;
   }
 
-  if (userId) {
-    searchQuery.$or = searchQuery.$or || [];
-    searchQuery.$or.push(
-      { projectOwnerId: userId },
-      { primaryTechnicalLeadId: userId },
-      { secondaryTechnicalLeadId: userId }
-    );
+  if (userEmail) {
+    searchQuery.$and = [
+      {
+        $or: [
+          { "projectOwnerDetails.email": { $regex: userEmail, $options: "i" } },
+          { "primaryTechnicalLeadDetails.email": { $regex: userEmail, $options: "i" } },
+          { "secondaryTechnicalLeadDetails.email": { $regex: userEmail, $options: "i" } },
+        ]
+      }
+    ];
   }
 
   // First, get the total count of matching documents
@@ -551,10 +551,10 @@ export async function privateCloudProjectsPaginated(
 export async function privateCloudRequestsPaginated(
   pageSize: number,
   pageNumber: number,
-  searchTerm?: string | null,
-  ministry?: string | null,
-  cluster?: string | null,
-  userId?: string | null
+  searchTerm?: string,
+  ministry?: string,
+  cluster?: string,
+  userEmail?: string
 ): Promise<{
   data: any[];
   total: number;
@@ -578,10 +578,19 @@ export async function privateCloudRequestsPaginated(
     searchQuery["requestedProject.cluster"] = cluster;
   }
 
-  if (userId) {
-    searchQuery.$or = [
-      { "requestedProject.projectOwnerId": userId },
-      { "requestedProject.teamMemberIds": userId },
+  if (cluster) {
+    searchQuery["requestedProject.cluster"] = cluster;
+  }
+
+  if (userEmail) {
+    searchQuery.$and = [
+      {
+        $or: [
+          { "projectOwner.email": { $regex: userEmail, $options: "i" } },
+          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
+        ]
+      }
     ];
   }
 
@@ -596,6 +605,39 @@ export async function privateCloudRequestsPaginated(
         },
       },
       { $unwind: "$requestedProject" },
+      {
+        $lookup: {
+          from: "User",
+          localField: "requestedProject.projectOwnerId",
+          foreignField: "_id",
+          as: "projectOwner",
+        },
+      },
+      { $unwind: "$projectOwner" },
+      {
+        $lookup: {
+          from: "User",
+          localField: "requestedProject.primaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "primaryTechnicalLead",
+        },
+      },
+      { $unwind: "$primaryTechnicalLead" },
+      {
+        $lookup: {
+          from: "User",
+          localField: "requestedProject.secondaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "secondaryTechnicalLead",
+        },
+      },
+      {
+        $unwind: {
+          path: "$secondaryTechnicalLead",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      { $unwind: "$requestedProject"},
       { $match: searchQuery },
       { $count: "totalCount" },
     ],

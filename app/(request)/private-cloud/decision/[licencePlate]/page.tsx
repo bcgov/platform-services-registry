@@ -6,7 +6,7 @@ import { PrivateCloudDecisionRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/CreatePublicCloud";
+import CreateModal from "@/components/modal/CreatePrivateCloud";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
@@ -132,7 +132,7 @@ export default function RequestDecision({
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {!isDisabled ? (
+            {!isDisabled && session?.user?.roles?.includes("admin") ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
