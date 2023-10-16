@@ -52,20 +52,18 @@ export default function TableBody({ headers, rows }: TableProps) {
   }
 
   const onRowClickHandler = (row: any) => {
-    // If path is /private-cloud/products, then redirect to /private-cloud/{licencePlate}/edit
-
-    // if (pathname === "/private-cloud/products") {
-    //   router.push(path.join(pathname as string, row.licencePlate, "edit"));
-    // }
-
     switch (pathname) {
       case "/private-cloud/products":
-        router.push(path.join(pathname as string, row.licencePlate, "edit"));
+        router.push(path.join("/private-cloud", "edit", row.licencePlate));
         break;
       case "/private-cloud/requests":
-        router.push(
-          path.join(pathname as string, row.id, "decision")
-        );
+        router.push(path.join("/private-cloud", "decision", row.licencePlate));
+        break;
+      case "/public-cloud/products":
+        router.push(path.join("/private-cloud", "edit", row.licencePlate));
+        break;
+      case "/public-cloud/requests":
+        router.push(path.join("/private-cloud", "decision", row.licencePlate));
         break;
     }
   };

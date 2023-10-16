@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
@@ -13,7 +13,7 @@ export default function Modal({
   handleSubmit: any;
   isLoading: boolean;
 }) {
-  const [confirm, setConfirm] = useState(true);
+  const [confirm, setConfirm] = useState(false);
   const cancelButtonRef = useRef(null);
 
   const handleCheck = () => {
@@ -63,7 +63,7 @@ export default function Modal({
                     <p className="font-bcsans text-sm text-gray-900">
                       After hitting request, our smart robots will start working
                       hard behind the scenes. There is one step, the approval
-                      process, where a human is involved. They&#39;ll take the
+                      process, where a human is involved. They will take the
                       opportunity, if needed, to reach out and have an
                       on-boarding conversation with you.
                     </p>

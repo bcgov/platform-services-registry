@@ -7,6 +7,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { PrivateCloudRequest } from "@prisma/client";
 
+export const revalidate = 0;
+
 const headers = [
   { field: "type", headerName: "Type" },
   { field: "status", headerName: "Status" },

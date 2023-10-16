@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Fragment, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Combobox, Transition } from "@headlessui/react";
@@ -37,7 +39,7 @@ export default function AsyncAutocomplete({
   label,
   placeHolder,
   className,
-  disabled
+  disabled,
 }: {
   name: string;
   label: string;
@@ -54,11 +56,10 @@ export default function AsyncAutocomplete({
     setValue,
     setError,
     clearErrors,
-    watch
+    watch,
   } = useFormContext();
 
   const email = watch(name + ".email");
-  // console.log("EMAIL", email);
 
   const {
     data: people,

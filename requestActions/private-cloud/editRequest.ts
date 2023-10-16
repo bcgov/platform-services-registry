@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+=======
+>>>>>>> main
 import {
   RequestType,
   PrivateCloudRequest,
@@ -9,19 +12,31 @@ import {
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+<<<<<<< HEAD
 import { EditRequestBodySchema, EditRequestBody, UserInput } from "@/schema";
 import { string, z } from "zod";
 
 export default async function editRequest(
   projectId: string,
   formData: EditRequestBody,
+=======
+import { PrivateCloudEditRequestBody } from "@/schema";
+
+export default async function editRequest(
+  licencePlate: string,
+  formData: PrivateCloudEditRequestBody,
+>>>>>>> main
   authEmail: string
 ): Promise<PrivateCloudRequest> {
   // Get the current project that we are creating an edit request for
   const project: PrivateCloudProject | null =
     await prisma.privateCloudProject.findUnique({
       where: {
+<<<<<<< HEAD
         id: projectId,
+=======
+        licencePlate: licencePlate,
+>>>>>>> main
       },
       include: {
         projectOwner: true,
@@ -98,9 +113,18 @@ export default async function editRequest(
       requestedProject: {
         create: requestedProject,
       },
+<<<<<<< HEAD
       project: {
         connect: {
           id: projectId,
+=======
+      userRequestedProject: {
+        create: requestedProject,
+      },
+      project: {
+        connect: {
+          licencePlate: licencePlate,
+>>>>>>> main
         },
       },
     },

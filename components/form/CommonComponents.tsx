@@ -39,7 +39,7 @@ const commonComponents = [
   },
 ];
 
-export default function CommonComponents() {
+export default function CommonComponents({ disabled }: { disabled?: boolean }) {
   const {
     register,
     formState: { errors },
@@ -126,6 +126,7 @@ export default function CommonComponents() {
             <div className="flex flex-col">
               <div className="flex items-center">
                 <input
+                  disabled={disabled}
                   id="none"
                   type="checkbox"
                   {...register("commonComponents.noServices")}
@@ -143,8 +144,9 @@ export default function CommonComponents() {
                   htmlFor="none"
                   className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2"
                 >
-                  Please select &#8220;The app does not use any of these services&#8220; if
-                  you are not using any of common components below
+                  Please select &quot;The app does not use any of these
+                  services&quot; if you are not using any of common components
+                  below
                 </label>
               ) : null}
             </div>
@@ -166,6 +168,7 @@ export default function CommonComponents() {
                       defaultValue={false}
                       render={({ field }) => (
                         <input
+                          disabled={disabled}
                           type="checkbox"
                           checked={field.value}
                           onChange={(e) =>
@@ -196,8 +199,10 @@ export default function CommonComponents() {
                       name={`commonComponents.${name}.planningToUse`}
                       control={control}
                       defaultValue={false}
+                      disabled={disabled}
                       render={({ field }) => (
                         <input
+                          disabled={disabled}
                           type="checkbox"
                           checked={field.value}
                           onChange={(e) =>
@@ -230,6 +235,7 @@ export default function CommonComponents() {
             </label>
             <div className="mt-2">
               <input
+                disabled={disabled}
                 type="text"
                 placeholder="Please specify any other common components used"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
