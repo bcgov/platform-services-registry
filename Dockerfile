@@ -1,29 +1,26 @@
-FROM node:16-alpine as BUILD
+# 1st stage to build the image
+FROM node:18-alpine as builder
 
 WORKDIR /app
-
-COPY ./package*.json ./
-
-RUN npm install
 
 COPY . .
 
+RUN npm install -f
+
 RUN npm run build
 
-# A multi-stage build to create a smaller final image
-FROM node:16-alpine
+# 2nd stage to copy image and create a smaller final image
+FROM gcr.io/distroless/nodejs18-debian12
 
 WORKDIR /app
 
-# Copy the built application from the builder stage
-COPY --from=BUILD /app/.next ./.next
-COPY --from=BUILD /app/public ./public
-COPY --from=BUILD /app/package.json ./
-COPY --from=BUILD /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
 
-RUN mkdir /.npm
-RUN chgrp -R 0 /.npm && \
-    chmod -R g=u /.npm
+ENV NEXTAUTH_SECRET changeme
 
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["node_modules/.bin/next", "start"]
