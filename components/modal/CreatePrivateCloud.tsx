@@ -16,12 +16,6 @@ export default function Modal({
   const [confirm, setConfirm] = useState(false);
   const cancelButtonRef = useRef(null);
 
-  useEffect(() => {
-    if(open){
-      setConfirm(false)
-    }
-  }, [open])
-
   const handleCheck = () => {
     setConfirm(!confirm);
   };
