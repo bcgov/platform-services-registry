@@ -5,6 +5,7 @@ import path from "path";
 import Image from "next/image";
 import Empty from "@/components/assets/empty.svg";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface TableProps {
   headers: Record<string, string>[];
@@ -46,6 +47,9 @@ function EmptyBody() {
 export default function TableBody({ headers, rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  const isAdmin = session?.user?.roles?.includes("admin");
 
   if (rows.length === 0) {
     return <EmptyBody />;
@@ -57,7 +61,13 @@ export default function TableBody({ headers, rows }: TableProps) {
         router.push(path.join("/private-cloud", "edit", row.licencePlate));
         break;
       case "/private-cloud/requests":
-        router.push(path.join("/private-cloud", "decision", row.licencePlate));
+        if (isAdmin) {
+          router.push(
+            path.join("/private-cloud", "decision", row.licencePlate)
+          );
+        } else {
+          router.push(path.join("/private-cloud", "request", row.id));
+        }
         break;
       case "/public-cloud/products":
         router.push(path.join("/private-cloud", "edit", row.licencePlate));
