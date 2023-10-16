@@ -6,7 +6,7 @@ import classNames from "@/components/utils/classnames";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import generateInitialsAvatar from './avatar'
+import generateAvatar from './generateAvatar'
 
 async function fetchUserImage(email: string): Promise<string> {
   const res = await fetch(`/api/msal/userImage?email=${email}`);
@@ -24,7 +24,7 @@ async function fetchUserImage(email: string): Promise<string> {
     return imageUrl;
   }
   else{
-    const imageUrl = await generateInitialsAvatar(email)
+    const imageUrl = await generateAvatar(email)
 
     return imageUrl
   }

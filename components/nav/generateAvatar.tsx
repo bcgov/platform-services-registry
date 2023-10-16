@@ -15,7 +15,7 @@ const stringToColor = (string:string):string => {
   return color;
 };
 
-async function generateInitialsAvatar(email: string): Promise<string> {
+async function generateAvatar(email: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // size: number, backgroundColor: string, textColor: string
     const size = 120
@@ -56,4 +56,4 @@ async function generateInitialsAvatar(email: string): Promise<string> {
   });
 }
 
-export default generateInitialsAvatar;
+export default generateAvatar;
