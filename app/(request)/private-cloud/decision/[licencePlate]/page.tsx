@@ -6,7 +6,7 @@ import { PrivateCloudDecisionRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/CreatePublicCloud";
+import CreateModal from "@/components/modal/CreatePrivateCloud";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescription";
 import TeamContacts from "@/components/form/TeamContacts";
