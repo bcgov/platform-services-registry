@@ -13,10 +13,8 @@ export default function AccountCodingInput({
     length: number
 }) {
     const {
-        formState: { errors },
         control,
     } = useFormContext();
-
 
     return (
         <div className="relative mb-3" data-te-input-wrapper-init>

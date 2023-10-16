@@ -2,6 +2,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { Question } from "@/components/assets/question";
 import { useEffect } from "react";
 import AccountCodingInput from "@/components/form/AccountCodingInput";
+import classNames from "@/components/utils/classnames";
 
 export default function AccountCoding({
     disabled
@@ -9,21 +10,24 @@ export default function AccountCoding({
     disabled: boolean;
 }) {
     const {
-        register,
         formState: { errors },
-        formState: { isDirty, isSubmitSuccessful },
         control,
-        setValue
+        setValue,
+        trigger,
+        clearErrors,
     } = useFormContext();
 
-    const sumBudget = useWatch({
+    const accountCodingLocal = useWatch({
         control,
-        name: ['client-code', 'responsibility-centre', 'service-line', 'object-expense'],
+        name: ['client-code', 'responsibility-centre', 'service-line', 'object-expense', 'project-code'],
     })
 
     useEffect(() => {
-        setValue("accountCoding", sumBudget.join(" "))
-    }, [sumBudget, setValue])
+        setValue("accountCoding",
+            accountCodingLocal.some(i => Boolean(i)) ?
+                accountCodingLocal.join("") :
+                undefined)
+    }, [accountCodingLocal, setValue])
 
     return (
         <div className="border-b border-gray-900/10 pb-14">
@@ -80,7 +84,12 @@ export default function AccountCoding({
                     id="account-coding"
                     placeholder="Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code"
                     disabled={true}
-                    {...register("accountCoding")}
+                    value={accountCodingLocal.some(i => Boolean(i)) ?
+                        accountCodingLocal.join(" ") : undefined}
+                    onChange={() => {
+                        clearErrors('accountCoding'); // Clear previous errors
+                        trigger('accountCoding'); // Run validation for the 'example' field
+                    }}
                 />
                 <Question />
                 <label
@@ -88,6 +97,14 @@ export default function AccountCoding({
                     className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
                 >
                 </label>
+                <p
+                    className={classNames(
+                        errors.accountCoding ? "text-red-400" : "",
+                        "mt-1 text-sm leading-6 text-gray-600 absolute"
+                    )}
+                >
+                    {errors.accountCoding?.message?.toString()}
+                </p>
             </div>
         </div>
     );

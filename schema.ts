@@ -98,22 +98,29 @@ export const DecisionRequestBodySchema = EditRequestBodySchema.merge(
 );
 
 export const BudgetInputSchema = z.object({
-  dev: z.number(),
-  test: z.number(),
-  prod: z.number(),
-  tools: z.number(),
+  dev: z.string().nonempty({ message: "Development Budget is required." })
+  .refine((value) => parseInt(value, 10) >= 50, 'Value should be no less than USD 50'),
+  test: z.string().nonempty({ message: "Test Account Budget is required." })
+  .refine((value) => parseInt(value, 10) >= 50, 'Value should be no less than USD 50'),
+  prod: z.string().nonempty({ message: "Production Account Budget is required." })
+  .refine((value) => parseInt(value, 10) >= 50, 'Value should be no less than USD 50'),
+  tool: z.string().nonempty({ message: "Tool Account Budget is required." })
+  .refine((value) => parseInt(value, 10) >= 50, 'Value should be no less than USD 50'),
 });
 
 export const CreateRequestPublicBodySchema = z.object({
-  name: z.string().nonempty({ message: "Name is required." }),
+  name: z.string().nonempty({ message: "Name is required." })
+  .refine((value) => !(/[!#$%^&*()_\-\[\]{};'"\\|,<>\?]/g.test(value)), 'Only /. : + = @ _ special symbols are allowed'),
+  accountCoding:z.string()
+  .length(24,{message: "Account Coding should containe 24 characters"})
+  .refine((value) => /^[1-9A-Z]+$/.test(value), 'Name should contain only Uppercase characters and digits'),
   description: z.string().nonempty({ message: "Description is required." }),
   provider: z.nativeEnum(Provider),
   budget: BudgetInputSchema,
   ministry: z.nativeEnum(Ministry),
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional(),
-  accountCoding:z.string().nonempty({ message: "Account Coding is required." }),
+  secondaryTechnicalLead: UserInputSchema.optional(),  
 });
 
 export type CreateRequestBody = z.infer<typeof CreateRequestPrivateBodySchema>;

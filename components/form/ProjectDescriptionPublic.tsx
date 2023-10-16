@@ -47,7 +47,7 @@ export default function ProjectDescriptionPublic({
               "mt-3 text-sm leading-6 text-gray-600"
             )}
           >
-Please provide a descriptive product name (No Acronyms)
+            {errors.name?.message?.toString()}
           </p>
         </div>
 
@@ -65,7 +65,7 @@ Please provide a descriptive product name (No Acronyms)
               {...register("description")}
               rows={3}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                       />
+            />
           </div>
           <p
             className={classNames(
@@ -73,7 +73,7 @@ Please provide a descriptive product name (No Acronyms)
               "mt-3 text-sm leading-6 text-gray-600"
             )}
           >
-Please include high level consideration for the technical architecture of the solution if available
+            Please include high level consideration for the technical architecture of the solution if available
           </p>
         </div>
         <div className="sm:col-span-3 sm:mr-10">

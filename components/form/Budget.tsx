@@ -1,5 +1,8 @@
 import { useFormContext, useWatch } from "react-hook-form";
-import {Question} from "@/components/assets/question";
+import { Question } from "@/components/assets/question";
+import classNames from "@/components/utils/classnames";
+
+import BudgetInput from "@/components/form/BudgetInput"
 
 export default function Budget({
     disabled
@@ -7,7 +10,6 @@ export default function Budget({
     disabled: boolean;
 }) {
     const {
-        register,
         formState: { errors },
         control
     } = useFormContext();
@@ -15,7 +17,12 @@ export default function Budget({
     const sumBudget = useWatch({
         control,
         name: "budget",
-        defaultValue: "0",
+        defaultValue: {
+            dev: '',
+            test: '',
+            prod: '',
+            tool: '',
+        },
     })
 
     return (
@@ -32,79 +39,26 @@ export default function Budget({
                 There will be a base charge of CAD 400 to 600 per month for each project set created
             </p>
             <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-8 sm:grid-cols-2">
-                <div className="relative mb-3" data-te-input-wrapper-init>
-                    <p className="font-bcsans text-base leading-6 mb-2">
-                        Estimated average monthly spend - Development Account
-                    </p>
-                    <input
-                        type="number"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        id="dev-budget"
-                        placeholder="Enter amount here"
-                        {...register("budget.dev")}
-                    />
-                    <Question/>
-                    <label
-                        htmlFor="dev-budget"
-                        className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                    >
-                    </label>
-                </div>
-
-                <div className="relative mb-3" data-te-input-wrapper-init>
-                    <p className="font-bcsans text-base leading-6 mb-2">
-                        Estimated average monthly spend - Test Account
-                    </p>
-                    <input
-                        type="number"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        id="test-budget"
-                        placeholder="Enter amount here"
-                        {...register("budget.test")}
-                    />
-                    <Question/>
-                    <label
-                        htmlFor="test-budget"
-                        className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                    >
-                    </label>
-                </div>
-                <div className="relative mb-3" data-te-input-wrapper-init>
-                    <p className="font-bcsans text-base leading-6 mb-2">
-                        Estimated average monthly spend - Production Account
-                    </p>
-                    <input
-                        type="number"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        id="prod-budget"
-                        placeholder="Enter amount here"
-                        {...register("budget.prod")}
-                    />
-                    <Question/>
-                    <label
-                        htmlFor="prod-budget"
-                        className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                    >
-                    </label>
-                </div>
-                <div className="relative mb-3" data-te-input-wrapper-init>
-                    <p className="font-bcsans text-base leading-6 mb-2">
-                        Estimated average monthly spend - Tool Account
-                    </p>
-                    <input
-                        type="number"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        id="tool-budget"
-                        placeholder="Enter amount here"
-                        {...register("budget.tool")}
-                    />
-                    <Question/>
-                    <label
-                        htmlFor="tool-budget"
-                        className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                    >
-                    </label>
-                </div>
+                <BudgetInput
+                    disabled={false}
+                    title={"Estimated average monthly spend - Development Account"}
+                    name={"budget.dev"}
+                />
+                <BudgetInput
+                    disabled={false}
+                    title={"Estimated average monthly spend - Test Account"}
+                    name={"budget.test"}
+                />
+                <BudgetInput
+                    disabled={false}
+                    title={"Estimated average monthly spend - Production Account"}
+                    name={"budget.prod"}
+                />
+                <BudgetInput
+                    disabled={false}
+                    title={"Estimated average monthly spend - Tool Account "}
+                    name={"budget.tool"}
+                />
                 <div className="relative mb-3" data-te-input-wrapper-init>
                     <p className="font-bcsans text-base leading-6 mb-2">
                         Total Estimated average monthly spend
@@ -112,17 +66,25 @@ export default function Budget({
                     <input
                         type="number"
                         className="bg-neutral-200 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        id="dev-budget"
+                        id="total"
                         placeholder="Value populated from Dev+Test+Prod+Tools"
                         disabled={true}
-                        value={Number(sumBudget.dev) + Number(sumBudget.test) + Number(sumBudget.prod) + Number(sumBudget.tool)}
+                        value={Number(sumBudget.dev) + Number(sumBudget.test) + Number(sumBudget.prod) + Number(sumBudget.tool)||''}
                     />
-                    <Question/>
+                    <Question />
                     <label
-                        htmlFor="dev-budget"
+                        htmlFor="total"
                         className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
                     >
                     </label>
+                    {errors.budget && <p
+                        className={classNames(
+                            errors.budget ? "text-red-400" : "",
+                            "mt-3 text-sm leading-6 text-gray-600"
+                        )}
+                    >
+                        Budget is required, Every value should be no less than USD 50
+                    </p>}
                 </div>
             </div>
         </div>
