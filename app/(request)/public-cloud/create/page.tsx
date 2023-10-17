@@ -12,12 +12,12 @@ import ProjectDescriptionPublic from "@/components/form/ProjectDescriptionPublic
 import TeamContacts from "@/components/form/TeamContacts";
 import Budget from "@/components/form/Budget";
 import AccountCoding from "@/components/form/AccountCoding";
+
 export default function Page() {
   const { data: session, status } = useSession({
     required: true
   });
 
- 
   const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
@@ -29,13 +29,7 @@ export default function Page() {
     resolver: zodResolver(CreateRequestPublicBodySchema)
   });
 
-  // console.log("VALUES");
-  // console.log(methods.watch());
-
-  // console.log("ERRORS");
-  // console.log(methods.formState.errors);
-
-const onSubmit = async (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
     console.log(data);
     try {
@@ -66,7 +60,7 @@ const onSubmit = async (data: any) => {
     // router.back();
     router.push("/public-cloud/requests");
   };
- 
+
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
@@ -78,9 +72,7 @@ const onSubmit = async (data: any) => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescriptionPublic
-              disabled={false} 
-              />
+            <ProjectDescriptionPublic disabled={false} />
             <TeamContacts
               disabled={false}
               secondTechLead={secondTechLead}
