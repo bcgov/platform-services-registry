@@ -107,7 +107,7 @@ model PublicCloudRequest {
   licencePlate       String
   createdByEmail     String
   decisionMakerEmail String?
-  type               PublicCloudRequestType
+  type               RequestType
   decisionStatus     DecisionStatus
   humanComment       String?
   active             Boolean                     @default(true)
@@ -136,7 +136,6 @@ model PublicCloudProject {
   secondaryTechnicalLead   User?                @relation("publicCloudSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
-  commonComponents         CommonComponents
   requests                 PublicCloudRequest[] @relation("publicCloudProject")
 }
 
@@ -147,7 +146,7 @@ model PublicCloudRequestedProject {
   description              String
   status                   ProjectStatus
   created                  DateTime            @default(now())
-  billingGroup             String
+  accountCoding            String
   budget                   Budget
   projectOwnerId           String              @db.ObjectId
   projectOwner             User                @relation("publicCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
@@ -157,7 +156,6 @@ model PublicCloudRequestedProject {
   secondaryTechnicalLead   User?               @relation("publicCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
-  commonComponents         CommonComponents
   requestedProject         PublicCloudRequest? @relation("publicCloudRequestedProject")
 }
 
@@ -168,16 +166,17 @@ type Quota {
 }
 
 type Budget {
-  dev   Int
-  test  Int
-  prod  Int
-  tools Int
+  dev   Float
+  test  Float
+  prod  Float
+  tools Float
 }
 
 type CommonComponentsOptions {
   planningToUse Boolean
   implemented   Boolean
 }
+
 
 type CommonComponents {
   addressAndGeolocation              CommonComponentsOptions
@@ -209,11 +208,6 @@ enum RequestType {
   CREATE
   EDIT
   DELETE
-}
-
-enum PublicCloudRequestType {
-  CREATE
-  EDIT
 }
 
 enum Ministry {

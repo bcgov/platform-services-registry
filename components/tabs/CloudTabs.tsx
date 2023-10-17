@@ -8,16 +8,18 @@ import CreateButton from "@/components/buttons/CreateButton";
 const tabs = [
   {
     name: "PRIVATE CLOUD OPENSHIFT",
-    href: "private-cloud",
+    href: "private-cloud"
   },
   {
     name: "PUBLIC CLOUD LANDING ZONES",
-    href: "public-cloud",
-  },
+    href: "public-cloud"
+  }
 ];
 
 export default function Tabs({ className }: { className?: string }) {
   const pathname = usePathname();
+
+  console.log(pathname);
 
   return (
     <div className="w-full">

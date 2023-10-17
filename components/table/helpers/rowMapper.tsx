@@ -99,7 +99,7 @@ export const privateCloudProjectDataToRow = (project: Project) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    ),
+    )
   };
 };
 
@@ -130,7 +130,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    ),
+    )
   };
 };
 
@@ -149,7 +149,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
       request?.secondaryTechnicalLead?.firstName || ""
     } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate,
+    licencePlate: request.licencePlate
   };
 };
 
@@ -164,6 +164,6 @@ export const publicCloudRequestDataToRow = (request: any) => {
     projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
     technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate,
+    licencePlate: request.licencePlate
   };
 };

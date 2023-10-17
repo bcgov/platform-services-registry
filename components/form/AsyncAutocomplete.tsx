@@ -64,12 +64,12 @@ export default function AsyncAutocomplete({
   const {
     data: people,
     isLoading,
-    error,
+    error
   } = useQuery<Person[], Error>(
     ["people", query],
     () => fetchPeople(query || ""),
     {
-      enabled: !!query,
+      enabled: !!query
     }
   );
 
@@ -82,7 +82,7 @@ export default function AsyncAutocomplete({
       givenName: firstName,
       surname: lastName,
       mail: email,
-      displayName,
+      displayName
     } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
@@ -91,7 +91,7 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry,
+      ministry
     });
 
     if (!parsedParams.success) {
@@ -103,7 +103,7 @@ export default function AsyncAutocomplete({
       setError(name, {
         type: "manual",
         message:
-          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry",
+          "The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry"
       });
     } else {
       clearErrors(name);
@@ -113,7 +113,7 @@ export default function AsyncAutocomplete({
       firstName,
       lastName,
       email,
-      ministry,
+      ministry
     });
   };
 

@@ -1,24 +1,23 @@
 "use client";
-
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { PrivateCloudCreateRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CommonComponents from "@/components/form/CommonComponents";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/CreatePrivateCloud";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
-import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
+import { CreateRequestPublicBodySchema } from "@/schema";
+import ProjectDescriptionPublic from "@/components/form/ProjectDescriptionPublic";
 import TeamContacts from "@/components/form/TeamContacts";
-import { revalidatePath } from "next/cache";
-
+import Budget from "@/components/form/Budget";
+import AccountCoding from "@/components/form/AccountCoding";
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true,
+    required: true
   });
 
+ 
   const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
@@ -27,19 +26,25 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudCreateRequestBodySchema),
+    resolver: zodResolver(CreateRequestPublicBodySchema)
   });
 
-  const onSubmit = async (data: any) => {
+  // console.log("VALUES");
+  // console.log(methods.watch());
+
+  // console.log("ERRORS");
+  // console.log(methods.formState.errors);
+
+const onSubmit = async (data: any) => {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/private-cloud/create", {
+      const response = await fetch("/api/requests/public-cloud/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
 
       console.log("response", response);
@@ -54,29 +59,35 @@ export default function Page() {
       setOpenCreate(false);
       setOpenReturn(true);
     } catch (error) {
-      setIsLoading(false);
       console.error("Error:", error);
     }
-  };
 
+    setIsLoading(false);
+    // router.back();
+    router.push("/public-cloud/requests");
+  };
+ 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
       methods.unregister("secondaryTechnicalLead");
     }
   };
-
   return (
     <div>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescription />
+            <ProjectDescriptionPublic
+              disabled={false} 
+              />
             <TeamContacts
+              disabled={false}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
-            <CommonComponents />
+            <Budget disabled={false} />
+            <AccountCoding disabled={false} />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />

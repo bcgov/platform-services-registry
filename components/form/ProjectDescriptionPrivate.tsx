@@ -1,11 +1,20 @@
 import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";
+import { useRouter } from "next/navigation";
 
-export default function AdminComment() {
+export default function ProjectDescription({
+  disabled,
+  clusterDisabled,
+}: {
+  disabled?: boolean;
+  clusterDisabled?: boolean;
+}) {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
   } = useFormContext();
+
+  const router = useRouter();
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -31,12 +40,19 @@ export default function AdminComment() {
           </label>
           <div className="mt-2">
             <input
+              disabled={disabled}
               type="text"
               placeholder="Enter product name"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
               {...register("name")}
             />
           </div>
+
           <p
             className={classNames(
               errors.name ? "text-red-400" : "",
@@ -56,12 +72,17 @@ export default function AdminComment() {
           </label>
           <div className="mt-2">
             <textarea
+              disabled={disabled}
               id="about"
               placeholder="Enter a description..."
               {...register("description")}
               rows={3}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              // defaultValue={""}
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )} // defaultValue={""}
             />
           </div>
           <p
@@ -73,7 +94,7 @@ export default function AdminComment() {
             Tell us more about your product
           </p>
         </div>
-        <div className="sm:col-span-3 mr-10">
+        <div className="sm:col-span-3 sm:mr-10">
           <label
             htmlFor="ministry"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -82,9 +103,15 @@ export default function AdminComment() {
           </label>
           <div className="mt-2">
             <select
+              disabled={disabled}
               id="ministry"
               {...register("ministry")}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             >
               <option value="">Select Ministry</option>
               <option>CITZ</option>
@@ -103,7 +130,7 @@ export default function AdminComment() {
           </div>
         </div>
 
-        <div className="sm:col-span-3 ml-10">
+        <div className="sm:col-span-3 sm:ml-10">
           <label
             htmlFor="last-name"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -112,9 +139,15 @@ export default function AdminComment() {
           </label>
           <div className="mt-2">
             <select
+              disabled={disabled || clusterDisabled}
               id="cluster"
               {...register("cluster")}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled || clusterDisabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : ""
+              )}
             >
               <option value="">Select Cluster</option>
               <option>SILVER</option>
