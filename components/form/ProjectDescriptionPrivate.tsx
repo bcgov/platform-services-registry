@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation";
 
 export default function ProjectDescription({
   disabled,
-  clusterDisabled,
+  clusterDisabled
 }: {
   disabled?: boolean;
   clusterDisabled?: boolean;
 }) {
   const {
     register,
-    formState: { errors },
+    formState: { errors }
   } = useFormContext();
 
   const router = useRouter();
@@ -52,7 +52,6 @@ export default function ProjectDescription({
               {...register("name")}
             />
           </div>
-
           <p
             className={classNames(
               errors.name ? "text-red-400" : "",

@@ -2,43 +2,29 @@ import {
   ProjectStatus,
   RequestType,
   DecisionStatus,
-  PrivateCloudRequest,
+  PublicCloudRequest,
   Prisma
 } from "@prisma/client";
-import {
-  DefaultCpuOptionsSchema,
-  DefaultMemoryOptionsSchema,
-  DefaultStorageOptionsSchema
-} from "@/schema";
 import prisma from "@/lib/prisma";
 import generateLicensePlate from "@/lib/generateLicencePlate";
-import { PrivateCloudCreateRequestBody } from "@/schema";
-
-const defaultQuota = {
-  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptionsSchema.enum.STORAGE_1
-};
+import { PublicCloudCreateRequestBody } from "@/schema";
 
 export default async function createRequest(
-  formData: PrivateCloudCreateRequestBody,
+  formData: PublicCloudCreateRequestBody,
   authEmail: string
-): Promise<PrivateCloudRequest> {
+): Promise<PublicCloudRequest> {
   const licencePlate = generateLicensePlate();
 
-  const createRequestedProject: Prisma.PrivateCloudRequestedProjectCreateInput =
+  const createRequestedProject: Prisma.PublicCloudRequestedProjectCreateInput =
     {
       name: formData.name,
+      accountCoding: formData.accountCoding,
+      budget: formData.budget,
+      provider: formData.provider,
       description: formData.description,
-      cluster: formData.cluster,
       ministry: formData.ministry,
       status: ProjectStatus.ACTIVE,
       licencePlate: licencePlate,
-      commonComponents: formData.commonComponents,
-      productionQuota: defaultQuota,
-      testQuota: defaultQuota,
-      toolsQuota: defaultQuota,
-      developmentQuota: defaultQuota,
       projectOwner: {
         connectOrCreate: {
           where: {
@@ -67,7 +53,7 @@ export default async function createRequest(
         : undefined
     };
 
-  return prisma.privateCloudRequest.create({
+  return prisma.publicCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,

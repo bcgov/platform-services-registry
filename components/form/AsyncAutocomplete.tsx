@@ -39,7 +39,7 @@ export default function AsyncAutocomplete({
   label,
   placeHolder,
   className,
-  disabled,
+  disabled
 }: {
   name: string;
   label: string;
@@ -56,7 +56,7 @@ export default function AsyncAutocomplete({
     setValue,
     setError,
     clearErrors,
-    watch,
+    watch
   } = useFormContext();
 
   const email = watch(name + ".email");
@@ -142,7 +142,7 @@ export default function AsyncAutocomplete({
         <div className="relative mt-1">
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
-              autoComplete="off"
+              autoComplete="xyz"
               displayValue={(person: Person) => person?.mail}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}

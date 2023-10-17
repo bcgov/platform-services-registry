@@ -33,7 +33,7 @@ export default function Page() {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/requests/public-cloud/create", {
+      const response = await fetch("/api/public-cloud/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -55,10 +55,6 @@ export default function Page() {
     } catch (error) {
       console.error("Error:", error);
     }
-
-    setIsLoading(false);
-    // router.back();
-    router.push("/public-cloud/requests");
   };
 
   const secondTechLeadOnClick = () => {
@@ -98,7 +94,11 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} />
+      <ReturnModal
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/public-cloud/requests"
+      />
     </div>
   );
 }

@@ -5,16 +5,18 @@ import { useRouter } from "next/navigation";
 export default function Modal({
   open,
   setOpen,
+  redirectUrl
 }: {
   open: boolean;
   setOpen: any;
+  redirectUrl: string;
 }) {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
   const handleReturn = () => {
     setOpen(false);
-    router.push("/private-cloud/requests");
+    router.push(redirectUrl);
     router.refresh();
   };
 

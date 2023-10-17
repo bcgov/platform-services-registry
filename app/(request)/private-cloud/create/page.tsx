@@ -16,7 +16,7 @@ import { revalidatePath } from "next/cache";
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true,
+    required: true
   });
 
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudCreateRequestBodySchema),
+    resolver: zodResolver(PrivateCloudCreateRequestBodySchema)
   });
 
   const onSubmit = async (data: any) => {
@@ -37,9 +37,9 @@ export default function Page() {
       const response = await fetch("/api/private-cloud/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
 
       console.log("response", response);
@@ -95,7 +95,11 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} />
+      <ReturnModal
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/private-cloud/requests"
+      />
     </div>
   );
 }

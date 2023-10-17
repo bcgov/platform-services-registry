@@ -1,3 +1,5 @@
+"use client";
+
 import classNames from "@/components/utils/classnames";
 import { useFormContext } from "react-hook-form";
 
@@ -20,7 +22,9 @@ export default function ProjectDescriptionPublic({
         1. Product Description
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
-        If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public Cloud Accelerator Service team. Reach out to
+        If this is your first time on the Public Cloud Platform you need to book
+        an alignment meeting with the Public Cloud Accelerator Service team.
+        Reach out to
         {/* <a className="text-blue-600 dark:text-blue-500 hover:underline" href={"mailto:cloud.pathfinder@gov.bc.ca"}> Cloud Pathfinder </a>  */}
         to get started.
       </p>
@@ -47,7 +51,9 @@ export default function ProjectDescriptionPublic({
               "mt-3 text-sm leading-6 text-gray-600"
             )}
           >
-            {errors.name?.message?.toString()}
+            {errors.name
+              ? errors.name?.message?.toString()
+              : "Please provide a descriptibe product name with no acronyms"}
           </p>
         </div>
 
@@ -73,7 +79,8 @@ export default function ProjectDescriptionPublic({
               "mt-3 text-sm leading-6 text-gray-600"
             )}
           >
-            Please include high level consideration for the technical architecture of the solution if available
+            Please include high level consideration for the technical
+            architecture of the solution if available
           </p>
         </div>
         <div className="sm:col-span-3 sm:mr-10">
