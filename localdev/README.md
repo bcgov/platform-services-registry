@@ -19,6 +19,7 @@ Within the local Docker container context, `five services` are established:
 3. `Postgres`: Serves as the database for Keycloak.
 4. `MongoDB`: Serves as the database for the local application.
 5. `Microsoft 365 Developer Proxy`: Serves as a proxy server for Microsoft Graph APIs.
+   - See https://github.com/microsoft/m365-developer-proxy
 
 - Please refer to [docker-compose.yml](./docker-compose.yml) for more detailed information.
 

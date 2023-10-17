@@ -4,6 +4,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const m365ProxyResponse = require('./responses.json');
 
+const keycloakUrl = process.env.KEYCLOAK_URL;
 const realmName = process.env.REALM_NAME;
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -16,12 +17,12 @@ async function main() {
   console.log('Starting Keycloak Provision...');
 
   await waitOn({
-    resources: ['http://keycloak:8080/health/ready'],
+    resources: [`${keycloakUrl}/health/ready`],
   });
 
   // Create KC admin client
   const kcAdminClient = new KcAdminClient({
-    baseUrl: 'http://keycloak:8080',
+    baseUrl: keycloakUrl,
     realmName: 'master',
     requestConfig: {
       timeout: 10000,
