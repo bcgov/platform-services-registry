@@ -40,6 +40,8 @@ export default async function RequestsTable({
     redirect("/login?callbackUrl=/private-cloud/products");
   }
 
+  const isAdmin = session?.user?.roles?.includes("admin");
+
   const { search, page, pageSize, ministry, cluster } = searchParams;
 
   // If a page is not provided, default to 1
@@ -47,9 +49,7 @@ export default async function RequestsTable({
   const defaultPageSize = 10;
 
   // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes("admin")
-    ? undefined
-    : session?.user?.email;
+  const userEmail = isAdmin ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateCloudRequest[]; total: number } =
     await privateCloudRequestsPaginated(
@@ -58,10 +58,11 @@ export default async function RequestsTable({
       search,
       ministry,
       cluster,
-      userEmail
+      userEmail,
+      isAdmin
     );
 
-  const rows = data.map(privateCloudRequestDataToRow);
+  const rows = data.map(privateCloudRequestDataToRow).reverse();
 
   return (
     <Table

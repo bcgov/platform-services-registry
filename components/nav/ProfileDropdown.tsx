@@ -6,20 +6,28 @@ import classNames from "@/components/utils/classnames";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import generateAvatar from './generateAvatar'
 
 async function fetchUserImage(email: string): Promise<string> {
   const res = await fetch(`/api/msal/userImage?email=${email}`);
   if (!res.ok) {
     throw new Error("Network response was not ok for fetch user image");
   }
+  
+  if(res.headers.get("Content-Type")){
+    // Assuming server returns a blob of image data
+    const blob = await res.blob();
+    
+    // Create a URL from the blob
+    const imageUrl = URL.createObjectURL(blob);
 
-  // Assuming server returns a blob of image data
-  const blob = await res.blob();
+    return imageUrl;
+  }
+  else{
+    const imageUrl = await generateAvatar(email)
 
-  // Create a URL from the blob
-  const imageUrl = URL.createObjectURL(blob);
-
-  return imageUrl;
+    return imageUrl
+  }
 }
 
 export default function ProfileDropdown() {
@@ -56,7 +64,7 @@ export default function ProfileDropdown() {
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <Menu.Item>
+          {/* <Menu.Item>
             {({ active }) => (
               <Link
                 href="#"
@@ -81,7 +89,7 @@ export default function ProfileDropdown() {
                 Settings
               </Link>
             )}
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item>
             {({ active }) => (
               <div>

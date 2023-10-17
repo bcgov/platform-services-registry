@@ -111,10 +111,17 @@ export async function publicCloudProjectsPaginated(
       {
         $or: [
           { "projectOwner.email": { $regex: userEmail, $options: "i" } },
-          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-        ]
-      }
+          {
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+          },
+          {
+            "secondaryTechnicalLead.email": {
+              $regex: userEmail,
+              $options: "i",
+            },
+          },
+        ],
+      },
     ];
   }
 
@@ -246,10 +253,17 @@ export async function publicCloudRequestsPaginated(
       {
         $or: [
           { "projectOwner.email": { $regex: userEmail, $options: "i" } },
-          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-        ]
-      }
+          {
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+          },
+          {
+            "secondaryTechnicalLead.email": {
+              $regex: userEmail,
+              $options: "i",
+            },
+          },
+        ],
+      },
     ];
   }
 
@@ -375,7 +389,6 @@ export async function privateCloudProjectsPaginated(
   data: Project[];
   total: number;
 }> {
-
   // Initialize the search/filter query
   const searchQuery: any = {
     status: "ACTIVE",
@@ -448,10 +461,20 @@ export async function privateCloudProjectsPaginated(
       {
         $or: [
           { "projectOwnerDetails.email": { $regex: userEmail, $options: "i" } },
-          { "primaryTechnicalLeadDetails.email": { $regex: userEmail, $options: "i" } },
-          { "secondaryTechnicalLeadDetails.email": { $regex: userEmail, $options: "i" } },
-        ]
-      }
+          {
+            "primaryTechnicalLeadDetails.email": {
+              $regex: userEmail,
+              $options: "i",
+            },
+          },
+          {
+            "secondaryTechnicalLeadDetails.email": {
+              $regex: userEmail,
+              $options: "i",
+            },
+          },
+        ],
+      },
     ];
   }
 
@@ -554,14 +577,13 @@ export async function privateCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
-  userEmail?: string
+  userEmail?: string,
+  active: boolean = true
 ): Promise<{
   data: any[];
   total: number;
 }> {
-  const searchQuery: any = {
-    active: true,
-  };
+  const searchQuery: any = active ? { active: true } : {};
 
   if (searchTerm) {
     searchQuery.$or = [
@@ -587,10 +609,17 @@ export async function privateCloudRequestsPaginated(
       {
         $or: [
           { "projectOwner.email": { $regex: userEmail, $options: "i" } },
-          { "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-          { "secondaryTechnicalLead.email": { $regex: userEmail, $options: "i" } },
-        ]
-      }
+          {
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+          },
+          {
+            "secondaryTechnicalLead.email": {
+              $regex: userEmail,
+              $options: "i",
+            },
+          },
+        ],
+      },
     ];
   }
 
@@ -637,7 +666,7 @@ export async function privateCloudRequestsPaginated(
           preserveNullAndEmptyArrays: true,
         },
       },
-      { $unwind: "$requestedProject"},
+      { $unwind: "$requestedProject" },
       { $match: searchQuery },
       { $count: "totalCount" },
     ],

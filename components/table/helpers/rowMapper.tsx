@@ -7,12 +7,26 @@ import classNames from "@/components/utils/classnames";
 function TypeBadge({ status }: { status: string }) {
   let text, colour;
 
-  if (status === "APPROVED") {
-    text = "Processing";
-    colour = "blue";
-  } else if (status === "PENDING") {
-    text = "Pending Approval";
-    colour = "grey";
+  switch (status) {
+    case "APPROVED":
+      text = "Processing";
+      colour = "blue";
+      break;
+    case "PENDING":
+      text = "Pending Approval";
+      colour = "grey";
+      break;
+    case "REJECTED":
+      text = "Rejected";
+      colour = "red";
+      break;
+    case "PROVISIONED":
+      text = "Provisioned";
+      colour = "green";
+      break;
+    default:
+      text = status;
+      colour = "grey";
   }
 
   const tailwindColors = {
