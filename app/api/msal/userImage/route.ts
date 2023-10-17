@@ -17,9 +17,14 @@ export async function GET(req: NextRequest) {
     const response = await callMsGraph(url, accessToken);
     const data = await response.arrayBuffer();
 
+    if(response.status == 404){
+      return new NextResponse(data);
+    } 
+
     return new NextResponse(data, {
       headers: { "Content-Type": "image/jpeg" },
     });
+
   } catch (error) {
     console.error("ERROR");
     console.error(error);
