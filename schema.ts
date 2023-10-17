@@ -74,24 +74,6 @@ export const CommonComponentsInputSchema = z
     }
   );
 
-export const UserInputSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email().toLowerCase(),
-  ministry: z.nativeEnum(Ministry)
-});
-
-export const PrivateCloudCreateRequestBodySchema = z.object({
-  name: z.string().nonempty({ message: "Name is required." }),
-  description: z.string().nonempty({ message: "Description is required." }),
-  cluster: z.nativeEnum(Cluster),
-  ministry: z.nativeEnum(Ministry),
-  projectOwner: UserInputSchema,
-  primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional(),
-  commonComponents: CommonComponentsInputSchema
-});
-
 export const QuotaInputSchema = z.object({
   cpu: z.union([
     DefaultCpuOptionsSchema,
@@ -114,6 +96,24 @@ export const BudgetInputSchema = z.object({
   test: z.number().min(50, "Value should be no less than USD 50").default(50),
   prod: z.number().min(50, "Value should be no less than USD 50").default(50),
   tools: z.number().min(50, "Value should be no less than USD 50").default(50)
+});
+
+export const UserInputSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email().toLowerCase(),
+  ministry: z.nativeEnum(Ministry)
+});
+
+export const PrivateCloudCreateRequestBodySchema = z.object({
+  name: z.string().nonempty({ message: "Name is required." }),
+  description: z.string().nonempty({ message: "Description is required." }),
+  cluster: z.nativeEnum(Cluster),
+  ministry: z.nativeEnum(Ministry),
+  projectOwner: UserInputSchema,
+  primaryTechnicalLead: UserInputSchema,
+  secondaryTechnicalLead: UserInputSchema.optional(),
+  commonComponents: CommonComponentsInputSchema
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({
@@ -150,8 +150,19 @@ export const PrivateCloudEditRequestBodySchema =
     })
   );
 
+export const PublicCloudEditRequestBodySchema =
+  PublicCloudCreateRequestBodySchema;
+
 export const PrivateCloudDecisionRequestBodySchema =
   PrivateCloudEditRequestBodySchema.merge(
+    z.object({
+      decision: DecisionOptionsSchema,
+      humanComment: string().optional()
+    })
+  );
+
+export const PublicCloudDecisionRequestBodySchema =
+  PublicCloudEditRequestBodySchema.merge(
     z.object({
       decision: DecisionOptionsSchema,
       humanComment: string().optional()
@@ -170,11 +181,16 @@ export type QuotaInput = z.infer<typeof QuotaInputSchema>;
 export type PrivateCloudEditRequestBody = z.infer<
   typeof PrivateCloudEditRequestBodySchema
 >;
+export type PublicCloudEditRequestBody = z.infer<
+  typeof PublicCloudEditRequestBodySchema
+>;
 export type PrivateCloudDecisionRequestBody = z.infer<
   typeof PrivateCloudDecisionRequestBodySchema
 >;
+export type PublicCloudDecisionRequestBody = z.infer<
+  typeof PublicCloudDecisionRequestBodySchema
+>;
 export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
-
 export type DefaultCpuOptions = z.infer<typeof DefaultCpuOptionsSchema>;
 export type DefaultMemoryOptions = z.infer<typeof DefaultMemoryOptionsSchema>;
 export type DefaultStorageOptions = z.infer<typeof DefaultStorageOptionsSchema>;
