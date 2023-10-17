@@ -56,7 +56,7 @@ export default function SignInPage() {
       </ul>
 
 
-      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">
+      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-8 mb-4">
         Before you start:
       </h2>
 
@@ -136,7 +136,7 @@ export default function SignInPage() {
           </p>
           <p className="font-bcsans text-sm text-blue-700 mt-1">
             The approval of new project set creation request is subject to
-            having a signed Memorandum of Understanding \(MoU\) with the Public
+            having a signed Memorandum of Understanding (MoU) with the Public
             Cloud Team. If you do not have a MoU in place, please email us at
             <span> </span>
             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
