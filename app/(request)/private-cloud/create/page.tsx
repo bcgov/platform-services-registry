@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/CreatePrivateCloud";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
-import ProjectDescription from "@/components/form/ProjectDescription";
+import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
 import TeamContacts from "@/components/form/TeamContacts";
 import { revalidatePath } from "next/cache";
 

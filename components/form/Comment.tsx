@@ -1,30 +1,12 @@
 import { useFormContext } from "react-hook-form";
 import classNames from "@/components/utils/classnames";
-import { useRouter } from "next/navigation";
 
-<<<<<<<< HEAD:components/form/Comment.tsx
 export default function AdminComment() {
   const {
     register,
     formState: { errors }
   } = useFormContext();
 
-========
-export default function ProjectDescription({
-  disabled,
-  clusterDisabled,
-}: {
-  disabled?: boolean;
-  clusterDisabled?: boolean;
-}) {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
-
-  const router = useRouter();
-
->>>>>>>> main:components/form/ProjectDescription.tsx
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
@@ -49,19 +31,12 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <input
-              disabled={disabled}
               type="text"
               placeholder="Enter product name"
-              className={classNames(
-                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                disabled
-                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
-              )}
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               {...register("name")}
             />
           </div>
-
           <p
             className={classNames(
               errors.name ? "text-red-400" : "",
@@ -81,17 +56,12 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <textarea
-              disabled={disabled}
               id="about"
               placeholder="Enter a description..."
               {...register("description")}
               rows={3}
-              className={classNames(
-                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                disabled
-                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
-              )} // defaultValue={""}
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              // defaultValue={""}
             />
           </div>
           <p
@@ -103,11 +73,7 @@ export default function ProjectDescription({
             Tell us more about your product
           </p>
         </div>
-<<<<<<<< HEAD:components/form/Comment.tsx
         <div className="sm:col-span-3 mr-10">
-========
-        <div className="sm:col-span-3 sm:mr-10">
->>>>>>>> main:components/form/ProjectDescription.tsx
           <label
             htmlFor="ministry"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -116,18 +82,9 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <select
-<<<<<<<< HEAD:components/form/Comment.tsx
-========
-              disabled={disabled}
->>>>>>>> main:components/form/ProjectDescription.tsx
               id="ministry"
               {...register("ministry")}
-              className={classNames(
-                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                disabled
-                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
-              )}
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Select Ministry</option>
               <option>CITZ</option>
@@ -146,11 +103,7 @@ export default function ProjectDescription({
           </div>
         </div>
 
-<<<<<<<< HEAD:components/form/Comment.tsx
         <div className="sm:col-span-3 ml-10">
-========
-        <div className="sm:col-span-3 sm:ml-10">
->>>>>>>> main:components/form/ProjectDescription.tsx
           <label
             htmlFor="last-name"
             className="block text-sm font-medium leading-6 text-gray-900"
@@ -159,18 +112,9 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <select
-<<<<<<<< HEAD:components/form/Comment.tsx
-========
-              disabled={disabled || clusterDisabled}
->>>>>>>> main:components/form/ProjectDescription.tsx
               id="cluster"
               {...register("cluster")}
-              className={classNames(
-                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                disabled || clusterDisabled
-                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
-              )}
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Select Cluster</option>
               <option>SILVER</option>
