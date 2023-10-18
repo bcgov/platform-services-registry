@@ -5,13 +5,13 @@ import { DecisionStatus, Cluster } from "@prisma/client";
 import { string, z } from "zod";
 import { PrivateCloudDecisionRequestBodySchema } from "@/schema";
 import makeDecisionRequest, {
-  PrivateCloudRequestWithRequestedProject,
+  PrivateCloudRequestWithRequestedProject
 } from "@/requestActions/private-cloud/decisionRequest";
 import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
-  licencePlate: string(),
+  licencePlate: string()
 });
 
 type Params = z.infer<typeof ParamsSchema>;
@@ -21,17 +21,20 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return new Response("You do not have the required credentials.", {
-      status: 401,
+    return new NextResponse("You do not have the required credentials.", {
+      status: 401
     });
   }
 
   const { email: authEmail, roles: authRoles } = session.user;
 
   if (!authRoles.includes("admin")) {
-    return new Response("You must be an admin to make a request decision.", {
-      status: 403,
-    });
+    return new NextResponse(
+      "You must be an admin to make a request decision.",
+      {
+        status: 403
+      }
+    );
   }
 
   const body = await req.json();
@@ -68,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       return new Response(
         `Error creating decision request for ${request.licencePlate}.`,
         {
-          status: 200,
+          status: 200
         }
       );
     }
@@ -99,14 +102,15 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         );
       }
     }
-    return new Response(
+
+    return new NextResponse(
       `Decision request for ${request.licencePlate} succesfully created.`,
       {
-        status: 200,
+        status: 200
       }
     );
   } catch (e) {
     console.log(e);
-    return new Response("Error creating decision request", { status: 400 });
+    return new NextResponse("Error creating decision request", { status: 400 });
   }
 }

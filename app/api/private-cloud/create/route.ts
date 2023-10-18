@@ -4,7 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Prisma } from "@prisma/client";
 import {
   PrivateCloudCreateRequestBodySchema,
-  PrivateCloudCreateRequestBody,
+  PrivateCloudCreateRequestBody
 } from "@/schema";
 import { PrivateCloudRequest } from "@prisma/client";
 import createRequest from "@/requestActions/private-cloud/createRequest";
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   if (!session) {
     return new NextResponse("You do not have the required credentials.", {
-      status: 401,
+      status: 401
     });
   }
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     ![
       formData.projectOwner.email,
       formData.primaryTechnicalLead.email,
-      formData.secondaryTechnicalLead?.email,
+      formData.secondaryTechnicalLead?.email
     ].includes(authEmail) &&
     !authRoles.includes("admin")
   ) {
@@ -47,10 +47,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Action
-  let request: PrivateCloudRequest;
-
   try {
-    request = await createRequest(formData, authEmail);
+    await createRequest(formData, authEmail);
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       throw new Error(e.message);
@@ -64,8 +62,8 @@ export async function POST(req: NextRequest) {
   //   status: 200,
   // });
 
-  return new NextResponse(JSON.stringify(request), {
+  return new NextResponse("Success creating request", {
     status: 200,
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json" }
   });
 }

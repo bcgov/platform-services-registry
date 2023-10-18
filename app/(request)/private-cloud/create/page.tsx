@@ -12,7 +12,6 @@ import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
 import TeamContacts from "@/components/form/TeamContacts";
-import { revalidatePath } from "next/cache";
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -47,9 +46,6 @@ export default function Page() {
       if (!response.ok) {
         throw new Error("Network response was not ok for create request");
       }
-
-      const result = await response.json();
-      console.log("Success:", result);
 
       setOpenCreate(false);
       setOpenReturn(true);

@@ -123,12 +123,10 @@ export default function EditProject({
         throw new Error("Network response was not ok for create request");
       }
 
-      const result = await response.json();
-      console.log("Success:", result);
-
       setOpenCreate(false);
       setOpenReturn(true);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error:", error);
     }
   };
