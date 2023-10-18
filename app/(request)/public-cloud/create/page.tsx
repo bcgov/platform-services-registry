@@ -7,8 +7,8 @@ import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/CreatePrivateCloud";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
-import { CreateRequestPublicBodySchema } from "@/schema";
-import ProjectDescriptionPublic from "@/components/form/ProjectDescriptionPublic";
+import { PublicCloudCreateRequestBodySchema } from "@/schema";
+import ProjectDescription from "@/components/form/ProjectDescriptionPublic";
 import TeamContacts from "@/components/form/TeamContacts";
 import Budget from "@/components/form/Budget";
 import AccountCoding from "@/components/form/AccountCoding";
@@ -26,7 +26,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(CreateRequestPublicBodySchema)
+    resolver: zodResolver(PublicCloudCreateRequestBodySchema)
   });
 
   const onSubmit = async (data: any) => {
@@ -68,7 +68,7 @@ export default function Page() {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescriptionPublic disabled={false} />
+            <ProjectDescription disabled={false} />
             <TeamContacts
               disabled={false}
               secondTechLead={secondTechLead}

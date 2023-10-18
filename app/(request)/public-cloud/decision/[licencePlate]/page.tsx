@@ -2,58 +2,41 @@
 
 import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { PrivateCloudEditRequestBodySchema } from "@/schema";
+import { PublicCloudDecisionRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/CreatePrivateCloud";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
-import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
+import ProjectDescription from "@/components/form/ProjectDescriptionPublic";
 import TeamContacts from "@/components/form/TeamContacts";
-import Quotas from "@/components/form/Quotas";
 import { useQuery } from "@tanstack/react-query";
 import SubmitButton from "@/components/buttons/SubmitButton";
-import { PrivateCloudProjectWithUsers } from "@/app/api/private-cloud/project/[licencePlate]/route";
-import { PrivateCloudRequestWithCurrentAndRequestedProject } from "@/app/api/private-cloud/request/[id]/route";
-import CommonComponents from "@/components/form/CommonComponents";
+import { PublicCloudRequestWithCurrentAndRequestedProject } from "@/app/api/public-cloud/request/[id]/route";
+import Budget from "@/components/form/Budget";
+import AccountCoding from "@/components/form/AccountCoding";
 
-async function fetchProject(
+async function fetchRequestedProject(
   licencePlate: string
-): Promise<PrivateCloudProjectWithUsers> {
-  const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
+): Promise<PublicCloudRequestWithCurrentAndRequestedProject> {
+  const res = await fetch(`/api/public-cloud/active-request/${licencePlate}`);
   if (!res.ok) {
-    throw new Error("Network response was not ok for fetch project");
+    throw new Error("Network response was not ok for fetch user image");
   }
 
   // Re format data to work with form
   const data = await res.json();
 
   // Secondaty technical lead should only be included if it exists
-  if (data.secondaryTechnicalLead === null) {
-    delete data.secondaryTechnicalLead;
+  if (data.requestedProject.secondaryTechnicalLead === null) {
+    delete data.requestedProject.secondaryTechnicalLead;
   }
 
   return data;
 }
 
-async function fetchActiveRequest(
-  licencePlate: string
-): Promise<PrivateCloudRequestWithCurrentAndRequestedProject> {
-  const res = await fetch(`/api/private-cloud/active-request/${licencePlate}`);
-
-  if (!res.ok) {
-    throw new Error("Network response was not ok for fetch active request");
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-  console.log("Active request data", data);
-
-  return data;
-}
-
-export default function EditProject({
+export default function RequestDecision({
   params
 }: {
   params: { licencePlate: string };
@@ -70,46 +53,33 @@ export default function EditProject({
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data } = useQuery<PrivateCloudProjectWithUsers, Error>(
-    ["project", params.licencePlate],
-    () => fetchProject(params.licencePlate),
+  const { data } = useQuery<
+    PublicCloudRequestWithCurrentAndRequestedProject,
+    Error
+  >(
+    ["requestedProject", params.licencePlate],
+    () => fetchRequestedProject(params.licencePlate),
     {
       enabled: !!params.licencePlate
     }
   );
 
-  const { data: requestData } = useQuery<
-    PrivateCloudRequestWithCurrentAndRequestedProject,
-    Error
-  >(
-    ["request", params.licencePlate],
-    () => fetchActiveRequest(params.licencePlate),
-    {
-      enabled: !!params.licencePlate,
-      onError: (error) => {
-        console.log("error", error);
-        setDisabled(true);
-      }
-    }
-  );
-
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudEditRequestBodySchema),
-    values: data
+    resolver: zodResolver(PublicCloudDecisionRequestBodySchema),
+    values: { comment: "", decision: "", ...data?.requestedProject }
   });
 
   useEffect(() => {
-    if (requestData) {
+    if (data && data.decisionStatus !== "PENDING") {
       setDisabled(true);
     }
-  }, [requestData]);
+  }, [data]);
 
   const onSubmit = async (data: any) => {
-    console.log("SUBMIT", data);
     setIsLoading(true);
     try {
       const response = await fetch(
-        `/api/private-cloud/edit/${params.licencePlate}`,
+        `/api/public-cloud/decision/${params.licencePlate}`,
         {
           method: "POST",
           headers: {
@@ -141,26 +111,29 @@ export default function EditProject({
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
+        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
+            <ProjectDescription disabled={isDisabled} />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
-            <Quotas
-              licensePlate={data?.licencePlate as string}
-              disabled={isDisabled}
-              // currentProject={data as PrivateCloudProject}
-            />
-            <CommonComponents disabled={isDisabled} />
+            <Budget disabled={false} />
+            <AccountCoding disabled={false} />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {!isDisabled ? (
+            {!isDisabled && session?.user?.roles?.includes("admin") ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT REQUEST" />
+                <SubmitButton
+                  text="REJECT REQUEST"
+                  onClick={() => methods.setValue("decision", "REJECTED")}
+                />
+                <SubmitButton
+                  text="APPROVE REQUEST"
+                  onClick={() => methods.setValue("decision", "APPROVED")}
+                />
               </div>
             ) : null}
           </div>
@@ -175,7 +148,7 @@ export default function EditProject({
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/requests"
+        redirectUrl="/public-cloud/requests"
       />
     </div>
   );
