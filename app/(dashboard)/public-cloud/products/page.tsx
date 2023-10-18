@@ -1,6 +1,9 @@
 import Table from "@/components/table/Table";
 import TableBody from "@/components/table/TableBody";
-import { privateCloudProjectsPaginated, Project } from "@/queries/project";
+import {
+  privateCloudProjectsPaginated,
+  Project
+} from "@/queries/private-cloud/project";
 import { privateCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -15,11 +18,11 @@ const headers = [
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
   { field: "licencePlate", headerName: "Licence Plate" },
-  { field: "edit", headerName: "" },
+  { field: "edit", headerName: "" }
 ];
 
 export default async function ProductsTable({
-  searchParams,
+  searchParams
 }: {
   searchParams: {
     search: string;

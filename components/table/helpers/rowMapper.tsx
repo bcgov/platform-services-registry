@@ -1,7 +1,7 @@
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
-import { Project } from "@/queries/project";
+import { Project } from "@/queries/private-cloud/project";
 import classNames from "@/components/utils/classnames";
 
 function TypeBadge({ status }: { status: string }) {
@@ -33,7 +33,7 @@ function TypeBadge({ status }: { status: string }) {
     red: ["bg-red-100", "text-red-700", "fill-red-500"],
     blue: ["bg-blue-100", "text-blue-700", "fill-blue-500"],
     green: ["bg-green-100", "text-green-700", "fill-green-500"],
-    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"],
+    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"]
     // ... add other colors here
   };
 
