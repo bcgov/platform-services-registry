@@ -1,32 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { ObjectId } from "bson";
 import prisma from "@/lib/prisma";
-
-export const privateCloudProjects = async () => {
-  return await prisma.privateCloudProject.findMany({
-    where: {
-      status: "ACTIVE"
-    }
-  });
-};
-
-interface PrivateCloudProject {
-  id: string;
-  name: string;
-  description: string;
-  status: string;
-  projectOwnerDetails: User;
-  primaryTechnicalLeadDetails: User;
-  secondaryTechnicalLeadDetails: User;
-  // and any other fields that might be relevant
-}
-
-interface User {
-  email: string;
-  firstName: string;
-  lastName: string;
-  // and any other fields that might be relevant
-}
 
 export interface ProjectOwnerDetails {
   email: string;
@@ -40,7 +12,7 @@ export interface Project {
   description: string;
   created: string;
   licencePlate: string;
-  cluster: string;
+  provider: string;
   ministry: string;
   status: string;
   projectOwnerId: string;
@@ -51,12 +23,12 @@ export interface Project {
   secondaryTechnicalLeadDetails: ProjectOwnerDetails;
 }
 
-export async function privateCloudProjectsPaginated(
+export async function publicCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
   searchTerm?: string | null,
   ministry?: string | null,
-  cluster?: string | null,
+  provider?: string | null,
   userEmail?: string | null // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: Project[];
@@ -114,7 +86,7 @@ export async function privateCloudProjectsPaginated(
       { name: { $regex: searchTerm, $options: "i" } },
       { description: { $regex: searchTerm, $options: "i" } },
       { licencePlate: { $regex: searchTerm, $options: "i" } },
-      { cluster: { $regex: searchTerm, $options: "i" } },
+      { provider: { $regex: searchTerm, $options: "i" } },
       { ministry: { $regex: searchTerm, $options: "i" } }
 
       // include other fields as necessary
@@ -125,8 +97,8 @@ export async function privateCloudProjectsPaginated(
     searchQuery.ministry = ministry;
   }
 
-  if (cluster) {
-    searchQuery.cluster = cluster;
+  if (provider) {
+    searchQuery.provider = provider;
   }
 
   if (userEmail) {
@@ -244,12 +216,12 @@ export async function privateCloudProjectsPaginated(
   };
 }
 
-export async function privateCloudRequestsPaginated(
+export async function publicCloudRequestsPaginated(
   pageSize: number,
   pageNumber: number,
   searchTerm?: string,
   ministry?: string,
-  cluster?: string,
+  provider?: string,
   userEmail?: string,
   active: boolean = true
 ): Promise<{
@@ -269,12 +241,8 @@ export async function privateCloudRequestsPaginated(
     searchQuery["requestedProject.ministry"] = ministry;
   }
 
-  if (cluster) {
-    searchQuery["requestedProject.cluster"] = cluster;
-  }
-
-  if (cluster) {
-    searchQuery["requestedProject.cluster"] = cluster;
+  if (provider) {
+    searchQuery["requestedProject.provider"] = provider;
   }
 
   if (userEmail) {

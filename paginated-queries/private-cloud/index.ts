@@ -1,31 +1,26 @@
-import { PrismaClient } from "@prisma/client";
-import { ObjectId } from "bson";
 import prisma from "@/lib/prisma";
 
-export const privateCloudProjects = async () => {
-  return await prisma.privateCloudProject.findMany({
-    where: {
-      status: "ACTIVE",
-    },
-  });
-};
-
-interface PrivateCloudProject {
-  id: string;
-  name: string;
-  description: string;
-  status: string;
-  projectOwnerDetails: User;
-  primaryTechnicalLeadDetails: User;
-  secondaryTechnicalLeadDetails: User;
-  // and any other fields that might be relevant
-}
-
-interface User {
+export interface ProjectOwnerDetails {
   email: string;
   firstName: string;
   lastName: string;
-  // and any other fields that might be relevant
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  created: string;
+  licencePlate: string;
+  cluster: string;
+  ministry: string;
+  status: string;
+  projectOwnerId: string;
+  primaryTechnicalLeadId: string;
+  secondaryTechnicalLeadId: string;
+  projectOwnerDetails: ProjectOwnerDetails;
+  primaryTechnicalLeadDetails: ProjectOwnerDetails;
+  secondaryTechnicalLeadDetails: ProjectOwnerDetails;
 }
 
 export async function publicCloudProjectsPaginated(
@@ -36,12 +31,12 @@ export async function publicCloudProjectsPaginated(
   provider?: string,
   userEmail?: string
 ): Promise<{
-  data: any[];
+  data: Project[];
   total: number;
 }> {
   // Initialize the search/filter query
   const searchQuery: any = {
-    status: "ACTIVE",
+    status: "ACTIVE"
   };
 
   // Construct search/filter conditions based on provided parameters
@@ -49,50 +44,50 @@ export async function publicCloudProjectsPaginated(
     searchQuery.$or = [
       { "projectOwnerDetails.email": { $regex: searchTerm, $options: "i" } },
       {
-        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" },
+        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" }
       },
       { "projectOwnerDetails.lastName": { $regex: searchTerm, $options: "i" } },
       {
         "primaryTechnicalLeadDetails.email": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "primaryTechnicalLeadDetails.firstName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "primaryTechnicalLeadDetails.lastName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "secondaryTechnicalLeadDetails.email": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "secondaryTechnicalLeadDetails.firstName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "secondaryTechnicalLeadDetails.lastName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       { name: { $regex: searchTerm, $options: "i" } },
       { description: { $regex: searchTerm, $options: "i" } },
       { licencePlate: { $regex: searchTerm, $options: "i" } },
       { provider: { $regex: searchTerm, $options: "i" } },
-      { ministry: { $regex: searchTerm, $options: "i" } },
+      { ministry: { $regex: searchTerm, $options: "i" } }
 
       // include other fields as necessary
     ];
@@ -112,16 +107,16 @@ export async function publicCloudProjectsPaginated(
         $or: [
           { "projectOwner.email": { $regex: userEmail, $options: "i" } },
           {
-            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" }
           },
           {
             "secondaryTechnicalLead.email": {
               $regex: userEmail,
-              $options: "i",
-            },
-          },
-        ],
-      },
+              $options: "i"
+            }
+          }
+        ]
+      }
     ];
   }
 
@@ -133,29 +128,29 @@ export async function publicCloudProjectsPaginated(
           from: "User",
           localField: "projectOwnerId",
           foreignField: "_id",
-          as: "projectOwnerDetails",
-        },
+          as: "projectOwnerDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLeadDetails",
-        },
+          as: "primaryTechnicalLeadDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLeadDetails",
-        },
+          as: "secondaryTechnicalLeadDetails"
+        }
       },
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
-      { $count: "totalCount" },
-    ],
+      { $count: "totalCount" }
+    ]
   });
 
   // Then, get the actual page of data
@@ -166,24 +161,24 @@ export async function publicCloudProjectsPaginated(
           from: "User",
           localField: "projectOwnerId",
           foreignField: "_id",
-          as: "projectOwnerDetails",
-        },
+          as: "projectOwnerDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLeadDetails",
-        },
+          as: "primaryTechnicalLeadDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLeadDetails",
-        },
+          as: "secondaryTechnicalLeadDetails"
+        }
       },
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
@@ -193,15 +188,15 @@ export async function publicCloudProjectsPaginated(
       { $limit: pageSize },
       {
         $addFields: {
-          id: { $toString: "$_id" }, // Convert _id to string
-        },
+          id: { $toString: "$_id" } // Convert _id to string
+        }
       },
       {
         $project: {
-          _id: 0, // Exclude _id field from the result
-        },
-      },
-    ],
+          _id: 0 // Exclude _id field from the result
+        }
+      }
+    ]
   });
 
   // @ts-ignore
@@ -209,7 +204,7 @@ export async function publicCloudProjectsPaginated(
 
   return {
     data: result as unknown as any[],
-    total: totalCount || 0,
+    total: totalCount || 0
   };
 }
 
@@ -221,11 +216,11 @@ export async function publicCloudRequestsPaginated(
   provider?: string,
   userEmail?: string
 ): Promise<{
-  data: any[];
+  data: Project[];
   total: number;
 }> {
   const searchQuery: any = {
-    status: "ACTIVE",
+    status: "ACTIVE"
   };
 
   if (searchTerm) {
@@ -236,7 +231,7 @@ export async function publicCloudRequestsPaginated(
       { "provider.name": { $regex: searchTerm, $options: "i" } },
       { "ministry.name": { $regex: searchTerm, $options: "i" } },
       { name: { $regex: searchTerm, $options: "i" } },
-      { description: { $regex: searchTerm, $options: "i" } },
+      { description: { $regex: searchTerm, $options: "i" } }
     ];
   }
 
@@ -254,16 +249,16 @@ export async function publicCloudRequestsPaginated(
         $or: [
           { "projectOwner.email": { $regex: userEmail, $options: "i" } },
           {
-            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" }
           },
           {
             "secondaryTechnicalLead.email": {
               $regex: userEmail,
-              $options: "i",
-            },
-          },
-        ],
-      },
+              $options: "i"
+            }
+          }
+        ]
+      }
     ];
   }
 
@@ -274,31 +269,31 @@ export async function publicCloudRequestsPaginated(
           from: "User",
           localField: "requesterId",
           foreignField: "_id",
-          as: "requesterDetails",
-        },
+          as: "requesterDetails"
+        }
       },
       {
         $lookup: {
           from: "Provider",
           localField: "providerId",
           foreignField: "_id",
-          as: "provider",
-        },
+          as: "provider"
+        }
       },
       {
         $lookup: {
           from: "Ministry",
           localField: "ministryId",
           foreignField: "_id",
-          as: "ministry",
-        },
+          as: "ministry"
+        }
       },
       { $match: searchQuery },
       { $unwind: "$requesterDetails" },
       { $unwind: "$provider" },
       { $unwind: "$ministry" },
-      { $count: "totalCount" },
-    ],
+      { $count: "totalCount" }
+    ]
   });
 
   const result = await prisma.publicCloudRequest.aggregateRaw({
@@ -308,24 +303,24 @@ export async function publicCloudRequestsPaginated(
           from: "User",
           localField: "requesterId",
           foreignField: "_id",
-          as: "requesterDetails",
-        },
+          as: "requesterDetails"
+        }
       },
       {
         $lookup: {
           from: "Provider",
           localField: "providerId",
           foreignField: "_id",
-          as: "provider",
-        },
+          as: "provider"
+        }
       },
       {
         $lookup: {
           from: "Ministry",
           localField: "ministryId",
           foreignField: "_id",
-          as: "ministry",
-        },
+          as: "ministry"
+        }
       },
       { $match: searchQuery },
       { $unwind: "$requesterDetails" },
@@ -335,15 +330,15 @@ export async function publicCloudRequestsPaginated(
       { $limit: pageSize },
       {
         $addFields: {
-          id: { $toString: "$_id" },
-        },
+          id: { $toString: "$_id" }
+        }
       },
       {
         $project: {
-          _id: 0,
-        },
-      },
-    ],
+          _id: 0
+        }
+      }
+    ]
   });
 
   // @ts-ignore
@@ -351,7 +346,7 @@ export async function publicCloudRequestsPaginated(
 
   return {
     data: result as unknown as any[],
-    total: totalCount || 0,
+    total: totalCount || 0
   };
 }
 
@@ -391,7 +386,7 @@ export async function privateCloudProjectsPaginated(
 }> {
   // Initialize the search/filter query
   const searchQuery: any = {
-    status: "ACTIVE",
+    status: "ACTIVE"
   };
 
   // Construct search/filter conditions based on provided parameters
@@ -399,50 +394,50 @@ export async function privateCloudProjectsPaginated(
     searchQuery.$or = [
       { "projectOwnerDetails.email": { $regex: searchTerm, $options: "i" } },
       {
-        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" },
+        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" }
       },
       { "projectOwnerDetails.lastName": { $regex: searchTerm, $options: "i" } },
       {
         "primaryTechnicalLeadDetails.email": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "primaryTechnicalLeadDetails.firstName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "primaryTechnicalLeadDetails.lastName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "secondaryTechnicalLeadDetails.email": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "secondaryTechnicalLeadDetails.firstName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       {
         "secondaryTechnicalLeadDetails.lastName": {
           $regex: searchTerm,
-          $options: "i",
-        },
+          $options: "i"
+        }
       },
       { name: { $regex: searchTerm, $options: "i" } },
       { description: { $regex: searchTerm, $options: "i" } },
       { licencePlate: { $regex: searchTerm, $options: "i" } },
       { cluster: { $regex: searchTerm, $options: "i" } },
-      { ministry: { $regex: searchTerm, $options: "i" } },
+      { ministry: { $regex: searchTerm, $options: "i" } }
 
       // include other fields as necessary
     ];
@@ -464,17 +459,17 @@ export async function privateCloudProjectsPaginated(
           {
             "primaryTechnicalLeadDetails.email": {
               $regex: userEmail,
-              $options: "i",
-            },
+              $options: "i"
+            }
           },
           {
             "secondaryTechnicalLeadDetails.email": {
               $regex: userEmail,
-              $options: "i",
-            },
-          },
-        ],
-      },
+              $options: "i"
+            }
+          }
+        ]
+      }
     ];
   }
 
@@ -486,29 +481,29 @@ export async function privateCloudProjectsPaginated(
           from: "User",
           localField: "projectOwnerId",
           foreignField: "_id",
-          as: "projectOwnerDetails",
-        },
+          as: "projectOwnerDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLeadDetails",
-        },
+          as: "primaryTechnicalLeadDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLeadDetails",
-        },
+          as: "secondaryTechnicalLeadDetails"
+        }
       },
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
-      { $count: "totalCount" },
-    ],
+      { $count: "totalCount" }
+    ]
   });
 
   // Then, get the actual page of data
@@ -519,24 +514,24 @@ export async function privateCloudProjectsPaginated(
           from: "User",
           localField: "projectOwnerId",
           foreignField: "_id",
-          as: "projectOwnerDetails",
-        },
+          as: "projectOwnerDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLeadDetails",
-        },
+          as: "primaryTechnicalLeadDetails"
+        }
       },
       {
         $lookup: {
           from: "User",
           localField: "secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLeadDetails",
-        },
+          as: "secondaryTechnicalLeadDetails"
+        }
       },
       { $match: searchQuery },
       { $unwind: "$projectOwnerDetails" },
@@ -544,22 +539,22 @@ export async function privateCloudProjectsPaginated(
       {
         $unwind: {
           path: "$secondaryTechnicalLeadDetails",
-          preserveNullAndEmptyArrays: true,
-        },
+          preserveNullAndEmptyArrays: true
+        }
       },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {
         $addFields: {
-          id: { $toString: "$_id" }, // Convert _id to string
-        },
+          id: { $toString: "$_id" } // Convert _id to string
+        }
       },
       {
         $project: {
-          _id: 0, // Exclude _id field from the result
-        },
-      },
-    ],
+          _id: 0 // Exclude _id field from the result
+        }
+      }
+    ]
   });
 
   // @ts-ignore
@@ -567,7 +562,7 @@ export async function privateCloudProjectsPaginated(
 
   return {
     data: result as unknown as Project[],
-    total: totalCount || 0,
+    total: totalCount || 0
   };
 }
 
@@ -588,7 +583,7 @@ export async function privateCloudRequestsPaginated(
   if (searchTerm) {
     searchQuery.$or = [
       { "requestedProject.name": { $regex: searchTerm, $options: "i" } },
-      { "requestedProject.ministry": { $regex: searchTerm, $options: "i" } },
+      { "requestedProject.ministry": { $regex: searchTerm, $options: "i" } }
     ];
   }
 
@@ -610,16 +605,16 @@ export async function privateCloudRequestsPaginated(
         $or: [
           { "projectOwner.email": { $regex: userEmail, $options: "i" } },
           {
-            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" }
           },
           {
             "secondaryTechnicalLead.email": {
               $regex: userEmail,
-              $options: "i",
-            },
-          },
-        ],
-      },
+              $options: "i"
+            }
+          }
+        ]
+      }
     ];
   }
 
@@ -630,8 +625,8 @@ export async function privateCloudRequestsPaginated(
           from: "PrivateCloudRequestedProject",
           localField: "requestedProjectId",
           foreignField: "_id",
-          as: "requestedProject",
-        },
+          as: "requestedProject"
+        }
       },
       { $unwind: "$requestedProject" },
       {
@@ -639,8 +634,8 @@ export async function privateCloudRequestsPaginated(
           from: "User",
           localField: "requestedProject.projectOwnerId",
           foreignField: "_id",
-          as: "projectOwner",
-        },
+          as: "projectOwner"
+        }
       },
       { $unwind: "$projectOwner" },
       {
@@ -648,8 +643,8 @@ export async function privateCloudRequestsPaginated(
           from: "User",
           localField: "requestedProject.primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLead",
-        },
+          as: "primaryTechnicalLead"
+        }
       },
       { $unwind: "$primaryTechnicalLead" },
       {
@@ -657,19 +652,19 @@ export async function privateCloudRequestsPaginated(
           from: "User",
           localField: "requestedProject.secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLead",
-        },
+          as: "secondaryTechnicalLead"
+        }
       },
       {
         $unwind: {
           path: "$secondaryTechnicalLead",
-          preserveNullAndEmptyArrays: true,
-        },
+          preserveNullAndEmptyArrays: true
+        }
       },
       { $unwind: "$requestedProject" },
       { $match: searchQuery },
-      { $count: "totalCount" },
-    ],
+      { $count: "totalCount" }
+    ]
   });
 
   const result = await prisma.privateCloudRequest.aggregateRaw({
@@ -679,8 +674,8 @@ export async function privateCloudRequestsPaginated(
           from: "PrivateCloudRequestedProject",
           localField: "requestedProjectId",
           foreignField: "_id",
-          as: "requestedProject",
-        },
+          as: "requestedProject"
+        }
       },
       { $unwind: "$requestedProject" },
       {
@@ -688,8 +683,8 @@ export async function privateCloudRequestsPaginated(
           from: "User",
           localField: "requestedProject.projectOwnerId",
           foreignField: "_id",
-          as: "projectOwner",
-        },
+          as: "projectOwner"
+        }
       },
       { $unwind: "$projectOwner" },
       {
@@ -697,8 +692,8 @@ export async function privateCloudRequestsPaginated(
           from: "User",
           localField: "requestedProject.primaryTechnicalLeadId",
           foreignField: "_id",
-          as: "primaryTechnicalLead",
-        },
+          as: "primaryTechnicalLead"
+        }
       },
       { $unwind: "$primaryTechnicalLead" },
       {
@@ -706,29 +701,29 @@ export async function privateCloudRequestsPaginated(
           from: "User",
           localField: "requestedProject.secondaryTechnicalLeadId",
           foreignField: "_id",
-          as: "secondaryTechnicalLead",
-        },
+          as: "secondaryTechnicalLead"
+        }
       },
       {
         $unwind: {
           path: "$secondaryTechnicalLead",
-          preserveNullAndEmptyArrays: true,
-        },
+          preserveNullAndEmptyArrays: true
+        }
       },
       { $match: searchQuery },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {
         $addFields: {
-          id: { $toString: "$_id" },
-        },
+          id: { $toString: "$_id" }
+        }
       },
       {
         $project: {
-          _id: 0,
-        },
-      },
-    ],
+          _id: 0
+        }
+      }
+    ]
   });
 
   // @ts-ignore
@@ -736,6 +731,6 @@ export async function privateCloudRequestsPaginated(
 
   return {
     data: result as any,
-    total: totalCount,
+    total: totalCount
   };
 }

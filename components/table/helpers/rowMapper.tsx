@@ -1,7 +1,7 @@
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
-import { Project } from "@/queries/private-cloud/project";
+import { Project } from "@/paginated-queries/private-cloud";
 import classNames from "@/components/utils/classnames";
 
 function TypeBadge({ status }: { status: string }) {
