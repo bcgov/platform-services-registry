@@ -4,7 +4,8 @@ The development sandbox serves as an isolated environment for local development 
 
 ## Getting Started
 
-To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
+1. To begin with, duplicate the `.env.localdev` file and name it either `.env` or `.env.local` to set the default local environment variable in your local environment.
+2. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
 
 ```bash
 docker-compose up --build
@@ -18,8 +19,9 @@ Within the local Docker container context, `five services` are established:
 2. `Keycloak Provision`: Provisions the local Keycloak's realm, clients, and users.
 3. `Postgres`: Serves as the database for Keycloak.
 4. `MongoDB`: Serves as the database for the local application.
+   - Please refer to [MongoDB Compass](https://www.mongodb.com/products/tools/compass) to explore the local database.
 5. `Microsoft 365 Developer Proxy`: Serves as a proxy server for Microsoft Graph APIs.
-   - See https://github.com/microsoft/m365-developer-proxy
+   - Please refer to https://github.com/microsoft/m365-developer-proxy for more detailed information.
 
 - Please refer to [docker-compose.yml](./docker-compose.yml) for more detailed information.
 
@@ -32,5 +34,5 @@ Within the local Docker container context, `five services` are established:
 - `Keyclaok Client Secret`: testsecret
 - `MongoDB URL`: mongodb@localhost:27017
 - `Microsoft 365 Proxy Url`: http://localhost:8000
-- please refer to [.env.localdev](../.env.localdev) for comprehensive local environment values.
-- please refer to [m365proxy/responses.json](./m365proxy/responses.json) for local mock user list.
+- Please refer to [.env.localdev](../.env.localdev) for comprehensive local environment values.
+- Please refer to [m365proxy/responses.json](./m365proxy/responses.json) for local mock user list.
