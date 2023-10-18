@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   //   status: 200,
   // });
 
-  return new NextResponse(JSON.stringify(request), {
+  return new NextResponse("Created successfuly", {
     status: 200,
     headers: { "content-type": "application/json" }
   });
