@@ -60,6 +60,8 @@ export default function Page() {
       methods.unregister("secondaryTechnicalLead");
     }
   };
+
+  console.log(methods.watch());
   return (
     <div>
       <FormProvider {...methods}>

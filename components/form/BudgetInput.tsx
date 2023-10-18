@@ -10,23 +10,26 @@ export default function BudgetInput({
   title: string;
   name: string;
 }) {
-  const { control } = useFormContext();
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext();
+
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
       <p className="font-bcsans text-base leading-6 mb-2">{title}</p>
-      <Controller
-        name={name}
-        control={control}
+
+      <input
+        disabled={disabled}
         defaultValue={50}
-        render={({ field }) => (
-          <input
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            id={name}
-            placeholder={"Enter amount here"}
-            {...field}
-          />
-        )}
+        type="number"
+        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        placeholder={"Enter amount here"}
+        {...register(name, {
+          valueAsNumber: true
+        })}
       />
+
       <Question />
       <label
         htmlFor="dev-budget"

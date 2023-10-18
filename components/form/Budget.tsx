@@ -1,25 +1,15 @@
 import { useFormContext, useWatch } from "react-hook-form";
 import { Question } from "@/components/assets/question";
 import classNames from "@/components/utils/classnames";
-
 import BudgetInput from "@/components/form/BudgetInput";
 
 export default function Budget({ disabled }: { disabled: boolean }) {
   const {
     formState: { errors },
-    control
+    watch
   } = useFormContext();
 
-  const sumBudget = useWatch({
-    control,
-    name: "budget",
-    defaultValue: {
-      dev: 50,
-      test: 50,
-      prod: 50,
-      tools: 50
-    }
-  });
+  const budget = watch("budget", {});
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -34,8 +24,7 @@ export default function Budget({ disabled }: { disabled: boolean }) {
             "https://www.thoughtco.com/html-code-for-common-symbols-and-signs-2654021"
           }
         >
-          {" "}
-          AWS Cost Calculator{" "}
+          AWS Cost Calculator
         </a>
         to get an estimate&#41;. Provide an estimated average monthly spend
         allocated to your cloud service usage for this project. As a part of
@@ -53,22 +42,22 @@ export default function Budget({ disabled }: { disabled: boolean }) {
       </p>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-8 sm:grid-cols-2">
         <BudgetInput
-          disabled={false}
+          disabled={disabled}
           title={"Estimated average monthly spend - Development Account"}
           name={"budget.dev"}
         />
         <BudgetInput
-          disabled={false}
+          disabled={disabled}
           title={"Estimated average monthly spend - Test Account"}
           name={"budget.test"}
         />
         <BudgetInput
-          disabled={false}
+          disabled={disabled}
           title={"Estimated average monthly spend - Production Account"}
           name={"budget.prod"}
         />
         <BudgetInput
-          disabled={false}
+          disabled={disabled}
           title={"Estimated average monthly spend - Tool Account "}
           name={"budget.tools"}
         />
@@ -83,10 +72,10 @@ export default function Budget({ disabled }: { disabled: boolean }) {
             placeholder="Value populated from Dev+Test+Prod+Tools"
             disabled={true}
             value={
-              Number(sumBudget.dev) +
-                Number(sumBudget.test) +
-                Number(sumBudget.prod) +
-                Number(sumBudget.tools) || 0
+              Number(budget.dev) +
+                Number(budget.test) +
+                Number(budget.prod) +
+                Number(budget.tools) || 0
             }
           />
           <Question />
