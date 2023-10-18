@@ -3,7 +3,7 @@ import TableBody from "@/components/table/TableBody";
 import {
   privateCloudProjectsPaginated,
   Project
-} from "@/paginated-queries/private-cloud";
+} from "@/paginatedQueries/private-cloud";
 import { privateCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

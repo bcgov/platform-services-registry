@@ -1,7 +1,7 @@
 import {
   privateCloudProjectsPaginated,
   privateCloudRequestsPaginated
-} from "@/paginated-queries/private-cloud";
+} from "@/paginatedQueries/private-cloud";
 import prisma from "@/lib/prisma";
 import {
   Prisma,

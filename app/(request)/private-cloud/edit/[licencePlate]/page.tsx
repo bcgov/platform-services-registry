@@ -72,7 +72,7 @@ export default function EditProject({
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data } = useQuery<PrivateCloudProjectWithUsers, Error>(
+  const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>(
     ["project", params.licencePlate],
     () => fetchProject(params.licencePlate),
     {
@@ -97,8 +97,17 @@ export default function EditProject({
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudEditRequestBodySchema),
-    values: data
+    defaultValues: data || {}
   });
+
+  // useEffect(() => {
+  //   if (isSuccess && data) {
+  //     methods.reset({
+  //       ...data
+  //       // You can spread in other default values here if needed.
+  //     });
+  //   }
+  // }, [isSuccess, data, methods]);
 
   useEffect(() => {
     if (requestData) {
