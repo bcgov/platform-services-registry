@@ -1,10 +1,10 @@
 import Table from "@/components/table/Table";
 import TableBody from "@/components/table/TableBody";
 import {
-  privateCloudProjectsPaginated,
+  publicCloudProjectsPaginated,
   Project
-} from "@/paginated-queries/private-cloud";
-import { privateCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
+} from "@/paginated-queries/public-cloud";
+import { publicCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
@@ -29,7 +29,7 @@ export default async function ProductsTable({
     page: number;
     pageSize: number;
     ministry: string;
-    cluster: string;
+    provider: string;
   };
 }) {
   // Authenticate the user
@@ -40,7 +40,7 @@ export default async function ProductsTable({
     redirect("/login?callbackUrl=/private-cloud/products");
   }
 
-  const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { search, page, pageSize, ministry, provider } = searchParams;
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
@@ -52,16 +52,16 @@ export default async function ProductsTable({
     : session?.user?.email;
 
   const { data, total }: { data: Project[]; total: number } =
-    await privateCloudProjectsPaginated(
+    await publicCloudProjectsPaginated(
       defaultPageSize,
       currentPage,
       search,
       ministry,
-      cluster,
+      provider,
       userEmail
     );
 
-  const rows = data.map(privateCloudProjectDataToRow);
+  const rows = data.map(publicCloudProjectDataToRow);
 
   return (
     <Table

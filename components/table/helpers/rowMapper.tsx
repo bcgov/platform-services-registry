@@ -154,6 +154,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
 };
 
 export const publicCloudRequestDataToRow = (request: any) => {
+  console.log("REQUEST", request);
   return {
     id: request.id,
     type: <TypeBadge status={request.type} />,
@@ -161,8 +162,12 @@ export const publicCloudRequestDataToRow = (request: any) => {
     name: request.requestedProject.name,
     csp: request.requestedProject.provider,
     ministry: request.requestedProject.ministry,
-    projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
-    technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
+    technicalLeads: `${request.primaryTechnicalLead.firstName} ${
+      request.primaryTechnicalLead.lastName
+    } ${request?.secondaryTechnicalLead ? "," : ""} ${
+      request?.secondaryTechnicalLead?.firstName || ""
+    } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
     licencePlate: request.licencePlate
   };

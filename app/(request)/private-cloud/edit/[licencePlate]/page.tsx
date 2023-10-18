@@ -29,6 +29,8 @@ async function fetchProject(
   // Re format data to work with form
   const data = await res.json();
 
+  console.log("Project data", data);
+
   // Secondaty technical lead should only be included if it exists
   if (data.secondaryTechnicalLead === null) {
     delete data.secondaryTechnicalLead;

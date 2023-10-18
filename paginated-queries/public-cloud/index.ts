@@ -124,7 +124,7 @@ export async function publicCloudProjectsPaginated(
   }
 
   // First, get the total count of matching documents
-  const totalCountResult = await prisma.privateCloudProject.aggregateRaw({
+  const totalCountResult = await prisma.publicCloudProject.aggregateRaw({
     pipeline: [
       {
         $lookup: {
@@ -157,7 +157,7 @@ export async function publicCloudProjectsPaginated(
   });
 
   // Then, get the actual page of data
-  const result = await prisma.privateCloudProject.aggregateRaw({
+  const result = await prisma.publicCloudProject.aggregateRaw({
     pipeline: [
       {
         $lookup: {
@@ -264,11 +264,11 @@ export async function publicCloudRequestsPaginated(
     ];
   }
 
-  const totalCountResult = await prisma.privateCloudRequest.aggregateRaw({
+  const totalCountResult = await prisma.publicCloudRequest.aggregateRaw({
     pipeline: [
       {
         $lookup: {
-          from: "PrivateCloudRequestedProject",
+          from: "PublicCloudRequestedProject",
           localField: "requestedProjectId",
           foreignField: "_id",
           as: "requestedProject"
@@ -313,11 +313,11 @@ export async function publicCloudRequestsPaginated(
     ]
   });
 
-  const result = await prisma.privateCloudRequest.aggregateRaw({
+  const result = await prisma.publicCloudRequest.aggregateRaw({
     pipeline: [
       {
         $lookup: {
-          from: "PrivateCloudRequestedProject",
+          from: "PublicCloudRequestedProject",
           localField: "requestedProjectId",
           foreignField: "_id",
           as: "requestedProject"
