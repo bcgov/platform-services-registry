@@ -95,7 +95,10 @@ export default function EditProject({
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudEditRequestBodySchema),
-    values: data
+    defaultValues: async () => {
+      const response = await fetchProject(params.licencePlate);
+      return response;
+    }
   });
 
   useEffect(() => {

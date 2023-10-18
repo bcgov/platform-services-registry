@@ -29,8 +29,6 @@ async function fetchProject(
   // Re format data to work with form
   const data = await res.json();
 
-  console.log("Project data", data);
-
   // Secondaty technical lead should only be included if it exists
   if (data.secondaryTechnicalLead === null) {
     delete data.secondaryTechnicalLead;
@@ -50,7 +48,6 @@ async function fetchActiveRequest(
 
   // Re format data to work with form
   const data = await res.json();
-  console.log("Active request data", data);
 
   return data;
 }
@@ -95,19 +92,15 @@ export default function EditProject({
     }
   );
 
+  // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
+  // in an error.
   const methods = useForm({
     resolver: zodResolver(PrivateCloudEditRequestBodySchema),
-    defaultValues: data || {}
+    defaultValues: async () => {
+      const response = await fetchProject(params.licencePlate);
+      return response;
+    }
   });
-
-  // useEffect(() => {
-  //   if (isSuccess && data) {
-  //     methods.reset({
-  //       ...data
-  //       // You can spread in other default values here if needed.
-  //     });
-  //   }
-  // }, [isSuccess, data, methods]);
 
   useEffect(() => {
     if (requestData) {
