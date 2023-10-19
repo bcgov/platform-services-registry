@@ -85,7 +85,7 @@ async function main() {
           secondaryTechnicalLeadId: user.id,
           ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           provider: faker.helpers.arrayElement(Object.values(Provider)),
-          billingGroup: faker.lorem.word(),
+          accountCoding: "client-code",
           budget: {
             dev: +faker.commerce.price(),
             test: +faker.commerce.price(),

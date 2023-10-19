@@ -126,7 +126,7 @@ model PublicCloudProject {
   description              String
   status                   ProjectStatus
   created                  DateTime             @default(now())
-  billingGroup             String
+  accountCoding            String
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
   projectOwner             User                 @relation("publicCloudProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)

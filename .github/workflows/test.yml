@@ -1,0 +1,55 @@
+name: Test codebase
+
+on:
+  push
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+
+    - name: Run lint
+      run: npm run lint
+
+    - name: Run build
+      run: npm run build
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@5d9862498505fcac67b9f455d6e94ec0339f7b90
+
+    - name: Build Local Images
+      uses: docker/bake-action@cff93986225aa60b529e85c83a08f7df996a8d48
+      with:
+        workdir: ./localdev
+        push: false
+        load: true
+        set: |
+          *.cache-to=type=gha,mode=max
+          *.cache-from=type=gha
+
+    - name: Run test
+      run: |
+        mkdir -p ./localdev/mnt/mongodb
+        mkdir -p ./localdev/mnt/postgres
+
+        docker images
+        docker-compose -f localdev/docker-compose.yml up -d
+
+        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 60000
+        cp .env.localdev .env.test
+        npm run test
+
+        docker-compose -f localdev/docker-compose.yml down
+        sudo rm -rf ./localdev/mnt

@@ -1,0 +1,17 @@
+name: Setup Tools
+description: Setup required tools in the workspace
+
+runs:
+  using: composite
+  steps:
+  - name: Setup Tools
+    uses: egose/actions/asdf-tools@d725ec2e6318ef28fde560028547d79aa604a897
+    with:
+      plugins: |
+        docker-compose=https://github.com/virtualstaticvoid/asdf-docker-compose.git
+
+  - name: Install python tools
+    run: |
+      pip install -r requirements.txt
+      asdf reshim
+    shell: bash
