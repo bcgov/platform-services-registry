@@ -40,7 +40,7 @@ export default function Budget({ disabled }: { disabled: boolean }) {
         There will be a base charge of CAD 400 to 600 per month for each project
         set created
       </p>
-      <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-8 sm:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <BudgetInput
           disabled={disabled}
           title={"Estimated average monthly spend - Development Account"}

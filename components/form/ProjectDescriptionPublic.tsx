@@ -28,7 +28,6 @@ export default function ProjectDescriptionPublic({
         {/* <a className="text-blue-600 dark:text-blue-500 hover:underline" href={"mailto:cloud.pathfinder@gov.bc.ca"}> Cloud Pathfinder </a>  */}
         to get started.
       </p>
-
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label
