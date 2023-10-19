@@ -5,6 +5,7 @@ import { Menu, Transition } from "@headlessui/react";
 import classNames from "@/components/utils/classnames";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import generateAvatar from './generateAvatar'
 
@@ -47,9 +48,11 @@ export default function ProfileDropdown() {
       <div>
         <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           <span className="sr-only">Open user menu</span>
-          <img
+          <Image
             className="h-10 w-10 rounded-full"
-            src={data || "http://www.gravatar.com/avatar/?d=identicon"}
+            width={0}
+            height={0}
+            src={data || "https://www.gravatar.com/avatar/?d=identicon"}
             alt=""
           />
         </Menu.Button>

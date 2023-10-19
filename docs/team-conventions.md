@@ -10,6 +10,11 @@
 
 ## Peer Review Process
 
+## Automated dependency updates
+
+    - [dependabot](https://github.com/bcgov/platform-services-registry/security/dependabot)
+    - [renovate](https://github.com/renovatebot/renovate)
+
 ## Secret Scanning
 
 In order to identify and manage potential secrets within your Git repository, a secret scanning task is executed as part of a pre-commit hook. This task utilizes a tool called [detect-secrets](https://github.com/Yelp/detect-secrets).

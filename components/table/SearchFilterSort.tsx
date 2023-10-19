@@ -48,7 +48,7 @@ export default function SearchFilterSort() {
     } else {
       handleSearch(debouncedValue);
     }
-  }, [debouncedValue, handleSearch]);
+  }, [searchParams, replace, pathname, debouncedValue, handleSearch]);
 
   return (
     <Disclosure>
