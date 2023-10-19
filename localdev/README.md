@@ -5,7 +5,21 @@ The development sandbox serves as an isolated environment for local development 
 ## Getting Started
 
 1. To begin with, duplicate the `.env.localdev` file and name it either `.env` or `.env.local` to set the default local environment variable in your local environment.
-2. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
+
+2. Create two directories to mount volumns for `mongodb` and `postgres`.
+
+```bash
+mkdir -p ./mnt/mongodb
+mkdir -p ./mnt/postgres
+```
+
+3. (For Mac M1 only) Set default platform of the docker commands:
+
+```bash
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+```
+
+4. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
 
 ```bash
 docker-compose up --build
