@@ -92,7 +92,6 @@ async function main() {
             prod: +faker.commerce.price(),
             tools: +faker.commerce.price(),
           },
-          commonComponents,
         },
       });
     }

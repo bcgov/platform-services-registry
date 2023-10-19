@@ -148,6 +148,7 @@ model PublicCloudRequestedProject {
   created                  DateTime            @default(now())
   accountCoding            String
   budget                   Budget
+  billingGroup             String
   projectOwnerId           String              @db.ObjectId
   projectOwner             User                @relation("publicCloudRequestedProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String              @db.ObjectId

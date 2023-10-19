@@ -28,9 +28,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       +defaultPageSize,
       +currentPage,
       search,
-      ministry,
-      cluster,
-      userEmail
+      ministry ?? '',
+      cluster ?? '',
+      userEmail ?? ''
     );
 
     if (!data) {
