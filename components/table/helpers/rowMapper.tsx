@@ -154,10 +154,9 @@ export const privateCloudRequestDataToRow = (request: any) => {
 };
 
 export const publicCloudRequestDataToRow = (request: any) => {
-  console.log("REQUEST", request);
   return {
     id: request.id,
-    type: <TypeBadge status={request.type} />,
+    type: <TypeBadge status={request.decisionStatus} />,
     status: request.decisionStatus,
     name: request.requestedProject.name,
     csp: request.requestedProject.provider,

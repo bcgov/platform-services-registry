@@ -35,6 +35,10 @@ export default function AccountCoding({ disabled }: { disabled: boolean }) {
     });
   }, [accountCodingInitial]);
 
+  if (typeof accountCodingInitial === "string") {
+    console.log(accountCodingInitial.length);
+  }
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -98,10 +102,16 @@ export default function AccountCoding({ disabled }: { disabled: boolean }) {
 
       <div className="relative mt-6 mb-3" data-te-input-wrapper-init>
         <p className="font-bcsans text-base leading-6 mb-2">Account Coding</p>
-        <Controller
-          name={"accountCoding"}
+        <div className="bg-neutral-200 block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-4 h-9">
+          {Object.values(accountCoding).join(" ")}
+        </div>
+
+        {/* <Controller
+          name="accountCoding"
           control={control}
-          defaultValue={Object.values(accountCoding).join(" ")}
+          defaultValue={
+            accountCodingInitial ? Object.values(accountCoding).join(" ") : ""
+          }
           render={({ field }) => (
             <input
               type="text"
@@ -110,13 +120,17 @@ export default function AccountCoding({ disabled }: { disabled: boolean }) {
               placeholder="Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code"
               disabled={true}
               value={Object.values(accountCoding).join(" ")}
-              onChange={() => {
-                clearErrors("accountCoding"); // Clear previous errors
-                trigger("accountCoding"); // Run validation for the 'example' field
-              }}
+              // onChange={(e) => {
+              //   clearErrors("accountCoding"); // Clear previous errors
+
+              //   // const valueWithoutSpaces = e.target.value.replace(/\s+/g, "");
+              //   // field.onChange(valueWithoutSpaces); // Pass the value without spaces to React Hook Form
+
+              //   trigger("accountCoding"); // Run validation for the 'accountCoding' field
+              // }}
             />
           )}
-        />
+        /> */}
         <Question />
         <label
           htmlFor="account-coding"
