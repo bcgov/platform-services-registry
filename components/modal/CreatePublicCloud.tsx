@@ -118,7 +118,7 @@ export default function Modal({
                       id="none"
                       name="none"
                       type="checkbox"
-                      checked={false}
+                      checked={confirm}
                       onChange={handleCheck}
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 mt-4 mr-4"
                     />
