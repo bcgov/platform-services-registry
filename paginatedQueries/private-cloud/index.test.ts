@@ -1,7 +1,7 @@
-import { 
-  privateCloudProjectsPaginated, 
-  privateCloudRequestsPaginated 
-} from "@/queries/project";
+import {
+  privateCloudProjectsPaginated,
+  privateCloudRequestsPaginated
+} from "@/paginatedQueries/private-cloud";
 import prisma from "@/lib/prisma";
 import {
   Prisma,
@@ -16,14 +16,14 @@ import {
 import {
   DefaultCpuOptionsSchema,
   DefaultMemoryOptionsSchema,
-  DefaultStorageOptionsSchema,
+  DefaultStorageOptionsSchema
 } from "@/schema";
 // import { cleanUp } from "@/jest.setup";
 
 const quota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
   memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
+  storage: DefaultStorageOptionsSchema.enum.STORAGE_1
 };
 
 const projectData = {
@@ -35,19 +35,19 @@ const projectData = {
     firstName: "Oamar",
     lastName: "Kanji",
     email: "oamar.kanji@gov.bc.ca",
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG // Assuming AGRI is a valid enum value for Ministry
   },
   secondaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG // Assuming AGRI is a valid enum value for Ministry
   },
   productionQuota: quota,
   testQuota: quota,
@@ -56,43 +56,43 @@ const projectData = {
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     workflowManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     formDesignAndSubmission: {
       planningToUse: true,
-      implemented: true,
+      implemented: true
     },
     identityManagement: {
       planningToUse: false,
-      implemented: false,
+      implemented: false
     },
     paymentServices: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     documentManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     endUserNotificationAndSubscription: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     publishing: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     businessIntelligence: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     other: "Some other services",
-    noServices: false,
-  },
+    noServices: false
+  }
 };
 
 const projectData2 = {
@@ -104,19 +104,19 @@ const projectData2 = {
     firstName: "Christopher",
     lastName: "Tan",
     email: "christopher.tan@gov.bc.ca",
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG // Assuming AGRI is a valid enum value for Ministry
   },
   secondaryTechnicalLead: {
     firstName: "Jane",
     lastName: "Smith",
     email: "jane.smith@example.com",
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    ministry: Ministry.AG // Assuming AGRI is a valid enum value for Ministry
   },
   productionQuota: quota,
   testQuota: quota,
@@ -125,46 +125,46 @@ const projectData2 = {
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     workflowManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     formDesignAndSubmission: {
       planningToUse: true,
-      implemented: true,
+      implemented: true
     },
     identityManagement: {
       planningToUse: false,
-      implemented: false,
+      implemented: false
     },
     paymentServices: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     documentManagement: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     endUserNotificationAndSubscription: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     publishing: {
       planningToUse: false,
-      implemented: true,
+      implemented: true
     },
     businessIntelligence: {
       planningToUse: true,
-      implemented: false,
+      implemented: false
     },
     other: "Some other services",
-    noServices: false,
-  },
+    noServices: false
+  }
 };
 
-function createProjectObject(data: any){
+function createProjectObject(data: any) {
   const createProject = {
     name: data.name,
     description: data.description,
@@ -179,38 +179,37 @@ function createProjectObject(data: any){
     projectOwner: {
       connectOrCreate: {
         where: {
-          email: data.projectOwner.email,
+          email: data.projectOwner.email
         },
-        create: data.projectOwner,
-      },
+        create: data.projectOwner
+      }
     },
     primaryTechnicalLead: {
       connectOrCreate: {
         where: {
-          email: data.primaryTechnicalLead.email,
+          email: data.primaryTechnicalLead.email
         },
-        create: data.primaryTechnicalLead,
-      },
+        create: data.primaryTechnicalLead
+      }
     },
     secondaryTechnicalLead: {
       connectOrCreate: {
         where: {
-          email: data.secondaryTechnicalLead.email,
+          email: data.secondaryTechnicalLead.email
         },
-        create: data.secondaryTechnicalLead,
-      },
+        create: data.secondaryTechnicalLead
+      }
     },
-    commonComponents: data.commonComponents,
+    commonComponents: data.commonComponents
   };
   return createProject;
 }
 
-const projectObject = createProjectObject(projectData)
-const projectObject2 = createProjectObject(projectData2)
+const projectObject = createProjectObject(projectData);
+const projectObject2 = createProjectObject(projectData2);
 
 describe("Query projects with filter and search and pagination", () => {
   beforeAll(async () => {
-
     for (let i = 0; i < 5; i++) {
       // Create 5 requests without secondary technical lead
       await prisma.privateCloudRequest.create({
@@ -224,17 +223,17 @@ describe("Query projects with filter and search and pagination", () => {
             create: projectObject
           },
           userRequestedProject: {
-            create: projectObject,
-          },
+            create: projectObject
+          }
         },
         include: {
           requestedProject: {
             include: {
               projectOwner: true,
-              primaryTechnicalLead: true,
-            },
-          },
-        },
+              primaryTechnicalLead: true
+            }
+          }
+        }
       });
 
       // create 5 projects without secondary technical lead
@@ -243,8 +242,8 @@ describe("Query projects with filter and search and pagination", () => {
           ...projectObject,
           name: projectObject.name + i,
           licencePlate: "123456" + i,
-          secondaryTechnicalLead: undefined,
-        },
+          secondaryTechnicalLead: undefined
+        }
       });
     }
   });
@@ -259,7 +258,6 @@ describe("Query projects with filter and search and pagination", () => {
     expect(projects.data.length).toBe(5);
   });
 
-  
   test("Should return only projects belonging to specific user when userEmail is passed", async () => {
     // Create 3 more projects with secondary technical lead, and different project lead
     for (let i = 5; i < 8; i++) {
@@ -275,28 +273,28 @@ describe("Query projects with filter and search and pagination", () => {
           },
           userRequestedProject: {
             create: createProjectObject(projectData2)
-          },
+          }
         },
         include: {
           requestedProject: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-            },
-          },
-        },
+              secondaryTechnicalLead: true
+            }
+          }
+        }
       });
     }
-    
+
     const projects = await privateCloudRequestsPaginated(
       10,
       1,
       undefined,
       undefined,
       undefined,
-      "christopher.tan@gov.bc.ca",
-      );
+      "christopher.tan@gov.bc.ca"
+    );
     expect(projects.total).toBe(3);
   });
 
@@ -307,8 +305,8 @@ describe("Query projects with filter and search and pagination", () => {
         data: {
           ...projectObject2,
           name: projectData2.name + i,
-          licencePlate: "123456" + i,
-        },
+          licencePlate: "123456" + i
+        }
       });
     }
 
@@ -318,29 +316,20 @@ describe("Query projects with filter and search and pagination", () => {
       undefined,
       undefined,
       undefined,
-      "christopher.tan@gov.bc.ca",
+      "christopher.tan@gov.bc.ca"
     );
 
     expect(projects.data.length).toBe(3);
   });
 
-
   test("Should return only requests that fits the SearchTerm", async () => {
-    const projects = await privateCloudRequestsPaginated(
-      10,
-      1,
-      "sample",
-    );
+    const projects = await privateCloudRequestsPaginated(10, 1, "sample");
 
     expect(projects.total).toBe(5);
   });
 
   test("Should return only projects that fits the SearchTerm", async () => {
-    const projects = await privateCloudProjectsPaginated(
-      10,
-      1,
-      "sample",
-    );
+    const projects = await privateCloudProjectsPaginated(10, 1, "sample");
     //projects searches for description, unlike requests
     expect(projects.total).toBe(8);
   });
@@ -351,7 +340,7 @@ describe("Query projects with filter and search and pagination", () => {
       1,
       undefined,
       undefined,
-      "CLAB",
+      "CLAB"
     );
 
     expect(Allprojects.total).toBe(5);
@@ -363,7 +352,7 @@ describe("Query projects with filter and search and pagination", () => {
       1,
       undefined,
       undefined,
-      "CLAB",
+      "CLAB"
     );
 
     expect(projects.total).toBe(5);

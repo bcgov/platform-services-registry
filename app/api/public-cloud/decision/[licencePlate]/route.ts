@@ -3,11 +3,11 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { DecisionStatus, Cluster } from "@prisma/client";
 import { string, z } from "zod";
-import { PrivateCloudDecisionRequestBodySchema } from "@/schema";
+import { PublicCloudDecisionRequestBodySchema } from "@/schema";
 import makeDecisionRequest, {
-  PrivateCloudRequestWithRequestedProject
-} from "@/requestActions/private-cloud/decisionRequest";
-import sendPrivateCloudNatsMessage from "@/nats/privateCloud";
+  PublicCloudRequestWithRequestedProject
+} from "@/requestActions/public-cloud/decisionRequest";
+import sendPublicCloudNatsMessage from "@/nats/public-cloud";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(body);
+  const parsedBody = PublicCloudDecisionRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
     console.log(parsedParams.error.message);
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     parsedBody.data;
 
   try {
-    const request: PrivateCloudRequestWithRequestedProject =
+    const request: PublicCloudRequestWithRequestedProject =
       await makeDecisionRequest(
         licencePlate,
         decision,
@@ -76,31 +76,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       );
     }
 
-    const contactChanged =
-      requestedProjectFormData.projectOwner.email !==
-        request.requestedProject.projectOwner.email ||
-      requestedProjectFormData.primaryTechnicalLead.email !==
-        request.requestedProject.primaryTechnicalLead.email ||
-      requestedProjectFormData.secondaryTechnicalLead?.email !==
-        request.requestedProject?.secondaryTechnicalLead?.email;
-
     if (request.decisionStatus === DecisionStatus.APPROVED) {
-      await sendPrivateCloudNatsMessage(
+      await sendPublicCloudNatsMessage(
         request.id,
         request.type,
-        request.requestedProject,
-        contactChanged
+        request.requestedProject
       );
-
-      // For GOLD requests, we create an identical request for GOLDDR
-      if (request.requestedProject.cluster === Cluster.GOLD) {
-        await sendPrivateCloudNatsMessage(
-          request.id,
-          request.type,
-          { ...request.requestedProject, cluster: Cluster.GOLDDR },
-          contactChanged
-        );
-      }
     }
 
     return new NextResponse(

@@ -12,14 +12,11 @@ import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
 import TeamContacts from "@/components/form/TeamContacts";
-import { revalidatePath } from "next/cache";
 
 export default function Page() {
   const { data: session, status } = useSession({
     required: true,
   });
-
-  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -47,9 +44,6 @@ export default function Page() {
       if (!response.ok) {
         throw new Error("Network response was not ok for create request");
       }
-
-      const result = await response.json();
-      console.log("Success:", result);
 
       setOpenCreate(false);
       setOpenReturn(true);
@@ -95,7 +89,11 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} />
+      <ReturnModal
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/private-cloud/requests"
+      />
     </div>
   );
 }

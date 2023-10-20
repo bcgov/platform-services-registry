@@ -1,6 +1,6 @@
 import Table from "@/components/table/Table";
 import TableBody from "@/components/table/TableBody";
-import { publicCloudRequestsPaginated } from "@/queries/project";
+import { publicCloudRequestsPaginated } from "@/paginatedQueries/public-cloud";
 import { publicCloudRequestDataToRow } from "@/components/table/helpers/rowMapper";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -11,7 +11,7 @@ const headers = [
   { field: "status", headerName: "Status" },
   { field: "name", headerName: "Name" },
   { field: "ministry", headerName: "Ministry" },
-  { field: "cluster", headerName: "Cluster" },
+  { field: "csp", headerName: "Cluster" },
   { field: "projectOwner", headerName: "Project Owner" },
   { field: "technicalLeads", headerName: "Technical Leads" },
   { field: "created", headerName: "Created" },
@@ -26,7 +26,7 @@ export default async function RequestsTable({
     page: number;
     pageSize: number;
     ministry: string;
-    cluster: string;
+    provider: string;
   };
 }) {
   // Authenticate the user
@@ -37,7 +37,7 @@ export default async function RequestsTable({
     redirect("/login?callbackUrl=/private-cloud/products");
   }
 
-  const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { search, page, pageSize, ministry, provider } = searchParams;
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === "string" ? +page : 1;
@@ -53,9 +53,10 @@ export default async function RequestsTable({
     currentPage,
     search,
     ministry,
-    cluster,
+    provider,
     userEmail
   );
+
   const rows = data.map(publicCloudRequestDataToRow);
 
   return (

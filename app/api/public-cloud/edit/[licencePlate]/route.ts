@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { PrivateCloudRequest } from "@prisma/client";
+import { PublicCloudRequest } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import {
-  PrivateCloudEditRequestBodySchema,
-  PrivateCloudEditRequestBody,
+  PublicCloudEditRequestBodySchema,
+  PublicCloudEditRequestBody,
   UserInput,
 } from "@/schema";
 import { string, z } from "zod";
-import editRequest from "@/requestActions/private-cloud/editRequest";
+import editRequest from "@/requestActions/public-cloud/editRequest";
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const body = await req.json();
 
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PrivateCloudEditRequestBodySchema.safeParse(body);
+  const parsedBody = PublicCloudEditRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
     return new NextResponse(parsedParams.error.message, { status: 400 });
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const formData: PrivateCloudEditRequestBody = parsedBody.data;
+  const formData: PublicCloudEditRequestBody = parsedBody.data;
   const { licencePlate } = parsedParams.data;
 
   if (
@@ -55,13 +55,13 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     !authRoles.includes("admin")
   ) {
     throw new Error(
-      "You need to assign yourself to this project in order to create it."
+      "You need to assign yourself to this project in order to create it.",
     );
   }
 
   try {
-    const existingRequest: PrivateCloudRequest | null =
-      await prisma.privateCloudRequest.findFirst({
+    const existingRequest: PublicCloudRequest | null =
+      await prisma.publicCloudRequest.findFirst({
         where: {
           AND: [{ licencePlate }, { active: true }],
         },
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
     if (existingRequest !== null) {
       throw new Error(
-        "This project already has an active request or it does not exist."
+        "This project already has an active request or it does not exist.",
       );
     }
 

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
 import CreateModal from "@/components/modal/CreatePrivateCloud";
+import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
 import TeamContacts from "@/components/form/TeamContacts";
@@ -36,17 +37,18 @@ async function fetchRequestedProject(
 }
 
 export default function RequestDecision({
-  params,
+  params
 }: {
   params: { licencePlate: string };
 }) {
   const { data: session, status } = useSession({
-    required: true,
+    required: true
   });
 
   const router = useRouter();
 
-  const [open, setOpen] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,13 +60,13 @@ export default function RequestDecision({
     ["requestedProject", params.licencePlate],
     () => fetchRequestedProject(params.licencePlate),
     {
-      enabled: !!params.licencePlate,
+      enabled: !!params.licencePlate
     }
   );
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { comment: "", decision: "", ...data?.requestedProject },
+    values: { comment: "", decision: "", ...data?.requestedProject }
   });
 
   useEffect(() => {
@@ -81,9 +83,9 @@ export default function RequestDecision({
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(data)
         }
       );
 
@@ -91,16 +93,12 @@ export default function RequestDecision({
         throw new Error("Network response was not ok for create request");
       }
 
-      const result = await response.json();
-
-      console.log("Success:", result);
+      setOpenCreate(false);
+      setOpenReturn(true);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error:", error);
     }
-
-    setIsLoading(false);
-    router.replace("/private-cloud/requests");
-    router.refresh();
   };
 
   const secondTechLeadOnClick = () => {
@@ -113,7 +111,7 @@ export default function RequestDecision({
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
+        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription
               disabled={isDisabled}
@@ -148,10 +146,15 @@ export default function RequestDecision({
         </form>
       </FormProvider>
       <CreateModal
-        open={open}
-        setOpen={setOpen}
+        open={openCreate}
+        setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
+      />
+      <ReturnModal
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/private-cloud/requests"
       />
     </div>
   );

@@ -63,17 +63,21 @@ export default function TableBody({ headers, rows }: TableProps) {
       case "/private-cloud/requests":
         if (isAdmin) {
           router.push(
-            path.join("/private-cloud", "decision", row.licencePlate)
+            path.join("/private-cloud", "decision", row.licencePlate),
           );
         } else {
           router.push(path.join("/private-cloud", "request", row.id));
         }
         break;
       case "/public-cloud/products":
-        router.push(path.join("/private-cloud", "edit", row.licencePlate));
+        router.push(path.join("/public-cloud", "edit", row.licencePlate));
         break;
       case "/public-cloud/requests":
-        router.push(path.join("/private-cloud", "decision", row.licencePlate));
+        if (isAdmin) {
+          router.push(path.join("/public-cloud", "decision", row.licencePlate));
+        } else {
+          router.push(path.join("/public-cloud", "request", row.id));
+        }
         break;
     }
   };

@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
@@ -103,20 +103,22 @@ model PrivateCloudRequestedProject {
 }
 
 model PublicCloudRequest {
-  id                 String                      @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate       String
-  createdByEmail     String
-  decisionMakerEmail String?
-  type               RequestType
-  decisionStatus     DecisionStatus
-  humanComment       String?
-  active             Boolean                     @default(true)
-  created            DateTime                    @default(now())
-  decisionDate       DateTime?
-  projectId          String?                     @db.ObjectId
-  project            PublicCloudProject?         @relation("publicCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
-  requestedProjectId String                      @unique @db.ObjectId
-  requestedProject   PublicCloudRequestedProject @relation("publicCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  id                     String                       @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate           String
+  createdByEmail         String
+  decisionMakerEmail     String?
+  type                   PublicCloudRequestType
+  decisionStatus         DecisionStatus
+  humanComment           String?
+  active                 Boolean                      @default(true)
+  created                DateTime                     @default(now())
+  decisionDate           DateTime?
+  projectId              String?                      @db.ObjectId
+  project                PublicCloudProject?          @relation("publicCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
+  requestedProjectId     String                       @unique @db.ObjectId
+  requestedProject       PublicCloudRequestedProject  @relation("publicCloudRequestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  userRequestedProjectId String                       @unique @db.ObjectId
+  userRequestedProject   PublicCloudRequestedProject? @relation("publicCloudUserRequestedProject", fields: [userRequestedProjectId], references: [id], onDelete: Cascade)
 }
 
 model PublicCloudProject {
@@ -126,7 +128,7 @@ model PublicCloudProject {
   description              String
   status                   ProjectStatus
   created                  DateTime             @default(now())
-  billingGroup             String
+  accountCoding            String
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
   projectOwner             User                 @relation("publicCloudProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
@@ -157,6 +159,7 @@ model PublicCloudRequestedProject {
   ministry                 Ministry
   provider                 Provider
   requestedProject         PublicCloudRequest? @relation("publicCloudRequestedProject")
+  userRequestedProject     PublicCloudRequest? @relation("publicCloudUserRequestedProject")
 }
 
 type Quota {
@@ -166,17 +169,16 @@ type Quota {
 }
 
 type Budget {
-  dev   Float
-  test  Float
-  prod  Float
-  tools Float
+  dev   Int
+  test  Int
+  prod  Int
+  tools Int
 }
 
 type CommonComponentsOptions {
   planningToUse Boolean
   implemented   Boolean
 }
-
 
 type CommonComponents {
   addressAndGeolocation              CommonComponentsOptions
@@ -208,6 +210,11 @@ enum RequestType {
   CREATE
   EDIT
   DELETE
+}
+
+enum PublicCloudRequestType {
+  CREATE
+  EDIT
 }
 
 enum Ministry {

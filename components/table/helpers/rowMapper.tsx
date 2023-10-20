@@ -1,7 +1,7 @@
 import formatDate from "@/components/utils/formatdates";
 import Image from "next/image";
 import Edit from "@/components/assets/edit.svg";
-import { Project } from "@/queries/project";
+import { Project } from "@/paginatedQueries/private-cloud";
 import classNames from "@/components/utils/classnames";
 
 function TypeBadge({ status }: { status: string }) {
@@ -52,14 +52,14 @@ function TypeBadge({ status }: { status: string }) {
         "text-xs",
         "font-medium",
         classes[0], // Background class
-        classes[1] // Text color class
+        classes[1], // Text color class
       )}
     >
       <svg
         className={classNames(
           "h-1.5",
           "w-1.5",
-          classes[2] // SVG fill class
+          classes[2], // SVG fill class
         )}
         viewBox="0 0 6 6"
         aria-hidden="true"
@@ -99,7 +99,7 @@ export const privateCloudProjectDataToRow = (project: Project) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    )
+    ),
   };
 };
 
@@ -113,9 +113,9 @@ export const publicCloudProjectDataToRow = (project: any) => {
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
     technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${
       project.primaryTechnicalLeadDetails.lastName
-    } ${project.secondaryTechnicalLeadDetails ? "," : ""} ${
-      project.secondaryTechnicalLeadDetails?.firstName || ""
-    } ${project.secondaryTechnicalLeadDetails?.lastName}`,
+    } ${project.secondaryTechnicalLeadDetails?.firstName || ""} ${
+      project.secondaryTechnicalLeadDetails ? "," : ""
+    } ${project.secondaryTechnicalLeadDetails?.lastName || ""}`,
     created: formatDate(project.created["$date"]),
     licencePlate: project.licencePlate,
     edit: (
@@ -130,7 +130,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    )
+    ),
   };
 };
 
@@ -149,21 +149,25 @@ export const privateCloudRequestDataToRow = (request: any) => {
       request?.secondaryTechnicalLead?.firstName || ""
     } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate
+    licencePlate: request.licencePlate,
   };
 };
 
 export const publicCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
-    type: <TypeBadge status={request.type} />,
+    type: <TypeBadge status={request.decisionStatus} />,
     status: request.decisionStatus,
     name: request.requestedProject.name,
     csp: request.requestedProject.provider,
     ministry: request.requestedProject.ministry,
-    projectOwner: `${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
-    technicalLeads: `${request.requestedProject.firstName} ${request.requestedProject.lastName}, ${request.requestedProject.firstName} ${request.requestedProject.lastName}`,
+    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
+    technicalLeads: `${request.primaryTechnicalLead.firstName} ${
+      request.primaryTechnicalLead.lastName
+    } ${request?.secondaryTechnicalLead ? "," : ""} ${
+      request?.secondaryTechnicalLead?.firstName || ""
+    } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate
+    licencePlate: request.licencePlate,
   };
 };

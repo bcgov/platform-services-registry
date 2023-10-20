@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrivateCloudProject } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { string, z } from "zod";
-import { privateCloudRequestsPaginated } from "@/queries/project";
+import { privateCloudRequestsPaginated } from "@/paginatedQueries/private-cloud";
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
@@ -28,9 +28,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       +defaultPageSize,
       +currentPage,
       search,
-      ministry ?? '',
-      cluster ?? '',
-      userEmail ?? ''
+      ministry ?? "",
+      cluster ?? "",
+      userEmail ?? "",
     );
 
     if (!data) {
