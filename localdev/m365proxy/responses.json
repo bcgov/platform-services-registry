@@ -1,0 +1,160 @@
+{
+  "responses": [
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/*/photo/$value",
+      "responseCode": 404
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users*",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users",
+        "@odata.count": 1000,
+        "value": [
+          {
+            "displayName": "Doe, John CITZ:EX",
+            "surname": "Doe",
+            "givenName": "John",
+            "mail": "John.Doe@gov.bc.ca",
+            "userPrincipalName": "John.Doe@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb1"
+          },
+          {
+            "displayName": "Smith, James CITZ:EX",
+            "surname": "Smith",
+            "givenName": "John",
+            "mail": "James.Smith@gov.bc.ca",
+            "userPrincipalName": "James.Smith@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb2"
+          },
+          {
+            "displayName": "Johnson, David CITZ:EX",
+            "surname": "Johnson",
+            "givenName": "John",
+            "mail": "David.Johnson@gov.bc.ca",
+            "userPrincipalName": "David.Johnson@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb3"
+          },
+          {
+            "displayName": "Williams, Sarah CITZ:EX",
+            "surname": "Williams",
+            "givenName": "John",
+            "mail": "Sarah.Williams@gov.bc.ca",
+            "userPrincipalName": "Sarah.Williams@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb4"
+          },
+          {
+            "displayName": "Brown, Michael CITZ:EX",
+            "surname": "Brown",
+            "givenName": "John",
+            "mail": "Michael.Brown@gov.bc.ca",
+            "userPrincipalName": "Michael.Brown@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb5"
+          },
+          {
+            "displayName": "Davis, Jessica CITZ:EX",
+            "surname": "Davis",
+            "givenName": "John",
+            "mail": "Jessica.Davis@gov.bc.ca",
+            "userPrincipalName": "Jessica.Davis@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb6"
+          },
+          {
+            "displayName": "Taylor, Kevin CITZ:EX",
+            "surname": "Taylor",
+            "givenName": "John",
+            "mail": "Kevin.Taylor@gov.bc.ca",
+            "userPrincipalName": "Kevin.Taylor@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb7"
+          },
+          {
+            "displayName": "Wilson, Amanda CITZ:EX",
+            "surname": "Wilson",
+            "givenName": "John",
+            "mail": "Amanda.Wilson@gov.bc.ca",
+            "userPrincipalName": "Amanda.Wilson@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb8"
+          },
+          {
+            "displayName": "Anderson, Jenna CITZ:EX",
+            "surname": "Anderson",
+            "givenName": "John",
+            "mail": "Jenna.Anderson@gov.bc.ca",
+            "userPrincipalName": "Jenna.Anderson@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effeb9"
+          },
+          {
+            "displayName": "Martinez, Laura CITZ:EX",
+            "surname": "Martinez",
+            "givenName": "John",
+            "mail": "Laura.Martinez@gov.bc.ca",
+            "userPrincipalName": "Laura.Martinez@gov.bc.ca",
+            "jobTitle": "",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effec0"
+          },
+          {
+            "displayName": "Ahn, Junmin CITZ:EX",
+            "surname": "Ahn",
+            "givenName": "Junmin",
+            "mail": "Junmin.Ahn@gov.bc.ca",
+            "userPrincipalName": "Junmin.Ahn@gov.bc.ca",
+            "jobTitle": "admin",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effec1"
+          }
+        ]
+      }
+    }
+  ]
+}

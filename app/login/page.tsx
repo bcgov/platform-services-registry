@@ -56,7 +56,7 @@ export default function SignInPage() {
       </ul>
 
 
-      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">
+      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-8 mb-4">
         Before you start:
       </h2>
 
@@ -65,7 +65,7 @@ export default function SignInPage() {
       </p>
 
       <p className="mb-4 max-w-7xl">
-        If you haven't attended an onboarding session, please contact:
+        If you haven&apos;t attended an onboarding session, please contact:
       </p>
       <ul>
           <li>
@@ -90,7 +90,7 @@ export default function SignInPage() {
               <svg className="mt-1 w-3.5 h-3.5 mr-2 text-green-500 dark:text-green-500 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
               </svg>
-              Have a valid IDIR account, which you'll use to access the registry
+              Have a valid IDIR account, which you&apos;ll use to access the registry
           </li>
           <li className="flex flex-row">
               <svg className="mt-1 w-3.5 h-3.5 mr-2 text-green-500 dark:text-green-500 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -119,7 +119,7 @@ export default function SignInPage() {
                   <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
               </svg>
               <span>
-              Provide an estimate for your project's projected budget if using AWS
+              Provide an estimate for your project&apos;s projected budget if using AWS
               </span>
           </li>
 
@@ -136,7 +136,7 @@ export default function SignInPage() {
           </p>
           <p className="font-bcsans text-sm text-blue-700 mt-1">
             The approval of new project set creation request is subject to
-            having a signed Memorandum of Understanding \(MoU\) with the Public
+            having a signed Memorandum of Understanding (MoU) with the Public
             Cloud Team. If you do not have a MoU in place, please email us at
             <span> </span>
             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">

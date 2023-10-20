@@ -3,7 +3,10 @@
 ## Setting Up WSL (Windows users only)
 
 WSL allows you to effortlessly incorporate a Linux environment into your Windows operating system. This method empowers developers to leverage the robust development tools of Linux while remaining within their Windows ecosystem.
-For the installation instructions of WSL, please refer to the following link: [Guide for manually installing older versions of WSL](https://learn.microsoft.com/en-us/windows/wsl/install-manual).
+For the installation instructions of WSL, please refer to the following links:
+
+- [How to install Linux on Windows with WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+- [Manual installation steps for older versions of WSL](https://learn.microsoft.com/en-us/windows/wsl/install-manual).
 
 ## Setting up the local development environment
 

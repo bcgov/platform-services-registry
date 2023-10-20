@@ -28,14 +28,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       +defaultPageSize,
       +currentPage,
       search,
-      ministry,
-      cluster,
-      userEmail
+      ministry ?? "",
+      cluster ?? "",
+      userEmail ?? "",
     );
 
     if (!data) {
       return new NextResponse("No data found.", {
-        status: 404
+        status: 404,
       });
     }
 

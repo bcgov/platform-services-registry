@@ -1,0 +1,16 @@
+{
+  "name": "keycloak-provision",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@keycloak/keycloak-admin-client": "^22.0.4",
+    "wait-on": "^7.0.1"
+  }
+}

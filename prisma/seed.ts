@@ -2,7 +2,7 @@ import { PrismaClient, Ministry, Cluster, Provider } from "@prisma/client";
 import {
   DefaultCpuOptionsSchema,
   DefaultMemoryOptionsSchema,
-  DefaultStorageOptionsSchema
+  DefaultStorageOptionsSchema,
 } from "../schema";
 const prisma = new PrismaClient();
 import { faker } from "@faker-js/faker";
@@ -10,42 +10,42 @@ import { faker } from "@faker-js/faker";
 const commonComponents = {
   addressAndGeolocation: {
     planningToUse: true,
-    implemented: false
+    implemented: false,
   },
   workflowManagement: {
     planningToUse: false,
-    implemented: true
+    implemented: true,
   },
   formDesignAndSubmission: {
     planningToUse: true,
-    implemented: true
+    implemented: true,
   },
   identityManagement: {
     planningToUse: false,
-    implemented: false
+    implemented: false,
   },
   paymentServices: {
     planningToUse: true,
-    implemented: false
+    implemented: false,
   },
   documentManagement: {
     planningToUse: false,
-    implemented: true
+    implemented: true,
   },
   endUserNotificationAndSubscription: {
     planningToUse: true,
-    implemented: false
+    implemented: false,
   },
   publishing: {
     planningToUse: false,
-    implemented: true
+    implemented: true,
   },
   businessIntelligence: {
     planningToUse: true,
-    implemented: false
+    implemented: false,
   },
   other: "Some other services",
-  noServices: false
+  noServices: false,
 };
 
 async function main() {
@@ -67,8 +67,8 @@ async function main() {
         ministry: faker.helpers.arrayElement(Object.values(Ministry)),
         archived: false,
         created: faker.date.past(),
-        lastSeen: faker.date.recent()
-      }
+        lastSeen: faker.date.recent(),
+      },
     });
 
     // Create fake public cloud project for the user
@@ -90,9 +90,9 @@ async function main() {
             dev: +faker.commerce.price(),
             test: +faker.commerce.price(),
             prod: +faker.commerce.price(),
-            tools: +faker.commerce.price()
-          }
-        }
+            tools: +faker.commerce.price(),
+          },
+        },
       });
     }
 
@@ -113,41 +113,41 @@ async function main() {
           productionQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options
+              DefaultMemoryOptionsSchema.options,
             ),
             storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options
-            )
+              DefaultStorageOptionsSchema.options,
+            ),
           },
           testQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options
+              DefaultMemoryOptionsSchema.options,
             ),
             storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options
-            )
+              DefaultStorageOptionsSchema.options,
+            ),
           },
           developmentQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options
+              DefaultMemoryOptionsSchema.options,
             ),
             storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options
-            )
+              DefaultStorageOptionsSchema.options,
+            ),
           },
           toolsQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options
+              DefaultMemoryOptionsSchema.options,
             ),
             storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options
-            )
+              DefaultStorageOptionsSchema.options,
+            ),
           },
-          commonComponents
-        }
+          commonComponents,
+        },
       });
     }
   }
