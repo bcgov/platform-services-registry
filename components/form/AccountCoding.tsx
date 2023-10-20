@@ -4,34 +4,38 @@ import { useEffect, useState, useRef } from "react";
 import AccountCodingInput from "@/components/form/AccountCodingInput";
 import classNames from "@/components/utils/classnames";
 
-export default function AccountCoding({ disabled }: { disabled?: boolean }) {
+export default function AccountCoding({
+  disabled,
+  accountCodingInitial = "",
+}: {
+  accountCodingInitial?: string;
+  disabled?: boolean;
+}) {
   const {
     formState: { errors },
     setValue,
-    getValues,
   } = useFormContext();
 
-  const accountCodingInitial = getValues("accountCoding");
-
   const [accountCoding, setAccountCoding] = useState({
-    clientCode: "",
-    serviceLine: "",
-    projectCode: "",
-    responsibilityCentre: "",
-    standardObjectOfExpense: "",
+    clientCode: accountCodingInitial?.slice(0, 3),
+    serviceLine: accountCodingInitial?.slice(3, 8),
+    projectCode: accountCodingInitial?.slice(8, 15),
+    responsibilityCentre: accountCodingInitial?.slice(15, 20),
+    standardObjectOfExpense: accountCodingInitial?.slice(20, 24),
   });
 
   useEffect(() => {
-    if (accountCodingInitial?.length === 24) {
-      setAccountCoding({
-        clientCode: accountCodingInitial?.slice(0, 3),
-        serviceLine: accountCodingInitial?.slice(3, 8),
-        projectCode: accountCodingInitial?.slice(8, 15),
-        responsibilityCentre: accountCodingInitial?.slice(15, 20),
-        standardObjectOfExpense: accountCodingInitial?.slice(20, 24),
-      });
-    }
+    setAccountCoding({
+      clientCode: accountCodingInitial?.slice(0, 3),
+      serviceLine: accountCodingInitial?.slice(3, 8),
+      projectCode: accountCodingInitial?.slice(8, 15),
+      responsibilityCentre: accountCodingInitial?.slice(15, 20),
+      standardObjectOfExpense: accountCodingInitial?.slice(20, 24),
+    });
   }, [accountCodingInitial]);
+
+  console.log("STATE ACCOUNT CODING");
+  console.log(accountCoding);
 
   useEffect(() => {
     setValue("accountCoding", Object.values(accountCoding).join(""));
@@ -57,6 +61,7 @@ export default function AccountCoding({ disabled }: { disabled?: boolean }) {
       </div>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <AccountCodingInput
+          disabled={disabled}
           title={"Client Code"}
           name={"clientCode"}
           accountCoding={accountCoding}
@@ -65,6 +70,7 @@ export default function AccountCoding({ disabled }: { disabled?: boolean }) {
           placeholder={"Enter the client code here (e.g. 111)"}
         />
         <AccountCodingInput
+          disabled={disabled}
           title={"Responsibility Centre (RC)"}
           name={"responsibilityCentre"}
           accountCoding={accountCoding}
@@ -73,6 +79,7 @@ export default function AccountCoding({ disabled }: { disabled?: boolean }) {
           placeholder={"Enter the responsibility centre here (e.g. 22222)"}
         />
         <AccountCodingInput
+          disabled={disabled}
           title={"Service Line (SL)"}
           name={"serviceLine"}
           accountCoding={accountCoding}
@@ -81,6 +88,7 @@ export default function AccountCoding({ disabled }: { disabled?: boolean }) {
           placeholder={"Enter the service line here (e.g. 33333)"}
         />
         <AccountCodingInput
+          disabled={disabled}
           title={"Standard Object of Expense (STOB)"}
           name={"standardObjectOfExpense"}
           accountCoding={accountCoding}
@@ -89,6 +97,7 @@ export default function AccountCoding({ disabled }: { disabled?: boolean }) {
           placeholder={"Enter the STOB here (e.g. 4444)"}
         />
         <AccountCodingInput
+          disabled={disabled}
           title={"Project Code"}
           name={"projectCode"}
           accountCoding={accountCoding}
@@ -109,34 +118,7 @@ export default function AccountCoding({ disabled }: { disabled?: boolean }) {
         <div className="bg-neutral-200 block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-4 h-9">
           {Object.values(accountCoding).join(" ")}
         </div>
-
-        {/* <Controller
-          name="accountCoding"
-          control={control}
-          defaultValue={
-            accountCodingInitial ? Object.values(accountCoding).join(" ") : ""
-          }
-          render={({ field }) => (
-            <input
-              type="text"
-              className="bg-neutral-200 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              id="accountCoding"
-              placeholder="Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code"
-              disabled={true}
-              value={Object.values(accountCoding).join(" ")}
-              // onChange={(e) => {
-              //   clearErrors("accountCoding"); // Clear previous errors
-
-              //   // const valueWithoutSpaces = e.target.value.replace(/\s+/g, "");
-              //   // field.onChange(valueWithoutSpaces); // Pass the value without spaces to React Hook Form
-
-              //   trigger("accountCoding"); // Run validation for the 'accountCoding' field
-              // }}
-            />
-          )}
-        /> */}
         <Question />
-
         <p
           className={classNames(
             errors.accountCoding ? "text-red-400" : "",

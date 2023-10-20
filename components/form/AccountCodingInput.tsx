@@ -51,6 +51,7 @@ export default function AccountCodingInput({
   placeholder,
   setAccountCoding,
   accountCoding,
+  disabled,
 }: {
   title: string;
   name: string;
@@ -58,6 +59,7 @@ export default function AccountCodingInput({
   length: number;
   setAccountCoding: any;
   accountCoding: any;
+  disabled?: boolean;
 }) {
   const {
     register,
@@ -73,6 +75,7 @@ export default function AccountCodingInput({
         {title}
       </label>
       <input
+        disabled={disabled}
         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         placeholder={placeholder}
         maxLength={length}

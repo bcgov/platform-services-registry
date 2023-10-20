@@ -108,6 +108,12 @@ export default function RequestDecision({
     }
   };
 
+  console.log("WATCH");
+  console.log(methods.watch());
+
+  console.log("DATA ACCOUNT CODING");
+  console.log(data?.requestedProject?.accountCoding);
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -120,7 +126,10 @@ export default function RequestDecision({
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Budget disabled={isDisabled} />
-            <AccountCoding disabled={isDisabled} />
+            <AccountCoding
+              accountCodingInitial={data?.requestedProject?.accountCoding}
+              disabled={false}
+            />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />

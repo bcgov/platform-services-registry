@@ -150,7 +150,10 @@ export default function EditProject({
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Budget disabled={false} />
-            <AccountCoding disabled={false} />
+            <AccountCoding
+              accountCodingInitial={data?.accountCoding}
+              disabled={false}
+            />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
