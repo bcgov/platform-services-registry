@@ -22,7 +22,7 @@ function EmptyBody() {
         height={128}
         style={{
           maxWidth: "100%",
-          height: "auto"
+          height: "auto",
         }}
       />
       <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">
@@ -63,14 +63,14 @@ export default function TableBody({ headers, rows }: TableProps) {
       case "/private-cloud/requests":
         if (isAdmin) {
           router.push(
-            path.join("/private-cloud", "decision", row.licencePlate)
+            path.join("/private-cloud", "decision", row.licencePlate),
           );
         } else {
           router.push(path.join("/private-cloud", "request", row.id));
         }
         break;
       case "/public-cloud/products":
-        router.push(path.join("/private-cloud", "edit", row.licencePlate));
+        router.push(path.join("/public-cloud", "edit", row.licencePlate));
         break;
       case "/public-cloud/requests":
         if (isAdmin) {

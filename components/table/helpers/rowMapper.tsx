@@ -33,7 +33,7 @@ function TypeBadge({ status }: { status: string }) {
     red: ["bg-red-100", "text-red-700", "fill-red-500"],
     blue: ["bg-blue-100", "text-blue-700", "fill-blue-500"],
     green: ["bg-green-100", "text-green-700", "fill-green-500"],
-    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"]
+    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"],
     // ... add other colors here
   };
 
@@ -52,14 +52,14 @@ function TypeBadge({ status }: { status: string }) {
         "text-xs",
         "font-medium",
         classes[0], // Background class
-        classes[1] // Text color class
+        classes[1], // Text color class
       )}
     >
       <svg
         className={classNames(
           "h-1.5",
           "w-1.5",
-          classes[2] // SVG fill class
+          classes[2], // SVG fill class
         )}
         viewBox="0 0 6 6"
         aria-hidden="true"
@@ -99,7 +99,7 @@ export const privateCloudProjectDataToRow = (project: Project) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    )
+    ),
   };
 };
 
@@ -113,9 +113,9 @@ export const publicCloudProjectDataToRow = (project: any) => {
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
     technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${
       project.primaryTechnicalLeadDetails.lastName
-    } ${project.secondaryTechnicalLeadDetails ? "," : ""} ${
-      project.secondaryTechnicalLeadDetails?.firstName || ""
-    } ${project.secondaryTechnicalLeadDetails?.lastName}`,
+    } ${project.secondaryTechnicalLeadDetails?.firstName || ""} ${
+      project.secondaryTechnicalLeadDetails ? "," : ""
+    } ${project.secondaryTechnicalLeadDetails?.lastName || ""}`,
     created: formatDate(project.created["$date"]),
     licencePlate: project.licencePlate,
     edit: (
@@ -130,7 +130,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
           <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
         </div>
       </div>
-    )
+    ),
   };
 };
 
@@ -149,7 +149,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
       request?.secondaryTechnicalLead?.firstName || ""
     } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate
+    licencePlate: request.licencePlate,
   };
 };
 
@@ -168,6 +168,6 @@ export const publicCloudRequestDataToRow = (request: any) => {
       request?.secondaryTechnicalLead?.firstName || ""
     } ${request?.secondaryTechnicalLead?.lastName || ""}`,
     created: formatDate(request.created["$date"]),
-    licencePlate: request.licencePlate
+    licencePlate: request.licencePlate,
   };
 };

@@ -1,12 +1,12 @@
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { Question } from "@/components/assets/question";
 import classNames from "@/components/utils/classnames";
 import BudgetInput from "@/components/form/BudgetInput";
 
-export default function Budget({ disabled }: { disabled: boolean }) {
+export default function Budget({ disabled }: { disabled?: boolean }) {
   const {
     formState: { errors },
-    watch
+    watch,
   } = useFormContext();
 
   const budget = watch("budget", {});
@@ -87,7 +87,7 @@ export default function Budget({ disabled }: { disabled: boolean }) {
             <p
               className={classNames(
                 errors.budget ? "text-red-400" : "",
-                "mt-3 text-sm leading-6 text-gray-600"
+                "mt-3 text-sm leading-6 text-gray-600",
               )}
             >
               Budget is required, Every value should be no less than USD 50

@@ -6,7 +6,7 @@ import { PublicCloudEditRequestBodySchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PreviousButton from "@/components/buttons/Previous";
 import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/CreatePrivateCloud";
+import CreateModal from "@/components/modal/CreatePublicCloud";
 import ReturnModal from "@/components/modal/Return";
 import { useRouter } from "next/navigation";
 import ProjectDescription from "@/components/form/ProjectDescriptionPublic";
@@ -19,7 +19,7 @@ import Budget from "@/components/form/Budget";
 import AccountCoding from "@/components/form/AccountCoding";
 
 async function fetchProject(
-  licencePlate: string
+  licencePlate: string,
 ): Promise<PublicCloudProjectWithUsers> {
   const res = await fetch(`/api/public-cloud/project/${licencePlate}`);
   if (!res.ok) {
@@ -38,7 +38,7 @@ async function fetchProject(
 }
 
 async function fetchActiveRequest(
-  licencePlate: string
+  licencePlate: string,
 ): Promise<PublicCloudRequestWithCurrentAndRequestedProject> {
   const res = await fetch(`/api/public-cloud/active-request/${licencePlate}`);
 
@@ -48,21 +48,18 @@ async function fetchActiveRequest(
 
   // Re format data to work with form
   const data = await res.json();
-  console.log("Active request data", data);
 
   return data;
 }
 
 export default function EditProject({
-  params
+  params,
 }: {
   params: { licencePlate: string };
 }) {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
-
-  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -74,8 +71,8 @@ export default function EditProject({
     ["project", params.licencePlate],
     () => fetchProject(params.licencePlate),
     {
-      enabled: !!params.licencePlate
-    }
+      enabled: !!params.licencePlate,
+    },
   );
 
   const { data: requestData } = useQuery<
@@ -89,8 +86,8 @@ export default function EditProject({
       onError: (error) => {
         console.log("error", error);
         setDisabled(true);
-      }
-    }
+      },
+    },
   );
 
   const methods = useForm({
@@ -98,7 +95,7 @@ export default function EditProject({
     defaultValues: async () => {
       const response = await fetchProject(params.licencePlate);
       return response;
-    }
+    },
   });
 
   useEffect(() => {
@@ -116,10 +113,10 @@ export default function EditProject({
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(data)
-        }
+          body: JSON.stringify(data),
+        },
       );
 
       if (!response.ok) {

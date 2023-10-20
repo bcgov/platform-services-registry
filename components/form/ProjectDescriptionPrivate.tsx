@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation";
 
 export default function ProjectDescription({
   disabled,
-  clusterDisabled
+  clusterDisabled,
 }: {
   disabled?: boolean;
   clusterDisabled?: boolean;
 }) {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
   } = useFormContext();
 
   const router = useRouter();
@@ -47,7 +47,7 @@ export default function ProjectDescription({
                 "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 disabled
                   ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
+                  : "",
               )}
               {...register("name")}
             />
@@ -55,7 +55,7 @@ export default function ProjectDescription({
           <p
             className={classNames(
               errors.name ? "text-red-400" : "",
-              "mt-3 text-sm leading-6 text-gray-600"
+              "mt-3 text-sm leading-6 text-gray-600",
             )}
           >
             Please provide a descriptibe product name with no acronyms
@@ -80,14 +80,14 @@ export default function ProjectDescription({
                 "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 disabled
                   ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
+                  : "",
               )} // defaultValue={""}
             />
           </div>
           <p
             className={classNames(
               errors.description ? "text-red-400" : "",
-              "mt-3 text-sm leading-6 text-gray-600"
+              "mt-3 text-sm leading-6 text-gray-600",
             )}
           >
             Tell us more about your product
@@ -109,7 +109,7 @@ export default function ProjectDescription({
                 "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 disabled
                   ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
+                  : "",
               )}
             >
               <option value="">Select Ministry</option>
@@ -121,7 +121,7 @@ export default function ProjectDescription({
             <p
               className={classNames(
                 errors.ministry ? "text-red-400" : "",
-                "mt-3 text-sm leading-6 text-gray-600"
+                "mt-3 text-sm leading-6 text-gray-600",
               )}
             >
               Select the government ministry that this product belongs to
@@ -139,13 +139,12 @@ export default function ProjectDescription({
           <div className="mt-2">
             <select
               disabled={disabled || clusterDisabled}
-              id="cluster"
               {...register("cluster")}
               className={classNames(
                 "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 disabled || clusterDisabled
                   ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
+                  : "",
               )}
             >
               <option value="">Select Cluster</option>
@@ -156,7 +155,7 @@ export default function ProjectDescription({
             <p
               className={classNames(
                 errors.cluster ? "text-red-400" : "",
-                "mt-3 text-sm leading-6 text-gray-600"
+                "mt-3 text-sm leading-6 text-gray-600",
               )}
             >
               Select your cluster Select CLAB or KLAB for testing purposes

@@ -18,7 +18,7 @@ import Budget from "@/components/form/Budget";
 import AccountCoding from "@/components/form/AccountCoding";
 
 async function fetchRequestedProject(
-  licencePlate: string
+  licencePlate: string,
 ): Promise<PublicCloudRequestWithCurrentAndRequestedProject> {
   const res = await fetch(`/api/public-cloud/active-request/${licencePlate}`);
   if (!res.ok) {
@@ -37,12 +37,12 @@ async function fetchRequestedProject(
 }
 
 export default function RequestDecision({
-  params
+  params,
 }: {
   params: { licencePlate: string };
 }) {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
 
   const router = useRouter();
@@ -60,13 +60,13 @@ export default function RequestDecision({
     ["requestedProject", params.licencePlate],
     () => fetchRequestedProject(params.licencePlate),
     {
-      enabled: !!params.licencePlate
-    }
+      enabled: !!params.licencePlate,
+    },
   );
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudDecisionRequestBodySchema),
-    values: { comment: "", decision: "", ...data?.requestedProject }
+    values: { comment: "", decision: "", ...data?.requestedProject },
   });
 
   useEffect(() => {
@@ -83,10 +83,10 @@ export default function RequestDecision({
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(data)
-        }
+          body: JSON.stringify(data),
+        },
       );
 
       if (!response.ok) {
@@ -119,8 +119,8 @@ export default function RequestDecision({
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
-            <Budget disabled={false} />
-            <AccountCoding disabled={false} />
+            <Budget disabled={isDisabled} />
+            <AccountCoding disabled={isDisabled} />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />

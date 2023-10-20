@@ -1,18 +1,14 @@
 import { useFormContext, useWatch, Controller } from "react-hook-form";
 import { Question } from "@/components/assets/question";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import AccountCodingInput from "@/components/form/AccountCodingInput";
 import classNames from "@/components/utils/classnames";
 
-export default function AccountCoding({ disabled }: { disabled: boolean }) {
+export default function AccountCoding({ disabled }: { disabled?: boolean }) {
   const {
     formState: { errors },
-    control,
     setValue,
-    trigger,
-    clearErrors,
     getValues,
-    watch
   } = useFormContext();
 
   const accountCodingInitial = getValues("accountCoding");
@@ -22,22 +18,24 @@ export default function AccountCoding({ disabled }: { disabled: boolean }) {
     serviceLine: "",
     projectCode: "",
     responsibilityCentre: "",
-    standardObjectOfExpense: ""
+    standardObjectOfExpense: "",
   });
 
   useEffect(() => {
-    setAccountCoding({
-      clientCode: accountCodingInitial?.slice(0, 3),
-      serviceLine: accountCodingInitial?.slice(3, 8),
-      projectCode: accountCodingInitial?.slice(8, 15),
-      responsibilityCentre: accountCodingInitial?.slice(15, 20),
-      standardObjectOfExpense: accountCodingInitial?.slice(20, 24)
-    });
+    if (accountCodingInitial?.length === 24) {
+      setAccountCoding({
+        clientCode: accountCodingInitial?.slice(0, 3),
+        serviceLine: accountCodingInitial?.slice(3, 8),
+        projectCode: accountCodingInitial?.slice(8, 15),
+        responsibilityCentre: accountCodingInitial?.slice(15, 20),
+        standardObjectOfExpense: accountCodingInitial?.slice(20, 24),
+      });
+    }
   }, [accountCodingInitial]);
 
-  if (typeof accountCodingInitial === "string") {
-    console.log(accountCodingInitial.length);
-  }
+  useEffect(() => {
+    setValue("accountCoding", Object.values(accountCoding).join(""));
+  }, [accountCoding]);
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -139,7 +137,7 @@ export default function AccountCoding({ disabled }: { disabled: boolean }) {
         <p
           className={classNames(
             errors.accountCoding ? "text-red-400" : "",
-            "mt-1 text-sm leading-6 text-gray-600 absolute"
+            "mt-1 text-sm leading-6 text-gray-600 absolute",
           )}
         >
           {errors.accountCoding?.message?.toString()}

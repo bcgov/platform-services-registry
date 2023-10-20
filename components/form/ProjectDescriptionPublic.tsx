@@ -4,13 +4,15 @@ import classNames from "@/components/utils/classnames";
 import { useFormContext } from "react-hook-form";
 
 export default function ProjectDescriptionPublic({
-  disabled
+  disabled,
+  providerDisabled,
 }: {
-  disabled: boolean;
+  disabled?: boolean;
+  providerDisabled?: boolean;
 }) {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
   } = useFormContext();
 
   return (
@@ -38,21 +40,25 @@ export default function ProjectDescriptionPublic({
           </label>
           <div className="mt-2">
             <input
+              disabled={disabled}
               type="text"
               placeholder="Enter product name"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : "",
+              )}
               {...register("name")}
             />
           </div>
           <p
             className={classNames(
               errors.name ? "text-red-400" : "",
-              "mt-3 text-sm leading-6 text-gray-600"
+              "mt-3 text-sm leading-6 text-gray-600",
             )}
           >
-            {errors.name
-              ? errors.name?.message?.toString()
-              : "Please provide a descriptibe product name with no acronyms"}
+            Please provide a descriptibe product name with no acronyms
           </p>
         </div>
 
@@ -65,17 +71,23 @@ export default function ProjectDescriptionPublic({
           </label>
           <div className="mt-2">
             <textarea
+              disabled={disabled}
               id="about"
               placeholder="Enter a description..."
               {...register("description")}
               rows={3}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : "",
+              )}
             />
           </div>
           <p
             className={classNames(
               errors.description ? "text-red-400" : "",
-              "mt-3 text-sm leading-6 text-gray-600"
+              "mt-3 text-sm leading-6 text-gray-600",
             )}
           >
             Please include high level consideration for the technical
@@ -98,7 +110,7 @@ export default function ProjectDescriptionPublic({
                 "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 disabled
                   ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
-                  : ""
+                  : "",
               )}
             >
               <option value="">Select Ministry</option>
@@ -110,7 +122,7 @@ export default function ProjectDescriptionPublic({
             <p
               className={classNames(
                 errors.ministry ? "text-red-400" : "",
-                "mt-3 text-sm leading-6 text-gray-600"
+                "mt-3 text-sm leading-6 text-gray-600",
               )}
             >
               Select the government ministry that this product belongs to
@@ -127,17 +139,23 @@ export default function ProjectDescriptionPublic({
           </label>
           <div className="mt-2">
             <select
+              disabled={disabled || providerDisabled}
               {...register("provider")}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className={classNames(
+                "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                disabled || providerDisabled
+                  ? "disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                  : "",
+              )}
             >
               <option value="">Select Provider</option>
               <option>AWS</option>
-              <option>GCP</option>
+              {/* <option>GCP</option> */}
             </select>
             <p
               className={classNames(
                 errors.provider ? "text-red-400" : "",
-                "mt-3 text-sm leading-6 text-gray-600"
+                "mt-3 text-sm leading-6 text-gray-600",
               )}
             >
               Select the Cloud Service Provider (AWS or GCP)

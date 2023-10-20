@@ -15,10 +15,8 @@ import AccountCoding from "@/components/form/AccountCoding";
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
-
-  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -26,7 +24,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudCreateRequestBodySchema)
+    resolver: zodResolver(PublicCloudCreateRequestBodySchema),
   });
 
   const onSubmit = async (data: any) => {
@@ -36,9 +34,9 @@ export default function Page() {
       const response = await fetch("/api/public-cloud/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       console.log("response", response);
@@ -61,20 +59,18 @@ export default function Page() {
     }
   };
 
-  console.log(methods.watch());
   return (
     <div>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescription disabled={false} />
+            <ProjectDescription />
             <TeamContacts
-              disabled={false}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
-            <Budget disabled={false} />
-            <AccountCoding disabled={false} />
+            <Budget />
+            <AccountCoding />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
