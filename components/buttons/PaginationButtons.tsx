@@ -30,7 +30,7 @@ export default function PaginationButton({
   return (
     <div {...props}>
       <button
-        className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 
+        className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
         ${
           isPrevDisabled
             ? "text-gray-500 border-gray-500"
@@ -44,8 +44,11 @@ export default function PaginationButton({
                   page: Number(page) - 1,
                   pageSize: pageSize ?? null,
                 },
-                searchParams
-              )}`
+                searchParams,
+              )}`,
+              {
+                scroll: false,
+              },
             );
           });
         }}
@@ -54,7 +57,7 @@ export default function PaginationButton({
         Previous
       </button>
       <button
-        className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 
+        className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
         ${
           isNextDisabled
             ? "text-gray-500 border-gray-500"
@@ -68,11 +71,11 @@ export default function PaginationButton({
                   page: Number(page) + 1,
                   pageSize: pageSize ?? null,
                 },
-                searchParams
+                searchParams,
               )}`,
               {
-                scroll: false 
-              }
+                scroll: false,
+              },
             );
           });
         }}
