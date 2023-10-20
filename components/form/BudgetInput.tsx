@@ -20,7 +20,7 @@ export default function BudgetInput({
     <div className="relative mb-3">
       <label
         htmlFor="street-address"
-        className="block text-sm font-medium leading-6 text-gray-900"
+        className="block text-sm font-medium leading-6 text-gray-900 mb-2"
       >
         {title}
       </label>

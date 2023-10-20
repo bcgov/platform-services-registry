@@ -50,7 +50,7 @@ export default function AccountCodingInput({
   length,
   placeholder,
   setAccountCoding,
-  accountCoding
+  accountCoding,
 }: {
   title: string;
   name: string;
@@ -61,13 +61,17 @@ export default function AccountCodingInput({
 }) {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
   } = useFormContext();
 
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
-      <p className="font-bcsans text-base leading-6 mb-2">{title}</p>
-
+      <label
+        htmlFor="street-address"
+        className="block text-sm font-medium leading-6 text-gray-900 mb-2"
+      >
+        {title}
+      </label>
       <input
         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         placeholder={placeholder}
