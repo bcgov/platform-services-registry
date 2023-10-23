@@ -1,39 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PublicCloudProject } from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import { string, z } from "zod";
+import { NextRequest, NextResponse } from 'next/server';
+import { PublicCloudProject } from '@prisma/client';
+import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import { string, z } from 'zod';
 
 const GetParamsSchema = z.object({
-  id: string()
+  id: string(),
 });
 
 type Params = z.infer<typeof GetParamsSchema>;
 
-export type PrivateCloudRequestWithCurrentAndRequestedProject =
-  Prisma.PrivateCloudRequestGetPayload<{
-    include: {
-      requestedProject: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
-      };
-      project: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
+export type PrivateCloudRequestWithCurrentAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
       };
     };
-  }>;
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Params }
-): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
   const parsedParams = GetParamsSchema.safeParse(params);
 
   if (!parsedParams.success) {
@@ -46,29 +42,29 @@ export async function GET(
     const request: PrivateCloudRequestWithCurrentAndRequestedProject | null =
       await prisma.privateCloudRequest.findUnique({
         where: {
-          id
+          id,
         },
         include: {
           project: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
-              secondaryTechnicalLead: true
-            }
+              secondaryTechnicalLead: true,
+            },
           },
           requestedProject: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
-              secondaryTechnicalLead: true
-            }
-          }
-        }
+              secondaryTechnicalLead: true,
+            },
+          },
+        },
       });
 
     if (!request) {
-      return new NextResponse("No project found with this licece plate.", {
-        status: 404
+      return new NextResponse('No project found with this licece plate.', {
+        status: 404,
       });
     }
 

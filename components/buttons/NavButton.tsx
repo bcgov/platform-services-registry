@@ -1,32 +1,19 @@
-"use client";
+'use client';
 
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-  useParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 
-export default function PaginationButton({
-  page,
-  pageSize,
-  label,
-}: {
-  page: number;
-  pageSize: number;
-  label: string;
-}) {
+export default function PaginationButton({ page, pageSize, label }: { page: number; pageSize: number; label: string }) {
   const { push } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
 
-  const disabled = false
+  const disabled = false;
 
   const onClickHandler = () => {
     const params = new URLSearchParams(searchParams?.toString());
 
-    params.set("page", page.toString());
-    params.set("pageSize", pageSize.toString());
+    params.set('page', page.toString());
+    params.set('pageSize', pageSize.toString());
 
     push(`${pathname}?${params.toString()}`);
   };
@@ -45,8 +32,8 @@ export default function PaginationButton({
       onClick={onClickHandler}
       className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 ${
         disabled
-          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-          : "bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0"
+          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          : 'bg-white text-gray-900 hover:bg-gray-50 focus-visible:outline-offset-0'
       })
   }`}
     >

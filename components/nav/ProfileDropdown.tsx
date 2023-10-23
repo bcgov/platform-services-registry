@@ -1,33 +1,32 @@
-"use client";
+'use client';
 
-import { Fragment } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import classNames from "@/components/utils/classnames";
-import { useSession, signIn, signOut } from "next-auth/react";
-import Link from "next/link";
-import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
-import generateAvatar from './generateAvatar'
+import { Fragment } from 'react';
+import { Menu, Transition } from '@headlessui/react';
+import classNames from '@/components/utils/classnames';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
+import generateAvatar from './generateAvatar';
 
 async function fetchUserImage(email: string): Promise<string> {
   const res = await fetch(`/api/msal/userImage?email=${email}`);
   if (!res.ok) {
-    throw new Error("Network response was not ok for fetch user image");
+    throw new Error('Network response was not ok for fetch user image');
   }
-  
-  if(res.headers.get("Content-Type")){
+
+  if (res.headers.get('Content-Type')) {
     // Assuming server returns a blob of image data
     const blob = await res.blob();
-    
+
     // Create a URL from the blob
     const imageUrl = URL.createObjectURL(blob);
 
     return imageUrl;
-  }
-  else{
-    const imageUrl = await generateAvatar(email)
+  } else {
+    const imageUrl = await generateAvatar(email);
 
-    return imageUrl
+    return imageUrl;
   }
 }
 
@@ -35,13 +34,9 @@ export default function ProfileDropdown() {
   const { data: session, status } = useSession();
   const email = session?.user?.email;
 
-  const { data, isLoading, error } = useQuery<string, Error>(
-    ["userImage", email],
-    () => fetchUserImage(email),
-    {
-      enabled: !!email,
-    }
-  );
+  const { data, isLoading, error } = useQuery<string, Error>(['userImage', email], () => fetchUserImage(email), {
+    enabled: !!email,
+  });
 
   return (
     <Menu as="div" className="relative ml-3">
@@ -52,7 +47,7 @@ export default function ProfileDropdown() {
             className="h-10 w-10 rounded-full"
             width={0}
             height={0}
-            src={data || "https://www.gravatar.com/avatar/?d=identicon"}
+            src={data || 'https://www.gravatar.com/avatar/?d=identicon'}
             alt=""
           />
         </Menu.Button>
@@ -96,29 +91,23 @@ export default function ProfileDropdown() {
           <Menu.Item>
             {({ active }) => (
               <div>
-                {status !== "authenticated" ? (
+                {status !== 'authenticated' ? (
                   <Link
                     href="#"
                     onClick={() =>
-                      signIn("keycloak", {
-                        callbackUrl: "/private-cloud/products",
+                      signIn('keycloak', {
+                        callbackUrl: '/private-cloud/products',
                       })
                     }
-                    className={classNames(
-                      active ? "bg-gray-100" : "",
-                      "block px-4 py-2 text-sm text-gray-700"
-                    )}
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                   >
                     Sign In
                   </Link>
                 ) : (
                   <Link
                     href="#"
-                    onClick={() => signOut({ callbackUrl: "/login" })}
-                    className={classNames(
-                      active ? "bg-gray-100" : "",
-                      "block px-4 py-2 text-sm text-gray-700"
-                    )}
+                    onClick={() => signOut({ callbackUrl: '/login' })}
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                   >
                     Sign out
                   </Link>

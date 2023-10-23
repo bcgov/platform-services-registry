@@ -1,6 +1,6 @@
-import SearchFilterSort from "@/components/table/SearchFilterSort";
-import TableTop from "@/components/table/TableTop";
-import PagninationButtons from "@/components/buttons/PaginationButtons";
+import SearchFilterSort from '@/components/table/SearchFilterSort';
+import TableTop from '@/components/table/TableTop';
+import PagninationButtons from '@/components/buttons/PaginationButtons';
 
 export default function Table({
   title,
@@ -8,7 +8,7 @@ export default function Table({
   currentPage,
   pageSize,
   total,
-  tableBody
+  tableBody,
 }: {
   title: string;
   description: string;
@@ -32,18 +32,13 @@ export default function Table({
       >
         <div className="hidden sm:block">
           <p className="text-sm text-gray-700">
-            Showing <span>{pageSize * (currentPage - 1)}</span> to{" "}
-            <span>{pageSize * currentPage}</span> of <span>{total}</span>{" "}
-            results
+            Showing <span>{pageSize * (currentPage - 1)}</span> to <span>{pageSize * currentPage}</span> of{' '}
+            <span>{total}</span> results
           </p>
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
           <div>
-            <PagninationButtons
-              pageCount={total / pageSize}
-              page={currentPage}
-              pageSize={pageSize}
-            />
+            <PagninationButtons pageCount={total / pageSize} page={currentPage} pageSize={pageSize} />
           </div>
         </div>
       </nav>

@@ -1,33 +1,26 @@
-import {
-  RequestType,
-  PublicCloudRequest,
-  DecisionStatus,
-  PublicCloudProject,
-  Prisma
-} from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { PublicCloudEditRequestBody } from "@/schema";
+import { RequestType, PublicCloudRequest, DecisionStatus, PublicCloudProject, Prisma } from '@prisma/client';
+import prisma from '@/lib/prisma';
+import { PublicCloudEditRequestBody } from '@/schema';
 
 export default async function editRequest(
   licencePlate: string,
   formData: PublicCloudEditRequestBody,
-  authEmail: string
+  authEmail: string,
 ): Promise<PublicCloudRequest> {
   // Get the current project that we are creating an edit request for
-  const project: PublicCloudProject | null =
-    await prisma.publicCloudProject.findUnique({
-      where: {
-        licencePlate: licencePlate
-      },
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true
-      }
-    });
+  const project: PublicCloudProject | null = await prisma.publicCloudProject.findUnique({
+    where: {
+      licencePlate: licencePlate,
+    },
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  });
 
   if (!project) {
-    throw new Error("Project does not exist.");
+    throw new Error('Project does not exist.');
   }
 
   // merge the form data with the existing project data
@@ -39,29 +32,29 @@ export default async function editRequest(
     projectOwner: {
       connectOrCreate: {
         where: {
-          email: formData.projectOwner.email
+          email: formData.projectOwner.email,
         },
-        create: formData.projectOwner
-      }
+        create: formData.projectOwner,
+      },
     },
     primaryTechnicalLead: {
       connectOrCreate: {
         where: {
-          email: formData.primaryTechnicalLead.email
+          email: formData.primaryTechnicalLead.email,
         },
-        create: formData.primaryTechnicalLead
-      }
+        create: formData.primaryTechnicalLead,
+      },
     },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
       ? {
           connectOrCreate: {
             where: {
-              email: formData.secondaryTechnicalLead.email
+              email: formData.secondaryTechnicalLead.email,
             },
-            create: formData.secondaryTechnicalLead
-          }
+            create: formData.secondaryTechnicalLead,
+          },
         }
-      : undefined
+      : undefined,
   };
 
   return prisma.publicCloudRequest.create({
@@ -72,32 +65,32 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestedProject: {
-        create: requestedProject
+        create: requestedProject,
       },
       userRequestedProject: {
-        create: requestedProject
+        create: requestedProject,
       },
       project: {
         connect: {
-          licencePlate: licencePlate
-        }
-      }
+          licencePlate: licencePlate,
+        },
+      },
     },
     include: {
       project: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
-          secondaryTechnicalLead: true
-        }
+          secondaryTechnicalLead: true,
+        },
       },
       requestedProject: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
-          secondaryTechnicalLead: true
-        }
-      }
-    }
+          secondaryTechnicalLead: true,
+        },
+      },
+    },
   });
 }

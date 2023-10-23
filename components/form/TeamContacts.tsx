@@ -1,10 +1,10 @@
-import AsyncAutocomplete from "@/components/form/AsyncAutocomplete";
-import SecondTechLeadButton from "@/components/buttons/SecondTechLeadButton";
+import AsyncAutocomplete from '@/components/form/AsyncAutocomplete';
+import SecondTechLeadButton from '@/components/buttons/SecondTechLeadButton';
 
 export default function TeamContacts({
   disabled,
   secondTechLead,
-  secondTechLeadOnClick
+  secondTechLeadOnClick,
 }: {
   disabled?: boolean;
   secondTechLead: boolean;
@@ -23,10 +23,9 @@ export default function TeamContacts({
               Product Owner (PO)
             </h3>
             <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-              Tell us about the Product Owner (PO). This is typically the
-              business owner of the application. We will use this information to
-              contact them with any non-technical questions. Please use only
-              IDIR linked email address below.
+              Tell us about the Product Owner (PO). This is typically the business owner of the application. We will use
+              this information to contact them with any non-technical questions. Please use only IDIR linked email
+              address below.
             </p>
           </div>
           <AsyncAutocomplete
@@ -44,11 +43,9 @@ export default function TeamContacts({
               Technical Lead (TL)
             </h3>
             <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-              This is typically the DevOps specialist. We use this information
-              to contact them with technical questions or notify them about
-              platform events. You require a Primary Technical Lead, a Secondary
-              Technical Lead is optional. Please use only IDIR linked email
-              address below.
+              This is typically the DevOps specialist. We use this information to contact them with technical questions
+              or notify them about platform events. You require a Primary Technical Lead, a Secondary Technical Lead is
+              optional. Please use only IDIR linked email address below.
             </p>
           </div>
           <AsyncAutocomplete
@@ -61,10 +58,7 @@ export default function TeamContacts({
         </div>
 
         <div className="mt-6 flex flex-col justify-between sm:col-start-2">
-          <SecondTechLeadButton
-            clicked={secondTechLead}
-            onClick={secondTechLeadOnClick}
-          />
+          <SecondTechLeadButton clicked={secondTechLead} onClick={secondTechLeadOnClick} />
 
           {secondTechLead ? (
             <div className="mt-6">
@@ -73,11 +67,9 @@ export default function TeamContacts({
                   Technical Lead (TL)
                 </h3>
                 <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-                  This is typically the DevOps specialist. We use this
-                  information to contact them with technical questions or notify
-                  them about platform events. You require a Primary Technical
-                  Lead, a Secondary Technical Lead is optional. Please use only
-                  IDIR linked email address below.
+                  This is typically the DevOps specialist. We use this information to contact them with technical
+                  questions or notify them about platform events. You require a Primary Technical Lead, a Secondary
+                  Technical Lead is optional. Please use only IDIR linked email address below.
                 </p>
               </div>
               <AsyncAutocomplete

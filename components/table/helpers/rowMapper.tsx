@@ -1,39 +1,39 @@
-import formatDate from "@/components/utils/formatdates";
-import Image from "next/image";
-import Edit from "@/components/assets/edit.svg";
-import { Project } from "@/paginatedQueries/private-cloud";
-import classNames from "@/components/utils/classnames";
+import formatDate from '@/components/utils/formatdates';
+import Image from 'next/image';
+import Edit from '@/components/assets/edit.svg';
+import { Project } from '@/paginatedQueries/private-cloud';
+import classNames from '@/components/utils/classnames';
 
 function TypeBadge({ status }: { status: string }) {
   let text, colour;
 
   switch (status) {
-    case "APPROVED":
-      text = "Processing";
-      colour = "blue";
+    case 'APPROVED':
+      text = 'Processing';
+      colour = 'blue';
       break;
-    case "PENDING":
-      text = "Pending Approval";
-      colour = "grey";
+    case 'PENDING':
+      text = 'Pending Approval';
+      colour = 'grey';
       break;
-    case "REJECTED":
-      text = "Rejected";
-      colour = "red";
+    case 'REJECTED':
+      text = 'Rejected';
+      colour = 'red';
       break;
-    case "PROVISIONED":
-      text = "Provisioned";
-      colour = "green";
+    case 'PROVISIONED':
+      text = 'Provisioned';
+      colour = 'green';
       break;
     default:
       text = status;
-      colour = "grey";
+      colour = 'grey';
   }
 
   const tailwindColors = {
-    red: ["bg-red-100", "text-red-700", "fill-red-500"],
-    blue: ["bg-blue-100", "text-blue-700", "fill-blue-500"],
-    green: ["bg-green-100", "text-green-700", "fill-green-500"],
-    grey: ["bg-gray-100", "text-gray-700", "fill-gray-500"],
+    red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
+    blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
+    green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
+    grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
     // ... add other colors here
   };
 
@@ -43,22 +43,22 @@ function TypeBadge({ status }: { status: string }) {
   return (
     <span
       className={classNames(
-        "inline-flex",
-        "items-center",
-        "gap-x-1.5",
-        "rounded-full",
-        "px-2",
-        "py-1",
-        "text-xs",
-        "font-medium",
+        'inline-flex',
+        'items-center',
+        'gap-x-1.5',
+        'rounded-full',
+        'px-2',
+        'py-1',
+        'text-xs',
+        'font-medium',
         classes[0], // Background class
         classes[1], // Text color class
       )}
     >
       <svg
         className={classNames(
-          "h-1.5",
-          "w-1.5",
+          'h-1.5',
+          'w-1.5',
           classes[2], // SVG fill class
         )}
         viewBox="0 0 6 6"
@@ -79,13 +79,11 @@ export const privateCloudProjectDataToRow = (project: Project) => {
     ministry: project.ministry,
     cluster: project.cluster,
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${
-      project.primaryTechnicalLeadDetails.lastName
-    } ${project.secondaryTechnicalLeadDetails?.firstName || ""} ${
-      project.secondaryTechnicalLeadDetails ? "," : ""
-    } ${project.secondaryTechnicalLeadDetails?.lastName || ""}`,
+    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName} ${
+      project.secondaryTechnicalLeadDetails?.firstName || ''
+    } ${project.secondaryTechnicalLeadDetails ? ',' : ''} ${project.secondaryTechnicalLeadDetails?.lastName || ''}`,
     // @ts-ignore
-    created: formatDate(project.created["$date"]),
+    created: formatDate(project.created['$date']),
     licencePlate: project.licencePlate,
     edit: (
       <div
@@ -111,12 +109,10 @@ export const publicCloudProjectDataToRow = (project: any) => {
     description: project.description,
     ministry: project.ministry,
     projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${
-      project.primaryTechnicalLeadDetails.lastName
-    } ${project.secondaryTechnicalLeadDetails?.firstName || ""} ${
-      project.secondaryTechnicalLeadDetails ? "," : ""
-    } ${project.secondaryTechnicalLeadDetails?.lastName || ""}`,
-    created: formatDate(project.created["$date"]),
+    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName} ${
+      project.secondaryTechnicalLeadDetails?.firstName || ''
+    } ${project.secondaryTechnicalLeadDetails ? ',' : ''} ${project.secondaryTechnicalLeadDetails?.lastName || ''}`,
+    created: formatDate(project.created['$date']),
     licencePlate: project.licencePlate,
     edit: (
       <div
@@ -143,12 +139,10 @@ export const privateCloudRequestDataToRow = (request: any) => {
     ministry: request.requestedProject.ministry,
     cluster: request.requestedProject.cluster,
     projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${
-      request.primaryTechnicalLead.lastName
-    } ${request?.secondaryTechnicalLead ? "," : ""} ${
-      request?.secondaryTechnicalLead?.firstName || ""
-    } ${request?.secondaryTechnicalLead?.lastName || ""}`,
-    created: formatDate(request.created["$date"]),
+    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
+      request?.secondaryTechnicalLead ? ',' : ''
+    } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
+    created: formatDate(request.created['$date']),
     licencePlate: request.licencePlate,
   };
 };
@@ -162,12 +156,10 @@ export const publicCloudRequestDataToRow = (request: any) => {
     csp: request.requestedProject.provider,
     ministry: request.requestedProject.ministry,
     projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${
-      request.primaryTechnicalLead.lastName
-    } ${request?.secondaryTechnicalLead ? "," : ""} ${
-      request?.secondaryTechnicalLead?.firstName || ""
-    } ${request?.secondaryTechnicalLead?.lastName || ""}`,
-    created: formatDate(request.created["$date"]),
+    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
+      request?.secondaryTechnicalLead ? ',' : ''
+    } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
+    created: formatDate(request.created['$date']),
     licencePlate: request.licencePlate,
   };
 };

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ReactNode, useState } from "react";
-import { SessionProvider } from "next-auth/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode, useState } from 'react';
+import { SessionProvider } from 'next-auth/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface ProviderProps {
   children: ReactNode;

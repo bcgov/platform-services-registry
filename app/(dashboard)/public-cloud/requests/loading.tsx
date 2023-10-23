@@ -1,5 +1,5 @@
-import TableRowSkeleton from "@/components/table/TableRowSkeleton";
-import Table from "@/components/table/Table";
+import TableRowSkeleton from '@/components/table/TableRowSkeleton';
+import Table from '@/components/table/Table';
 
 export default async function RequestsTableSkeleton() {
   return (

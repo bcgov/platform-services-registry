@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import classNames from "@/components/utils/classnames";
-import { usePathname } from "next/navigation";
-import CreateButton from "@/components/buttons/CreateButton";
+import Link from 'next/link';
+import classNames from '@/components/utils/classnames';
+import { usePathname } from 'next/navigation';
+import CreateButton from '@/components/buttons/CreateButton';
 
 const tabs = [
   {
-    name: "PRIVATE CLOUD OPENSHIFT",
-    href: "private-cloud"
+    name: 'PRIVATE CLOUD OPENSHIFT',
+    href: 'private-cloud',
   },
   {
-    name: "PUBLIC CLOUD LANDING ZONES",
-    href: "public-cloud"
-  }
+    name: 'PUBLIC CLOUD LANDING ZONES',
+    href: 'public-cloud',
+  },
 ];
 
 export default function Tabs({ className }: { className?: string }) {
@@ -41,20 +41,17 @@ export default function Tabs({ className }: { className?: string }) {
       </div>
       <div className="hidden md:block  justify-start">
         <div className="border-b border-gray-200">
-          <div
-            className="w-full -mb-px flex justify-between items-center"
-            aria-label="Tabs"
-          >
+          <div className="w-full -mb-px flex justify-between items-center" aria-label="Tabs">
             <div className=" -mb-px flex justify-start">
               {tabs.map((tab) => (
                 <Link
                   key={tab.name}
-                  href={`/${tab.href}/${pathname.split("/")[2]}`}
+                  href={`/${tab.href}/${pathname.split('/')[2]}`}
                   className={classNames(
-                    pathname.split("/")[1] === tab.href
+                    pathname.split('/')[1] === tab.href
                       ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                       : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
-                    "lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold"
+                    'lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold',
                   )}
                 >
                   {tab.name}

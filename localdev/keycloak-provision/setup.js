@@ -59,7 +59,7 @@ async function main() {
       { realm: realmName },
       {
         enabled: true,
-      }
+      },
     );
 
     scope = await kcAdminClient.clientScopes.findOneByName({ realm: realmName, name: clientScope });
@@ -109,7 +109,7 @@ async function main() {
         directAccessGrantsEnabled: false,
         redirectUris: ['*'],
         secret: clientSecret,
-      }
+      },
     );
 
     client = await findClient();
@@ -194,7 +194,7 @@ async function main() {
           });
         }
       }
-    })
+    }),
   );
 
   return {

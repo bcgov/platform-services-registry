@@ -1,17 +1,17 @@
-"use client";
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import PreviousButton from "@/components/buttons/Previous";
-import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/CreatePublicCloud";
-import ReturnModal from "@/components/modal/Return";
-import { useRouter } from "next/navigation";
-import { PublicCloudCreateRequestBodySchema } from "@/schema";
-import ProjectDescription from "@/components/form/ProjectDescriptionPublic";
-import TeamContacts from "@/components/form/TeamContacts";
-import Budget from "@/components/form/Budget";
-import AccountCoding from "@/components/form/AccountCoding";
+'use client';
+import { useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import PreviousButton from '@/components/buttons/Previous';
+import { useSession } from 'next-auth/react';
+import CreateModal from '@/components/modal/CreatePublicCloud';
+import ReturnModal from '@/components/modal/Return';
+import { useRouter } from 'next/navigation';
+import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import TeamContacts from '@/components/form/TeamContacts';
+import Budget from '@/components/form/Budget';
+import AccountCoding from '@/components/form/AccountCoding';
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -31,31 +31,31 @@ export default function Page() {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/public-cloud/create", {
-        method: "POST",
+      const response = await fetch('/api/public-cloud/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
 
-      console.log("response", response);
+      console.log('response', response);
 
       if (!response.ok) {
-        throw new Error("Network response was not ok for create request");
+        throw new Error('Network response was not ok for create request');
       }
 
       setOpenCreate(false);
       setOpenReturn(true);
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
-      methods.unregister("secondaryTechnicalLead");
+      methods.unregister('secondaryTechnicalLead');
     }
   };
 
@@ -65,10 +65,7 @@ export default function Page() {
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription />
-            <TeamContacts
-              secondTechLead={secondTechLead}
-              secondTechLeadOnClick={secondTechLeadOnClick}
-            />
+            <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <Budget />
             <AccountCoding />
           </div>
@@ -89,11 +86,7 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal
-        open={openReturn}
-        setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/requests"
-      />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests" />
     </div>
   );
 }
