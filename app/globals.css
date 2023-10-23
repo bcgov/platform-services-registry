@@ -17,20 +17,18 @@
 }
 
 @font-face {
-  font-family: "BCSans";
-  src: url("../fonts/BCSans-Regular.woff") format("woff");
+  font-family: 'BCSans';
+  src: url('../fonts/BCSans-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "BCSans";
-  src: url("../fonts/BCSans-Bold.woff") format("woff");
+  font-family: 'BCSans';
+  src: url('../fonts/BCSans-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
-
-
 
 /* body {
   color: rgb(var(--foreground-rgb));

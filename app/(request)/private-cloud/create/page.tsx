@@ -1,25 +1,22 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { PrivateCloudCreateRequestBodySchema } from "@/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import CommonComponents from "@/components/form/CommonComponents";
-import PreviousButton from "@/components/buttons/Previous";
-import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/CreatePrivateCloud";
-import ReturnModal from "@/components/modal/Return";
-import { useRouter } from "next/navigation";
-import ProjectDescription from "@/components/form/ProjectDescriptionPrivate";
-import TeamContacts from "@/components/form/TeamContacts";
-import { revalidatePath } from "next/cache";
+import { useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { PrivateCloudCreateRequestBodySchema } from '@/schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import CommonComponents from '@/components/form/CommonComponents';
+import PreviousButton from '@/components/buttons/Previous';
+import { useSession } from 'next-auth/react';
+import CreateModal from '@/components/modal/CreatePrivateCloud';
+import ReturnModal from '@/components/modal/Return';
+import { useRouter } from 'next/navigation';
+import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import TeamContacts from '@/components/form/TeamContacts';
 
 export default function Page() {
   const { data: session, status } = useSession({
     required: true,
   });
-
-  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -34,35 +31,32 @@ export default function Page() {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/private-cloud/create", {
-        method: "POST",
+      const response = await fetch('/api/private-cloud/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
 
-      console.log("response", response);
+      console.log('response', response);
 
       if (!response.ok) {
-        throw new Error("Network response was not ok for create request");
+        throw new Error('Network response was not ok for create request');
       }
-
-      const result = await response.json();
-      console.log("Success:", result);
 
       setOpenCreate(false);
       setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
-      methods.unregister("secondaryTechnicalLead");
+      methods.unregister('secondaryTechnicalLead');
     }
   };
 
@@ -72,10 +66,7 @@ export default function Page() {
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription />
-            <TeamContacts
-              secondTechLead={secondTechLead}
-              secondTechLeadOnClick={secondTechLeadOnClick}
-            />
+            <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <CommonComponents />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
@@ -95,7 +86,7 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );
 }

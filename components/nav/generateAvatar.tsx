@@ -1,4 +1,4 @@
-const stringToColor = (string:string):string => {
+const stringToColor = (string: string): string => {
   let hash = 0;
   let i;
 
@@ -6,7 +6,7 @@ const stringToColor = (string:string):string => {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  let color = "#";
+  let color = '#';
 
   for (i = 0; i < 3; i += 1) {
     const value = (hash >> (i * 8)) & 0xff;
@@ -18,7 +18,7 @@ const stringToColor = (string:string):string => {
 async function generateAvatar(email: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // size: number, backgroundColor: string, textColor: string
-    const size = 120
+    const size = 120;
 
     const initials = email
       .split('@')[0] // Extract the part before '@' as initials

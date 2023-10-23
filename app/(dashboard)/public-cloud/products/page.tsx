@@ -1,21 +1,21 @@
-import Table from "@/components/table/Table";
-import TableBody from "@/components/table/TableBody";
-import { privateCloudProjectsPaginated, Project } from "@/queries/project";
-import { privateCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
+import Table from '@/components/table/Table';
+import TableBody from '@/components/table/TableBody';
+import { publicCloudProjectsPaginated, Project } from '@/paginatedQueries/public-cloud';
+import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { redirect } from 'next/navigation';
 
 const headers = [
-  { field: "name", headerName: "Name" },
-  { field: "description", headerName: "Description" },
-  { field: "ministry", headerName: "Ministry" },
-  { field: "cluster", headerName: "Cluster" },
-  { field: "projectOwner", headerName: "Project Owner" },
-  { field: "technicalLeads", headerName: "Technical Leads" },
-  { field: "created", headerName: "Created" },
-  { field: "licencePlate", headerName: "Licence Plate" },
-  { field: "edit", headerName: "" },
+  { field: 'name', headerName: 'Name' },
+  { field: 'description', headerName: 'Description' },
+  { field: 'ministry', headerName: 'Ministry' },
+  { field: 'cluster', headerName: 'Cluster' },
+  { field: 'projectOwner', headerName: 'Project Owner' },
+  { field: 'technicalLeads', headerName: 'Technical Leads' },
+  { field: 'created', headerName: 'Created' },
+  { field: 'licencePlate', headerName: 'Licence Plate' },
+  { field: 'edit', headerName: '' },
 ];
 
 export default async function ProductsTable({
@@ -26,39 +26,36 @@ export default async function ProductsTable({
     page: number;
     pageSize: number;
     ministry: string;
-    cluster: string;
+    provider: string;
   };
 }) {
   // Authenticate the user
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log("No session found");
-    redirect("/login?callbackUrl=/private-cloud/products");
+    console.log('No session found');
+    redirect('/login?callbackUrl=/private-cloud/products');
   }
 
-  const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { search, page, pageSize, ministry, provider } = searchParams;
 
   // If a page is not provided, default to 1
-  const currentPage = typeof searchParams.page === "string" ? +page : 1;
+  const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
   // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes("admin")
-    ? undefined
-    : session?.user?.email;
+  const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
-  const { data, total }: { data: Project[]; total: number } =
-    await privateCloudProjectsPaginated(
-      defaultPageSize,
-      currentPage,
-      search,
-      ministry,
-      cluster,
-      userEmail
-    );
+  const { data, total }: { data: Project[]; total: number } = await publicCloudProjectsPaginated(
+    defaultPageSize,
+    currentPage,
+    search,
+    ministry,
+    provider,
+    userEmail,
+  );
 
-  const rows = data.map(privateCloudProjectDataToRow);
+  const rows = data.map(publicCloudProjectDataToRow);
 
   return (
     <Table

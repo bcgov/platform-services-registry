@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
   const { data: session, status } = useSession();
 
-  console.log("SESSION: ", session);
+  console.log('SESSION: ', session);
 
-  if (session?.user?.roles?.includes("admin")) {
+  if (session?.user?.roles?.includes('admin')) {
     return (
       <div>
         <p>You are an admin, welcome!</p>

@@ -1,13 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Prisma } from "@prisma/client";
-import {
-  PrivateCloudCreateRequestBodySchema,
-  PrivateCloudCreateRequestBody,
-} from "@/schema";
-import { PrivateCloudRequest } from "@prisma/client";
-import createRequest from "@/requestActions/private-cloud/createRequest";
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { Prisma } from '@prisma/client';
+import { PublicCloudCreateRequestBodySchema, PublicCloudCreateRequestBody } from '@/schema';
+import { PrivateCloudRequest } from '@prisma/client';
+import createRequest from '@/requestActions/public-cloud/createRequest';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
@@ -15,7 +12,7 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return new NextResponse("You do not have the required credentials.", {
+    return new NextResponse('You do not have the required credentials.', {
       status: 401,
     });
   }
@@ -24,13 +21,13 @@ export async function POST(req: NextRequest) {
 
   // Validation
   const body = await req.json();
-  const parsedBody = PrivateCloudCreateRequestBodySchema.safeParse(body);
+  const parsedBody = PublicCloudCreateRequestBodySchema.safeParse(body);
 
   if (!parsedBody.success) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const formData: PrivateCloudCreateRequestBody = parsedBody.data;
+  const formData: PublicCloudCreateRequestBody = parsedBody.data;
 
   // Authorization
   if (
@@ -39,11 +36,9 @@ export async function POST(req: NextRequest) {
       formData.primaryTechnicalLead.email,
       formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
-    !authRoles.includes("admin")
+    !authRoles.includes('admin')
   ) {
-    throw new Error(
-      "You need to assign yourself to this project in order to create it."
-    );
+    throw new Error('You need to assign yourself to this project in order to create it.');
   }
 
   // Action
@@ -64,8 +59,8 @@ export async function POST(req: NextRequest) {
   //   status: 200,
   // });
 
-  return new NextResponse(JSON.stringify(request), {
+  return new NextResponse('Created successfuly', {
     status: 200,
-    headers: { "content-type": "application/json" },
+    headers: { 'content-type': 'application/json' },
   });
 }

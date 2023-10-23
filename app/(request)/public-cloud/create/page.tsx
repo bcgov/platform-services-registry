@@ -1,24 +1,22 @@
-"use client";
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import PreviousButton from "@/components/buttons/Previous";
-import { useSession } from "next-auth/react";
-import CreateModal from "@/components/modal/CreatePrivateCloud";
-import ReturnModal from "@/components/modal/Return";
-import { useRouter } from "next/navigation";
-import { CreateRequestPublicBodySchema } from "@/schema";
-import ProjectDescriptionPublic from "@/components/form/ProjectDescriptionPublic";
-import TeamContacts from "@/components/form/TeamContacts";
-import Budget from "@/components/form/Budget";
-import AccountCoding from "@/components/form/AccountCoding";
+'use client';
+import { useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import PreviousButton from '@/components/buttons/Previous';
+import { useSession } from 'next-auth/react';
+import CreateModal from '@/components/modal/CreatePublicCloud';
+import ReturnModal from '@/components/modal/Return';
+import { useRouter } from 'next/navigation';
+import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import TeamContacts from '@/components/form/TeamContacts';
+import Budget from '@/components/form/Budget';
+import AccountCoding from '@/components/form/AccountCoding';
 
 export default function Page() {
   const { data: session, status } = useSession({
-    required: true
+    required: true,
   });
-
-  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -26,60 +24,50 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(CreateRequestPublicBodySchema)
+    resolver: zodResolver(PublicCloudCreateRequestBodySchema),
   });
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     console.log(data);
     try {
-      const response = await fetch("/api/requests/public-cloud/create", {
-        method: "POST",
+      const response = await fetch('/api/public-cloud/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
-      console.log("response", response);
+      console.log('response', response);
 
       if (!response.ok) {
-        throw new Error("Network response was not ok for create request");
+        throw new Error('Network response was not ok for create request');
       }
-
-      const result = await response.json();
-      console.log("Success:", result);
 
       setOpenCreate(false);
       setOpenReturn(true);
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
-
-    setIsLoading(false);
-    // router.back();
-    router.push("/public-cloud/requests");
   };
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
-      methods.unregister("secondaryTechnicalLead");
+      methods.unregister('secondaryTechnicalLead');
     }
   };
+
   return (
     <div>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescriptionPublic disabled={false} />
-            <TeamContacts
-              disabled={false}
-              secondTechLead={secondTechLead}
-              secondTechLeadOnClick={secondTechLeadOnClick}
-            />
-            <Budget disabled={false} />
-            <AccountCoding disabled={false} />
+            <ProjectDescription />
+            <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <Budget />
+            <AccountCoding />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
@@ -98,7 +86,7 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests" />
     </div>
   );
 }

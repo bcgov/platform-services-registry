@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function Component() {
   const { data: session } = useSession();
@@ -15,8 +15,8 @@ export default function Component() {
   return (
     <>
       <button
-        className="self-start justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2" 
-        onClick={() => signIn("keycloak", { callbackUrl: "/private-cloud/products" })}
+        className="self-start justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+        onClick={() => signIn('keycloak', { callbackUrl: '/private-cloud/products' })}
       >
         LOGIN
       </button>

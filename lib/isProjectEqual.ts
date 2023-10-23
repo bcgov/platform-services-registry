@@ -1,4 +1,4 @@
-import { deepStrictEqual } from "assert";
+import { deepStrictEqual } from 'assert';
 
 export function checkObjectEquality(objectA: object, objectB: object): boolean {
   try {

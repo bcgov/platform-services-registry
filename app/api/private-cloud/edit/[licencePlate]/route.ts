@@ -1,15 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { PrivateCloudRequest } from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import {
-  PrivateCloudEditRequestBodySchema,
-  PrivateCloudEditRequestBody,
-} from "@/schema";
-import { string, z } from "zod";
-import editRequest from "@/requestActions/private-cloud/editRequest";
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { PrivateCloudRequest } from '@prisma/client';
+import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import { PrivateCloudEditRequestBodySchema, PrivateCloudEditRequestBody } from '@/schema';
+import { string, z } from 'zod';
+import editRequest from '@/requestActions/private-cloud/editRequest';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -23,7 +20,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   if (!session) {
     return NextResponse.json({
-      message: "You do not have the required credentials.",
+      message: 'You do not have the required credentials.',
     });
   }
 
@@ -51,25 +48,20 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       formData.primaryTechnicalLead.email,
       formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
-    !authRoles.includes("admin")
+    !authRoles.includes('admin')
   ) {
-    throw new Error(
-      "You need to assign yourself to this project in order to create it."
-    );
+    throw new Error('You need to assign yourself to this project in order to create it.');
   }
 
   try {
-    const existingRequest: PrivateCloudRequest | null =
-      await prisma.privateCloudRequest.findFirst({
-        where: {
-          AND: [{ licencePlate }, { active: true }],
-        },
-      });
+    const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({
+      where: {
+        AND: [{ licencePlate }, { active: true }],
+      },
+    });
 
     if (existingRequest !== null) {
-      throw new Error(
-        "This project already has an active request or it does not exist."
-      );
+      throw new Error('This project already has an active request or it does not exist.');
     }
 
     await editRequest(licencePlate, formData, authEmail);
@@ -80,8 +72,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     // );
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002") {
-        throw new Error("There is already an active request for this project.");
+      if (e.code === 'P2002') {
+        throw new Error('There is already an active request for this project.');
       }
     }
     throw e;
@@ -97,5 +89,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   //   }
   // }
 
-  return new NextResponse("success", { status: 200 });
+  return new NextResponse('success', { status: 200 });
 }

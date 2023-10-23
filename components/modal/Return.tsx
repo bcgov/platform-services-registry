@@ -1,31 +1,20 @@
-import { Fragment, useRef, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { Fragment, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
 
-export default function Modal({
-  open,
-  setOpen,
-}: {
-  open: boolean;
-  setOpen: any;
-}) {
+export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; setOpen: any; redirectUrl: string }) {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
   const handleReturn = () => {
     setOpen(false);
-    router.push("/private-cloud/requests");
+    router.push(redirectUrl);
     router.refresh();
   };
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        initialFocus={cancelButtonRef}
-        onClose={() => {}}
-      >
+      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => {}}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -60,47 +49,33 @@ export default function Modal({
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
-                        We have received your request for a new project set, the
-                        Product Owner and Technical Lead will receive the
-                        approval/denial decision via email.
+                        We have received your request for a new project set, the Product Owner and Technical Lead will
+                        receive the approval/denial decision via email.
                       </p>
                       <p className="font-bcsans text-sm text-gray-900 mt-4">
-                        Alternatively, you can also track the status of your
-                        requests from the Registry App Dashboard
+                        Alternatively, you can also track the status of your requests from the Registry App Dashboard
                       </p>
                     </div>
                     <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
                       <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
-                        <span className="font-bold text-blue-700 font-sans text-xs">
-                          i
-                        </span>
+                        <span className="font-bold text-blue-700 font-sans text-xs">i</span>
                       </div>
                       <div>
-                        <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">
-                          Note:
-                        </p>
+                        <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
                         <p className="font-bcsans text-sm text-blue-700 mt-1">
-                          The approval of new project set creation request is
-                          subject to having a signed Memorandum of Understanding
-                          (MoU) with the Public Cloud Team. If you do not have a
-                          MoU in place, please email us at
+                          The approval of new project set creation request is subject to having a signed Memorandum of
+                          Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
+                          email us at
                           <span> </span>
-                          <a
-                            href="mailto:cloud.pathfinder@gov.bc.ca"
-                            className="underline"
-                          >
+                          <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
                             cloud.pathfinder@gov.bc.ca
                           </a>
                           .
                         </p>
                         <p className="font-bcsans text-sm text-blue-700 mt-4">
-                          In order to request a project deletion, please email
-                          us at
+                          In order to request a project deletion, please email us at
                           <span> </span>
-                          <a
-                            href="mailto:cloud.pathfinder@gov.bc.ca"
-                            className="underline"
-                          >
+                          <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
                             cloud.pathfinder@gov.bc.ca
                           </a>
                           .

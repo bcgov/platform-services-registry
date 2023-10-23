@@ -1,4 +1,4 @@
-import CrumbsNav from "@/components/nav/CrumbsNav";
+import CrumbsNav from '@/components/nav/CrumbsNav';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

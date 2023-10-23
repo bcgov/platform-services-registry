@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Search from "@/components/assets/search.svg";
-import Filter from "@/components/assets/filter.svg";
-import Export from "@/components/assets/export.svg";
-import { useState, useTransition, useCallback, useEffect } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDebounce } from "@/components/utils/useDebounce";
-import FilterPanel from "./FilterPanel";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import Image from 'next/image';
+import Search from '@/components/assets/search.svg';
+import Filter from '@/components/assets/filter.svg';
+import Export from '@/components/assets/export.svg';
+import { useState, useTransition, useCallback, useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useDebounce } from '@/components/utils/useDebounce';
+import FilterPanel from './FilterPanel';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
 
 export default function SearchFilterSort() {
   const [focused, setFocused] = useState(false);
@@ -18,7 +18,7 @@ export default function SearchFilterSort() {
 
   const [isPending, startTransition] = useTransition();
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedValue = useDebounce<string>(searchTerm, 450);
 
   const handleSearch = useCallback(
@@ -26,24 +26,24 @@ export default function SearchFilterSort() {
       const params = new URLSearchParams(searchParams?.toString());
 
       if (term) {
-        params.set("search", term);
+        params.set('search', term);
       } else {
-        params.delete("search");
+        params.delete('search');
       }
-      params.delete("page");
+      params.delete('page');
 
       startTransition(() => {
         replace(`${pathname}?${params.toString()}`);
       });
     },
-    [searchParams, replace, pathname]
+    [searchParams, replace, pathname],
   );
 
   useEffect(() => {
-    if (debouncedValue == "") {
+    if (debouncedValue == '') {
       // remove search param
       const params = new URLSearchParams(searchParams?.toString());
-      params.delete("search");
+      params.delete('search');
       replace(`${pathname}?${params.toString()}`);
     } else {
       handleSearch(debouncedValue);
@@ -65,8 +65,8 @@ export default function SearchFilterSort() {
                 width={15}
                 height={15}
                 style={{
-                  maxWidth: "100%",
-                  height: "auto",
+                  maxWidth: '100%',
+                  height: 'auto',
                 }}
               />
             </div>
@@ -97,8 +97,8 @@ export default function SearchFilterSort() {
             width={16}
             height={10}
             style={{
-              maxWidth: "100%",
-              height: "auto",
+              maxWidth: '100%',
+              height: 'auto',
             }}
           />
 
@@ -114,8 +114,8 @@ export default function SearchFilterSort() {
             width={16}
             height={12.5}
             style={{
-              maxWidth: "100%",
-              height: "auto",
+              maxWidth: '100%',
+              height: 'auto',
             }}
           />
           <span className="md:inline hidden">Export</span>

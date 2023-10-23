@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import {
   ProjectStatus,
   RequestType,
@@ -8,10 +8,10 @@ import {
   PrivateCloudProject,
   User,
   PrivateCloudRequest,
-} from "@prisma/client";
-import { Prisma } from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { string, z } from "zod";
+} from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import prisma from '@/lib/prisma';
+import { string, z } from 'zod';
 // import { sendDeleteRequestEmails } from "../../ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return new Response("You do not have the required credentials.", {
+    return new Response('You do not have the required credentials.', {
       status: 401,
     });
   }
@@ -42,36 +42,28 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   let createRequest: PrivateCloudRequest;
 
   try {
-    const project: PrivateCloudProject | null =
-      await prisma.privateCloudProject.findUnique({
-        where: {
-          id: projectId,
-        },
-      });
+    const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
 
     if (!project) {
-      throw new Error("Project does not exist.");
+      throw new Error('Project does not exist.');
     }
 
     const users: User[] = await prisma.user.findMany({
       where: {
         id: {
-          in: [
-            project.projectOwnerId,
-            project.primaryTechnicalLeadId,
-            project.secondaryTechnicalLeadId,
-          ].filter(Boolean) as string[],
+          in: [project.projectOwnerId, project.primaryTechnicalLeadId, project.secondaryTechnicalLeadId].filter(
+            Boolean,
+          ) as string[],
         },
       },
     });
 
-    if (
-      !users.map((user) => user.email).includes(authEmail) &&
-      !authRoles.includes("admin")
-    ) {
-      throw new Error(
-        "You need to be a contact on this project in order to delete it."
-      );
+    if (!users.map((user) => user.email).includes(authEmail) && !authRoles.includes('admin')) {
+      throw new Error('You need to be a contact on this project in order to delete it.');
     }
 
     project.status = ProjectStatus.INACTIVE;
@@ -104,8 +96,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002") {
-        throw new Error("There is already an active request for this project.");
+      if (e.code === 'P2002') {
+        throw new Error('There is already an active request for this project.');
       }
     }
     throw e;
@@ -113,5 +105,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   // sendDeleteRequestEmails(createRequest.project);
 
-  return  new Response("Success", { status: 200 });;
+  return new Response('Success', { status: 200 });
 }

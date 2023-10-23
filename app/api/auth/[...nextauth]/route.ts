@@ -1,11 +1,11 @@
-import NextAuth, { User, Account, NextAuthOptions } from "next-auth";
-import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
-import KeycloakProvider from "next-auth/providers/keycloak";
-import prisma from "@/lib/prisma";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import jwt from "jsonwebtoken";
-import AzureADProvider from "next-auth/providers/azure-ad";
+import NextAuth, { User, Account, NextAuthOptions } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import { Session } from 'next-auth';
+import KeycloakProvider from 'next-auth/providers/keycloak';
+import prisma from '@/lib/prisma';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import jwt from 'jsonwebtoken';
+import AzureADProvider from 'next-auth/providers/azure-ad';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
 
   // callbacks: {
@@ -68,9 +68,9 @@ export const authOptions: NextAuthOptions = {
         token.accessToken = account?.access_token;
       }
 
-      const decodedToken = jwt.decode(token.accessToken || "") as any;
+      const decodedToken = jwt.decode(token.accessToken || '') as any;
 
-      token.roles = decodedToken?.resource_access?.["registry-web"]?.roles;
+      token.roles = decodedToken?.resource_access?.['registry-web']?.roles;
 
       return token;
     },
