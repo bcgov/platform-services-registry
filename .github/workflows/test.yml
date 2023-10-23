@@ -1,10 +1,6 @@
 name: Test codebase
 
-on:
-  push
-
-env:
-  ACTIONS_RUNNER_DEBUG: true
+on: push
 
 jobs:
   test:
@@ -26,28 +22,14 @@ jobs:
     - name: Run build
       run: npm run build
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@5d9862498505fcac67b9f455d6e94ec0339f7b90
-
-    - name: Build Local Images
-      uses: docker/bake-action@cff93986225aa60b529e85c83a08f7df996a8d48
-      with:
-        workdir: ./localdev
-        push: false
-        load: true
-        set: |
-          *.cache-to=type=gha,mode=max
-          *.cache-from=type=gha
-
     - name: Run test
       run: |
         mkdir -p ./localdev/mnt/mongodb
         mkdir -p ./localdev/mnt/postgres
 
-        docker images
         docker-compose -f localdev/docker-compose.yml up -d
 
-        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 60000
+        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
         cp .env.localdev .env.test
         npm run test
 
