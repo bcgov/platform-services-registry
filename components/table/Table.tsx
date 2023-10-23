@@ -32,7 +32,7 @@ export default function Table({
       >
         <div className="hidden sm:block">
           <p className="text-sm text-gray-700">
-            Showing <span>{pageSize * (currentPage - 1)}</span> to <span>{pageSize * currentPage}</span> of{' '}
+            Showing <span>{pageSize * (currentPage - 1) + 1}</span> to <span>{pageSize * currentPage}</span> of{' '}
             <span>{total}</span> results
           </p>
         </div>
