@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Fragment, useEffect, useRef, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { CheckIcon } from '@heroicons/react/24/outline';
 
 export default function Modal({
   open,
@@ -24,12 +24,7 @@ export default function Modal({
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        initialFocus={cancelButtonRef}
-        onClose={setOpen}
-      >
+      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -63,50 +58,35 @@ export default function Modal({
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="font-bcsans text-sm text-gray-900">
-                      After hitting request, our smart robots will start working
-                      hard behind the scenes. There is one step, the approval
-                      process, where a human is involved. They will take the
-                      opportunity, if needed, to reach out and have an
-                      on-boarding conversation with you.
+                      After hitting request, our smart robots will start working hard behind the scenes. There is one
+                      step, the approval process, where a human is involved. They will take the opportunity, if needed,
+                      to reach out and have an on-boarding conversation with you.
                     </p>
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      Also, look out for our Notification emails that will
-                      provide you with valuable information regarding your
-                      product status and details.
+                      Also, look out for our Notification emails that will provide you with valuable information
+                      regarding your product status and details.
                     </p>
                   </div>
                   <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
                     <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
-                      <span className="font-bold text-blue-700 font-sans text-xs">
-                        i
-                      </span>
+                      <span className="font-bold text-blue-700 font-sans text-xs">i</span>
                     </div>
                     <div>
-                      <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">
-                        Note:
-                      </p>
+                      <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
                       <p className="font-bcsans text-sm text-blue-700 mt-1">
-                        The approval of new project set creation request is
-                        subject to having a signed Memorandum of Understanding
-                        (MoU) with the Public Cloud Team. If you do not have a
-                        MoU in place, please email us at
+                        The approval of new project set creation request is subject to having a signed Memorandum of
+                        Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please email
+                        us at
                         <span> </span>
-                        <a
-                          href="mailto:cloud.pathfinder@gov.bc.ca"
-                          className="underline"
-                        >
+                        <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
                           cloud.pathfinder@gov.bc.ca
                         </a>
                         .
                       </p>
                       <p className="font-bcsans text-sm text-blue-700 mt-4">
-                        In order to request a project deletion, please email us
-                        at
+                        In order to request a project deletion, please email us at
                         <span> </span>
-                        <a
-                          href="mailto:cloud.pathfinder@gov.bc.ca"
-                          className="underline"
-                        >
+                        <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
                           cloud.pathfinder@gov.bc.ca
                         </a>
                         .
@@ -123,9 +103,8 @@ export default function Modal({
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 mt-4 mr-4"
                     />
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      By checking this box, I confirm that I have read and
-                      understood the roles and responsibilities as described in
-                      the <span> </span>
+                      By checking this box, I confirm that I have read and understood the roles and responsibilities as
+                      described in the <span> </span>
                       <a href="" className="underline text-blue-700">
                         Onboarding Guide.
                       </a>

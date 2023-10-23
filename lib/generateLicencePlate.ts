@@ -1,10 +1,10 @@
-import crypto from "crypto";
+import crypto from 'crypto';
 
 const generateLicensePlate = (len = 6) => {
   const getRandomPrefix = (requiredLength: number) =>
     crypto
       .randomBytes(Math.ceil(requiredLength / 2))
-      .toString("hex")
+      .toString('hex')
       .slice(0, len);
   let generatedNamespacePrefix = getRandomPrefix(len);
   do {

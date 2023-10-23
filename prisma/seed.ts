@@ -1,11 +1,7 @@
-import { PrismaClient, Ministry, Cluster, Provider } from "@prisma/client";
-import {
-  DefaultCpuOptionsSchema,
-  DefaultMemoryOptionsSchema,
-  DefaultStorageOptionsSchema,
-} from "../schema";
+import { PrismaClient, Ministry, Cluster, Provider } from '@prisma/client';
+import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '../schema';
 const prisma = new PrismaClient();
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 
 const commonComponents = {
   addressAndGeolocation: {
@@ -44,7 +40,7 @@ const commonComponents = {
     planningToUse: true,
     implemented: false,
   },
-  other: "Some other services",
+  other: 'Some other services',
   noServices: false,
 };
 
@@ -63,7 +59,7 @@ async function main() {
         email: faker.internet.email(),
         firstName: firstName,
         lastName: firstName,
-        image: "avatar.png",
+        image: 'avatar.png',
         ministry: faker.helpers.arrayElement(Object.values(Ministry)),
         archived: false,
         created: faker.date.past(),
@@ -79,7 +75,7 @@ async function main() {
           accountCoding: faker.string.alphanumeric(24),
           name: faker.company.name(),
           description: faker.lorem.sentence(),
-          status: "ACTIVE",
+          status: 'ACTIVE',
           created: faker.date.past(),
           projectOwnerId: user.id,
           primaryTechnicalLeadId: user.id,
@@ -103,7 +99,7 @@ async function main() {
           licencePlate: faker.string.alphanumeric(7),
           name: faker.company.name(),
           description: faker.lorem.sentence(),
-          status: "ACTIVE",
+          status: 'ACTIVE',
           created: faker.date.past(),
           projectOwnerId: user.id,
           primaryTechnicalLeadId: user.id,
@@ -112,39 +108,23 @@ async function main() {
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
           productionQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options,
-            ),
-            storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options,
-            ),
+            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
+            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
           },
           testQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options,
-            ),
-            storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options,
-            ),
+            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
+            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
           },
           developmentQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options,
-            ),
-            storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options,
-            ),
+            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
+            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
           },
           toolsQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(
-              DefaultMemoryOptionsSchema.options,
-            ),
-            storage: faker.helpers.arrayElement(
-              DefaultStorageOptionsSchema.options,
-            ),
+            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
+            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
           },
           commonComponents,
         },

@@ -1,5 +1,5 @@
-import CloudTabs from "@/components/tabs/CloudTabs";
-import ProductsRequestsTabs from "@/components/tabs/ProductsRequestsTabs";
+import CloudTabs from '@/components/tabs/CloudTabs';
+import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,12 +1,6 @@
-"use client";
+'use client';
 
-export default function SubmitButton({
-  text,
-  onClick,
-}: {
-  text: string;
-  onClick?: () => void;
-}) {
+export default function SubmitButton({ text, onClick }: { text: string; onClick?: () => void }) {
   return (
     <button
       onClick={onClick}

@@ -1,49 +1,47 @@
-import { ProjectStatus, DecisionStatus, Cluster } from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { PrivateCloudEditRequestBody } from "@/schema";
-import { Prisma } from "@prisma/client";
+import { ProjectStatus, DecisionStatus, Cluster } from '@prisma/client';
+import prisma from '@/lib/prisma';
+import { PrivateCloudEditRequestBody } from '@/schema';
+import { Prisma } from '@prisma/client';
 
-export type PrivateCloudRequestWithRequestedProject =
-  Prisma.PrivateCloudRequestGetPayload<{
-    include: {
-      requestedProject: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
+export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
       };
     };
-  }>;
+  };
+}>;
 
 export default async function makeDecisionRequest(
   licencePlate: string,
   decision: DecisionStatus,
   comment: string | undefined,
   formData: PrivateCloudEditRequestBody,
-  authEmail: string
+  authEmail: string,
 ): Promise<PrivateCloudRequestWithRequestedProject> {
   // Get the request
-  const request: PrivateCloudRequestWithRequestedProject | null =
-    await prisma.privateCloudRequest.findFirst({
-      where: {
-        licencePlate,
-        active: true,
-      },
-      include: {
-        project: true,
-        requestedProject: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
+  const request: PrivateCloudRequestWithRequestedProject | null = await prisma.privateCloudRequest.findFirst({
+    where: {
+      licencePlate,
+      active: true,
+    },
+    include: {
+      project: true,
+      requestedProject: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
         },
       },
-    });
+    },
+  });
 
   if (!request) {
-    throw new Error("Request not found.");
+    throw new Error('Request not found.');
   }
 
   const {
@@ -57,64 +55,63 @@ export default async function makeDecisionRequest(
   // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject model
   // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
   // project if the admin did not change anything.
-  const decisionRequest: PrivateCloudRequestWithRequestedProject | null =
-    await prisma.privateCloudRequest.update({
-      where: {
-        id: request.id,
-      },
-      include: {
-        requestedProject: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
+  const decisionRequest: PrivateCloudRequestWithRequestedProject | null = await prisma.privateCloudRequest.update({
+    where: {
+      id: request.id,
+    },
+    include: {
+      requestedProject: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
         },
       },
-      data: {
-        decisionStatus: decision,
-        humanComment: comment,
-        active: decision === DecisionStatus.APPROVED,
-        decisionDate: new Date(),
-        decisionMakerEmail: authEmail,
-        requestedProject: {
-          update: {
-            ...formData,
-            status: ProjectStatus.ACTIVE,
-            licencePlate: request.licencePlate,
-            projectOwner: {
-              connectOrCreate: {
-                where: {
-                  email: formData.projectOwner.email,
-                },
-                create: formData.projectOwner,
+    },
+    data: {
+      decisionStatus: decision,
+      humanComment: comment,
+      active: decision === DecisionStatus.APPROVED,
+      decisionDate: new Date(),
+      decisionMakerEmail: authEmail,
+      requestedProject: {
+        update: {
+          ...formData,
+          status: ProjectStatus.ACTIVE,
+          licencePlate: request.licencePlate,
+          projectOwner: {
+            connectOrCreate: {
+              where: {
+                email: formData.projectOwner.email,
               },
+              create: formData.projectOwner,
             },
-            primaryTechnicalLead: {
-              connectOrCreate: {
-                where: {
-                  email: formData.primaryTechnicalLead.email,
-                },
-                create: formData.primaryTechnicalLead,
+          },
+          primaryTechnicalLead: {
+            connectOrCreate: {
+              where: {
+                email: formData.primaryTechnicalLead.email,
               },
+              create: formData.primaryTechnicalLead,
             },
-            secondaryTechnicalLead: formData.secondaryTechnicalLead
-              ? {
-                  connectOrCreate: {
-                    where: {
-                      email: formData.secondaryTechnicalLead.email,
-                    },
-                    create: formData.secondaryTechnicalLead,
+          },
+          secondaryTechnicalLead: formData.secondaryTechnicalLead
+            ? {
+                connectOrCreate: {
+                  where: {
+                    email: formData.secondaryTechnicalLead.email,
                   },
-                }
-              : undefined,
-          },
+                  create: formData.secondaryTechnicalLead,
+                },
+              }
+            : undefined,
         },
       },
-    });
+    },
+  });
 
   if (decisionRequest === null) {
-    throw new Error("Unable to update request.");
+    throw new Error('Unable to update request.');
   }
 
   return decisionRequest;

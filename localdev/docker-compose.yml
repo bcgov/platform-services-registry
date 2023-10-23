@@ -28,7 +28,7 @@ services:
       - 8080:8080
       - 8443:8443
     depends_on:
-    - postgres
+      - postgres
 
   keycloak-provision:
     container_name: keycloak-provision
@@ -43,13 +43,13 @@ services:
       CLIENT_ID: registry-web
       CLIENT_SECRET: testsecret
     depends_on:
-    - keycloak
+      - keycloak
 
   postgres:
     container_name: postgres
     image: postgres:14.9
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "keycloak", "-U", "postgres" ]
+      test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
       timeout: 45s
       interval: 10s
       retries: 10
@@ -61,9 +61,9 @@ services:
     ports:
       - 5432:5432
     volumes:
-    - type: bind
-      source: ./mnt/postgres
-      target: /var/lib/postgresql/data
+      - type: bind
+        source: ./mnt/postgres
+        target: /var/lib/postgresql/data
 
   mongodb:
     container_name: mongodb
@@ -90,4 +90,4 @@ services:
 
     stdin_open: true
     ports:
-    - 8000:8000
+      - 8000:8000

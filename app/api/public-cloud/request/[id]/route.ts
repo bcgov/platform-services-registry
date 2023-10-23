@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import { string, z } from "zod";
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import { string, z } from 'zod';
 
 const GetParamsSchema = z.object({
   id: string(),
@@ -9,30 +9,26 @@ const GetParamsSchema = z.object({
 
 type Params = z.infer<typeof GetParamsSchema>;
 
-export type PublicCloudRequestWithCurrentAndRequestedProject =
-  Prisma.PublicCloudRequestGetPayload<{
-    include: {
-      requestedProject: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
-      };
-      project: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
+export type PublicCloudRequestWithCurrentAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
+  include: {
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
       };
     };
-  }>;
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Params }
-): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
   const parsedParams = GetParamsSchema.safeParse(params);
 
   if (!parsedParams.success) {
@@ -42,8 +38,8 @@ export async function GET(
   const { id } = params;
 
   try {
-    const request: PublicCloudRequestWithCurrentAndRequestedProject | null =
-      await prisma.publicCloudRequest.findUnique({
+    const request: PublicCloudRequestWithCurrentAndRequestedProject | null = await prisma.publicCloudRequest.findUnique(
+      {
         where: {
           id,
         },
@@ -63,10 +59,11 @@ export async function GET(
             },
           },
         },
-      });
+      },
+    );
 
     if (!request) {
-      return new NextResponse("No project found with this licece plate.", {
+      return new NextResponse('No project found with this licece plate.', {
         status: 404,
       });
     }

@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Arrow from "@/components/assets/arrow.svg";
-import Link from "next/link";
+import Image from 'next/image';
+import Arrow from '@/components/assets/arrow.svg';
+import Link from 'next/link';
 
 export default function CrumbsNav({
   backUrl,
@@ -17,7 +17,7 @@ export default function CrumbsNav({
     <div className="">
       <div className="flex h-16 justify-left items-center">
         <div className="font-bcsans text-2xl text-cloudgrey ">{cloudLabel}</div>
-        <div className="border-l h-12 border-divider mx-5"></div>{" "}
+        <div className="border-l h-12 border-divider mx-5"></div>{' '}
         {/* Adjust the height (h-20) and color (border-gray-500) as needed */}
         <nav className="flex" aria-label="Breadcrumb">
           <ol role="list" className="flex items-center ">
@@ -30,8 +30,8 @@ export default function CrumbsNav({
                     width={25}
                     height={25}
                     style={{
-                      maxWidth: "100%",
-                      height: "auto",
+                      maxWidth: '100%',
+                      height: 'auto',
                     }}
                   />
                 </Link>
@@ -39,9 +39,7 @@ export default function CrumbsNav({
             </li>
             <li>
               <div className="flex items-center">
-                <a className="ml-4 font-bcsans text-xl font-medium text-gray-500">
-                  {previousLabel}
-                </a>
+                <a className="ml-4 font-bcsans text-xl font-medium text-gray-500">{previousLabel}</a>
                 {currentLabel && (
                   <svg
                     className="h-5 w-5 flex-shrink-0 text-gray-300"
@@ -55,9 +53,7 @@ export default function CrumbsNav({
               </div>
             </li>
             <li>
-              <div className="flex items-center font-bcsans text-xl">
-                {currentLabel}
-              </div>
+              <div className="flex items-center font-bcsans text-xl">{currentLabel}</div>
             </li>
           </ol>
         </nav>

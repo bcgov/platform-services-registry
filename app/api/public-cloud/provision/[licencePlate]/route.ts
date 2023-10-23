@@ -1,21 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  DecisionStatus,
-  PublicCloudRequestedProject,
-  Prisma,
-} from "@prisma/client";
-import prisma from "@/lib/prisma";
-import { string, z } from "zod";
+import { NextRequest, NextResponse } from 'next/server';
+import { DecisionStatus, PublicCloudRequestedProject, Prisma } from '@prisma/client';
+import prisma from '@/lib/prisma';
+import { string, z } from 'zod';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
 
-export type PublicCloudRequestWithRequestedProject =
-  Prisma.PublicCloudRequestGetPayload<{
-    include: {
-      requestedProject: true;
-    };
-  }>;
+export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
+  include: {
+    requestedProject: true;
+  };
+}>;
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -33,21 +28,20 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
   const { licencePlate } = params;
 
   try {
-    const request: PublicCloudRequestWithRequestedProject | null =
-      await prisma.publicCloudRequest.findFirst({
-        where: {
-          decisionStatus: DecisionStatus.APPROVED,
-          licencePlate,
-          active: true,
-        },
-        include: {
-          requestedProject: true,
-        },
-      });
+    const request: PublicCloudRequestWithRequestedProject | null = await prisma.publicCloudRequest.findFirst({
+      where: {
+        decisionStatus: DecisionStatus.APPROVED,
+        licencePlate,
+        active: true,
+      },
+      include: {
+        requestedProject: true,
+      },
+    });
 
     if (!request) {
-      console.log("No provision request found for project: " + licencePlate);
-      return new NextResponse("No requetst found for this licece plate.", {
+      console.log('No provision request found for project: ' + licencePlate);
+      return new NextResponse('No requetst found for this licece plate.', {
         status: 404,
       });
     }
@@ -76,10 +70,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     await prisma.$transaction([updateRequest, upsertProject]);
 
     // sendProvisionedEmails(request);
-    return new NextResponse(
-      `Successfuly marked ${licencePlate} as provisioned.`,
-      { status: 200 },
-    );
+    return new NextResponse(`Successfuly marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
     return new NextResponse(error.message, { status: 500 });

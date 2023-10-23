@@ -2,9 +2,8 @@
 name: Service Design Template
 about: Describe this issue template's purpose here.
 title: ''
-labels: "*team/ service design*"
+labels: '*team/ service design*'
 assignees: ''
-
 ---
 
 **Describe the issue**

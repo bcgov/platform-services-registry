@@ -41,8 +41,8 @@
 //   );
 // }
 
-import { useFormContext, Controller } from "react-hook-form";
-import { Question } from "@/components/assets/question";
+import { useFormContext, Controller } from 'react-hook-form';
+import { Question } from '@/components/assets/question';
 
 export default function AccountCodingInput({
   title,
@@ -68,10 +68,7 @@ export default function AccountCodingInput({
 
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
-      <label
-        htmlFor="street-address"
-        className="block text-sm font-medium leading-6 text-gray-900 mb-2"
-      >
+      <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-2">
         {title}
       </label>
       <input

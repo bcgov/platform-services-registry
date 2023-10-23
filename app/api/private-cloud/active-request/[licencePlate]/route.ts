@@ -1,30 +1,29 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { string, z } from "zod";
-import { Prisma } from "@prisma/client";
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import { string, z } from 'zod';
+import { Prisma } from '@prisma/client';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
 
-export type PrivateCloudRequestWithCurrentAndRequestedProject =
-  Prisma.PrivateCloudRequestGetPayload<{
-    include: {
-      requestedProject: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
-      };
-      project: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
+export type PrivateCloudRequestWithCurrentAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
       };
     };
-  }>;
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
 
 const GetParamsSchema = z.object({
   licencePlate: string(),
@@ -32,10 +31,7 @@ const GetParamsSchema = z.object({
 
 type Params = z.infer<typeof GetParamsSchema>;
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Params }
-): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
   const parsedParams = GetParamsSchema.safeParse(params);
 
   if (!parsedParams.success) {

@@ -1,16 +1,11 @@
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-  useParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 
 const filters = {
   cluster: [
-    { value: "KLAB", label: "KLAB", checked: false },
-    { value: "CLAB", label: "CLAB", checked: false },
-    { value: "SILVER", label: "SILVER", checked: false },
-    { value: "GOLD", label: "GOLD", checked: false },
+    { value: 'KLAB', label: 'KLAB', checked: false },
+    { value: 'CLAB', label: 'CLAB', checked: false },
+    { value: 'SILVER', label: 'SILVER', checked: false },
+    { value: 'GOLD', label: 'GOLD', checked: false },
   ],
 };
 
@@ -23,11 +18,11 @@ export default function FilterPanel() {
     const urlSearchParams = new URLSearchParams(searchParams?.toString());
 
     if (cluster) {
-      urlSearchParams.set("cluster", cluster);
+      urlSearchParams.set('cluster', cluster);
     } else {
-      urlSearchParams.delete("cluster");
+      urlSearchParams.delete('cluster');
     }
-    urlSearchParams.delete("page");
+    urlSearchParams.delete('page');
 
     replace(`${pathname}?${urlSearchParams.toString()}`);
   };
@@ -39,10 +34,7 @@ export default function FilterPanel() {
           <legend className="block font-medium">Cluster</legend>
           <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
             {filters.cluster.map((option, optionIdx) => (
-              <div
-                key={option.value}
-                className="flex items-center text-base sm:text-sm"
-              >
+              <div key={option.value} className="flex items-center text-base sm:text-sm">
                 <input
                   id={`price-${optionIdx}`}
                   name="price[]"
@@ -50,16 +42,9 @@ export default function FilterPanel() {
                   type="checkbox"
                   className="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   defaultChecked={option.checked}
-                  onChange={(e) =>
-                    handleClusterFilterChange(
-                      e.target.checked ? e.target.value : null
-                    )
-                  }
+                  onChange={(e) => handleClusterFilterChange(e.target.checked ? e.target.value : null)}
                 />
-                <label
-                  htmlFor={`price-${optionIdx}`}
-                  className="ml-3 min-w-0 flex-1 text-gray-600"
-                >
+                <label htmlFor={`price-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
                   {option.label}
                 </label>
               </div>

@@ -1,40 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import React, { useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 const commonComponents = [
-  { name: "addressAndGeolocation", label: "Address and Geolocation" },
+  { name: 'addressAndGeolocation', label: 'Address and Geolocation' },
   {
-    name: "workflowManagement",
-    label: "Workflow Management (similar to Camunda)",
+    name: 'workflowManagement',
+    label: 'Workflow Management (similar to Camunda)',
   },
   {
-    name: "formDesignAndSubmission",
-    label: "Form Design and Submission (similar to CHEFS, Gravity, Orbeon)",
+    name: 'formDesignAndSubmission',
+    label: 'Form Design and Submission (similar to CHEFS, Gravity, Orbeon)',
   },
   {
-    name: "identityManagement",
-    label: "Identity management (user authentication and authorization)",
+    name: 'identityManagement',
+    label: 'Identity management (user authentication and authorization)',
   },
   {
-    name: "paymentServices",
+    name: 'paymentServices',
+    label: 'Payment services (i.e. collection, processing, reconciliation, ledger management)',
+  },
+  {
+    name: 'documentManagement',
+    label: 'Document Management (file storage and transfer, PDF and other document generation)',
+  },
+  {
+    name: 'endUserNotificationAndSubscription',
     label:
-      "Payment services (i.e. collection, processing, reconciliation, ledger management)",
+      'End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)',
   },
+  { name: 'publishing', label: 'Publishing (web content management)' },
   {
-    name: "documentManagement",
-    label:
-      "Document Management (file storage and transfer, PDF and other document generation)",
-  },
-  {
-    name: "endUserNotificationAndSubscription",
-    label:
-      "End user notification and subscription service (email, text messages, automated phone calls, in-app pop up messages)",
-  },
-  { name: "publishing", label: "Publishing (web content management)" },
-  {
-    name: "businessIntelligence",
-    label:
-      "Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)",
+    name: 'businessIntelligence',
+    label: 'Business Intelligence Dashboard and Metrics reporting (i.e. diagrams and pie charts, report generation)',
   },
 ];
 
@@ -53,7 +50,7 @@ export default function CommonComponents() {
     // console.log("onClickHandler", name, value);
     setCheckedState((prevState) => ({
       ...prevState,
-      [name]: prevState[name] === value ? "NOT_USING" : value,
+      [name]: prevState[name] === value ? 'NOT_USING' : value,
     }));
     setNoneSelected(false); // Whenever an option is clicked, make sure noneSelected is turned off
   };
@@ -81,9 +78,9 @@ export default function CommonComponents() {
 
     // For noneSelected, you can either set it to `true` or `null` based on whether it is checked
     if (noneSelected) {
-      setValue("commonComponents.noServices", true);
+      setValue('commonComponents.noServices', true);
     } else {
-      setValue("commonComponents.noServices", false);
+      setValue('commonComponents.noServices', false);
       // unregister("commonComponents.noServices");
     }
   }, [checkedState, noneSelected, setValue, unregister]);
@@ -121,8 +118,7 @@ export default function CommonComponents() {
         3. Common Components
       </h2>
       <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-        Please indicate what services you expect to utilize as part of your
-        product.
+        Please indicate what services you expect to utilize as part of your product.
       </p>
       <div className="mt-12 space-y-10 ">
         <fieldset>
@@ -137,31 +133,21 @@ export default function CommonComponents() {
                   onChange={onNoneSelected}
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
-                <label
-                  htmlFor="none"
-                  className="ml-4 font-bcsans font-semibold text-base text-gray-900"
-                >
+                <label htmlFor="none" className="ml-4 font-bcsans font-semibold text-base text-gray-900">
                   The app does not use any of these services
                 </label>
               </div>
               {errors.commonComponents ? (
-                <label
-                  htmlFor="none"
-                  className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2"
-                >
-                  Please select &quot;The app does not use any of these
-                  services&quot; if you are not using any of common components
-                  below
+                <label htmlFor="none" className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2">
+                  Please select &quot;The app does not use any of these services&quot; if you are not using any of
+                  common components below
                 </label>
               ) : null}
             </div>
             {commonComponents.map(({ name, label }) => (
               <div className="relative flex flex-col" key={name}>
                 <div className="text-sm leading-6">
-                  <label
-                    htmlFor={name}
-                    className="font-bcsans font-semibold text-base text-gray-900"
-                  >
+                  <label htmlFor={name} className="font-bcsans font-semibold text-base text-gray-900">
                     {label}
                   </label>
                 </div>
@@ -171,8 +157,8 @@ export default function CommonComponents() {
                       id={name}
                       name={name}
                       type="checkbox"
-                      checked={checkedState[name] === "IMPLEMENTED"}
-                      onChange={() => onClickHandler(name, "IMPLEMENTED")}
+                      checked={checkedState[name] === 'IMPLEMENTED'}
+                      onChange={() => onClickHandler(name, 'IMPLEMENTED')}
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                     <label
@@ -187,8 +173,8 @@ export default function CommonComponents() {
                       id={name}
                       name={name}
                       type="checkbox"
-                      checked={checkedState[name] === "PLANNING_TO_USE"}
-                      onChange={() => onClickHandler(name, "PLANNING_TO_USE")}
+                      checked={checkedState[name] === 'PLANNING_TO_USE'}
+                      onChange={() => onClickHandler(name, 'PLANNING_TO_USE')}
                       className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                     <label
@@ -203,10 +189,7 @@ export default function CommonComponents() {
             ))}
           </div>
           <div className="col-span-full mt-10">
-            <label
-              htmlFor="street-address"
-              className="font-bcsans font-semibold text-base text-gray-900"
-            >
+            <label htmlFor="street-address" className="font-bcsans font-semibold text-base text-gray-900">
               Other
             </label>
             <div className="mt-2">
@@ -214,7 +197,7 @@ export default function CommonComponents() {
                 type="text"
                 placeholder="Please specify any other common components used"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                {...register("commonComponents.other")}
+                {...register('commonComponents.other')}
               />
             </div>
           </div>
