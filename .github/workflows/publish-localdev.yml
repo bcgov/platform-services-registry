@@ -1,4 +1,4 @@
-name: Build and Publish ClamAV Image
+name: Build and Publish Localdev Images
 
 on:
   push:
