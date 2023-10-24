@@ -4,7 +4,7 @@ on: push
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
@@ -39,8 +39,13 @@ jobs:
         mkdir -p ./localdev/mnt/mongodb
         mkdir -p ./localdev/mnt/postgres
 
+        DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+        mkdir -p $DOCKER_CONFIG/cli-plugins
+        curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+        sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
         which docker-compose
-        docker-compose --version
+        docker compose version
         docker-compose -f localdev/docker-compose.yml up -d
 
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
