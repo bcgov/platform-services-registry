@@ -34,7 +34,7 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: pltsvc
+        image-name: bcgov/pltsvc
         docker-context: .
         docker-file: Dockerfile
         metadata-tags: |
