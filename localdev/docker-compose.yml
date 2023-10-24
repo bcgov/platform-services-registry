@@ -3,6 +3,8 @@ version: '3.9'
 x-cache: &cache
   cache_from:
   - type=local,src=/tmp/.buildx-cache
+  cache_to:
+  - type=local,mode=max,dest=/tmp/.buildx-cache-new
 
 services:
   keycloak:
