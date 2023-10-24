@@ -1,16 +1,11 @@
 version: '3.9'
 
-x-cache: &cache
-  cache_from:
-  - type=local,src=/tmp/.buildx-cache
-
 services:
   keycloak:
     container_name: keycloak
     build:
       context: ./keycloak
       dockerfile: Dockerfile
-      <<: *cache
     command:
     - start-dev
     environment:
@@ -41,7 +36,6 @@ services:
     build:
       context: ./
       dockerfile: ./keycloak-provision/Dockerfile
-      <<: *cache
     environment:
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_ADMIN: admin
@@ -94,7 +88,6 @@ services:
     build:
       context: ./m365proxy
       dockerfile: Dockerfile
-      <<: *cache
     stdin_open: true
     ports:
     - 8000:8000

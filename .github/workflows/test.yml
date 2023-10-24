@@ -2,9 +2,6 @@ name: Test codebase
 
 on: push
 
-env:
-  ACTIONS_RUNNER_DEBUG: true
-
 jobs:
   test:
     runs-on: ubuntu-22.04
@@ -24,33 +21,6 @@ jobs:
 
     - name: Run build
       run: npm run build
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@5d9862498505fcac67b9f455d6e94ec0339f7b90
-
-          # see https://github.com/docker/build-push-action/issues/252#issuecomment-744400434
-    - name: Cache Docker layers
-          # see https://github.com/actions/cache/commit/69d9d449aced6a2ede0bc19182fadc3a0a42d2b0
-      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-test-${{ github.sha }}
-        restore-keys: ${{ runner.os }}-buildx-test
-
-    - name: Build Local Images
-      uses: docker/bake-action@cff93986225aa60b529e85c83a08f7df996a8d48
-      with:
-        workdir: ./localdev
-        push: false
-        load: true
-        set: |
-          *.cache-from=type=local,src=/tmp/.buildx-cache
-          *.cache-to=type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Run test
       run: |
