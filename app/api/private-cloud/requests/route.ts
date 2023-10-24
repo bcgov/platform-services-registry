@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 import { privateCloudRequestsPaginated } from '@/paginatedQueries/private-cloud';
+=======
+import { NextRequest, NextResponse } from "next/server";
+import { PrivateCloudProject } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { string, z } from "zod";
+import { privateCloudRequestsPaginated } from "@/paginated-queries/private-cloud";
+>>>>>>> 316df6e (created quereis)
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts

@@ -59,7 +59,11 @@ export async function privateCloudProjectsPaginated(
 }> {
   // Initialize the search/filter query
   const searchQuery: any = {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
     status: 'ACTIVE',
+=======
+    status: "ACTIVE",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
   };
 
   // Construct search/filter conditions based on provided parameters
@@ -67,42 +71,67 @@ export async function privateCloudProjectsPaginated(
     searchQuery.$or = [
       { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
       {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
         'projectOwnerDetails.firstName': { $regex: searchTerm, $options: 'i' },
+=======
+        "projectOwnerDetails.firstName": { $regex: searchTerm, $options: "i" },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
       },
       { 'projectOwnerDetails.lastName': { $regex: searchTerm, $options: 'i' } },
       {
         'primaryTechnicalLeadDetails.email': {
           $regex: searchTerm,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           $options: 'i',
+=======
+          $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         'primaryTechnicalLeadDetails.firstName': {
           $regex: searchTerm,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           $options: 'i',
+=======
+          $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         'primaryTechnicalLeadDetails.lastName': {
           $regex: searchTerm,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           $options: 'i',
+=======
+          $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         'secondaryTechnicalLeadDetails.email': {
           $regex: searchTerm,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           $options: 'i',
+=======
+          $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         'secondaryTechnicalLeadDetails.firstName': {
           $regex: searchTerm,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           $options: 'i',
+=======
+          $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         'secondaryTechnicalLeadDetails.lastName': {
           $regex: searchTerm,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           $options: 'i',
         },
       },
@@ -111,6 +140,16 @@ export async function privateCloudProjectsPaginated(
       { licencePlate: { $regex: searchTerm, $options: 'i' } },
       { cluster: { $regex: searchTerm, $options: 'i' } },
       { ministry: { $regex: searchTerm, $options: 'i' } },
+=======
+          $options: "i",
+        },
+      },
+      { name: { $regex: searchTerm, $options: "i" } },
+      { description: { $regex: searchTerm, $options: "i" } },
+      { licencePlate: { $regex: searchTerm, $options: "i" } },
+      { cluster: { $regex: searchTerm, $options: "i" } },
+      { ministry: { $regex: searchTerm, $options: "i" } },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
 
       // include other fields as necessary
     ];
@@ -132,13 +171,21 @@ export async function privateCloudProjectsPaginated(
           {
             'primaryTechnicalLeadDetails.email': {
               $regex: userEmail,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
               $options: 'i',
+=======
+              $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
               $regex: userEmail,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
               $options: 'i',
+=======
+              $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
             },
           },
         ],
@@ -151,22 +198,37 @@ export async function privateCloudProjectsPaginated(
     pipeline: [
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
           as: 'projectOwnerDetails',
+=======
+          from: "User",
+          localField: "projectOwnerId",
+          foreignField: "_id",
+          as: "projectOwnerDetails",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'primaryTechnicalLeadId',
           foreignField: '_id',
           as: 'primaryTechnicalLeadDetails',
+=======
+          from: "User",
+          localField: "primaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "primaryTechnicalLeadDetails",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
@@ -176,6 +238,17 @@ export async function privateCloudProjectsPaginated(
       { $match: searchQuery },
       { $unwind: '$projectOwnerDetails' },
       { $count: 'totalCount' },
+=======
+          from: "User",
+          localField: "secondaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "secondaryTechnicalLeadDetails",
+        },
+      },
+      { $match: searchQuery },
+      { $unwind: "$projectOwnerDetails" },
+      { $count: "totalCount" },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
     ],
   });
 
@@ -184,26 +257,47 @@ export async function privateCloudProjectsPaginated(
     pipeline: [
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
           as: 'projectOwnerDetails',
+=======
+          from: "User",
+          localField: "projectOwnerId",
+          foreignField: "_id",
+          as: "projectOwnerDetails",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'primaryTechnicalLeadId',
           foreignField: '_id',
           as: 'primaryTechnicalLeadDetails',
+=======
+          from: "User",
+          localField: "primaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "primaryTechnicalLeadDetails",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
           as: 'secondaryTechnicalLeadDetails',
+=======
+          from: "User",
+          localField: "secondaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "secondaryTechnicalLeadDetails",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $match: searchQuery },
@@ -211,7 +305,11 @@ export async function privateCloudProjectsPaginated(
       { $unwind: '$primaryTechnicalLeadDetails' },
       {
         $unwind: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           path: '$secondaryTechnicalLeadDetails',
+=======
+          path: "$secondaryTechnicalLeadDetails",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -219,7 +317,11 @@ export async function privateCloudProjectsPaginated(
       { $limit: pageSize },
       {
         $addFields: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           id: { $toString: '$_id' }, // Convert _id to string
+=======
+          id: { $toString: "$_id" }, // Convert _id to string
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
@@ -255,8 +357,13 @@ export async function privateCloudRequestsPaginated(
 
   if (searchTerm) {
     searchQuery.$or = [
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
       { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
       { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+=======
+      { "requestedProject.name": { $regex: searchTerm, $options: "i" } },
+      { "requestedProject.ministry": { $regex: searchTerm, $options: "i" } },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
     ];
   }
 
@@ -278,12 +385,20 @@ export async function privateCloudRequestsPaginated(
         $or: [
           { 'projectOwner.email': { $regex: userEmail, $options: 'i' } },
           {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
             'primaryTechnicalLead.email': { $regex: userEmail, $options: 'i' },
+=======
+            "primaryTechnicalLead.email": { $regex: userEmail, $options: "i" },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
           },
           {
             'secondaryTechnicalLead.email': {
               $regex: userEmail,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
               $options: 'i',
+=======
+              $options: "i",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
             },
           },
         ],
@@ -295,48 +410,84 @@ export async function privateCloudRequestsPaginated(
     pipeline: [
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'PrivateCloudRequestedProject',
           localField: 'requestedProjectId',
           foreignField: '_id',
           as: 'requestedProject',
+=======
+          from: "PrivateCloudRequestedProject",
+          localField: "requestedProjectId",
+          foreignField: "_id",
+          as: "requestedProject",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $unwind: '$requestedProject' },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'requestedProject.projectOwnerId',
           foreignField: '_id',
           as: 'projectOwner',
+=======
+          from: "User",
+          localField: "requestedProject.projectOwnerId",
+          foreignField: "_id",
+          as: "projectOwner",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $unwind: '$projectOwner' },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'requestedProject.primaryTechnicalLeadId',
           foreignField: '_id',
           as: 'primaryTechnicalLead',
+=======
+          from: "User",
+          localField: "requestedProject.primaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "primaryTechnicalLead",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $unwind: '$primaryTechnicalLead' },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'requestedProject.secondaryTechnicalLeadId',
           foreignField: '_id',
           as: 'secondaryTechnicalLead',
+=======
+          from: "User",
+          localField: "requestedProject.secondaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "secondaryTechnicalLead",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         $unwind: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           path: '$secondaryTechnicalLead',
+=======
+          path: "$secondaryTechnicalLead",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
           preserveNullAndEmptyArrays: true,
         },
       },
       { $unwind: '$requestedProject' },
       { $match: searchQuery },
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
       { $count: 'totalCount' },
+=======
+      { $count: "totalCount" },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
     ],
   });
 
@@ -344,42 +495,74 @@ export async function privateCloudRequestsPaginated(
     pipeline: [
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'PrivateCloudRequestedProject',
           localField: 'requestedProjectId',
           foreignField: '_id',
           as: 'requestedProject',
+=======
+          from: "PrivateCloudRequestedProject",
+          localField: "requestedProjectId",
+          foreignField: "_id",
+          as: "requestedProject",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $unwind: '$requestedProject' },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'requestedProject.projectOwnerId',
           foreignField: '_id',
           as: 'projectOwner',
+=======
+          from: "User",
+          localField: "requestedProject.projectOwnerId",
+          foreignField: "_id",
+          as: "projectOwner",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $unwind: '$projectOwner' },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'requestedProject.primaryTechnicalLeadId',
           foreignField: '_id',
           as: 'primaryTechnicalLead',
+=======
+          from: "User",
+          localField: "requestedProject.primaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "primaryTechnicalLead",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       { $unwind: '$primaryTechnicalLead' },
       {
         $lookup: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           from: 'User',
           localField: 'requestedProject.secondaryTechnicalLeadId',
           foreignField: '_id',
           as: 'secondaryTechnicalLead',
+=======
+          from: "User",
+          localField: "requestedProject.secondaryTechnicalLeadId",
+          foreignField: "_id",
+          as: "secondaryTechnicalLead",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {
         $unwind: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           path: '$secondaryTechnicalLead',
+=======
+          path: "$secondaryTechnicalLead",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -388,7 +571,11 @@ export async function privateCloudRequestsPaginated(
       { $limit: pageSize },
       {
         $addFields: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.ts
           id: { $toString: '$_id' },
+=======
+          id: { $toString: "$_id" },
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.ts
         },
       },
       {

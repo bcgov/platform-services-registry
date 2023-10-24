@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBody';
 import { publicCloudProjectsPaginated, Project } from '@/paginatedQueries/public-cloud';
@@ -16,6 +17,29 @@ const headers = [
   { field: 'created', headerName: 'Created' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
   { field: 'edit', headerName: '' },
+=======
+import Table from "@/components/table/Table";
+import TableBody from "@/components/table/TableBody";
+import {
+  publicCloudProjectsPaginated,
+  Project,
+} from "@/paginated-queries/public-cloud";
+import { publicCloudProjectDataToRow } from "@/components/table/helpers/rowMapper";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+
+const headers = [
+  { field: "name", headerName: "Name" },
+  { field: "description", headerName: "Description" },
+  { field: "ministry", headerName: "Ministry" },
+  { field: "cluster", headerName: "Cluster" },
+  { field: "projectOwner", headerName: "Project Owner" },
+  { field: "technicalLeads", headerName: "Technical Leads" },
+  { field: "created", headerName: "Created" },
+  { field: "licencePlate", headerName: "Licence Plate" },
+  { field: "edit", headerName: "" },
+>>>>>>> 316df6e (created quereis)
 ];
 
 export default async function ProductsTable({
@@ -46,6 +70,7 @@ export default async function ProductsTable({
   // If not an admin, we need to provide the user's email to the query
   const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
+<<<<<<< HEAD
   const { data, total }: { data: Project[]; total: number } = await publicCloudProjectsPaginated(
     defaultPageSize,
     currentPage,
@@ -54,6 +79,17 @@ export default async function ProductsTable({
     provider,
     userEmail,
   );
+=======
+  const { data, total }: { data: Project[]; total: number } =
+    await publicCloudProjectsPaginated(
+      defaultPageSize,
+      currentPage,
+      search,
+      ministry,
+      provider,
+      userEmail,
+    );
+>>>>>>> 316df6e (created quereis)
 
   const rows = data.map(publicCloudProjectDataToRow);
 

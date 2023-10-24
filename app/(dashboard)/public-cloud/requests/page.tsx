@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBody';
 import { publicCloudRequestsPaginated } from '@/paginatedQueries/public-cloud';
@@ -16,6 +17,26 @@ const headers = [
   { field: 'technicalLeads', headerName: 'Technical Leads' },
   { field: 'created', headerName: 'Created' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
+=======
+import Table from "@/components/table/Table";
+import TableBody from "@/components/table/TableBody";
+import { publicCloudRequestsPaginated } from "@/paginated-queries/public-cloud";
+import { publicCloudRequestDataToRow } from "@/components/table/helpers/rowMapper";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+
+const headers = [
+  { field: "type", headerName: "Type" },
+  { field: "status", headerName: "Status" },
+  { field: "name", headerName: "Name" },
+  { field: "ministry", headerName: "Ministry" },
+  { field: "csp", headerName: "Cluster" },
+  { field: "projectOwner", headerName: "Project Owner" },
+  { field: "technicalLeads", headerName: "Technical Leads" },
+  { field: "created", headerName: "Created" },
+  { field: "licencePlate", headerName: "Licence Plate" },
+>>>>>>> 316df6e (created quereis)
 ];
 
 export default async function RequestsTable({

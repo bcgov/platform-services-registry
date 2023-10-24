@@ -1,5 +1,13 @@
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
 import { privateCloudProjectsPaginated, privateCloudRequestsPaginated } from '@/paginatedQueries/private-cloud';
 import prisma from '@/lib/prisma';
+=======
+import {
+  privateCloudProjectsPaginated,
+  privateCloudRequestsPaginated,
+} from "@/paginated-queries/private-cloud";
+import prisma from "@/lib/prisma";
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
 import {
   Prisma,
   RequestType,
@@ -9,8 +17,17 @@ import {
   Ministry,
   Cluster,
   User,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+=======
+} from "@prisma/client";
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+} from "@/schema";
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
 // import { cleanUp } from "@/jest.setup";
 
 const quota = {
@@ -25,6 +42,7 @@ const projectData = {
   cluster: Cluster.CLAB, // Assuming CLUSTER_A is a valid enum value for Cluster
   ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   projectOwner: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
     firstName: 'Oamar',
     lastName: 'Kanji',
     email: 'oamar.kanji@gov.bc.ca',
@@ -40,6 +58,23 @@ const projectData = {
     firstName: 'Jane',
     lastName: 'Smith',
     email: 'jane.smith@example.com',
+=======
+    firstName: "Oamar",
+    lastName: "Kanji",
+    email: "oamar.kanji@gov.bc.ca",
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+  },
+  primaryTechnicalLead: {
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+  },
+  secondaryTechnicalLead: {
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
     ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   },
   productionQuota: quota,
@@ -83,7 +118,11 @@ const projectData = {
       planningToUse: true,
       implemented: false,
     },
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
     other: 'Some other services',
+=======
+    other: "Some other services",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
     noServices: false,
   },
 };
@@ -94,6 +133,7 @@ const projectData2 = {
   cluster: Cluster.SILVER, // Assuming CLUSTER_A is a valid enum value for Cluster
   ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   projectOwner: {
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
     firstName: 'Christopher',
     lastName: 'Tan',
     email: 'christopher.tan@gov.bc.ca',
@@ -109,6 +149,23 @@ const projectData2 = {
     firstName: 'Jane',
     lastName: 'Smith',
     email: 'jane.smith@example.com',
+=======
+    firstName: "Christopher",
+    lastName: "Tan",
+    email: "christopher.tan@gov.bc.ca",
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+  },
+  primaryTechnicalLead: {
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+  },
+  secondaryTechnicalLead: {
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
     ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
   },
   productionQuota: quota,
@@ -152,7 +209,11 @@ const projectData2 = {
       planningToUse: true,
       implemented: false,
     },
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
     other: 'Some other services',
+=======
+    other: "Some other services",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
     noServices: false,
   },
 };
@@ -234,7 +295,11 @@ describe('Query projects with filter and search and pagination', () => {
         data: {
           ...projectObject,
           name: projectObject.name + i,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
           licencePlate: '123456' + i,
+=======
+          licencePlate: "123456" + i,
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
           secondaryTechnicalLead: undefined,
         },
       });
@@ -286,7 +351,11 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       undefined,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
       'christopher.tan@gov.bc.ca',
+=======
+      "christopher.tan@gov.bc.ca",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
     );
     expect(projects.total).toBe(3);
   });
@@ -298,7 +367,11 @@ describe('Query projects with filter and search and pagination', () => {
         data: {
           ...projectObject2,
           name: projectData2.name + i,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
           licencePlate: '123456' + i,
+=======
+          licencePlate: "123456" + i,
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
         },
       });
     }
@@ -309,7 +382,11 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       undefined,
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
       'christopher.tan@gov.bc.ca',
+=======
+      "christopher.tan@gov.bc.ca",
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
     );
 
     expect(projects.data.length).toBe(3);
@@ -327,14 +404,36 @@ describe('Query projects with filter and search and pagination', () => {
     expect(projects.total).toBe(8);
   });
 
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
   test('Should return only requests that fits the Cluster', async () => {
     const Allprojects = await privateCloudRequestsPaginated(10, 1, undefined, undefined, 'CLAB');
+=======
+  test("Should return only requests that fits the Cluster", async () => {
+    const Allprojects = await privateCloudRequestsPaginated(
+      10,
+      1,
+      undefined,
+      undefined,
+      "CLAB",
+    );
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
 
     expect(Allprojects.total).toBe(5);
   });
 
+<<<<<<< HEAD:paginatedQueries/private-cloud/index.test.ts
   test('Should return only projects that fits the SearchTerm', async () => {
     const projects = await privateCloudProjectsPaginated(10, 1, undefined, undefined, 'CLAB');
+=======
+  test("Should return only projects that fits the SearchTerm", async () => {
+    const projects = await privateCloudProjectsPaginated(
+      10,
+      1,
+      undefined,
+      undefined,
+      "CLAB",
+    );
+>>>>>>> 316df6e (created quereis):paginated-queries/private-cloud/index.test.ts
 
     expect(projects.total).toBe(5);
   });

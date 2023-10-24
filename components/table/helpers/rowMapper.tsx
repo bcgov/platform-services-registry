@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import formatDate from '@/components/utils/formatdates';
 import Image from 'next/image';
 import Edit from '@/components/assets/edit.svg';
 import { Project } from '@/paginatedQueries/private-cloud';
 import classNames from '@/components/utils/classnames';
+=======
+import formatDate from "@/components/utils/formatdates";
+import Image from "next/image";
+import Edit from "@/components/assets/edit.svg";
+import { Project } from "@/paginated-queries/private-cloud";
+import classNames from "@/components/utils/classnames";
+>>>>>>> 316df6e (created quereis)
 
 function TypeBadge({ status }: { status: string }) {
   let text, colour;

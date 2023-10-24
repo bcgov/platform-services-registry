@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBody';
 import { privateCloudRequestsPaginated } from '@/paginatedQueries/private-cloud';
@@ -6,10 +7,21 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
 import { PrivateCloudRequest } from '@prisma/client';
+=======
+import Table from "@/components/table/Table";
+import TableBody from "@/components/table/TableBody";
+import { privateCloudRequestsPaginated } from "@/paginated-queries/private-cloud";
+import { privateCloudRequestDataToRow } from "@/components/table/helpers/rowMapper";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import { PrivateCloudRequest } from "@prisma/client";
+>>>>>>> 316df6e (created quereis)
 
 export const revalidate = 0;
 
 const headers = [
+<<<<<<< HEAD
   { field: 'type', headerName: 'Type' },
   { field: 'status', headerName: 'Status' },
   { field: 'name', headerName: 'Name' },
@@ -19,6 +31,17 @@ const headers = [
   { field: 'technicalLeads', headerName: 'Technical Leads' },
   { field: 'created', headerName: 'Created' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
+=======
+  { field: "type", headerName: "Type" },
+  { field: "status", headerName: "Status" },
+  { field: "name", headerName: "Name" },
+  { field: "ministry", headerName: "Ministry" },
+  { field: "cluster", headerName: "Cluster" },
+  { field: "projectOwner", headerName: "Project Owner" },
+  { field: "technicalLeads", headerName: "Technical Leads" },
+  { field: "created", headerName: "Created" },
+  { field: "licencePlate", headerName: "Licence Plate" },
+>>>>>>> 316df6e (created quereis)
 ];
 
 export default async function RequestsTable({
@@ -51,6 +74,7 @@ export default async function RequestsTable({
   // If not an admin, we need to provide the user's email to the query
   const userEmail = isAdmin ? undefined : session?.user?.email;
 
+<<<<<<< HEAD
   const { data, total }: { data: PrivateCloudRequest[]; total: number } = await privateCloudRequestsPaginated(
     defaultPageSize,
     currentPage,
@@ -60,6 +84,18 @@ export default async function RequestsTable({
     userEmail,
     isAdmin,
   );
+=======
+  const { data, total }: { data: PrivateCloudRequest[]; total: number } =
+    await privateCloudRequestsPaginated(
+      defaultPageSize,
+      currentPage,
+      search,
+      ministry,
+      cluster,
+      userEmail,
+      isAdmin,
+    );
+>>>>>>> 316df6e (created quereis)
 
   const rows = data.map(privateCloudRequestDataToRow).reverse();
 
