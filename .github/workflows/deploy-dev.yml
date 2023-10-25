@@ -1,0 +1,56 @@
+name: Deploy Dev Environment
+
+on:
+  push:
+    branches:
+    - main
+    paths-ignore:
+    - CHANGELOG.md
+    - .pre-commit-config.yaml
+    - .conventional-changelog.mjs
+    - .release-it.json
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+jobs:
+  build-push:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@d725ec2e6318ef28fde560028547d79aa604a897
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc
+        docker-context: .
+        docker-file: Dockerfile
+        metadata-tags: |
+          type=ref,event=branch
+          type=sha,format=long,prefix=,suffix=
+
+  deploy:
+    needs: [build-push]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
+
+    - name: Deploy app with Helm chart
+      run: echo "WIP"

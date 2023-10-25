@@ -1,0 +1,82 @@
+name: Build and Publish Localdev Images
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/publish-localdev.yml
+    - localdev/**
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+jobs:
+  build-push-keycloak:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@d725ec2e6318ef28fde560028547d79aa604a897
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-localdev-keycloak
+        docker-context: ./localdev/keycloak
+        docker-file: Dockerfile
+        metadata-tags: |
+          type=raw,value=latest
+
+  build-push-keycloak-provision:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@d725ec2e6318ef28fde560028547d79aa604a897
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-localdev-keycloak-provision
+        docker-context: ./localdev/keycloak-provision
+        docker-file: Dockerfile
+        metadata-tags: |
+          type=raw,value=latest
+
+  build-push-m365proxy:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@d725ec2e6318ef28fde560028547d79aa604a897
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-localdev-m365proxy
+        docker-context: ./localdev/m365proxy
+        docker-file: Dockerfile
+        metadata-tags: |
+          type=raw,value=latest
