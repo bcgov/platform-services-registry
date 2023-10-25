@@ -68,7 +68,7 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: bitnami/mongodb:6.0.11
+    image: bitnami/mongodb:7.0.2
 
     environment:
     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
