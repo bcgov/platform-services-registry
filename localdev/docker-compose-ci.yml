@@ -1,0 +1,12 @@
+services:
+  keycloak:
+    image: ghcr.io/bcgov/pltsvc-localdev-keycloak:latest
+    build: {}
+
+  keycloak-provision:
+    image: ghcr.io/bcgov/pltsvc-localdev-keycloak-provision:latest
+    build: {}
+
+  m365proxy:
+    image: ghcr.io/bcgov/pltsvc-localdev-m365proxy:latest
+    build: {}
