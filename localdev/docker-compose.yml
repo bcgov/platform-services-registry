@@ -48,7 +48,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:14.9
+    image: postgres:16.0
     healthcheck:
       test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
       timeout: 45s
