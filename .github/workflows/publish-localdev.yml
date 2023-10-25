@@ -30,8 +30,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-localdev-keycloak
-        docker-context: ./localdev/keycloak
-        docker-file: Dockerfile
+        docker-context: localdev/keycloak
+        docker-file: localdev/keycloak/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -53,8 +53,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-localdev-keycloak-provision
-        docker-context: ./localdev/keycloak-provision
-        docker-file: Dockerfile
+        docker-context: localdev/keycloak-provision
+        docker-file: localdev/keycloak-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -76,7 +76,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-localdev-m365proxy
-        docker-context: ./localdev/m365proxy
-        docker-file: Dockerfile
+        docker-context: localdev/m365proxy
+        docker-file: localdev/m365proxy/Dockerfile
         metadata-tags: |
           type=raw,value=latest
