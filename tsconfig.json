@@ -35,7 +35,10 @@
     ".next/types/**/*.ts",
     "types/**/*.ts",
     "middleware/**/*.ts",
-    "components/nav/Avatar.js"
+    "components/nav/Avatar.js",
+    "ches/index.js",
+    "ches/chesService.ts",
+    "ches/clientConnection.ts"
   ],
 
   "exclude": ["node_modules"]

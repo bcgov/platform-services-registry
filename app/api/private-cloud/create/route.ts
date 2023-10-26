@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { PrivateCloudRequest } from '@prisma/client';
 import createRequest from '@/requestActions/private-cloud/createRequest';
+import { sendCreateRequestEmails } from '@/ches/emailHandler';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     throw e;
   }
 
-  // sendCreateRequestEmails(createRequest.requestedProject);
+  sendCreateRequestEmails(formData);
 
   // return NextResponse.json(request, {
   //   status: 200,

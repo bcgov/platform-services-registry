@@ -12,7 +12,6 @@ import ReturnModal from '@/components/modal/Return';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
-import { sendEmail } from '../../../../components/email/sendEmail';
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -45,7 +44,6 @@ export default function Page() {
 
       setOpenCreate(false);
       setOpenReturn(true);
-      const emailSent = await sendEmail(data);
     } catch (error) {
       setIsLoading(false);
       console.error('Error:', error);
