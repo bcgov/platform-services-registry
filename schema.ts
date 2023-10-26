@@ -1,6 +1,7 @@
 import { Cluster, Ministry, Provider } from '@prisma/client';
 import { string, number, z } from 'zod';
 
+
 export const DefaultCpuOptionsSchema = z.enum([
   'CPU_REQUEST_0_5_LIMIT_1_5',
   'CPU_REQUEST_1_LIMIT_2',
@@ -12,6 +13,7 @@ export const DefaultCpuOptionsSchema = z.enum([
   'CPU_REQUEST_64_LIMIT_128',
 ]);
 
+
 export const DefaultMemoryOptionsSchema = z.enum([
   'MEMORY_REQUEST_2_LIMIT_4',
   'MEMORY_REQUEST_4_LIMIT_8',
@@ -20,6 +22,7 @@ export const DefaultMemoryOptionsSchema = z.enum([
   'MEMORY_REQUEST_32_LIMIT_64',
   'MEMORY_REQUEST_64_LIMIT_128',
 ]);
+
 
 export const DefaultStorageOptionsSchema = z.enum([
   'STORAGE_1',
@@ -33,10 +36,12 @@ export const DefaultStorageOptionsSchema = z.enum([
   'STORAGE_512',
 ]);
 
+
 const CommonComponentsOptionsSchema = z.object({
   planningToUse: z.boolean(),
   implemented: z.boolean(),
 });
+
 
 export const CommonComponentsInputSchema = z
   .object({
@@ -63,8 +68,10 @@ export const CommonComponentsInputSchema = z
         ) // @ts-ignore
         .some((options) => options.planningToUse || options.implemented);
 
+
       const otherFieldHasValue = data.other !== undefined && data.other !== '';
       const noServicesIsChecked = data.noServices === true;
+
 
       return checkBoxIsChecked || otherFieldHasValue || noServicesIsChecked;
     },
@@ -73,13 +80,16 @@ export const CommonComponentsInputSchema = z
     },
   );
 
+
 export const QuotaInputSchema = z.object({
   cpu: z.union([DefaultCpuOptionsSchema, z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/)]),
   memory: z.union([DefaultMemoryOptionsSchema, z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/)]),
   storage: z.union([DefaultStorageOptionsSchema, z.string().regex(/STORAGE_\d+/)]),
 });
 
+
 export const DecisionOptionsSchema = z.enum(['APPROVED', 'REJECTED']);
+
 
 export const BudgetInputSchema = z.object({
   dev: z.number().min(50, 'Value should be no less than USD 50').default(50),
@@ -88,12 +98,14 @@ export const BudgetInputSchema = z.object({
   tools: z.number().min(50, 'Value should be no less than USD 50').default(50),
 });
 
+
 export const UserInputSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email().toLowerCase(),
   ministry: z.nativeEnum(Ministry),
 });
+
 
 export const PrivateCloudCreateRequestBodySchema = z.object({
   name: z.string().nonempty({ message: 'Name is required.' }),
@@ -106,10 +118,11 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   commonComponents: CommonComponentsInputSchema,
 });
 
+
 export const PublicCloudCreateRequestBodySchema = z.object({
   name: z
     .string()
-    .nonempty({ message: 'Name is required.' })
+    .min(1, { message: 'Name is required.' })
     .refine(
       (value) => !/[!#$%^&*()_\-\[\]{};'"\\|,<>\?]/g.test(value),
       'Only /. : + = @ _ special symbols are allowed',
@@ -118,11 +131,11 @@ export const PublicCloudCreateRequestBodySchema = z.object({
     .string()
     .refine(
       (value) => /^[1-9A-Z\s]+$/.test(value),
-      'Account Coding should contain only uppercase characters, digits, and spaces',
+      'Account Coding should contain only uppercase characters, digits',
     )
     .transform((value) => value.replace(/\s+/g, ''))
     .refine((value) => value.length === 24, 'Account Coding should contain 24 characters'),
-  description: z.string().nonempty({ message: 'Description is required.' }),
+  description: z.string().min(1, { message: 'Description is required.' }),
   provider: z.nativeEnum(Provider),
   budget: BudgetInputSchema,
   ministry: z.nativeEnum(Ministry),
@@ -130,6 +143,7 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional(),
 });
+
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(
   z.object({
@@ -140,7 +154,9 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
   }),
 );
 
+
 export const PublicCloudEditRequestBodySchema = PublicCloudCreateRequestBodySchema;
+
 
 export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBodySchema.merge(
   z.object({
@@ -149,12 +165,14 @@ export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBody
   }),
 );
 
+
 export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
     humanComment: string().optional(),
   }),
 );
+
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof PrivateCloudCreateRequestBodySchema>;
 export type PublicCloudCreateRequestBody = z.infer<typeof PublicCloudCreateRequestBodySchema>;
@@ -169,3 +187,6 @@ export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
 export type DefaultCpuOptions = z.infer<typeof DefaultCpuOptionsSchema>;
 export type DefaultMemoryOptions = z.infer<typeof DefaultMemoryOptionsSchema>;
 export type DefaultStorageOptions = z.infer<typeof DefaultStorageOptionsSchema>;
+
+
+
