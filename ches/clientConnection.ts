@@ -29,13 +29,5 @@ export default class ClientConnection {
         }),
       ),
     );
-    // this.axios.interceptors.request.use(
-    //   oauth.clientCredentials(
-    //     axios.create(),
-    //     tokenUrl,
-    //     clientId,
-    //     clientSecret,
-    //   )
-    // );
   }
 }

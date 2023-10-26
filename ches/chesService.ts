@@ -33,7 +33,6 @@ export default class ChesService {
 
   async send(email: any) {
     try {
-      console.log('service1');
       const { data, status } = await this.axios.post(`${this.apiUrl}/email`, email, {
         headers: {
           'Content-Type': 'application/json',
@@ -41,11 +40,9 @@ export default class ChesService {
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
       });
-      console.log('service2');
       return { data, status };
     } catch (e) {
       console.log('Error', e);
-      console.log(SERVICE);
     }
   }
 }

@@ -5,10 +5,11 @@ import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } fr
 import { render } from '@react-email/render';
 
 export const sendCreateRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
+  const email = render(Template({ formData }), { pretty: true });
   try {
     // await chesService.send({
     //   bodyType: "html",
-    //   body: render(Template({formData})),
+    //   body: email,
     //   // For all project contacts. Sent when the project set deletion request is successfully submitted
     //   to: [
     //     formData.projectOwner,
@@ -22,17 +23,16 @@ export const sendCreateRequestEmails = async (formData: PrivateCloudCreateReques
     // });
     // await chesService.send({
     //   bodyType: "html",
-    //   body: render(Template({formData})),
+    //   body: email,
     //   to: adminEmails,
     //   from: "Registry <PlatformServicesTeam@gov.bc.ca>",
     //   subject: `New Delete request in Registry waiting for your approval`,
     // });
 
-    const email = render(Template({ formData }), { pretty: true });
     await chesService.send({
       bodyType: 'html',
       body: email,
-      to: '02c.albert@gmail.com',
+      to: ['02c.albert@gmail.com'],
       from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `Test`,
     });

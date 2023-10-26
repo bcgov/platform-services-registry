@@ -103,19 +103,14 @@ export const Template = ({ formData }: EmailProp) => {
           },
         }}
       >
-        <Body className="bg-white my-auto mx-auto font-sans text-xs">
+        <style>
+          {`@tailwind base;
+          @tailwind components;
+          @tailwind utilities;`}
+        </style>
+        <Body className="bg-white my-auto mx-auto font-sans">
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
             <Header />
-            <div className="m-4">
-              <Heading className="text-lg">New Provisioning Request!</Heading>
-              <Text>Hi Registry Team, </Text>
-              <Text className="">
-                There is a new request that requires your review. Log in to the Registry to review the details. If you
-                have any questions about the request, the PO and TL contact details are included below and in the
-                Registry
-              </Text>
-              <Button className="bg-bcorange rounded-md px-4 py-2 text-white">Review Request</Button>
-            </div>
           </Container>
         </Body>
       </Tailwind>
