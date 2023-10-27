@@ -208,10 +208,12 @@ function createProjectObject(data: any) {
 const projectObject = createProjectObject(projectData);
 const projectObject2 = createProjectObject(projectData2);
 
-describe("Query projects with filter and search ", () => {
+describe("Query projects with filter and search", () => {
+  const seededProjectsCount = 5;
+
   beforeAll(async () => {
-    for (let i = 0; i < 5; i++) {
-      // create 5 projects without secondary technical lead
+    // Seed the database with 5 projects
+    for (let i = 0; i < seededProjectsCount; i++) {
       await prisma.privateCloudProject.create({
         data: {
           ...projectObject,
@@ -220,6 +222,20 @@ describe("Query projects with filter and search ", () => {
           secondaryTechnicalLead: undefined,
         },
       });
+    }
+  });
+
+  afterAll(async () => {
+    // Cleanup the database by removing the seeded projects
+    for (let i = 0; i < seededProjectsCount; i++) {
+      const projectToDelete = await prisma.privateCloudProject.findFirst({
+        where: { name: projectObject.name + i }
+      });
+      if (projectToDelete) {
+        await prisma.privateCloudProject.delete({
+          where: { id: projectToDelete.id }
+        });
+      }
     }
   });
 
@@ -237,6 +253,29 @@ describe("Query projects with filter and search ", () => {
     const projects = await privateCloudProjects("abcdefg");
     expect(projects.length).toBe(0);
   });
+
+
+  test("Should return all projects", async () => {
+    const projects = await privateCloudProjects();
+    expect(projects.length).toBe(seededProjectsCount);
+  });
+
+  test("Should return limited number of projects", async () => {
+    const projects = await privateCloudProjects(undefined, undefined, undefined, undefined, 5); // assuming the 5th parameter is limit
+    expect(projects.length).toBe(5);
+  });
+
+  test("Should paginate projects correctly", async () => {
+    const page1 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 0); // 5 projects from the start
+    const page2 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 5); // next 5 projects
+    expect(page1[4].name).not.toBe(page2[0].name); // last project of page 1 should not be the first project of page 2
+  });
+  
+  
+
+
+});
+
 
   //   test("Should return only projects belonging to specific user when userEmail is passed", async () => {
   //     // Create 3 more projects with secondary technical lead, and different project lead
@@ -309,4 +348,4 @@ describe("Query projects with filter and search ", () => {
 
   //     expect(projects.total).toBe(5);
   //   });
-});
+  //
