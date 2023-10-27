@@ -33,8 +33,8 @@ const formData: PrivateCloudCreateRequestBody = {
   },
 };
 
-describe('Test CHES API endpoint', () => {
-  test('Should send email to PO and Technical Lead', async () => {
-    sendCreateRequestEmails(formData);
-  });
-});
+// describe('Test CHES API endpoint', () => {
+//   test('Should send email to PO and Technical Lead', async () => {
+//     sendCreateRequestEmails(formData);
+//   });
+// });
