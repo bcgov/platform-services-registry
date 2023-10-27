@@ -35,7 +35,8 @@
     ".next/types/**/*.ts",
     "types/**/*.ts",
     "middleware/**/*.ts",
-    "components/nav/Avatar.js"
+    "components/nav/Avatar.js",
+    "mautic/index.ts"
   ],
 
   "exclude": ["node_modules"]

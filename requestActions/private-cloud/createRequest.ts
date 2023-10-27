@@ -4,6 +4,25 @@ import prisma from '@/lib/prisma';
 import generateLicensePlate from '@/lib/generateLicencePlate';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 
+export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
+
 const defaultQuota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
   memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
@@ -13,7 +32,7 @@ const defaultQuota = {
 export default async function createRequest(
   formData: PrivateCloudCreateRequestBody,
   authEmail: string,
-): Promise<PrivateCloudRequest> {
+): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
   const licencePlate = generateLicensePlate();
 
   const createRequestedProject: Prisma.PrivateCloudRequestedProjectCreateInput = {
@@ -71,6 +90,13 @@ export default async function createRequest(
       },
     },
     include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
       requestedProject: {
         include: {
           projectOwner: true,
