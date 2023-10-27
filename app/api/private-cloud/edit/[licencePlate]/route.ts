@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { PrivateCloudRequest } from '@prisma/client';
+import { PrivateCloudRequest, User, DecisionStatus } from '@prisma/client';
 import prisma from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
 import { PrivateCloudEditRequestBodySchema, PrivateCloudEditRequestBody } from '@/schema';
 import { string, z } from 'zod';
 import editRequest from '@/requestActions/private-cloud/editRequest';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/editRequest';
+import { subscribeUsersToMautic } from '@/mautic';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -53,33 +54,29 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }
 
-  try {
-    const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({
-      where: {
-        AND: [{ licencePlate }, { active: true }],
-      },
-    });
+  const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({
+    where: {
+      AND: [{ licencePlate }, { active: true }],
+    },
+  });
 
-    if (existingRequest !== null) {
-      throw new Error('This project already has an active request or it does not exist.');
-    }
-
-    await editRequest(licencePlate, formData, authEmail);
-
-    // await sendEditRequestEmails(
-    //   editRequest.project,
-    //   editRequest.requestedProject
-    // );
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === 'P2002') {
-        throw new Error('There is already an active request for this project.');
-      }
-    }
-    throw e;
+  if (existingRequest !== null) {
+    throw new Error('This project already has an active request or it does not exist.');
   }
 
-  // if (decisionStatus === DecisionStatus.Approved) {
+  const request: PrivateCloudRequestWithProjectAndRequestedProject = await editRequest(
+    licencePlate,
+    formData,
+    authEmail,
+  );
+
+  if (request.decisionStatus !== DecisionStatus.APPROVED) {
+    return new NextResponse(
+      'Successfuly edited project, admin approval will be required for this request to be provisioned ',
+      { status: 200 },
+    );
+  }
+
   //   await sendNatsMessage(editRequest.type, editRequest.requestedProject);
 
   //   if (editRequest.requestedProject.cluster === Cluster.Gold) {
@@ -87,7 +84,20 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   //     goldDrRequest.requestedProject.cluster = Cluster.Golddr;
   //     await sendNatsMessage(goldDrRequest.type, goldDrRequest.requestedProject);
   //   }
-  // }
+
+  // await sendEditRequestEmails(
+  //   editRequest.project,
+  //   editRequest.requestedProject
+  // );
+
+  // Subscribe users to Mautic
+  const users: User[] = [
+    request.requestedProject.projectOwner,
+    request.requestedProject.primaryTechnicalLead,
+    request.requestedProject?.secondaryTechnicalLead,
+  ].filter((user): user is User => Boolean(user));
+
+  await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
   return new NextResponse('success', { status: 200 });
 }

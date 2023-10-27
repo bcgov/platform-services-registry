@@ -1,0 +1,9 @@
+dependencies:
+- name: app
+  repository: file://../_app
+  version: 0.1.0
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.0.14
+digest: sha256:e0e7a00d790941ea288db8f0a51f6f67fb880866177fd06cd1cb62bb34d223e4
+generated: "2023-10-27T22:32:16.232532819Z"

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { DecisionStatus, Cluster } from '@prisma/client';
+import { DecisionStatus, User } from '@prisma/client';
 import { string, z } from 'zod';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PublicCloudRequestWithRequestedProject,
 } from '@/requestActions/public-cloud/decisionRequest';
 import sendPublicCloudNatsMessage from '@/nats/public-cloud';
+import { subscribeUsersToMautic } from '@/mautic';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -53,30 +54,41 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { licencePlate } = parsedParams.data;
   const { decision, humanComment, ...requestedProjectFormData } = parsedBody.data;
 
-  try {
-    const request: PublicCloudRequestWithRequestedProject = await makeDecisionRequest(
-      licencePlate,
-      decision,
-      humanComment,
-      requestedProjectFormData,
-      authEmail,
-    );
+  const request: PublicCloudRequestWithRequestedProject = await makeDecisionRequest(
+    licencePlate,
+    decision,
+    humanComment,
+    requestedProjectFormData,
+    authEmail,
+  );
 
-    if (!request.requestedProject) {
-      return new Response(`Error creating decision request for ${request.licencePlate}.`, {
-        status: 200,
-      });
-    }
-
-    if (request.decisionStatus === DecisionStatus.APPROVED) {
-      await sendPublicCloudNatsMessage(request.id, request.type, request.requestedProject);
-    }
-
-    return new NextResponse(`Decision request for ${request.licencePlate} succesfully created.`, {
-      status: 200,
+  if (!request.requestedProject) {
+    return new Response(`Error creating decision request for ${request.licencePlate}.`, {
+      status: 400,
     });
-  } catch (e) {
-    console.log(e);
-    return new NextResponse('Error creating decision request', { status: 400 });
   }
+
+  if (request.decisionStatus !== DecisionStatus.APPROVED) {
+    return new Response(
+      `Decision request for ${request.licencePlate} succesfully created. Admin approval is required`,
+      {
+        status: 200,
+      },
+    );
+  }
+
+  await sendPublicCloudNatsMessage(request.id, request.type, request.requestedProject);
+
+  // Subscribe users to Mautic
+  const users: User[] = [
+    request.requestedProject.projectOwner,
+    request.requestedProject.primaryTechnicalLead,
+    request.requestedProject?.secondaryTechnicalLead,
+  ].filter((user): user is User => Boolean(user));
+
+  await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
+
+  return new NextResponse(`Decision request for ${request.licencePlate} succesfully created and provisioned.`, {
+    status: 200,
+  });
 }

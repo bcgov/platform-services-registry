@@ -3,6 +3,25 @@ import prisma from '@/lib/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { Prisma } from '@prisma/client';
 
+export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
+
 export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {
     requestedProject: {
@@ -21,7 +40,7 @@ export default async function makeDecisionRequest(
   comment: string | undefined,
   formData: PrivateCloudEditRequestBody,
   authEmail: string,
-): Promise<PrivateCloudRequestWithRequestedProject> {
+): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
   // Get the request
   const request: PrivateCloudRequestWithRequestedProject | null = await prisma.privateCloudRequest.findFirst({
     where: {
@@ -55,11 +74,18 @@ export default async function makeDecisionRequest(
   // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject model
   // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
   // project if the admin did not change anything.
-  const decisionRequest: PrivateCloudRequestWithRequestedProject | null = await prisma.privateCloudRequest.update({
+  return await prisma.privateCloudRequest.update({
     where: {
       id: request.id,
     },
     include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
       requestedProject: {
         include: {
           projectOwner: true,
@@ -109,10 +135,4 @@ export default async function makeDecisionRequest(
       },
     },
   });
-
-  if (decisionRequest === null) {
-    throw new Error('Unable to update request.');
-  }
-
-  return decisionRequest;
 }

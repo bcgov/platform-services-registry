@@ -1,0 +1,20 @@
+global:
+  vault:
+    role: 101ed4-nonprod
+    subPath: pltsvc-dev
+  env:
+    "Env": "dev"
+
+app:
+  env:
+    "APP_ENV": "dev"
+    "AUTH_SERVER_URL": "https://dev.loginproxy.gov.bc.ca/auth"
+    "AUTH_RELM": "platform-services"
+    "NEXTAUTH_URL": "https://dev-pltsvc.apps.silver.devops.gov.bc.ca/"
+
+  route:
+    enabled: true
+    host: dev-pltsvc.apps.silver.devops.gov.bc.ca
+
+mongodb:
+  enabled: false

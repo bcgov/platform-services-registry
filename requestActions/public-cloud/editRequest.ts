@@ -1,12 +1,31 @@
-import { RequestType, PublicCloudRequest, DecisionStatus, PublicCloudProject, Prisma } from '@prisma/client';
+import { RequestType, DecisionStatus, PublicCloudProject, Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { PublicCloudEditRequestBody } from '@/schema';
+
+export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
 
 export default async function editRequest(
   licencePlate: string,
   formData: PublicCloudEditRequestBody,
   authEmail: string,
-): Promise<PublicCloudRequest> {
+): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
   // Get the current project that we are creating an edit request for
   const project: PublicCloudProject | null = await prisma.publicCloudProject.findUnique({
     where: {

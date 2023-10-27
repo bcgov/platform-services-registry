@@ -3,10 +3,29 @@ import prisma from '@/lib/prisma';
 import generateLicensePlate from '@/lib/generateLicencePlate';
 import { PublicCloudCreateRequestBody } from '@/schema';
 
+export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
+
 export default async function createRequest(
   formData: PublicCloudCreateRequestBody,
   authEmail: string,
-): Promise<PublicCloudRequest> {
+): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
   const licencePlate = generateLicensePlate();
 
   const createRequestedProject: Prisma.PublicCloudRequestedProjectCreateInput = {
@@ -61,6 +80,13 @@ export default async function createRequest(
       },
     },
     include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
       requestedProject: {
         include: {
           projectOwner: true,
