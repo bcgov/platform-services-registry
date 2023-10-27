@@ -1,0 +1,15 @@
+apiVersion: v2
+name: main
+description: A Helm chart for platform-services-registry
+type: application
+version: 0.1.0
+appVersion: '0.1.0'
+dependencies:
+  - name: app
+    version: '0.1.0'
+    repository: 'file://../_app'
+    condition: app.enabled
+  - name: mongodb
+    version: '14.0.5'
+    repository: https://charts.bitnami.com/bitnami
+    condition: mongodb.enabled

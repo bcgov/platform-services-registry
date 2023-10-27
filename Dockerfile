@@ -20,6 +20,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 
+RUN mkdir -p .next/cache/images &&\
+    chmod -R 777 .next/cache/images
+
 ENV NEXTAUTH_SECRET changeme
 
 EXPOSE 3000
