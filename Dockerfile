@@ -10,7 +10,8 @@ RUN npm install
 RUN npm run build
 
 # 2nd stage to copy image and create a smaller final image
-FROM gcr.io/distroless/nodejs18-debian12
+# FROM gcr.io/distroless/nodejs18-debian12
+FROM node:18-alpine
 
 WORKDIR /app
 
