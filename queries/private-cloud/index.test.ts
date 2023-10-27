@@ -270,8 +270,32 @@ describe("Query projects with filter and search", () => {
     const page2 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 5); // next 5 projects
     expect(page1[4].name).not.toBe(page2[0].name); // last project of page 1 should not be the first project of page 2
   });
+
+  test("Should return projects with the correct ministry", async () => {
+    const ministryFilter = Ministry.AG;
+    
+    const projects = await privateCloudProjects(undefined, ministryFilter);
+
+    // Make sure all returned projects match the ministry criteria
+    for (const project of projects) {
+        expect(project.ministry).toBe(ministryFilter);
+    }
+});
+
   
-  
+  test("Should return projects filtered by both cluster and ministry", async () => {
+    const clusterFilter = Cluster.CLAB;
+    const ministryFilter = Ministry.AG;
+    
+    const projects = await privateCloudProjects(clusterFilter, ministryFilter); 
+
+    // Make sure all returned projects match the criteria
+    for (const project of projects) {
+        expect(project.cluster).toBe(clusterFilter);
+        expect(project.ministry).toBe(ministryFilter);
+    }
+});
+
 
 
 });
