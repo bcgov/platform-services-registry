@@ -295,6 +295,36 @@ describe("Query projects with filter and search", () => {
         expect(project.ministry).toBe(ministryFilter);
     }
 });
+  //These two tests below are failing because privateCloudProjects function only takes in a string value, so we cannot loop through all the pages to pull all the projects. 
+  test("Should return all projects", async () => {
+    const veryHighLimit = 10000;  // Assuming this is higher than the total number of projects
+    const projects = await privateCloudProjects({ limit: veryHighLimit });
+
+    
+    expect(projects.length).toBeGreaterThan(0);
+  });
+
+  test("Should return all projects", async () => {
+    const defaultLimit = 10;  // Replace with the actual default limit or max items per page
+    let offset = 0;
+    let allProjects = [];
+    
+    while (true) {
+        const projects = await privateCloudProjects({ limit: defaultLimit, offset: offset });
+
+        if (projects.length === 0) {
+            break;  // No more projects left
+        }
+
+        allProjects = [...allProjects, ...projects];
+        offset += defaultLimit;
+    }
+
+    
+
+    expect(allProjects.length).toBeGreaterThan(0);
+});
+
 
 
 
