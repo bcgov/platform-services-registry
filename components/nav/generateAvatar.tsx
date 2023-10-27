@@ -24,6 +24,7 @@ async function generateAvatar(email: string): Promise<string> {
       .split('@')[0] // Extract the part before '@' as initials
       .split('.')
       .map((part) => part[0].toUpperCase())
+      .slice(0, 2)
       .join('');
 
     const canvas = document.createElement('canvas');

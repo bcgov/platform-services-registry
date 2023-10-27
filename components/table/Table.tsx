@@ -31,10 +31,19 @@ export default function Table({
         aria-label="Pagination"
       >
         <div className="hidden sm:block">
-          <p className="text-sm text-gray-700">
-            Showing <span>{pageSize * (currentPage - 1) + 1}</span> to <span>{pageSize * currentPage}</span> of{' '}
-            <span>{total}</span> results
-          </p>
+          {total == 0 ? (
+            <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
+          ) : total < pageSize * currentPage ? (
+            <p className="text-sm text-gray-700">
+              Showing <span>{pageSize * (currentPage - 1) + 1}</span> to <span>{total}</span> of <span>{total}</span>{' '}
+              results
+            </p>
+          ) : (
+            <p className="text-sm text-gray-700">
+              Showing <span>{pageSize * (currentPage - 1) + 1}</span> to <span>{pageSize * currentPage}</span> of{' '}
+              <span>{total}</span> results
+            </p>
+          )}
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
           <div>
