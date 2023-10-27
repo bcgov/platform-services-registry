@@ -3,10 +3,12 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { PublicCloudRequest } from '@prisma/client';
 import prisma from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PublicCloudEditRequestBodySchema, PublicCloudEditRequestBody, UserInput } from '@/schema';
 import { string, z } from 'zod';
 import editRequest from '@/requestActions/public-cloud/editRequest';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/createRequest';
+import { subscribeUsersToMautic } from '@/mautic';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -53,31 +55,21 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }
 
-  try {
-    const existingRequest: PublicCloudRequest | null = await prisma.publicCloudRequest.findFirst({
-      where: {
-        AND: [{ licencePlate }, { active: true }],
-      },
-    });
+  const existingRequest: PublicCloudRequest | null = await prisma.publicCloudRequest.findFirst({
+    where: {
+      AND: [{ licencePlate }, { active: true }],
+    },
+  });
 
-    if (existingRequest !== null) {
-      throw new Error('This project already has an active request or it does not exist.');
-    }
-
-    await editRequest(licencePlate, formData, authEmail);
-
-    // await sendEditRequestEmails(
-    //   editRequest.project,
-    //   editRequest.requestedProject
-    // );
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === 'P2002') {
-        throw new Error('There is already an active request for this project.');
-      }
-    }
-    throw e;
+  if (existingRequest !== null) {
+    throw new Error('This project already has an active request or it does not exist.');
   }
+
+  const request: PublicCloudRequestWithProjectAndRequestedProject = await editRequest(
+    licencePlate,
+    formData,
+    authEmail,
+  );
 
   // if (decisionStatus === DecisionStatus.Approved) {
   //   await sendNatsMessage(editRequest.type, editRequest.requestedProject);
@@ -89,5 +81,23 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   //   }
   // }
 
-  return new NextResponse('success', { status: 200 });
+  const users: User[] = [
+    request.requestedProject.projectOwner,
+    request.requestedProject.primaryTechnicalLead,
+    request.requestedProject?.secondaryTechnicalLead,
+  ].filter((user): user is User => Boolean(user));
+  // Subscribe users to Mautic
+
+  try {
+    await subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
+  } catch (error) {
+    console.log('Mautic error', error);
+  }
+
+  // await sendEditRequestEmails(
+  //   editRequest.project,
+  //   editRequest.requestedProject
+  // );
+
+  return new NextResponse('Successfuly created and provisioned edit request ', { status: 200 });
 }

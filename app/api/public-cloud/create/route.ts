@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { Prisma } from '@prisma/client';
 import { PublicCloudCreateRequestBodySchema, PublicCloudCreateRequestBody } from '@/schema';
-import { PrivateCloudRequest } from '@prisma/client';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/createRequest';
 import createRequest from '@/requestActions/public-cloud/createRequest';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
@@ -42,16 +41,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Action
-  let request: PrivateCloudRequest;
-
-  try {
-    request = await createRequest(formData, authEmail);
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      throw new Error(e.message);
-    }
-    throw e;
-  }
+  const request: PublicCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
   // sendCreateRequestEmails(createRequest.requestedProject);
 

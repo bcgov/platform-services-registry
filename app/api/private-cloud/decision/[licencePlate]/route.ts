@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { DecisionStatus, Cluster } from '@prisma/client';
+import { DecisionStatus, Cluster, User } from '@prisma/client';
 import { string, z } from 'zod';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
 import sendPrivateCloudNatsMessage from '@/nats/privateCloud';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
+import { subscribeUsersToMautic } from '@/mautic';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -53,46 +53,60 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { licencePlate } = parsedParams.data;
   const { decision, humanComment, ...requestedProjectFormData } = parsedBody.data;
 
-  try {
-    const request: PrivateCloudRequestWithRequestedProject = await makeDecisionRequest(
-      licencePlate,
-      decision,
-      humanComment,
-      requestedProjectFormData,
-      authEmail,
-    );
+  const request: PrivateCloudRequestWithRequestedProject = await makeDecisionRequest(
+    licencePlate,
+    decision,
+    humanComment,
+    requestedProjectFormData,
+    authEmail,
+  );
 
-    if (!request.requestedProject) {
-      return new Response(`Error creating decision request for ${request.licencePlate}.`, {
-        status: 200,
-      });
-    }
+  if (!request.requestedProject) {
+    return new Response(`Error creating decision request for ${request.licencePlate}.`, {
+      status: 400,
+    });
+  }
 
-    const contactChanged =
-      requestedProjectFormData.projectOwner.email !== request.requestedProject.projectOwner.email ||
-      requestedProjectFormData.primaryTechnicalLead.email !== request.requestedProject.primaryTechnicalLead.email ||
-      requestedProjectFormData.secondaryTechnicalLead?.email !==
-        request.requestedProject?.secondaryTechnicalLead?.email;
-
-    if (request.decisionStatus === DecisionStatus.APPROVED) {
-      await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
-
-      // For GOLD requests, we create an identical request for GOLDDR
-      if (request.requestedProject.cluster === Cluster.GOLD) {
-        await sendPrivateCloudNatsMessage(
-          request.id,
-          request.type,
-          { ...request.requestedProject, cluster: Cluster.GOLDDR },
-          contactChanged,
-        );
-      }
-    }
-
-    return new NextResponse(`Decision request for ${request.licencePlate} succesfully created.`, {
+  if (request.decisionStatus !== DecisionStatus.APPROVED) {
+    return new NextResponse(`Request for ${request.licencePlate} succesfully created as rejected.`, {
       status: 200,
     });
-  } catch (e) {
-    console.log(e);
-    return new NextResponse('Error creating decision request', { status: 400 });
   }
+
+  const contactChanged =
+    requestedProjectFormData.projectOwner.email !== request.requestedProject.projectOwner.email ||
+    requestedProjectFormData.primaryTechnicalLead.email !== request.requestedProject.primaryTechnicalLead.email ||
+    requestedProjectFormData.secondaryTechnicalLead?.email !== request.requestedProject?.secondaryTechnicalLead?.email;
+
+  await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
+
+  // For GOLD requests, we create an identical request for GOLDDR
+  if (request.requestedProject.cluster === Cluster.GOLD) {
+    await sendPrivateCloudNatsMessage(
+      request.id,
+      request.type,
+      { ...request.requestedProject, cluster: Cluster.GOLDDR },
+      contactChanged,
+    );
+  }
+
+  const users: User[] = [
+    request.requestedProject.projectOwner,
+    request.requestedProject.primaryTechnicalLead,
+    request.requestedProject?.secondaryTechnicalLead,
+  ].filter((user): user is User => Boolean(user));
+
+  // Subscribe users to Mautic
+  try {
+    await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
+  } catch (error) {
+    console.log('MATIC ERROR');
+    console.log(error);
+  }
+
+  // Send emails
+
+  return new NextResponse(`Decision request for ${request.licencePlate} succesfully created.`, {
+    status: 200,
+  });
 }

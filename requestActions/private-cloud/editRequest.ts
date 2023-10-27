@@ -3,11 +3,30 @@ import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { PrivateCloudEditRequestBody } from '@/schema';
 
+export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
+
 export default async function editRequest(
   licencePlate: string,
   formData: PrivateCloudEditRequestBody,
   authEmail: string,
-): Promise<PrivateCloudRequest> {
+): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
   // Get the current project that we are creating an edit request for
   const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
     where: {

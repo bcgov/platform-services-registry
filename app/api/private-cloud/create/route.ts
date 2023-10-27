@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { PrivateCloudRequest } from '@prisma/client';
 import createRequest from '@/requestActions/private-cloud/createRequest';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/createRequest';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
@@ -42,23 +43,11 @@ export async function POST(req: NextRequest) {
   }
 
   // Action
-  try {
-    await createRequest(formData, authEmail);
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      throw new Error(e.message);
-    }
-    throw e;
-  }
+  const request: PrivateCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
   // sendCreateRequestEmails(createRequest.requestedProject);
 
-  // return NextResponse.json(request, {
-  //   status: 200,
-  // });
-
   return new NextResponse('Success creating request', {
     status: 200,
-    headers: { 'content-type': 'application/json' },
   });
 }
