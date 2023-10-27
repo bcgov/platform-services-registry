@@ -1,5 +1,5 @@
 # 1st stage to build the image
-FROM node:18-alpine as builder
+FROM node:21-alpine as builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN npm run build
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:18-alpine
+FROM node:21-alpine
 
 WORKDIR /app
 
