@@ -1,0 +1,19 @@
+name: Setup NPM Packages
+description: Setup required NPM packages
+
+runs:
+  using: composite
+  steps:
+  # See https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
+  - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84
+    with:
+      path: |
+        ~/.npm
+        ${{ github.workspace }}/.next/cache
+      key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+      restore-keys: |
+        ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+  - name: Install NPM packages
+    run: npm install
+    shell: bash

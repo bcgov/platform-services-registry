@@ -18,6 +18,8 @@ async function main() {
 
   await waitOn({
     resources: [`${keycloakUrl}/health/ready`],
+    delay: 1000,
+    window: 5000,
   });
 
   // Create KC admin client
@@ -131,7 +133,7 @@ async function main() {
 
       let role = await getRole();
       if (!role) {
-        kcAdminClient.clients.createRole({
+        await kcAdminClient.clients.createRole({
           realm: realmName,
           id: client.id,
           name: roleName,

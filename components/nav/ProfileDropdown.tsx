@@ -45,8 +45,8 @@ export default function ProfileDropdown() {
           <span className="sr-only">Open user menu</span>
           <Image
             className="h-10 w-10 rounded-full"
-            width={0}
-            height={0}
+            width={120}
+            height={120}
             src={data || 'https://www.gravatar.com/avatar/?d=identicon'}
             alt=""
           />
