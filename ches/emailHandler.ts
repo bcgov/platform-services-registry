@@ -7,20 +7,16 @@ import { render } from '@react-email/render';
 export const sendCreateRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
   const email = render(Template({ formData }), { pretty: true });
   try {
-    // await chesService.send({
-    //   bodyType: "html",
-    //   body: email,
-    //   // For all project contacts. Sent when the project set deletion request is successfully submitted
-    //   to: [
-    //     formData.projectOwner,
-    //     formData.primaryTechnicalLead,
-    //     formData.secondaryTechnicalLead,
-    //   ]
-    //     .filter(Boolean)
-    //     .map((item) => item?.email),
-    //   from: "Registry <PlatformServicesTeam@gov.bc.ca>",
-    //   subject: `${formData.name} deletion request received`,
-    // });
+    await chesService.send({
+      bodyType: 'html',
+      body: email,
+      // For all project contacts. Sent when the project set deletion request is successfully submitted
+      to: [formData.projectOwner, formData.primaryTechnicalLead, formData.secondaryTechnicalLead]
+        .filter(Boolean)
+        .map((item) => item?.email),
+      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      subject: `${formData.name} deletion request received`,
+    });
     // await chesService.send({
     //   bodyType: "html",
     //   body: email,
@@ -29,13 +25,15 @@ export const sendCreateRequestEmails = async (formData: PrivateCloudCreateReques
     //   subject: `New Delete request in Registry waiting for your approval`,
     // });
 
-    await chesService.send({
-      bodyType: 'html',
-      body: email,
-      to: ['02c.albert@gmail.com'],
-      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
-      subject: `Test`,
-    });
+    // // change 'to' variable to test email
+    // const to = "02c.albert@gmail.com"
+    // await chesService.send({
+    //   bodyType: 'html',
+    //   body: email,
+    //   to: [to],
+    //   from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
+    //   subject: `Test`,
+    // });
   } catch (error) {
     console.error(error);
   }

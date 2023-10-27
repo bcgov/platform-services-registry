@@ -1,6 +1,7 @@
 import { PrivateCloudCreateRequestBody } from '@/schema';
 import * as React from 'react';
 import Header from './components/Header';
+import ProductDetails from './components/ProductDetails';
 import {
   Body,
   Button,
@@ -40,8 +41,8 @@ export const Template = ({ formData }: EmailProp) => {
         ministry: 'CITZ',
       },
       primaryTechnicalLead: {
-        firstName: '',
-        lastName: 'Jane',
+        firstName: 'Jane',
+        lastName: 'Doe',
         email: 'sarah.williams@gov.bc.ca',
         ministry: 'CITZ',
       },
@@ -60,7 +61,6 @@ export const Template = ({ formData }: EmailProp) => {
       },
     };
   }
-
   return (
     <Html>
       <Tailwind
@@ -103,21 +103,24 @@ export const Template = ({ formData }: EmailProp) => {
           },
         }}
       >
-        <Body className="bg-white my-auto mx-auto font-sans text-xs">
-          <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
-            <Header />
-            <div className="m-4">
-              <Heading className="text-lg">New Provisioning Request!</Heading>
-              <Text>Hi Registry Team, </Text>
-              <Text className="">
-                There is a new request that requires your review. Log in to the Registry to review the details. If you
-                have any questions about the request, the PO and TL contact details are included below and in the
-                Registry
-              </Text>
-              <Button className="bg-bcorange rounded-md px-4 py-2 text-white">Review Request</Button>
+        <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
+          <Header />
+          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+            <div className="m-12">
+              <div>
+                <Heading className="text-lg">New Provisioning Request!</Heading>
+                <Text>Hi Registry Team, </Text>
+                <Text className="">
+                  There is a new request that requires your review. Log in to the Registry to review the details. If you
+                  have any questions about the request, the PO and TL contact details are included below and in the
+                  Registry
+                </Text>
+                <Button className="bg-bcorange rounded-md px-4 py-2 text-white">Review Request</Button>
+              </div>
+              <ProductDetails data={formData} />
             </div>
-          </Container>
-        </Body>
+          </Body>
+        </div>
       </Tailwind>
     </Html>
   );

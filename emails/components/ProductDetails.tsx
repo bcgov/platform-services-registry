@@ -1,15 +1,46 @@
 import Image from 'next/image';
 import Logo from '../assets/logo.png';
-import { Img, Text } from '@react-email/components';
+import { Button, Heading, Img, Link, Text } from '@react-email/components';
+import { PrivateCloudCreateRequestBody } from '@/schema';
 
-export default function Header() {
+interface EmailProp {
+  data: PrivateCloudCreateRequestBody;
+}
+
+export default function Header({ data }: EmailProp) {
   return (
-    <div className="flex flex-row border-b-3 border-bcorange bg-bcblue shadow">
-      <Img src="./logo.png" alt="BC Platform Services Product Registry" width={56} height={56} className="ml-2 mr-2" />
-      <span className="flex flex-row text-white">
-        <Text className="text-lg mr-2 font-roboto font-thin">BC Platform Services</Text>
-        <Text className="text-lg font-roboto font-normal">Product Registry</Text>
-      </span>
+    <div>
+      <Heading className="text-lg">Product Details</Heading>
+      <div>
+        <Text className="mb-0 font-bold h-4">Product Name: </Text>
+        <Text className="mt-0 h-4">{data.name}</Text>
+      </div>
+      <div>
+        <Text className="mb-0 font-bold h-4">Product Description: </Text>
+        <Text className="mt-0 h-4">{data.description}</Text>
+      </div>
+      <div>
+        <Text className="mb-0 font-bold h-4">Ministry: </Text>
+        <Text className="mt-0 h-4">{data.ministry}</Text>
+      </div>
+      <div>
+        <Text className="mb-0 font-bold h-4">Product Owner: </Text>
+        <Text className="mt-0 mb-0 h-4">
+          {data.projectOwner.firstName} {data.projectOwner.lastName}
+        </Text>
+        <Link className="mt-0 h-4" href={`mailto:${data.projectOwner.email}`}>
+          {data.projectOwner.email}
+        </Link>
+      </div>
+      <div>
+        <Text className="mb-0 font-bold h-4">Product Owner: </Text>
+        <Text className="mt-0 mb-0 h-4">
+          {data.primaryTechnicalLead.firstName} {data.primaryTechnicalLead.lastName}
+        </Text>
+        <Link className="mt-0 h-4" href={`mailto:${data.primaryTechnicalLead.email}`}>
+          {data.primaryTechnicalLead.email}
+        </Link>
+      </div>
     </div>
   );
 }

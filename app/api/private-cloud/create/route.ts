@@ -6,7 +6,6 @@ import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } fr
 import { PrivateCloudRequest } from '@prisma/client';
 import createRequest from '@/requestActions/private-cloud/createRequest';
 import { sendCreateRequestEmails } from '@/ches/emailHandler';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
   // Authentication
