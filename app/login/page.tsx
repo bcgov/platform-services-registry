@@ -4,9 +4,15 @@ import { useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import LoginButton from '@/components/buttons/LoginButton';
 import RegisterProductButton from '@/components/buttons/RegisterProductButton';
+import { useSession } from 'next-auth/react';
 
 export default function SignInPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  if (session) {
+    router.push('/private-cloud/products');
+  }
 
   return (
     <div className="flex flex-col m-12">

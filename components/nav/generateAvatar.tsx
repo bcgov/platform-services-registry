@@ -18,7 +18,7 @@ const stringToColor = (string: string): string => {
 async function generateAvatar(email: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // size: number, backgroundColor: string, textColor: string
-    const size = 120;
+    const size = 240;
 
     const initials = email
       .split('@')[0] // Extract the part before '@' as initials

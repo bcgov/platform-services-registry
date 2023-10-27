@@ -1,0 +1,14 @@
+name: Setup Tools
+description: Setup required tools in the workspace
+
+runs:
+  using: composite
+  steps:
+  - name: Setup Tools
+    uses: egose/actions/asdf-tools@cf2f1200f48743cf7974609fe8ac80f0d1b08e56
+
+  - name: Install python tools
+    run: |
+      pip install -r requirements.txt
+      asdf reshim
+    shell: bash
