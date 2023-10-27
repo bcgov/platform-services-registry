@@ -36,6 +36,7 @@
     "types/**/*.ts",
     "middleware/**/*.ts",
     "components/nav/Avatar.js",
+    "mautic/index.ts",
     "ches/index.js",
     "ches/chesService.ts",
     "ches/clientConnection.ts",
