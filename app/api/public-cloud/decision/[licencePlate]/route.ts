@@ -86,11 +86,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     request.requestedProject?.secondaryTechnicalLead,
   ].filter((user): user is User => Boolean(user));
 
-  try {
-    await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
-  } catch (e) {
-    console.log('Mautic error: ', e);
-  }
+  await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
 
   return new NextResponse(`Decision request for ${request.licencePlate} succesfully created and provisioned.`, {
     status: 200,

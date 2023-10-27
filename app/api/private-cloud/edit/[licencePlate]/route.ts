@@ -91,18 +91,13 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   // );
 
   // Subscribe users to Mautic
-  try {
-    const users: User[] = [
-      request.requestedProject.projectOwner,
-      request.requestedProject.primaryTechnicalLead,
-      request.requestedProject?.secondaryTechnicalLead,
-    ].filter((user): user is User => Boolean(user));
+  const users: User[] = [
+    request.requestedProject.projectOwner,
+    request.requestedProject.primaryTechnicalLead,
+    request.requestedProject?.secondaryTechnicalLead,
+  ].filter((user): user is User => Boolean(user));
 
-    await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
-  } catch (e) {
-    console.log('MAUTIC ERROR');
-    console.log(e);
-  }
+  await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
   return new NextResponse('success', { status: 200 });
 }

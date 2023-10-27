@@ -88,12 +88,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   ].filter((user): user is User => Boolean(user));
   // Subscribe users to Mautic
 
-  try {
-    await subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
-  } catch (error) {
-    console.log('Mautic error', error);
-  }
-
+  await subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
   // await sendEditRequestEmails(
   //   editRequest.project,
   //   editRequest.requestedProject

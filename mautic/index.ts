@@ -84,27 +84,22 @@ export const subscribe = async (user: User, token: string, cluster: string, plat
   }
 };
 
-export const subscribeUserToMautic = async (user: User, cluster: string, platform: string): Promise<number> => {
+export const subscribeUserToMautic = async (user: User, cluster: string, platform: string) => {
   try {
     const token = await getToken();
     const response = await subscribe(user, token, cluster, platform);
-
-    return response.status;
   } catch (error) {
     console.log('MAUTIC FAILED TO SUBSCRIBE USER', error);
-    throw error;
   }
 };
 
-export const subscribeUsersToMautic = async (users: User[], cluster: string, platform: string): Promise<number[]> => {
+export const subscribeUsersToMautic = async (users: User[], cluster: string, platform: string) => {
   try {
     const token = await getToken();
     const promises = users.map((user) => subscribe(user, token, cluster, platform));
 
-    const responses = await Promise.all(promises);
-    return responses.map((response) => response.status);
+    await Promise.all(promises);
   } catch (error) {
     console.log('MAUTIC FAILED TO SUBSCRIBE USERS', error);
-    throw error;
   }
 };
