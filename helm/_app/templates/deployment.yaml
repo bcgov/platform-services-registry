@@ -50,10 +50,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          # image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
-          image: junminahn/pltsvc
-          # imagePullPolicy: {{ .Values.image.pullPolicy }}
-          imagePullPolicy: Always
+          image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
           args:
             ['. /vault/secrets/secrets.env && /app/node_modules/.bin/next start']
