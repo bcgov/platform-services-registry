@@ -1,0 +1,3 @@
+charts/
+template.yaml
+*.secret.yaml
