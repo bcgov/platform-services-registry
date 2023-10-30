@@ -29,7 +29,6 @@ export default function Page() {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
     try {
       const response = await fetch('/api/private-cloud/create', {
         method: 'POST',
@@ -38,8 +37,6 @@ export default function Page() {
         },
         body: JSON.stringify(data),
       });
-
-      console.log('response', response);
 
       if (!response.ok) {
         throw new Error('Network response was not ok for create request');
