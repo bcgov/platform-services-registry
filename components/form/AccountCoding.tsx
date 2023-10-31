@@ -18,19 +18,19 @@ export default function AccountCoding({
 
   const [accountCoding, setAccountCoding] = useState({
     clientCode: accountCodingInitial?.slice(0, 3),
-    serviceLine: accountCodingInitial?.slice(3, 8),
-    projectCode: accountCodingInitial?.slice(8, 15),
-    responsibilityCentre: accountCodingInitial?.slice(15, 20),
-    standardObjectOfExpense: accountCodingInitial?.slice(20, 24),
+    responsibilityCentre: accountCodingInitial?.slice(3, 8),
+    serviceLine: accountCodingInitial?.slice(8, 13),
+    standardObjectOfExpense: accountCodingInitial?.slice(13, 17),
+    projectCode: accountCodingInitial?.slice(17, 24),
   });
 
   useEffect(() => {
     setAccountCoding({
       clientCode: accountCodingInitial?.slice(0, 3),
-      serviceLine: accountCodingInitial?.slice(3, 8),
-      projectCode: accountCodingInitial?.slice(8, 15),
-      responsibilityCentre: accountCodingInitial?.slice(15, 20),
-      standardObjectOfExpense: accountCodingInitial?.slice(20, 24),
+      responsibilityCentre: accountCodingInitial?.slice(3, 8),
+      serviceLine: accountCodingInitial?.slice(8, 13),
+      standardObjectOfExpense: accountCodingInitial?.slice(13, 17),
+      projectCode: accountCodingInitial?.slice(17, 24),
     });
   }, [accountCodingInitial]);
 
@@ -111,9 +111,11 @@ export default function AccountCoding({
           Account Coding
         </label>
         <p className="font-bcsans text-base leading-6 mb-2"></p>
-        <div className="bg-neutral-200 block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-4 h-9">
-          {Object.values(accountCoding).join(' ')}
-        </div>
+        <p className="bg-neutral-200 block w-full rounded-md py-1.5 text-gray-400 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-4 h-9">
+          {Object.values(accountCoding).filter((i) => i !== '').length > 0
+            ? Object.values(accountCoding).join(' ')
+            : 'Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code'}
+        </p>
         <Question />
         <p
           className={classNames(
