@@ -61,8 +61,6 @@ export default function AccountCodingInput({
   accountCoding: any;
   disabled?: boolean;
 }) {
-  const {} = useFormContext();
-
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
       <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-2">
