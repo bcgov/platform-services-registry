@@ -12,6 +12,7 @@ import ReturnModal from '@/components/modal/Return';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
+import { sendEmail } from '../../../../components/email/sendEmail';
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -29,7 +30,6 @@ export default function Page() {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
     try {
       const response = await fetch('/api/private-cloud/create', {
         method: 'POST',
@@ -39,14 +39,13 @@ export default function Page() {
         body: JSON.stringify(data),
       });
 
-      console.log('response', response);
-
       if (!response.ok) {
         throw new Error('Network response was not ok for create request');
       }
 
       setOpenCreate(false);
       setOpenReturn(true);
+      const emailSent = await sendEmail(data);
     } catch (error) {
       setIsLoading(false);
       console.error('Error:', error);
