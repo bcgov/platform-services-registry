@@ -14,7 +14,6 @@ Conventional Commits provide a structured way to format commit messages. This im
 - `refactor(api): optimize database queries in user endpoints`
 - `docs(readme): update installation instructions`
 - `chore(deps): update package versions for security patch`
-- `chore(deps): update package versions for security patch`
 - `BREAKING CHANGE: remove support for Node.js v10`
 
 ## Git Branching Model
