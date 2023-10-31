@@ -65,6 +65,7 @@ mongodb:
 
   persistence:
     enabled: true
+    storageClass: netapp-block-standard
     size: 5Gi
 
   resources:
