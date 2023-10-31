@@ -8,6 +8,49 @@ For the installation instructions of WSL, please refer to the following links:
 - [How to install Linux on Windows with WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 - [Manual installation steps for older versions of WSL](https://learn.microsoft.com/en-us/windows/wsl/install-manual).
 
+## Setting Up GitHub project repository
+
+### Connecting to GitHub with SSH
+
+For an enhanced method of authentication when interacting with GitHub repositories, employing an SSH key is highly advisable, as opposed to the less secure username and password authentication.
+For detailed instructions, refer to the GitHub documentation:
+
+- [Generating a New SSH Key and Adding it to the SSH Agent](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+
+### Clonning Repository
+
+To clone a repository using SSH and set up essential Git configurations, you can execute the following shell commands:
+
+```sh
+# Clone the repository via SSH
+git clone git@github.com:bcgov/platform-services-registry.git
+
+# Change into the cloned repository directory
+cd platform-services-registry
+```
+
+### GPG key signing
+
+To ensure the legitimacy of Git commits, it is strongly recommended to sign them using a GPG key.
+For step-by-step guidance, please consult the GitHub documentation:
+
+- [Signing Commits](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/signing-commits)
+- [Adding a New GPG Key to Your GitHub Account](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/adding-a-new-gpg-key-to-your-github-account)
+
+To enable GPG signing in Git, follow these steps in the repository:
+
+```sh
+# Define the signing key hash
+git config user.signingkey "<hash>"
+
+# Specify Git to sign commits and tags with GPG
+git config commit.gpgsign true
+git config tag.gpgsign true
+
+# Set the GPG program for signing (if not already set)
+git config gpg.program gpg
+```
+
 ## Setting up the local development environment
 
 - Using Linux or MacOS terminals is advised for the development of web applications and managing their pipelines.
@@ -40,40 +83,6 @@ For the installation instructions of WSL, please refer to the following links:
    ```
 
 ## Setting Up GitHub Workspace
-
-### Connecting to GitHub with SSH
-
-For an enhanced method of authentication when interacting with GitHub repositories, employing an SSH key is highly advisable, as opposed to the less secure username and password authentication.
-For detailed instructions, refer to the GitHub documentation:
-
-- [Generating a New SSH Key and Adding it to the SSH Agent](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
-
-### GPG key signing
-
-To ensure the legitimacy of Git commits, it is strongly recommended to sign them using a GPG key.
-For step-by-step guidance, please consult the GitHub documentation:
-
-- [Signing Commits](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/signing-commits)
-- [Adding a New GPG Key to Your GitHub Account](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/adding-a-new-gpg-key-to-your-github-account)
-
-### Clonning Repository
-
-To clone a repository using SSH and set up essential Git configurations, you can execute the following shell commands:
-
-```sh
-# Clone the repository via SSH
-git clone git@github.com:bcgov/platform-services-registry.git
-
-# Change into the cloned repository directory
-cd platform-services-registry
-
-# Configure Git to sign commits and tags with GPG
-git config commit.gpgsign true
-git config tag.gpgsign true
-
-# Set the GPG program for signing (if not already set)
-git config gpg.program gpg
-```
 
 ## Working on features
 
