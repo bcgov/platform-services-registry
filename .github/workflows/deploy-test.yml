@@ -1,14 +1,9 @@
-name: Deploy Dev Environment
+name: Deploy Test Environment
 
 on:
   push:
-    branches:
-    - main
-    paths-ignore:
-    - CHANGELOG.md
-    - .pre-commit-config.yaml
-    - .conventional-changelog.mjs
-    - .release-it.json
+    tags:
+    - v*.*.*
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -23,7 +18,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -38,8 +33,9 @@ jobs:
         docker-context: .
         docker-file: Dockerfile
         metadata-tags: |
-          type=ref,event=branch
-          type=sha,format=long,prefix=,suffix=
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
 
   deploy:
     needs: [build-push]
@@ -48,24 +44,25 @@ jobs:
     permissions:
       contents: read
     environment:
-      name: dev
-      url: https://dev-pltsvc.apps.silver.devops.gov.bc.ca
+      name: test
+      url: https://test-pltsvc.apps.silver.devops.gov.bc.ca
 
     steps:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@96f53100ba2a5449eb71d2e6604bbcd94b9449b5
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@9b79eb6d8ec51bce42cb4e77f0a174fc80cf3cb9
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-        namespace: 101ed4-dev
+        namespace: 101ed4-test
         insecure_skip_tls_verify: true
 
     - name: Deploy apps with Helm chart
       run: |
+        vtag=${{ github.ref_name }}
         make upgrade \
-        NAMESPACE=101ed4-dev \
-        IMAGE_TAG=${{ github.sha }}
+        NAMESPACE=101ed4-test \
+        IMAGE_TAG=${vtag//v}
       working-directory: ./helm/main
