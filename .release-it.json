@@ -1,0 +1,12 @@
+{
+  "git": {
+    "commitMessage": "chore: release candidate v${version}",
+    "tagName": "v${version}",
+    "tagAnnotation": "${name}\n${changelog}"
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {},
+  "plugins": {}
+}
