@@ -16,7 +16,7 @@ export default function AccountCoding({
     setValue,
   } = useFormContext();
 
-  const [accountCoding, setAccountCoding] = useState({
+  const accountCodingSeparation = () => ({
     clientCode: accountCodingInitial?.slice(0, 3),
     responsibilityCentre: accountCodingInitial?.slice(3, 8),
     serviceLine: accountCodingInitial?.slice(8, 13),
@@ -24,14 +24,10 @@ export default function AccountCoding({
     projectCode: accountCodingInitial?.slice(17, 24),
   });
 
+  const [accountCoding, setAccountCoding] = useState(accountCodingSeparation());
+
   useEffect(() => {
-    setAccountCoding({
-      clientCode: accountCodingInitial?.slice(0, 3),
-      responsibilityCentre: accountCodingInitial?.slice(3, 8),
-      serviceLine: accountCodingInitial?.slice(8, 13),
-      standardObjectOfExpense: accountCodingInitial?.slice(13, 17),
-      projectCode: accountCodingInitial?.slice(17, 24),
-    });
+    setAccountCoding(accountCodingSeparation());
   }, [accountCodingInitial]);
 
   console.log('STATE ACCOUNT CODING');
