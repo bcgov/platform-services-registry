@@ -1,11 +1,14 @@
-import { Template } from '@/emails/Template';
+import { NewRequest } from '@/emails/NewRequest';
 import { adminEmails } from './emailConstant';
 import chesService from './index';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { render } from '@react-email/render';
+import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import RequestApproval from '@/emails/RequestApproval';
+import RequestRejection from '@/emails/RequestRejection';
 
-export const sendCreateRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
-  const email = render(Template({ formData }), { pretty: true });
+export const sendNewRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
+  const email = render(NewRequest({ formData }), { pretty: true });
   try {
     await chesService.send({
       bodyType: 'html',
@@ -15,25 +18,59 @@ export const sendCreateRequestEmails = async (formData: PrivateCloudCreateReques
         .filter(Boolean)
         .map((item) => item?.email),
       from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
-      subject: `${formData.name} deletion request received`,
+      subject: `${formData.name} provisioning request received`,
     });
-    // await chesService.send({
-    //   bodyType: "html",
-    //   body: email,
-    //   to: adminEmails,
-    //   from: "Registry <PlatformServicesTeam@gov.bc.ca>",
-    //   subject: `New Delete request in Registry waiting for your approval`,
-    // });
+    await chesService.send({
+      bodyType: 'html',
+      body: email,
+      to: adminEmails,
+      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      subject: `New Provisioning request in Registry waiting for your approval`,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-    // // change 'to' variable to test email
-    // const to = "02c.albert@gmail.com"
-    // await chesService.send({
-    //   bodyType: 'html',
-    //   body: email,
-    //   to: [to],
-    //   from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
-    //   subject: `Test`,
-    // });
+export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+  const email = render(RequestApproval({ request }), { pretty: true });
+  try {
+    await chesService.send({
+      bodyType: 'html',
+      body: email,
+      // For all project contacts. Sent when the project set deletion request is successfully submitted
+      to: [
+        request.requestedProject.projectOwner,
+        request.requestedProject.primaryTechnicalLead,
+        request.requestedProject.secondaryTechnicalLead,
+      ]
+        .filter(Boolean)
+        .map((item) => item?.email),
+      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      subject: `${request.requestedProject.name} has been approved`,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const sendRequestDenialEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
+  const email = render(RequestRejection({ request }), { pretty: true });
+  try {
+    await chesService.send({
+      bodyType: 'html',
+      body: email,
+      // For all project contacts. Sent when the project set deletion request is successfully submitted
+      to: [
+        request.requestedProject.projectOwner,
+        request.requestedProject.primaryTechnicalLead,
+        request.requestedProject.secondaryTechnicalLead,
+      ]
+        .filter(Boolean)
+        .map((item) => item?.email),
+      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      subject: `${request.requestedProject.name} has been approved`,
+    });
   } catch (error) {
     console.error(error);
   }

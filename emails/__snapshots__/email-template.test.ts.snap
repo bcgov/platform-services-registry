@@ -1,0 +1,167 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Email template snapshots returns Closing component 1`] = `"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><div><p style="font-size:14px;line-height:24px;margin:16px 0">If you have any questions, send us a message at <a target="_blank" style="color:#067df7;text-decoration:none" class="mt-0 h-4" href="mailto:PlatformServicesTeam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</a>. We&#x27;d love to hear from you.</p><p style="font-size:14px;line-height:24px;margin:16px 0">-- The Registry Team</p></div>"`;
+
+exports[`Email template snapshots returns Header component 1`] = `"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><div class="flex flex-row border-b-3 border-bcorange bg-bcblue shadow"><img alt="BC Platform Services Product Registry" src="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products/logo.png" width="58" height="41" style="display:block;outline:none;border:none;text-decoration:none" class="m-auto ml-2 mr-2"/><div class="flex flex-row text-white"><p style="font-size:14px;line-height:24px;margin:16px 0" class="text-lg mr-2 font-roboto font-thin">BC Platform Services</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="text-lg font-roboto font-normal">Product Registry</p></div></div>"`;
+
+exports[`Email template snapshots returns Namespace component if approved 1`] = `"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><div><h1 class="text-lg">Namespace Details</h1><div><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">OpenShift Cluster: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">SILVER</p></div><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Development Namespace: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">be74f8-dev</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Test Namespace: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">be74f8-test</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Production Namespace: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">be74f8-prod</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Tools Namespace: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">be74f8-tools</p></div>"`;
+
+exports[`Email template snapshots returns NamespaceDetails component 1`] = `"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><div><h1 class="text-lg">Namespace Details</h1><div><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">OpenShift Cluster: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">KLAB</p></div></div>"`;
+
+exports[`Email template snapshots returns NewRequest template 1`] = `
+"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+  <div style="border-width:1px;border-style:solid;border-color:rgb(234,234,234);border-radius:0.25rem;margin-top:1rem;margin-bottom:1rem;margin-left:auto;margin-right:auto;padding:1rem;max-width:36rem">
+    <div style="display:flex;flex-direction:row;border-bottom-width:3px;border-color:rgb(252,186,25);background-color:rgb(0,51,102);box-shadow:0 0 #0000, 0 0 #0000, 0 1px 3px 0 rgb(0,0,0,0.1), 0 1px 2px -1px rgb(0,0,0,0.1)"><img alt="BC Platform Services Product Registry" src="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products/logo.png" width="58" height="41" style="display:block;outline:none;border:none;text-decoration:none;margin:auto;margin-left:0.5rem;margin-right:0.5rem" />
+      <div style="display:flex;flex-direction:row;color:rgb(255,255,255)">
+        <p style="font-size:1.125rem;line-height:1.75rem;margin:16px 0;margin-right:0.5rem;font-family:Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-weight:100">BC Platform Services</p>
+        <p style="font-size:1.125rem;line-height:1.75rem;margin:16px 0;font-family:Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-weight:400">Product Registry</p>
+      </div>
+    </div>
+
+    <body style="background-color:rgb(255,255,255);margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;font-family:Inter var, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-size:0.75rem;line-height:1rem">
+      <div style="margin:3rem">
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <h1 style="font-size:1.125rem;line-height:1.75rem">New Provisioning Request!</h1>
+          <p style="font-size:14px;line-height:24px;margin:16px 0">Hi Registry Team, </p>
+          <p style="font-size:14px;line-height:24px;margin:16px 0" class="">There is a new request that requires your review. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL contact details are included below and in the Registry</p><a href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products" target="_blank" style="line-height:100%;text-decoration:none;display:inline-block;max-width:100%;padding:0px 0px;background-color:rgb(252,186,25);border-radius:0.375rem;padding-left:1rem;padding-right:1rem;padding-top:0.5rem;padding-bottom:0.5rem;color:rgb(255,255,255)"><span></span><span style="max-width:100%;display:inline-block;line-height:120%;text-decoration:none;text-transform:none;mso-padding-alt:0px;mso-text-raise:0">Review Request</span><span></span></a>
+        </div>
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <div>
+            <h1 style="font-size:1.125rem;line-height:1.75rem">Product Details</h1>
+            <div>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Name: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">placeholder</p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Description: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">placeholder</p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Ministry: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">CITZ</p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Owner: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;margin-bottom:0px;height:1rem">John Doe</p><a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:john.doe@gov.bc.ca">john.doe@gov.bc.ca</a>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Owner: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;margin-bottom:0px;height:1rem">Sarah Williams</p><a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:sarah.williams@gov.bc.ca">sarah.williams@gov.bc.ca</a>
+            </div>
+          </div>
+        </div>
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <div>
+            <h1 style="font-size:1.125rem;line-height:1.75rem">Namespace Details</h1>
+            <div>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">OpenShift Cluster: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">KLAB</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div>
+            <p style="font-size:14px;line-height:24px;margin:16px 0">If you have any questions, send us a message at <a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:PlatformServicesTeam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</a>. We&#x27;d love to hear from you.</p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0">-- The Registry Team</p>
+          </div>
+        </div>
+      </div>
+    </body>
+  </div>
+
+</html>"
+`;
+
+exports[`Email template snapshots returns NewRequest template 2`] = `
+"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+  <div style="border-width:1px;border-style:solid;border-color:rgb(234,234,234);border-radius:0.25rem;margin-top:1rem;margin-bottom:1rem;margin-left:auto;margin-right:auto;padding:1rem;max-width:36rem">
+    <div style="display:flex;flex-direction:row;border-bottom-width:3px;border-color:rgb(252,186,25);background-color:rgb(0,51,102);box-shadow:0 0 #0000, 0 0 #0000, 0 1px 3px 0 rgb(0,0,0,0.1), 0 1px 2px -1px rgb(0,0,0,0.1)"><img alt="BC Platform Services Product Registry" src="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products/logo.png" width="58" height="41" style="display:block;outline:none;border:none;text-decoration:none;margin:auto;margin-left:0.5rem;margin-right:0.5rem" />
+      <div style="display:flex;flex-direction:row;color:rgb(255,255,255)">
+        <p style="font-size:1.125rem;line-height:1.75rem;margin:16px 0;margin-right:0.5rem;font-family:Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-weight:100">BC Platform Services</p>
+        <p style="font-size:1.125rem;line-height:1.75rem;margin:16px 0;font-family:Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-weight:400">Product Registry</p>
+      </div>
+    </div>
+
+    <body style="background-color:rgb(255,255,255);margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;font-family:Inter var, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-size:0.75rem;line-height:1rem">
+      <div style="margin:3rem">
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <h1 style="font-size:1.125rem;line-height:1.75rem">Hurray! Your provisioning request was approved and completed!</h1>
+          <p style="font-size:14px;line-height:24px;margin:16px 0">Hi John, </p>
+          <p style="font-size:14px;line-height:24px;margin:16px 0" class="">Your request for a new project set for your product on the Private Cloud Openshift platform is complete. Log in to the cluster console using the button bellow and you&#x27;ll see all four namespaces included in a project set. If you have any more questions, reach out to the Platform Services team in the RocketChat channel #devops-operations.</p>
+          <p style="font-size:14px;line-height:24px;margin:16px 0" class="">The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces above and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is removed as a project contact in the Platform Registry, they will lost their access to the projcect set namespaces in Openshift. The new Product or Technical Lead provided on the product details page will gain the administrative access to the namespaces.</p><a href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products" target="_blank" style="line-height:100%;text-decoration:none;display:inline-block;max-width:100%;padding:0px 0px;background-color:rgb(252,186,25);border-radius:0.375rem;padding-left:1rem;padding-right:1rem;padding-top:0.5rem;padding-bottom:0.5rem;color:rgb(255,255,255)"><span></span><span style="max-width:100%;display:inline-block;line-height:120%;text-decoration:none;text-transform:none;mso-padding-alt:0px;mso-text-raise:0">Log in to Console</span><span></span></a>
+        </div>
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <div>
+            <h1 style="font-size:1.125rem;line-height:1.75rem">Product Details</h1>
+            <div>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Name: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">31.1</p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Description: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">1</p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Ministry: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">CITZ</p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Owner: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;margin-bottom:0px;height:1rem">John Doe</p><a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:john.doe@gov.bc.ca">john.doe@gov.bc.ca</a>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Product Owner: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;margin-bottom:0px;height:1rem">Sarah Williams</p><a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:sarah.williams@gov.bc.ca">sarah.williams@gov.bc.ca</a>
+            </div>
+          </div>
+        </div>
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <div>
+            <h1 style="font-size:1.125rem;line-height:1.75rem">Namespace Details</h1>
+            <div>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">OpenShift Cluster: </p>
+              <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">SILVER</p>
+            </div>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Development Namespace: </p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">be74f8-dev</p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Test Namespace: </p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">be74f8-test</p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Production Namespace: </p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">be74f8-prod</p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-bottom:0px;font-weight:600;height:1rem">Tools Namespace: </p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0;margin-top:0px;height:1rem">be74f8-tools</p>
+          </div>
+        </div>
+        <div>
+          <div>
+            <p style="font-size:14px;line-height:24px;margin:16px 0">If you have any questions, send us a message at <a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:PlatformServicesTeam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</a>. We&#x27;d love to hear from you.</p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0">-- The Registry Team</p>
+          </div>
+        </div>
+      </div>
+    </body>
+  </div>
+
+</html>"
+`;
+
+exports[`Email template snapshots returns NewRequest template 3`] = `
+"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+  <div style="border-width:1px;border-style:solid;border-color:rgb(234,234,234);border-radius:0.25rem;margin-top:1rem;margin-bottom:1rem;margin-left:auto;margin-right:auto;padding:1rem;max-width:36rem">
+    <div style="display:flex;flex-direction:row;border-bottom-width:3px;border-color:rgb(252,186,25);background-color:rgb(0,51,102);box-shadow:0 0 #0000, 0 0 #0000, 0 1px 3px 0 rgb(0,0,0,0.1), 0 1px 2px -1px rgb(0,0,0,0.1)"><img alt="BC Platform Services Product Registry" src="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products/logo.png" width="58" height="41" style="display:block;outline:none;border:none;text-decoration:none;margin:auto;margin-left:0.5rem;margin-right:0.5rem" />
+      <div style="display:flex;flex-direction:row;color:rgb(255,255,255)">
+        <p style="font-size:1.125rem;line-height:1.75rem;margin:16px 0;margin-right:0.5rem;font-family:Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-weight:100">BC Platform Services</p>
+        <p style="font-size:1.125rem;line-height:1.75rem;margin:16px 0;font-family:Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-weight:400">Product Registry</p>
+      </div>
+    </div>
+
+    <body style="background-color:rgb(255,255,255);margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;font-family:Inter var, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;font-size:0.75rem;line-height:1rem">
+      <div style="margin:3rem">
+        <div style="padding-bottom:1.5rem;margin-top:1rem;margin-bottom:1rem;border-style:solid;border-width:0px;border-bottom-width:1px;border-color:rgb(203,213,225)">
+          <h1 style="font-size:1.125rem;line-height:1.75rem">Sorry, your provisioning request was Rejected</h1>
+          <p style="font-size:14px;line-height:24px;margin:16px 0">Hi John, </p>
+          <p style="font-size:14px;line-height:24px;margin:16px 0" class="">Your request for a new project set for your product on the Private Cloud Openshift platform is rejected due to the following reason(s):</p>
+          <p style="font-size:14px;line-height:24px;margin:16px 0" class="">sample reason</p>
+          <p style="font-size:14px;line-height:24px;margin:16px 0">Log in to your registry account and raise a new request if the above rejection reason no longer applies</p><a href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products" target="_blank" style="line-height:100%;text-decoration:none;display:inline-block;max-width:100%;padding:0px 0px;background-color:rgb(252,186,25);border-radius:0.375rem;padding-left:1rem;padding-right:1rem;padding-top:0.5rem;padding-bottom:0.5rem;color:rgb(255,255,255)"><span></span><span style="max-width:100%;display:inline-block;line-height:120%;text-decoration:none;text-transform:none;mso-padding-alt:0px;mso-text-raise:0">Log in to Registry</span><span></span></a>
+        </div>
+        <div>
+          <div>
+            <p style="font-size:14px;line-height:24px;margin:16px 0">If you have any questions, send us a message at <a target="_blank" style="color:#067df7;text-decoration:none;margin-top:0px;height:1rem" href="mailto:PlatformServicesTeam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</a>. We&#x27;d love to hear from you.</p>
+            <p style="font-size:14px;line-height:24px;margin:16px 0">-- The Registry Team</p>
+          </div>
+        </div>
+      </div>
+    </body>
+  </div>
+
+</html>"
+`;
+
+exports[`Email template snapshots returns ProductDetails component 1`] = `"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><div><h1 class="text-lg">Product Details</h1><div><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Product Name: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">placeholder</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Product Description: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">placeholder</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Ministry: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 h-4">CITZ</p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Product Owner: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 mb-0 h-4">John Doe</p><a target="_blank" style="color:#067df7;text-decoration:none" class="mt-0 h-4" href="mailto:john.doe@gov.bc.ca">john.doe@gov.bc.ca</a><p style="font-size:14px;line-height:24px;margin:16px 0" class="mb-0 font-semibold h-4">Product Owner: </p><p style="font-size:14px;line-height:24px;margin:16px 0" class="mt-0 mb-0 h-4">Sarah Williams</p><a target="_blank" style="color:#067df7;text-decoration:none" class="mt-0 h-4" href="mailto:sarah.williams@gov.bc.ca">sarah.williams@gov.bc.ca</a></div></div>"`;

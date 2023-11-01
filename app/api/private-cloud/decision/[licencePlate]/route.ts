@@ -9,6 +9,7 @@ import makeDecisionRequest, {
 } from '@/requestActions/private-cloud/decisionRequest';
 import sendPrivateCloudNatsMessage from '@/nats/privateCloud';
 import { subscribeUsersToMautic } from '@/mautic';
+import { sendRequestApprovalEmails } from '@/ches/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -68,6 +69,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
+    // Send emails
+    sendRequestRejectionEmails(request);
     return new NextResponse(`Request for ${request.licencePlate} succesfully created as rejected.`, {
       status: 200,
     });
@@ -100,8 +103,92 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
   // Send emails
+  sendRequestApprovalEmails(request);
 
   return new NextResponse(`Decision request for ${request.licencePlate} succesfully created.`, {
     status: 200,
   });
+}
+function sendRequestRejectionEmails(
+  request: {
+    requestedProject: {
+      projectOwner: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        email: string;
+        image: string | null;
+        ministry: string | null;
+        archived: boolean;
+        created: Date;
+        lastSeen: Date;
+      };
+      primaryTechnicalLead: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        email: string;
+        image: string | null;
+        ministry: string | null;
+        archived: boolean;
+        created: Date;
+        lastSeen: Date;
+      };
+      secondaryTechnicalLead: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        email: string;
+        image: string | null;
+        ministry: string | null;
+        archived: boolean;
+        created: Date;
+        lastSeen: Date;
+      } | null;
+    } & {
+      id: string;
+      name: string;
+      description: string;
+      status: import('.prisma/client').$Enums.ProjectStatus;
+      licencePlate: string;
+      created: Date;
+      projectOwnerId: string;
+      primaryTechnicalLeadId: string;
+      secondaryTechnicalLeadId: string | null;
+      ministry: import('.prisma/client').$Enums.Ministry;
+      cluster: import('.prisma/client').$Enums.Cluster;
+    } & {
+      productionQuota: { cpu: string; memory: string; storage: string };
+      testQuota: { cpu: string; memory: string; storage: string };
+      developmentQuota: { cpu: string; memory: string; storage: string };
+      toolsQuota: { cpu: string; memory: string; storage: string };
+      commonComponents: { other: string; noServices: boolean } & {
+        addressAndGeolocation: { planningToUse: boolean; implemented: boolean };
+        workflowManagement: { planningToUse: boolean; implemented: boolean };
+        formDesignAndSubmission: { planningToUse: boolean; implemented: boolean };
+        identityManagement: { planningToUse: boolean; implemented: boolean };
+        paymentServices: { planningToUse: boolean; implemented: boolean };
+        documentManagement: { planningToUse: boolean; implemented: boolean };
+        endUserNotificationAndSubscription: { planningToUse: boolean; implemented: boolean };
+        publishing: { planningToUse: boolean; implemented: boolean };
+        businessIntelligence: { planningToUse: boolean; implemented: boolean };
+      };
+    };
+  } & {
+    id: string;
+    licencePlate: string;
+    createdByEmail: string;
+    decisionMakerEmail: string | null;
+    type: import('.prisma/client').$Enums.RequestType;
+    decisionStatus: import('.prisma/client').$Enums.DecisionStatus;
+    humanComment: string | null;
+    active: boolean;
+    created: Date;
+    decisionDate: Date | null;
+    projectId: string | null;
+    requestedProjectId: string;
+    userRequestedProjectId: string;
+  },
+) {
+  throw new Error('Function not implemented.');
 }

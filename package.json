@@ -12,7 +12,7 @@
     "prisma-generate-test": "dotenv -e .env.test -- npx prisma generate",
     "prisma-migrate-test": "dotenv -e .env.test -- npx prisma generate && dotenv -e .env.test -- npx prisma db push",
     "public-cloud-projects-to-csv": "dotenv -e .env -- node scripts/public-cloud-projects-to-csv.js",
-    "email": "email dev --dir emails"
+    "email": "email dev --dir emails --port 3001"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
