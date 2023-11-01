@@ -41,7 +41,7 @@
 //   );
 // }
 
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Question } from '@/components/assets/question';
 
 export default function AccountCodingInput({
@@ -61,11 +61,6 @@ export default function AccountCodingInput({
   accountCoding: any;
   disabled?: boolean;
 }) {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
-
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
       <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-2">

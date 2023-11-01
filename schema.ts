@@ -1,5 +1,5 @@
 import { Cluster, Ministry, Provider } from '@prisma/client';
-import { string, number, z } from 'zod';
+import { string, z } from 'zod';
 
 export const DefaultCpuOptionsSchema = z.enum([
   'CPU_REQUEST_0_5_LIMIT_1_5',
@@ -96,8 +96,8 @@ export const UserInputSchema = z.object({
 });
 
 export const PrivateCloudCreateRequestBodySchema = z.object({
-  name: z.string().nonempty({ message: 'Name is required.' }),
-  description: z.string().nonempty({ message: 'Description is required.' }),
+  name: z.string().min(1, { message: 'Name is required.' }),
+  description: z.string().min(1, { message: 'Description is required.' }),
   cluster: z.nativeEnum(Cluster),
   ministry: z.nativeEnum(Ministry),
   projectOwner: UserInputSchema,
@@ -109,20 +109,17 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
 export const PublicCloudCreateRequestBodySchema = z.object({
   name: z
     .string()
-    .nonempty({ message: 'Name is required.' })
+    .min(1, { message: 'Name is required.' })
     .refine(
       (value) => !/[!#$%^&*()_\-\[\]{};'"\\|,<>\?]/g.test(value),
       'Only /. : + = @ _ special symbols are allowed',
     ),
   accountCoding: z
     .string()
-    .refine(
-      (value) => /^[1-9A-Z\s]+$/.test(value),
-      'Account Coding should contain only uppercase characters, digits, and spaces',
-    )
+    .refine((value) => /^[1-9A-Z\s]+$/.test(value), 'Account Coding should contain only uppercase characters, digits')
     .transform((value) => value.replace(/\s+/g, ''))
     .refine((value) => value.length === 24, 'Account Coding should contain 24 characters'),
-  description: z.string().nonempty({ message: 'Description is required.' }),
+  description: z.string().min(1, { message: 'Description is required.' }),
   provider: z.nativeEnum(Provider),
   budget: BudgetInputSchema,
   ministry: z.nativeEnum(Ministry),
