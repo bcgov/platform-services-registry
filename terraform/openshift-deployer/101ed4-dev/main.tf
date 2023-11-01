@@ -1,4 +1,4 @@
-module "fdf5df_deployer" {
+module "oc_deployer" {
   source  = "bcgov/openshift/deployer"
   version = "0.11.0"
 
