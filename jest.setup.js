@@ -11,6 +11,14 @@ jest.mock('@/mautic', () => ({
   subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]), // Mocked return value
 }));
 
+// Mock CHES
+jest.mock('@/ches/emailHandler', () => ({
+  ...jest.requireActual('@/ches'),
+  sendNewRequestEmails: jest.fn(async () => [200]),
+  sendRequestApprovalEmails: jest.fn(async () => [200]),
+  sendRequestDenialEmails: jest.fn(async () => [200]),
+}));
+
 export async function cleanUp() {
   // Delete related documents from referencing models first
   await prisma.privateCloudRequest.deleteMany();
