@@ -252,26 +252,32 @@ describe('Query projects with filter and search', () => {
     expect(projects.length).toBe(seededProjectsCount);
   });
 
+  //This test seems to be failing: TypeError: Cannot read properties of undefined (reading 'email')
   test('Should return only projects belonging to specific user when userEmail is passed', async () => {
     const specificUserEmail = 'jane.smith@example.com';
     const projects = await privateCloudProjects(specificUserEmail);
-    
+
     // Ensure all returned projects belong to the user with the provided email
     for (const project of projects) {
-      expect([project.projectOwner.email, project.primaryTechnicalLead.email, project.secondaryTechnicalLead.email]).toContain(specificUserEmail);
+      
+      const emails = [];
+      if (project.projectOwner) emails.push(project.projectOwner.email);
+      if (project.primaryTechnicalLead) emails.push(project.primaryTechnicalLead.email);
+      if (project.secondaryTechnicalLead) emails.push(project.secondaryTechnicalLead.email);
+
+      expect(emails).toContain(specificUserEmail);
     }
   });
 
   test('Should return no projects when a non-associated userEmail is passed', async () => {
     const nonAssociatedEmail = 'non.associated@example.com';
     const projects = await privateCloudProjects(nonAssociatedEmail);
-    
+
     // Expecting no projects to be returned for a non-associated email
     expect(projects.length).toBe(0);
   });
 
   //TODO: Create tests that will test for the email parameter of a querie, and then create some that will test a comboination of parameters (Ex, email + minisitry)
-
 
   //test("Should paginate projects correctly", async () => {
   //  const page1 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 0); // 5 projects from the start
