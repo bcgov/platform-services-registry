@@ -256,7 +256,7 @@ describe('Query projects with filter and search', () => {
   test('Should return only projects belonging to specific user when userEmail is passed', async () => {
     const specificUserEmail = 'jane.smith@example.com';
     const projects = await privateCloudProjects(null, null, null, specificUserEmail);
-    console.log(projects);
+    //console.log(projects);
 
     // Ensure all returned projects belong to the user with the provided email
     for (const project of projects) {
@@ -271,43 +271,96 @@ describe('Query projects with filter and search', () => {
 
   test('Should return no projects when a non-associated userEmail is passed', async () => {
     const nonAssociatedEmail = 'non.associated@example.com';
-    const projects = await privateCloudProjects(nonAssociatedEmail);
+    const projects = await privateCloudProjects(null, null, null, nonAssociatedEmail);
 
     // Expecting no projects to be returned for a non-associated email
     expect(projects.length).toBe(0);
   });
 
-  //TODO: Create tests that will test for the email parameter of a querie, and then create some that will test a comboination of parameters (Ex, email + minisitry)
+  test('Should return projects filtered by both cluster and ministry', async () => {
+    const clusterFilter = Cluster.CLAB;
+    const ministryFilter = Ministry.AG;
+  
+    const projects = await privateCloudProjects(null, ministryFilter, clusterFilter);
+  
+    // Make sure all returned projects match the criteria
+    for (const project of projects) {
+      expect(project.cluster).toBe(clusterFilter);
+      expect(project.ministry).toBe(ministryFilter);
+    }
+  });
 
-  //test("Should paginate projects correctly", async () => {
-  //  const page1 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 0); // 5 projects from the start
-  //  const page2 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 5); // next 5 projects
-  //  expect(page1[4].name).not.toBe(page2[0].name); // last project of page 1 should not be the first project of page 2
-  // });
+  // Test filtering by searchTerm and ministry
+  test('Should return projects filtered by searchTerm and ministry', async () => {
+    const searchTerm = 'Sample Project1';
+    const ministryFilter = Ministry.AG;
 
-  //test("Should return projects with the correct ministry", async () => {
+    const projects = await privateCloudProjects(searchTerm, ministryFilter);
+
+    // Ensure all returned projects match the criteria
+    for (const project of projects) {
+      expect(project.ministry).toBe(ministryFilter);
+      expect(project.name).toContain(searchTerm);
+  }
+});
+  
+  // Test filtering by searchTerm, ministry, and userEmail
+  test('Should return projects filtered by searchTerm, ministry, and userEmail', async () => {
+    const searchTerm = 'Sample Project1';
+    const ministryFilter = Ministry.AG;
+    const specificUserEmail = 'jane.smith@example.com';
+
+    const projects = await privateCloudProjects(searchTerm, ministryFilter, null, specificUserEmail);
+
+    for (const project of projects) {
+      expect(project.ministry).toBe(ministryFilter);
+      expect(project.name).toContain(searchTerm);
+
+      const emails = [];
+      if (project.projectOwnerDetails) emails.push(project.projectOwnerDetails.email);
+      if (project.primaryTechnicalLeadDetails) emails.push(project.primaryTechnicalLeadDetails.email);
+      if (project.secondaryTechnicalLeadDetails) emails.push(project.secondaryTechnicalLeadDetails.email);
+
+      expect(emails).toContain(specificUserEmail);
+    }
+});
+
+  // Test filtering by cluster and userEmail
+  test('Should return projects filtered by cluster and userEmail', async () => {
+    const clusterFilter = Cluster.CLAB;
+    const specificUserEmail = 'jane.smith@example.com';
+
+    const projects = await privateCloudProjects(null, null, clusterFilter, specificUserEmail);
+
+    for (const project of projects) {
+      expect(project.cluster).toBe(clusterFilter);
+
+      const emails = [];
+      if (project.projectOwnerDetails) emails.push(project.projectOwnerDetails.email);
+      if (project.primaryTechnicalLeadDetails) emails.push(project.primaryTechnicalLeadDetails.email);
+      if (project.secondaryTechnicalLeadDetails) emails.push(project.secondaryTechnicalLeadDetails.email);
+
+      expect(emails).toContain(specificUserEmail);
+    }
+  });
+
+});
+
+//test("Should paginate projects correctly", async () => {
+//  const page1 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 0); // 5 projects from the start
+//  const page2 = await privateCloudProjects(undefined, undefined, undefined, undefined, 5, 5); // next 5 projects
+//  expect(page1[4].name).not.toBe(page2[0].name); // last project of page 1 should not be the first project of page 2
+// });
+
+//test("Should return projects with the correct ministry", async () => {
   //  const ministryFilter = Ministry.AG;
 
   //  const projects = await privateCloudProjects(undefined, ministryFilter);
 
   // Make sure all returned projects match the ministry criteria
-  //  for (const project of projects) {
-  //      expect(project.ministry).toBe(ministryFilter);
-  //   }
-});
-
-test('Should return projects filtered by both cluster and ministry', async () => {
-  const clusterFilter = Cluster.CLAB;
-  const ministryFilter = Ministry.AG;
-
-  const projects = await privateCloudProjects(null, ministryFilter, clusterFilter);
-
-  // Make sure all returned projects match the criteria
-  for (const project of projects) {
-    expect(project.cluster).toBe(clusterFilter);
-    expect(project.ministry).toBe(ministryFilter);
-  }
-});
+//  for (const project of projects) {
+//      expect(project.ministry).toBe(ministryFilter);
+//   }
 
 //These two tests below are failing because privateCloudProjects function only takes in a string value, so we cannot loop through all the pages to pull all the projects.
 //test("Should return all projects", async () => {
@@ -409,4 +462,3 @@ test('Should return projects filtered by both cluster and ministry', async () =>
 
 //     expect(projects.total).toBe(5);
 //   });
-//
