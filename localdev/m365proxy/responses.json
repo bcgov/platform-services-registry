@@ -191,6 +191,19 @@
             "officeLocation": "DevOps and Cloud Services",
             "preferredLanguage": null,
             "id": "bbb8b857-aaaa-4a17-a79a-518e33effccc"
+          },
+          {
+            "displayName": "Kolesnyk, Zhanna CITZ:EX",
+            "surname": "Kolesnyk",
+            "givenName": "Zhanna",
+            "mail": "Zhanna.Kolesnyk@gov.bc.ca",
+            "userPrincipalName": "Zhanna.Kolesnyk@gov.bc.ca",
+            "jobTitle": "admin",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "bbb8b857-36c8-4a17-a79a-518e33effbbb"
           }
         ]
       }
