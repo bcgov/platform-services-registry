@@ -5,8 +5,8 @@ import { Prisma } from '@prisma/client';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { PrivateCloudRequest } from '@prisma/client';
 import createRequest from '@/requestActions/private-cloud/createRequest';
+import { sendCreateRequestEmails } from '@/ches/emailHandler';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/createRequest';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 export async function POST(req: NextRequest) {
   // Authentication
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   // Action
   const request: PrivateCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
-  // sendCreateRequestEmails(createRequest.requestedProject);
+  sendCreateRequestEmails(formData);
 
   return new NextResponse('Success creating request', {
     status: 200,

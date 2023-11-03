@@ -1,0 +1,89 @@
+# See https://helm.sh/docs/chart_template_guide/subcharts_and_globals/#global-chart-values
+global:
+  licensePlate: 101ed4
+  vault:
+    # licensePlate-nonprod or licensePlate-prod
+    role:
+    # sub-path of the vault secret
+    subPath:
+    podAnnotations:
+      # See https://developer.hashicorp.com/vault/docs/platform/k8s/injector/annotations#agent-annotations
+      vault.hashicorp.com/auth-path: auth/k8s-silver
+      vault.hashicorp.com/namespace: platform-services
+      vault.hashicorp.com/agent-inject: "true"
+      vault.hashicorp.com/agent-inject-token: "false"
+      vault.hashicorp.com/agent-pre-populate: "true"
+      vault.hashicorp.com/agent-pre-populate-only: "true"
+      vault.hashicorp.com/agent-requests-cpu: 50m
+      vault.hashicorp.com/agent-limits-cpu: 100m
+      vault.hashicorp.com/agent-requests-mem: 32Mi
+      vault.hashicorp.com/agent-limits-mem: 64Mi
+  env:
+    "Env": ""
+
+  serviceAccountName: 101ed4-vault
+
+nameOverride: pltsvc
+fullnameOverride: pltsvc
+
+app:
+  enabled: true
+  image:
+    pullPolicy: IfNotPresent
+
+  nameOverride: pltsvc-app
+  fullnameOverride: pltsvc-app
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
+  env:
+    "APP_ENV": ""
+    "AUTH_SERVER_URL": ""
+    "AUTH_RELM": ""
+    "NEXTAUTH_URL": ""
+
+mongodb:
+  enabled: false
+
+  # See https://github.com/bitnami/charts/blob/main/bitnami/mongodb/README.md#parameters
+  nameOverride: pltsvc-mongodb
+  fullnameOverride: pltsvc-mongodb
+
+  architecture: replicaset
+  useStatefulSet: true
+  replicaCount: 3
+
+  auth:
+    enabled: true
+    existingSecret: pltsvc-mongodb # pragma: allowlist secret
+
+  persistence:
+    enabled: true
+    storageClass: netapp-block-standard
+    size: 5Gi
+
+  resources:
+    limits:
+      cpu: 1
+      memory: 1500Mi
+    requests:
+      cpu: 0.5
+      memory: 500Mi
+
+  podSecurityContext:
+    enabled: false
+  containerSecurityContext:
+    enabled: false
+
+  arbiter:
+    enabled: true
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false

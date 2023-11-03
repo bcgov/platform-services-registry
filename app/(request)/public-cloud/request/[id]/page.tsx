@@ -40,13 +40,11 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
 
-  const { data } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>(
-    ['requestedProject', params.id],
-    () => fetchRequestedProject(params.id),
-    {
-      enabled: !!params.id,
-    },
-  );
+  const { data } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['requestedProject', params.id],
+    queryFn: () => fetchRequestedProject(params.id),
+    enabled: !!params.id,
+  });
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudDecisionRequestBodySchema),

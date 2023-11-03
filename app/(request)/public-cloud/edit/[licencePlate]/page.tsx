@@ -59,25 +59,22 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data } = useQuery<PublicCloudProjectWithUsers, Error>(
-    ['project', params.licencePlate],
-    () => fetchProject(params.licencePlate),
-    {
-      enabled: !!params.licencePlate,
-    },
-  );
+  const { data } = useQuery<PublicCloudProjectWithUsers, Error>({
+    queryKey: ['project', params.licencePlate],
+    queryFn: () => fetchProject(params.licencePlate),
+    enabled: !!params.licencePlate,
+  });
 
-  const { data: requestData } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>(
-    ['request', params.licencePlate],
-    () => fetchActiveRequest(params.licencePlate),
-    {
-      enabled: !!params.licencePlate,
-      onError: (error) => {
+  const { data: requestData } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['request', params.licencePlate],
+    queryFn: () =>
+      fetchActiveRequest(params.licencePlate).catch((error) => {
         console.log('error', error);
         setDisabled(true);
-      },
-    },
-  );
+        return Promise.reject(error);
+      }),
+    enabled: !!params.licencePlate,
+  });
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudEditRequestBodySchema),

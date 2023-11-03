@@ -1,5 +1,5 @@
 import 'isomorphic-fetch';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { PrismaClient } from '@prisma/client';
 import prisma from '@/lib/prisma';
 
