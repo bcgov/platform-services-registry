@@ -47,13 +47,11 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>(
-    ['requestedProject', params.licencePlate],
-    () => fetchRequestedProject(params.licencePlate),
-    {
-      enabled: !!params.licencePlate,
-    },
-  );
+  const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['requestedProject', params.licencePlate],
+    queryFn: () => fetchRequestedProject(params.licencePlate),
+    enabled: !!params.licencePlate,
+  });
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),

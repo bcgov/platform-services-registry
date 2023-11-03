@@ -61,25 +61,22 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>(
-    ['project', params.licencePlate],
-    () => fetchProject(params.licencePlate),
-    {
-      enabled: !!params.licencePlate,
-    },
-  );
+  const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
+    queryKey: ['project', params.licencePlate],
+    queryFn: () => fetchProject(params.licencePlate),
+    enabled: !!params.licencePlate,
+  });
 
-  const { data: requestData } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>(
-    ['request', params.licencePlate],
-    () => fetchActiveRequest(params.licencePlate),
-    {
-      enabled: !!params.licencePlate,
-      onError: (error) => {
+  const { data: requestData } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['request', params.licencePlate],
+    queryFn: () =>
+      fetchActiveRequest(params.licencePlate).catch((error) => {
         console.log('error', error);
         setDisabled(true);
-      },
-    },
-  );
+        return Promise.reject(error);
+      }),
+    enabled: !!params.licencePlate,
+  });
 
   // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
   // in an error.
