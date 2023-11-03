@@ -252,7 +252,7 @@ describe('Query projects with filter and search', () => {
     expect(projects.length).toBe(seededProjectsCount);
   });
 
-  //This test seems to be failing: TypeError: Cannot read properties of undefined (reading 'email')
+  //This test was previously failing because the correct parameter is 'projectOwnerDetails' and NOT 'projectOwner'
   test('Should return only projects belonging to specific user when userEmail is passed', async () => {
     const specificUserEmail = 'jane.smith@example.com';
     const projects = await privateCloudProjects(null, null, null, specificUserEmail);
