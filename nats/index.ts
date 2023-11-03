@@ -14,7 +14,7 @@ const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
 async function sendNatsMessage(natsSubject: string, messageBody: any) {
   try {
     console.log('NATS SUBJECT: ', natsSubject);
-    console.log('MESSAGE BODY: ', JSON.stringify(messageBody));
+    // console.log('MESSAGE BODY: ', JSON.stringify(messageBody));
 
     const nc = await connect({ servers: serverURL });
 
@@ -35,6 +35,7 @@ export async function sendPrivateCloudNatsMessage(
   requestedProject: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,
 ) {
+  console.log('********** RAN **************');
   const natsSubject = `registry_project_provisioning_${requestedProject.cluster}`;
 
   // Perform deletion check if request is a delete request
