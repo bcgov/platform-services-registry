@@ -152,6 +152,32 @@
             "officeLocation": "DevOps and Cloud Services",
             "preferredLanguage": null,
             "id": "a008b857-36c8-4a17-a79a-518e33effec0"
+          },
+          {
+            "displayName": "Ahn, Junmin CITZ:EX",
+            "surname": "Ahn",
+            "givenName": "Junmin",
+            "mail": "Junmin.Ahn@gov.bc.ca",
+            "userPrincipalName": "Junmin.Ahn@gov.bc.ca",
+            "jobTitle": "admin",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "a008b857-36c8-4a17-a79a-518e33effec1"
+          },
+          {
+            "displayName": "Kravchenko, Artem CITZ:EX",
+            "surname": "Artem",
+            "givenName": "Kravchenko",
+            "mail": "Artem.Kravchenko@gov.bc.ca",
+            "userPrincipalName": "Artem.Kravchenko@gov.bc.ca",
+            "jobTitle": "admin",
+            "businessPhones": [],
+            "mobilePhone": null,
+            "officeLocation": "DevOps and Cloud Services",
+            "preferredLanguage": null,
+            "id": "aaa8b857-36c8-4a17-a79a-518e33effbbb"
           }
         ]
       }
