@@ -7,7 +7,7 @@ import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
-import sendPrivateCloudNatsMessage from '@/nats/privateCloud';
+import { sendPrivateCloudNatsMessage } from '@/nats';
 import { subscribeUsersToMautic } from '@/mautic';
 
 const ParamsSchema = z.object({

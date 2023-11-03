@@ -48,7 +48,13 @@ export default async function makeDecisionRequest(
       active: true,
     },
     include: {
-      project: true,
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
       requestedProject: {
         include: {
           projectOwner: true,

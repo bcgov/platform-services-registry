@@ -1,0 +1,80 @@
+{
+  "action": "create",
+  "profile_id": "6542e4acdcde5bb491a13b3e",
+  "licencePlate": "1c4f9c",
+  "isContactChanged": false,
+  "workflow": "silver-1c4f9c-6542e4acdcde5bb491a13b3f",
+  "cluster_name": "silver",
+  "display_name": "Sample Project",
+  "description": "This is a sample project description.",
+  "ministry_id": "AGRI",
+  "merge_type": "auto",
+  "alliance": "none",
+  "namespaces": [
+    {
+      "name": "1c4f9c-tools",
+      "quota": {
+        "cpu": "cpu-request-2-limit-4",
+        "memory": "memory-request-8-limit-16",
+        "storage": "storage-64",
+        "snapshot": "snapshot-5"
+      },
+      "quotas": {
+        "cpu": { "requests": 2, "limits": 4 },
+        "memory": { "requests": "8Gi", "limits": "16Gi" },
+        "storage": { "block": "64Gi", "file": "64Gi", "backup": "32Gi", "capacity": "64Gi", "pvc_count": 60 },
+        "snapshot": { "count": 5 }
+      }
+    },
+    {
+      "name": "1c4f9c-prod",
+      "quota": {
+        "cpu": "cpu-request-4-limit-8",
+        "memory": "memory-request-16-limit-32",
+        "storage": "storage-64",
+        "snapshot": "snapshot-5"
+      },
+      "quotas": {
+        "cpu": { "requests": 4, "limits": 8 },
+        "memory": { "requests": "16Gi", "limits": "32Gi" },
+        "storage": { "block": "64Gi", "file": "64Gi", "backup": "32Gi", "capacity": "64Gi", "pvc_count": 60 },
+        "snapshot": { "count": 5 }
+      }
+    },
+    {
+      "name": "1c4f9c-dev",
+      "quota": {
+        "cpu": "cpu-request-4-limit-8",
+        "memory": "memory-request-16-limit-32",
+        "storage": "storage-64",
+        "snapshot": "snapshot-5"
+      },
+      "quotas": {
+        "cpu": { "requests": 4, "limits": 8 },
+        "memory": { "requests": "16Gi", "limits": "32Gi" },
+        "storage": { "block": "64Gi", "file": "64Gi", "backup": "32Gi", "capacity": "64Gi", "pvc_count": 60 },
+        "snapshot": { "count": 5 }
+      }
+    },
+    {
+      "name": "1c4f9c-test",
+      "quota": {
+        "cpu": "cpu-request-4-limit-8",
+        "memory": "memory-request-16-limit-32",
+        "storage": "storage-64",
+        "snapshot": "snapshot-5"
+      },
+      "quotas": {
+        "cpu": { "requests": 4, "limits": 8 },
+        "memory": { "requests": "16Gi", "limits": "32Gi" },
+        "storage": { "block": "64Gi", "file": "64Gi", "backup": "32Gi", "capacity": "64Gi", "pvc_count": 60 },
+        "snapshot": { "count": 5 }
+      }
+    }
+  ],
+  "contacts": [
+    { "email": "jeff.dorion@gov.bc.ca", "idir": "JDORION", "upn": "Jeff.Dorion@gov.bc.ca", "role": "owner" },
+    { "email": "branko.bajic@gov.bc.ca", "idir": "BBAJIC", "upn": "Branko.Bajic@gov.bc.ca", "role": "lead" },
+    { "email": "brian.d.pham@gov.bc.ca", "idir": "BDPHAM", "upn": "Brian.D.Pham@gov.bc.ca", "role": "lead" }
+  ]
+}

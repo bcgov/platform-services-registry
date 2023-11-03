@@ -1,7 +1,12 @@
-import { RequestType, PrivateCloudRequest, PrivateCloudRequestedProject } from '@prisma/client';
-import { Prisma } from '@prisma/client';
+import {
+  DefaultCpuOptions,
+  DefaultMemoryOptions,
+  DefaultStorageOptions,
+  snapshot,
+} from '@/nats/privateCloud/constants';
+import { Prisma, RequestType, PrivateCloudRequest } from '@prisma/client';
 
-export type PrivateCloudRequestWithAdminRequestedProject = Prisma.PrivateCloudRequestedProjectGetPayload<{
+export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
   include: {
     projectOwner: true;
     primaryTechnicalLead: true;
@@ -9,11 +14,113 @@ export type PrivateCloudRequestWithAdminRequestedProject = Prisma.PrivateCloudRe
   };
 }>;
 
-export default async function sendPrivateCloudNatsMessage(
+export default async function createPrivateCloudNatsMessage(
   requestId: PrivateCloudRequest['id'],
   requestType: RequestType,
-  requestedProject: PrivateCloudRequestedProject,
+  requestedProject: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,
 ) {
-  return {};
+  const {
+    id,
+    licencePlate,
+    name,
+    description,
+    ministry,
+    cluster,
+    productionQuota,
+    developmentQuota,
+    testQuota,
+    toolsQuota,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+  } = requestedProject;
+
+  console.log('QUOTAS');
+  console.log(productionQuota);
+  console.log(developmentQuota);
+  console.log(testQuota);
+  console.log(toolsQuota);
+
+  let allianceLabel = '';
+  switch (ministry.toLocaleLowerCase()) {
+    case 'ag':
+    case 'pssg':
+    case 'embc':
+    case 'mah':
+      allianceLabel = 'JAG';
+      break;
+    default:
+      allianceLabel = 'none';
+      break;
+  }
+
+  console.log('REQUESTED PROJECT', requestedProject);
+
+  const messageBody = {
+    action: requestType.toLocaleLowerCase(),
+    profile_id: id,
+    licencePlate: licencePlate,
+    isContactChanged: contactChanged,
+    workflow: `${cluster.toLocaleLowerCase()}-${licencePlate}-${requestId}`,
+    cluster_name: cluster.toLocaleLowerCase(),
+    display_name: name,
+    description: description,
+    ministry_id: ministry,
+    merge_type: 'auto',
+    alliance: allianceLabel,
+    namespaces: [
+      { quotaName: 'tools', quota: toolsQuota },
+      { quotaName: 'prod', quota: productionQuota },
+      { quotaName: 'dev', quota: developmentQuota },
+      { quotaName: 'test', quota: testQuota },
+    ].map(({ quotaName, quota }) => ({
+      name: `${licencePlate}-${quotaName}`,
+      quota: {
+        cpu: DefaultCpuOptions[quota.cpu],
+        memory: DefaultMemoryOptions[quota.memory],
+        storage: DefaultStorageOptions[quota.storage],
+        snapshot: snapshot.name,
+      },
+      quotas: {
+        cpu: { requests: DefaultCpuOptions[quota.cpu].cpuRequests, limits: DefaultCpuOptions[quota.cpu].cpuLimits },
+        memory: {
+          requests: DefaultMemoryOptions[quota.memory].memoryRequests,
+          limits: DefaultMemoryOptions[quota.memory].memoryLimits,
+        },
+        storage: {
+          block: DefaultStorageOptions[quota.storage].storageBlock,
+          file: DefaultStorageOptions[quota.storage].storageFile,
+          backup: DefaultStorageOptions[quota.storage].storageBackup,
+          capacity: DefaultStorageOptions[quota.storage].storageCapacity,
+          pvc_count: DefaultStorageOptions[quota.storage].storagePvcCount,
+        },
+        snapshot: { count: snapshot.snapshotCount },
+      },
+    })),
+    contacts: [
+      {
+        email: projectOwner.email,
+        idir: projectOwner.idir,
+        upn: projectOwner.upn,
+        role: 'owner',
+      },
+      {
+        email: primaryTechnicalLead.email,
+        idir: primaryTechnicalLead.idir,
+        upn: primaryTechnicalLead.upn,
+        role: 'lead',
+      },
+      secondaryTechnicalLead
+        ? {
+            email: secondaryTechnicalLead.email,
+            idir: secondaryTechnicalLead.idir,
+            upn: secondaryTechnicalLead.upn,
+            role: 'lead',
+          }
+        : null,
+    ].filter(Boolean),
+  };
+
+  return messageBody;
 }

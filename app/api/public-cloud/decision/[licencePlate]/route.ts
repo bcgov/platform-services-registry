@@ -5,9 +5,9 @@ import { DecisionStatus, User } from '@prisma/client';
 import { string, z } from 'zod';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
-  PublicCloudRequestWithRequestedProject,
+  PublicCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/public-cloud/decisionRequest';
-import sendPublicCloudNatsMessage from '@/nats/public-cloud';
+import { sendPublicCloudNatsMessage } from '@/nats';
 import { subscribeUsersToMautic } from '@/mautic';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { licencePlate } = parsedParams.data;
   const { decision, humanComment, ...requestedProjectFormData } = parsedBody.data;
 
-  const request: PublicCloudRequestWithRequestedProject = await makeDecisionRequest(
+  const request: PublicCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
     licencePlate,
     decision,
     humanComment,
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     );
   }
 
-  await sendPublicCloudNatsMessage(request.id, request.type, request.requestedProject);
+  await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
 
   // Subscribe users to Mautic
   const users: User[] = [

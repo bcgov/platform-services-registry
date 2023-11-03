@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { PrivateCloudRequest, User, DecisionStatus } from '@prisma/client';
+import { PrivateCloudRequest, User, DecisionStatus, Cluster } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { PrivateCloudEditRequestBodySchema, PrivateCloudEditRequestBody } from '@/schema';
 import { string, z } from 'zod';
 import editRequest from '@/requestActions/private-cloud/editRequest';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/editRequest';
 import { subscribeUsersToMautic } from '@/mautic';
+import { sendPrivateCloudNatsMessage } from '@/nats';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -77,13 +78,24 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     );
   }
 
-  //   await sendNatsMessage(editRequest.type, editRequest.requestedProject);
+  const contactChanged =
+    formData.projectOwner.email !== request.requestedProject.projectOwner.email ||
+    formData.primaryTechnicalLead.email !== request.requestedProject.primaryTechnicalLead.email ||
+    formData.secondaryTechnicalLead?.email !== request.requestedProject?.secondaryTechnicalLead?.email;
 
-  //   if (editRequest.requestedProject.cluster === Cluster.Gold) {
-  //     const goldDrRequest = { ...editRequest };
-  //     goldDrRequest.requestedProject.cluster = Cluster.Golddr;
-  //     await sendNatsMessage(goldDrRequest.type, goldDrRequest.requestedProject);
-  //   }
+  await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
+
+  if (request.requestedProject.cluster === Cluster.GOLD) {
+    const goldDrRequest = { ...request };
+    goldDrRequest.requestedProject.cluster = Cluster.GOLDDR;
+    await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
+    await sendPrivateCloudNatsMessage(
+      goldDrRequest.id,
+      goldDrRequest.type,
+      goldDrRequest.requestedProject,
+      contactChanged,
+    );
+  }
 
   // await sendEditRequestEmails(
   //   editRequest.project,
