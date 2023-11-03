@@ -30,9 +30,6 @@ export default function AccountCoding({
     setAccountCoding(accountCodingSeparation());
   }, [accountCodingInitial]);
 
-  console.log('STATE ACCOUNT CODING');
-  console.log(accountCoding);
-
   useEffect(() => {
     setValue('accountCoding', Object.values(accountCoding).join(''));
   }, [accountCoding]);

@@ -6,7 +6,7 @@ import createPublicCloudNatsMessage, {
   PublicCloudRequestedProjectWithContacts,
   PublicCloudProjectWithContacts,
 } from '@/nats/publicCloud';
-import openshiftDeletionCheck, { DeletableField } from '@/scripts/deletioncheck.js';
+import openshiftDeletionCheck, { DeletableField } from '@/scripts/deletioncheck';
 import { RequestType, PrivateCloudRequest } from '@prisma/client';
 
 const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
