@@ -280,9 +280,9 @@ describe('Query projects with filter and search', () => {
   test('Should return projects filtered by both cluster and ministry', async () => {
     const clusterFilter = Cluster.CLAB;
     const ministryFilter = Ministry.AG;
-  
+
     const projects = await privateCloudProjects(null, ministryFilter, clusterFilter);
-  
+
     // Make sure all returned projects match the criteria
     for (const project of projects) {
       expect(project.cluster).toBe(clusterFilter);
@@ -301,9 +301,9 @@ describe('Query projects with filter and search', () => {
     for (const project of projects) {
       expect(project.ministry).toBe(ministryFilter);
       expect(project.name).toContain(searchTerm);
-  }
-});
-  
+    }
+  });
+
   // Test filtering by searchTerm, ministry, and userEmail
   test('Should return projects filtered by searchTerm, ministry, and userEmail', async () => {
     const searchTerm = 'Sample Project1';
@@ -323,7 +323,7 @@ describe('Query projects with filter and search', () => {
 
       expect(emails).toContain(specificUserEmail);
     }
-});
+  });
 
   // Test filtering by cluster and userEmail
   test('Should return projects filtered by cluster and userEmail', async () => {
@@ -343,7 +343,6 @@ describe('Query projects with filter and search', () => {
       expect(emails).toContain(specificUserEmail);
     }
   });
-
 });
 
 //test("Should paginate projects correctly", async () => {
@@ -353,11 +352,11 @@ describe('Query projects with filter and search', () => {
 // });
 
 //test("Should return projects with the correct ministry", async () => {
-  //  const ministryFilter = Ministry.AG;
+//  const ministryFilter = Ministry.AG;
 
-  //  const projects = await privateCloudProjects(undefined, ministryFilter);
+//  const projects = await privateCloudProjects(undefined, ministryFilter);
 
-  // Make sure all returned projects match the ministry criteria
+// Make sure all returned projects match the ministry criteria
 //  for (const project of projects) {
 //      expect(project.ministry).toBe(ministryFilter);
 //   }
