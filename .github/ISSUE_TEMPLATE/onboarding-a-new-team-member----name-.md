@@ -4,7 +4,6 @@ about: This template is for creating an epic for onboarding a new team member.
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 Please use this epic to create various tickets for onboarding a new team member based on the following categories:
@@ -29,7 +28,9 @@ Please use this epic to create various tickets for onboarding a new team member 
 - [ ] Add to Rocket Chat team channels
 
 3. Onboarding with the subject matter expert/supervisor:
-- 
+
+-
 
 4. Training and technical onboarding that a new team member has to do:
+
 -
