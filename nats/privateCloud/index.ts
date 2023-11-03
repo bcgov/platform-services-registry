@@ -36,12 +36,6 @@ export default async function createPrivateCloudNatsMessage(
     secondaryTechnicalLead,
   } = requestedProject;
 
-  console.log('QUOTAS');
-  console.log(productionQuota);
-  console.log(developmentQuota);
-  console.log(testQuota);
-  console.log(toolsQuota);
-
   let allianceLabel = '';
   switch (ministry.toLocaleLowerCase()) {
     case 'ag':
@@ -54,8 +48,6 @@ export default async function createPrivateCloudNatsMessage(
       allianceLabel = 'none';
       break;
   }
-
-  console.log('REQUESTED PROJECT', requestedProject);
 
   const messageBody = {
     action: requestType.toLocaleLowerCase(),

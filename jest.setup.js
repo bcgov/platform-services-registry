@@ -13,7 +13,7 @@ jest.mock('@/mautic', () => ({
 
 // Mock Nats
 jest.mock('@/nats', () => ({
-  ...jest.requireActual('@/nats'),
+  // ...jest.requireActual('@/nats'),
   sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendNatsMessage: jest.fn(async () => [200, 200, 200]),

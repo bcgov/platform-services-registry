@@ -51,7 +51,7 @@ export default async function openshiftDeletionCheck(
     emerald: process.env.EMERALD_SERVICE_ACCOUNT_TOKEN || '',
   };
 
-  const clusterName = clusterNameParam.toLowerCase();
+  const clusterName = clusterNameParam.toLowerCase() as keyof typeof CLUSTER_SERVICE_ACCOUNT_TOKEN;
 
   const url = `https://api.${clusterName}.devops.gov.bc.ca:6443`;
   const BEARER_TOKEN = `Bearer ${CLUSTER_SERVICE_ACCOUNT_TOKEN[clusterName]}`;
@@ -79,6 +79,7 @@ export default async function openshiftDeletionCheck(
   }
   // Namespaces check
   const allNamespacesUnderProject = Object.keys(ProjectSetNamespace).map(
+    // @ts-ignore
     (element) => `${namespacePrefix}-${ProjectSetNamespace[element]}`,
   );
 
@@ -90,14 +91,14 @@ export default async function openshiftDeletionCheck(
       withCredentials: true,
     });
 
-    const allAvailableNamespacesOnCluster = data.items.map((item) => item.metadata.name);
+    const allAvailableNamespacesOnCluster = data.items.map((item: any) => item.metadata.name);
     const checker = (arr: string[], target: string[]) => target.every((v) => arr.includes(v));
 
     checkResult.namespaceDeletability = checker(allAvailableNamespacesOnCluster, allNamespacesUnderProject);
     console.log(`namespace in  ${clusterName} existance is ${checkResult.namespaceDeletability}`);
   } catch (err) {
     const message = `Namespace check failed, can not fetch all namespaces in cluster`;
-    console.log(`${message}, err = ${err.message}`);
+    console.log(`${message}, err = ${err}`);
     checkResult.namespaceDeletability = false;
 
     return checkResult;
@@ -118,7 +119,9 @@ export default async function openshiftDeletionCheck(
       console.log(` pod response: ${podResponse}}`);
       podResponse.forEach((namespace) => namespace.data.items.forEach((pod: any) => allPodInProject.push(pod.status)));
 
-      checkResult.podsDeletability = allPodInProject.every((pod) => pod.phase !== 'Running' && pod.phase !== 'Pending');
+      checkResult.podsDeletability = allPodInProject.every(
+        (pod: any) => pod.phase !== 'Running' && pod.phase !== 'Pending',
+      );
       console.log(`There's no running pod in  ${clusterName} is ${checkResult.podsDeletability}`);
       const pvcResponse = await Promise.all(
         allNamespacesUnderProject.map(async (namespace) =>
@@ -135,7 +138,7 @@ export default async function openshiftDeletionCheck(
       console.log(`There's no PVC in  ${clusterName} is ${checkResult.podsDeletability}`);
     } catch (err) {
       const message = `pod and pvc check failed, can not fetch info from namespaces`;
-      console.log(`${message}, err = ${err.message}`);
+      console.log(`${message}, err = ${err}`);
       checkResult.pvcDeletability = false;
       checkResult.podsDeletability = false;
 
