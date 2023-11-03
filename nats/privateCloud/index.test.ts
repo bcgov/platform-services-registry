@@ -6,7 +6,6 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 import createPrivateCloudNatsMessage from '@/nats/privateCloud';
-// import { cleanUp } from "@/jest.setup";
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/create/private-cloud`;
@@ -87,8 +86,6 @@ jest.mock('../../app/api/auth/[...nextauth]/route', () => ({
 }));
 
 beforeAll(async () => {
-  // await cleanUp();
-
   mockedGetServerSession.mockResolvedValue({
     user: {
       email: 'oamar.kanji@gov.bc.ca',
@@ -109,20 +106,6 @@ beforeAll(async () => {
     throw new Error('Request not created. Issue in beforeAll');
   }
 });
-
-// mockedGetServerSession.mockResolvedValue({
-//   user: {
-//     email: 'oamar.kanji@gov.bc.ca',
-//     roles: [],
-//   },
-// });
-
-// const req = new NextRequest(API_URL, {
-//   method: 'POST',
-//   body: JSON.stringify(createRequestBody),
-// });
-
-// const response = await POST(req);
 
 describe('Create Private Cloud Request Route', () => {
   test('should create a request with the correct data', async () => {
@@ -148,7 +131,5 @@ describe('Create Private Cloud Request Route', () => {
 
     // TODO: Add more assertions
     expect(natsMessage).toBeDefined();
-
-    // console.log(JSON.stringify(natsMessage, null, 2));
   });
 });
