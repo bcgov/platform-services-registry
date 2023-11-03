@@ -91,14 +91,3 @@ jobs:
             issue_number: result.data.number,
             labels: ['changelog', 'v${{ steps.input.outputs.tag }}']
           });
-
-          github.rest.pulls.merge({
-            owner,
-            repo,
-            pull_number: result.data.number,
-            merge_method: 'merge'
-          });
-
-    - name: Delete Changelog Branch
-      run: |
-        git push origin -d changelog/${{ steps.input.outputs.tag }}
