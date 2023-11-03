@@ -13,6 +13,8 @@ mkdir -p ./mnt/mongodb
 mkdir -p ./mnt/postgres
 ```
 
+If you have data version conflict errors due to existing mount volumes, please delete the directories and recreate them.
+
 3. (For Mac M1 only) Set default platform of the docker commands:
 
 ```bash
@@ -24,6 +26,8 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 ```bash
 docker-compose up --build [-d]
 ```
+
+You can add the `-d` flag to run the containers in daemon mode.
 
 ## Services
 
