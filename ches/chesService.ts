@@ -2,6 +2,14 @@ import ClientConnection from './clientConnection';
 
 const SERVICE = 'CHES';
 
+interface Email {
+  bodyType: 'html' | 'text';
+  body: string;
+  to: (string | undefined)[];
+  from: string;
+  subject: string;
+}
+
 export default class ChesService {
   private connection: ClientConnection;
   private axios;
@@ -31,12 +39,8 @@ export default class ChesService {
     this.apiUrl = apiUrl;
   }
 
-  async send(email: any) {
+  async send(email: Email) {
     try {
-      // Filter out any email addresses that are not present
-      const toEmails = email.to.filter(Boolean);
-      email.to = toEmails;
-
       const { data, status } = await this.axios.post(`${this.apiUrl}/email`, email, {
         headers: {
           'Content-Type': 'application/json',
