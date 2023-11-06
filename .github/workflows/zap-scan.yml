@@ -24,7 +24,8 @@ jobs:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
-        ref: dev
+        ref: main
+
     - name: ZAP Scan
       uses: zaproxy/action-full-scan@effbebdc13bc3ad39acf34d4ee43f644f89c30d8
       with:
