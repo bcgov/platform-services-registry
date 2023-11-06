@@ -23,7 +23,7 @@ module.exports = {
         tablebordergrey: '#EAECF0',
         disabledborder: 'D0D5DD',
         cloudgrey: '#667085',
-        divider: '#0000001f',
+        divider: '#0000001F',
         linkblue: '#155EEF',
       },
       borderWidth: {

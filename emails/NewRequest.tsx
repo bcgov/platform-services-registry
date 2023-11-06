@@ -15,7 +15,7 @@ interface EmailProp {
 }
 
 export const NewRequest = ({ formData }: EmailProp) => {
-  if (!formData) {
+  if (!formData && !process.env.APP_URL) {
     formData = sampleFormData;
   }
   return (
@@ -26,7 +26,7 @@ export const NewRequest = ({ formData }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">New Provisioning Request!</Heading>
+                <Heading className="text-lg">New Request!</Heading>
                 <Text>Hi Registry Team, </Text>
                 <Text className="">
                   There is a new request that requires your review. Log in to the Registry to review the details. If you

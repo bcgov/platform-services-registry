@@ -14,9 +14,7 @@ export const sendNewRequestEmails = async (formData: PrivateCloudCreateRequestBo
       bodyType: 'html',
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
-      to: [formData.projectOwner, formData.primaryTechnicalLead, formData.secondaryTechnicalLead]
-        .filter(Boolean)
-        .map((item) => item?.email),
+      to: [formData.projectOwner.email, formData.primaryTechnicalLead.email, formData.secondaryTechnicalLead?.email],
       from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${formData.name} provisioning request received`,
     });
@@ -40,12 +38,10 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        request.requestedProject.projectOwner,
-        request.requestedProject.primaryTechnicalLead,
-        request.requestedProject.secondaryTechnicalLead,
-      ]
-        .filter(Boolean)
-        .map((item) => item?.email),
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
       from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${request.requestedProject.name} has been approved`,
     });
@@ -54,7 +50,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
   }
 };
 
-export const sendRequestDenialEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
+export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
   const email = render(RequestRejection({ request }), { pretty: true });
   try {
     await chesService.send({
@@ -62,12 +58,10 @@ export const sendRequestDenialEmails = async (request: PrivateCloudRequestWithRe
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        request.requestedProject.projectOwner,
-        request.requestedProject.primaryTechnicalLead,
-        request.requestedProject.secondaryTechnicalLead,
-      ]
-        .filter(Boolean)
-        .map((item) => item?.email),
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
       from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${request.requestedProject.name} has been approved`,
     });

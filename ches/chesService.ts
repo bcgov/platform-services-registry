@@ -33,6 +33,10 @@ export default class ChesService {
 
   async send(email: any) {
     try {
+      // Filter out any email addresses that are not present
+      const toEmails = email.to.filter(Boolean);
+      email.to = toEmails;
+
       const { data, status } = await this.axios.post(`${this.apiUrl}/email`, email, {
         headers: {
           'Content-Type': 'application/json',

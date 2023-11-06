@@ -14,7 +14,7 @@ interface EmailProp {
 }
 
 export const RequestRejection = ({ request }: EmailProp) => {
-  if (!request) {
+  if (!request && !process.env.APP_URL) {
     request = sampleRequest;
   }
   return (
