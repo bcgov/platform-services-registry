@@ -68,12 +68,13 @@ services:
 
   mongodb:
     container_name: mongodb
-    # See https://hub.docker.com/r/prismagraphql/mongo-single-replica/tags
-    image: prismagraphql/mongo-single-replica:5.0.3
+    image: bitnami/mongodb:7.0.2
     environment:
-    - MONGO_INITDB_ROOT_USERNAME=mongodb
-    - MONGO_INITDB_ROOT_PASSWORD=mongodb
-    - INIT_WAIT_SEC=3
+    - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
+    - MONGODB_REPLICA_SET_MODE=primary
+    - MONGODB_ROOT_USER=mongodb
+    - MONGODB_ROOT_PASSWORD=mongodb
+    - MONGODB_REPLICA_SET_KEY=replicasetkey123
     ports:
     - 27017:27017
     volumes:
