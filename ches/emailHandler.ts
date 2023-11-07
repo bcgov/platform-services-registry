@@ -1,40 +1,39 @@
-import { NewRequest } from '@/emails/NewRequest';
+import { render } from '@react-email/render';
+import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
+import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { NewRequestTemplate } from '@/emails/templates/NewRequest';
+import { RequestApprovalTemplate } from '@/emails/templates/RequestApproval';
+import { RequestRejectionTemplate } from '@/emails/templates/RequestRejection';
 import { adminEmails } from './emailConstant';
 import chesService from './index';
-import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
-import { render } from '@react-email/render';
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
-import RequestApproval from '@/emails/RequestApproval';
-import RequestRejection from '@/emails/RequestRejection';
 
 export const sendNewRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
-  const email = render(NewRequest({ formData }), { pretty: true });
+  const email = render(NewRequestTemplate({ formData }), { pretty: true });
   try {
-    await chesService.send({
-      bodyType: 'html',
+    const send1 = chesService.send({
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [formData.projectOwner.email, formData.primaryTechnicalLead.email, formData.secondaryTechnicalLead?.email],
-      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${formData.name} provisioning request received`,
     });
-    await chesService.send({
+
+    const send2 = chesService.send({
       bodyType: 'html',
       body: email,
       to: adminEmails,
-      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `New Provisioning request in Registry waiting for your approval`,
     });
+
+    await Promise.all([send1, send2]);
   } catch (error) {
     console.error(error);
   }
 };
 
 export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
-  const email = render(RequestApproval({ request }), { pretty: true });
+  const email = render(RequestApprovalTemplate({ request }), { pretty: true });
   try {
     await chesService.send({
-      bodyType: 'html',
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
@@ -42,7 +41,6 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
         request.requestedProject.primaryTechnicalLead.email,
         request.requestedProject.secondaryTechnicalLead?.email,
       ],
-      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${request.requestedProject.name} has been approved`,
     });
   } catch (error) {
@@ -51,10 +49,9 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 };
 
 export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
-  const email = render(RequestRejection({ request }), { pretty: true });
+  const email = render(RequestRejectionTemplate({ request }), { pretty: true });
   try {
     await chesService.send({
-      bodyType: 'html',
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
@@ -62,7 +59,6 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
         request.requestedProject.primaryTechnicalLead.email,
         request.requestedProject.secondaryTechnicalLead?.email,
       ],
-      from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
       subject: `${request.requestedProject.name} has been approved`,
     });
   } catch (error) {
