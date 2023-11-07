@@ -19,48 +19,20 @@ import {
   Text,
 } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
+import { Prisma } from '@prisma/client';
 const defaultTheme = require('tailwindcss/defaultTheme');
+
+export type PrivateCloudProjectWithContacts = Prisma.PrivateCloudProjectGetPayload<{
+  include: {
+    projectOwner: true;
+    primaryTechnicalLead: true;
+    secondaryTechnicalLead: true;
+  };
+}>;
 
 const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
 
-interface EmailProp {
-  formData: PrivateCloudCreateRequestBody;
-}
-
-export const Template = ({ formData }: EmailProp) => {
-  if (!formData) {
-    formData = {
-      name: 'placeholder',
-      description: 'placeholder',
-      cluster: 'KLAB',
-      ministry: 'CITZ',
-      projectOwner: {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@gov.bc.ca',
-        ministry: 'CITZ',
-      },
-      primaryTechnicalLead: {
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'sarah.williams@gov.bc.ca',
-        ministry: 'CITZ',
-      },
-      commonComponents: {
-        addressAndGeolocation: { planningToUse: true, implemented: false },
-        workflowManagement: { planningToUse: false, implemented: false },
-        formDesignAndSubmission: { planningToUse: false, implemented: false },
-        identityManagement: { planningToUse: false, implemented: false },
-        paymentServices: { planningToUse: false, implemented: false },
-        documentManagement: { planningToUse: false, implemented: false },
-        endUserNotificationAndSubscription: { planningToUse: false, implemented: false },
-        publishing: { planningToUse: false, implemented: false },
-        businessIntelligence: { planningToUse: false, implemented: false },
-        other: '',
-        noServices: false,
-      },
-    };
-  }
+export const Template = (project: PrivateCloudProjectWithContacts) => {
   return (
     <Html>
       <Tailwind
@@ -117,7 +89,7 @@ export const Template = ({ formData }: EmailProp) => {
                 </Text>
                 <Button className="bg-bcorange rounded-md px-4 py-2 text-white">Review Request</Button>
               </div>
-              <ProductDetails data={formData} />
+              <ProductDetails data={project} />
             </div>
           </Body>
         </div>
@@ -127,3 +99,37 @@ export const Template = ({ formData }: EmailProp) => {
 };
 
 export default Template;
+
+// if (!formData) {
+//   formData = {
+//     name: 'placeholder',
+//     description: 'placeholder',
+//     cluster: 'KLAB',
+//     ministry: 'CITZ',
+//     projectOwner: {
+//       firstName: 'John',
+//       lastName: 'Doe',
+//       email: 'john.doe@gov.bc.ca',
+//       ministry: 'CITZ',
+//     },
+//     primaryTechnicalLead: {
+//       firstName: 'Jane',
+//       lastName: 'Doe',
+//       email: 'sarah.williams@gov.bc.ca',
+//       ministry: 'CITZ',
+//     },
+//     commonComponents: {
+//       addressAndGeolocation: { planningToUse: true, implemented: false },
+//       workflowManagement: { planningToUse: false, implemented: false },
+//       formDesignAndSubmission: { planningToUse: false, implemented: false },
+//       identityManagement: { planningToUse: false, implemented: false },
+//       paymentServices: { planningToUse: false, implemented: false },
+//       documentManagement: { planningToUse: false, implemented: false },
+//       endUserNotificationAndSubscription: { planningToUse: false, implemented: false },
+//       publishing: { planningToUse: false, implemented: false },
+//       businessIntelligence: { planningToUse: false, implemented: false },
+//       other: '',
+//       noServices: false,
+//     },
+//   };
+// }

@@ -3,19 +3,25 @@ import { adminEmails } from './emailConstant';
 import chesService from './index';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { render } from '@react-email/render';
+import { PrivateCloudProjectWithContacts } from '@/emails/Template';
 
-export const sendCreateRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
-  const email = render(Template({ formData }), { pretty: true });
+export const sendCreateRequestEmails = async (requestedProject: PrivateCloudProjectWithContacts) => {
+  const email = render(Template(requestedProject), { pretty: true });
+
   try {
     await chesService.send({
       bodyType: 'html',
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
-      to: [formData.projectOwner, formData.primaryTechnicalLead, formData.secondaryTechnicalLead]
+      to: [
+        requestedProject.projectOwner,
+        requestedProject.primaryTechnicalLead,
+        requestedProject.secondaryTechnicalLead,
+      ]
         .filter(Boolean)
         .map((item) => item?.email),
       from: 'Registry <PlatformServicesTeam@gov.bc.ca>',
-      subject: `${formData.name} deletion request received`,
+      subject: `${requestedProject.name} deletion request received`,
     });
     // await chesService.send({
     //   bodyType: "html",
