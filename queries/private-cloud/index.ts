@@ -1,50 +1,5 @@
 import prisma from '@/lib/prisma';
-
-export interface ProjectOwnerDetails {
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface Project {
-  id: string;
-  name: string;
-  description: string;
-  created: string;
-  licencePlate: string;
-  cluster: string;
-  ministry: string;
-  status: string;
-  projectOwnerId: string;
-  primaryTechnicalLeadId: string;
-  secondaryTechnicalLeadId: string;
-  projectOwnerDetails: ProjectOwnerDetails;
-  primaryTechnicalLeadDetails: ProjectOwnerDetails;
-  secondaryTechnicalLeadDetails: ProjectOwnerDetails;
-}
-
-export interface ProjectOwnerDetails {
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface Project {
-  id: string;
-  name: string;
-  description: string;
-  created: string;
-  licencePlate: string;
-  cluster: string;
-  ministry: string;
-  status: string;
-  projectOwnerId: string;
-  primaryTechnicalLeadId: string;
-  secondaryTechnicalLeadId: string;
-  projectOwnerDetails: ProjectOwnerDetails;
-  primaryTechnicalLeadDetails: ProjectOwnerDetails;
-  secondaryTechnicalLeadDetails: ProjectOwnerDetails;
-}
+import { PrivateProject } from '@/queries/types';
 
 export async function privateCloudProjects(
   searchTerm?: string | null,
@@ -190,5 +145,5 @@ export async function privateCloudProjects(
     ],
   });
 
-  return result as unknown as Project[];
+  return result as unknown as PrivateProject[];
 }
