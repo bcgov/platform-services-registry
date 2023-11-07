@@ -343,4 +343,16 @@ describe('Query projects with filter and search', () => {
       expect(emails).toContain(specificUserEmail);
     }
   });
+
+  test('Should return an empty array when no projects match the query', async () => {
+    const searchTerm = 'nonexistent';
+    const ministryFilter = 'nonexistentMinistry';
+    const clusterFilter = 'nonexistentCluster';
+    const userEmail = 'nonexistent@example.com';
+
+    const projects = await privateCloudProjects(searchTerm, ministryFilter, clusterFilter, userEmail);
+
+    expect(projects).toBeDefined();
+    expect(projects).toHaveLength(0);
+  });
 });
