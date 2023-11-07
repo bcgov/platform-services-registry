@@ -9,6 +9,7 @@ app:
   env:
     "APP_ENV": "dev"
     "BASE_URL": "https://dev-pltsvc.apps.silver.devops.gov.bc.ca"
+    "AUTH_BASE_URL": "https://dev.loginproxy.gov.bc.ca/"
     "AUTH_SERVER_URL": "https://dev.loginproxy.gov.bc.ca/auth"
     "AUTH_RELM": "platform-services"
     "NEXTAUTH_URL": "https://dev-pltsvc.apps.silver.devops.gov.bc.ca/"
