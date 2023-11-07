@@ -7,7 +7,7 @@ export default function Header() {
       <div className="flex flex-row border-b-3 border-bcorange bg-bcblue shadow">
         {/* <Img src="/static/logo.png" alt="BC Platform Services Product Registry" width={58} height={41} className="m-auto ml-2 mr-2" /> */}
         <Img
-          src={`${process.env.APP_URL}/logo.png`}
+          src={`${process.env.BASE_URL}/logo.png`}
           alt="BC Platform Services Product Registry"
           width={58}
           height={41}
