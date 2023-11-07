@@ -1,6 +1,6 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBody';
-import { privateCloudProjectsPaginated, Project } from '@/paginatedQueries/private-cloud';
+import { privateCloudProjectsPaginated, Project } from '@/queries/paginated/private-cloud';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
