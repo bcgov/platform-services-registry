@@ -34,7 +34,9 @@ export default function ProfileDropdown() {
   const { data: session, status } = useSession();
   const email = session?.user?.email;
 
-  const { data, isLoading, error } = useQuery<string, Error>(['userImage', email], () => fetchUserImage(email), {
+  const { data, isLoading, error } = useQuery<string, Error>({
+    queryKey: ['userImage', email],
+    queryFn: () => fetchUserImage(email),
     enabled: !!email,
   });
 

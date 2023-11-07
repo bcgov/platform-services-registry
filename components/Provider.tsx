@@ -1,16 +1,22 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryCache, QueryClientProvider } from '@tanstack/react-query';
 
 interface ProviderProps {
   children: ReactNode;
 }
 
-const Provider: React.FC<ProviderProps> = ({ children }) => {
-  const [queryClient] = useState(() => new QueryClient());
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      // PLACEHOLDER: any common error handling logic here?
+    },
+  }),
+});
 
+const Provider: React.FC<ProviderProps> = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>{children}</SessionProvider>

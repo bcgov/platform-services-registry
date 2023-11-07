@@ -49,7 +49,7 @@ jobs:
       contents: read
     environment:
       name: dev
-      url: https://platsrv-registry-web-101ed4-dev.apps.silver.devops.gov.bc.ca/
+      url: https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
     steps:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a

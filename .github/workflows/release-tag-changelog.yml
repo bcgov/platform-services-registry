@@ -1,0 +1,93 @@
+name: Create Release Tag with Changelog PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        description: Tag Version (excl. prefix; e.g. 1.2.3)
+        required: true
+
+jobs:
+  tag-changelog:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+    - name: Fail on tags
+      run: exit 1
+      if: ${{ !startsWith(github.ref, 'refs/heads/') }}
+
+    - name: Validate Tag Input
+      id: input
+      run: |
+        vtag=${{ github.event.inputs.tag }}
+        echo "tag=${vtag//v}" >> $GITHUB_OUTPUT
+
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      with:
+        ssh-key: ${{ secrets.SSH_KEY }}
+        fetch-depth: 0
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+
+    - name: Create a tag and update changelog
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git config commit.gpgsign false
+
+        branch=changelog/${{ steps.input.outputs.tag }}
+        git checkout -b "$branch"
+        git push --set-upstream origin "$branch"
+
+        ./node_modules/.bin/release-it ${{ steps.input.outputs.tag }} --only-version
+
+    - name: Set output variables
+      id: vars
+      run: |
+        pr_title="chore: release candidate v${{ steps.input.outputs.tag }}"
+        pr_body=$(git tag -l --format='%(contents)' v${{ steps.input.outputs.tag }})
+        echo "pr_title=$pr_title" >> $GITHUB_OUTPUT
+        echo "base=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+
+        # See https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "pr_body<<$EOF" >> "$GITHUB_OUTPUT"
+        echo "$pr_body" >> $GITHUB_OUTPUT
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+    - name: Create Pull Request
+      uses: actions/github-script@6b5d3eac1fb48c23fcd665e5a63baced5392d8ce
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { repo, owner } = context.repo;
+          const result = await github.rest.pulls.create({
+            owner,
+            repo,
+            head: 'changelog/${{ steps.input.outputs.tag }}',
+            base: '${{ steps.vars.outputs.base }}',
+            title: '${{ steps.vars.outputs.pr_title }}',
+            body: `### Commits
+          ${{ steps.vars.outputs.pr_body }}
+          ### GitHub Action
+          - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
+          `,
+          });
+
+          github.rest.issues.addLabels({
+            owner,
+            repo,
+            issue_number: result.data.number,
+            labels: ['changelog', 'v${{ steps.input.outputs.tag }}']
+          });
