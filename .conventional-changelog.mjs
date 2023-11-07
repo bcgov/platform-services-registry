@@ -41,12 +41,6 @@ export default {
           hidden: true,
         },
       ],
-      scopes: [
-        {
-          type: 'deps',
-          hidden: true,
-        },
-      ],
     },
   },
 };

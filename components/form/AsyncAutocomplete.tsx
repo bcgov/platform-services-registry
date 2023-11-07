@@ -65,7 +65,9 @@ export default function AsyncAutocomplete({
     data: people,
     isLoading,
     error,
-  } = useQuery<Person[], Error>(['people', query], () => fetchPeople(query || ''), {
+  } = useQuery<Person[], Error>({
+    queryKey: ['people', query],
+    queryFn: () => fetchPeople(query || ''),
     enabled: !!query,
   });
 

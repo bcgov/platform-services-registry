@@ -44,9 +44,14 @@ app:
 
   env:
     "APP_ENV": ""
+    "BASE_URL": ""
     "AUTH_SERVER_URL": ""
     "AUTH_RELM": ""
     "NEXTAUTH_URL": ""
+    "CHES_TOKEN_URL": ""
+    "CHES_API_URL": ""
+    "NATS_HOST": ""
+    "NATS_PORT": ""
 
 mongodb:
   enabled: false

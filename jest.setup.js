@@ -1,5 +1,5 @@
 import 'isomorphic-fetch';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { PrismaClient } from '@prisma/client';
 import prisma from '@/lib/prisma';
 
@@ -9,6 +9,14 @@ jest.setTimeout(75000);
 jest.mock('@/mautic', () => ({
   ...jest.requireActual('@/mautic'),
   subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]), // Mocked return value
+}));
+
+// Mock CHES
+jest.mock('@/ches/emailHandler', () => ({
+  ...jest.requireActual('@/ches'),
+  sendNewRequestEmails: jest.fn(async () => [200]),
+  sendRequestApprovalEmails: jest.fn(async () => [200]),
+  sendRequestDenialEmails: jest.fn(async () => [200]),
 }));
 
 export async function cleanUp() {

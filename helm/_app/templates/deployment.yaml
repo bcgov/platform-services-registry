@@ -31,6 +31,8 @@ spec:
             export MS_GRAPH_API_CLIENT_ID="{{ .Data.data.MS_GRAPH_API_CLIENT_ID }}"
             export MS_GRAPH_API_CLIENT_SECRET="{{ .Data.data.MS_GRAPH_API_CLIENT_SECRET }}"
             export DATABASE_URL="{{ .Data.data.DATABASE_URL }}"
+            export CHES_CLIENT_ID="{{ .Data.data.CHES_CLIENT_ID }}"
+            export CHES_CLIENT_SECRET="{{ .Data.data.CHES_CLIENT_SECRET }}"
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
