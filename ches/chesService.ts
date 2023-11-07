@@ -9,6 +9,7 @@ const SERVICE = 'CHES';
 type nullstr = string | null | undefined;
 const safeEmails = (v: nullstr | nullstr[]) => uniq(compact(castArray(v)));
 
+// See https://ches.api.gov.bc.ca/api/v1/docs#tag/Email/operation/postEmail
 interface Email {
   bodyType?: 'html' | 'text';
   from?: string;
