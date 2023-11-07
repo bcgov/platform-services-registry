@@ -103,6 +103,8 @@ export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
       archived: false,
       created: sampleDate,
       lastSeen: sampleDate,
+      upn: 'John.Doe@gov.bc.ca',
+      idir: 'JDOE',
     },
     primaryTechnicalLead: {
       id: 'c',
@@ -114,6 +116,8 @@ export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
       archived: false,
       created: sampleDate,
       lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
     },
     secondaryTechnicalLead: null,
   },
