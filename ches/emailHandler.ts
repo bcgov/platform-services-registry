@@ -1,9 +1,9 @@
 import { render } from '@react-email/render';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
-import { NewRequestTemplate } from '@/emails/templates/NewRequest';
-import { RequestApprovalTemplate } from '@/emails/templates/RequestApproval';
-import { RequestRejectionTemplate } from '@/emails/templates/RequestRejection';
+import { NewRequestTemplate } from '@/emails/templates/NewRequestTemplate';
+import { RequestApprovalTemplate } from '@/emails/templates/RequestApprovalTemplate';
+import { RequestRejectionTemplate } from '@/emails/templates/RequestRejectionTemplate';
 import { adminEmails } from './emailConstant';
 import chesService from './index';
 
