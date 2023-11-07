@@ -45,7 +45,6 @@ app:
   env:
     "APP_ENV": ""
     "BASE_URL": ""
-    "AUTH_BASE_URL": ""
     "AUTH_SERVER_URL": ""
     "AUTH_RELM": ""
     "NEXTAUTH_URL": ""

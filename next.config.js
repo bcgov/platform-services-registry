@@ -21,7 +21,11 @@ const nextConfig = {
   },
   poweredByHeader: false,
   async headers() {
-    if (!['dev', 'test', 'prod'].includes(process.env.APP_ENV)) return [];
+    if (process.env.SECURE_HEADERS === 'false') return [];
+
+    const loginproxy_gov =
+      'https://loginproxy.gov.bc.ca/ https://dev.loginproxy.gov.bc.ca/ https://test.loginproxy.gov.bc.ca/';
+    const gravatar_com = 'https://gravatar.com/';
 
     return [
       {
@@ -35,10 +39,10 @@ const nextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' https://gravatar.com/",
-              `connect-src 'self' https://gravatar.com/ ${process.env.AUTH_BASE_URL}`,
-              `frame-src ${process.env.AUTH_BASE_URL}`,
-              `frame-ancestors ${process.env.AUTH_BASE_URL}`,
+              `img-src 'self' ${gravatar_com}`,
+              `connect-src 'self' ${gravatar_com} ${loginproxy_gov}`,
+              `frame-src ${loginproxy_gov}`,
+              `frame-ancestors ${loginproxy_gov}`,
               "object-src 'none'",
               "form-action 'self'",
               'upgrade-insecure-requests',
