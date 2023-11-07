@@ -7,6 +7,8 @@
 
 # testing
 /coverage
+/cypress/screenshots
+/cypress/videos
 
 # next.js
 /.next/
@@ -28,6 +30,7 @@ yarn-error.log*
 .env*.local
 .env
 .env.test
+.env.secret*
 
 # vercel
 .vercel

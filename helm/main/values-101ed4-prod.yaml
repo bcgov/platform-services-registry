@@ -8,13 +8,18 @@ global:
 app:
   env:
     "APP_ENV": "prod"
+    "BASE_URL": "https://pltsvc.apps.silver.devops.gov.bc.ca"
     "AUTH_SERVER_URL": "https://loginproxy.gov.bc.ca/auth"
     "AUTH_RELM": "platform-services"
-    "NEXTAUTH_URL": "https://prod-pltsvc.apps.silver.devops.gov.bc.ca/"
+    "NEXTAUTH_URL": "https://pltsvc.apps.silver.devops.gov.bc.ca/"
+    "CHES_TOKEN_URL": "https://loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token"
+    "CHES_API_URL": "https://ches.api.gov.bc.ca/api/v1/"
+    "NATS_HOST": "nats://nats.platform-provisioner.svc"
+    "NATS_PORT": "4222"
 
   route:
     enabled: true
-    host: prod-pltsvc.apps.silver.devops.gov.bc.ca
+    host: pltsvc.apps.silver.devops.gov.bc.ca
 
 mongodb:
   enabled: false
