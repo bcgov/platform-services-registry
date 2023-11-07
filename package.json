@@ -52,6 +52,7 @@
     "lodash.compact": "^3.0.1",
     "lodash.uniq": "^4.5.0",
     "mongodb": "^6.0.0",
+    "nats": "^2.17.0",
     "next": "^14.0.0",
     "next-auth": "^4.23.1",
     "papaparse": "^5.4.1",

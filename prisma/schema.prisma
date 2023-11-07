@@ -16,6 +16,8 @@ model User {
   firstName                                          String?
   lastName                                           String?
   email                                              String                         @unique
+  upn                                                String?
+  idir                                               String?
   image                                              String?
   ministry                                           String?
   archived                                           Boolean                        @default(false)

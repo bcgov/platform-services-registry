@@ -188,6 +188,7 @@ describe('Create Private Cloud Request Route', () => {
     const response = await POST(req, {
       params: { licencePlate: createRequestLicencePlate },
     });
+
     expect(response.status).toBe(403);
   });
 

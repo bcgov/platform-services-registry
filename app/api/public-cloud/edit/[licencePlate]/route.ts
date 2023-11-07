@@ -9,6 +9,7 @@ import { string, z } from 'zod';
 import editRequest from '@/requestActions/public-cloud/editRequest';
 import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/createRequest';
 import { subscribeUsersToMautic } from '@/mautic';
+import { sendPublicCloudNatsMessage } from '@/nats';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -71,24 +72,16 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     authEmail,
   );
 
-  // if (decisionStatus === DecisionStatus.Approved) {
-  //   await sendNatsMessage(editRequest.type, editRequest.requestedProject);
-
-  //   if (editRequest.requestedProject.cluster === Cluster.Gold) {
-  //     const goldDrRequest = { ...editRequest };
-  //     goldDrRequest.requestedProject.cluster = Cluster.Golddr;
-  //     await sendNatsMessage(goldDrRequest.type, goldDrRequest.requestedProject);
-  //   }
-  // }
+  await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
 
   const users: User[] = [
     request.requestedProject.projectOwner,
     request.requestedProject.primaryTechnicalLead,
     request.requestedProject?.secondaryTechnicalLead,
   ].filter((user): user is User => Boolean(user));
-  // Subscribe users to Mautic
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
+
   // await sendEditRequestEmails(
   //   editRequest.project,
   //   editRequest.requestedProject

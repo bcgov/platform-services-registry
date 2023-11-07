@@ -5,10 +5,17 @@ import prisma from '@/lib/prisma';
 
 jest.setTimeout(75000);
 
-// Mock mautic
+// Mock Mautic
 jest.mock('@/mautic', () => ({
   ...jest.requireActual('@/mautic'),
   subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]), // Mocked return value
+}));
+
+// Mock Nats
+jest.mock('@/nats', () => ({
+  sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
+  sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
+  sendNatsMessage: jest.fn(async () => [200, 200, 200]),
 }));
 
 // Mock CHES
