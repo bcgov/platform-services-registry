@@ -1,6 +1,7 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBody';
-import { privateCloudProjectsPaginated, Project } from '@/queries/paginated/private-cloud';
+import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
+import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
@@ -46,7 +47,7 @@ export default async function ProductsTable({
   // If not an admin, we need to provide the user's email to the query
   const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
-  const { data, total }: { data: Project[]; total: number } = await privateCloudProjectsPaginated(
+  const { data, total }: { data: PrivateProject[]; total: number } = await privateCloudProjectsPaginated(
     defaultPageSize,
     currentPage,
     search,
