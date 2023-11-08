@@ -2,6 +2,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+
+  if (!['dev', 'test', 'prod'].includes(process.env.APP_ENV ?? 'localdev')) {
+    return NextResponse.next({
+      headers: requestHeaders,
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  }
+
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
   const loginproxy_gov =
@@ -25,7 +36,6 @@ export function middleware(request: NextRequest) {
     'upgrade-insecure-requests',
   ];
 
-  const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('content-security-policy', cspSegments.join(';'));
 
