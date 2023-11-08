@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
 
-  if (!['dev', 'test', 'prod'].includes(process.env.APP_ENV ?? 'localdev')) {
+  if (process.env.SECURE_HEADERS === 'false') {
     return NextResponse.next({
       headers: requestHeaders,
       request: {
