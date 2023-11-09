@@ -26,7 +26,7 @@ export const sendNewRequestEmails = async (formData: PrivateCloudCreateRequestBo
 
     await Promise.all([send1, send2]);
   } catch (error) {
-    console.error(error);
+    console.log('ERROR SENDING NEW REQUEST EMAIL EMAIL');
   }
 };
 
@@ -44,7 +44,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
       subject: `${request.requestedProject.name} has been approved`,
     });
   } catch (error) {
-    console.error(error);
+    console.error('ERROR SENDING REQUEST APPROVAL EMAIL');
   }
 };
 
@@ -62,6 +62,6 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
       subject: `${request.requestedProject.name} has been approved`,
     });
   } catch (error) {
-    console.error(error);
+    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
   }
 };
