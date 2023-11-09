@@ -4,7 +4,7 @@ import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 
 const headers = [
