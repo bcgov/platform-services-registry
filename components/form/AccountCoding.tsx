@@ -1,4 +1,5 @@
-import { useFormContext, useWatch, Controller } from 'react-hook-form';
+import { useCallback } from 'react';
+import { useFormContext, Controller } from 'react-hook-form';
 import { Question } from '@/components/assets/question';
 import { useEffect, useState, useRef } from 'react';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
@@ -16,23 +17,26 @@ export default function AccountCoding({
     setValue,
   } = useFormContext();
 
-  const accountCodingSeparation = () => ({
-    clientCode: accountCodingInitial?.slice(0, 3),
-    responsibilityCentre: accountCodingInitial?.slice(3, 8),
-    serviceLine: accountCodingInitial?.slice(8, 13),
-    standardObjectOfExpense: accountCodingInitial?.slice(13, 17),
-    projectCode: accountCodingInitial?.slice(17, 24),
-  });
+  const accountCodingSeparation = useCallback(
+    () => ({
+      clientCode: accountCodingInitial?.slice(0, 3),
+      responsibilityCentre: accountCodingInitial?.slice(3, 8),
+      serviceLine: accountCodingInitial?.slice(8, 13),
+      standardObjectOfExpense: accountCodingInitial?.slice(13, 17),
+      projectCode: accountCodingInitial?.slice(17, 24),
+    }),
+    [accountCodingInitial],
+  );
 
   const [accountCoding, setAccountCoding] = useState(accountCodingSeparation());
 
   useEffect(() => {
     setAccountCoding(accountCodingSeparation());
-  }, [accountCodingInitial]);
+  }, [accountCodingInitial, accountCodingSeparation]);
 
   useEffect(() => {
     setValue('accountCoding', Object.values(accountCoding).join(''));
-  }, [accountCoding]);
+  }, [setValue, accountCoding]);
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
