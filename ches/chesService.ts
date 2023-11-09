@@ -25,9 +25,9 @@ interface Email {
 }
 
 export default class ChesService {
-  private connection: ClientConnection;
+  private connection?: ClientConnection;
   private axios;
-  private apiUrl: string;
+  private apiUrl?: string;
 
   constructor({
     tokenUrl,
@@ -44,16 +44,27 @@ export default class ChesService {
       console.log('Invalid configuration.', { function: 'constructor' });
       throw new Error('ChesService is not configured. Check configuration.');
     }
-    this.connection = new ClientConnection({
-      tokenUrl,
-      clientId,
-      clientSecret,
-    });
+
+    try {
+      this.connection = new ClientConnection({
+        tokenUrl,
+        clientId,
+        clientSecret,
+      });
+    } catch (e) {
+      console.log('CHES CLIENT CONNECTION ERROR');
+      return;
+    }
+
     this.axios = this.connection.axios;
     this.apiUrl = apiUrl;
   }
 
   async send(email: Email) {
+    if (!this.axios) {
+      return;
+    }
+
     const {
       bodyType = 'html',
       from = 'Registry <PlatformServicesTeam@gov.bc.ca>',
@@ -94,7 +105,7 @@ export default class ChesService {
       );
       return { data, status };
     } catch (e) {
-      console.log('Error', e);
+      console.log('Error Sending Email');
     }
   }
 }
