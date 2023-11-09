@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { sampleFormData } from './components/Params';
+import { sampleRequest } from './components/Params';
 import { NewRequestTemplate } from './templates/NewRequestTemplate';
 
 export const NewRequest = () => {
-  return <NewRequestTemplate formData={sampleFormData} />;
+  return <NewRequestTemplate request={sampleRequest} />;
 };
 
 export default NewRequest;
