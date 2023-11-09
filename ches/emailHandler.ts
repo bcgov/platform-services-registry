@@ -7,14 +7,18 @@ import { RequestRejectionTemplate } from '@/emails/templates/RequestRejectionTem
 import { adminEmails } from './emailConstant';
 import chesService from './index';
 
-export const sendNewRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
-  const email = render(NewRequestTemplate({ formData }), { pretty: true });
+export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+  const email = render(NewRequestTemplate({ request }), { pretty: true });
   try {
     const send1 = chesService.send({
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
-      to: [formData.projectOwner.email, formData.primaryTechnicalLead.email, formData.secondaryTechnicalLead?.email],
-      subject: `${formData.name} provisioning request received`,
+      to: [
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
+      subject: `${request.requestedProject.name} provisioning request received`,
     });
 
     const send2 = chesService.send({

@@ -1,4 +1,4 @@
-import { PrivateCloudCreateRequestBody } from '@/schema';
+import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../components/Header';
 import ProductDetails from '../components/ProductDetails';
@@ -10,11 +10,11 @@ import { TailwindConfig } from '../components/TailwindConfig';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
-  formData: PrivateCloudCreateRequestBody;
+  request: PrivateCloudRequestWithRequestedProject;
 }
 
-export const NewRequestTemplate = ({ formData }: EmailProp) => {
-  if (!formData) return <></>;
+export const NewRequestTemplate = ({ request }: EmailProp) => {
+  if (!request) return <></>;
 
   return (
     <Html>
@@ -40,16 +40,16 @@ export const NewRequestTemplate = ({ formData }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={formData.name}
-                  description={formData.description}
-                  ministry={formData.ministry}
-                  po={formData.projectOwner}
-                  tl1={formData.primaryTechnicalLead}
-                  tl2={formData.secondaryTechnicalLead}
+                  name={request.requestedProject.name}
+                  description={request.requestedProject.description}
+                  ministry={request.requestedProject.ministry}
+                  po={request.requestedProject.projectOwner}
+                  tl1={request.requestedProject.primaryTechnicalLead}
+                  tl2={request.requestedProject.secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={formData.cluster} />
+                <NamespaceDetails cluster={request.requestedProject.cluster} />
               </div>
               <div>
                 <Closing />
