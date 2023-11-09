@@ -13,10 +13,17 @@ jest.mock('@/mautic', () => ({
 
 // Mock Nats
 jest.mock('@/nats', () => ({
-  // ...jest.requireActual('@/nats'),
   sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendNatsMessage: jest.fn(async () => [200, 200, 200]),
+}));
+
+// Mock CHES
+jest.mock('@/ches/emailHandler', () => ({
+  ...jest.requireActual('@/ches'),
+  sendNewRequestEmails: jest.fn(async () => [200]),
+  sendRequestApprovalEmails: jest.fn(async () => [200]),
+  sendRequestDenialEmails: jest.fn(async () => [200]),
 }));
 
 export async function cleanUp() {

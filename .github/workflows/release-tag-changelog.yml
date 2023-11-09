@@ -67,7 +67,7 @@ jobs:
         echo "$EOF" >> "$GITHUB_OUTPUT"
 
     - name: Create Pull Request
-      uses: actions/github-script@6b5d3eac1fb48c23fcd665e5a63baced5392d8ce
+      uses: actions/github-script@ecae9eb5354bb50ec47c128d372ed4735e630703
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -91,14 +91,3 @@ jobs:
             issue_number: result.data.number,
             labels: ['changelog', 'v${{ steps.input.outputs.tag }}']
           });
-
-          github.rest.pulls.merge({
-            owner,
-            repo,
-            pull_number: result.data.number,
-            merge_method: 'merge'
-          });
-
-    - name: Delete Changelog Branch
-      run: |
-        git push origin -d changelog/${{ steps.input.outputs.tag }}

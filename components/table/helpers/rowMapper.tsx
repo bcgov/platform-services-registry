@@ -1,7 +1,7 @@
 import formatDate from '@/components/utils/formatdates';
 import Image from 'next/image';
 import Edit from '@/components/assets/edit.svg';
-import { Project } from '@/paginatedQueries/private-cloud';
+import { PrivateProject } from '@/queries/types';
 import classNames from '@/components/utils/classnames';
 
 function TypeBadge({ status }: { status: string }) {
@@ -71,7 +71,7 @@ function TypeBadge({ status }: { status: string }) {
   );
 }
 
-export const privateCloudProjectDataToRow = (project: Project) => {
+export const privateCloudProjectDataToRow = (project: PrivateProject) => {
   return {
     id: project.id,
     name: project.name,
