@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   // Action
   const request: PrivateCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
-  // sendNewRequestEmails(formData);
+  sendNewRequestEmails(request);
 
   return new NextResponse('Success creating request', {
     status: 200,
