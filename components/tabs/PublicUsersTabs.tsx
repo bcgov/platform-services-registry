@@ -30,8 +30,6 @@ const tabs = [
 export default function Tabs({ className }: { className?: string }) {
   const pathname = usePathname();
 
-  console.log(pathname);
-
   return (
     <div className="w-full">
       <div className="md:hidden">
