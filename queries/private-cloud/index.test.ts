@@ -232,26 +232,22 @@ describe('Query projects with filter and search', () => {
     }
   });
 
-  // Verifies that all projects can be retrieved without any filter.
-  test('Should return all projects ', async () => {
+  test('returns all projects without any filter', async () => {
     const projects = await privateCloudProjects();
     expect(projects.length).toBe(5);
   });
 
-  // Checks if the function correctly filters projects based on a search term.
-  test('Should return only projects that fits the SearchTerm', async () => {
+  test('returns only projects that match the searchTerm "Sample Project1"', async () => {
     const projects = await privateCloudProjects('Sample Project1');
     expect(projects.length).toBe(1);
   });
 
-  // Ensures that the function returns no projects when the search term is not present in any project.
-  test('Should return no projects for a search tearm non included in any projects', async () => {
+  test('returns no projects when the searchTerm is not present in any project', async () => {
     const projects = await privateCloudProjects('abcdefg');
     expect(projects.length).toBe(0);
   });
 
-  // Confirms that the function correctly filters projects by user email.
-  test('Should return only projects belonging to specific user when userEmail is passed', async () => {
+  test('returns only projects associated with the userEmail "jane.smith@example.com"', async () => {
     const specificUserEmail = 'jane.smith@example.com';
     const projects = await privateCloudProjects(null, null, null, specificUserEmail);
 
@@ -265,16 +261,14 @@ describe('Query projects with filter and search', () => {
     }
   });
 
-  // Validates that the function returns no projects when an unassociated userEmail is provided.
-  test('Should return no projects when a non-associated userEmail is passed', async () => {
+  test('returns no projects when the userEmail "non.associated@example.com" is not associated with any projects', async () => {
     const nonAssociatedEmail = 'non.associated@example.com';
     const projects = await privateCloudProjects(null, null, null, nonAssociatedEmail);
 
     expect(projects.length).toBe(0);
   });
 
-  // Tests the function's ability to filter projects by both cluster and ministry simultaneously.
-  test('Should return projects filtered by both cluster and ministry', async () => {
+  test('returns projects filtered by the cluster "CLAB" and the ministry "AG"', async () => {
     const clusterFilter = Cluster.CLAB;
     const ministryFilter = Ministry.AG;
 
@@ -286,8 +280,7 @@ describe('Query projects with filter and search', () => {
     }
   });
 
-  // Explores the function's capability to handle multiple filters: searchTerm and ministry.
-  test('Should return projects filtered by searchTerm and ministry', async () => {
+  test('returns projects filtered by the searchTerm "Sample Project1" and the ministry "AG"', async () => {
     const searchTerm = 'Sample Project1';
     const ministryFilter = Ministry.AG;
 
@@ -299,8 +292,7 @@ describe('Query projects with filter and search', () => {
     }
   });
 
-  // Checks the function's response when provided with a comprehensive set of filters.
-  test('Should return projects filtered by searchTerm, ministry, and userEmail', async () => {
+  test('returns projects filtered by the searchTerm "Sample Project1", the ministry "AG", and the userEmail "jane.smith@example.com"', async () => {
     const searchTerm = 'Sample Project1';
     const ministryFilter = Ministry.AG;
     const specificUserEmail = 'jane.smith@example.com';
@@ -320,8 +312,7 @@ describe('Query projects with filter and search', () => {
     }
   });
 
-  // Assesses if the function can filter projects by cluster and userEmail, ensuring proper access control.
-  test('Should return projects filtered by cluster and userEmail', async () => {
+  test('returns projects filtered by the cluster "CLAB" and the userEmail "jane.smith@example.com"', async () => {
     const clusterFilter = Cluster.CLAB;
     const specificUserEmail = 'jane.smith@example.com';
 
@@ -339,8 +330,7 @@ describe('Query projects with filter and search', () => {
     }
   });
 
-  // Confirms the function's correct behavior when no matching projects are found for the given query.
-  test('Should return an empty array when no projects match the query', async () => {
+  test('returns an empty array when no projects match the comprehensive query filters', async () => {
     const searchTerm = 'nonexistent';
     const ministryFilter = 'nonexistentMinistry';
     const clusterFilter = 'nonexistentCluster';
