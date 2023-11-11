@@ -32,11 +32,10 @@ export default function Tabs({ className }: { className?: string }) {
 
   return (
     <div className="w-full">
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <label htmlFor="tabs" className="sr-only">
           Select a tab
         </label>
-        {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
         <select
           id="tabs"
           name="tabs"
@@ -69,7 +68,7 @@ export default function Tabs({ className }: { className?: string }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
