@@ -32,12 +32,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       userEmail,
     );
 
-    if (!result) {
-      return new NextResponse('No data found for the provided query', {
-        status: 404,
-      });
-    }
-
     // Convert the data to CSV
     const csv = stringify(result.data, {
       header: true,
@@ -52,7 +46,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       },
     });
 
-    return response;  //NextResponse.json(data);
+    return response; //changed from NextResponse.json(data);
   } catch (error: any) {
     return new NextResponse(error.message, { status: 500 });
   }
