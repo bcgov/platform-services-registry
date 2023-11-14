@@ -21,7 +21,7 @@ const nextConfig = {
   },
   poweredByHeader: false,
   async headers() {
-    if (process.env.SECURE_HEADERS === 'false') return [];
+    if (process.env.SECURE_HEADERS !== 'true') return [];
 
     return [
       {

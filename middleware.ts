@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
 
-  if (process.env.SECURE_HEADERS === 'false') {
+  if (process.env.SECURE_HEADERS !== 'true') {
     return NextResponse.next({
       headers: requestHeaders,
       request: {
@@ -36,15 +36,20 @@ export function middleware(request: NextRequest) {
     'upgrade-insecure-requests',
   ];
 
-  requestHeaders.set('x-nonce', nonce);
-  requestHeaders.set('content-security-policy', cspSegments.join(';'));
+  const cspHeaderValue = cspSegments.join(';');
 
-  return NextResponse.next({
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('content-security-policy', cspHeaderValue);
+
+  const response = NextResponse.next({
     headers: requestHeaders,
     request: {
       headers: requestHeaders,
     },
   });
+
+  response.headers.set('content-security-policy', cspHeaderValue);
+  return response;
 }
 
 export const config = {

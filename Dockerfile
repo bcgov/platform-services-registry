@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY . .
 
+ENV SECURE_HEADERS true
 RUN npm install
 RUN npm run build
 
