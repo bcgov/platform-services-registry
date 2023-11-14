@@ -23,7 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const data = await privateCloudProjectsPaginated(
+    const result = await privateCloudProjectsPaginated(
       +defaultPageSize,
       +currentPage,
       search,
@@ -32,14 +32,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       userEmail,
     );
 
-    if (!data) {
+    if (!result) {
       return new NextResponse('No data found for the provided query', {
         status: 404,
       });
     }
 
     // Convert the data to CSV
-    const csv = stringify(data, {
+    const csv = stringify(result.data, {
       header: true,
       columns: [], //insert fields here
     });
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       },
     });
 
-    return NextResponse.json(data);
+    return response;  //NextResponse.json(data);
   } catch (error: any) {
     return new NextResponse(error.message, { status: 500 });
   }
