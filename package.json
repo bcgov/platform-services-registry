@@ -12,7 +12,7 @@
     "prisma-generate-test": "dotenv -e .env.test -- npx prisma generate",
     "prisma-migrate-test": "dotenv -e .env.test -- npx prisma generate && dotenv -e .env.test -- npx prisma db push",
     "public-cloud-projects-to-csv": "dotenv -e .env -- node scripts/public-cloud-projects-to-csv.js",
-    "email": "email dev --dir emails --port 3001",
+    "email": "dotenv -e .env -- email dev --dir emails --port 3001",
     "release": "release-it",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable"
   },

@@ -18,7 +18,7 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const isPrevDisabled = Number(page) === 1 || isPending;
-  const isNextDisabled = Number(page) > pageCount || isPending;
+  const isNextDisabled = Number(page) >= pageCount || isPending;
 
   return (
     <div {...props}>

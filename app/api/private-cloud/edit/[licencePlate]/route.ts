@@ -9,6 +9,7 @@ import editRequest from '@/requestActions/private-cloud/editRequest';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/editRequest';
 import { subscribeUsersToMautic } from '@/mautic';
 import { sendPrivateCloudNatsMessage } from '@/nats';
+import { sendEditRequestEmails } from '@/ches/emailHandler';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
 
 const ParamsSchema = z.object({
@@ -97,11 +98,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     );
   }
 
-  // await sendEditRequestEmails(
-  //   editRequest.project,
-  //   editRequest.requestedProject
-  // );
-
   // Subscribe users to Mautic
   const users: User[] = [
     request.requestedProject.projectOwner,
@@ -111,5 +107,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
+  // const diff = compareProjects(request.project, request.requestedProject)
+  // sendEditRequestEmails(request, diff)
+
   return new NextResponse('success', { status: 200 });
 }
+``;

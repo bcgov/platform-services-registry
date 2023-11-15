@@ -1,9 +1,13 @@
 import { render } from '@react-email/render';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import {
+  PrivateCloudRequestWithProjectAndRequestedProject,
+  PrivateCloudRequestWithRequestedProject,
+} from '@/requestActions/private-cloud/decisionRequest';
 import { NewRequestTemplate } from '@/emails/templates/NewRequestTemplate';
 import { RequestApprovalTemplate } from '@/emails/templates/RequestApprovalTemplate';
 import { RequestRejectionTemplate } from '@/emails/templates/RequestRejectionTemplate';
+import { EditRequestTemplate } from '@/emails/templates/EditRequestTemplate';
 import { adminEmails } from './emailConstant';
 import chesService from './index';
 
@@ -54,6 +58,27 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 
 export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
   const email = render(RequestRejectionTemplate({ request }), { pretty: true });
+  try {
+    await chesService.send({
+      body: email,
+      // For all project contacts. Sent when the project set deletion request is successfully submitted
+      to: [
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
+      subject: `${request.requestedProject.name} has been approved`,
+    });
+  } catch (error) {
+    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
+  }
+};
+
+export const sendEditRequestEmails = async (
+  request: PrivateCloudRequestWithProjectAndRequestedProject,
+  diff: boolean[],
+) => {
+  const email = render(EditRequestTemplate({ request }), { pretty: true });
   try {
     await chesService.send({
       body: email,
