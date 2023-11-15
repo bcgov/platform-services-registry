@@ -54,7 +54,7 @@ export default async function RequestsTable({
   const userEmail = isAdmin || ministryRole ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateCloudRequest[]; total: number } = await privateCloudRequestsPaginated(
-    defaultPageSize,
+    +pageSize || defaultPageSize,
     currentPage,
     search,
     ministryRole || ministry,
