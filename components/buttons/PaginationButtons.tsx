@@ -17,30 +17,41 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const isPrevDisabled = Number(page) === 1 || isPending;
-  const isNextDisabled = Number(page) > pageCount || isPending;
+  page = Number(page);
+  const isPrevDisabled = page === 1 || isPending;
+  const isNextDisabled = page > pageCount || isPending;
+
+  const handlePaginationUpdate = (newPage: number, newPageSize?: number) => {
+    startTransition(() => {
+      router.replace(
+        `${pathname}?${createQueryString({ page: newPage, pageSize: newPageSize ?? pageSize ?? null }, searchParams)}`,
+        { scroll: false },
+      );
+    });
+  };
 
   return (
     <div {...props}>
+      <span>Rows per page: </span>
+      <select
+        id="pageSize"
+        name="pageSize"
+        value={String(pageSize)}
+        className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        onChange={(e) => handlePaginationUpdate(page, Number(e.target.value))}
+      >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+      </select>
       <button
         className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
         ${isPrevDisabled ? 'text-gray-500 border-gray-500' : 'text-black border-black'}`}
-        onClick={() => {
-          startTransition(() => {
-            router.replace(
-              `${pathname}?${createQueryString(
-                {
-                  page: Number(page) - 1,
-                  pageSize: pageSize ?? null,
-                },
-                searchParams,
-              )}`,
-              {
-                scroll: false,
-              },
-            );
-          });
-        }}
+        onClick={() => handlePaginationUpdate(page - 1)}
         disabled={isPrevDisabled}
       >
         Previous
@@ -48,22 +59,7 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
       <button
         className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
         ${isNextDisabled ? 'text-gray-500 border-gray-500' : 'text-black border-black'}`}
-        onClick={() => {
-          startTransition(() => {
-            router.replace(
-              `${pathname}?${createQueryString(
-                {
-                  page: Number(page) + 1,
-                  pageSize: pageSize ?? null,
-                },
-                searchParams,
-              )}`,
-              {
-                scroll: false,
-              },
-            );
-          });
-        }}
+        onClick={() => handlePaginationUpdate(page + 1)}
         disabled={isNextDisabled}
       >
         Next

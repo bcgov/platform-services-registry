@@ -48,7 +48,7 @@ export default async function ProductsTable({
   const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
   const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
-    defaultPageSize,
+    +pageSize || defaultPageSize,
     currentPage,
     search,
     ministry,
