@@ -6,7 +6,7 @@ import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import CreateModal from '@/components/modal/CreatePrivateCloud';
+import EditModal from '@/components/modal/EditRequest';
 import ReturnModal from '@/components/modal/Return';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -60,6 +60,11 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [comment, setComment] = useState('');
+
+  const handleComment = (textArea: string) => {
+    setComment(textArea);
+  };
 
   const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
@@ -95,6 +100,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   }, [requestData]);
 
   const onSubmit = async (data: any) => {
+    data.comment = comment;
     console.log('SUBMIT', data);
     setIsLoading(true);
     try {
@@ -153,11 +159,13 @@ export default function EditProject({ params }: { params: { licencePlate: string
           </div>
         </form>
       </FormProvider>
-      <CreateModal
+      <EditModal
         open={openCreate}
         setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
+        onCommentChange={handleComment}
+        type="create"
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
