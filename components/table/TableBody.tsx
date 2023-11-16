@@ -14,7 +14,7 @@ interface TableProps {
 
 function EmptyBody() {
   return (
-    <div className="flex flex-col items-center justify-center h-[700px]">
+    <div className="flex flex-col items-center justify-center py-12">
       <Image
         alt="Empty"
         src={Empty}
@@ -78,7 +78,7 @@ export default function TableBody({ headers, rows }: TableProps) {
 
   return (
     <>
-      <div className="flow-root h-[700px] overflow-y-auto ">
+      <div className="flow-root overflow-y-auto">
         <div className="w-full overflow-auto">
           <div className="inline-block min-w-full align-middle">
             <table className="w-full text-left">

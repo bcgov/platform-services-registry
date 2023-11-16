@@ -20,6 +20,7 @@ global:
       vault.hashicorp.com/agent-limits-mem: 64Mi
   env:
     "Env": ""
+    "SECURE_HEADERS": "true"
 
   serviceAccountName: 101ed4-vault
 
