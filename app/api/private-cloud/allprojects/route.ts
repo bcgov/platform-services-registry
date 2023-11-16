@@ -40,10 +40,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       description: project.description,
       ministry: project.ministry,
       cluster: project.cluster,
-      projectOwnerId: project.projectOwnerId, // Already a string
-      primaryTechnicalLeadId: project.primaryTechnicalLeadId || '', // Handle null or undefined
-      secondaryTechnicalLeadId: project.secondaryTechnicalLeadId || '',
-      created: project.created.toString(),
+      projectOwnerEmail: project.projectOwnerDetails.email,
+      projectOwnerName: project.projectOwnerDetails.firstName + ' ' + project.projectOwnerDetails.lastName,
+      primaryTechnicalLeadEmail: project.primaryTechnicalLeadDetails.email,
+      primaryTechnicalLeadName:
+        project.primaryTechnicalLeadDetails.firstName + ' ' + project.primaryTechnicalLeadDetails.lastName,
+      secondaryTechnicalLeadEmail: project.secondaryTechnicalLeadDetails
+        ? project.secondaryTechnicalLeadDetails.email
+        : '',
+      secondaryTechnicalLeadName: project.secondaryTechnicalLeadDetails
+        ? project.secondaryTechnicalLeadDetails.firstName + ' ' + project.secondaryTechnicalLeadDetails.lastName
+        : '',
+      created: new Date(project.created['$date']).toISOString(),
       licencePlate: project.licencePlate,
     }));
 
@@ -55,10 +63,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         'description',
         'ministry',
         'cluster',
-        'projectOwnerId',
-        'primaryTechnicalLeadId',
+        'projectOwnerEmail',
+        'projectOwnerName',
+        'primaryTechnicalLeadEmail',
+        'primaryTechnicalLeadName',
+        'secondaryTechnicalLeadEmail',
+        'secondaryTechnicalLeadName',
         'created',
-        'licence plate',
+        'licencePlate',
       ],
     });
 
