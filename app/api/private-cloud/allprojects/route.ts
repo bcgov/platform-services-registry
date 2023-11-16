@@ -3,6 +3,7 @@ import { stringify } from 'csv-stringify/sync';
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjects } from '@/queries/private-cloud';
 import formatDate from '@/components/utils/formatdates';
+import { formatFullName } from '@/components/utils/formatFullName';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
@@ -22,15 +23,20 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ministry: project.ministry,
       cluster: project.cluster,
       projectOwnerEmail: project.projectOwnerDetails.email,
-      projectOwnerName: project.projectOwnerDetails.firstName + ' ' + project.projectOwnerDetails.lastName,
+      projectOwnerName: formatFullName(project.projectOwnerDetails.firstName, project.projectOwnerDetails.lastName),
       primaryTechnicalLeadEmail: project.primaryTechnicalLeadDetails.email,
-      primaryTechnicalLeadName:
-        project.primaryTechnicalLeadDetails.firstName + ' ' + project.primaryTechnicalLeadDetails.lastName,
+      primaryTechnicalLeadName: formatFullName(
+        project.primaryTechnicalLeadDetails.firstName,
+        project.primaryTechnicalLeadDetails.lastName,
+      ),
       secondaryTechnicalLeadEmail: project.secondaryTechnicalLeadDetails
         ? project.secondaryTechnicalLeadDetails.email
         : '',
       secondaryTechnicalLeadName: project.secondaryTechnicalLeadDetails
-        ? project.secondaryTechnicalLeadDetails.firstName + ' ' + project.secondaryTechnicalLeadDetails.lastName
+        ? formatFullName(
+            project.secondaryTechnicalLeadDetails.firstName,
+            project.secondaryTechnicalLeadDetails.lastName,
+          )
         : '',
       created: formatDate(project.created['$date']),
       licencePlate: project.licencePlate,
