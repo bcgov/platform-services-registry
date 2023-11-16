@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 import { PrivateProject } from '@/queries/types';
-import { getPrivateCloudProjectsQuery, getPrivateCloudProjectsResult } from '@/queries/private-cloud/helpers';
+import { privateCloudProjects } from '@/queries/private-cloud';
+import formatDate from '@/components/utils/formatdates';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
@@ -11,14 +12,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const userEmail = searchParams.get('email');
 
   try {
-    const searchQuery = await getPrivateCloudProjectsQuery({
-      searchTerm: search,
-      ministry,
-      cluster,
-      userEmail,
-    });
-
-    const projects = await getPrivateCloudProjectsResult({ searchQuery });
+    // Fetch the projects using the privateCloudProjects function
+    const projects = await privateCloudProjects(search, ministry, cluster, userEmail);
 
     // Map the data to the correct format for CSV conversion
     const formattedData = projects.map((project: PrivateProject) => ({
@@ -37,7 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       secondaryTechnicalLeadName: project.secondaryTechnicalLeadDetails
         ? project.secondaryTechnicalLeadDetails.firstName + ' ' + project.secondaryTechnicalLeadDetails.lastName
         : '',
-      created: new Date(project.created['$date']).toISOString(),
+      created: formatDate(project.created['$date']),
       licencePlate: project.licencePlate,
     }));
 
