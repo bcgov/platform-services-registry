@@ -43,7 +43,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
         request.requestedProject.projectOwner.email,
         request.requestedProject.primaryTechnicalLead.email,
         request.requestedProject.secondaryTechnicalLead?.email,
-      ].filter(Boolean),
+      ],
       subject: `${request.requestedProject.name} has been approved`,
     });
   } catch (error) {
@@ -61,7 +61,7 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
         request.requestedProject.projectOwner.email,
         request.requestedProject.primaryTechnicalLead.email,
         request.requestedProject.secondaryTechnicalLead?.email,
-      ].filter(Boolean),
+      ],
       subject: `${request.requestedProject.name} has been approved`,
     });
   } catch (error) {
