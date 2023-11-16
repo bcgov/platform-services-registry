@@ -4,7 +4,7 @@ import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 
 const headers = [
@@ -48,7 +48,7 @@ export default async function ProductsTable({
   const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateProject[]; total: number } = await privateCloudProjectsPaginated(
-    defaultPageSize,
+    +pageSize || defaultPageSize,
     currentPage,
     search,
     ministry,

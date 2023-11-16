@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/options';
 import { Prisma } from '@prisma/client';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { PrivateCloudRequest } from '@prisma/client';
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   // Action
   const request: PrivateCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
-  sendNewRequestEmails(formData);
+  sendNewRequestEmails(request);
 
   return new NextResponse('Success creating request', {
     status: 200,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/options';
 import { PrivateCloudRequest, User, DecisionStatus, Cluster } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { PrivateCloudEditRequestBodySchema, PrivateCloudEditRequestBody } from '@/schema';

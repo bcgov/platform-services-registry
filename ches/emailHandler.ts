@@ -1,5 +1,4 @@
 import { render } from '@react-email/render';
-import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
 import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import { NewRequestTemplate } from '@/emails/templates/NewRequestTemplate';
 import { RequestApprovalTemplate } from '@/emails/templates/RequestApprovalTemplate';
@@ -7,18 +6,18 @@ import { RequestRejectionTemplate } from '@/emails/templates/RequestRejectionTem
 import { adminEmails } from './emailConstant';
 import { sendEmail } from './index';
 
-export const sendNewRequestEmails = async (formData: PrivateCloudCreateRequestBody) => {
-  const email = render(NewRequestTemplate({ formData }), { pretty: true });
+export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+  const email = render(NewRequestTemplate({ request }), { pretty: true });
   try {
     const send1 = await sendEmail({
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        formData.projectOwner.email,
-        formData.primaryTechnicalLead.email,
-        formData.secondaryTechnicalLead?.email,
-      ].filter(Boolean),
-      subject: `${formData.name} provisioning request received`,
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
+      subject: `${request.requestedProject.name} provisioning request received`,
     });
 
     const send2 = await sendEmail({

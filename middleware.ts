@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
 
-  if (process.env.SECURE_HEADERS === 'false') {
+  if (process.env.SECURE_HEADERS !== 'true') {
     return NextResponse.next({
       headers: requestHeaders,
       request: {
@@ -25,8 +25,11 @@ export function middleware(request: NextRequest) {
   const cspSegments = [
     "base-uri 'self'",
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    // Let's take another look at CSP since it necessitates the regeneration of static HTML files.
+    // `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    // `style-src 'self' 'nonce-${nonce}'`,
+    `script-src 'self' 'unsafe-inline'`,
+    `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' blob: data: ${gravatar_com}`,
     `connect-src 'self' ${gravatar_com} ${loginproxy_gov}`,
     `frame-src ${loginproxy_gov}`,
@@ -36,15 +39,20 @@ export function middleware(request: NextRequest) {
     'upgrade-insecure-requests',
   ];
 
-  requestHeaders.set('x-nonce', nonce);
-  requestHeaders.set('content-security-policy', cspSegments.join(';'));
+  const cspHeaderValue = cspSegments.join(';');
 
-  return NextResponse.next({
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('content-security-policy', cspHeaderValue);
+
+  const response = NextResponse.next({
     headers: requestHeaders,
     request: {
       headers: requestHeaders,
     },
   });
+
+  response.headers.set('content-security-policy', cspHeaderValue);
+  return response;
 }
 
 export const config = {

@@ -3,7 +3,7 @@ import TableBody from '@/components/table/TableBody';
 import { privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
 import { privateCloudRequestDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { PrivateCloudRequest } from '@prisma/client';
 
@@ -52,7 +52,7 @@ export default async function RequestsTable({
   const userEmail = isAdmin ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateCloudRequest[]; total: number } = await privateCloudRequestsPaginated(
-    defaultPageSize,
+    +pageSize || defaultPageSize,
     currentPage,
     search,
     ministry,

@@ -171,10 +171,10 @@ type Quota {
 }
 
 type Budget {
-  dev   Int
-  test  Int
-  prod  Int
-  tools Int
+  dev   Float
+  test  Float
+  prod  Float
+  tools Float
 }
 
 type CommonComponentsOptions {
