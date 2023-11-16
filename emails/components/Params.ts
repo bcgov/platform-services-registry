@@ -224,8 +224,8 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
     projectOwnerId: 'd',
     primaryTechnicalLeadId: 'd',
     secondaryTechnicalLeadId: null,
-    ministry: 'CITZ',
-    cluster: 'SILVER',
+    ministry: 'AGRI',
+    cluster: 'GOLD',
     projectOwner: {
       id: 'd',
       firstName: 'John',
@@ -252,7 +252,19 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
       upn: 'John.Doe@gov.bc.ca',
       idir: 'JDOE',
     },
-    secondaryTechnicalLead: null,
+    secondaryTechnicalLead: {
+      id: 'd',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'John.Doe@gov.bc.ca',
+      idir: 'JDOE',
+    },
   },
 };
 // Edit name, description and primary TL, prod quotas, test quota

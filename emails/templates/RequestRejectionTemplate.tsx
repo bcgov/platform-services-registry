@@ -21,7 +21,7 @@ export const RequestRejectionTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">Sorry, your provisioning request was Rejected</Heading>
+                <Heading className="text-lg text-black">Sorry, your provisioning request was Rejected</Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
                   Your request for a new project set for your product on the Private Cloud Openshift platform is

@@ -20,10 +20,12 @@ export const RequestApprovalTemplate = ({ request }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">Hurray! Your provisioning request was approved and completed!</Heading>
+                <Heading className="text-lg text-black">
+                  Hurray! Your provisioning request was approved and completed!
+                </Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
                   Your request for a new project set for your product on the Private Cloud Openshift platform is

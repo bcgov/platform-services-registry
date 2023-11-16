@@ -23,7 +23,7 @@ export default function ContactChanges({
   return (
     <Tailwind config={TailwindConfig}>
       <div>
-        <Heading className="text-lg">Contact Changes</Heading>
+        <Heading className="text-lg text-black">Contact Changes</Heading>
         {poCurrent.id !== poRequested.id && (
           <div>
             <Text className="mb-0 font-semibold h-4">Current Product Owner: </Text>
@@ -62,20 +62,32 @@ export default function ContactChanges({
         )}
         {tl2Current?.id !== tl2Requested?.id && (
           <div>
-            <Text className="mb-0 font-semibold h-4">Current Primary Technical Lead: </Text>
-            <Text className="mt-0 h-4">
-              {tl2Current?.firstName} {tl2Current?.lastName}
-            </Text>
-            <Link className="mt-0 h-4" href={`mailto:${tl2Current?.email}`}>
-              {tl2Current?.email}
-            </Link>
-            <Text className="mb-0 font-semibold h-4">Requested Primary Technical Lead: </Text>
-            <Text className="mt-0 h-4">
-              {tl2Requested?.firstName} {tl2Requested?.lastName}
-            </Text>
-            <Link className="mt-0 h-4" href={`mailto:${tl2Requested?.email}`}>
-              {tl2Requested?.email}
-            </Link>
+            <Text className="mb-0 font-semibold h-4">Current Secondary Technical Lead: </Text>
+            {tl2Current ? (
+              <div>
+                <Text className="mt-0 h-4">
+                  {tl2Current.firstName} {tl2Current.lastName}
+                </Text>
+                <Link className="mt-0 h-4" href={`mailto:${tl2Current?.email}`}>
+                  {tl2Current?.email}
+                </Link>
+              </div>
+            ) : (
+              <Text className="mt-0 h-4"> - </Text>
+            )}
+            <Text className="mb-0 font-semibold h-4">Requested Secondary Technical Lead: </Text>
+            {tl2Requested ? (
+              <div>
+                <Text className="mt-0 h-4">
+                  {tl2Requested.firstName} {tl2Requested.lastName}
+                </Text>
+                <Link className="mt-0 h-4" href={`mailto:${tl2Requested?.email}`}>
+                  {tl2Requested?.email}
+                </Link>
+              </div>
+            ) : (
+              <Text className="mt-0 h-4"> Removed </Text>
+            )}
           </div>
         )}
       </div>

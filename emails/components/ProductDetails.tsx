@@ -29,7 +29,7 @@ export default function ProductDetails({
   return (
     <Tailwind config={TailwindConfig}>
       <div>
-        <Heading className="text-lg">Product Details</Heading>
+        <Heading className="text-lg text-black">Product Details</Heading>
         <div>
           <Text className="mb-0 font-semibold h-4">Product Name: </Text>
           <Text className="mt-0 h-4">{name}</Text>

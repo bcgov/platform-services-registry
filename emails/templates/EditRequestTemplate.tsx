@@ -13,6 +13,7 @@ import { TailwindConfig } from '../components/TailwindConfig';
 import { compareProjects } from '../components/Edit/compareProjects';
 import ContactChanges from '../components/Edit/ContactChanges';
 import QuotaChanges from '../components/Edit/QuotaChanges';
+import DescriptionChanges from '../components/Edit/DescriptionChanges';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
@@ -30,11 +31,11 @@ export const EditRequestTemplate = ({ request }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">New Edit Product Request!</Heading>
-                <Text>Hi Registry Team, </Text>
+                <Heading className="text-lg text-black">New Edit Product Request!</Heading>
+                <Text>Hi {current.name} Team, </Text>
                 <Text className="">
                   You have submitted an edit request for your product with the license plate
                   {request.licencePlate}. Our administrators have been notified and will review your request.
@@ -45,6 +46,20 @@ export const EditRequestTemplate = ({ request }: EmailProp) => {
                 >
                   Review Request
                 </Button>
+              </div>
+              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+                {(changed['name'] || changed['description'] || changed['ministry'] || changed['cluster']) && (
+                  <DescriptionChanges
+                    nameCurrent={current.name}
+                    descCurrent={current.description}
+                    ministryCurrent={current.ministry}
+                    clusterCurrent={current.cluster}
+                    nameRequested={requested.name}
+                    descRequested={requested.description}
+                    ministryRequested={requested.ministry}
+                    clusterRequested={requested.cluster}
+                  />
+                )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 {(changed['projectOwnerId'] ||
@@ -64,7 +79,7 @@ export const EditRequestTemplate = ({ request }: EmailProp) => {
                 {(changed['productionQuota'] ||
                   changed['testQuota'] ||
                   changed['developmentQuota'] ||
-                  changed['toolsQuota']) && <Heading className="text-lg mb-0">Quota Changes</Heading>}
+                  changed['toolsQuota']) && <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>}
                 <div className="flex flex-row flex-wrap">
                   {changed['productionQuota'] && (
                     <QuotaChanges
