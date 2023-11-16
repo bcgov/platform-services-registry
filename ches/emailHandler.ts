@@ -8,8 +8,9 @@ import { sendEmail } from './index';
 
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
+
   try {
-    const send1 = await sendEmail({
+    const contacts = await sendEmail({
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
@@ -20,14 +21,14 @@ export const sendNewRequestEmails = async (request: PrivateCloudRequestWithReque
       subject: `${request.requestedProject.name} provisioning request received`,
     });
 
-    const send2 = await sendEmail({
+    const admins = await sendEmail({
       bodyType: 'html',
       body: email,
       to: adminEmails,
       subject: `New Provisioning request in Registry waiting for your approval`,
     });
 
-    await Promise.all([send1, send2]);
+    await Promise.all([contacts, admins]);
   } catch (error) {
     console.log('ERROR SENDING NEW REQUEST EMAIL EMAIL');
   }
