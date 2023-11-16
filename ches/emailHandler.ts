@@ -12,7 +12,6 @@ export const sendNewRequestEmails = async (request: PrivateCloudRequestWithReque
   try {
     const contacts = await sendEmail({
       body: email,
-      // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
         request.requestedProject.projectOwner.email,
         request.requestedProject.primaryTechnicalLead.email,
@@ -36,10 +35,10 @@ export const sendNewRequestEmails = async (request: PrivateCloudRequestWithReque
 
 export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(RequestApprovalTemplate({ request }), { pretty: true });
+
   try {
     await sendEmail({
       body: email,
-      // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
         request.requestedProject.projectOwner.email,
         request.requestedProject.primaryTechnicalLead.email,
@@ -54,10 +53,10 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 
 export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
   const email = render(RequestRejectionTemplate({ request }), { pretty: true });
+
   try {
     await sendEmail({
       body: email,
-      // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
         request.requestedProject.projectOwner.email,
         request.requestedProject.primaryTechnicalLead.email,
