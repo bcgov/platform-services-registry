@@ -3,8 +3,8 @@ import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/privat
 import { NewRequestTemplate } from '@/emails/templates/NewRequestTemplate';
 import { RequestApprovalTemplate } from '@/emails/templates/RequestApprovalTemplate';
 import { RequestRejectionTemplate } from '@/emails/templates/RequestRejectionTemplate';
-import { adminEmails } from './emailConstant';
-import { sendEmail } from './index';
+import { adminEmails } from '@/ches/emailConstant';
+import { sendEmail } from '@/ches';
 
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
