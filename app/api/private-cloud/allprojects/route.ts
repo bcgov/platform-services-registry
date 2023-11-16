@@ -4,11 +4,7 @@ import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
 import { stringify } from 'csv-stringify/sync';
-//import { PrivateCloudProjectMongo } from './privateCloudProjectMongo';
 import { PrivateProject } from '@/queries/types';
-// import { sendProvisionedEmails } from "../ches/emailHandlers.js";
-
-// See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
@@ -20,14 +16,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const cluster = searchParams.get('cluster');
   const userEmail = searchParams.get('email');
 
-  //if (!search) {
-  //  return new NextResponse('Missing query parameters.', { status: 400 });
-  // }
-
   try {
     const result = await privateCloudProjectsPaginated(
-      1000000, //+defaultPageSize,
-      1, //+currentPage,
+      1000000, //+defaultPageSize, setting a default value, this needs work
+      1, //+currentPage, setting a default value, this needs work
       search,
       ministry,
       cluster,
@@ -83,7 +75,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       },
     });
 
-    return response; //changed from NextResponse.json(data);
+    return response;
   } catch (error: any) {
     return new NextResponse(error.message, { status: 500 });
   }
