@@ -13,6 +13,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 // import { sendDeleteRequestEmails } from "../../ches/emailHandlers.js";
+import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 const ParamsSchema = z.object({
   id: string(),
@@ -62,7 +63,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       },
     });
 
-    if (!users.map((user) => user.email).includes(authEmail) && !authRoles.includes('admin')) {
+    if (
+      !users.map((user) => user.email).includes(authEmail) &&
+      !(authRoles.includes('admin') || project.ministry === checkUserMinistryRole(authRoles))
+    ) {
       throw new Error('You need to be a contact on this project in order to delete it.');
     }
 

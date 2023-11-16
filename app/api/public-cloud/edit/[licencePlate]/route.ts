@@ -11,6 +11,7 @@ import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActio
 import { subscribeUsersToMautic } from '@/mautic';
 import { sendPublicCloudNatsMessage } from '@/nats';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
+import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       formData.primaryTechnicalLead.email,
       formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
-    !authRoles.includes('admin')
+    !(authRoles.includes('admin') || formData.ministry === checkUserMinistryRole(authRoles))
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }

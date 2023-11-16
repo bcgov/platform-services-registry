@@ -6,6 +6,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { PrivateCloudRequest } from '@prisma/client';
+import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 export const revalidate = 0;
 
@@ -48,14 +49,15 @@ export default async function RequestsTable({
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  // If not an admin, we need to provide the user's email to the query
-  const userEmail = isAdmin ? undefined : session?.user?.email;
+  const ministryRole = isAdmin ? null : checkUserMinistryRole(session?.user?.roles);
+  // If not an admin or doesn't have ministry name role, we need to provide the user's email to the query
+  const userEmail = isAdmin || ministryRole ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateCloudRequest[]; total: number } = await privateCloudRequestsPaginated(
     defaultPageSize,
     currentPage,
     search,
-    ministry,
+    ministryRole || ministry,
     cluster,
     userEmail,
     isAdmin,
