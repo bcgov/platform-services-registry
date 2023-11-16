@@ -1,33 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrivateCloudProject } from '@prisma/client';
-import prisma from '@/lib/prisma';
-import { string, z } from 'zod';
-import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
 import { stringify } from 'csv-stringify/sync';
 import { PrivateProject } from '@/queries/types';
+import { getPrivateCloudProjectsQuery, getPrivateCloudProjectsResult } from '@/queries/private-cloud/helpers';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
-
-  //const defaultPageSize = searchParams.get('defaultPageSize');
-  //const currentPage = searchParams.get('currentPage');
   const search = searchParams.get('search') || '';
   const ministry = searchParams.get('ministry');
   const cluster = searchParams.get('cluster');
   const userEmail = searchParams.get('email');
 
   try {
-    const result = await privateCloudProjectsPaginated(
-      1000000, //+defaultPageSize, setting a default value, this needs work
-      1, //+currentPage, setting a default value, this needs work
-      search,
+    const searchQuery = await getPrivateCloudProjectsQuery({
+      searchTerm: search,
       ministry,
       cluster,
       userEmail,
-    );
+    });
+
+    const projects = await getPrivateCloudProjectsResult({ searchQuery });
 
     // Map the data to the correct format for CSV conversion
-    const formattedData = result.data.map((project: PrivateProject) => ({
+    const formattedData = projects.map((project: PrivateProject) => ({
       name: project.name,
       description: project.description,
       ministry: project.ministry,
