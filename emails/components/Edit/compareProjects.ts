@@ -1,6 +1,5 @@
-interface FieldDifferences {
-  [field: string]: boolean;
-}
+import _isEqual from 'lodash/isEqual';
+
 export function compareProjects(project: any, requestedProject: any): { [field: string]: boolean } {
   const fieldsToCompare = [
     'name',
@@ -20,7 +19,7 @@ export function compareProjects(project: any, requestedProject: any): { [field: 
   const differences: { [field: string]: boolean } = {};
 
   fieldsToCompare.forEach((field) => {
-    differences[field] = JSON.stringify(project[field]) !== JSON.stringify(requestedProject[field]);
+    differences[field] = !_isEqual(project[field], requestedProject[field]);
   });
 
   return differences;
