@@ -44,16 +44,12 @@ export default async function ProductsTable({
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
-
   const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
     +pageSize || defaultPageSize,
     currentPage,
     search,
     ministry,
     provider,
-    userEmail,
   );
 
   const rows = data.map(publicCloudProjectDataToRow);

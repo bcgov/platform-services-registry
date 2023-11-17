@@ -44,7 +44,6 @@ export default async function RequestsTable({
   const defaultPageSize = 10;
 
   // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
   const { data, total } = await publicCloudRequestsPaginated(
     +pageSize || defaultPageSize,
@@ -52,7 +51,6 @@ export default async function RequestsTable({
     search,
     ministry,
     provider,
-    userEmail,
   );
 
   const rows = data.map(publicCloudRequestDataToRow);

@@ -1,30 +1,44 @@
 import prisma from '@/lib/prisma';
 import { PrivateProject } from '@/queries/types';
+import { userInfo } from '@/queries/user';
 
-export function getPrivateCloudProjectsQuery({
+export async function getPrivateCloudProjectsQuery({
   searchTerm,
   ministry,
   cluster,
-  userEmail,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | null;
-  userEmail?: string | null;
 }) {
   // Initialize the search/filter query
   const searchQuery: any = {
     status: 'ACTIVE',
   };
 
+  const user = await userInfo();
+
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
     searchQuery.$or = [
-      { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
       {
-        'projectOwnerDetails.firstName': { $regex: searchTerm, $options: 'i' },
+        'projectOwnerDetails.email': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
       },
-      { 'projectOwnerDetails.lastName': { $regex: searchTerm, $options: 'i' } },
+      {
+        'projectOwnerDetails.firstName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
+      {
+        'projectOwnerDetails.lastName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
       {
         'primaryTechnicalLeadDetails.email': {
           $regex: searchTerm,
@@ -79,22 +93,30 @@ export function getPrivateCloudProjectsQuery({
     searchQuery.cluster = cluster;
   }
 
-  if (userEmail) {
+  if (user.userEmail) {
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwnerDetails.email': { $regex: userEmail, $options: 'i' } },
+          {
+            'projectOwnerDetails.email': {
+              $regex: user.userEmail,
+              $options: 'i',
+            },
+          },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
+          },
+          {
+            ministry: user.ministryRole,
           },
         ],
       },
@@ -182,7 +204,7 @@ export async function getPrivateCloudProjectsResult({
           as: 'secondaryTechnicalLeadDetails',
         },
       },
-      { $match: searchQuery },
+      { $match: await searchQuery },
       { $unwind: '$projectOwnerDetails' },
       { $unwind: '$primaryTechnicalLeadDetails' },
       {

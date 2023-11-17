@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { PublicProject } from '@/queries/types';
+import { userInfo } from '@/queries/user';
 
 export async function publicCloudProjectsPaginated(
   pageSize: number,
@@ -7,7 +8,6 @@ export async function publicCloudProjectsPaginated(
   searchTerm?: string | null,
   ministry?: string | null,
   provider?: string | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: PublicProject[];
   total: number;
@@ -17,14 +17,29 @@ export async function publicCloudProjectsPaginated(
     status: 'ACTIVE',
   };
 
+  const user = await userInfo();
+
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
     searchQuery.$or = [
-      { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
       {
-        'projectOwnerDetails.firstName': { $regex: searchTerm, $options: 'i' },
+        'projectOwnerDetails.email': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
       },
-      { 'projectOwnerDetails.lastName': { $regex: searchTerm, $options: 'i' } },
+      {
+        'projectOwnerDetails.firstName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
+      {
+        'projectOwnerDetails.lastName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
       {
         'primaryTechnicalLeadDetails.email': {
           $regex: searchTerm,
@@ -79,22 +94,30 @@ export async function publicCloudProjectsPaginated(
     searchQuery.provider = provider;
   }
 
-  if (userEmail) {
+  if (user.userEmail) {
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwnerDetails.email': { $regex: userEmail, $options: 'i' } },
+          {
+            'projectOwnerDetails.email': {
+              $regex: user.userEmail,
+              $options: 'i',
+            },
+          },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
+          },
+          {
+            ministry: user.ministryRole,
           },
         ],
       },
@@ -200,13 +223,13 @@ export async function publicCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   provider?: string,
-  userEmail?: string,
   active: boolean = true,
 ): Promise<{
   data: any[];
   total: number;
 }> {
   const searchQuery: any = active ? { active: true } : {};
+  const user = await userInfo();
 
   if (searchTerm) {
     searchQuery.$or = [
@@ -223,19 +246,30 @@ export async function publicCloudRequestsPaginated(
     searchQuery['requestedProject.provider'] = provider;
   }
 
-  if (userEmail) {
+  if (user.userEmail) {
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwner.email': { $regex: userEmail, $options: 'i' } },
           {
-            'primaryTechnicalLead.email': { $regex: userEmail, $options: 'i' },
+            'projectOwner.email': {
+              $regex: user.userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'primaryTechnicalLead.email': {
+              $regex: user.userEmail,
+              $options: 'i',
+            },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
+          },
+          {
+            ministry: user.ministryRole,
           },
         ],
       },

@@ -5,14 +5,14 @@ import {
   getPrivateCloudProjectsResult,
 } from '@/queries/private-cloud/helpers';
 import { PrivateProject } from '@/queries/types';
+import { userInfo } from '@/queries/user';
 
 export async function privateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
   searchTerm?: string | null,
   ministry?: string | null,
-  cluster?: string | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
 ): Promise<{
   data: PrivateProject[];
   total: number;
@@ -22,7 +22,6 @@ export async function privateCloudProjectsPaginated(
     searchTerm,
     ministry,
     cluster,
-    userEmail,
   });
 
   const proms = [];
@@ -46,13 +45,13 @@ export async function privateCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
-  userEmail?: string,
   active: boolean = true,
 ): Promise<{
   data: any[];
   total: number;
 }> {
   const searchQuery: any = active ? { active: true } : {};
+  const user = await userInfo();
 
   if (searchTerm) {
     searchQuery.$or = [
@@ -73,19 +72,22 @@ export async function privateCloudRequestsPaginated(
     searchQuery['requestedProject.cluster'] = cluster;
   }
 
-  if (userEmail) {
+  if (user.userEmail) {
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwner.email': { $regex: userEmail, $options: 'i' } },
+          { 'projectOwner.email': { $regex: user.userEmail, $options: 'i' } },
           {
-            'primaryTechnicalLead.email': { $regex: userEmail, $options: 'i' },
+            'primaryTechnicalLead.email': { $regex: user.userEmail, $options: 'i' },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
+          },
+          {
+            'requestedProject.ministry': user.ministryRole,
           },
         ],
       },
