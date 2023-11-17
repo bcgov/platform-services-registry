@@ -13,7 +13,15 @@ To address this, a practical workaround involves resetting all commits on the ba
    git checkout -b <new-branch>
    ```
 
-3. Reset all commits based on the base branch (usually the default repository branch):
+3. Pull Changes from the Base Branch:
+
+   ```sh
+   git pull origin <base-branch> --no-rebase
+   ```
+
+   - Resolve any merge conflicts and commit the changes.
+
+4. Reset all commits based on the base branch (usually the default repository branch):
    ```sh
    git reset --soft origin/<base-branch>
    ```
