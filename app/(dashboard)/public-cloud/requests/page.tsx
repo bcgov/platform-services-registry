@@ -5,7 +5,6 @@ import { publicCloudRequestDataToRow } from '@/components/table/helpers/rowMappe
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
-import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 const headers = [
   { field: 'type', headerName: 'Type' },
@@ -45,7 +44,6 @@ export default async function RequestsTable({
   const defaultPageSize = 10;
 
   // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
   const { data, total } = await publicCloudRequestsPaginated(
     +pageSize || defaultPageSize,

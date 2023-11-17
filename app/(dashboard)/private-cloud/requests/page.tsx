@@ -6,7 +6,6 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { PrivateCloudRequest } from '@prisma/client';
-import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 export const revalidate = 0;
 

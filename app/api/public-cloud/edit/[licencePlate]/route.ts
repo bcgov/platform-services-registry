@@ -11,7 +11,6 @@ import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActio
 import { subscribeUsersToMautic } from '@/mautic';
 import { sendPublicCloudNatsMessage } from '@/nats';
 // import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
-import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -52,9 +51,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       formData.primaryTechnicalLead.email,
       formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
-    !(authRoles.includes('admin') || formData.ministry === checkUserMinistryRole(authRoles))
+    !(authRoles.includes('admin') || authRoles.includes(`ministry-${formData.ministry.toLocaleLowerCase()}-admin`))
   ) {
-    throw new Error('You need to assign yourself to this project in order to create it.');
+    throw new Error('You need to assign yourself to this project in order to edit it.');
   }
 
   const existingRequest: PublicCloudRequest | null = await prisma.publicCloudRequest.findFirst({
