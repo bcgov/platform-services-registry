@@ -38,7 +38,7 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
         name="pageSize"
         value={String(pageSize)}
         className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        onChange={(e) => handlePaginationUpdate(page, Number(e.target.value))}
+        onChange={(e) => handlePaginationUpdate(1, Number(e.target.value))}
       >
         <option value="5">5</option>
         <option value="10">10</option>
