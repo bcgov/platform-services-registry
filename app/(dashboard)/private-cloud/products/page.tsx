@@ -6,7 +6,7 @@ import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapp
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
-import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
+// import checkUserMinistryRole from '@/components/utils/checkUserMinistryRole';
 
 const headers = [
   { field: 'name', headerName: 'Name' },
@@ -41,21 +41,21 @@ export default async function ProductsTable({
 
   const { search, page, pageSize, ministry, cluster } = searchParams;
 
-  const isAdmin = session?.user?.roles?.includes('admin');
+  // const isAdmin = session?.user?.roles?.includes('admin');
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
-  const ministryRole = isAdmin ? null : checkUserMinistryRole(session?.user?.roles);
+  // const ministryRole = isAdmin ? null : checkUserMinistryRole(session?.user?.roles);
   // If not an admin or doesn't have ministry name role, we need to provide the user's email to the query
-  const userEmail = isAdmin || ministryRole ? undefined : session?.user?.email;
+  // const userEmail = isAdmin || ministryRole ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateProject[]; total: number } = await privateCloudProjectsPaginated(
     +pageSize || defaultPageSize,
     currentPage,
     search,
-    ministryRole || ministry,
+    ministry,
     cluster,
-    userEmail,
+    // userEmail
   );
 
   const rows = data.map(privateCloudProjectDataToRow);
