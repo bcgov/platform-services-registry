@@ -72,22 +72,22 @@ export async function privateCloudRequestsPaginated(
     searchQuery['requestedProject.cluster'] = cluster;
   }
 
-  if (user?.userEmail) {
+  if (user.userEmail) {
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwner.email': { $regex: user?.userEmail, $options: 'i' } },
+          { 'projectOwner.email': { $regex: user.userEmail, $options: 'i' } },
           {
-            'primaryTechnicalLead.email': { $regex: user?.userEmail, $options: 'i' },
+            'primaryTechnicalLead.email': { $regex: user.userEmail, $options: 'i' },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: user?.userEmail,
+              $regex: user.userEmail,
               $options: 'i',
             },
           },
           {
-            'requestedProject.ministry': user?.ministryRole,
+            'requestedProject.ministry': user.ministryRole,
           },
         ],
       },

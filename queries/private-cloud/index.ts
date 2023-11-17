@@ -11,7 +11,6 @@ export async function privateCloudProjects(
     searchTerm,
     ministry,
     cluster,
-    userEmail,
   });
 
   const data = await getPrivateCloudProjectsResult({ searchQuery });
