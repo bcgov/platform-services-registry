@@ -280,7 +280,7 @@ describe('Query projects with filter and search and pagination', () => {
       });
     }
 
-    const projects = await privateCloudRequestsPaginated(10, 1, undefined);
+    const projects = await privateCloudRequestsPaginated(10, 1);
     expect(projects.total).toBe(3);
   });
 
@@ -296,7 +296,7 @@ describe('Query projects with filter and search and pagination', () => {
       });
     }
 
-    const projects = await privateCloudRequestsPaginated(10, 1, undefined);
+    const projects = await privateCloudRequestsPaginated(10, 1);
 
     expect(projects.data.length).toBe(3);
   });
