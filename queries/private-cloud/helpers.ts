@@ -93,30 +93,30 @@ export async function getPrivateCloudProjectsQuery({
     searchQuery.cluster = cluster;
   }
 
-  if (user.userEmail) {
+  if (user?.userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwnerDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: { $in: user.ministryRole },
+            ministry: { $in: user?.ministryRole },
           },
         ],
       },

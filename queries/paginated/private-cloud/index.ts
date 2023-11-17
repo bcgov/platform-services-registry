@@ -23,7 +23,7 @@ export async function privateCloudProjectsPaginated(
     ministry,
     cluster,
   });
-
+  const user = await userInfo();
   const proms = [];
   // First, get the total count of matching documents
   proms.push(getPrivateCloudProjectsTotalCount({ searchQuery }));
@@ -33,10 +33,15 @@ export async function privateCloudProjectsPaginated(
 
   const [total, data] = await Promise.all(proms);
 
-  return {
-    data: data as PrivateProject[],
-    total: total as number,
-  };
+  return user
+    ? {
+        data: data as PrivateProject[],
+        total: total as number,
+      }
+    : {
+        data: [],
+        total: 0,
+      };
 }
 
 export async function privateCloudRequestsPaginated(
@@ -72,30 +77,30 @@ export async function privateCloudRequestsPaginated(
     searchQuery['requestedProject.cluster'] = cluster;
   }
 
-  if (user.userEmail) {
+  if (user?.userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwner.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
-            'requestedProject.ministry': { $in: user.ministryRole },
+            'requestedProject.ministry': { $in: user?.ministryRole },
           },
         ],
       },
@@ -212,9 +217,13 @@ export async function privateCloudRequestsPaginated(
 
   // @ts-ignore
   const totalCount = totalCountResult[0]?.totalCount || 0;
-
-  return {
-    data: result as any,
-    total: totalCount,
-  };
+  return user
+    ? {
+        data: result as any,
+        total: totalCount,
+      }
+    : {
+        data: [],
+        total: 0,
+      };
 }

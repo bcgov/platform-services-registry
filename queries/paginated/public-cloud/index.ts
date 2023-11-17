@@ -94,30 +94,30 @@ export async function publicCloudProjectsPaginated(
     searchQuery.provider = provider;
   }
 
-  if (user.userEmail) {
+  if (user?.userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwnerDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: { $in: user.ministryRole },
+            ministry: { $in: user?.ministryRole },
           },
         ],
       },
@@ -211,10 +211,15 @@ export async function publicCloudProjectsPaginated(
   // @ts-ignore
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
-  return {
-    data: result as unknown as PublicProject[],
-    total: totalCount || 0,
-  };
+  return user
+    ? {
+        data: result as unknown as PublicProject[],
+        total: totalCount || 0,
+      }
+    : {
+        data: [],
+        total: 0,
+      };
 }
 
 export async function publicCloudRequestsPaginated(
@@ -246,30 +251,30 @@ export async function publicCloudRequestsPaginated(
     searchQuery['requestedProject.provider'] = provider;
   }
 
-  if (user.userEmail) {
+  if (user?.userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwner.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: { $in: user.ministryRole },
+            ministry: { $in: user?.ministryRole },
           },
         ],
       },
@@ -387,8 +392,13 @@ export async function publicCloudRequestsPaginated(
   // @ts-ignore
   const totalCount = totalCountResult[0]?.totalCount || 0;
 
-  return {
-    data: result as any,
-    total: totalCount,
-  };
+  return user
+    ? {
+        data: result as any,
+        total: totalCount,
+      }
+    : {
+        data: [],
+        total: 0,
+      };
 }
