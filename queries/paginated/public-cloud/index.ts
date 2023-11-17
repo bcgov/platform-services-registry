@@ -94,30 +94,30 @@ export async function publicCloudProjectsPaginated(
     searchQuery.provider = provider;
   }
 
-  if (user.userEmail) {
+  if (user?.userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwnerDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: user.ministryRole,
+            ministry: user?.ministryRole,
           },
         ],
       },
@@ -246,30 +246,30 @@ export async function publicCloudRequestsPaginated(
     searchQuery['requestedProject.provider'] = provider;
   }
 
-  if (user.userEmail) {
+  if (user?.userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwner.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: user?.userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: user.ministryRole,
+            ministry: user?.ministryRole,
           },
         ],
       },
