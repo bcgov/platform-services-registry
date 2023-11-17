@@ -117,7 +117,7 @@ export async function publicCloudProjectsPaginated(
             },
           },
           {
-            ministry: user.ministryRole,
+            ministry: { $in: user.ministryRole },
           },
         ],
       },
@@ -269,7 +269,7 @@ export async function publicCloudRequestsPaginated(
             },
           },
           {
-            ministry: user.ministryRole,
+            ministry: { $in: user.ministryRole },
           },
         ],
       },

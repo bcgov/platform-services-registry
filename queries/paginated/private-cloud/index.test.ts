@@ -280,14 +280,7 @@ describe('Query projects with filter and search and pagination', () => {
       });
     }
 
-    const projects = await privateCloudRequestsPaginated(
-      10,
-      1,
-      undefined,
-      undefined,
-      undefined,
-      'christopher.tan@gov.bc.ca',
-    );
+    const projects = await privateCloudRequestsPaginated(10, 1, undefined, undefined, undefined);
     expect(projects.total).toBe(3);
   });
 
@@ -303,14 +296,7 @@ describe('Query projects with filter and search and pagination', () => {
       });
     }
 
-    const projects = await privateCloudRequestsPaginated(
-      10,
-      1,
-      undefined,
-      undefined,
-      undefined,
-      'christopher.tan@gov.bc.ca',
-    );
+    const projects = await privateCloudRequestsPaginated(10, 1, undefined, undefined, undefined);
 
     expect(projects.data.length).toBe(3);
   });

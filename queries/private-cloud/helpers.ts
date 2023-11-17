@@ -116,7 +116,7 @@ export async function getPrivateCloudProjectsQuery({
             },
           },
           {
-            ministry: user.ministryRole,
+            ministry: { $in: user.ministryRole },
           },
         ],
       },
@@ -204,7 +204,7 @@ export async function getPrivateCloudProjectsResult({
           as: 'secondaryTechnicalLeadDetails',
         },
       },
-      { $match: await searchQuery },
+      { $match: searchQuery },
       { $unwind: '$projectOwnerDetails' },
       { $unwind: '$primaryTechnicalLeadDetails' },
       {

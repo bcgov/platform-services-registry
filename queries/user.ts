@@ -9,8 +9,8 @@ export async function userInfo() {
   const { email: authEmail, roles: authRoles } = session
     ? session.user
     : {
-        email: undefined,
-        roles: undefined,
+        email: null,
+        roles: null,
       };
   const isAdmin = authRoles.includes('admin');
   const ministryRole = checkUserMinistryRole(authRoles);

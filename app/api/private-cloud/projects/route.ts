@@ -22,14 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const data = await privateCloudProjectsPaginated(
-      +defaultPageSize,
-      +currentPage,
-      search,
-      ministry,
-      cluster,
-      userEmail,
-    );
+    const data = await privateCloudProjectsPaginated(+defaultPageSize, +currentPage, search, ministry, cluster);
 
     if (!data) {
       return new NextResponse('No data found.', {

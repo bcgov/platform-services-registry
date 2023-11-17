@@ -18,7 +18,7 @@ export async function privateCloudProjectsPaginated(
   total: number;
 }> {
   // Initialize the search/filter query
-  const searchQuery = getPrivateCloudProjectsQuery({
+  const searchQuery = await getPrivateCloudProjectsQuery({
     searchTerm,
     ministry,
     cluster,
@@ -76,9 +76,17 @@ export async function privateCloudRequestsPaginated(
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwner.email': { $regex: user.userEmail, $options: 'i' } },
           {
-            'primaryTechnicalLead.email': { $regex: user.userEmail, $options: 'i' },
+            'projectOwner.email': {
+              $regex: user.userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'primaryTechnicalLead.email': {
+              $regex: user.userEmail,
+              $options: 'i',
+            },
           },
           {
             'secondaryTechnicalLead.email': {
@@ -87,7 +95,7 @@ export async function privateCloudRequestsPaginated(
             },
           },
           {
-            'requestedProject.ministry': user.ministryRole,
+            'requestedProject.ministry': { $in: user.ministryRole },
           },
         ],
       },
