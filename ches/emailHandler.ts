@@ -7,10 +7,10 @@ import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches';
 
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
-  const email = render(NewRequestTemplate({ request }), { pretty: true });
-
   try {
-    const contacts = await sendEmail({
+    const email = render(NewRequestTemplate({ request }), { pretty: false });
+
+    const contacts = sendEmail({
       body: email,
       to: [
         request.requestedProject.projectOwner.email,
@@ -20,7 +20,7 @@ export const sendNewRequestEmails = async (request: PrivateCloudRequestWithReque
       subject: `${request.requestedProject.name} provisioning request received`,
     });
 
-    const admins = await sendEmail({
+    const admins = sendEmail({
       bodyType: 'html',
       body: email,
       to: adminEmails,
