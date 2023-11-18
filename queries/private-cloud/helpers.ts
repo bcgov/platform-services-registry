@@ -11,12 +11,12 @@ export async function getPrivateCloudProjectsQuery({
   ministry?: string | null;
   cluster?: string | null;
 }) {
+  const user = await userInfo();
+
   // Initialize the search/filter query
   const searchQuery: any = {
     status: 'ACTIVE',
   };
-
-  const user = await userInfo();
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
