@@ -23,21 +23,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ministry: project.ministry,
       cluster: project.cluster,
       projectOwnerEmail: project.projectOwnerDetails.email,
-      projectOwnerName: formatFullName(project.projectOwnerDetails.firstName, project.projectOwnerDetails.lastName),
+      projectOwnerName: formatFullName(project.projectOwnerDetails),
       primaryTechnicalLeadEmail: project.primaryTechnicalLeadDetails.email,
-      primaryTechnicalLeadName: formatFullName(
-        project.primaryTechnicalLeadDetails.firstName,
-        project.primaryTechnicalLeadDetails.lastName,
-      ),
+      primaryTechnicalLeadName: formatFullName(project.primaryTechnicalLeadDetails),
       secondaryTechnicalLeadEmail: project.secondaryTechnicalLeadDetails
         ? project.secondaryTechnicalLeadDetails.email
         : '',
-      secondaryTechnicalLeadName: project.secondaryTechnicalLeadDetails
-        ? formatFullName(
-            project.secondaryTechnicalLeadDetails.firstName,
-            project.secondaryTechnicalLeadDetails.lastName,
-          )
-        : '',
+      secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLeadDetails),
       created: formatDate(project.created['$date']),
       licencePlate: project.licencePlate,
     }));
