@@ -7,6 +7,8 @@
   "npm": {
     "publish": false
   },
-  "hooks": {},
+  "hooks": {
+    "after:bump": "npm run changelog"
+  },
   "plugins": {}
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
+import withErrorHandler from '@/helpers/apiErrorHandler';
 import { authOptions } from '@/app/api/auth/options';
 import { Prisma } from '@prisma/client';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
@@ -8,7 +9,7 @@ import createRequest from '@/requestActions/private-cloud/createRequest';
 import { sendNewRequestEmails } from '@/ches/emailHandler';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/createRequest';
 
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandler(async (req: NextRequest) => {
   // Authentication
   const session = await getServerSession(authOptions);
 
@@ -50,4 +51,4 @@ export async function POST(req: NextRequest) {
   return new NextResponse('Success creating request', {
     status: 200,
   });
-}
+});
