@@ -1,10 +1,14 @@
 import { render } from '@react-email/render';
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import {
+  PrivateCloudRequestWithProjectAndRequestedProject,
+  PrivateCloudRequestWithRequestedProject,
+} from '@/requestActions/private-cloud/decisionRequest';
 import { NewRequestTemplate } from '@/emails/templates/NewRequestTemplate';
 import { RequestApprovalTemplate } from '@/emails/templates/RequestApprovalTemplate';
 import { RequestRejectionTemplate } from '@/emails/templates/RequestRejectionTemplate';
 import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches';
+import EditRequestTemplate from '@/emails/templates/EditRequestTemplate';
 
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
@@ -66,5 +70,23 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
     });
   } catch (error) {
     console.error('ERROR SENDING REQUEST REJECTION EMAIL');
+  }
+};
+
+export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+  const email = render(EditRequestTemplate({ request }), { pretty: true });
+  try {
+    await sendEmail({
+      body: email,
+      // For all project contacts. Sent when the project set deletion request is successfully submitted
+      to: [
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
+      subject: `${request.requestedProject.name} has been approved`,
+    });
+  } catch (error) {
+    console.error('ERROR SENDING EDIT REQUEST EMAIL');
   }
 };

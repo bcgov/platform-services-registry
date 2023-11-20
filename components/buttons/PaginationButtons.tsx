@@ -19,7 +19,7 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
   const pathname = usePathname();
   page = Number(page);
   const isPrevDisabled = page === 1 || isPending;
-  const isNextDisabled = page > pageCount || isPending;
+  const isNextDisabled = page >= pageCount || isPending;
 
   const handlePaginationUpdate = (newPage: number, newPageSize?: number) => {
     startTransition(() => {
