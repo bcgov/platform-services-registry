@@ -1,6 +1,6 @@
 {
   "name": "pltsrv-registry",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -36,7 +36,7 @@
     "@react-email/tailwind": "0.0.12",
     "@tailwindcss/forms": "^0.5.3",
     "@tanstack/react-query": "^5.4.3",
-    "@types/node": "20.9.0",
+    "@types/node": "20.9.1",
     "@types/react": "18.2.37",
     "@types/react-dom": "18.2.15",
     "autoprefixer": "10.4.16",
@@ -44,7 +44,7 @@
     "axios-oauth-client": "^2.0.4",
     "bson": "^6.0.0",
     "eslint": "8.53.0",
-    "eslint-config-next": "14.0.2",
+    "eslint-config-next": "14.0.3",
     "https-proxy-agent": "^7.0.2",
     "jest-environment-jsdom": "^29.7.0",
     "jsonwebtoken": "^9.0.0",
