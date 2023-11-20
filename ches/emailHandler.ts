@@ -73,10 +73,7 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
   }
 };
 
-export const sendEditRequestEmails = async (
-  request: PrivateCloudRequestWithProjectAndRequestedProject,
-  diff: boolean[],
-) => {
+export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
   const email = render(EditRequestTemplate({ request }), { pretty: true });
   try {
     await sendEmail({

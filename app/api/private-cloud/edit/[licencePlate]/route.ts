@@ -107,8 +107,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  // const diff = compareProjects(request.project, request.requestedProject)
-  // sendEditRequestEmails(request, diff)
+  sendEditRequestEmails(request);
 
   return new NextResponse('success', { status: 200 });
 }
