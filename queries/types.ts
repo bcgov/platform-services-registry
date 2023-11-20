@@ -8,7 +8,7 @@ export interface Project {
   id: string;
   name: string;
   description: string;
-  created: string;
+  created: ProjectCreated;
   licencePlate: string;
   ministry: string;
   status: string;
@@ -26,4 +26,8 @@ export interface PrivateProject extends Project {
 
 export interface PublicProject extends Project {
   provider: string;
+}
+
+export interface ProjectCreated {
+  $date: string;
 }
