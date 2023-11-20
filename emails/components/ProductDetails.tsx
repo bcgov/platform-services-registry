@@ -1,8 +1,30 @@
-import Image from 'next/image';
-import Logo from '../assets/logo.png';
-import { Button, Heading, Img, Link, Tailwind, Text } from '@react-email/components';
+import { Button, Heading, Img, Link, Text } from '@react-email/components';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 import { TailwindConfig } from './TailwindConfig';
+
+const styles = {
+  heading: {
+    fontSize: '1.125rem',
+    fontWeight: 'bold',
+  },
+  text: {
+    marginBottom: '0',
+    fontWeight: '600',
+    height: '1rem',
+  },
+  link: {
+    marginTop: '0',
+    textDecoration: 'none',
+    color: '#0000EE',
+    height: '1rem',
+  },
+  secondaryLead: {
+    marginTop: '0',
+    marginBottom: '0',
+    fontWeight: '600',
+    height: '1rem',
+  },
+};
 
 interface User {
   firstName: string | null;
@@ -27,43 +49,41 @@ export default function ProductDetails({
   tl2?: User | null;
 }) {
   return (
-    <Tailwind config={TailwindConfig}>
+    <div>
+      <Heading style={styles.heading}>Product Details</Heading>
       <div>
-        <Heading className="text-lg">Product Details</Heading>
-        <div>
-          <Text className="mb-0 font-semibold h-4">Product Name: </Text>
-          <Text className="mt-0 h-4">{name}</Text>
-          <Text className="mb-0 font-semibold h-4">Product Description: </Text>
-          <Text className="mt-0 h-4">{description}</Text>
-          <Text className="mb-0 font-semibold h-4">Ministry: </Text>
-          <Text className="mt-0 h-4">{ministry}</Text>
-          <Text className="mb-0 font-semibold h-4">Product Owner: </Text>
-          <Text className="mt-0 mb-0 h-4">
-            {po.firstName} {po.lastName}
-          </Text>
-          <Link className="mt-0 h-4" href={`mailto:${po.email}`}>
-            {po.email}
-          </Link>
-          <Text className="mb-0 font-semibold h-4">Technical Lead: </Text>
-          <Text className="mt-0 mb-0 h-4">
-            {tl1.firstName} {tl1.lastName}
-          </Text>
-          <Link className="mt-0 h-4" href={`mailto:${tl1.email}`}>
-            {tl1.email}
-          </Link>
-          {tl2 && (
-            <div>
-              <Text className="mb-0 font-semibold h-4">Secondary Technical Lead: </Text>
-              <Text className="mt-0 mb-0 h-4">
-                {tl2.firstName} {tl2.lastName}
-              </Text>
-              <Link className="mt-0 h-4" href={`mailto:${tl2.email}`}>
-                {tl2.email}
-              </Link>
-            </div>
-          )}
-        </div>
+        <Text style={styles.text}>Product Name: </Text>
+        <Text style={styles.text}>{name}</Text>
+        <Text style={styles.text}>Product Description: </Text>
+        <Text style={styles.text}>{description}</Text>
+        <Text style={styles.text}>Ministry: </Text>
+        <Text style={styles.text}>{ministry}</Text>
+        <Text style={styles.text}>Product Owner: </Text>
+        <Text style={styles.text}>
+          {po.firstName} {po.lastName}
+        </Text>
+        <Link style={styles.link} href={`mailto:${po.email}`}>
+          {po.email}
+        </Link>
+        <Text style={styles.text}>Technical Lead: </Text>
+        <Text style={styles.text}>
+          {tl1.firstName} {tl1.lastName}
+        </Text>
+        <Link style={styles.link} href={`mailto:${tl1.email}`}>
+          {tl1.email}
+        </Link>
+        {tl2 && (
+          <div>
+            <Text style={styles.text}>Secondary Technical Lead: </Text>
+            <Text style={styles.secondaryLead}>
+              {tl2.firstName} {tl2.lastName}
+            </Text>
+            <Link style={styles.link} href={`mailto:${tl2.email}`}>
+              {tl2.email}
+            </Link>
+          </div>
+        )}
       </div>
-    </Tailwind>
+    </div>
   );
 }
