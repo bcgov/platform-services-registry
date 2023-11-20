@@ -6,6 +6,7 @@ import { POST } from '@/app/api/private-cloud/decision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 // import { cleanUp } from "@/jest.setup";
+import { expect } from '@jest/globals';
 
 const BASE_URL = 'http://localhost:3000';
 
