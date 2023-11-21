@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { PublicProject } from '@/queries/types';
-import { userInfo } from '@/queries/user';
 
 export async function publicCloudProjectsPaginated(
   pageSize: number,

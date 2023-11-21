@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { PrivateProject } from '@/queries/types';
-// import { userInfo } from '@/queries/user';
 
 export async function getPrivateCloudProjectsQuery({
   searchTerm,
