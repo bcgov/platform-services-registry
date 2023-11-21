@@ -51,9 +51,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       formData.primaryTechnicalLead.email,
       formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
-    !authRoles.includes('admin')
+    !(authRoles.includes('admin') || authRoles.includes(`ministry-${formData.ministry.toLocaleLowerCase()}-admin`))
   ) {
-    throw new Error('You need to assign yourself to this project in order to create it.');
+    throw new Error('You need to assign yourself to this project in order to edit it.');
   }
 
   const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({

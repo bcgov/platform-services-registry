@@ -7,7 +7,8 @@ export async function publicCloudProjectsPaginated(
   searchTerm?: string | null,
   ministry?: string | null,
   provider?: string | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  userEmail?: string | null,
+  ministryRoles?: string[],
 ): Promise<{
   data: PublicProject[];
   total: number;
@@ -20,11 +21,24 @@ export async function publicCloudProjectsPaginated(
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
     searchQuery.$or = [
-      { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
       {
-        'projectOwnerDetails.firstName': { $regex: searchTerm, $options: 'i' },
+        'projectOwnerDetails.email': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
       },
-      { 'projectOwnerDetails.lastName': { $regex: searchTerm, $options: 'i' } },
+      {
+        'projectOwnerDetails.firstName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
+      {
+        'projectOwnerDetails.lastName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
       {
         'primaryTechnicalLeadDetails.email': {
           $regex: searchTerm,
@@ -83,7 +97,12 @@ export async function publicCloudProjectsPaginated(
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwnerDetails.email': { $regex: userEmail, $options: 'i' } },
+          {
+            'projectOwnerDetails.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
           {
             'primaryTechnicalLeadDetails.email': {
               $regex: userEmail,
@@ -95,6 +114,9 @@ export async function publicCloudProjectsPaginated(
               $regex: userEmail,
               $options: 'i',
             },
+          },
+          {
+            ministry: { $in: ministryRoles },
           },
         ],
       },
@@ -200,7 +222,8 @@ export async function publicCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   provider?: string,
-  userEmail?: string,
+  userEmail?: string | null,
+  ministryRoles?: string[],
   active: boolean = true,
 ): Promise<{
   data: any[];
@@ -227,15 +250,26 @@ export async function publicCloudRequestsPaginated(
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwner.email': { $regex: userEmail, $options: 'i' } },
           {
-            'primaryTechnicalLead.email': { $regex: userEmail, $options: 'i' },
+            'projectOwner.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'primaryTechnicalLead.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
           },
           {
             'secondaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
+          },
+          {
+            'requestedProject.ministry': { $in: ministryRoles },
           },
         ],
       },
