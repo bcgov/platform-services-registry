@@ -116,8 +116,8 @@ export const PublicCloudCreateRequestBodySchema = z.object({
     ),
   accountCoding: z
     .string()
-    .refine((value) => /^[1-9A-Z\s]+$/.test(value), 'Account Coding should contain only uppercase characters, digits')
-    .transform((value) => value.replace(/\s+/g, ''))
+    .refine((value) => /^[0-9A-Z\s]+$/.test(value), 'Account Coding should contain only uppercase characters, digits')
+    .transform((value) => value.replace(/\s+/g, '').toLocaleUpperCase())
     .refine((value) => value.length === 24, 'Account Coding should contain 24 characters'),
   description: z.string().min(1, { message: 'Description is required.' }),
   provider: z.nativeEnum(Provider),

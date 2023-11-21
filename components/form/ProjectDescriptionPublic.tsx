@@ -49,7 +49,7 @@ export default function ProjectDescriptionPublic({
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-            Please provide a descriptibe product name with no acronyms
+            {errors.name?.message?.toString()}
           </p>
         </div>
 
