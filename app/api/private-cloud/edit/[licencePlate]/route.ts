@@ -112,4 +112,3 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   return new NextResponse('success', { status: 200 });
 }
-``;

@@ -6,7 +6,7 @@ import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import EditModal from '@/components/modal/EditRequest';
+import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/Return';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -55,12 +55,12 @@ export default function EditProject({ params }: { params: { licencePlate: string
 
   const router = useRouter();
 
-  const [openCreate, setOpenCreate] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
+  const [comment, setComment] = useState('');
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [comment, setComment] = useState('');
 
   const handleComment = (textArea: string) => {
     setComment(textArea);
@@ -101,7 +101,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
 
   const onSubmit = async (data: any) => {
     data.comment = comment;
-    console.log('SUBMIT', data);
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/edit/${params.licencePlate}`, {
@@ -116,7 +115,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         throw new Error('Network response was not ok for create request');
       }
 
-      setOpenCreate(false);
+      setOpenComment(false);
       setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
@@ -134,7 +133,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
             <TeamContacts
@@ -159,9 +158,9 @@ export default function EditProject({ params }: { params: { licencePlate: string
           </div>
         </form>
       </FormProvider>
-      <EditModal
-        open={openCreate}
-        setOpen={setOpenCreate}
+      <Comment
+        open={openComment}
+        setOpen={setOpenComment}
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
         onCommentChange={handleComment}

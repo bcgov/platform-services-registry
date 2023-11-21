@@ -3,7 +3,7 @@ import { sampleRequest } from './components/Params';
 import { RequestRejectionTemplate } from './templates/RequestRejectionTemplate';
 
 export const RequestRejection = () => {
-  return <RequestRejectionTemplate request={sampleRequest} />;
+  return <RequestRejectionTemplate request={sampleRequest} comment="SAMPLE COMMENT" />;
 };
 
 export default RequestRejection;

@@ -41,10 +41,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
                   administrators have been notified and will review your request.
                 </Text>
-                <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
-                  className="bg-bcorange rounded-md px-4 py-2 text-white"
-                >
+                <Button href={process.env.BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
                   Review Request
                 </Button>
               </div>

@@ -27,8 +27,14 @@ export default function Modal({
   };
 
   useEffect(() => {
-    if (comment.trim() === '') setConfirm(false);
-    else setConfirm(true);
+    if (!open) {
+      setComment('');
+      setConfirm(false);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    setConfirm(comment.trim() !== '');
   }, [comment]);
 
   return (
@@ -83,7 +89,6 @@ export default function Modal({
                   <button
                     type="button"
                     className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
-                    // "mt-3 inline-flex items-center justify-center -md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >

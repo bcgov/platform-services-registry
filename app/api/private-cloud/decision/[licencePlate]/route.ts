@@ -36,10 +36,11 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const body = await req.json();
+  const { comment, ...data } = body;
 
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(body);
+  const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(data);
 
   if (!parsedParams.success) {
     console.log(parsedParams.error.message);
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    // sendRequestRejectionEmails(request, 'Request Denied');
+    sendRequestRejectionEmails(request, comment);
     return new NextResponse(`Request for ${request.licencePlate} succesfully created as rejected.`, {
       status: 200,
     });

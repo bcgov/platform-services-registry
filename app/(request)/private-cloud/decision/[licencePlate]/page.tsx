@@ -8,6 +8,7 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
+import Comment from '@/components/modal/Comment';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -41,11 +42,18 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
   const router = useRouter();
 
+  let buttonDecision: string = 'None';
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
+  const [comment, setComment] = useState('');
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleComment = (textArea: string) => {
+    setComment(textArea);
+  };
 
   const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
@@ -65,6 +73,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   }, [data]);
 
   const onSubmit = async (data: any) => {
+    data.comment = comment;
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/decision/${params.licencePlate}`, {
@@ -80,6 +89,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
       }
 
       setOpenCreate(false);
+      setOpenComment(false);
       setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
@@ -97,7 +107,13 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form
+          onSubmit={methods.handleSubmit(() => {
+            buttonDecision = methods.getValues('decision');
+            if (buttonDecision === 'APPROVED') setOpenCreate(true);
+            if (buttonDecision === 'REJECTED') setOpenComment(true);
+          })}
+        >
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
             <TeamContacts
@@ -127,6 +143,14 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
+      />
+      <Comment
+        open={openComment}
+        setOpen={setOpenComment}
+        handleSubmit={methods.handleSubmit(onSubmit)}
+        isLoading={isLoading}
+        onCommentChange={handleComment}
+        type="reject"
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
