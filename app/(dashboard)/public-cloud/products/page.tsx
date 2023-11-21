@@ -6,6 +6,7 @@ import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMappe
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
+import { userInfo } from '@/queries/user';
 
 const headers = [
   { field: 'name', headerName: 'Name' },
@@ -39,13 +40,11 @@ export default async function ProductsTable({
   }
 
   const { search, page, pageSize, ministry, provider } = searchParams;
+  const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
-
-  // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
 
   const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
     +pageSize || defaultPageSize,
@@ -54,6 +53,7 @@ export default async function ProductsTable({
     ministry,
     provider,
     userEmail,
+    ministryRoles,
   );
 
   const rows = data.map(publicCloudProjectDataToRow);

@@ -12,6 +12,7 @@ import {
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 // import { cleanUp } from "@/jest.setup";
+import { expect } from '@jest/globals';
 
 const quota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
@@ -287,6 +288,7 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       'christopher.tan@gov.bc.ca',
+      ['ministry-citz-admin'],
     );
     expect(projects.total).toBe(3);
   });
@@ -310,6 +312,7 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       'christopher.tan@gov.bc.ca',
+      ['ministry-citz-admin'],
     );
 
     expect(projects.data.length).toBe(3);

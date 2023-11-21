@@ -12,6 +12,7 @@ import {
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 // import { cleanUp } from "@/jest.setup";
+import { expect } from '@jest/globals';
 
 const quota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,

@@ -6,6 +6,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { PrivateCloudRequest } from '@prisma/client';
+import { userInfo } from '@/queries/user';
 
 export const revalidate = 0;
 
@@ -40,16 +41,12 @@ export default async function RequestsTable({
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
-  const isAdmin = session?.user?.roles?.includes('admin');
-
   const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
-
-  // If not an admin, we need to provide the user's email to the query
-  const userEmail = isAdmin ? undefined : session?.user?.email;
 
   const { data, total }: { data: PrivateCloudRequest[]; total: number } = await privateCloudRequestsPaginated(
     +pageSize || defaultPageSize,
@@ -58,7 +55,7 @@ export default async function RequestsTable({
     ministry,
     cluster,
     userEmail,
-    isAdmin,
+    ministryRoles,
   );
 
   const rows = data.map(privateCloudRequestDataToRow).reverse();

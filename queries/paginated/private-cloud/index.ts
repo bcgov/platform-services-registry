@@ -11,18 +11,20 @@ export async function privateCloudProjectsPaginated(
   pageNumber: number,
   searchTerm?: string | null,
   ministry?: string | null,
-  cluster?: string | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  userEmail?: string | null,
+  ministryRoles?: string[],
 ): Promise<{
   data: PrivateProject[];
   total: number;
 }> {
   // Initialize the search/filter query
-  const searchQuery = getPrivateCloudProjectsQuery({
+  const searchQuery = await getPrivateCloudProjectsQuery({
     searchTerm,
     ministry,
     cluster,
     userEmail,
+    ministryRoles,
   });
 
   const proms = [];
@@ -46,7 +48,8 @@ export async function privateCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
-  userEmail?: string,
+  userEmail?: string | null,
+  ministryRoles: string[] = [],
   active: boolean = true,
 ): Promise<{
   data: any[];
@@ -77,15 +80,26 @@ export async function privateCloudRequestsPaginated(
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwner.email': { $regex: userEmail, $options: 'i' } },
           {
-            'primaryTechnicalLead.email': { $regex: userEmail, $options: 'i' },
+            'projectOwner.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'primaryTechnicalLead.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
           },
           {
             'secondaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
+          },
+          {
+            'requestedProject.ministry': { $in: ministryRoles },
           },
         ],
       },
@@ -202,7 +216,6 @@ export async function privateCloudRequestsPaginated(
 
   // @ts-ignore
   const totalCount = totalCountResult[0]?.totalCount || 0;
-
   return {
     data: result as any,
     total: totalCount,
