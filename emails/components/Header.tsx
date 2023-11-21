@@ -1,5 +1,4 @@
 import { Img, Text } from '@react-email/components';
-import { TailwindConfig } from './TailwindConfig';
 
 interface Styles {
   [key: string]: React.CSSProperties;

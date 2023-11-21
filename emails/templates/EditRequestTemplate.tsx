@@ -1,13 +1,8 @@
-import {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-  PrivateCloudRequestWithRequestedProject,
-} from '@/requestActions/private-cloud/decisionRequest';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../components/Header';
-import ProductDetails from '../components/ProductDetails';
-import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
+import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../components/NamespaceDetails';
 import Closing from '../components/Closing';
 import { TailwindConfig } from '../components/TailwindConfig';
 import { compareProjects } from '../components/Edit/compareProjects';

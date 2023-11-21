@@ -1,6 +1,4 @@
-import Image from 'next/image';
-import Logo from '../assets/logo.png';
-import { Button, Heading, Img, Link, Tailwind, Text } from '@react-email/components';
+import { Heading, Link, Tailwind, Text } from '@react-email/components';
 import { QuotaInput } from '@/schema';
 import { TailwindConfig } from '../TailwindConfig';
 

@@ -1,9 +1,5 @@
-import Image from 'next/image';
-import Logo from '../assets/logo.png';
-import { Button, Heading, Img, Link, Tailwind, Text } from '@react-email/components';
-import { PrivateCloudCreateRequestBody } from '@/schema';
+import { Heading, Tailwind, Text } from '@react-email/components';
 import { TailwindConfig } from '../TailwindConfig';
-import { User } from '@prisma/client';
 
 export default function DescriptionChanges({
   nameCurrent,
@@ -15,14 +11,14 @@ export default function DescriptionChanges({
   ministryRequested,
   clusterRequested,
 }: {
-  nameCurrent: String;
-  descCurrent: String;
-  ministryCurrent: String;
-  clusterCurrent: String;
-  nameRequested: String;
-  descRequested: String;
-  ministryRequested: String;
-  clusterRequested: String;
+  nameCurrent: string;
+  descCurrent: string;
+  ministryCurrent: string;
+  clusterCurrent: string;
+  nameRequested: string;
+  descRequested: string;
+  ministryRequested: string;
+  clusterRequested: string;
 }) {
   return (
     <Tailwind config={TailwindConfig}>
