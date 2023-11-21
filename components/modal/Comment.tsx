@@ -4,16 +4,14 @@ import { Dialog, Transition } from '@headlessui/react';
 export default function Modal({
   open,
   setOpen,
-  handleSubmit,
+  onSubmit,
   isLoading,
-  onCommentChange,
   type,
 }: {
   open: boolean;
   setOpen: any;
-  handleSubmit: any;
+  onSubmit: any;
   isLoading: boolean;
-  onCommentChange: any;
   type: string;
 }) {
   const [comment, setComment] = useState('');
@@ -23,15 +21,7 @@ export default function Modal({
   const handleCommentChange = (event: any) => {
     const comment = event.target.value;
     setComment(comment);
-    onCommentChange(comment);
   };
-
-  useEffect(() => {
-    if (!open) {
-      setComment('');
-      setConfirm(false);
-    }
-  }, [open]);
 
   useEffect(() => {
     setConfirm(comment.trim() !== '');
@@ -39,7 +29,15 @@ export default function Modal({
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => {}}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        initialFocus={cancelButtonRef}
+        onClose={() => {
+          setOpen(false);
+          setConfirm(false);
+        }}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -89,7 +87,10 @@ export default function Modal({
                   <button
                     type="button"
                     className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      setOpen(false);
+                      setConfirm(false);
+                    }}
                     ref={cancelButtonRef}
                   >
                     CANCEL
@@ -111,7 +112,7 @@ export default function Modal({
                   ) : confirm ? (
                     <button
                       type="button"
-                      onClick={handleSubmit}
+                      onClick={() => onSubmit(comment)}
                       className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
                     >
                       {type.toUpperCase()}
@@ -119,7 +120,6 @@ export default function Modal({
                   ) : (
                     <button
                       type="button"
-                      onClick={handleSubmit}
                       disabled
                       className="inline-flex justify-center rounded-md bg-bcorange/50 px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
                     >

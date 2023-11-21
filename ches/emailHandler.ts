@@ -12,10 +12,10 @@ import EditRequestTemplate from '@/emails/templates/EditRequestTemplate';
 
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
-
   try {
-    const contacts = await sendEmail({
+    const contacts = sendEmail({
       body: email,
+      // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
         request.requestedProject.projectOwner.email,
         request.requestedProject.primaryTechnicalLead.email,
@@ -24,7 +24,7 @@ export const sendNewRequestEmails = async (request: PrivateCloudRequestWithReque
       subject: `${request.requestedProject.name} provisioning request received`,
     });
 
-    const admins = await sendEmail({
+    const admins = sendEmail({
       bodyType: 'html',
       body: email,
       to: adminEmails,

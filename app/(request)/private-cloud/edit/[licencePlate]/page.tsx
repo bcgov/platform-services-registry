@@ -56,7 +56,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const router = useRouter();
 
   const [openComment, setOpenComment] = useState(false);
-  const [comment, setComment] = useState('');
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -100,7 +99,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
   }, [requestData]);
 
   const onSubmit = async (data: any) => {
-    data.comment = comment;
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/edit/${params.licencePlate}`, {
@@ -128,6 +126,10 @@ export default function EditProject({ params }: { params: { licencePlate: string
     if (secondTechLead) {
       methods.unregister('secondaryTechnicalLead');
     }
+  };
+
+  const setComment = (comment: string) => {
+    onSubmit({ ...methods.getValues(), comment });
   };
 
   return (
@@ -158,14 +160,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
           </div>
         </form>
       </FormProvider>
-      <Comment
-        open={openComment}
-        setOpen={setOpenComment}
-        handleSubmit={methods.handleSubmit(onSubmit)}
-        isLoading={isLoading}
-        onCommentChange={handleComment}
-        type="create"
-      />
+      <Comment open={openComment} setOpen={setOpenComment} onSubmit={setComment} isLoading={isLoading} type="create" />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );
