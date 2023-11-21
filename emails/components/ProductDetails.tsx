@@ -1,7 +1,4 @@
-import Image from 'next/image';
-import Logo from '../assets/logo.png';
-import { Button, Heading, Img, Link, Tailwind, Text } from '@react-email/components';
-import { PrivateCloudCreateRequestBody } from '@/schema';
+import { Heading, Link, Tailwind, Text } from '@react-email/components';
 import { TailwindConfig } from './TailwindConfig';
 
 interface User {
