@@ -41,6 +41,5 @@
     "ches/clientConnection.ts",
     "mautic/index.ts"
   ],
-
   "exclude": ["node_modules"]
 }
