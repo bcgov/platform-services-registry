@@ -4,14 +4,16 @@ export async function privateCloudProjects(
   searchTerm?: string | null,
   ministry?: string | null,
   cluster?: string | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  userEmail?: string | null,
+  ministryRoles?: string[],
 ): Promise<any> {
   // Initialize the search/filter query
-  const searchQuery = getPrivateCloudProjectsQuery({
+  const searchQuery = await getPrivateCloudProjectsQuery({
     searchTerm,
     ministry,
     cluster,
     userEmail,
+    ministryRoles,
   });
 
   const data = await getPrivateCloudProjectsResult({ searchQuery });

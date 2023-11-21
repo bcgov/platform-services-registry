@@ -1,54 +1,23 @@
-import { Img, Text } from '@react-email/components';
-
-interface Styles {
-  [key: string]: React.CSSProperties;
-}
-
-const containerStyles: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  borderBottom: '3px solid #FFA500',
-  backgroundColor: '#003366',
-  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-};
-
-const imgStyles: React.CSSProperties = {
-  margin: 'auto 8px',
-};
-
-const textContainerStyles: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  color: '#ffffff',
-};
-
-const textStyles: React.CSSProperties = {
-  fontSize: '1.25rem',
-  fontFamily: 'Roboto',
-  fontWeight: 300,
-};
-
-const boldTextStyles: React.CSSProperties = {
-  ...textStyles,
-  fontWeight: 'normal',
-};
+import { Img, Tailwind, Text } from '@react-email/components';
+import { TailwindConfig } from './TailwindConfig';
 
 export default function Header() {
   return (
-    <div>
-      <div style={containerStyles}>
+    <Tailwind config={TailwindConfig}>
+      <div className="flex flex-row border-b-3 border-bcorange bg-bcblue shadow">
+        {/* <Img src="/static/logo.png" alt="BC Platform Services Product Registry" width={58} height={41} className="m-auto ml-2 mr-2" /> */}
         <Img
           src={`${process.env.BASE_URL}/logo.png`}
           alt="BC Platform Services Product Registry"
           width={58}
           height={41}
-          style={imgStyles}
+          className="m-auto ml-2 mr-2"
         />
-        <div style={textContainerStyles}>
-          <Text style={textStyles}>BC Platform Services</Text>
-          <Text style={boldTextStyles}>Product Registry</Text>
+        <div className="flex flex-row text-white">
+          <Text className="text-lg mr-2 font-roboto font-thin">BC Platform Services</Text>
+          <Text className="text-lg font-roboto font-normal">Product Registry</Text>
         </div>
       </div>
-    </div>
+    </Tailwind>
   );
 }
