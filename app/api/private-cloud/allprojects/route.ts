@@ -4,17 +4,38 @@ import { PrivateProject } from '@/queries/types';
 import { privateCloudProjects } from '@/queries/private-cloud';
 import formatDate from '@/components/utils/formatdates';
 import { formatFullName } from '@/components/utils/formatFullName';
+import { z } from 'zod';
+
+const queryScheme = z.object({
+  search: z.string().optional(),
+  ministry: z.string().optional(),
+  cluster: z.string().optional(),
+  userEmail: z.string().email().optional(),
+});
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const { searchParams } = new URL(req.url);
-  const search = searchParams.get('search') || '';
-  const ministry = searchParams.get('ministry');
-  const cluster = searchParams.get('cluster');
-  const userEmail = searchParams.get('email');
+  //const { searchParams } = new URL(req.url);
+  //const search = searchParams.get('search') || '';
+  //const ministry = searchParams.get('ministry');
+  //const cluster = searchParams.get('cluster');
+  //const userEmail = searchParams.get('email');
 
   try {
-    // Fetch the projects using the privateCloudProjects function
-    const projects = await privateCloudProjects(search, ministry, cluster, userEmail);
+    //Extract and parse the query parameters
+    const searchParams = new URL(req.url).searchParams;
+    const queryParams = queryScheme.parse({
+      search: searchParams.get('search') || undefined,
+      ministry: searchParams.get('ministry') || undefined,
+      cluster: searchParams.get('cluster') || undefined,
+      userEmail: searchParams.get('userEmail') || undefined,
+    });
+
+    const projects = await privateCloudProjects(
+      queryParams.search,
+      queryParams.ministry,
+      queryParams.cluster,
+      queryParams.userEmail,
+    );
 
     // Map the data to the correct format for CSV conversion
     const formattedData = projects.map((project: PrivateProject) => ({
