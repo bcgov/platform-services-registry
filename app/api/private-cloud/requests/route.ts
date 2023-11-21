@@ -17,7 +17,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const search = searchParams.get('search');
   const ministry = searchParams.get('ministry');
   const cluster = searchParams.get('cluster');
-
+  const userEmail = searchParams.get('email');
   if (!defaultPageSize || !currentPage || !search) {
     return new NextResponse('Missing query parameters.', { status: 400 });
   }
@@ -29,6 +29,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       search,
       ministry ?? '',
       cluster ?? '',
+      userEmail ?? '',
     );
 
     if (!data) {

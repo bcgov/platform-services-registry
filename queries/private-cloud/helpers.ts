@@ -1,18 +1,20 @@
 import prisma from '@/lib/prisma';
 import { PrivateProject } from '@/queries/types';
-import { userInfo } from '@/queries/user';
+// import { userInfo } from '@/queries/user';
 
 export async function getPrivateCloudProjectsQuery({
   searchTerm,
   ministry,
   cluster,
+  userEmail,
+  ministryRoles,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | null;
+  userEmail?: string | null;
+  ministryRoles?: string[];
 }) {
-  const user = await userInfo();
-
   // Initialize the search/filter query
   const searchQuery: any = {
     status: 'ACTIVE',
@@ -93,30 +95,30 @@ export async function getPrivateCloudProjectsQuery({
     searchQuery.cluster = cluster;
   }
 
-  if (user?.userEmail) {
+  if (userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwnerDetails.email': {
-              $regex: user?.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: user?.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: user?.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: { $in: user?.ministryRole },
+            ministry: { $in: ministryRoles },
           },
         ],
       },

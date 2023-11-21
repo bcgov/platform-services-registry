@@ -8,17 +8,12 @@ export async function publicCloudProjectsPaginated(
   searchTerm?: string | null,
   ministry?: string | null,
   provider?: string | null,
+  userEmail?: string | null,
+  ministryRoles?: string[],
 ): Promise<{
   data: PublicProject[];
   total: number;
 }> {
-  const user = await userInfo();
-  if (!user) {
-    return {
-      data: [],
-      total: 0,
-    };
-  }
   // Initialize the search/filter query
   const searchQuery: any = {
     status: 'ACTIVE',
@@ -99,30 +94,30 @@ export async function publicCloudProjectsPaginated(
     searchQuery.provider = provider;
   }
 
-  if (user.userEmail) {
+  if (userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwnerDetails.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLeadDetails.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            ministry: { $in: user.ministryRole },
+            ministry: { $in: ministryRoles },
           },
         ],
       },
@@ -228,18 +223,13 @@ export async function publicCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   provider?: string,
+  userEmail?: string | null,
+  ministryRoles?: string[],
   active: boolean = true,
 ): Promise<{
   data: any[];
   total: number;
 }> {
-  const user = await userInfo();
-  if (!user) {
-    return {
-      data: [],
-      total: 0,
-    };
-  }
   const searchQuery: any = active ? { active: true } : {};
 
   if (searchTerm) {
@@ -257,30 +247,30 @@ export async function publicCloudRequestsPaginated(
     searchQuery['requestedProject.provider'] = provider;
   }
 
-  if (user.userEmail) {
+  if (userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwner.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'requestedProject.ministry': { $in: user.ministryRole },
+            'requestedProject.ministry': { $in: ministryRoles },
           },
         ],
       },

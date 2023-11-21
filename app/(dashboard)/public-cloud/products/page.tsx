@@ -6,6 +6,7 @@ import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMappe
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
+import { userInfo } from '@/queries/user';
 
 const headers = [
   { field: 'name', headerName: 'Name' },
@@ -39,6 +40,7 @@ export default async function ProductsTable({
   }
 
   const { search, page, pageSize, ministry, provider } = searchParams;
+  const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
@@ -50,6 +52,8 @@ export default async function ProductsTable({
     search,
     ministry,
     provider,
+    userEmail,
+    ministryRoles,
   );
 
   const rows = data.map(publicCloudProjectDataToRow);

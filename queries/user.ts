@@ -1,34 +1,22 @@
 import { User } from '@prisma/client';
 import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
 
-export async function userInfo(): Promise<{
-  // ministryRoleReadOnlyAdmin: string[] | null,
-  ministryRole: string[] | null;
+export function userInfo(
+  userSessionEmail: string,
+  userRoles: string[],
+): {
   userEmail: string | undefined;
-} | null> {
-  const session = await getServerSession(authOptions);
-
-  if (session) {
-    const { email: authEmail, roles: authRoles }: { email: string; roles: string[] } = session.user;
-    const isAdmin = authRoles.includes('admin');
-    const ministryRole = authRoles
-      .filter((role) => role.startsWith('ministry') && role.indexOf('admin', role.length - 5) !== -1)
-      .map((role) => role.split('-')[1].toLocaleUpperCase());
-
-    // In case read only admin role for ministries will be needed
-    // const ministryRoleReadOnlyAdmin = authRoles.filter(role => role.startsWith("ministry")
-    // && role.indexOf('read-only-admin', role.length - 15) !== -1)
-    // .map(role => role.split('-')[1].toLocaleUpperCase());
-
-    const userEmail = isAdmin ? undefined : authEmail;
-    return {
-      // ministryRoleReadOnlyAdmin,
-      ministryRole,
-      userEmail,
-    };
-  } else return null;
+  ministryRoles: string[];
+} {
+  const isAdmin = userRoles.includes('admin');
+  const ministryRoles = userRoles
+    .filter((role: string) => role.startsWith('ministry') && role.indexOf('admin', role.length - 5) !== -1)
+    .map((role: string) => role.split('-')[1].toLocaleUpperCase());
+  const userEmail = isAdmin ? undefined : userSessionEmail;
+  return {
+    userEmail,
+    ministryRoles,
+  };
 }
 
 export const getUsers = (): Promise<User[]> => prisma.user.findMany();

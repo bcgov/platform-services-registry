@@ -5,7 +5,6 @@ import {
   getPrivateCloudProjectsResult,
 } from '@/queries/private-cloud/helpers';
 import { PrivateProject } from '@/queries/types';
-import { userInfo } from '@/queries/user';
 
 export async function privateCloudProjectsPaginated(
   pageSize: number,
@@ -13,6 +12,8 @@ export async function privateCloudProjectsPaginated(
   searchTerm?: string | null,
   ministry?: string | null,
   cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  userEmail?: string | null,
+  ministryRoles?: string[],
 ): Promise<{
   data: PrivateProject[];
   total: number;
@@ -22,14 +23,10 @@ export async function privateCloudProjectsPaginated(
     searchTerm,
     ministry,
     cluster,
+    userEmail,
+    ministryRoles,
   });
-  const user = await userInfo();
-  if (!user) {
-    return {
-      data: [],
-      total: 0,
-    };
-  }
+
   const proms = [];
   // First, get the total count of matching documents
   proms.push(getPrivateCloudProjectsTotalCount({ searchQuery }));
@@ -51,18 +48,13 @@ export async function privateCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
+  userEmail?: string | null,
+  ministryRoles: string[] = [],
   active: boolean = true,
 ): Promise<{
   data: any[];
   total: number;
 }> {
-  const user = await userInfo();
-  if (!user) {
-    return {
-      data: [],
-      total: 0,
-    };
-  }
   const searchQuery: any = active ? { active: true } : {};
 
   if (searchTerm) {
@@ -84,30 +76,30 @@ export async function privateCloudRequestsPaginated(
     searchQuery['requestedProject.cluster'] = cluster;
   }
 
-  if (user.userEmail) {
+  if (userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
             'projectOwner.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'primaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
             'secondaryTechnicalLead.email': {
-              $regex: user.userEmail,
+              $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'requestedProject.ministry': { $in: user.ministryRole },
+            'requestedProject.ministry': { $in: ministryRoles },
           },
         ],
       },
