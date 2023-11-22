@@ -55,8 +55,8 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
   }
 };
 
-export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, message: String) => {
-  const email = render(RequestRejectionTemplate({ request }), { pretty: true });
+export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
+  const email = render(RequestRejectionTemplate({ request, comment }), { pretty: true });
 
   try {
     await sendEmail({
@@ -73,8 +73,11 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
   }
 };
 
-export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
-  const email = render(EditRequestTemplate({ request }), { pretty: true });
+export const sendEditRequestEmails = async (
+  request: PrivateCloudRequestWithProjectAndRequestedProject,
+  comment: string,
+) => {
+  const email = render(EditRequestTemplate({ request, comment }), { pretty: true });
   try {
     await sendEmail({
       body: email,

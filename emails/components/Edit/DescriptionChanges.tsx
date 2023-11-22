@@ -1,4 +1,4 @@
-import { Heading, Tailwind, Text } from '@react-email/components';
+import { Heading, Text } from '@react-email/components';
 
 export default function DescriptionChanges({
   nameCurrent,
@@ -10,14 +10,14 @@ export default function DescriptionChanges({
   ministryRequested,
   clusterRequested,
 }: {
-  nameCurrent: String;
-  descCurrent: String;
-  ministryCurrent: String;
-  clusterCurrent: String;
-  nameRequested: String;
-  descRequested: String;
-  ministryRequested: String;
-  clusterRequested: String;
+  nameCurrent: string;
+  descCurrent: string;
+  ministryCurrent: string;
+  clusterCurrent: string;
+  nameRequested: string;
+  descRequested: string;
+  ministryRequested: string;
+  clusterRequested: string;
 }) {
   return (
     <div>

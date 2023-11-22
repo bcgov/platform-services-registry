@@ -8,6 +8,7 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
+import Comment from '@/components/modal/Comment';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -43,6 +44,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,6 +82,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
       }
 
       setOpenCreate(false);
+      setOpenComment(false);
       setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
@@ -94,10 +97,19 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
+  const setComment = (comment: string) => {
+    onSubmit({ ...methods.getValues(), comment });
+  };
+
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form
+          onSubmit={methods.handleSubmit(() => {
+            if (methods.getValues('decision') === 'APPROVED') setOpenCreate(true);
+            if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
+          })}
+        >
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
             <TeamContacts
@@ -128,6 +140,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
+      <Comment open={openComment} setOpen={setOpenComment} onSubmit={setComment} isLoading={isLoading} type="reject" />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );
