@@ -61,10 +61,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleComment = (textArea: string) => {
-    setComment(textArea);
-  };
-
   const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
     queryFn: () => fetchProject(params.licencePlate),
