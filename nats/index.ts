@@ -1,5 +1,3 @@
-// import dotenv from 'dotenv';
-// dotenv.config();
 import { connect, StringCodec, JSONCodec } from 'nats';
 import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 import createPublicCloudNatsMessage, {
@@ -50,10 +48,6 @@ export async function sendPrivateCloudNatsMessage(
       );
     }
   }
-
-  console.log('NATS PARAMS');
-
-  console.log(requestId, requestType, requestedProject, contactChanged);
 
   const messageBody = createPrivateCloudNatsMessage(requestId, requestType, requestedProject, contactChanged);
 

@@ -115,6 +115,4 @@ export default function createPrivateCloudNatsMessage(
   };
 
   return messageBody;
-
-  console.log('Message Body', messageBody);
 }
