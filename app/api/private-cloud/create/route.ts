@@ -2,13 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import withErrorHandler from '@/helpers/apiErrorHandler';
 import { authOptions } from '@/app/api/auth/options';
-import { Prisma } from '@prisma/client';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
-import { PrivateCloudRequest } from '@prisma/client';
 import createRequest from '@/requestActions/private-cloud/createRequest';
 import { sendNewRequestEmails } from '@/ches/emailHandler';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/createRequest';
-import { sendPrivateCloudNatsMessage } from '@/nats';
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
   // Authentication
