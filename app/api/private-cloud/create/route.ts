@@ -8,6 +8,7 @@ import { PrivateCloudRequest } from '@prisma/client';
 import createRequest from '@/requestActions/private-cloud/createRequest';
 import { sendNewRequestEmails } from '@/ches/emailHandler';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/createRequest';
+import { sendPrivateCloudNatsMessage } from '@/nats';
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
   // Authentication

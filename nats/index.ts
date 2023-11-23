@@ -51,6 +51,10 @@ export async function sendPrivateCloudNatsMessage(
     }
   }
 
+  console.log('NATS PARAMS');
+
+  console.log(requestId, requestType, requestedProject, contactChanged);
+
   const messageBody = createPrivateCloudNatsMessage(requestId, requestType, requestedProject, contactChanged);
 
   return sendNatsMessage(natsSubject, messageBody);
