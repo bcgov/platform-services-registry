@@ -6,7 +6,7 @@ import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import Comment from '@/components/modal/Comment';
+import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -156,7 +156,13 @@ export default function EditProject({ params }: { params: { licencePlate: string
           </div>
         </form>
       </FormProvider>
-      <Comment open={openComment} setOpen={setOpenComment} onSubmit={setComment} isLoading={isLoading} type="create" />
+      <PrivateCloudEditModal
+        open={openComment}
+        setOpen={setOpenComment}
+        handleSubmit={setComment}
+        isLoading={isLoading}
+        type="create"
+      />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );

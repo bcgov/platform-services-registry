@@ -77,12 +77,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     });
   }
 
-  const contactChanged =
+  const contactsChanged =
     requestedProjectFormData.projectOwner.email !== request.requestedProject.projectOwner.email ||
     requestedProjectFormData.primaryTechnicalLead.email !== request.requestedProject.primaryTechnicalLead.email ||
     requestedProjectFormData.secondaryTechnicalLead?.email !== request.requestedProject?.secondaryTechnicalLead?.email;
 
-  await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
+  await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactsChanged);
 
   // For GOLD requests, we create an identical request for GOLDDR
   if (request.requestedProject.cluster === Cluster.GOLD) {
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       request.id,
       request.type,
       { ...request.requestedProject, cluster: Cluster.GOLDDR },
-      contactChanged,
+      contactsChanged,
     );
   }
 
