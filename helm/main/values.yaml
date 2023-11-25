@@ -32,6 +32,9 @@ app:
   image:
     pullPolicy: IfNotPresent
 
+  preImage:
+    pullPolicy: IfNotPresent
+
   nameOverride: pltsvc-app
   fullnameOverride: pltsvc-app
 
