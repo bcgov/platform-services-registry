@@ -37,8 +37,7 @@ jobs:
         mkdir -p ./localdev/mnt/postgres
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
-        node_modules/.bin/wait-on http://0.0.0.0:8080/health/ready --timeout 120000 || true
-        curl http://0.0.0.0:8080/health/ready
+        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
         cp .env.localdev .env.test
         npm run test
 
