@@ -1,0 +1,11 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache jq
+
+COPY ["package.json", "prisma/schema.prisma", "./"]
+
+RUN npm install prisma@$(jq -r '.devDependencies.prisma' package.json)
+
+CMD ["node_modules/.bin/prisma", "db", "push", "--schema", "schema.prisma", "--skip-generate"]
