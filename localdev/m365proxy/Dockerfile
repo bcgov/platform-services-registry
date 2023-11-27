@@ -12,7 +12,7 @@ RUN apt-get update -q && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN wget --max-redirect=1 https://github.com/microsoft/m365-developer-proxy/releases/download/v0.12.1/m365-developer-proxy-linux-x64-v0.12.1.zip && \
+RUN wget --max-redirect=1 https://github.com/microsoft/dev-proxy/releases/download/v0.12.1/m365-developer-proxy-linux-x64-v0.12.1.zip && \
     unzip m365-developer-proxy-linux-x64-v0.12.1.zip && \
     chmod +x ./m365proxy
 

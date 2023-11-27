@@ -1,5 +1,3 @@
-// import dotenv from 'dotenv';
-// dotenv.config();
 import { connect, StringCodec, JSONCodec } from 'nats';
 import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 import createPublicCloudNatsMessage, {
@@ -35,7 +33,7 @@ export async function sendPrivateCloudNatsMessage(
   requestedProject: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,
 ) {
-  const natsSubject = `registry_project_provisioning_${requestedProject.cluster}`;
+  const natsSubject = `registry_project_provisioning_${requestedProject.cluster}`.toLocaleLowerCase();
 
   // Perform deletion check if request is a delete request
   if (requestType === RequestType.DELETE || requestType.toLowerCase() === 'delete') {

@@ -30,9 +30,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { email: authEmail, roles: authRoles } = session.user;
 
   const body = await req.json();
+  const { comment, ...data } = body;
 
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PrivateCloudEditRequestBodySchema.safeParse(body);
+  const parsedBody = PrivateCloudEditRequestBodySchema.safeParse(data);
 
   if (!parsedParams.success) {
     return new NextResponse(parsedParams.error.message, { status: 400 });
@@ -73,13 +74,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   );
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendEditRequestEmails(request);
+    sendEditRequestEmails(request, comment);
     return new NextResponse(
       'Successfuly edited project, admin approval will be required for this request to be provisioned ',
       { status: 200 },
     );
   }
-
   const contactChanged =
     formData.projectOwner.email !== request.requestedProject.projectOwner.email ||
     formData.primaryTechnicalLead.email !== request.requestedProject.primaryTechnicalLead.email ||
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  sendEditRequestEmails(request);
+  sendEditRequestEmails(request, comment);
 
   return new NextResponse('success', { status: 200 });
 }
