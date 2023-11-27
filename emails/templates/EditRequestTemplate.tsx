@@ -25,7 +25,7 @@ export const EditRequestTemplate = ({ request }: EmailProp) => {
   const current = request.project;
   const requested = request.requestedProject;
   const changed = compareProjects(current, requested);
-  // console.log(changed)
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
