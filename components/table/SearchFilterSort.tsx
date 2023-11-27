@@ -9,11 +9,15 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/components/utils/useDebounce';
 import FilterPanel from './FilterPanel';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
+import cluster from 'cluster';
+import { all } from 'cypress/types/bluebird';
 
 export default function SearchFilterSort() {
   const [focused, setFocused] = useState(false);
   const { replace } = useRouter();
   const pathname = usePathname();
+  console.log(pathname.split('/')[2]);
+
   const searchParams = useSearchParams()!;
 
   const [isPending, startTransition] = useTransition();
@@ -38,6 +42,38 @@ export default function SearchFilterSort() {
     },
     [searchParams, replace, pathname],
   );
+  console.log(new URLSearchParams(searchParams?.toString()).toString());
+  const handleDownload = async () => {
+    const params = new URLSearchParams(searchParams?.toString());
+
+    try {
+      // Fetch the data from the API
+      const response = await fetch(`/api/${pathname.split('/')[1]}/allprojects?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Get the blob from the response
+      const blob = await response.blob();
+
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary link element
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'download.csv'; // Name the download
+
+      // Append the link, trigger the download, then clean up
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
 
   useEffect(() => {
     if (debouncedValue == '') {
@@ -104,22 +140,26 @@ export default function SearchFilterSort() {
 
           <span className="md:inline hidden">Filters</span>
         </Disclosure.Button>
-        <button
-          type="button"
-          className="inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        >
-          <Image
-            alt="Export"
-            src={Export}
-            width={16}
-            height={12.5}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-            }}
-          />
-          <span className="md:inline hidden">Export</span>
-        </button>
+
+        {pathname.split('/')[2] === 'products' ? (
+          <button
+            onClick={handleDownload}
+            type="button"
+            className="inline-flex items-center gap-x-2 rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            <Image
+              alt="Export"
+              src={Export}
+              width={16}
+              height={12.5}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
+            <span className="md:inline hidden">Export</span>
+          </button>
+        ) : null}
       </div>
       <Disclosure.Panel className="py-10">
         <FilterPanel />

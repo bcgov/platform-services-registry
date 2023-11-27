@@ -7,41 +7,44 @@ import { formatFullName } from '@/components/utils/formatFullName';
 import { z } from 'zod';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-//import { NextApiRequest, NextApiResponse } from 'next';
 
-const queryScheme = z.object({
+const searchParamsSchema = z.object({
   search: z.string().optional().nullable(),
   ministry: z.string().optional().nullable(),
   cluster: z.string().optional().nullable(),
-  userEmail: z.string().email().optional().nullable(),
 });
 
 export async function GET(req: NextRequest) {
   try {
-    console.log('Handler Called'); //Check if handler is called
     const session = await getServerSession(authOptions);
-    console.log('Session', session); //Check session details
 
     if (!session) {
       console.log('No session, sending 401');
-      //res.status(401).json({error: 'Unauthorized'});
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     //Extract and parse the query parameters
-    const searchParams = new URL(req.url || '').searchParams;
-    const queryParams = queryScheme.parse({
+    const { searchParams } = new URL(req.url || '');
+
+    const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search') || undefined,
       ministry: searchParams.get('ministry') || undefined,
       cluster: searchParams.get('cluster') || undefined,
-      userEmail: searchParams.get('userEmail') || undefined,
     });
 
+    let email: string | undefined;
+
+    if (session.user.roles.includes('admin')) {
+      email = undefined;
+    } else {
+      email = session.user.email;
+    }
+
     const projects = await privateCloudProjects(
-      queryParams.search,
-      queryParams.ministry,
-      queryParams.cluster,
-      queryParams.userEmail,
+      parsedSearchParams.search,
+      parsedSearchParams.ministry,
+      parsedSearchParams.cluster,
+      email,
     );
 
     // Map the data to the correct format for CSV conversion
@@ -89,15 +92,10 @@ export async function GET(req: NextRequest) {
         'Content-Disposition': 'attachment; filename="projects.csv"',
       },
     });
-    console.log('Sending CSV response');
-    //res.setHeader('Content-Type', 'text/csv');
-    //res.setHeader('Content-Disposition', 'attachment; filename="projects.csv"');
-    //res.status(200).send(csv);
 
     return response;
   } catch (error: any) {
     console.error('Error in handler:', error);
     return new NextResponse(error.message, { status: 500 });
-    //res.status(500).json({ error: error.message});
   }
 }
