@@ -5,24 +5,32 @@ import { privateCloudProjects } from '@/queries/private-cloud';
 import formatDate from '@/components/utils/formatdates';
 import { formatFullName } from '@/components/utils/formatFullName';
 import { z } from 'zod';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/options';
+//import { NextApiRequest, NextApiResponse } from 'next';
 
 const queryScheme = z.object({
-  search: z.string().optional(),
-  ministry: z.string().optional(),
-  cluster: z.string().optional(),
-  userEmail: z.string().email().optional(),
+  search: z.string().optional().nullable(),
+  ministry: z.string().optional().nullable(),
+  cluster: z.string().optional().nullable(),
+  userEmail: z.string().email().optional().nullable(),
 });
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
-  //const { searchParams } = new URL(req.url);
-  //const search = searchParams.get('search') || '';
-  //const ministry = searchParams.get('ministry');
-  //const cluster = searchParams.get('cluster');
-  //const userEmail = searchParams.get('email');
-
+export async function GET(req: NextRequest) {
   try {
+    console.log('Handler Called'); //Check if handler is called
+    const session = await getServerSession(authOptions);
+    console.log('Session', session); //Check session details
+
+    if (!session) {
+      console.log('No session, sending 401');
+      //res.status(401).json({error: 'Unauthorized'});
+      return new NextResponse('Unauthorized', { status: 401 });
+      return;
+    }
+
     //Extract and parse the query parameters
-    const searchParams = new URL(req.url).searchParams;
+    const searchParams = new URL(req.url || '').searchParams;
     const queryParams = queryScheme.parse({
       search: searchParams.get('search') || undefined,
       ministry: searchParams.get('ministry') || undefined,
@@ -82,9 +90,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         'Content-Disposition': 'attachment; filename="projects.csv"',
       },
     });
+    console.log('Sending CSV response');
+    //res.setHeader('Content-Type', 'text/csv');
+    //res.setHeader('Content-Disposition', 'attachment; filename="projects.csv"');
+    //res.status(200).send(csv);
 
     return response;
   } catch (error: any) {
+    console.error('Error in handler:', error);
     return new NextResponse(error.message, { status: 500 });
+    //res.status(500).json({ error: error.message});
   }
 }
