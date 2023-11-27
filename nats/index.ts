@@ -51,10 +51,10 @@ export async function sendPrivateCloudNatsMessage(
 
   const messageBody = createPrivateCloudNatsMessage(requestId, requestType, requestedProject, contactChanged);
 
-  return sendNatsMessage(natsSubject, messageBody);
+  await sendNatsMessage(natsSubject, messageBody);
 }
 
-export function sendPublicCloudNatsMessage(
+export async function sendPublicCloudNatsMessage(
   requestType: RequestType,
   requestedProject: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,
@@ -63,5 +63,5 @@ export function sendPublicCloudNatsMessage(
 
   const messageBody = createPublicCloudNatsMessage(requestType, requestedProject, currentProject);
 
-  return sendNatsMessage(natsSubject, messageBody);
+  await sendNatsMessage(natsSubject, messageBody);
 }
