@@ -23,4 +23,4 @@ app:
     host: dev-pltsvc.apps.silver.devops.gov.bc.ca
 
 mongodb:
-  enabled: false
+  enabled: true
