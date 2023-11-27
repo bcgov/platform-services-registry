@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
       console.log('No session, sending 401');
       //res.status(401).json({error: 'Unauthorized'});
       return new NextResponse('Unauthorized', { status: 401 });
-      return;
     }
 
     //Extract and parse the query parameters
