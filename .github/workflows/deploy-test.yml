@@ -1,4 +1,4 @@
-name: Deploy Test Environment
+name: 2.Deploy Test Environment
 
 on:
   push:
@@ -84,13 +84,13 @@ jobs:
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-        namespace: 101ed4-test
+        namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
 
     - name: Deploy apps with Helm chart
       run: |
         vtag=${{ github.ref_name }}
         make upgrade \
-        NAMESPACE=101ed4-test \
+        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${vtag//v}
       working-directory: ./helm/main

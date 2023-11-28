@@ -1,8 +1,16 @@
-name: 3.Deploy Prod Environment
+name: 4.Deploy Dispatch
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy ClamAV
+        type: environment
+        required: true
+      imageTag:
+        description: Image Tag Version (ghcr.io/bcgov/pltsvc:<imageTag>)
+        type: string
+        required: true
 
 jobs:
   deploy:
@@ -11,8 +19,7 @@ jobs:
     permissions:
       contents: read
     environment:
-      name: prod
-      url: https://registry.developer.gov.bc.ca
+      name: ${{ inputs.environment }}
 
     steps:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
@@ -30,8 +37,7 @@ jobs:
 
     - name: Deploy apps with Helm chart
       run: |
-        vtag=${{ github.event.release.tag_name }}
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
-        IMAGE_TAG=${vtag//v}
+        IMAGE_TAG=${{ inputs.imageTag }}
       working-directory: ./helm/main

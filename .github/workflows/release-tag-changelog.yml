@@ -1,4 +1,4 @@
-name: Create Release Tag with Changelog PR
+name: 5.Create Release Tag
 
 on:
   workflow_dispatch:
