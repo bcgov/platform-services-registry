@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Environment to deploy ClamAV
+        description: Environment to deploy
         type: environment
         required: true
       imageTag:
