@@ -9,7 +9,7 @@ export function getPrivateCloudProjectsQuery({
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
-  cluster?: string | null;
+  cluster?: string | string[] | null;
   userEmail?: string | null;
 }) {
   // Initialize the search/filter query
@@ -75,9 +75,9 @@ export function getPrivateCloudProjectsQuery({
     searchQuery.ministry = ministry;
   }
 
-  if (cluster) {
-    searchQuery.cluster = cluster;
-  }
+  // if (cluster) {
+  //   searchQuery.cluster = cluster;
+  // }
 
   if (userEmail) {
     searchQuery.$and = [
@@ -99,6 +99,15 @@ export function getPrivateCloudProjectsQuery({
         ],
       },
     ];
+  }
+  if (cluster) {
+    if (Array.isArray(cluster)) {
+      // Handle the case where cluster is an array
+      searchQuery.cluster = { $in: cluster };
+    } else {
+      // Handle the case where cluster is a single string
+      searchQuery.cluster = cluster;
+    }
   }
 
   return searchQuery;

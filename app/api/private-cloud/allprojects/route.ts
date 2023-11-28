@@ -11,7 +11,7 @@ import { authOptions } from '@/app/api/auth/options';
 const searchParamsSchema = z.object({
   search: z.string().optional().nullable(),
   ministry: z.string().optional().nullable(),
-  cluster: z.string().optional().nullable(),
+  cluster: z.array(z.string()).optional().nullable(),
 });
 
 export async function GET(req: NextRequest) {
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search') || undefined,
       ministry: searchParams.get('ministry') || undefined,
-      cluster: searchParams.get('cluster') || undefined,
+      cluster: searchParams.get('cluster')?.split(',') || undefined,
     });
 
     let email: string | undefined;
