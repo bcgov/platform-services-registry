@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     }
 
     //Extract and parse the query parameters
-    const { searchParams } = new URL(req.url || '');
+    const searchParams = req.nextUrl.searchParams;
 
     const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search') || undefined,
