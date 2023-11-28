@@ -14,7 +14,7 @@ type QuotaOptions<K extends string> = {
   [key in K]: string;
 };
 
-const defaultCpuOptionsLookup: QuotaOptions<CpuOptionKeys> = {
+export const defaultCpuOptionsLookup: QuotaOptions<CpuOptionKeys> = {
   CPU_REQUEST_0_5_LIMIT_1_5: '0.5 CPU Request, 1.5 CPU Limit',
   CPU_REQUEST_1_LIMIT_2: '1 CPU Request, 2 CPU Limit',
   CPU_REQUEST_2_LIMIT_4: '2 CPU Request, 4 CPU Limit',
@@ -25,7 +25,7 @@ const defaultCpuOptionsLookup: QuotaOptions<CpuOptionKeys> = {
   CPU_REQUEST_64_LIMIT_128: '64 CPU Request, 128 CPU Limit',
 };
 
-const defaultMemoryOptionsLookup: QuotaOptions<MemoryOptionKeys> = {
+export const defaultMemoryOptionsLookup: QuotaOptions<MemoryOptionKeys> = {
   MEMORY_REQUEST_2_LIMIT_4: '2 GB Request, 4 GB Limit',
   MEMORY_REQUEST_4_LIMIT_8: '4 GB Request, 8 GB Limit',
   MEMORY_REQUEST_8_LIMIT_16: '8 GB Request, 16 GB Limit',
@@ -34,7 +34,7 @@ const defaultMemoryOptionsLookup: QuotaOptions<MemoryOptionKeys> = {
   MEMORY_REQUEST_64_LIMIT_128: '64 GB Request, 128 GB Limit',
 };
 
-const defaultStorageOptionsLookup: QuotaOptions<StorageOptionKeys> = {
+export const defaultStorageOptionsLookup: QuotaOptions<StorageOptionKeys> = {
   STORAGE_1: '1 GB',
   STORAGE_2: '2 GB',
   STORAGE_4: '4 GB',
