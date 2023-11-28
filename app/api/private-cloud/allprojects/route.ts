@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search') || undefined,
       ministry: searchParams.get('ministry') || undefined,
-      cluster: searchParams.get('cluster')?.split(',') || undefined,
+      cluster: searchParams.getAll('cluster').length > 0 ? searchParams.getAll('cluster') : undefined,
     });
 
     let email = null;
