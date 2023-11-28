@@ -9,8 +9,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/components/utils/useDebounce';
 import FilterPanel from './FilterPanel';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import cluster from 'cluster';
-import { all } from 'cypress/types/bluebird';
 
 type SearchFilterSortProps = {
   showDownloadButton?: boolean;
@@ -20,7 +18,6 @@ export default function SearchFilterSort({ showDownloadButton = false }: SearchF
   const [focused, setFocused] = useState(false);
   const { replace } = useRouter();
   const pathname = usePathname();
-  //console.log(pathname.split('/')[2]);
 
   const searchParams = useSearchParams()!;
 
@@ -46,7 +43,7 @@ export default function SearchFilterSort({ showDownloadButton = false }: SearchF
     },
     [searchParams, replace, pathname],
   );
-  console.log(new URLSearchParams(searchParams?.toString()).toString());
+
   const handleDownload = async () => {
     const params = new URLSearchParams(searchParams?.toString());
 
