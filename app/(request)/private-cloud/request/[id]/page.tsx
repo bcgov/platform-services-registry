@@ -60,6 +60,13 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
     }
   }, [data]);
 
+  // If user is not an admin, set isDisabled to true
+  useEffect(() => {
+    if (session && !session.user.isAdmin) {
+      setDisabled(true);
+    }
+  }, [session]);
+
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
