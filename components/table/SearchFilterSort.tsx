@@ -12,11 +12,15 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import cluster from 'cluster';
 import { all } from 'cypress/types/bluebird';
 
-export default function SearchFilterSort() {
+type SearchFilterSortProps = {
+  showDownloadButton?: boolean;
+};
+
+export default function SearchFilterSort({ showDownloadButton = false }: SearchFilterSortProps) {
   const [focused, setFocused] = useState(false);
   const { replace } = useRouter();
   const pathname = usePathname();
-  console.log(pathname.split('/')[2]);
+  //console.log(pathname.split('/')[2]);
 
   const searchParams = useSearchParams()!;
 
@@ -141,7 +145,7 @@ export default function SearchFilterSort() {
           <span className="md:inline hidden">Filters</span>
         </Disclosure.Button>
 
-        {pathname.split('/')[2] === 'products' ? (
+        {showDownloadButton && (
           <button
             onClick={handleDownload}
             type="button"
@@ -159,7 +163,7 @@ export default function SearchFilterSort() {
             />
             <span className="md:inline hidden">Export</span>
           </button>
-        ) : null}
+        )}
       </div>
       <Disclosure.Panel className="py-10">
         <FilterPanel />
