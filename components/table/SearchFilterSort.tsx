@@ -12,9 +12,10 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 
 type SearchFilterSortProps = {
   showDownloadButton?: boolean;
+  apiEndpoint: string;
 };
 
-export default function SearchFilterSort({ showDownloadButton = false }: SearchFilterSortProps) {
+export default function SearchFilterSort({ showDownloadButton = false, apiEndpoint }: SearchFilterSortProps) {
   const [focused, setFocused] = useState(false);
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -49,7 +50,7 @@ export default function SearchFilterSort({ showDownloadButton = false }: SearchF
 
     try {
       // Fetch the data from the API
-      const response = await fetch(`/api/${pathname.split('/')[1]}/allprojects?${params.toString()}`);
+      const response = await fetch(`/api/${apiEndpoint}/allprojects?${params.toString()}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
