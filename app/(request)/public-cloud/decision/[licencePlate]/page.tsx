@@ -94,12 +94,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
-  console.log('WATCH');
-  console.log(methods.watch());
-
-  console.log('DATA ACCOUNT CODING');
-  console.log(data?.requestedProject?.accountCoding);
-
   return (
     <div>
       <FormProvider {...methods}>

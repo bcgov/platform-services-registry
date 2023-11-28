@@ -34,7 +34,6 @@ export default async function RequestsTable({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log('No session found');
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 

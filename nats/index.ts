@@ -11,6 +11,7 @@ const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
 
 async function sendNatsMessage(natsSubject: string, messageBody: any) {
   try {
+    console.log('NATS SERVER URL: ', serverURL);
     console.log('NATS SUBJECT: ', natsSubject);
     console.log('MESSAGE BODY: ', JSON.stringify(messageBody));
 

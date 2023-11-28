@@ -35,7 +35,6 @@ export default async function ProductsTable({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log('No session found');
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
