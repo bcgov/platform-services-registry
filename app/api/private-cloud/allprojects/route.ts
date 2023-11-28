@@ -27,8 +27,8 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
 
     const parsedSearchParams = searchParamsSchema.parse({
-      search: searchParams.get('search') || undefined,
-      ministry: searchParams.get('ministry') || undefined,
+      search: searchParams.get('search'),
+      ministry: searchParams.get('ministry'),
       cluster: searchParams.getAll('cluster').length > 0 ? searchParams.getAll('cluster') : undefined,
     });
 
