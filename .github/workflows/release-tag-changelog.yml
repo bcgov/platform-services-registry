@@ -50,7 +50,9 @@ jobs:
         git checkout -b "$branch"
         git push --set-upstream origin "$branch"
 
-        ./node_modules/.bin/release-it ${{ steps.input.outputs.tag }} --only-version
+        git status
+        git reset --hard
+        ./node_modules/.bin/release-it ${{ steps.input.outputs.tag }} --ci
 
     - name: Set output variables
       id: vars
