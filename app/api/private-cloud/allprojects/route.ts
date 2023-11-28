@@ -32,11 +32,9 @@ export async function GET(req: NextRequest) {
       cluster: searchParams.get('cluster')?.split(',') || undefined,
     });
 
-    let email: string | undefined;
+    let email = null;
 
-    if (session.user.roles.includes('admin')) {
-      email = undefined;
-    } else {
+    if (!session.user.roles.includes('admin')) {
       email = session.user.email;
     }
 
