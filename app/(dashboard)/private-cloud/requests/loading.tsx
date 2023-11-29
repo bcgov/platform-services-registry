@@ -12,7 +12,6 @@ export default async function RequestsTableSkeleton() {
       total={10}
       currentPage={1}
       pageSize={10}
-      showDownloadButton={false}
     />
   );
 }

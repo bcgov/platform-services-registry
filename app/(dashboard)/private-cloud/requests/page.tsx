@@ -67,7 +67,6 @@ export default async function RequestsTable({
       total={total}
       currentPage={currentPage}
       pageSize={pageSize || defaultPageSize}
-      showDownloadButton={false}
     />
   );
 }
