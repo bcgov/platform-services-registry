@@ -10,6 +10,7 @@ export default function Table({
   total,
   tableBody,
   showDownloadButton,
+  downloadApiEndpoint,
 }: {
   title: string;
   description: string;
@@ -18,13 +19,14 @@ export default function Table({
   total: number;
   tableBody: React.ReactNode;
   showDownloadButton?: boolean;
+  downloadApiEndpoint: string;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
         <TableTop title={title} description={description} />
         <div className="border-b-2 px-4 py-2 w-full">
-          <SearchFilterSort showDownloadButton={showDownloadButton} apiEndpoint="private-cloud" />
+          <SearchFilterSort showDownloadButton={showDownloadButton} downloadApiEndpoint={downloadApiEndpoint} />
         </div>
         {tableBody}
       </div>
