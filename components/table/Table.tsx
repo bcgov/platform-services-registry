@@ -10,7 +10,6 @@ export default function Table({
   total,
   tableBody,
   showDownloadButton,
-  apiEndpoint,
 }: {
   title: string;
   description: string;
@@ -19,7 +18,6 @@ export default function Table({
   total: number;
   tableBody: React.ReactNode;
   showDownloadButton?: boolean;
-  apiEndpoint: string;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
