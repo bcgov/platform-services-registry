@@ -88,7 +88,7 @@ export default function TableBody({ headers, rows }: TableProps) {
                     <th
                       key={headerName + index}
                       scope="col"
-                      className={`font-bcsans relative isolate py-3.5 text-left text-sm font-normal text-mediumgrey md:w-auto ${
+                      className={`font-sans relative isolate py-3.5 text-left text-base font-semibold text-mediumgrey md:w-auto ${
                         index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : 'px-3'
                       } ${index === headers.length - 1 ? 'pr-4 sm:pr-6 lg:pr-8' : ''}`}
                     >
@@ -107,7 +107,7 @@ export default function TableBody({ headers, rows }: TableProps) {
                     {headers.map((value, index) => (
                       <td
                         key={value['field'] + index}
-                        className={` px-3 py-4 text-sm text-mediumgrey md:table-cell border-b-1 ${
+                        className={`font-sans font-normal text-sm px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
                           index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                         } `}
                       >
