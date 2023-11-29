@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import fetchUserImage from '@/components/nav/generateAvatar';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +12,7 @@ export default function Avatar({ name, email }: { name: string; email: string })
   });
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center mx-2">
       <div className="h-9 w-9">
         <Image
           className="inline-block rounded-full"
