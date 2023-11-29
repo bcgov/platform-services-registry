@@ -99,7 +99,7 @@ export function getPrivateCloudProjectsQuery({
 
   if (cluster) {
     if (Array.isArray(cluster)) {
-      searchQuery.cluster = { $in: cluster };
+      if (cluster.length > 0) searchQuery.cluster = { $in: cluster };
     } else {
       searchQuery.cluster = cluster;
     }

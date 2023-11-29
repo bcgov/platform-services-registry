@@ -9,9 +9,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 
 const searchParamsSchema = z.object({
-  search: z.string().optional().nullable(),
-  ministry: z.string().optional().nullable(),
-  cluster: z.array(z.string()).optional().nullable(),
+  search: z.string().nullable(),
+  ministry: z.string().nullable(),
+  cluster: z.array(z.string()),
 });
 
 export async function GET(req: NextRequest) {
@@ -23,13 +23,12 @@ export async function GET(req: NextRequest) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    //Extract and parse the query parameters
-    const searchParams = req.nextUrl.searchParams;
+    const { searchParams } = req.nextUrl;
 
     const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
-      cluster: searchParams.getAll('cluster').length > 0 ? searchParams.getAll('cluster') : undefined,
+      cluster: searchParams.getAll('cluster'),
     });
 
     let email = null;

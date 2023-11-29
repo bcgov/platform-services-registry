@@ -46,26 +46,20 @@ export default function SearchFilterSort({ showDownloadButton = false, apiEndpoi
   );
 
   const handleDownload = async () => {
-    const params = new URLSearchParams(searchParams?.toString());
-
     try {
-      // Fetch the data from the API
-      const response = await fetch(`/api/${apiEndpoint}/allprojects?${params.toString()}`);
+      const response = await fetch(`/api/${apiEndpoint}/allprojects?${searchParams.toString()}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      // Get the blob from the response
       const blob = await response.blob();
 
-      // Create a URL for the blob
       const url = window.URL.createObjectURL(blob);
 
-      // Create a temporary link element
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = 'download.csv'; // Name the download
+      a.download = 'download.csv';
 
       // Append the link, trigger the download, then clean up
       document.body.appendChild(a);
