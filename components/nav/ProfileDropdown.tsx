@@ -7,28 +7,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import generateAvatar from './generateAvatar';
-
-async function fetchUserImage(email: string): Promise<string> {
-  const res = await fetch(`/api/msal/userImage?email=${email}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch user image');
-  }
-
-  if (res.headers.get('Content-Type')) {
-    // Assuming server returns a blob of image data
-    const blob = await res.blob();
-
-    // Create a URL from the blob
-    const imageUrl = URL.createObjectURL(blob);
-
-    return imageUrl;
-  } else {
-    const imageUrl = await generateAvatar(email);
-
-    return imageUrl;
-  }
-}
+import fetchUserImage from '@/components/nav/generateAvatar';
 
 export default function ProfileDropdown() {
   const { data: session, status } = useSession();

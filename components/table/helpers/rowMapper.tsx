@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Edit from '@/components/assets/edit.svg';
 import { PrivateProject } from '@/queries/types';
 import classNames from '@/components/utils/classnames';
+import Avtar from '@/components/table/Avtars';
 
 function TypeBadge({ status }: { status: string }) {
   let text, colour;
@@ -75,14 +76,27 @@ export const privateCloudProjectDataToRow = (project: PrivateProject) => {
   return {
     id: project.id,
     name: project.name,
-    description: project.description,
+    description: <p className="text-ellipsis">{project.description}</p>,
     ministry: project.ministry,
     cluster: project.cluster,
-    projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName} ${
-      project.secondaryTechnicalLeadDetails?.firstName || ''
-    } ${project.secondaryTechnicalLeadDetails ? ',' : ''} ${project.secondaryTechnicalLeadDetails?.lastName || ''}`,
-    // @ts-ignore
+    projectOwner: (
+      <Avtar
+        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
+        email={project.projectOwnerDetails.email}
+      />
+    ),
+    primaryTechnicalLead: (
+      <Avtar
+        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
+        email={project.primaryTechnicalLeadDetails.email}
+      />
+    ),
+    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
+      <Avtar
+        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
+        email={project.secondaryTechnicalLeadDetails.email}
+      />
+    ) : null,
     created: formatDate(project.created['$date']),
     licencePlate: project.licencePlate,
     edit: (
@@ -108,10 +122,24 @@ export const publicCloudProjectDataToRow = (project: any) => {
     csp: project.provider,
     description: project.description,
     ministry: project.ministry,
-    projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName} ${
-      project.secondaryTechnicalLeadDetails?.firstName || ''
-    } ${project.secondaryTechnicalLeadDetails ? ',' : ''} ${project.secondaryTechnicalLeadDetails?.lastName || ''}`,
+    projectOwner: (
+      <Avtar
+        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
+        email={project.projectOwnerDetails.email}
+      />
+    ),
+    primaryTechnicalLead: (
+      <Avtar
+        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
+        email={project.primaryTechnicalLeadDetails.email}
+      />
+    ),
+    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
+      <Avtar
+        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
+        email={project.secondaryTechnicalLeadDetails.email}
+      />
+    ) : null,
     created: formatDate(project.created['$date']),
     licencePlate: project.licencePlate,
     edit: (

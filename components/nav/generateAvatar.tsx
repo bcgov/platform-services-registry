@@ -15,7 +15,7 @@ const stringToColor = (string: string): string => {
   return color;
 };
 
-async function generateAvatar(email: string): Promise<string> {
+export async function generateAvatar(email: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // size: number, backgroundColor: string, textColor: string
     const size = 240;
@@ -57,4 +57,23 @@ async function generateAvatar(email: string): Promise<string> {
   });
 }
 
-export default generateAvatar;
+export default async function fetchUserImage(email: string): Promise<string> {
+  const res = await fetch(`/api/msal/userImage?email=${email}`);
+  if (!res.ok) {
+    throw new Error('Network response was not ok for fetch user image');
+  }
+
+  if (res.headers.get('Content-Type')) {
+    // Assuming server returns a blob of image data
+    const blob = await res.blob();
+
+    // Create a URL from the blob
+    const imageUrl = URL.createObjectURL(blob);
+
+    return imageUrl;
+  } else {
+    const imageUrl = await generateAvatar(email);
+
+    return imageUrl;
+  }
+}
