@@ -3,8 +3,8 @@ import { getPrivateCloudProjectsQuery, getPrivateCloudProjectsResult } from '@/q
 export async function privateCloudProjects(
   searchTerm?: string | null,
   ministry?: string | null,
-  cluster?: string | null,
-  userEmail?: string | null,
+  cluster?: string | string[] | null,
+  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
   ministryRoles?: string[],
 ): Promise<any> {
   // Initialize the search/filter query

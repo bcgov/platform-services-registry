@@ -4,17 +4,45 @@ import { PrivateProject } from '@/queries/types';
 import { privateCloudProjects } from '@/queries/private-cloud';
 import formatDate from '@/components/utils/formatdates';
 import { formatFullName } from '@/components/utils/formatFullName';
+import { z } from 'zod';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/options';
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
-  const { searchParams } = new URL(req.url);
-  const search = searchParams.get('search') || '';
-  const ministry = searchParams.get('ministry');
-  const cluster = searchParams.get('cluster');
-  const userEmail = searchParams.get('email');
+const searchParamsSchema = z.object({
+  search: z.string().nullable(),
+  ministry: z.string().nullable(),
+  cluster: z.array(z.string()),
+});
 
+export async function GET(req: NextRequest) {
   try {
-    // Fetch the projects using the privateCloudProjects function
-    const projects = await privateCloudProjects(search, ministry, cluster, userEmail);
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      console.log('No session, sending 401');
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const { searchParams } = req.nextUrl;
+
+    const parsedSearchParams = searchParamsSchema.parse({
+      search: searchParams.get('search'),
+      ministry: searchParams.get('ministry'),
+      cluster: searchParams.getAll('cluster'),
+    });
+
+    let email = null;
+
+    if (!session.user.roles.includes('admin')) {
+      email = session.user.email;
+    }
+
+    const projects = await privateCloudProjects(
+      parsedSearchParams.search,
+      parsedSearchParams.ministry,
+      parsedSearchParams.cluster,
+      email,
+    );
 
     // Map the data to the correct format for CSV conversion
     const formattedData = projects.map((project: PrivateProject) => ({
@@ -64,6 +92,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     return response;
   } catch (error: any) {
+    console.error('Error in handler:', error);
     return new NextResponse(error.message, { status: 500 });
   }
 }
