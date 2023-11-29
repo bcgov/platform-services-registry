@@ -78,7 +78,7 @@ export default function TableBody({ headers, rows }: TableProps) {
 
   return (
     <>
-      <div className="flow-root overflow-y-auto">
+      <div className="flow-root overflow-y-auto h-[55vh]">
         <div className="w-full overflow-auto">
           <div className="inline-block min-w-full align-middle">
             <table className="w-full text-left">
