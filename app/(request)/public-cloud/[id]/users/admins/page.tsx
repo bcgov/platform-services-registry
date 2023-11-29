@@ -27,6 +27,8 @@ export default function PublicUsers({ params }: { params: {} }) {
         total={10}
         currentPage={1}
         pageSize={10}
+        showDownloadButton={false}
+        downloadApiEndpoint="/api/public-cloud/allprojects"
       />
     </div>
   );
