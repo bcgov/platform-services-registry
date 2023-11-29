@@ -9,6 +9,8 @@ export default function Table({
   pageSize,
   total,
   tableBody,
+  showDownloadButton,
+  apiEndpoint,
 }: {
   title: string;
   description: string;
@@ -16,13 +18,15 @@ export default function Table({
   pageSize: number;
   total: number;
   tableBody: React.ReactNode;
+  showDownloadButton?: boolean;
+  apiEndpoint: string;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
         <TableTop title={title} description={description} />
         <div className="border-b-2 px-4 py-2 w-full">
-          <SearchFilterSort />
+          <SearchFilterSort showDownloadButton={showDownloadButton} apiEndpoint="private-cloud" />
         </div>
         {tableBody}
       </div>
