@@ -6,6 +6,7 @@ import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapp
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
+import { userInfo } from '@/queries/user';
 
 const headers = [
   { field: 'name', headerName: 'Name' },
@@ -34,19 +35,15 @@ export default async function ProductsTable({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log('No session found');
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
   const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
-
-  // If not an admin, we need to provide the user's email to the query
-  const userEmail = session?.user?.roles?.includes('admin') ? undefined : session?.user?.email;
-
   const { data, total }: { data: PrivateProject[]; total: number } = await privateCloudProjectsPaginated(
     +pageSize || defaultPageSize,
     currentPage,
@@ -54,6 +51,7 @@ export default async function ProductsTable({
     ministry,
     cluster,
     userEmail,
+    ministryRoles,
   );
 
   const rows = data.map(privateCloudProjectDataToRow);

@@ -6,7 +6,7 @@ import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import CreateModal from '@/components/modal/CreatePrivateCloud';
+import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -55,7 +55,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
 
   const router = useRouter();
 
-  const [openCreate, setOpenCreate] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -95,7 +95,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
   }, [requestData]);
 
   const onSubmit = async (data: any) => {
-    console.log('SUBMIT', data);
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/edit/${params.licencePlate}`, {
@@ -110,7 +109,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         throw new Error('Network response was not ok for create request');
       }
 
-      setOpenCreate(false);
+      setOpenComment(false);
       setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
@@ -125,10 +124,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
+  const setComment = (comment: string) => {
+    onSubmit({ ...methods.getValues(), comment });
+  };
+
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
             <TeamContacts
@@ -153,11 +156,12 @@ export default function EditProject({ params }: { params: { licencePlate: string
           </div>
         </form>
       </FormProvider>
-      <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(onSubmit)}
+      <PrivateCloudEditModal
+        open={openComment}
+        setOpen={setOpenComment}
+        handleSubmit={setComment}
         isLoading={isLoading}
+        type="create"
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>

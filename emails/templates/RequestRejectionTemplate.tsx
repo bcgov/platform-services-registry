@@ -8,9 +8,10 @@ import { TailwindConfig } from '../components/TailwindConfig';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
+  comment: string;
 }
 
-export const RequestRejectionTemplate = ({ request }: EmailProp) => {
+export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
   if (!request) return <></>;
 
   return (
@@ -38,6 +39,10 @@ export const RequestRejectionTemplate = ({ request }: EmailProp) => {
                 >
                   Log in to Registry
                 </Button>
+              </div>
+              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+                <Heading className="text-lg text-black">Comments</Heading>
+                <Text className="mb-0">{comment}</Text>
               </div>
               <div>
                 <Closing />

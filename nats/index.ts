@@ -1,5 +1,3 @@
-// import dotenv from 'dotenv';
-// dotenv.config();
 import { connect, StringCodec, JSONCodec } from 'nats';
 import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 import createPublicCloudNatsMessage, {
@@ -13,6 +11,7 @@ const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
 
 async function sendNatsMessage(natsSubject: string, messageBody: any) {
   try {
+    console.log('NATS SERVER URL: ', serverURL);
     console.log('NATS SUBJECT: ', natsSubject);
     console.log('MESSAGE BODY: ', JSON.stringify(messageBody));
 
@@ -35,7 +34,7 @@ export async function sendPrivateCloudNatsMessage(
   requestedProject: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,
 ) {
-  const natsSubject = `registry_project_provisioning_${requestedProject.cluster}`;
+  const natsSubject = `registry_project_provisioning_${requestedProject.cluster}`.toLocaleLowerCase();
 
   // Perform deletion check if request is a delete request
   if (requestType === RequestType.DELETE || requestType.toLowerCase() === 'delete') {
@@ -53,10 +52,10 @@ export async function sendPrivateCloudNatsMessage(
 
   const messageBody = createPrivateCloudNatsMessage(requestId, requestType, requestedProject, contactChanged);
 
-  return sendNatsMessage(natsSubject, messageBody);
+  await sendNatsMessage(natsSubject, messageBody);
 }
 
-export function sendPublicCloudNatsMessage(
+export async function sendPublicCloudNatsMessage(
   requestType: RequestType,
   requestedProject: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,
@@ -65,5 +64,5 @@ export function sendPublicCloudNatsMessage(
 
   const messageBody = createPublicCloudNatsMessage(requestType, requestedProject, currentProject);
 
-  return sendNatsMessage(natsSubject, messageBody);
+  await sendNatsMessage(natsSubject, messageBody);
 }

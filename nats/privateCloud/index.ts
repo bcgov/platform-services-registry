@@ -14,7 +14,7 @@ export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudReques
   };
 }>;
 
-export default async function createPrivateCloudNatsMessage(
+export default function createPrivateCloudNatsMessage(
   requestId: PrivateCloudRequest['id'],
   requestType: RequestType,
   requestedProject: PrivateCloudRequestedProjectWithContacts,
@@ -69,9 +69,9 @@ export default async function createPrivateCloudNatsMessage(
     ].map(({ quotaName, quota }) => ({
       name: `${licencePlate}-${quotaName}`,
       quota: {
-        cpu: DefaultCpuOptions[quota.cpu],
-        memory: DefaultMemoryOptions[quota.memory],
-        storage: DefaultStorageOptions[quota.storage],
+        cpu: DefaultCpuOptions[quota.cpu].name,
+        memory: DefaultMemoryOptions[quota.memory].name,
+        storage: DefaultStorageOptions[quota.storage].name,
         snapshot: snapshot.name,
       },
       quotas: {

@@ -1,13 +1,8 @@
-import {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-  PrivateCloudRequestWithRequestedProject,
-} from '@/requestActions/private-cloud/decisionRequest';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../components/Header';
-import ProductDetails from '../components/ProductDetails';
-import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
+import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../components/NamespaceDetails';
 import Closing from '../components/Closing';
 import { TailwindConfig } from '../components/TailwindConfig';
 import { compareProjects } from '../components/Edit/compareProjects';
@@ -18,14 +13,15 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
+  comment: string;
 }
 
-export const EditRequestTemplate = ({ request }: EmailProp) => {
+export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
   const changed = compareProjects(current, requested);
-  // console.log(changed)
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -37,12 +33,16 @@ export const EditRequestTemplate = ({ request }: EmailProp) => {
                 <Heading className="text-lg text-black">New Edit Product Request!</Heading>
                 <Text>Hi {current.name} Team, </Text>
                 <Text className="">
-                  You have submitted an edit request for your product with the license plate
-                  {request.licencePlate}. Our administrators have been notified and will review your request.
+                  You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
+                  administrators have been notified and will review your request.
                 </Text>
                 <Button href={process.env.BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
                   Review Request
                 </Button>
+              </div>
+              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+                <Heading className="text-lg text-black">Comments</Heading>
+                <Text className="mb-0">{comment}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 {(changed['name'] || changed['description'] || changed['ministry'] || changed['cluster']) && (

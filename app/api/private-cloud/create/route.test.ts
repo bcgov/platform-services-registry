@@ -6,6 +6,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 // import { cleanUp } from "@/jest.setup";
+import { expect } from '@jest/globals';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/create/private-cloud`;

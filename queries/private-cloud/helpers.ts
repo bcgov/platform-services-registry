@@ -1,16 +1,18 @@
 import prisma from '@/lib/prisma';
 import { PrivateProject } from '@/queries/types';
 
-export function getPrivateCloudProjectsQuery({
+export async function getPrivateCloudProjectsQuery({
   searchTerm,
   ministry,
   cluster,
   userEmail,
+  ministryRoles,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | string[] | null;
   userEmail?: string | null;
+  ministryRoles?: string[];
 }) {
   // Initialize the search/filter query
   const searchQuery: any = {
@@ -20,11 +22,24 @@ export function getPrivateCloudProjectsQuery({
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
     searchQuery.$or = [
-      { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
       {
-        'projectOwnerDetails.firstName': { $regex: searchTerm, $options: 'i' },
+        'projectOwnerDetails.email': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
       },
-      { 'projectOwnerDetails.lastName': { $regex: searchTerm, $options: 'i' } },
+      {
+        'projectOwnerDetails.firstName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
+      {
+        'projectOwnerDetails.lastName': {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      },
       {
         'primaryTechnicalLeadDetails.email': {
           $regex: searchTerm,
@@ -79,7 +94,12 @@ export function getPrivateCloudProjectsQuery({
     searchQuery.$and = [
       {
         $or: [
-          { 'projectOwnerDetails.email': { $regex: userEmail, $options: 'i' } },
+          {
+            'projectOwnerDetails.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
           {
             'primaryTechnicalLeadDetails.email': {
               $regex: userEmail,
@@ -91,6 +111,9 @@ export function getPrivateCloudProjectsQuery({
               $regex: userEmail,
               $options: 'i',
             },
+          },
+          {
+            ministry: { $in: ministryRoles },
           },
         ],
       },

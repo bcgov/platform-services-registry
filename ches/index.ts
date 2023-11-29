@@ -27,9 +27,29 @@ interface TokenData {
 
 const safeEmails = (emails: Array<NullOrString>): string[] => uniq(compact(castArray(emails)));
 
+const fetchWithTimeout = async (
+  resource: RequestInfo,
+  init?: RequestInit & { body?: BodyInit | null | undefined; headers?: HeadersInit | undefined },
+  options?: { timeout: number },
+) => {
+  const { timeout = 5000 } = options ?? {};
+
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  const response = await fetch(resource, {
+    ...(init ?? {}),
+    signal: controller.signal,
+  });
+
+  clearTimeout(id);
+
+  return response;
+};
+
 const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promise<string | null> => {
   try {
-    const response = await fetch(tokenUrl, {
+    const response = await fetchWithTimeout(tokenUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -76,7 +96,7 @@ const sendEmail = async (email: Email): Promise<void> => {
   try {
     const apiUrl = process.env.CHES_API_URL || '';
 
-    const response = await fetch(`${apiUrl}/email`, {
+    const response = await fetchWithTimeout(`${apiUrl}/email`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -104,7 +124,6 @@ const sendEmail = async (email: Email): Promise<void> => {
     }
 
     const data = await response.json();
-    console.log('Email sent successfully:', data);
   } catch (error) {
     console.error('Exception sending email:', error);
   }

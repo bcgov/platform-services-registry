@@ -1,4 +1,4 @@
-name: Deploy Dev Environment
+name: 1.Deploy Dev Environment
 
 on:
   push:
@@ -14,7 +14,7 @@ env:
   GITHUB_REGISTRY: ghcr.io
 
 jobs:
-  build-push:
+  build-push-app:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -41,8 +41,35 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
+  build-push-pre:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-pre
+        docker-context: .
+        docker-file: Dockerfile.db
+        metadata-tags: |
+          type=ref,event=branch
+          type=sha,format=long,prefix=,suffix=
+
   deploy:
-    needs: [build-push]
+    needs: [build-push-app, build-push-pre]
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
@@ -60,12 +87,12 @@ jobs:
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-        namespace: 101ed4-dev
+        namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
 
     - name: Deploy apps with Helm chart
       run: |
         make upgrade \
-        NAMESPACE=101ed4-dev \
+        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${{ github.sha }}
       working-directory: ./helm/main

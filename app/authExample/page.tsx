@@ -6,7 +6,6 @@ const ServerProtectedPage = async () => {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log('No session found');
     redirect('/signin?callbackUrl=/protected/server');
   }
 

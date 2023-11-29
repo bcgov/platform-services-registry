@@ -5,6 +5,11 @@ image:
   tag: main
   pullPolicy: Always
 
+preImage:
+  repository: ghcr.io/bcgov/pltsvc-pre
+  tag: main
+  pullPolicy: Always
+
 imagePullSecrets: []
 nameOverride: pltsvc-app
 fullnameOverride: pltsvc-app

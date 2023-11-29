@@ -1,4 +1,4 @@
-name: Deploy Prod Environment
+name: 3.Deploy Prod Environment
 
 on:
   release:
@@ -25,13 +25,13 @@ jobs:
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-        namespace: 101ed4-prod
+        namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
 
     - name: Deploy apps with Helm chart
       run: |
         vtag=${{ github.event.release.tag_name }}
         make upgrade \
-        NAMESPACE=101ed4-prod \
+        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${vtag//v}
       working-directory: ./helm/main

@@ -18,7 +18,7 @@ export type PublicCloudProjectWithContacts = Prisma.PublicCloudRequestedProjectG
 }>;
 
 // Create a test env variable that prefix the namespace name with "t"
-export default async function createPublicCloudNatsMessage(
+export default function createPublicCloudNatsMessage(
   requestType: RequestType,
   requestedProject: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,

@@ -10,6 +10,6 @@ dependencies:
     repository: 'file://../_app'
     condition: app.enabled
   - name: mongodb
-    version: '14.2.7'
+    version: '14.3.2'
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
