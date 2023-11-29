@@ -66,7 +66,7 @@ export default async function ProductsTable({
       total={total}
       currentPage={currentPage}
       pageSize={pageSize || defaultPageSize}
-      showDownloadButton={true}
+      showDownloadButton
     />
   );
 }
