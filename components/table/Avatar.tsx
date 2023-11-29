@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 export default function Avatar({ name, email }: { name: string; email: string }) {
   const { data, isLoading, error } = useQuery<string, Error>({
     queryKey: ['userImage', email],
-    queryFn: () => fetchUserImage('oamar.kanji@gov.bc.ca'),
+    queryFn: () => fetchUserImage(email),
     enabled: !!email,
   });
 
