@@ -1,56 +1,100 @@
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
-
-const filters = {
-  cluster: [
-    { value: 'KLAB', label: 'KLAB', checked: false },
-    { value: 'CLAB', label: 'CLAB', checked: false },
-    { value: 'SILVER', label: 'SILVER', checked: false },
-    { value: 'GOLD', label: 'GOLD', checked: false },
-  ],
-};
+import { clusters, ministries } from '@/constants';
+import { useRef } from 'react';
 
 export default function FilterPanel() {
   const { replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
+  const clusterRef = useRef<HTMLSelectElement>(null);
+  const ministryRef = useRef<HTMLSelectElement>(null);
 
-  const handleClusterFilterChange = (cluster: string | null) => {
+  const handleFilterChange = (name: string, value: string | null) => {
     const urlSearchParams = new URLSearchParams(searchParams?.toString());
 
-    if (cluster) {
-      urlSearchParams.set('cluster', cluster);
+    if (value) {
+      urlSearchParams.set(name, value);
     } else {
-      urlSearchParams.delete('cluster');
+      urlSearchParams.delete(name);
     }
     urlSearchParams.delete('page');
 
     replace(`${pathname}?${urlSearchParams.toString()}`);
   };
 
+  const clearFilters = () => {
+    const urlSearchParams = new URLSearchParams();
+    urlSearchParams.delete('cluster');
+    urlSearchParams.delete('ministry');
+
+    if (clusterRef.current) {
+      clusterRef.current.value = '';
+    }
+    if (ministryRef.current) {
+      ministryRef.current.value = '';
+    }
+    replace(`${pathname}?${urlSearchParams.toString()}`);
+  };
+
   return (
     <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 px-4 text-sm sm:px-6 md:gap-x-6 lg:px-8">
-      <div className="grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6">
+      <div className="grid auto-rows-min grid-cols-1 gap-y-8 md:grid-cols-2 md:gap-x-6">
         <fieldset>
-          <legend className="block font-medium">Cluster</legend>
-          <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
-            {filters.cluster.map((option, optionIdx) => (
-              <div key={option.value} className="flex items-center text-base sm:text-sm">
-                <input
-                  id={`price-${optionIdx}`}
-                  name="price[]"
-                  defaultValue={option.value}
-                  type="checkbox"
-                  className="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  defaultChecked={option.checked}
-                  onChange={(e) => handleClusterFilterChange(e.target.checked ? e.target.value : null)}
-                />
-                <label htmlFor={`price-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
-                  {option.label}
-                </label>
-              </div>
-            ))}
+          <div className="mt-2">
+            <label htmlFor="cluster" className="block text-sm font-medium leading-6 text-gray-900">
+              Cluster
+            </label>
+            <select
+              ref={clusterRef}
+              id="cluster"
+              name="cluster"
+              autoComplete="cluster-name"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+              onChange={(e) => handleFilterChange('cluster', e.target.value)}
+            >
+              <option selected={true} disabled value="">
+                Select Cluster
+              </option>
+              {clusters.map((cluster) => (
+                <option key={cluster} value={cluster}>
+                  {cluster}
+                </option>
+              ))}
+            </select>
           </div>
         </fieldset>
+        <fieldset>
+          <div className="mt-2">
+            <label htmlFor="ministry" className="block text-sm font-medium leading-6 text-gray-900">
+              Ministry
+            </label>
+            <select
+              ref={ministryRef}
+              id="ministry"
+              name="ministry"
+              autoComplete="cluster-name"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+              onChange={(e) => handleFilterChange('ministry', e.target.value)}
+            >
+              <option selected={true} disabled value="">
+                Select Ministry
+              </option>
+              {ministries.map((cluster) => (
+                <option key={cluster} value={cluster}>
+                  {cluster}
+                </option>
+              ))}
+            </select>
+          </div>
+        </fieldset>
+      </div>
+      <div className="mt-2 flex items-end">
+        <button
+          className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          onClick={clearFilters}
+        >
+          Clear Filters
+        </button>
       </div>
     </div>
   );

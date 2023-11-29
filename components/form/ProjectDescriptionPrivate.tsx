@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
 import { useRouter } from 'next/navigation';
+import { clusters, ministries } from '@/constants';
 
 export default function ProjectDescription({
   disabled,
@@ -93,9 +94,11 @@ export default function ProjectDescription({
               )}
             >
               <option value="">Select Ministry</option>
-              <option>CITZ</option>
-              <option>PSA</option>
-              <option>HLTH</option>
+              {ministries.map((ministry) => (
+                <option key={ministry} value={ministry}>
+                  {ministry}
+                </option>
+              ))}
             </select>
 
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -120,9 +123,11 @@ export default function ProjectDescription({
               )}
             >
               <option value="">Select Cluster</option>
-              <option>SILVER</option>
-              <option>GOLD</option>
-              <option>KLAB</option>
+              {clusters.map((cluster) => (
+                <option key={cluster} value={cluster}>
+                  {cluster}
+                </option>
+              ))}
             </select>
             <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select your cluster Select CLAB or KLAB for testing purposes
