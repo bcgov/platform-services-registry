@@ -65,7 +65,7 @@ export default async function ProductsTable({
       currentPage={currentPage}
       pageSize={pageSize || defaultPageSize}
       showDownloadButton={true}
-      downloadApiEndpoint="private-cloud"
+      apiContext="private-cloud"
     />
   );
 }

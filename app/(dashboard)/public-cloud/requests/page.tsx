@@ -67,7 +67,6 @@ export default async function RequestsTable({
       currentPage={currentPage}
       pageSize={pageSize || defaultPageSize}
       showDownloadButton={false}
-      downloadApiEndpoint="/api/public-cloud/allprojects"
     />
   );
 }

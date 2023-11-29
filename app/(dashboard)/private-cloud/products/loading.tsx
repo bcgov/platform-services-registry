@@ -13,7 +13,6 @@ export default async function ProductsTableSkeleton() {
       currentPage={1}
       pageSize={10}
       showDownloadButton={false}
-      downloadApiEndpoint="/api/private-cloud/allprojects"
     />
   );
 }
