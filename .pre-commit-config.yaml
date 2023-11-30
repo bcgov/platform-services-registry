@@ -22,6 +22,10 @@ repos:
   rev: v3.0.3
   hooks:
   - id: prettier
+- repo: https://github.com/pre-commit/mirrors-eslint
+  rev: 5e0aa6aae48e016554f9ff5fc2141f50ba8ac52f # pragma: allowlist secret
+  hooks:
+  - id: eslint
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.4.0
   hooks:
