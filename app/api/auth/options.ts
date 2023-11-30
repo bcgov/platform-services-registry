@@ -1,6 +1,5 @@
-import NextAuth, { Account, AuthOptions } from 'next-auth';
+import NextAuth, { Account, AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import { Session } from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 

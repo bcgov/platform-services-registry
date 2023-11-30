@@ -30,8 +30,6 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-shadow": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "import/extensions": "off",
-    "import/no-duplicates": "off",
     "import/no-extraneous-dependencies": "off",
     "import/no-named-as-default": "off",
     "jsx-a11y/anchor-is-valid": "off",
@@ -41,9 +39,7 @@
     "jsx-a11y/no-redundant-roles": "off",
     "jsx-a11y/no-static-element-interactions": "off",
     "newline-before-return": "off",
-    "no-else-return": "off",
-    "prettier/prettier": "off",
-    "react/prop-types": "off",
+    "no-else-return": "error",
     "react/react-in-jsx-scope": "off"
   }
 }

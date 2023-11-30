@@ -5,8 +5,9 @@ import { PrivateCloudRequest, User, DecisionStatus, Cluster } from '@prisma/clie
 import prisma from '@/lib/prisma';
 import { PrivateCloudEditRequestBodySchema, PrivateCloudEditRequestBody } from '@/schema';
 import { string, z } from 'zod';
-import editRequest from '@/requestActions/private-cloud/editRequest';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/editRequest';
+import editRequest, {
+  PrivateCloudRequestWithProjectAndRequestedProject,
+} from '@/requestActions/private-cloud/editRequest';
 import { subscribeUsersToMautic } from '@/mautic';
 import { sendPrivateCloudNatsMessage } from '@/nats';
 import { sendEditRequestEmails } from '@/ches/emailHandler';

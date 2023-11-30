@@ -1,7 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Question } from '@/components/assets/question';
-import { useEffect, useState, useRef } from 'react';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import classNames from '@/components/utils/classnames';
 
