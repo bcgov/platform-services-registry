@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import classNames from '@/components/utils/classnames';
 
 interface TableProps {
   headers: Record<string, string>[];
@@ -54,21 +55,21 @@ export default function TableBody({ headers, rows }: TableProps) {
   const onRowClickHandler = (row: any) => {
     switch (pathname) {
       case '/private-cloud/products':
-        router.push(path.join('/private-cloud', 'edit', row.licencePlate));
+        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
         break;
       case '/private-cloud/requests':
         if (isAdmin) {
-          router.push(path.join('/private-cloud', 'decision', row.licencePlate));
+          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
         } else {
           router.push(path.join('/private-cloud', 'request', row.id));
         }
         break;
       case '/public-cloud/products':
-        router.push(path.join('/public-cloud', 'edit', row.licencePlate));
+        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
         break;
       case '/public-cloud/requests':
         if (isAdmin) {
-          router.push(path.join('/public-cloud', 'decision', row.licencePlate));
+          router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
         } else {
           router.push(path.join('/public-cloud', 'request', row.id));
         }

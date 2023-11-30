@@ -75,7 +75,8 @@ function TypeBadge({ status }: { status: string }) {
 export const privateCloudProjectDataToRow = (project: PrivateProject) => {
   return {
     id: project.id,
-    name: project.name,
+    licencePlateValue: project.licencePlate,
+    name: <p className="line-clamp-2 w-60">{project.description}</p>,
     description: <p className="line-clamp-2">{project.description}</p>,
     ministry: project.ministry,
     cluster: project.cluster,
@@ -118,7 +119,8 @@ export const privateCloudProjectDataToRow = (project: PrivateProject) => {
 export const publicCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
-    name: project.name,
+    licencePlateValue: project.licencePlate,
+    name: <p className="line-clamp-2 w-60">{project.description}</p>,
     provider: project.provider,
     description: project.description,
     ministry: project.ministry,
@@ -161,6 +163,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
 export const privateCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
+    licencePlateValue: request.licencePlate,
     type: request.type,
     status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
@@ -178,6 +181,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
 export const publicCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
+    licencePlateValue: request.licencePlate,
     type: <TypeBadge status={request.decisionStatus} />,
     status: request.decisionStatus,
     name: request.requestedProject.name,

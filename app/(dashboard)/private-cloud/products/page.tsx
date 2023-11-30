@@ -10,7 +10,6 @@ import { userInfo } from '@/queries/user';
 
 const headers = [
   { field: 'name', headerName: 'Name' },
-  { field: 'description', headerName: 'Description' },
   { field: 'ministry', headerName: 'Ministry' },
   { field: 'cluster', headerName: 'Cluster' },
   { field: 'projectOwner', headerName: 'Project Owner' },
