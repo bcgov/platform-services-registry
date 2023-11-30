@@ -1,14 +1,14 @@
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../components/Closing';
-import { TailwindConfig } from '../components/TailwindConfig';
-import { compareProjects } from '../components/Edit/compareProjects';
-import ContactChanges from '../components/Edit/ContactChanges';
-import QuotaChanges from '../components/Edit/QuotaChanges';
-import DescriptionChanges from '../components/Edit/DescriptionChanges';
+import Closing from '../../components/Closing';
+import { TailwindConfig } from '../../components/TailwindConfig';
+import { compareProjects } from '../../components/Edit/compareProjects';
+import ContactChanges from '../../components/Edit/ContactChanges';
+import QuotaChanges from '../../components/Edit/QuotaChanges';
+import DescriptionChanges from '../../components/Edit/DescriptionChanges';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {

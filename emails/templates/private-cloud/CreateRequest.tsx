@@ -1,12 +1,12 @@
 import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../components/Header';
-import ProductDetails from '../components/ProductDetails';
+import Header from '../../components/Header';
+import ProductDetails from '../../components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../components/NamespaceDetails';
-import Closing from '../components/Closing';
-import { TailwindConfig } from '../components/TailwindConfig';
+import NamespaceDetails from '../../components/NamespaceDetails';
+import Closing from '../../components/Closing';
+import { TailwindConfig } from '../../components/TailwindConfig';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
@@ -25,11 +25,10 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg">New Request!</Heading>
-                <Text>Hi Registry Team, </Text>
+                <Text>Hi {request.requestedProject.name} Team, </Text>
                 <Text className="">
-                  There is a new request that requires your review. Log in to the Registry to review the details. If you
-                  have any questions about the request, the PO and TL contact details are included below and in the
-                  Registry
+                  You have requested a new project set for your product on the Private Cloud Openshift platform. Our
+                  administrators have been notified and will review your request.
                 </Text>
                 <Button
                   href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
