@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import classNames from '@/components/utils/classnames';
 
 interface TableProps {
   headers: Record<string, string>[];

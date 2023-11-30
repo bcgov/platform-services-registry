@@ -76,7 +76,7 @@ export const privateCloudProjectDataToRow = (project: PrivateProject) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: project.name,
+    name: <p className="line-clamp-2 w-60">{project.description}</p>,
     description: <p className="line-clamp-2">{project.description}</p>,
     ministry: project.ministry,
     cluster: project.cluster,
@@ -120,7 +120,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: project.name,
+    name: <p className="line-clamp-2 w-60">{project.description}</p>,
     provider: project.provider,
     description: project.description,
     ministry: project.ministry,
