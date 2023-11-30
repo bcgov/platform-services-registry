@@ -69,6 +69,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
+      console.log(data);
       const response = await fetch(`/api/private-cloud/decision/${params.licencePlate}`, {
         method: 'POST',
         headers: {
@@ -128,7 +129,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             {!isDisabled && session?.user?.roles?.includes('admin') ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton text="REJECT REQUEST" onClick={() => methods.setValue('decision', 'REJECTED')} />
-                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />{' '}
+                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />
               </div>
             ) : null}
           </div>
@@ -140,7 +141,13 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <Comment open={openComment} setOpen={setOpenComment} onSubmit={setComment} isLoading={isLoading} type="reject" />
+      <Comment
+        open={openComment}
+        setOpen={setOpenComment}
+        onSubmit={setComment}
+        isLoading={isLoading}
+        type={data?.type}
+      />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );
