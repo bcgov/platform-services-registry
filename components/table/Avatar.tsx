@@ -12,7 +12,7 @@ export default function Avatar({ name, email }: { name: string; email: string })
   });
 
   return (
-    <div className="flex items-center mx-2">
+    <div className="flex items-center">
       <div className="h-9 w-9">
         <Image
           className="inline-block rounded-full"
@@ -24,8 +24,8 @@ export default function Avatar({ name, email }: { name: string; email: string })
         />
       </div>
       <div className="ml-3">
-        <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{name}</p>
-        <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">{email}</p>
+        <p className="text-base  text-gray-700 group-hover:text-gray-900">{name}</p>
+        {/* <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">{email}</p> */}
       </div>
     </div>
   );
