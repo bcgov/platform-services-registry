@@ -3,7 +3,7 @@ import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
-import { NewRequestTemplate } from '@/emails/templates/private-cloud/AdminCreateRequest';
+import { NewRequestTemplate } from '@/emails/templates/private-cloud/AdminRequest';
 import { RequestApprovalTemplate } from '@/emails/templates/private-cloud/RequestApproval';
 import { RequestRejectionTemplate } from '@/emails/templates/private-cloud/RequestRejection';
 import { adminEmails } from '@/ches/emailConstant';
