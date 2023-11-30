@@ -98,7 +98,7 @@ export const privateCloudProjectDataToRow = (project: PrivateProject) => {
         email={project.secondaryTechnicalLeadDetails.email}
       />
     ) : null,
-    created: <p className="w-28">{formatDate(project.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
     licencePlate: <p className="w-28">{project.licencePlate}</p>,
     edit: (
       <div
@@ -142,7 +142,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
         email={project.secondaryTechnicalLeadDetails.email}
       />
     ) : null,
-    created: <p className="w-28">{formatDate(project.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
     licencePlate: <p className="w-28">{project.licencePlate}</p>,
     edit: (
       <div
@@ -173,7 +173,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
     technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
       request?.secondaryTechnicalLead ? ',' : ''
     } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
     licencePlate: <p className="w-28">{request.licencePlate}</p>,
   };
 };
@@ -191,7 +191,7 @@ export const publicCloudRequestDataToRow = (request: any) => {
     technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
       request?.secondaryTechnicalLead ? ',' : ''
     } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
     licencePlate: <p className="w-28">{request.licencePlate}</p>,
   };
 };

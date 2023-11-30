@@ -25,8 +25,8 @@ export default function Modal({
   };
 
   const handleCommentChange = (event: any) => {
-    const comment = event.target.value;
-    setComment(comment);
+    const comm = event.target.value;
+    setComment(comm);
   };
 
   return (

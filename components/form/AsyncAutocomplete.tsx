@@ -75,14 +75,14 @@ export default function AsyncAutocomplete({
     setSelected(value);
     setQuery(value.mail);
 
-    const { givenName: firstName, surname: lastName, mail: email, displayName } = value;
+    const { givenName: firstName, surname: lastName, mail, displayName } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
 
     const parsedParams = UserInputSchema.safeParse({
       firstName,
       lastName,
-      email,
+      email: mail,
       ministry,
     });
 
@@ -104,7 +104,7 @@ export default function AsyncAutocomplete({
     setValue(name, {
       firstName,
       lastName,
-      email,
+      email: mail,
       ministry,
     });
   };
@@ -168,12 +168,10 @@ export default function AsyncAutocomplete({
                     }
                     value={person}
                   >
-                    {({ selected, active }) => (
+                    {({ selected: sel, active }) => (
                       <>
-                        <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                          {person?.mail}
-                        </span>
-                        {selected ? (
+                        <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{person?.mail}</span>
+                        {sel ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                               active ? 'text-white' : 'text-teal-600'
