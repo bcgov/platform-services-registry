@@ -1,7 +1,6 @@
-// @ts-nocheck
-
 import { Fragment, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import isString from 'lodash.isstring';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
@@ -76,14 +75,14 @@ export default function AsyncAutocomplete({
     setSelected(value);
     setQuery(value.mail);
 
-    const { givenName: firstName, surname: lastName, mail: email, displayName } = value;
+    const { givenName: firstName, surname: lastName, mail, displayName } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
 
     const parsedParams = UserInputSchema.safeParse({
       firstName,
       lastName,
-      email,
+      email: mail,
       ministry,
     });
 
@@ -105,7 +104,7 @@ export default function AsyncAutocomplete({
     setValue(name, {
       firstName,
       lastName,
-      email,
+      email: mail,
       ministry,
     });
   };
@@ -169,12 +168,10 @@ export default function AsyncAutocomplete({
                     }
                     value={person}
                   >
-                    {({ selected, active }) => (
+                    {({ selected: sel, active }) => (
                       <>
-                        <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                          {person?.mail}
-                        </span>
-                        {selected ? (
+                        <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{person?.mail}</span>
+                        {sel ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                               active ? 'text-white' : 'text-teal-600'
@@ -192,7 +189,7 @@ export default function AsyncAutocomplete({
           </Transition>
         </div>
       </Combobox>
-      {errors[name] ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{errors[name].message}</p> : null}
+      {errors[name] ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors[name]?.message)}</p> : null}
       {/* {errors?.[name]?.["email"] ? (
         <p className={"text-red-400 mt-3 text-sm leading-6"}>
           {errors?.[name]?.["email"].message}
@@ -206,7 +203,7 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            value={selected?.givenName}
+            value={isString(selected) ? selected : selected.givenName}
             placeholder="Autofilled from IDIR"
             type="text"
             id="first-name"
@@ -223,7 +220,7 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            value={selected?.surname}
+            value={isString(selected) ? selected : selected.surname}
             placeholder="Autofilled from IDIR"
             type="text"
             id="last-name"
@@ -240,7 +237,7 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            value={parseMinistryFromDisplayName(selected?.displayName || '')}
+            value={parseMinistryFromDisplayName(isString(selected) ? selected : selected.displayName)}
             placeholder="Autofilled from IDIR"
             type="text"
             id="ministry"

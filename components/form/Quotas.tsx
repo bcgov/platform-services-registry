@@ -1,7 +1,6 @@
-// @ts-nocheck
-
 import Link from 'next/link';
 import { useFormContext } from 'react-hook-form';
+import { z } from 'zod';
 import classNames from '@/components/utils/classnames';
 import { PrivateCloudProject, Quota } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
@@ -10,7 +9,7 @@ type CpuOptionKeys = z.infer<typeof DefaultCpuOptionsSchema>;
 type MemoryOptionKeys = z.infer<typeof DefaultMemoryOptionsSchema>;
 type StorageOptionKeys = z.infer<typeof DefaultStorageOptionsSchema>;
 
-type QuotaOptions<K extends string> = {
+type QuotaOptions<K extends string = any> = {
   [key in K]: string;
 };
 
@@ -119,7 +118,7 @@ function QuotaInput({
             </option>
           )}
         </select>
-        {errors?.[nameSpace + 'Quota']?.[quotaName] && (
+        {(errors?.[nameSpace + 'Quota'] as { [key: string]: any })?.[quotaName] && (
           <p className="text-red-400 mt-3 text-sm leading-6">
             Select the {quotaName} for the {nameSpace} namespace
           </p>
@@ -172,8 +171,7 @@ export default function Quotas({
                 licensePlate={licensePlate}
                 nameSpace={nameSpace}
                 disabled={disabled}
-                // @ts-ignore
-                quota={currentProject?.[nameSpace + 'Quota'][quotaName]}
+                quota={(currentProject as { [key: string]: any })?.[nameSpace + 'Quota'][quotaName]}
               />
             ))}
           </div>

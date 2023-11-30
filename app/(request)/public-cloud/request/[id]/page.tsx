@@ -74,7 +74,7 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts

@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
   }),
 });
 
-const Provider: React.FC<ProviderProps> = ({ children }) => {
+const Provider: React.FC<ProviderProps> = ({ children }: ProviderProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>{children}</SessionProvider>

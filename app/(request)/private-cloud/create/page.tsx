@@ -60,7 +60,7 @@ export default function Page() {
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
           <div className="space-y-12">
             <ProjectDescription />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />

@@ -3,12 +3,12 @@ import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
-import { NewRequestTemplate } from '@/emails/templates/NewRequestTemplate';
-import { RequestApprovalTemplate } from '@/emails/templates/RequestApprovalTemplate';
-import { DenialTemplate } from '@/emails/templates/DenialTemplate';
+import { NewRequestTemplate } from '@/emails/templates/private-cloud/AdminCreateRequest';
+import { RequestApprovalTemplate } from '@/emails/templates/private-cloud/RequestApproval';
+import { RequestRejectionTemplate } from '@/emails/templates/private-cloud/RequestRejection';
 import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches';
-import EditRequestTemplate from '@/emails/templates/EditRequestTemplate';
+import EditRequestTemplate from '@/emails/templates/private-cloud/EditRequest';
 
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
@@ -55,8 +55,8 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
   }
 };
 
-export const sendDenialEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
-  const email = render(DenialTemplate({ request, comment }), { pretty: true });
+export const sendRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
+  const email = render(RequestRejectionTemplate({ request, comment }), { pretty: true });
 
   try {
     await sendEmail({

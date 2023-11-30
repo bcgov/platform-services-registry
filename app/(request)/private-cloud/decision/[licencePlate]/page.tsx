@@ -66,7 +66,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [data]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
       console.log(data);
@@ -75,7 +75,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {
@@ -106,6 +106,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     <div>
       <FormProvider {...methods}>
         <form
+          autoComplete="off"
           onSubmit={methods.handleSubmit(() => {
             if (methods.getValues('decision') === 'APPROVED') setOpenCreate(true);
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);

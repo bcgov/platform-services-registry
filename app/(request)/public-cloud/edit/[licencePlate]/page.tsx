@@ -49,10 +49,6 @@ async function fetchActiveRequest(licencePlate: string): Promise<PublicCloudRequ
 }
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
@@ -90,8 +86,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [requestData]);
 
-  const onSubmit = async (data: any) => {
-    console.log('SUBMIT', data);
+  const onSubmit = async (val: any) => {
+    console.log('SUBMIT', val);
     setIsLoading(true);
     try {
       const response = await fetch(`/api/public-cloud/edit/${params.licencePlate}`, {
@@ -99,7 +95,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {
@@ -124,7 +120,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrivateCloudProject } from '@prisma/client';
+import { Prisma, PrivateCloudProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
-import { Prisma } from '@prisma/client';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts

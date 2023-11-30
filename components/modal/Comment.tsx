@@ -19,8 +19,8 @@ export default function Modal({
   const cancelButtonRef = useRef(null);
 
   const handleCommentChange = (event: any) => {
-    const comment = event.target.value;
-    setComment(comment);
+    const comm = event.target.value;
+    setComment(comm);
   };
 
   useEffect(() => {

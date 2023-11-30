@@ -25,8 +25,8 @@ export default function Modal({
   };
 
   const handleCommentChange = (event: any) => {
-    const comment = event.target.value;
-    setComment(comment);
+    const comm = event.target.value;
+    setComment(comm);
   };
 
   return (
@@ -142,8 +142,8 @@ export default function Modal({
                       isLoading
                         ? 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2'
                         : confirm
-                        ? 'justify-center bg-bcorange text-bcblue hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2'
-                        : 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2',
+                        ? 'justify-center bg-bcorange text-bcblue hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2' // eslint-disable-line prettier/prettier
+                        : 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2', // eslint-disable-line prettier/prettier
                     )}
                   >
                     {isLoading ? (
