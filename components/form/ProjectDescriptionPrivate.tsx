@@ -37,6 +37,7 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <input
+              type="hidden"
               disabled={disabled}
               type="text"
               placeholder="Enter product name"

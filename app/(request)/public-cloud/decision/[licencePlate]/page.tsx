@@ -97,7 +97,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts

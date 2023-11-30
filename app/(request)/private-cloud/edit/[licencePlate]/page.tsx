@@ -131,7 +131,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
             <TeamContacts

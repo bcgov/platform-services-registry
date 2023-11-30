@@ -105,6 +105,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     <div>
       <FormProvider {...methods}>
         <form
+          autoComplete="off"
           onSubmit={methods.handleSubmit(() => {
             if (methods.getValues('decision') === 'APPROVED') setOpenCreate(true);
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
