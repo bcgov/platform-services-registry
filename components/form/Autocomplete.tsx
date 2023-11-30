@@ -62,12 +62,10 @@ export default function Example() {
                       }
                       value={person}
                     >
-                      {({ selected, active }) => (
+                      {({ selected: sel, active }) => (
                         <>
-                          <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                            {person.name}
-                          </span>
-                          {selected ? (
+                          <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{person.name}</span>
+                          {sel ? (
                             <span
                               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                 active ? 'text-white' : 'text-teal-600'

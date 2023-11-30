@@ -94,7 +94,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [requestData]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/edit/${params.licencePlate}`, {
@@ -102,7 +102,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {

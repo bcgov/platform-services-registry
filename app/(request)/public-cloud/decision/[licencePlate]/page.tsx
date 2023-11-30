@@ -64,7 +64,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [data]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/public-cloud/decision/${params.licencePlate}`, {
@@ -72,7 +72,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {

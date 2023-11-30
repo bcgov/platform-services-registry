@@ -5,8 +5,17 @@ import { PrivateProject } from '@/queries/types';
 import classNames from '@/components/utils/classnames';
 import Avtar from '@/components/table/Avatar';
 
+const tailwindColors = {
+  red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
+  blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
+  green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
+  grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
+  // ... add other colors here
+};
+
 function TypeBadge({ status }: { status: string }) {
-  let text, colour;
+  let text = '';
+  let colour!: keyof typeof tailwindColors;
 
   switch (status) {
     case 'APPROVED':
@@ -30,15 +39,6 @@ function TypeBadge({ status }: { status: string }) {
       colour = 'grey';
   }
 
-  const tailwindColors = {
-    red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
-    blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
-    green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
-    grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
-    // ... add other colors here
-  };
-
-  //@ts-ignore
   const classes = tailwindColors[colour] || [];
 
   return (
@@ -98,7 +98,7 @@ export const privateCloudProjectDataToRow = (project: PrivateProject) => {
         email={project.secondaryTechnicalLeadDetails.email}
       />
     ) : null,
-    created: <p className="w-28">{formatDate(project.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
     licencePlate: <p className="w-28">{project.licencePlate}</p>,
     edit: (
       <div
@@ -142,7 +142,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
         email={project.secondaryTechnicalLeadDetails.email}
       />
     ) : null,
-    created: <p className="w-28">{formatDate(project.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
     licencePlate: <p className="w-28">{project.licencePlate}</p>,
     edit: (
       <div
@@ -173,7 +173,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
     technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
       request?.secondaryTechnicalLead ? ',' : ''
     } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
     licencePlate: <p className="w-28">{request.licencePlate}</p>,
   };
 };
@@ -191,7 +191,7 @@ export const publicCloudRequestDataToRow = (request: any) => {
     technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
       request?.secondaryTechnicalLead ? ',' : ''
     } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created['$date'])}</p>,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
     licencePlate: <p className="w-28">{request.licencePlate}</p>,
   };
 };
