@@ -54,6 +54,9 @@ jobs:
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
 
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+
     - name: Rerun Pre-Commit Hooks on CI
       run: |
         pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
