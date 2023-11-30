@@ -79,9 +79,9 @@ export default function FilterPanel() {
               <option selected={true} disabled value="">
                 Select Ministry
               </option>
-              {ministries.map((cluster) => (
-                <option key={cluster} value={cluster}>
-                  {cluster}
+              {ministries.map((ministry) => (
+                <option key={ministry} value={ministry}>
+                  {ministry}
                 </option>
               ))}
             </select>
