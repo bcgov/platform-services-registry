@@ -69,7 +69,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
-      console.log(data);
       const response = await fetch(`/api/private-cloud/decision/${params.licencePlate}`, {
         method: 'POST',
         headers: {

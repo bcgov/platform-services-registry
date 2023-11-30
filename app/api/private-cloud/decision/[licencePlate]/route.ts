@@ -41,8 +41,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
   const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(data);
-  console.log('params', parsedParams);
-  console.log('body', parsedBody);
 
   if (!parsedParams.success) {
     console.log(parsedParams.error.message);
