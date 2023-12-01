@@ -1,4 +1,4 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../../components/Header';
 import ProductDetails from '../../components/ProductDetails';
@@ -9,7 +9,7 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
+  request: PublicCloudRequestWithRequestedProject;
 }
 
 export const RequestApprovalTemplate = ({ request }: EmailProp) => {

@@ -39,6 +39,7 @@ const publicCloudFieldsToCompare: Array<keyof PublicCloudProject> = [
   'primaryTechnicalLeadId',
   'secondaryTechnicalLeadId',
   'accountCoding',
+  'budget',
 ];
 
 export function comparePrivateCloudProjects(

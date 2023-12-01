@@ -45,7 +45,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 <Text className="mb-0">{comment}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['name'] || changed['description'] || changed['ministry'] || changed['cluster']) && (
+                {(changed['name'] || changed['description'] || changed['ministry']) && (
                   <DescriptionChanges
                     nameCurrent={current.name}
                     descCurrent={current.description}
@@ -71,10 +71,9 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['accountCoding'] ||
-                  changed['testQuota'] ||
-                  changed['developmentQuota'] ||
-                  changed['toolsQuota']) && <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>}
+                {(changed['accountCoding'] || changed['budget']) && (
+                  <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>
+                )}
                 <div className="flex flex-row flex-wrap">
                   {changed['productionQuota'] && (
                     <QuotaChanges

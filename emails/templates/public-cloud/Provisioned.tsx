@@ -6,10 +6,10 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 import ProductDetails from '../../components/ProductDetails';
 import NamespaceDetails from '../../components/NamespaceDetails';
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
 
 interface EmailProp {
-  product: PrivateCloudRequestedProjectWithContacts;
+  product: PublicCloudRequestedProjectWithContacts;
 }
 
 export const ProvisionedTemplate = ({ product }: EmailProp) => {
