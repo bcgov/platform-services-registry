@@ -22,7 +22,7 @@ export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Sorry, your request was Rejected</Heading>
+                <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
                 <Text>Hi {request.requestedProject.name} team, </Text>
                 <Text className="">
                   Your request regarding the product {request.requestedProject.name} on the Private Cloud Openshift
