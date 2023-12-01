@@ -37,7 +37,7 @@ export default function ProjectDescription({
           </label>
           <div className="mt-2">
             <input
-              autoComplete="xyz"
+              autoComplete="off"
               disabled={disabled}
               type="text"
               placeholder="Enter product name"
