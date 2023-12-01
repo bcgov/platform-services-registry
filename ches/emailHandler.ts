@@ -55,7 +55,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
   }
 };
 
-export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
+export const sendRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
   const email = render(RequestRejectionTemplate({ request, comment }), { pretty: true });
 
   try {
