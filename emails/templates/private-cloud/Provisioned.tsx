@@ -12,7 +12,7 @@ interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
 }
 
-export const ProvisionedTemplate = ({ product }: EmailProp) => {
+const ProvisionedTemplate = ({ product }: EmailProp) => {
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -31,8 +31,8 @@ export const ProvisionedTemplate = ({ product }: EmailProp) => {
                   <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
                     Log in to the cluster console
                   </Link>{' '}
-                  using the button below and you'll see all four namespaces included in a project set. If you have any
-                  more questions reach out to the Platform Services team in the RocketChat channel{' '}
+                  using the button below and you&apos;ll see all four namespaces included in a project set. If you have
+                  any more questions reach out to the Platform Services team in the RocketChat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops&#8209;operations
                   </Link>

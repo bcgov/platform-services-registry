@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import { PublicCloudCreateRequestBodySchema, PublicCloudCreateRequestBody } from '@/schema';
+import { PublicCloudCreateRequestBody, PublicCloudCreateRequestBodySchema } from '@/schema';
 import createRequest, {
   PublicCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/public-cloud/createRequest';

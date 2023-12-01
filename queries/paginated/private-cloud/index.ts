@@ -1,8 +1,8 @@
 import prisma from '@/lib/prisma';
 import {
   getPrivateCloudProjectsQuery,
-  getPrivateCloudProjectsTotalCount,
   getPrivateCloudProjectsResult,
+  getPrivateCloudProjectsTotalCount,
 } from '@/queries/private-cloud/helpers';
 import { PrivateProject } from '@/queries/types';
 

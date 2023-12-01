@@ -1,5 +1,5 @@
 // RegisterProductButton.js
-import { useSession, signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 export default function RegisterProductButton() {
   const { data: session } = useSession();

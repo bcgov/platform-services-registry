@@ -72,7 +72,7 @@ export default function AccountCodingInput({
         placeholder={placeholder}
         maxLength={length}
         onChange={(e) => {
-          const value = e.target.value;
+          const { value } = e.target;
           setAccountCoding((prev: any) => ({ ...prev, [name]: value }));
         }}
         value={accountCoding[name]}
