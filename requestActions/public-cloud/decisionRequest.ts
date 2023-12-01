@@ -1,7 +1,6 @@
-import { ProjectStatus, DecisionStatus } from '@prisma/client';
+import { DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { PublicCloudEditRequestBody } from '@/schema';
-import { Prisma } from '@prisma/client';
 
 export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {
@@ -80,7 +79,7 @@ export default async function makeDecisionRequest(
   // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject field
   // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
   // project if the admin did not change anything.
-  return await prisma.publicCloudRequest.update({
+  return prisma.publicCloudRequest.update({
     where: {
       id: request.id,
     },

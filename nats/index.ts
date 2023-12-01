@@ -1,11 +1,11 @@
-import { connect, StringCodec, JSONCodec } from 'nats';
+import { JSONCodec, StringCodec, connect } from 'nats';
 import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 import createPublicCloudNatsMessage, {
-  PublicCloudRequestedProjectWithContacts,
   PublicCloudProjectWithContacts,
+  PublicCloudRequestedProjectWithContacts,
 } from '@/nats/publicCloud';
 import openshiftDeletionCheck, { DeletableField } from '@/scripts/deletioncheck';
-import { RequestType, PrivateCloudRequest } from '@prisma/client';
+import { PrivateCloudRequest, RequestType } from '@prisma/client';
 
 const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
 

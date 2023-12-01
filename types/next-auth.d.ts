@@ -1,4 +1,4 @@
-import NextAuth, { JWT, DefaultSession } from 'next-auth/jwt';
+import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
   /**

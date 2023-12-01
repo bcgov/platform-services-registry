@@ -4,7 +4,7 @@ import {
   DefaultStorageOptions,
   snapshot,
 } from '@/nats/privateCloud/constants';
-import { Prisma, RequestType, PrivateCloudRequest } from '@prisma/client';
+import { Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 
 export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
   include: {
