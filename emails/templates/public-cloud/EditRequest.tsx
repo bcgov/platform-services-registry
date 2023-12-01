@@ -1,18 +1,18 @@
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../../components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
-import { compareProjects } from '../../components/Edit/compareProjects';
+import { comparePublicCloudProjects } from '../../components/Edit/utils/compareProjects';
 import ContactChanges from '../../components/Edit/ContactChanges';
 import QuotaChanges from '../../components/Edit/QuotaChanges';
 import DescriptionChanges from '../../components/Edit/DescriptionChanges';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
-  request: PrivateCloudRequestWithProjectAndRequestedProject;
+  request: PublicCloudRequestWithProjectAndRequestedProject;
   comment: string;
 }
 
@@ -20,7 +20,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
-  const changed = compareProjects(current, requested);
+  const changed = comparePublicCloudProjects(current, requested);
 
   return (
     <Html>
@@ -50,11 +50,9 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                     nameCurrent={current.name}
                     descCurrent={current.description}
                     ministryCurrent={current.ministry}
-                    clusterCurrent={current.cluster}
                     nameRequested={requested.name}
                     descRequested={requested.description}
                     ministryRequested={requested.ministry}
-                    clusterRequested={requested.cluster}
                   />
                 )}
               </div>

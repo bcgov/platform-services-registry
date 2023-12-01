@@ -5,7 +5,7 @@ import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
-import { compareProjects } from '../../components/Edit/compareProjects';
+import { comparePrivateCloudProjects } from '../../components/Edit/utils/compareProjects';
 import ContactChanges from '../../components/Edit/ContactChanges';
 import QuotaChanges from '../../components/Edit/QuotaChanges';
 import DescriptionChanges from '../../components/Edit/DescriptionChanges';
@@ -20,7 +20,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
-  const changed = compareProjects(current, requested);
+  const changed = comparePrivateCloudProjects(current, requested);
 
   return (
     <Html>
