@@ -10,6 +10,13 @@ declare module 'next-auth' {
       /** The user's postal address. */
       roles: string[];
     } & DefaultSession['user'];
+    isAdmin: boolean;
+    roles: string[];
+    ministries: {
+      admin: string[];
+      readonly: string[];
+      [key: string]: string[];
+    };
   }
 }
 

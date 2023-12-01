@@ -71,12 +71,41 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
+      session.isAdmin = false;
+      session.roles = [];
+      session.ministries = {
+        admin: [],
+        readonly: [],
+      };
+
       // Send properties to the client, like an access_token from a provider.
       if (token) {
         session.accessToken = token.accessToken;
-        session.user.roles = token.roles || []; // Adding roles to session.user here
-      }
+        session.user.roles = token.roles || [];
+        session.roles = token.roles || [];
 
+        session.roles.forEach((role) => {
+          if (role === 'admin') {
+            session.isAdmin = true;
+            return;
+          }
+
+          const regexPattern = /^ministry-(\w+)-(.+)$/;
+          const match = regexPattern.exec(role);
+          if (match) {
+            const ministryCode = match[1];
+            const ministryRole = match[2];
+            if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
+            session.ministries[ministryRole].push(ministryCode);
+          }
+        });
+      }
+      // {
+      //   ...
+      //   roles: ['admin', 'ministry-citz-admin'],
+      //   isAdmin: true,
+      //   ministries: { admin: ['citz'], readonly: [] },
+      // }
       return session;
     },
   },
