@@ -71,7 +71,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['productionQuota'] ||
+                {(changed['accountCoding'] ||
                   changed['testQuota'] ||
                   changed['developmentQuota'] ||
                   changed['toolsQuota']) && <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>}
