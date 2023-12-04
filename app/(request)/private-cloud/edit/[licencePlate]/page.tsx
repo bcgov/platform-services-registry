@@ -88,6 +88,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     },
   });
 
+  console.log(methods.watch());
+
   useEffect(() => {
     if (requestData) {
       setDisabled(true);
@@ -124,8 +126,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
-  const setComment = (comment: string) => {
-    onSubmit({ ...methods.getValues(), comment });
+  const setComment = (userComment: string) => {
+    onSubmit({ ...methods.getValues(), userComment });
   };
 
   return (
