@@ -32,7 +32,7 @@
     "@prisma/client": "^5.0.0",
     "@react-email/button": "^0.0.13",
     "@react-email/components": "^0.0.11",
-    "@react-email/html": "0.0.6",
+    "@react-email/html": "0.0.7",
     "@react-email/render": "0.0.10",
     "@react-email/tailwind": "0.0.13-canary.4",
     "@tailwindcss/forms": "^0.5.3",
