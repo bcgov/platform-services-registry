@@ -1,4 +1,4 @@
-import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { clusters, ministries } from '@/constants';
 import { useRef } from 'react';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -66,7 +66,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [data]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/decision/${params.licencePlate}`, {
@@ -74,7 +74,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {
@@ -129,7 +129,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             {!isDisabled && session?.user?.roles?.includes('admin') ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton text="REJECT REQUEST" onClick={() => methods.setValue('decision', 'REJECTED')} />
-                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />{' '}
+                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />
               </div>
             ) : null}
           </div>
@@ -141,7 +141,13 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <Comment open={openComment} setOpen={setOpenComment} onSubmit={setComment} isLoading={isLoading} type="reject" />
+      <Comment
+        open={openComment}
+        setOpen={setOpenComment}
+        onSubmit={setComment}
+        isLoading={isLoading}
+        type={data?.type}
+      />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );

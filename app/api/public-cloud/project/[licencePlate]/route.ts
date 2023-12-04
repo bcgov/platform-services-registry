@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PublicCloudProject, Prisma } from '@prisma/client';
+import { Prisma, PublicCloudProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 

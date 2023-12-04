@@ -1,14 +1,14 @@
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../components/Closing';
-import { TailwindConfig } from '../components/TailwindConfig';
-import { compareProjects } from '../components/Edit/compareProjects';
-import ContactChanges from '../components/Edit/ContactChanges';
-import QuotaChanges from '../components/Edit/QuotaChanges';
-import DescriptionChanges from '../components/Edit/DescriptionChanges';
+import Closing from '../../components/Closing';
+import { TailwindConfig } from '../../components/TailwindConfig';
+import { compareProjects } from '../../components/Edit/compareProjects';
+import ContactChanges from '../../components/Edit/ContactChanges';
+import QuotaChanges from '../../components/Edit/QuotaChanges';
+import DescriptionChanges from '../../components/Edit/DescriptionChanges';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
@@ -16,7 +16,7 @@ interface EmailProp {
   comment: string;
 }
 
-export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
+const EditRequestTemplate = ({ request, comment }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
@@ -45,7 +45,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 <Text className="mb-0">{comment}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['name'] || changed['description'] || changed['ministry'] || changed['cluster']) && (
+                {(changed.name || changed.description || changed.ministry || changed.cluster) && (
                   <DescriptionChanges
                     nameCurrent={current.name}
                     descCurrent={current.description}
@@ -59,9 +59,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['projectOwnerId'] ||
-                  changed['primaryTechnicalLeadId'] ||
-                  changed['secondaryTechnicalLeadId']) && (
+                {(changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
                   <ContactChanges
                     poCurrent={current.projectOwner}
                     tl1Current={current.primaryTechnicalLead}
@@ -73,12 +71,11 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['productionQuota'] ||
-                  changed['testQuota'] ||
-                  changed['developmentQuota'] ||
-                  changed['toolsQuota']) && <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>}
+                {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) && (
+                  <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>
+                )}
                 <div className="flex flex-row flex-wrap">
-                  {changed['productionQuota'] && (
+                  {changed.productionQuota && (
                     <QuotaChanges
                       licencePlate={`${request.licencePlate}-prod`}
                       quotaCurrent={current.productionQuota}
@@ -87,7 +84,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                       cluster={current.cluster}
                     />
                   )}
-                  {changed['testQuota'] && (
+                  {changed.testQuota && (
                     <QuotaChanges
                       licencePlate={`${request.licencePlate}-test`}
                       quotaCurrent={current.testQuota}
@@ -96,7 +93,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                       cluster={current.cluster}
                     />
                   )}
-                  {changed['developmentQuota'] && (
+                  {changed.developmentQuota && (
                     <QuotaChanges
                       licencePlate={`${request.licencePlate}-dev`}
                       quotaCurrent={current.testQuota}
@@ -105,7 +102,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                       cluster={current.cluster}
                     />
                   )}
-                  {changed['toolsQuota'] && (
+                  {changed.toolsQuota && (
                     <QuotaChanges
                       licencePlate={`${request.licencePlate}-tools`}
                       quotaCurrent={current.testQuota}

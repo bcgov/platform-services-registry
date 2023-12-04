@@ -1,8 +1,12 @@
-import { ProjectStatus, RequestType, DecisionStatus, PrivateCloudRequest, Prisma } from '@prisma/client';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { DecisionStatus, Prisma, PrivateCloudRequest, ProjectStatus, RequestType } from '@prisma/client';
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+  PrivateCloudCreateRequestBody,
+} from '@/schema';
 import prisma from '@/lib/prisma';
 import generateLicensePlate from '@/lib/generateLicencePlate';
-import { PrivateCloudCreateRequestBody } from '@/schema';
 
 export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {

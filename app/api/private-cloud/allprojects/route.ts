@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
         ? project.secondaryTechnicalLeadDetails.email
         : '',
       secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLeadDetails),
-      created: formatDate(project.created['$date']),
+      created: formatDate(project.created.$date),
       licencePlate: project.licencePlate,
     }));
 

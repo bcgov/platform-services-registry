@@ -103,9 +103,7 @@ export default function Modal({
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
                       By checking this box, I confirm that I have read and understood the roles and responsibilities as
                       described in the <span> </span>
-                      <a href="" className="underline text-blue-700">
-                        Onboarding Guide.
-                      </a>
+                      <span className="underline text-blue-700">Onboarding Guide.</span>
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import { clear } from 'console';
 import React, { useEffect, useState } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 const commonComponents = [
   { name: 'addressAndGeolocation', label: 'Address and Geolocation' },

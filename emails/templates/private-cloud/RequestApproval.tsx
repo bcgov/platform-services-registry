@@ -1,12 +1,12 @@
 import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../components/Header';
-import ProductDetails from '../components/ProductDetails';
+import Header from '../../components/Header';
+import ProductDetails from '../../components/ProductDetails';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../components/NamespaceDetails';
-import Closing from '../components/Closing';
-import { TailwindConfig } from '../components/TailwindConfig';
+import NamespaceDetails from '../../components/NamespaceDetails';
+import Closing from '../../components/Closing';
+import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
@@ -29,9 +29,9 @@ export const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
                   Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete. Log in to the cluster console using the button bellow and you'll see all four namespaces
-                  included in a project set. If you have any more questions, reach out to the Platform Services team in
-                  the RocketChat channel #devops-operations.
+                  complete. Log in to the cluster console using the button bellow and you&apos;ll see all four
+                  namespaces included in a project set. If you have any more questions, reach out to the Platform
+                  Services team in the RocketChat channel #devops-operations.
                 </Text>
                 <Text className="">
                   The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces

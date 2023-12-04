@@ -1,5 +1,4 @@
-import { RequestType, PublicCloudRequest, PublicCloudRequestedProject } from '@prisma/client';
-import { Prisma } from '@prisma/client';
+import { Prisma, PublicCloudRequest, PublicCloudRequestedProject, RequestType } from '@prisma/client';
 
 export type PublicCloudRequestedProjectWithContacts = Prisma.PublicCloudRequestedProjectGetPayload<{
   include: {

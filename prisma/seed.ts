@@ -1,4 +1,4 @@
-import { PrismaClient, Ministry, Cluster, Provider } from '@prisma/client';
+import { Cluster, Ministry, PrismaClient, Provider } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '../schema';
 const prisma = new PrismaClient();
 import { faker } from '@faker-js/faker';

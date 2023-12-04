@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import withErrorHandler from '@/helpers/apiErrorHandler';
 import { authOptions } from '@/app/api/auth/options';
-import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
-import createRequest from '@/requestActions/private-cloud/createRequest';
+import { PrivateCloudCreateRequestBody, PrivateCloudCreateRequestBodySchema } from '@/schema';
+import createRequest, {
+  PrivateCloudRequestWithProjectAndRequestedProject,
+} from '@/requestActions/private-cloud/createRequest';
 import { sendNewRequestEmails } from '@/ches/emailHandler';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/createRequest';
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
   // Authentication

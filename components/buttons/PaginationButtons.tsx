@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition, DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import createQueryString from '@/components/utils/createQueryString';
 

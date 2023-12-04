@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import path from 'path';
 import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
@@ -107,12 +107,12 @@ export default function TableBody({ headers, rows }: TableProps) {
                   >
                     {headers.map((value, index) => (
                       <td
-                        key={value['field'] + index}
+                        key={value.field + index}
                         className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
                           index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                         } `}
                       >
-                        {row[value['field']]}
+                        {row[value.field]}
                       </td>
                     ))}
                   </tr>
