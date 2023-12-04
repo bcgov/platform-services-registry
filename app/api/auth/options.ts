@@ -84,6 +84,9 @@ export const authOptions: AuthOptions = {
         session.user.roles = token.roles || [];
         session.roles = token.roles || [];
 
+        // Assign the 'user' role to users who log in to the system.
+        session.roles.push('user');
+
         session.roles.forEach((role) => {
           if (role === 'admin') {
             session.isAdmin = true;
