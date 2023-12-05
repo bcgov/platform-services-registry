@@ -43,11 +43,7 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  const projectsWithActiveRequest = data.filter((project) => project.activeRequest.length > 0);
-  const projectsWithoutActiveRequest = data.filter((project) => project.activeRequest.length === 0);
-
-  const rowsWithActiveRequest = projectsWithActiveRequest.map(privateCloudProjectDataToRow);
-  const rowsWithoutActiveRequest = projectsWithoutActiveRequest.map(privateCloudProjectDataToRow);
+  const rows = data.map(privateCloudProjectDataToRow);
 
   return (
     <Table
@@ -55,7 +51,7 @@ export default async function ProductsTable({
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={
         <div>
-          <NewTableBody rows={rowsWithActiveRequest} />
+          <NewTableBody rows={rows} />
         </div>
       }
       total={total}

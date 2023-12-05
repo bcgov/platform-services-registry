@@ -17,6 +17,7 @@ export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
   created: sampleDate,
   decisionDate: sampleDate,
   projectId: null,
+  userComment: 'Some comment',
   requestedProjectId: 'f',
   userRequestedProjectId: 'e',
   requestedProject: {
@@ -105,6 +106,7 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
   active: true,
   created: sampleDate,
   decisionDate: sampleDate,
+  userComment: 'Some comment',
   projectId: null,
   requestedProjectId: 'f',
   userRequestedProjectId: 'e',
