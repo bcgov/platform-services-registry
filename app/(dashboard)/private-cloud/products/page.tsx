@@ -1,6 +1,7 @@
 import Table from '@/components/table/Table';
-import TableBody from '@/components/table/TableBody';
-import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
+import NewTableBody from '@/components/table/TableBodyNew';
+import { privateCloudProjectsPaginated, Data } from '@/queries/paginated/private-cloud';
+import { privateCloudProjects } from '@/queries/private-cloud';
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
@@ -25,8 +26,8 @@ export default async function ProductsTable({
 }: {
   searchParams: {
     search: string;
-    page: number;
-    pageSize: number;
+    page: string;
+    pageSize: string;
     ministry: string;
     cluster: string;
   };
@@ -44,7 +45,8 @@ export default async function ProductsTable({
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
-  const { data, total }: { data: PrivateProject[]; total: number } = await privateCloudProjectsPaginated(
+
+  const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
     +pageSize || defaultPageSize,
     currentPage,
     search,
@@ -54,16 +56,33 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  const rows = data.map(privateCloudProjectDataToRow);
+  const allProjects = await privateCloudProjects(search, ministry, cluster, userEmail, ministryRoles);
+
+  const projectsWithActiveRequest = allProjects.filter((project: any) => project.activeRequest.length > 0);
+  const projectsWithoutActiveRequest = data.filter((project) => project.activeRequest.length === 0);
+
+  const rowsWithActiveRequest = projectsWithActiveRequest.map(privateCloudProjectDataToRow);
+  const rowsWithoutActiveRequest = projectsWithoutActiveRequest.map(privateCloudProjectDataToRow);
 
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="These are your products hosted on Private Cloud OpenShift platform"
-      tableBody={<TableBody headers={headers} rows={rows} />}
+      tableBody={
+        <div>
+          {(page === '1' || page === undefined) && (
+            <div>
+              <div className="space-x-4 px-4 py-4 sm:px-6 lg:px-8">Products with Active Requests</div>
+              <NewTableBody headers={headers} rows={rowsWithActiveRequest} />
+            </div>
+          )}
+          <div className="space-x-4 px-4 py-4 sm:px-6 lg:px-8">All Products</div>
+          <NewTableBody headers={headers} rows={rowsWithoutActiveRequest} />
+        </div>
+      }
       total={total}
       currentPage={currentPage}
-      pageSize={pageSize || defaultPageSize}
+      pageSize={+pageSize || defaultPageSize}
       showDownloadButton
       apiContext="private-cloud"
     />

@@ -6,6 +6,8 @@ import {
 } from '@/queries/private-cloud/helpers';
 import { PrivateProject } from '@/queries/types';
 
+export type Data = PrivateProject & Record<'activeRequest', string>;
+
 export async function privateCloudProjectsPaginated(
   pageSize: number,
   pageNumber: number,
@@ -15,7 +17,7 @@ export async function privateCloudProjectsPaginated(
   userEmail?: string | null,
   ministryRoles?: string[],
 ): Promise<{
-  data: PrivateProject[];
+  data: Data[];
   total: number;
 }> {
   // Initialize the search/filter query
@@ -37,7 +39,7 @@ export async function privateCloudProjectsPaginated(
   const [total, data] = await Promise.all(proms);
 
   return {
-    data: data as PrivateProject[],
+    data: data as Data[],
     total: total as number,
   };
 }

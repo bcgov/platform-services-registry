@@ -187,6 +187,26 @@ export async function getPrivateCloudProjectsResult({
     pipeline: [
       {
         $lookup: {
+          from: 'PrivateCloudRequest', // The foreign collection
+          let: { projectId: '$_id' }, // Define variable for use in the pipeline
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$projectId', '$$projectId'] }, // Match projectId
+                    { $eq: ['$active', true] }, // Match active requests
+                  ],
+                },
+              },
+            },
+            // You can add other stages here if needed
+          ],
+          as: 'activeRequest', // Output array field
+        },
+      },
+      {
+        $lookup: {
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',

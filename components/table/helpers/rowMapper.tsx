@@ -72,34 +72,32 @@ function TypeBadge({ status }: { status: string }) {
   );
 }
 
-export const privateCloudProjectDataToRow = (project: PrivateProject) => {
+export const privateCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: <p className="line-clamp-2 w-60">{project.description}</p>,
+    name: project.description,
     description: <p className="line-clamp-2">{project.description}</p>,
     ministry: project.ministry,
     cluster: project.cluster,
-    projectOwner: (
-      <Avtar
-        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
-        email={project.projectOwnerDetails.email}
-      />
-    ),
-    primaryTechnicalLead: (
-      <Avtar
-        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
-        email={project.primaryTechnicalLeadDetails.email}
-      />
-    ),
-    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
-      <Avtar
-        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
-        email={project.secondaryTechnicalLeadDetails.email}
-      />
-    ) : null,
-    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
-    licencePlate: <p className="w-28">{project.licencePlate}</p>,
+    requestDecisionStatus: project?.activeRequest[0]?.decisionStatus,
+    requestType: project?.activeRequest[0]?.type,
+    projectOwner: {
+      name: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
+      email: project.projectOwnerDetails.email,
+    },
+    primaryTechnicalLead: {
+      name: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`,
+      email: project.primaryTechnicalLeadDetails.email,
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails
+      ? {
+          name: `${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
+          email: project.secondaryTechnicalLeadDetails.email,
+        }
+      : null,
+    created: formatDate(project.created.$date),
+    licencePlate: project.licencePlate,
     edit: (
       <div
         className="pr-4 sm:pr-6 lg:pr-8
