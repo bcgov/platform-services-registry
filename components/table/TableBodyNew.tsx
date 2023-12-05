@@ -137,14 +137,14 @@ export default function TableBody({ headers, rows }: TableProps) {
                     </h2>
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
-                    <p className="truncate">Deployed to {deployment.cluster}</p>
+                    <p className="truncate">Deployed on {deployment.cluster}</p>
                     <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
                       <circle cx={1} cy={1} r={0.7} />
                     </svg>
                     <p className="whitespace-nowrap">Created on {deployment.created}</p>
                   </div>
                 </div>
-                <div className="md:flex hidden justify-start w-60 md:ml-20 ml-0">
+                <div className="md:flex hidden justify- mt-1 w-60 md:ml-20 ml-0">
                   <div className="gap-x-6 2xl:flex hidden">
                     <Avatar
                       name={deployment.projectOwner.name}
@@ -190,7 +190,7 @@ export default function TableBody({ headers, rows }: TableProps) {
                   hidden={!deployment.requestType}
                   className={classNames(
                     requestTypes[deployment.requestType as keyof typeof requestTypes],
-                    'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset',
+                    'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset mr-4',
                   )}
                 >
                   {typeof deployment?.requestType === 'string' ? deployment?.requestType.toLowerCase() : null} request

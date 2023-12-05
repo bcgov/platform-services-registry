@@ -72,11 +72,17 @@ export default async function ProductsTable({
         <div>
           {(page === '1' || page === undefined) && (
             <div>
-              <div className="space-x-4 px-4 py-4 sm:px-6 lg:px-8">Products with Active Requests</div>
+              <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-2">
+                <h1 className="text-lg">Products with Active Requests</h1>
+                <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
+              </div>
               <NewTableBody headers={headers} rows={rowsWithActiveRequest} />
             </div>
           )}
-          <div className="space-x-4 px-4 py-4 sm:px-6 lg:px-8">All Products</div>
+          <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-2">
+            <h1>All Products</h1>
+            <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
+          </div>
           <NewTableBody headers={headers} rows={rowsWithoutActiveRequest} />
         </div>
       }
