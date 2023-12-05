@@ -28,7 +28,7 @@ export default function Tabs() {
             pathname.split('/')[2] === 'requests' ? 'bg-bcblue text-white' : 'bg-white text-gray-900 hover:bg-gray-100'
           }`}
       >
-        Activity
+        History
       </Link>
     </span>
   );

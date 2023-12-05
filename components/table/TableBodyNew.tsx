@@ -11,6 +11,8 @@ import { useSession } from 'next-auth/react';
 import classNames from '@/components/utils/classnames';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import Avatar from '@/components/table/Avatar';
+import Avatars from '@/components/table/Avatars';
+import { de } from '@faker-js/faker';
 
 interface TableProps {
   rows: Record<string, any>[];
@@ -198,25 +200,11 @@ export default function TableBody({ rows }: TableProps) {
                       />
                     )}
                   </div>
-                  <div className="flex 3xl:hidden isolate items-center -space-x-2 overflow-hidden ml-10 mt-2">
-                    <img
-                      className="relative z-30 inline-block h-8 w-8 rounded-full ring-2 ring-white"
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                    <img
-                      className="relative z-20 inline-block h-8 w-8 rounded-full ring-2 ring-white"
-                      src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                    {deployment?.secondaryTechnicalLead && (
-                      <img
-                        className="relative z-10 inline-block h-8 w-8 rounded-full ring-2 ring-white"
-                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
-                        alt=""
-                      />
-                    )}
-                  </div>
+                  <Avatars
+                    productOwnerEmail={deployment.projectOwner.email}
+                    primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
+                    secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
+                  />
                 </div>
               </div>
               <div className="flex items-center space-x-4">
