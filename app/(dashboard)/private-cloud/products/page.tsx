@@ -56,7 +56,7 @@ export default async function ProductsTable({
         <div>
           {activeRequestRows.length > 0 ? (
             <div>
-              <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5">
+              <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5 text-gray-700">
                 <h1 className="text-lg">Products with Active Requests</h1>
                 <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
               </div>
@@ -65,7 +65,7 @@ export default async function ProductsTable({
           ) : null}
           {nonActiveRequestRows.length > 0 ? (
             <div>
-              <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5">
+              <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5 text-gray-700">
                 <h1>All Products</h1>
                 <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
               </div>
