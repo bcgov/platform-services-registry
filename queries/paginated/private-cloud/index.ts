@@ -10,15 +10,14 @@ export type Data = PrivateProject & Record<'activeRequest', string>;
 
 export async function privateCloudProjectsPaginated(
   pageSize: number,
-  skip: number,
+  pageNumber: number,
   searchTerm?: string | null,
   ministry?: string | null,
   cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
   userEmail?: string | null,
   ministryRoles?: string[],
-  excludeActiveRequestProjects?: boolean,
 ): Promise<{
-  data: Data[];
+  data: PrivateProject[];
   total: number;
 }> {
   // Initialize the search/filter query
@@ -32,15 +31,15 @@ export async function privateCloudProjectsPaginated(
 
   const proms = [];
   // First, get the total count of matching documents
-  proms.push(getPrivateCloudProjectsTotalCount({ searchQuery, excludeActiveRequestProjects }));
+  proms.push(getPrivateCloudProjectsTotalCount({ searchQuery }));
 
   // Then, get the actual page of data
-  proms.push(getPrivateCloudProjectsResult({ searchQuery, skip, pageSize, excludeActiveRequestProjects }));
+  proms.push(getPrivateCloudProjectsResult({ searchQuery, pageNumber, pageSize }));
 
   const [total, data] = await Promise.all(proms);
 
   return {
-    data: data as Data[],
+    data: data as PrivateProject[],
     total: total as number,
   };
 }
