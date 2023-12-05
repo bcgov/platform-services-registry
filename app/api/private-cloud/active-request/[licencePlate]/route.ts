@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 import { Prisma } from '@prisma/client';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
-import { Session } from 'next-auth';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
@@ -35,7 +32,6 @@ const GetParamsSchema = z.object({
 type Params = z.infer<typeof GetParamsSchema>;
 
 export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
-  const session = await getServerSession(authOptions);
   const parsedParams = GetParamsSchema.safeParse(params);
 
   if (!parsedParams.success) {
