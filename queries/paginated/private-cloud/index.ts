@@ -10,7 +10,7 @@ export type Data = PrivateProject & Record<'activeRequest', string>;
 
 export async function privateCloudProjectsPaginated(
   pageSize: number,
-  pageNumber: number,
+  skip: number,
   searchTerm?: string | null,
   ministry?: string | null,
   cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
@@ -35,7 +35,7 @@ export async function privateCloudProjectsPaginated(
   proms.push(getPrivateCloudProjectsTotalCount({ searchQuery, excludeActiveRequestProjects }));
 
   // Then, get the actual page of data
-  proms.push(getPrivateCloudProjectsResult({ searchQuery, pageNumber, pageSize, excludeActiveRequestProjects }));
+  proms.push(getPrivateCloudProjectsResult({ searchQuery, skip, pageSize, excludeActiveRequestProjects }));
 
   const [total, data] = await Promise.all(proms);
 
