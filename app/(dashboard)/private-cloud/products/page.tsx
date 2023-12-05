@@ -43,8 +43,6 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  console.log(data);
-
   const projectsWithActiveRequest = data.filter((project) => project.activeRequest.length > 0);
   const projectsWithoutActiveRequest = data.filter((project) => project.activeRequest.length === 0);
 

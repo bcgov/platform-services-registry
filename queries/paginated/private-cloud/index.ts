@@ -17,7 +17,7 @@ export async function privateCloudProjectsPaginated(
   userEmail?: string | null,
   ministryRoles?: string[],
 ): Promise<{
-  data: PrivateProject[];
+  data: Data[];
   total: number;
 }> {
   // Initialize the search/filter query
