@@ -180,8 +180,8 @@ export default function TableBody({ rows }: TableProps) {
                     <p className="whitespace-nowrap">Created on {deployment.created}</p>
                   </div>
                 </div>
-                <div className="md:flex hidden justify- mt-1 w-max">
-                  <div className="gap-x-2 3xl:flex hidden">
+                <div className="md:flex hidden justify-left mt-1 w-max">
+                  <div className="gap-x-0 2xl:flex hidden">
                     <Avatar
                       name={deployment.projectOwner.name}
                       email={deployment.projectOwner.role}
@@ -200,11 +200,13 @@ export default function TableBody({ rows }: TableProps) {
                       />
                     )}
                   </div>
-                  <Avatars
-                    productOwnerEmail={deployment.projectOwner.email}
-                    primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
-                    secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
-                  />
+                  <div className="2xl:hidden flex">
+                    <Avatars
+                      productOwnerEmail={deployment.projectOwner.email}
+                      primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
+                      secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
