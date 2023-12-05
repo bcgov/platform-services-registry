@@ -16,7 +16,7 @@ export default function Avatar({
   className?: string;
 }) {
   const { data, isLoading, error } = useQuery<string, Error>({
-    queryKey: ['imageUrl', email],
+    queryKey: [email],
     queryFn: () => fetchUserImage(email),
     enabled: !!email,
   });

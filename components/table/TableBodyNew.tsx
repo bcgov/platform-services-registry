@@ -184,7 +184,7 @@ export default function TableBody({ rows }: TableProps) {
                   <div className="gap-x-0 2xl:flex hidden">
                     <Avatar
                       name={deployment.projectOwner.name}
-                      email={deployment.projectOwner.role}
+                      email={deployment.projectOwner.email}
                       userRole={'Product Owner'}
                     />
                     <Avatar

@@ -15,20 +15,20 @@ export default function Avatar({
   secondaryTechnicalLeadEmail: string;
   className?: string;
 }) {
-  const { data: poImageUrl } = useQuery<string, Error>({
-    queryKey: ['imageUrl', productOwnerEmail],
+  const { data: poImageUrl, isLoading: poLoading } = useQuery<string, Error>({
+    queryKey: [productOwnerEmail],
     queryFn: () => fetchUserImage(productOwnerEmail),
     enabled: !!productOwnerEmail,
   });
 
-  const { data: tlImageUrl } = useQuery<string, Error>({
-    queryKey: ['imageUrl', primaryTechnicalLeadEmail],
+  const { data: tlImageUrl, isLoading: ptlLoading } = useQuery<string, Error>({
+    queryKey: [primaryTechnicalLeadEmail],
     queryFn: () => fetchUserImage(primaryTechnicalLeadEmail),
     enabled: !!primaryTechnicalLeadEmail,
   });
 
-  const { data: secondaryTlUrl } = useQuery<string, Error>({
-    queryKey: ['imageUrl', secondaryTechnicalLeadEmail],
+  const { data: secondaryTlUrl, isLoading: stlLoading } = useQuery<string, Error>({
+    queryKey: [secondaryTechnicalLeadEmail],
     queryFn: () => fetchUserImage(secondaryTechnicalLeadEmail),
     enabled: !!secondaryTechnicalLeadEmail,
   });
