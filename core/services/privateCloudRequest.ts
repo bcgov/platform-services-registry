@@ -8,8 +8,6 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
     if (!this.session.isAdmin) {
       const res = await this.client.privateCloudRequestedProject.findMany({
         select: { id: true },
-        session: this.session as never,
-        skipSecurity: true as never,
       });
 
       const ids = res.map(({ id }) => id);

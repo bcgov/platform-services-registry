@@ -224,7 +224,6 @@ describe('Query projects with filter and search', () => {
     for (let i = 0; i < seededProjectsCount; i++) {
       const projectToDelete = await prisma.privateCloudProject.findFirst({
         where: { name: projectObject.name + i },
-        skipSecurity: true as never,
       });
       if (projectToDelete) {
         await prisma.privateCloudProject.delete({

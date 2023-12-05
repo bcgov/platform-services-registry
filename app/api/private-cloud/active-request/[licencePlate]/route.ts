@@ -67,8 +67,6 @@ export async function GET(req: NextRequest, { params }: { params: Params }): Pro
             },
           },
         },
-        session: session as never,
-        skipSecurity: true as never,
       });
 
     // if (!request) {
