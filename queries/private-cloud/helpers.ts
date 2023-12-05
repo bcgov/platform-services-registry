@@ -131,9 +131,35 @@ export async function getPrivateCloudProjectsQuery({
   return searchQuery;
 }
 
-export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
+export async function getPrivateCloudProjectsTotalCount({
+  searchQuery,
+  excludeActiveRequestProjects = false,
+}: {
+  searchQuery: any;
+  excludeActiveRequestProjects?: boolean;
+}) {
   const result: unknown = await prisma.privateCloudProject.aggregateRaw({
     pipeline: [
+      {
+        $lookup: {
+          from: 'PrivateCloudRequest', // The foreign collection
+          let: { projectId: '$_id' }, // Define variable for use in the pipeline
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$projectId', '$$projectId'] }, // Match projectId
+                    { $eq: ['$active', true] }, // Match active requests
+                  ],
+                },
+              },
+            },
+            // You can add other stages here if needed
+          ],
+          as: 'activeRequest', // Output array field
+        },
+      },
       {
         $lookup: {
           from: 'User',
@@ -150,6 +176,15 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           as: 'primaryTechnicalLeadDetails',
         },
       },
+      ...(excludeActiveRequestProjects
+        ? [
+            {
+              $match: {
+                activeRequest: { $size: 0 },
+              },
+            },
+          ]
+        : []),
       {
         $lookup: {
           from: 'User',
@@ -173,10 +208,12 @@ export async function getPrivateCloudProjectsResult({
   searchQuery,
   pageNumber,
   pageSize,
+  excludeActiveRequestProjects,
 }: {
   searchQuery: any;
   pageNumber?: number;
   pageSize?: number;
+  excludeActiveRequestProjects?: boolean;
 }) {
   let paginationPipelines: any[] = [];
   if (pageNumber && pageSize) {
@@ -229,6 +266,15 @@ export async function getPrivateCloudProjectsResult({
           as: 'secondaryTechnicalLeadDetails',
         },
       },
+      ...(excludeActiveRequestProjects
+        ? [
+            {
+              $match: {
+                activeRequest: { $size: 0 },
+              },
+            },
+          ]
+        : []),
       { $match: searchQuery },
       { $unwind: '$projectOwnerDetails' },
       { $unwind: '$primaryTechnicalLeadDetails' },

@@ -34,17 +34,30 @@ export default async function ProductsTable({
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
-    +pageSize || defaultPageSize,
-    currentPage,
-    search,
-    ministry,
-    cluster,
-    userEmail,
-    ministryRoles,
-  );
-
-  const allProjects = await privateCloudProjects(search, ministry, cluster, userEmail, ministryRoles);
+  const activeRequestsWithProjject = await prisma.privateCloudRequest.findMany({
+    where: {
+      active: true,
+      type: {
+        in: ['EDIT', 'DELETE'],
+      },
+    },
+    include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      requestedProject: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+    },
+  });
 
   const createRequests = await prisma.privateCloudRequest.findMany({
     where: {
@@ -71,12 +84,33 @@ export default async function ProductsTable({
     activeRequest: [request],
   }));
 
-  const projectsWithActiveRequest = allProjects.filter((project: any) => project.activeRequest.length > 0);
-  const projectsWithoutActiveRequest = data.filter((project) => project.activeRequest.length === 0);
+  const transformActiveRequests = activeRequestsWithProjject.map((request) => ({
+    ...request.project,
+    projectOwnerDetails: request?.project?.projectOwner,
+    primaryTechnicalLeadDetails: request?.project?.primaryTechnicalLead,
+    secondaryTechnicalLeadDetails: request?.project?.secondaryTechnicalLead,
+    created: { $date: request.created.toDateString() },
+    activeRequest: [request],
+  }));
 
-  const rowsWithActiveRequest = [...transformCreateRequests, ...projectsWithActiveRequest].map(
+  const rowsWithActiveRequest = [...transformCreateRequests, ...transformActiveRequests].map(
     privateCloudProjectDataToRow,
   );
+
+  const isFirstPage = page === '1' || page === undefined;
+
+  const { data: projectsWithoutActiveRequest, total }: { data: Data[]; total: number } =
+    await privateCloudProjectsPaginated(
+      isFirstPage ? (+pageSize || defaultPageSize) - rowsWithActiveRequest.length : +pageSize || defaultPageSize,
+      currentPage,
+      search,
+      ministry,
+      cluster,
+      userEmail,
+      ministryRoles,
+      true,
+    );
+
   const rowsWithoutActiveRequest = projectsWithoutActiveRequest.map(privateCloudProjectDataToRow);
 
   return (
@@ -85,7 +119,7 @@ export default async function ProductsTable({
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={
         <div>
-          {(page === '1' || page === undefined) && (
+          {isFirstPage && (
             <div>
               <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5">
                 <h1 className="text-lg">Products with Active Requests</h1>
