@@ -2,6 +2,7 @@ import NextAuth, { Account, AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
+import prisma from '@/lib/prisma';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -80,6 +81,8 @@ export const authOptions: AuthOptions = {
 
       // Send properties to the client, like an access_token from a provider.
       if (token) {
+        const user = await prisma.user.findFirst({ where: { email: session.user.email } });
+        session.userId = user?.id ?? null;
         session.accessToken = token.accessToken;
         session.user.roles = token.roles || [];
         session.roles = token.roles || [];
