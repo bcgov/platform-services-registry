@@ -6,12 +6,14 @@ export async function getPrivateCloudProjectsQuery({
   ministry,
   cluster,
   userEmail,
+  activeRequest,
   ministryRoles,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | string[] | null;
   userEmail?: string | null;
+  activeRequest?: boolean;
   ministryRoles?: string[];
 }) {
   // Initialize the search/filter query
@@ -131,13 +133,7 @@ export async function getPrivateCloudProjectsQuery({
   return searchQuery;
 }
 
-export async function getPrivateCloudProjectsTotalCount({
-  searchQuery,
-  excludeActiveRequestProjects = false,
-}: {
-  searchQuery: any;
-  excludeActiveRequestProjects?: boolean;
-}) {
+export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
   const result: unknown = await prisma.privateCloudProject.aggregateRaw({
     pipeline: [
       {
@@ -176,15 +172,7 @@ export async function getPrivateCloudProjectsTotalCount({
           as: 'primaryTechnicalLeadDetails',
         },
       },
-      ...(excludeActiveRequestProjects
-        ? [
-            {
-              $match: {
-                activeRequest: { $size: 0 },
-              },
-            },
-          ]
-        : []),
+
       {
         $lookup: {
           from: 'User',
@@ -272,6 +260,14 @@ export async function getPrivateCloudProjectsResult({
           path: '$secondaryTechnicalLeadDetails',
           preserveNullAndEmptyArrays: true,
         },
+      },
+      {
+        $addFields: {
+          activeRequestCount: { $size: '$activeRequest' },
+        },
+      },
+      {
+        $sort: { activeRequestCount: -1 },
       },
       ...paginationPipelines,
       {

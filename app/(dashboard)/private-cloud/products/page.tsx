@@ -40,10 +40,13 @@ export default async function ProductsTable({
     ministry,
     cluster,
     userEmail,
+    true,
     ministryRoles,
   );
 
   const rows = data.map(privateCloudProjectDataToRow);
+  const activeRequestRows = data.filter((row) => row.activeRequest.length > 0).map(privateCloudProjectDataToRow);
+  const nonActiveRequestRows = data.filter((row) => row.activeRequest.length === 0).map(privateCloudProjectDataToRow);
 
   return (
     <Table
@@ -51,7 +54,24 @@ export default async function ProductsTable({
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={
         <div>
-          <NewTableBody rows={rows} />
+          {activeRequestRows.length > 0 ? (
+            <div>
+              <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5">
+                <h1 className="text-lg">Products with Active Requests</h1>
+                <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
+              </div>
+              <NewTableBody rows={activeRequestRows} />
+            </div>
+          ) : null}
+          {nonActiveRequestRows.length > 0 ? (
+            <div>
+              <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5">
+                <h1>All Products</h1>
+                <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
+              </div>
+              <NewTableBody rows={nonActiveRequestRows} />
+            </div>
+          ) : null}
         </div>
       }
       total={total}
