@@ -142,7 +142,7 @@ describe('Create Private Cloud Request Route', () => {
     await createRequest(createRequestObject);
 
     // Get the request id
-    const request = await prisma.privateCloudRequest.findFirst();
+    const request = await prisma.privateCloudRequest.findFirst({ where: {}, skipSecurity: true as never });
 
     if (!request) {
       throw new Error('Request not found for provision test.');
@@ -230,6 +230,7 @@ describe('Create Private Cloud Request Route', () => {
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
       },
+      skipSecurity: true as never,
     });
 
     if (!project) {
@@ -255,6 +256,7 @@ describe('Create Private Cloud Request Route', () => {
   test('the request should be marked as provisioned and not be active', async () => {
     const request = await prisma.privateCloudRequest.findFirst({
       where: { licencePlate: createRequestLicenceplate },
+      skipSecurity: true as never,
     });
 
     if (!request) {

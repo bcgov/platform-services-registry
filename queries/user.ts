@@ -19,13 +19,14 @@ export function userInfo(
   };
 }
 
-export const getUsers = (): Promise<User[]> => prisma.user.findMany();
+export const getUsers = (): Promise<User[]> => prisma.user.findMany({ where: {}, skipSecurity: true as never });
 
 export const getUserById = (id: string): Promise<User | null> =>
   prisma.user.findUnique({
     where: {
       id: id,
     },
+    skipSecurity: false as never,
   });
 
 export const getUsersByIds = (ids: string[]): Promise<User[]> =>
@@ -35,6 +36,7 @@ export const getUsersByIds = (ids: string[]): Promise<User[]> =>
         in: ids,
       },
     },
+    skipSecurity: true as never,
   });
 
 export const getUserByEmail = (email: string): Promise<User | null> =>
@@ -42,6 +44,7 @@ export const getUserByEmail = (email: string): Promise<User | null> =>
     where: {
       email: email,
     },
+    skipSecurity: false as never,
   });
 
 export const getMe = (email: string): Promise<User | null> =>
@@ -49,4 +52,5 @@ export const getMe = (email: string): Promise<User | null> =>
     where: {
       email,
     },
+    skipSecurity: false as never,
   });
