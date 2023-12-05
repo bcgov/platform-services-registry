@@ -14,6 +14,7 @@ export async function privateCloudProjectsPaginated(
   cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
   userEmail?: string | null,
   ministryRoles?: string[],
+  active: boolean = true,
 ): Promise<{
   data: PrivateProject[];
   total: number;
@@ -25,6 +26,7 @@ export async function privateCloudProjectsPaginated(
     cluster,
     userEmail,
     ministryRoles,
+    active,
   });
 
   const proms = [];
