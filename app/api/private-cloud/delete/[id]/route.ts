@@ -46,7 +46,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       where: {
         id: projectId,
       },
-      skipSecurity: true as never,
     });
 
     if (!project) {
@@ -61,7 +60,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
           ) as string[],
         },
       },
-      skipSecurity: true as never,
     });
 
     if (

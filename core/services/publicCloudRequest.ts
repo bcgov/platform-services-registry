@@ -9,7 +9,6 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
       const res = await this.client.publicCloudRequestedProject.findMany({
         select: { id: true },
         session: this.session as never,
-        skipSecurity: true as never,
       });
 
       const ids = res.map(({ id }) => id);

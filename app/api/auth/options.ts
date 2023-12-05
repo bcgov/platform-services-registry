@@ -81,7 +81,7 @@ export const authOptions: AuthOptions = {
 
       // Send properties to the client, like an access_token from a provider.
       if (token) {
-        const user = await prisma.user.findFirst({ where: { email: session.user.email }, skipSecurity: true as never });
+        const user = await prisma.user.findFirst({ where: { email: session.user.email } });
         session.userId = user?.id ?? null;
         session.accessToken = token.accessToken;
         session.user.roles = token.roles || [];

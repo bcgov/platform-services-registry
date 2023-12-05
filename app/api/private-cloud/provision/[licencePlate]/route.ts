@@ -38,7 +38,6 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
       include: {
         requestedProject: true,
       },
-      skipSecurity: true as never,
     });
 
     if (!request) {
@@ -73,8 +72,8 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
 
     console.log(`Successfuly marked ${licencePlate} as provisioned.`);
 
-    revalidatePath('/private-cloud/requests', 'page');
-    revalidatePath('/private-cloud/products', 'page');
+    // revalidatePath('/private-cloud/requests', 'page');
+    // revalidatePath('/private-cloud/products', 'page');
 
     // sendProvisionedEmails(request);
     return new NextResponse(`Successfuly marked ${licencePlate} as provisioned.`, { status: 200 });

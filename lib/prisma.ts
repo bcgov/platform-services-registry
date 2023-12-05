@@ -21,8 +21,8 @@ const prisma =
           return query(args);
         }
 
-        const { session, skipSecurity, ...validArgs } = args;
-        if (skipSecurity) return query(validArgs);
+        const { session, ...validArgs } = args;
+        if (session === undefined) return query(validArgs);
 
         const multi = ['findMany'].includes(operation);
         if (!session?.userId) return multi ? [] : null;

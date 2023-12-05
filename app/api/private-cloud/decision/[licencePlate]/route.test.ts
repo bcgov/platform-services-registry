@@ -139,7 +139,7 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     await createRequest(req);
-    const request = await prisma.privateCloudRequest.findFirst({ where: {}, skipSecurity: true as never });
+    const request = await prisma.privateCloudRequest.findFirst();
 
     if (!request) {
       throw new Error('Request not created. Issue in beforeAll');
@@ -212,7 +212,7 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should create a request with the correct data in userRequestedProject', async () => {
-    const requests = await prisma.privateCloudRequest.findMany({ where: {}, skipSecurity: true as never });
+    const requests = await prisma.privateCloudRequest.findMany();
 
     const request = requests[0];
 
@@ -225,7 +225,6 @@ describe('Create Private Cloud Request Route', () => {
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
       },
-      skipSecurity: true as never,
     });
 
     if (!requestedProject) {
@@ -304,7 +303,7 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should create a request with the correct data requestedProject', async () => {
-    const requests = await prisma.privateCloudRequest.findMany({ where: {}, skipSecurity: true as never });
+    const requests = await prisma.privateCloudRequest.findMany();
 
     const request = requests[0];
 
@@ -317,7 +316,6 @@ describe('Create Private Cloud Request Route', () => {
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
       },
-      skipSecurity: true as never,
     });
 
     if (!requestedProject) {

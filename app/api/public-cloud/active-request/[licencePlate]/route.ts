@@ -62,7 +62,6 @@ export async function GET(req: NextRequest, { params }: { params: Params }): Pro
           },
         },
       },
-      skipSecurity: true as never,
     });
 
     // if (!request) {
