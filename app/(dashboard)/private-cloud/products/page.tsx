@@ -27,14 +27,13 @@ export default async function ProductsTable({
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
-  const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { search, page, pageSize = 10, ministry, cluster } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
-  const defaultPageSize = 10;
 
-  const activeRequestsWithProjject = await prisma.privateCloudRequest.findMany({
+  const activeRequestsWithProject = await prisma.privateCloudRequest.findMany({
     where: {
       active: true,
       type: {
@@ -84,7 +83,7 @@ export default async function ProductsTable({
     activeRequest: [request],
   }));
 
-  const transformActiveRequests = activeRequestsWithProjject.map((request) => ({
+  const transformActiveRequests = activeRequestsWithProject.map((request) => ({
     ...request.project,
     projectOwnerDetails: request?.project?.projectOwner,
     primaryTechnicalLeadDetails: request?.project?.primaryTechnicalLead,
@@ -97,12 +96,23 @@ export default async function ProductsTable({
     privateCloudProjectDataToRow,
   );
 
-  const isFirstPage = page === '1' || page === undefined;
+  const totalArRows = rowsWithActiveRequest.length;
+  const startArIndex = (currentPage - 1) * +pageSize;
+  const endArIndex = Math.min(startArIndex + +pageSize, totalArRows);
+
+  // Determine the subset of AR rows for this page
+  const arRowsForPage = rowsWithActiveRequest.slice(startArIndex, endArIndex);
+
+  // Calculate how many PR rows are needed to fill the page
+  const prRowsNeeded = +pageSize - arRowsForPage.length;
+
+  // Calculate the skip value for PR rows
+  const prSkip = Math.max(0, startArIndex - totalArRows);
 
   const { data: projectsWithoutActiveRequest, total }: { data: Data[]; total: number } =
     await privateCloudProjectsPaginated(
-      isFirstPage ? (+pageSize || defaultPageSize) - rowsWithActiveRequest.length : +pageSize || defaultPageSize,
-      currentPage,
+      prRowsNeeded,
+      prSkip + 1,
       search,
       ministry,
       cluster,
@@ -111,7 +121,9 @@ export default async function ProductsTable({
       true,
     );
 
-  const rowsWithoutActiveRequest = projectsWithoutActiveRequest.map(privateCloudProjectDataToRow);
+  const prRowsForPage = prRowsNeeded > 0 ? projectsWithoutActiveRequest : [];
+
+  const rowsWithoutActiveRequest = prRowsForPage.map(privateCloudProjectDataToRow);
 
   return (
     <Table
@@ -119,25 +131,29 @@ export default async function ProductsTable({
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={
         <div>
-          {isFirstPage && (
+          {arRowsForPage.length > 0 ? (
             <div>
               <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5">
                 <h1 className="text-lg">Products with Active Requests</h1>
                 <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
               </div>
-              <NewTableBody rows={rowsWithActiveRequest} />
+              <NewTableBody rows={arRowsForPage} />
             </div>
-          )}
-          <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5">
-            <h1>Products</h1>
-            <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
-          </div>
-          <NewTableBody rows={rowsWithoutActiveRequest} />
+          ) : null}
+          {rowsWithoutActiveRequest.length > 0 ? (
+            <div>
+              <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5">
+                <h1>Products</h1>
+                <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
+              </div>
+              <NewTableBody rows={rowsWithoutActiveRequest} />
+            </div>
+          ) : null}
         </div>
       }
       total={total}
       currentPage={currentPage}
-      pageSize={+pageSize || defaultPageSize}
+      pageSize={+pageSize}
       showDownloadButton
       apiContext="private-cloud"
     />
