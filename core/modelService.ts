@@ -2,7 +2,8 @@ import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import { Session } from 'next-auth';
 
 export abstract class ModelService<TFilter> {
-  abstract secureFilter(): Promise<TFilter>;
+  abstract readFilter(): Promise<TFilter>;
+  abstract writeFilter(): Promise<TFilter>;
   abstract decorate(doc: any): Promise<any>;
 
   protected client!: PrismaClient;
@@ -14,16 +15,17 @@ export abstract class ModelService<TFilter> {
     this.session = session;
   }
 
-  async genFilter(where: TFilter) {
+  async genFilter(where: TFilter, mode: 'read' | 'write') {
     let filter = where;
 
-    const secureFilter = await this.secureFilter();
+    const baseFilterFn = mode === 'read' ? this.readFilter : this.writeFilter;
+    const baseFilter = await baseFilterFn();
 
-    if (secureFilter) {
+    if (baseFilter) {
       if (where) {
-        filter = { AND: [secureFilter, where] } as TFilter;
+        filter = { AND: [baseFilter, where] } as TFilter;
       } else {
-        filter = secureFilter;
+        filter = baseFilter;
       }
     }
 

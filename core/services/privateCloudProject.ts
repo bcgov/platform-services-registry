@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import { ModelService } from '../modelService';
 
 export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloudProjectWhereInput> {
-  async secureFilter() {
+  async readFilter() {
     let baseFilter!: Prisma.PrivateCloudProjectWhereInput;
     if (!this.session.isAdmin) {
       baseFilter = {
@@ -14,6 +14,18 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
           { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
           { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
         ],
+      };
+    }
+
+    return baseFilter;
+  }
+
+  async writeFilter() {
+    let baseFilter!: Prisma.PrivateCloudProjectWhereInput;
+    if (!this.session.isAdmin) {
+      baseFilter = {
+        // Adding a dummy query to ensure no documents match
+        created: new Date(),
       };
     }
 
