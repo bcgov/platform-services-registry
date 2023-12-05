@@ -12,7 +12,7 @@ const headers = [
   { field: 'name', headerName: 'Name' },
   { field: 'ministry', headerName: 'Ministry' },
   { field: 'provider', headerName: 'Provider' },
-  { field: 'projectOwner', headerName: 'Project Owner' },
+  { field: 'projectOwner', headerName: 'Product Owner' },
   { field: 'primaryTechnicalLead', headerName: 'Technical Leads' },
   { field: 'secondaryTechnicalLead', headerName: '' },
   { field: 'created', headerName: 'Created' },
