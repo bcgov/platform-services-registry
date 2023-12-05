@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Header from '../../components/Header';
-import { Link, Body, Button, Heading, Html, Text } from '@react-email/components';
+import { Body, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
@@ -12,7 +12,7 @@ interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
 }
 
-const ProvisionedTemplate = ({ product }: EmailProp) => {
+const DeleteRequestTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
   return (
     <Html>
@@ -23,34 +23,12 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  Hurray! Your Edit Product request was approved and completed!
+                  Your deletion request for Private Cloud Openshift Platform has been received!
                 </Heading>
-                <Text>Hi {product.name} Team, </Text>
+                <Text>Hi {product.name} Team,</Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete.{' '}
-                  <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
-                    Log in to the cluster console
-                  </Link>{' '}
-                  using the button below and you&apos;ll see all four namespaces included in a project set. If you have
-                  any more questions reach out to the Platform Services team in the RocketChat channel{' '}
-                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
-                    #devops&#8209;operations
-                  </Link>
+                  {`We have received your deletion request for ${product.name}. You will receive an email once your request has been processed.`}
                 </Text>
-                <Text className="">
-                  The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
-                  above and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is
-                  removed as a project contact in the Platform Registry, they will lose their access to the project set
-                  namespaces in Openshift. The new Product or Technical Lead provided on the product details page will
-                  gain the administrative access to the namespaces.
-                </Text>
-                <Button
-                  href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}
-                  className="bg-bcorange rounded-md px-4 py-2 text-white"
-                >
-                  Log in to console
-                </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
@@ -76,4 +54,4 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
   );
 };
 
-export default ProvisionedTemplate;
+export default DeleteRequestTemplate;

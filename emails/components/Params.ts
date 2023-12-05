@@ -340,5 +340,17 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
     upn: 'Sarah.Williams@gov.bc.ca',
     idir: 'SWILLIAMS',
   },
-  secondaryTechnicalLead: null,
+  secondaryTechnicalLead: {
+    id: 'c',
+    firstName: 'Sarah',
+    lastName: 'Williams',
+    email: 'sarah.williams@gov.bc.ca',
+    image: null,
+    ministry: 'CITZ',
+    archived: false,
+    created: sampleDate,
+    lastSeen: sampleDate,
+    upn: 'Sarah.Williams@gov.bc.ca',
+    idir: 'SWILLIAMS',
+  },
 };

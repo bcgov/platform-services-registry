@@ -9,7 +9,10 @@ import { RequestRejectionTemplate } from '@/emails/templates/private-cloud/Reque
 import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches';
 import EditRequestTemplate from '@/emails/templates/private-cloud/EditRequest';
-
+import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import DeleteRequestTemplate from '@/emails/templates/private-cloud/DeleteRequest';
+import DeleteApprovalTemplate from '@/emails/templates/private-cloud/DeleteApproval';
+import DeleteRequestRejectionTemplate from '@/emails/templates/private-cloud/DeleteRequestRejection';
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
   try {
@@ -56,7 +59,9 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 };
 
 export const sendRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
-  const email = render(RequestRejectionTemplate({ request, comment }), { pretty: true });
+  const email = render(RequestRejectionTemplate({ request, comment }), {
+    pretty: true,
+  });
 
   try {
     await sendEmail({
@@ -91,5 +96,50 @@ export const sendEditRequestEmails = async (
     });
   } catch (error) {
     console.error('ERROR SENDING EDIT REQUEST EMAIL');
+  }
+};
+
+export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProjectWithContacts, comment: string) => {
+  const email = render(DeleteRequestTemplate({ product }), { pretty: true });
+
+  try {
+    await sendEmail({
+      body: email,
+      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
+      subject: `${product.name} deletion request has been rejected`,
+    });
+  } catch (error) {
+    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
+  }
+};
+
+export const sendDeleteRequestApprovalEmails = async (
+  product: PrivateCloudRequestedProjectWithContacts,
+  comment: string,
+) => {
+  const email = render(DeleteApprovalTemplate({ product }), { pretty: true });
+
+  try {
+    await sendEmail({
+      body: email,
+      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
+      subject: `${product.name} deletion request has been approved`,
+    });
+  } catch (error) {
+    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
+  }
+};
+
+export const sendDeleteRejectionEmails = async (product: PrivateCloudRequestedProjectWithContacts, comment: string) => {
+  const email = render(DeleteRequestRejectionTemplate({ productName: product.name, comment }), { pretty: true });
+
+  try {
+    await sendEmail({
+      body: email,
+      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
+      subject: `${product.name} deletion request has been rejected`,
+    });
+  } catch (error) {
+    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
   }
 };
