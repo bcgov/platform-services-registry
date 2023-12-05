@@ -56,6 +56,7 @@ export default async function makeDecisionRequest(
         },
       },
     },
+    skipSecurity: true as never,
   });
 
   if (!request) {

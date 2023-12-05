@@ -35,6 +35,7 @@ async function fetchPublicCloudProjects() {
           },
         },
       },
+      skipSecurity: true,
     });
 
     // Format the projects data for CSV

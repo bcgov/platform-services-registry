@@ -37,6 +37,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
       include: {
         requestedProject: true,
       },
+      skipSecurity: true as never,
     });
 
     if (!request) {

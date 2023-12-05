@@ -62,6 +62,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     where: {
       AND: [{ licencePlate }, { active: true }],
     },
+    skipSecurity: true as never,
   });
 
   if (existingRequest !== null) {

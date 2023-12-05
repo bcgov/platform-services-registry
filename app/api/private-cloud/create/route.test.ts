@@ -107,7 +107,10 @@ describe('Create Private Cloud Request Route', () => {
       },
     });
 
-    const requestsBefore: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
+    const requestsBefore: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany({
+      where: {},
+      skipSecurity: true as never,
+    });
 
     const req = new NextRequest(API_URL, {
       method: 'POST',
@@ -117,13 +120,19 @@ describe('Create Private Cloud Request Route', () => {
     const response = await POST(req);
     expect(response.status).toBe(200);
 
-    const requestsAfter: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
+    const requestsAfter: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany({
+      where: {},
+      skipSecurity: true as never,
+    });
 
     expect(requestsAfter.length).toBe(requestsBefore.length + 1);
   });
 
   test('should create a request with the correct data', async () => {
-    const requests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
+    const requests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany({
+      where: {},
+      skipSecurity: true as never,
+    });
 
     const request: PrivateCloudRequest = requests[0];
 
@@ -136,6 +145,7 @@ describe('Create Private Cloud Request Route', () => {
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
       },
+      skipSecurity: false as never,
     });
 
     if (!requestedProject) {
