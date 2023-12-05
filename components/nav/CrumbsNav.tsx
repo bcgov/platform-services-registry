@@ -16,19 +16,18 @@ export default function CrumbsNav({
   return (
     <div className="">
       <div className="flex h-16 justify-left items-center">
-        <div className="font-bcsans text-2xl text-cloudgrey ">{cloudLabel}</div>
+        <div className="font-bcsans text-xl text-cloudgrey ">{cloudLabel}</div>
         <div className="border-l h-12 border-divider mx-5"></div>{' '}
-        {/* Adjust the height (h-20) and color (border-gray-500) as needed */}
         <nav className="flex" aria-label="Breadcrumb">
-          <ol className="flex items-center ">
+          <ol className="flex items-center">
             <li>
               <div>
                 <Link href={backUrl}>
                   <Image
                     alt="Arrow"
                     src={Arrow}
-                    width={25}
-                    height={25}
+                    width={20}
+                    height={20}
                     style={{
                       maxWidth: '100%',
                       height: 'auto',
@@ -39,10 +38,10 @@ export default function CrumbsNav({
             </li>
             <li>
               <div className="flex items-center">
-                <span className="ml-4 font-bcsans text-xl font-medium text-gray-500">{previousLabel}</span>
+                <span className="ml-4 font-bcsans text-lg font-medium text-gray-500 mb-0.5">{previousLabel}</span>
                 {currentLabel && (
                   <svg
-                    className="h-5 w-5 flex-shrink-0 text-gray-300"
+                    className="h-3 w-3 flex-shrink-0 text-gray-300"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     aria-hidden="true"

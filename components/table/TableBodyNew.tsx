@@ -9,11 +9,10 @@ import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import classNames from '@/components/utils/classnames';
-import { Bars3Icon, ChevronRightIcon, ChevronUpDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import Avatar from '@/components/table/Avatar';
 
 interface TableProps {
-  headers: Record<string, string>[];
   rows: Record<string, any>[];
 }
 
@@ -46,27 +45,19 @@ function EmptyBody() {
 }
 
 const requestDecisionStatuses = {
-  PENDING: 'text-gray-500 bg-gray-100/10',
-  APPROVED: 'text-green-400 bg-green-400/10',
+  PENDING: 'text-blue-400 bg-blue-400/10',
+  APPROVED: 'text-blue-400 bg-blue-400/10',
   REJECTED: 'text-rose-400 bg-rose-400/10',
   PROVISIONED: 'text-green-400 bg-green-400/10',
 };
 
 const requestTypes = {
-  CREATE: 'text-gray-400 bg-gray-400/10 ring-gray-400/20',
+  CREATE: 'text-gray-400 bg-green-400/10 ring-green-400/20',
   EDIT: 'text-indigo-400 bg-indigo-400/10 ring-indigo-400/30',
   DELETE: 'text-red-400 bg-red-400/10 ring-red-400/20',
 };
 
-function shortenString(str: string, length: number) {
-  console.log(str, length);
-  if (str.length > length) {
-    return `${str.substring(0, length)}...`;
-  }
-  return str;
-}
-
-export default function TableBody({ headers, rows }: TableProps) {
+export default function TableBody({ rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, status } = useSession();
@@ -102,9 +93,25 @@ export default function TableBody({ headers, rows }: TableProps) {
     }
   };
 
+  function deploymentText(requestType: string) {
+    if (requestType === 'CREATE') {
+      return 'Pending deployment on';
+    }
+
+    if (requestType === 'EDIT') {
+      return 'Requested changes on';
+    }
+
+    if (requestType === 'DELETE') {
+      return 'Requested deletion on';
+    }
+
+    return 'Deployed on';
+  }
+
   return (
-    <main className="overflow-x-auto">
-      <ul className="divide-y divide-grey-200/5 ">
+    <main className="">
+      <ul className="divide-y divide-grey-200/5 overflow-auto">
         {rows.map((deployment) => (
           <li key={deployment.id}>
             <div
@@ -115,13 +122,13 @@ export default function TableBody({ headers, rows }: TableProps) {
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
               <div className="flex justify-between">
-                <div className="min-w-0 w-96">
+                <div className="w-[500px] 2xl:w-[600px]">
                   <div className="flex items-center gap-x-3">
                     <div
                       className={classNames(
                         requestDecisionStatuses[
                           deployment.requestDecisionStatus as keyof typeof requestDecisionStatuses
-                        ],
+                        ] || requestDecisionStatuses.PROVISIONED,
                         'flex-none rounded-full p-1',
                       )}
                     >
@@ -131,21 +138,23 @@ export default function TableBody({ headers, rows }: TableProps) {
                       <div className="flex gap-x-2">
                         <span className="">{deployment.ministry}</span>
                         <span className="text-gray-400">/</span>
-                        <span className="truncate">{deployment.name.substring(0, 50)}</span>
+                        <span className="truncate">{deployment.name}</span>
                         <span className="absolute inset-0" />
                       </div>
                     </h2>
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
-                    <p className="truncate">Deployed on {deployment.cluster}</p>
+                    <p className="truncate">
+                      {deploymentText(deployment.requestType)} {deployment.cluster}
+                    </p>
                     <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
                       <circle cx={1} cy={1} r={0.7} />
                     </svg>
                     <p className="whitespace-nowrap">Created on {deployment.created}</p>
                   </div>
                 </div>
-                <div className="md:flex hidden justify- mt-1 w-60 md:ml-20 ml-0">
-                  <div className="gap-x-6 2xl:flex hidden">
+                <div className="md:flex hidden justify- mt-1 w-max">
+                  <div className="gap-x-2 3xl:flex hidden">
                     <Avatar
                       name={deployment.projectOwner.name}
                       email={deployment.projectOwner.role}
@@ -164,7 +173,7 @@ export default function TableBody({ headers, rows }: TableProps) {
                       />
                     )}
                   </div>
-                  <div className="flex 2xl:hidden isolate items-center -space-x-2 overflow-hidden ml-10 mt-2">
+                  <div className="flex 3xl:hidden isolate items-center -space-x-2 overflow-hidden ml-10 mt-2">
                     <img
                       className="relative z-30 inline-block h-8 w-8 rounded-full ring-2 ring-white"
                       src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"

@@ -4,7 +4,17 @@ import Image from 'next/image';
 import fetchUserImage from '@/components/nav/generateAvatar';
 import { useQuery } from '@tanstack/react-query';
 
-export default function Avatar({ name, email, userRole }: { name: string; userRole: string; email: string }) {
+export default function Avatar({
+  name,
+  email,
+  userRole,
+  className = '',
+}: {
+  name: string;
+  userRole: string;
+  email: string;
+  className?: string;
+}) {
   const { data, isLoading, error } = useQuery<string, Error>({
     queryKey: [email + 'image', email],
     queryFn: () => fetchUserImage(email),
@@ -12,7 +22,7 @@ export default function Avatar({ name, email, userRole }: { name: string; userRo
   });
 
   return (
-    <div className="group block flex-shrink-0 px-5">
+    <div className={'group block flex-shrink-0 px-5 w-50 overflow-hidden' + className}>
       <div className="flex items-center">
         <div>
           <Image

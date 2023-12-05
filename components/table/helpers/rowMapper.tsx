@@ -126,18 +126,21 @@ export const publicCloudProjectDataToRow = (project: any) => {
       <Avtar
         name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
         email={project.projectOwnerDetails.email}
+        userRole="Product Owner"
       />
     ),
     primaryTechnicalLead: (
       <Avtar
         name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
         email={project.primaryTechnicalLeadDetails.email}
+        userRole="Technical Lead"
       />
     ),
     secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
       <Avtar
         name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
         email={project.secondaryTechnicalLeadDetails.email}
+        userRole="Technical Lead"
       />
     ) : null,
     created: <p className="w-28">{formatDate(project.created.$date)}</p>,
