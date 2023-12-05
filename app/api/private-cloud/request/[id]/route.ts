@@ -59,7 +59,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }): Pro
             },
           },
         },
-        skipSecurity: false as never,
+        skipSecurity: true as never,
       });
 
     if (!request) {

@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }): Pro
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
       },
-      skipSecurity: false as never,
+      skipSecurity: true as never,
     });
 
     if (!project) {

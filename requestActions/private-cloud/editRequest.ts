@@ -36,7 +36,7 @@ export default async function editRequest(
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
     },
-    skipSecurity: false as never,
+    skipSecurity: true as never,
   });
 
   if (!project) {

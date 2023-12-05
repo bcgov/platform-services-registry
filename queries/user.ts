@@ -26,7 +26,7 @@ export const getUserById = (id: string): Promise<User | null> =>
     where: {
       id: id,
     },
-    skipSecurity: false as never,
+    skipSecurity: true as never,
   });
 
 export const getUsersByIds = (ids: string[]): Promise<User[]> =>
@@ -44,7 +44,7 @@ export const getUserByEmail = (email: string): Promise<User | null> =>
     where: {
       email: email,
     },
-    skipSecurity: false as never,
+    skipSecurity: true as never,
   });
 
 export const getMe = (email: string): Promise<User | null> =>
@@ -52,5 +52,5 @@ export const getMe = (email: string): Promise<User | null> =>
     where: {
       email,
     },
-    skipSecurity: false as never,
+    skipSecurity: true as never,
   });

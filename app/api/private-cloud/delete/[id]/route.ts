@@ -46,7 +46,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       where: {
         id: projectId,
       },
-      skipSecurity: false as never,
+      skipSecurity: true as never,
     });
 
     if (!project) {

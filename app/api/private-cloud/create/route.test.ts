@@ -145,7 +145,7 @@ describe('Create Private Cloud Request Route', () => {
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
       },
-      skipSecurity: false as never,
+      skipSecurity: true as never,
     });
 
     if (!requestedProject) {
