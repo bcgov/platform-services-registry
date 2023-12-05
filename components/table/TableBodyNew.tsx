@@ -44,11 +44,11 @@ function EmptyBody() {
   );
 }
 
-const requestDecisionStatuses = {
-  PENDING: 'text-blue-400 bg-blue-400/10',
-  APPROVED: 'text-blue-400 bg-blue-400/10',
-  REJECTED: 'text-rose-400 bg-rose-400/10',
-  PROVISIONED: 'text-green-400 bg-green-400/10',
+const circleStatus = {
+  blue: 'text-blue-400 bg-blue-400/10',
+  grey: 'text-gray-400 bg-gray-400/10',
+  red: 'text-rose-400 bg-rose-400/10',
+  green: 'text-green-400 bg-green-400/10',
 };
 
 const requestTypes = {
@@ -56,6 +56,42 @@ const requestTypes = {
   EDIT: 'text-indigo-400 bg-indigo-400/10 ring-indigo-400/30',
   DELETE: 'text-red-400 bg-red-400/10 ring-red-400/20',
 };
+
+function circleColor(requestType: string) {
+  if (requestType === 'CREATE') {
+    return circleStatus.grey;
+  }
+
+  if (requestType === 'EDIT') {
+    return circleStatus.blue;
+  }
+
+  if (requestType === 'DELETE') {
+    return circleStatus.red;
+  }
+
+  return circleStatus.green;
+}
+
+function deploymentText(requestType: string, requestDecisionStatus?: string) {
+  if (requestDecisionStatus === 'APPROVED') {
+    return 'Provisioning on';
+  }
+
+  if (requestType === 'CREATE') {
+    return 'Pending deployment on';
+  }
+
+  if (requestType === 'EDIT') {
+    return 'Requested changes on';
+  }
+
+  if (requestType === 'DELETE') {
+    return 'Requested deletion on';
+  }
+
+  return 'Deployed on';
+}
 
 export default function TableBody({ rows }: TableProps) {
   const router = useRouter();
@@ -105,22 +141,6 @@ export default function TableBody({ rows }: TableProps) {
     }
   };
 
-  function deploymentText(requestType: string) {
-    if (requestType === 'CREATE') {
-      return 'Pending deployment on';
-    }
-
-    if (requestType === 'EDIT') {
-      return 'Requested changes on';
-    }
-
-    if (requestType === 'DELETE') {
-      return 'Requested deletion on';
-    }
-
-    return 'Deployed on';
-  }
-
   return (
     <main className="">
       <ul className="divide-y divide-grey-200/5 overflow-auto">
@@ -136,14 +156,7 @@ export default function TableBody({ rows }: TableProps) {
               <div className="flex justify-between">
                 <div className="w-[500px] 2xl:w-[600px]">
                   <div className="flex items-center gap-x-3">
-                    <div
-                      className={classNames(
-                        requestDecisionStatuses[
-                          deployment.requestDecisionStatus as keyof typeof requestDecisionStatuses
-                        ] || requestDecisionStatuses.PROVISIONED,
-                        'flex-none rounded-full p-1',
-                      )}
-                    >
+                    <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
                     </div>
                     <h2 className="min-w-0 text-base font-semibold leading-6 text-gray-700">
@@ -157,7 +170,7 @@ export default function TableBody({ rows }: TableProps) {
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
                     <p className="truncate">
-                      {deploymentText(deployment.requestType)} {deployment.cluster}
+                      {deploymentText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.cluster}
                     </p>
                     <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
                       <circle cx={1} cy={1} r={0.7} />
