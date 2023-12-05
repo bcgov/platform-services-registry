@@ -26,7 +26,7 @@ export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
                 <Text>Hi {request.requestedProject.name} team, </Text>
                 <Text className="">
                   Your request regarding the product {request.requestedProject.name} on the Private Cloud Openshift
-                  platform has rejected due to the following reason(s):
+                  platform has been rejected due to the following reason(s):
                 </Text>
                 <Text className="">{comment}</Text>
                 <Text>
