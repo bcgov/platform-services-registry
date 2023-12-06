@@ -228,6 +228,7 @@ export async function getPrivateCloudProjectsResult({
           as: 'activeRequest', // Output array field
         },
       },
+
       {
         $lookup: {
           from: 'User',

@@ -1,6 +1,6 @@
 import Table from '@/components/table/Table';
 import NewTableBody from '@/components/table/TableBodyNew';
-import { privateCloudProjectsPaginated, Data } from '@/queries/paginated/private-cloud';
+import { privateCloudProjectsPaginated, Data, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
@@ -33,9 +33,44 @@ export default async function ProductsTable({
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
-    +pageSize || defaultPageSize,
+  const effectivePageSize = +pageSize || 10;
+
+  const { data: requestsData, total: requestsTotal } = await privateCloudRequestsPaginated(
+    effectivePageSize,
     currentPage,
+    search,
+    ministry,
+    cluster,
+    'CREATE',
+    userEmail,
+    ministryRoles,
+    true,
+  );
+
+  console.log('Create Requests Data length', requestsData.length);
+  console.log('Create Requests Total', requestsTotal);
+  console.log('Search', search);
+  requestsData.forEach((project) => console.log(project));
+
+  // console.log('requestsTotal', requestsTotal);
+
+  const transformCreateRequests = requestsData.map((request) => ({
+    ...request.requestedProject,
+    projectOwnerDetails: request.projectOwner,
+    primaryTechnicalLeadDetails: request.primaryTechnicalLead,
+    secondaryTechnicalLeadDetails: request.secondaryTechnicalLead,
+    created: request.created,
+    activeRequest: [request],
+  }));
+
+  const createRequests = transformCreateRequests.map(privateCloudProjectDataToRow);
+
+  const projectsPageSize = Math.max(effectivePageSize - requestsData.length, 0);
+  const projectsCurrentPage = Math.max(currentPage - Math.ceil(requestsTotal / effectivePageSize), 1);
+
+  const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
+    projectsPageSize,
+    projectsCurrentPage,
     search,
     ministry,
     cluster,
@@ -48,19 +83,21 @@ export default async function ProductsTable({
   const activeRequestRows = data.filter((row) => row.activeRequest.length > 0).map(privateCloudProjectDataToRow);
   const nonActiveRequestRows = data.filter((row) => row.activeRequest.length === 0).map(privateCloudProjectDataToRow);
 
+  const merged = [...createRequests, ...activeRequestRows];
+
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={
         <div>
-          {activeRequestRows.length > 0 ? (
+          {merged.length > 0 ? (
             <div>
               <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5 text-gray-700">
                 <h1 className="text-lg">Products with Active Requests</h1>
                 <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
               </div>
-              <NewTableBody rows={activeRequestRows} />
+              <NewTableBody rows={merged} />
             </div>
           ) : null}
           {nonActiveRequestRows.length > 0 ? (
@@ -74,9 +111,9 @@ export default async function ProductsTable({
           ) : null}
         </div>
       }
-      total={total}
+      total={total + requestsTotal}
       currentPage={currentPage}
-      pageSize={pageSize || defaultPageSize}
+      pageSize={merged.length + nonActiveRequestRows.length}
       showDownloadButton
       apiContext="private-cloud"
     />

@@ -54,9 +54,14 @@ export default async function RequestsTable({
     ministry,
     cluster,
     userEmail,
+    null,
     ministryRoles,
     false,
   );
+
+  data.forEach((request) => console.log(request));
+
+  return null;
 
   const rows = data.map(privateCloudRequestDataToRow).reverse();
 
@@ -67,7 +72,7 @@ export default async function RequestsTable({
       tableBody={<TableBody headers={headers} rows={rows} />}
       total={total}
       currentPage={currentPage}
-      pageSize={pageSize || defaultPageSize}
+      pageSize={+pageSize || defaultPageSize}
     />
   );
 }
