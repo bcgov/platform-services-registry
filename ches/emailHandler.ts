@@ -12,7 +12,7 @@ import EditRequestTemplate from '@/emails/templates/private-cloud/EditRequest';
 import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 import DeleteRequestTemplate from '@/emails/templates/private-cloud/DeleteRequest';
 import DeleteApprovalTemplate from '@/emails/templates/private-cloud/DeleteApproval';
-import DeleteRequestRejectionTemplate from '@/emails/templates/private-cloud/DeleteRequestRejection';
+
 export const sendNewRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   const email = render(NewRequestTemplate({ request }), { pretty: true });
   try {
@@ -59,7 +59,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 };
 
 export const sendRejectionEmails = async (request: PrivateCloudRequestWithRequestedProject, comment: string) => {
-  const email = render(RequestRejectionTemplate({ request, comment }), {
+  const email = render(RequestRejectionTemplate({ productName: request.requestedProject.name, comment }), {
     pretty: true,
   });
 
@@ -113,10 +113,7 @@ export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProj
   }
 };
 
-export const sendDeleteRequestApprovalEmails = async (
-  product: PrivateCloudRequestedProjectWithContacts,
-  comment: string,
-) => {
+export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
   const email = render(DeleteApprovalTemplate({ product }), { pretty: true });
 
   try {
@@ -131,7 +128,7 @@ export const sendDeleteRequestApprovalEmails = async (
 };
 
 export const sendDeleteRejectionEmails = async (product: PrivateCloudRequestedProjectWithContacts, comment: string) => {
-  const email = render(DeleteRequestRejectionTemplate({ productName: product.name, comment }), { pretty: true });
+  const email = render(RequestRejectionTemplate({ productName: product.name, comment }), { pretty: true });
 
   try {
     await sendEmail({
