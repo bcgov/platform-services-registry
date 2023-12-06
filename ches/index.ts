@@ -124,7 +124,6 @@ const sendEmail = async (email: Email): Promise<void> => {
     }
 
     const data = await response.json();
-    console.log('Email sent successfully:', data);
   } catch (error) {
     console.error('Exception sending email:', error);
   }

@@ -2,7 +2,7 @@ import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
-import { PrivateCloudCreateRequestBody } from '@/schema';
+import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 
 const sampleDate = new Date();
 export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
@@ -13,6 +13,7 @@ export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
   type: 'CREATE',
   decisionStatus: 'APPROVED',
   humanComment: null,
+  userComment: null,
   active: true,
   created: sampleDate,
   decisionDate: sampleDate,
@@ -102,6 +103,7 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
   type: 'CREATE',
   decisionStatus: 'APPROVED',
   humanComment: null,
+  userComment: null,
   active: true,
   created: sampleDate,
   decisionDate: sampleDate,
@@ -268,3 +270,77 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
   },
 };
 // Edit name, description and primary TL, prod quotas, test quota
+
+export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
+  id: 'a',
+  licencePlate: 'be74f8',
+  created: sampleDate,
+  productionQuota: {
+    cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
+    memory: 'MEMORY_REQUEST_2_LIMIT_4',
+    storage: 'STORAGE_1',
+  },
+  testQuota: {
+    cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
+    memory: 'MEMORY_REQUEST_2_LIMIT_4',
+    storage: 'STORAGE_1',
+  },
+  developmentQuota: {
+    cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
+    memory: 'MEMORY_REQUEST_2_LIMIT_4',
+    storage: 'STORAGE_1',
+  },
+  toolsQuota: {
+    cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
+    memory: 'MEMORY_REQUEST_2_LIMIT_4',
+    storage: 'STORAGE_1',
+  },
+  commonComponents: {
+    addressAndGeolocation: { planningToUse: true, implemented: false },
+    workflowManagement: { planningToUse: false, implemented: false },
+    formDesignAndSubmission: { planningToUse: false, implemented: false },
+    identityManagement: { planningToUse: false, implemented: false },
+    paymentServices: { planningToUse: false, implemented: false },
+    documentManagement: { planningToUse: false, implemented: false },
+    endUserNotificationAndSubscription: { planningToUse: false, implemented: false },
+    publishing: { planningToUse: false, implemented: false },
+    businessIntelligence: { planningToUse: false, implemented: false },
+    other: '',
+    noServices: false,
+  },
+  name: '31.1',
+  description: '1',
+  status: 'ACTIVE',
+  projectOwnerId: 'd',
+  primaryTechnicalLeadId: 'c',
+  secondaryTechnicalLeadId: null,
+  ministry: 'CITZ',
+  cluster: 'SILVER',
+  projectOwner: {
+    id: 'd',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@gov.bc.ca',
+    image: null,
+    ministry: 'CITZ',
+    archived: false,
+    created: sampleDate,
+    lastSeen: sampleDate,
+    upn: 'John.Doe@gov.bc.ca',
+    idir: 'JDOE',
+  },
+  primaryTechnicalLead: {
+    id: 'c',
+    firstName: 'Sarah',
+    lastName: 'Williams',
+    email: 'sarah.williams@gov.bc.ca',
+    image: null,
+    ministry: 'CITZ',
+    archived: false,
+    created: sampleDate,
+    lastSeen: sampleDate,
+    upn: 'Sarah.Williams@gov.bc.ca',
+    idir: 'SWILLIAMS',
+  },
+  secondaryTechnicalLead: null,
+};

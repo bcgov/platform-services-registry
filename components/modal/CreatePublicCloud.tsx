@@ -107,8 +107,12 @@ export default function Modal({
                       Understanding (MoU) and have attended an onboarding session with the Public Cloud Accelerator
                       Service Team. I also confirm that I have read and understood the roles and responsibilities as
                       described in the
-                      <a href="#" className="underline text-blue-700">
-                        {' '}
+                      <a
+                        href="https://digital.gov.bc.ca/cloud/services/public/onboard/#understand"
+                        target="_blank"
+                        className="ml-1 underline text-blue-700"
+                        rel="noreferrer"
+                      >
                         Public Cloud Services Shared Responsibility Model
                       </a>
                       .

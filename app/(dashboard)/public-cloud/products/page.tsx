@@ -10,11 +10,11 @@ import { userInfo } from '@/queries/user';
 
 const headers = [
   { field: 'name', headerName: 'Name' },
-  { field: 'description', headerName: 'Description' },
   { field: 'ministry', headerName: 'Ministry' },
-  { field: 'cluster', headerName: 'Cluster' },
-  { field: 'projectOwner', headerName: 'Project Owner' },
-  { field: 'technicalLeads', headerName: 'Technical Leads' },
+  { field: 'provider', headerName: 'Provider' },
+  { field: 'projectOwner', headerName: 'Product Owner' },
+  { field: 'primaryTechnicalLead', headerName: 'Technical Leads' },
+  { field: 'secondaryTechnicalLead', headerName: '' },
   { field: 'created', headerName: 'Created' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
   { field: 'edit', headerName: '' },
@@ -35,7 +35,6 @@ export default async function ProductsTable({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log('No session found');
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
@@ -66,6 +65,7 @@ export default async function ProductsTable({
       total={total}
       currentPage={currentPage}
       pageSize={pageSize || defaultPageSize}
+      showDownloadButton
     />
   );
 }

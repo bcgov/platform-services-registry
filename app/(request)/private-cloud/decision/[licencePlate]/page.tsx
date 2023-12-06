@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -57,7 +57,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { comment: '', decision: '', ...data?.requestedProject },
+    values: { humanCommnet: '', decision: '', ...data?.requestedProject },
   });
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [data]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/decision/${params.licencePlate}`, {
@@ -74,7 +74,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {
@@ -105,6 +105,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     <div>
       <FormProvider {...methods}>
         <form
+          autoComplete="off"
           onSubmit={methods.handleSubmit(() => {
             if (methods.getValues('decision') === 'APPROVED') setOpenCreate(true);
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
@@ -123,12 +124,19 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
               currentProject={data?.project as PrivateCloudProject}
             />
           </div>
+          <div className="border-b border-gray-900/10 pb-14">
+            <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+              4. User Comments
+            </h2>
+            <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.userComment}</p>
+          </div>
+
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
             {!isDisabled && session?.user?.roles?.includes('admin') ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton text="REJECT REQUEST" onClick={() => methods.setValue('decision', 'REJECTED')} />
-                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />{' '}
+                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />
               </div>
             ) : null}
           </div>
@@ -140,7 +148,13 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <Comment open={openComment} setOpen={setOpenComment} onSubmit={setComment} isLoading={isLoading} type="reject" />
+      <Comment
+        open={openComment}
+        setOpen={setOpenComment}
+        onSubmit={setComment}
+        isLoading={isLoading}
+        type={data?.type}
+      />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
     </div>
   );

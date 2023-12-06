@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -88,13 +88,15 @@ export default function EditProject({ params }: { params: { licencePlate: string
     },
   });
 
+  console.log(methods.watch());
+
   useEffect(() => {
     if (requestData) {
       setDisabled(true);
     }
   }, [requestData]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/edit/${params.licencePlate}`, {
@@ -102,7 +104,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {
@@ -124,14 +126,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
-  const setComment = (comment: string) => {
-    onSubmit({ ...methods.getValues(), comment });
+  const setComment = (userComment: string) => {
+    onSubmit({ ...methods.getValues(), userComment });
   };
 
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
             <TeamContacts

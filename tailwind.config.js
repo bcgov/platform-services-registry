@@ -25,6 +25,7 @@ module.exports = {
         cloudgrey: '#667085',
         divider: '#0000001F',
         linkblue: '#155EEF',
+        tremortablergrey: '#6b7280',
       },
       borderWidth: {
         1: '1px',

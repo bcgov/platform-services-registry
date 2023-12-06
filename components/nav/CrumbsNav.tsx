@@ -20,7 +20,7 @@ export default function CrumbsNav({
         <div className="border-l h-12 border-divider mx-5"></div>{' '}
         {/* Adjust the height (h-20) and color (border-gray-500) as needed */}
         <nav className="flex" aria-label="Breadcrumb">
-          <ol role="list" className="flex items-center ">
+          <ol className="flex items-center ">
             <li>
               <div>
                 <Link href={backUrl}>
@@ -39,7 +39,7 @@ export default function CrumbsNav({
             </li>
             <li>
               <div className="flex items-center">
-                <a className="ml-4 font-bcsans text-xl font-medium text-gray-500">{previousLabel}</a>
+                <span className="ml-4 font-bcsans text-xl font-medium text-gray-500">{previousLabel}</span>
                 {currentLabel && (
                   <svg
                     className="h-5 w-5 flex-shrink-0 text-gray-300"

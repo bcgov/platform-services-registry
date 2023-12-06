@@ -1,11 +1,12 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import path from 'path';
 import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import classNames from '@/components/utils/classnames';
 
 interface TableProps {
   headers: Record<string, string>[];
@@ -54,21 +55,21 @@ export default function TableBody({ headers, rows }: TableProps) {
   const onRowClickHandler = (row: any) => {
     switch (pathname) {
       case '/private-cloud/products':
-        router.push(path.join('/private-cloud', 'edit', row.licencePlate));
+        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
         break;
       case '/private-cloud/requests':
         if (isAdmin) {
-          router.push(path.join('/private-cloud', 'decision', row.licencePlate));
+          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
         } else {
           router.push(path.join('/private-cloud', 'request', row.id));
         }
         break;
       case '/public-cloud/products':
-        router.push(path.join('/public-cloud', 'edit', row.licencePlate));
+        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
         break;
       case '/public-cloud/requests':
         if (isAdmin) {
-          router.push(path.join('/public-cloud', 'decision', row.licencePlate));
+          router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
         } else {
           router.push(path.join('/public-cloud', 'request', row.id));
         }
@@ -78,7 +79,7 @@ export default function TableBody({ headers, rows }: TableProps) {
 
   return (
     <>
-      <div className="flow-root overflow-y-auto">
+      <div className="flow-root overflow-y-auto h-[55vh]">
         <div className="w-full overflow-auto">
           <div className="inline-block min-w-full align-middle">
             <table className="w-full text-left">
@@ -88,7 +89,7 @@ export default function TableBody({ headers, rows }: TableProps) {
                     <th
                       key={headerName + index}
                       scope="col"
-                      className={`font-bcsans relative isolate py-3.5 text-left text-sm font-normal text-mediumgrey md:w-auto ${
+                      className={`font-sans relative isolate py-3.5 text-left text-base font-semibold text-mediumgrey md:w-auto ${
                         index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : 'px-3'
                       } ${index === headers.length - 1 ? 'pr-4 sm:pr-6 lg:pr-8' : ''}`}
                     >
@@ -106,12 +107,12 @@ export default function TableBody({ headers, rows }: TableProps) {
                   >
                     {headers.map((value, index) => (
                       <td
-                        key={value['field'] + index}
-                        className={` px-3 py-4 text-sm text-mediumgrey md:table-cell border-b-1 ${
+                        key={value.field + index}
+                        className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
                           index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                         } `}
                       >
-                        {row[value['field']]}
+                        {row[value.field]}
                       </td>
                     ))}
                   </tr>

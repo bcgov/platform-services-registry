@@ -1,16 +1,17 @@
-import { connect, StringCodec, JSONCodec } from 'nats';
+import { JSONCodec, StringCodec, connect } from 'nats';
 import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 import createPublicCloudNatsMessage, {
-  PublicCloudRequestedProjectWithContacts,
   PublicCloudProjectWithContacts,
+  PublicCloudRequestedProjectWithContacts,
 } from '@/nats/publicCloud';
 import openshiftDeletionCheck, { DeletableField } from '@/scripts/deletioncheck';
-import { RequestType, PrivateCloudRequest } from '@prisma/client';
+import { PrivateCloudRequest, RequestType } from '@prisma/client';
 
 const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
 
 async function sendNatsMessage(natsSubject: string, messageBody: any) {
   try {
+    console.log('NATS SERVER URL: ', serverURL);
     console.log('NATS SUBJECT: ', natsSubject);
     console.log('MESSAGE BODY: ', JSON.stringify(messageBody));
 
@@ -51,10 +52,10 @@ export async function sendPrivateCloudNatsMessage(
 
   const messageBody = createPrivateCloudNatsMessage(requestId, requestType, requestedProject, contactChanged);
 
-  return sendNatsMessage(natsSubject, messageBody);
+  await sendNatsMessage(natsSubject, messageBody);
 }
 
-export function sendPublicCloudNatsMessage(
+export async function sendPublicCloudNatsMessage(
   requestType: RequestType,
   requestedProject: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,
@@ -63,5 +64,5 @@ export function sendPublicCloudNatsMessage(
 
   const messageBody = createPublicCloudNatsMessage(requestType, requestedProject, currentProject);
 
-  return sendNatsMessage(natsSubject, messageBody);
+  await sendNatsMessage(natsSubject, messageBody);
 }

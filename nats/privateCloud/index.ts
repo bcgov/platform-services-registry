@@ -4,7 +4,7 @@ import {
   DefaultStorageOptions,
   snapshot,
 } from '@/nats/privateCloud/constants';
-import { Prisma, RequestType, PrivateCloudRequest } from '@prisma/client';
+import { Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 
 export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
   include: {
@@ -69,9 +69,9 @@ export default function createPrivateCloudNatsMessage(
     ].map(({ quotaName, quota }) => ({
       name: `${licencePlate}-${quotaName}`,
       quota: {
-        cpu: DefaultCpuOptions[quota.cpu],
-        memory: DefaultMemoryOptions[quota.memory],
-        storage: DefaultStorageOptions[quota.storage],
+        cpu: DefaultCpuOptions[quota.cpu].name,
+        memory: DefaultMemoryOptions[quota.memory].name,
+        storage: DefaultStorageOptions[quota.storage].name,
         snapshot: snapshot.name,
       },
       quotas: {

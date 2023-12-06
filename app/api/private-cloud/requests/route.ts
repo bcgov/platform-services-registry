@@ -10,8 +10,6 @@ import { privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
 
-  console.log('SEARCH PARAMS: ', searchParams);
-
   const defaultPageSize = searchParams.get('defaultPageSize');
   const currentPage = searchParams.get('currentPage');
   const search = searchParams.get('search');

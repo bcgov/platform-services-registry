@@ -1,4 +1,4 @@
-name: Test codebase
+name: 7.Test codebase
 
 on: push
 
@@ -53,6 +53,9 @@ jobs:
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
 
     - name: Rerun Pre-Commit Hooks on CI
       run: |

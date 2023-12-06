@@ -4,6 +4,7 @@ import Provider from '@/components/Provider';
 import Nav from '@/components/nav/Nav';
 import classNames from '@/components/utils/classnames';
 import Footer from '@/components/Footer';
+// import Footer from '@/components/FooterLarge';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,10 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <Provider>
-        <body className={classNames(inter.className)}>
+        <body className={classNames('flex flex-col min-h-screen', inter.className)}>
           <Nav />
-          {children}
-          {/* <Footer /> */}
+          <main className="flex-grow h-100">{children}</main>
+          <Footer />
         </body>
       </Provider>
     </html>

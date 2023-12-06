@@ -1,6 +1,5 @@
-import { RequestType, PrivateCloudRequest, DecisionStatus, PrivateCloudProject } from '@prisma/client';
+import { DecisionStatus, Prisma, PrivateCloudProject, PrivateCloudRequest, RequestType } from '@prisma/client';
 import prisma from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
 import { PrivateCloudEditRequestBody } from '@/schema';
 
 export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
@@ -43,9 +42,11 @@ export default async function editRequest(
     throw new Error('Project does not exist.');
   }
 
+  const { userComment, ...rest } = formData;
+
   // merge the form data with the existing project data
   const requestedProject = {
-    ...formData,
+    ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
     cluster: project.cluster,
@@ -102,6 +103,7 @@ export default async function editRequest(
       active: true,
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
+      userComment,
       requestedProject: {
         create: requestedProject,
       },

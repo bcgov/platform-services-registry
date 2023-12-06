@@ -1,4 +1,4 @@
-import { ProjectStatus, RequestType, DecisionStatus, PublicCloudRequest, Prisma } from '@prisma/client';
+import { DecisionStatus, Prisma, ProjectStatus, PublicCloudRequest, RequestType } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import generateLicensePlate from '@/lib/generateLicencePlate';
 import { PublicCloudCreateRequestBody } from '@/schema';

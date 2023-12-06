@@ -134,6 +134,7 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
     testQuota: QuotaInputSchema,
     toolsQuota: QuotaInputSchema,
     developmentQuota: QuotaInputSchema,
+    userComment: string().optional(),
   }),
 );
 

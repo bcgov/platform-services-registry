@@ -47,7 +47,6 @@ export default function CommonComponents() {
   const [noneSelected, setNoneSelected] = useState<boolean>(false);
 
   const onClickHandler = (name: string, value: string) => {
-    // console.log("onClickHandler", name, value);
     setCheckedState((prevState) => ({
       ...prevState,
       [name]: prevState[name] === value ? 'NOT_USING' : value,

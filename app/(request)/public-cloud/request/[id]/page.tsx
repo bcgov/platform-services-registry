@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -64,10 +64,17 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
     }
   };
 
+  // If user is not an admin, set isDisabled to true
+  useEffect(() => {
+    if (session && !session.user.isAdmin) {
+      setDisabled(true);
+    }
+  }, [session]);
+
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpen(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts

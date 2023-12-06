@@ -28,5 +28,14 @@ repos:
   - id: detect-secrets
     args: [--baseline, .secrets.baseline]
     exclude: package.lock.json
+- repo: local
+  hooks:
+  - id: bash-format
+    name: eslint
+    entry: .bin/eslint.sh
+    language: script
+    files: \.tsx?$
+    verbose: true
+    pass_filenames: true
 
 exclude: ^(CHANGELOG\.md)$

@@ -16,7 +16,7 @@ const headers = [
 //   return 'data';
 // }
 
-export default function PublicUsers({ params }: { params: {} }) {
+export default function PublicUsers() {
   return (
     <div>
       <PublicUserTabs />

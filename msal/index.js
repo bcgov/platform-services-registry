@@ -1,7 +1,7 @@
 import { ConfidentialClientApplication } from '@azure/msal-node';
 import fetch, { Headers } from 'node-fetch';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import msalConfig from './config.js';
+import msalConfig from './config';
 
 let msalInstance;
 const graphAPIProxy = process.env.APP_ENV === 'localdev' ? new HttpsProxyAgent(process.env.M365_PROXY_URL) : null;

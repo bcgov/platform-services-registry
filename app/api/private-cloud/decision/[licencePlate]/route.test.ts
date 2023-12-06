@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/create/route';
@@ -139,8 +139,6 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     await createRequest(req);
-    const privateCloudRequests = await prisma.privateCloudRequest.findMany();
-
     const request = await prisma.privateCloudRequest.findFirst();
 
     if (!request) {

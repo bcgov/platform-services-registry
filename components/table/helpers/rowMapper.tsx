@@ -3,9 +3,19 @@ import Image from 'next/image';
 import Edit from '@/components/assets/edit.svg';
 import { PrivateProject } from '@/queries/types';
 import classNames from '@/components/utils/classnames';
+import Avtar from '@/components/table/Avatar';
+
+const tailwindColors = {
+  red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
+  blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
+  green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
+  grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
+  // ... add other colors here
+};
 
 function TypeBadge({ status }: { status: string }) {
-  let text, colour;
+  let text = '';
+  let colour!: keyof typeof tailwindColors;
 
   switch (status) {
     case 'APPROVED':
@@ -29,15 +39,6 @@ function TypeBadge({ status }: { status: string }) {
       colour = 'grey';
   }
 
-  const tailwindColors = {
-    red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
-    blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
-    green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
-    grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
-    // ... add other colors here
-  };
-
-  //@ts-ignore
   const classes = tailwindColors[colour] || [];
 
   return (
@@ -74,17 +75,31 @@ function TypeBadge({ status }: { status: string }) {
 export const privateCloudProjectDataToRow = (project: PrivateProject) => {
   return {
     id: project.id,
-    name: project.name,
-    description: project.description,
+    licencePlateValue: project.licencePlate,
+    name: <p className="line-clamp-2 w-60">{project.description}</p>,
+    description: <p className="line-clamp-2">{project.description}</p>,
     ministry: project.ministry,
     cluster: project.cluster,
-    projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName} ${
-      project.secondaryTechnicalLeadDetails?.firstName || ''
-    } ${project.secondaryTechnicalLeadDetails ? ',' : ''} ${project.secondaryTechnicalLeadDetails?.lastName || ''}`,
-    // @ts-ignore
-    created: formatDate(project.created['$date']),
-    licencePlate: project.licencePlate,
+    projectOwner: (
+      <Avtar
+        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
+        email={project.projectOwnerDetails.email}
+      />
+    ),
+    primaryTechnicalLead: (
+      <Avtar
+        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
+        email={project.primaryTechnicalLeadDetails.email}
+      />
+    ),
+    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
+      <Avtar
+        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
+        email={project.secondaryTechnicalLeadDetails.email}
+      />
+    ) : null,
+    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
+    licencePlate: <p className="w-28">{project.licencePlate}</p>,
     edit: (
       <div
         className="pr-4 sm:pr-6 lg:pr-8
@@ -104,16 +119,31 @@ export const privateCloudProjectDataToRow = (project: PrivateProject) => {
 export const publicCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
-    name: project.name,
-    csp: project.provider,
+    licencePlateValue: project.licencePlate,
+    name: <p className="line-clamp-2 w-60">{project.description}</p>,
+    provider: project.provider,
     description: project.description,
     ministry: project.ministry,
-    projectOwner: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-    technicalLeads: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName} ${
-      project.secondaryTechnicalLeadDetails?.firstName || ''
-    } ${project.secondaryTechnicalLeadDetails ? ',' : ''} ${project.secondaryTechnicalLeadDetails?.lastName || ''}`,
-    created: formatDate(project.created['$date']),
-    licencePlate: project.licencePlate,
+    projectOwner: (
+      <Avtar
+        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
+        email={project.projectOwnerDetails.email}
+      />
+    ),
+    primaryTechnicalLead: (
+      <Avtar
+        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
+        email={project.primaryTechnicalLeadDetails.email}
+      />
+    ),
+    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
+      <Avtar
+        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
+        email={project.secondaryTechnicalLeadDetails.email}
+      />
+    ) : null,
+    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
+    licencePlate: <p className="w-28">{project.licencePlate}</p>,
     edit: (
       <div
         className="pr-4 sm:pr-6 lg:pr-8
@@ -133,6 +163,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
 export const privateCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
+    licencePlateValue: request.licencePlate,
     type: request.type,
     status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
@@ -142,14 +173,15 @@ export const privateCloudRequestDataToRow = (request: any) => {
     technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
       request?.secondaryTechnicalLead ? ',' : ''
     } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: formatDate(request.created['$date']),
-    licencePlate: request.licencePlate,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
+    licencePlate: <p className="w-28">{request.licencePlate}</p>,
   };
 };
 
 export const publicCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
+    licencePlateValue: request.licencePlate,
     type: <TypeBadge status={request.decisionStatus} />,
     status: request.decisionStatus,
     name: request.requestedProject.name,
@@ -159,7 +191,7 @@ export const publicCloudRequestDataToRow = (request: any) => {
     technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
       request?.secondaryTechnicalLead ? ',' : ''
     } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: formatDate(request.created['$date']),
-    licencePlate: request.licencePlate,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
+    licencePlate: <p className="w-28">{request.licencePlate}</p>,
   };
 };
