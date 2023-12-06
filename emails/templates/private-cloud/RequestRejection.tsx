@@ -23,8 +23,8 @@ export const RequestRejectionTemplate = ({ productName, comment }: EmailProp) =>
                 <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
                 <Text>Hi {productName} team, </Text>
                 <Text className="">
-                  Your request regarding the product {productName} on the Private Cloud Openshift platform has rejected
-                  due to the following reason(s):
+                  Your request regarding the product {productName} on the Private Cloud Openshift platform has been
+                  rejected due to the following reason(s):
                 </Text>
                 <Text className="">{comment}</Text>
                 <Text>
