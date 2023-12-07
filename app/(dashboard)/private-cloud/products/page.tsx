@@ -41,20 +41,20 @@ export default async function ProductsTable({
     search,
     ministry,
     cluster,
-    'CREATE',
+    undefined,
     userEmail,
     ministryRoles,
     true,
   );
 
   // console.log('Create Requests Data length', requestsData.length);
-  // console.log('Create Requests Total', requestsTotal);
+  console.log('Create Requests Total', requestsTotal);
   // console.log('Search', search);
   // requestsData.forEach((project) => console.log(project));
 
   // console.log('requestsTotal', requestsTotal);
 
-  const transformCreateRequests = requestsData.map((request) => ({
+  const transformActiveRequests = requestsData.map((request) => ({
     ...request.requestedProject,
     created: request.created,
     activeRequest: [request],
@@ -62,10 +62,14 @@ export default async function ProductsTable({
 
   // console.log('transformCreateRequests', transformCreateRequests);
 
-  const createRequests = transformCreateRequests.map(privateCloudProjectDataToRow);
+  const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
 
-  const projectsPageSize = Math.max(effectivePageSize - requestsData.length, 0);
+  const projectsPageSize = Math.max(effectivePageSize - activeRequests.length, 0);
   const projectsCurrentPage = Math.max(currentPage - Math.ceil(requestsTotal / effectivePageSize), 1);
+
+  console.log('projectsPageSize', projectsPageSize);
+
+  // NOTE: 0 is interpreted as no limit. So if projectsPageSize is 0, we want to skip the query altogether
 
   const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
     projectsPageSize,
@@ -78,13 +82,11 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
+  console.log('Projects Data length', data.length);
+
   // data.forEach((project) => console.log(project));
 
-  const rows = data.map(privateCloudProjectDataToRow);
-  const activeRequestRows = data.filter((row) => row.activeRequest.length > 0).map(privateCloudProjectDataToRow);
-  const nonActiveRequestRows = data.filter((row) => row.activeRequest.length === 0).map(privateCloudProjectDataToRow);
-
-  const merged = [...createRequests, ...activeRequestRows];
+  const projects = data.map(privateCloudProjectDataToRow);
 
   return (
     <Table
@@ -92,29 +94,29 @@ export default async function ProductsTable({
       description="These are your products hosted on Private Cloud OpenShift platform"
       tableBody={
         <div>
-          {merged.length > 0 ? (
+          {activeRequests.length > 0 ? (
             <div>
               <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5 text-gray-700">
                 <h1 className="text-lg">Products with Active Requests</h1>
                 <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
               </div>
-              <NewTableBody rows={merged} />
+              <NewTableBody rows={activeRequests} />
             </div>
           ) : null}
-          {nonActiveRequestRows.length > 0 ? (
+          {projects.length > 0 ? (
             <div>
               <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5 text-gray-700">
-                <h1>All Products</h1>
+                <h1>Products</h1>
                 <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
               </div>
-              <NewTableBody rows={nonActiveRequestRows} />
+              <NewTableBody rows={projects} />
             </div>
           ) : null}
         </div>
       }
       total={total + requestsTotal}
       currentPage={currentPage}
-      pageSize={merged.length + nonActiveRequestRows.length}
+      pageSize={effectivePageSize}
       showDownloadButton
       apiContext="private-cloud"
     />

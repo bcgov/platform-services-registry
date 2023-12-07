@@ -15,7 +15,7 @@ export async function privateCloudProjectsPaginated(
   ministry?: string | null,
   cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
   userEmail?: string | null,
-  activeRequest?: boolean,
+  excludeProjectsWithActiveRequest?: boolean,
   ministryRoles?: string[],
 ): Promise<{
   data: Data[];
@@ -27,7 +27,7 @@ export async function privateCloudProjectsPaginated(
     ministry,
     cluster,
     userEmail,
-    activeRequest,
+    excludeProjectsWithActiveRequest,
     ministryRoles,
   });
 

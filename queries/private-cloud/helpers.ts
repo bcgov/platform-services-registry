@@ -6,14 +6,14 @@ export async function getPrivateCloudProjectsQuery({
   ministry,
   cluster,
   userEmail,
-  activeRequest,
+  excludeProjectsWithActiveRequest = false,
   ministryRoles,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | string[] | null;
   userEmail?: string | null;
-  activeRequest?: boolean;
+  excludeProjectsWithActiveRequest?: boolean;
   ministryRoles?: string[];
 }) {
   // Initialize the search/filter query
@@ -128,6 +128,15 @@ export async function getPrivateCloudProjectsQuery({
     } else {
       searchQuery.cluster = cluster;
     }
+  }
+
+  if (excludeProjectsWithActiveRequest) {
+    // Add a condition to exclude projects with active requests
+    searchQuery.$nor = [
+      {
+        activeRequest: { $elemMatch: { active: true } },
+      },
+    ];
   }
 
   return searchQuery;
@@ -268,8 +277,11 @@ export async function getPrivateCloudProjectsResult({
         },
       },
       {
-        $sort: { activeRequestCount: -1 },
+        $sort: { name: 1 },
       },
+      // {
+      //   $sort: { activeRequestCount: -1 },
+      // },
       ...paginationPipelines,
       {
         $addFields: {
