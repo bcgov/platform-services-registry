@@ -10,6 +10,9 @@ export default function FilterPanel() {
   const clusterRef = useRef<HTMLSelectElement>(null);
   const ministryRef = useRef<HTMLSelectElement>(null);
 
+  const isRequests = pathname.includes('/requests');
+  const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Projects';
+
   const handleFilterChange = (name: string, value: string | null) => {
     const urlSearchParams = new URLSearchParams(searchParams?.toString());
 
@@ -114,9 +117,7 @@ export default function FilterPanel() {
               }`}
             />
           </span>
-          <span className="block text-sm font-medium leading-6 text-gray-900">
-            Show Inactive Projects <span className="pl-1"> {showInactive ? 'On' : 'Off'} </span>
-          </span>
+          <span className="block text-sm font-medium leading-6 text-gray-900">{toggleText}</span>
         </label>
       </div>
       <div className="mt-8 md:mt-7">

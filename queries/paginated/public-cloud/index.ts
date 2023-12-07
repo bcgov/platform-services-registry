@@ -228,7 +228,7 @@ export async function publicCloudRequestsPaginated(
   data: any[];
   total: number;
 }> {
-  const searchQuery: any = active ? { active: true } : {};
+  const searchQuery: any = active ? {} : { active: true };
 
   if (searchTerm) {
     searchQuery.$or = [
