@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     return new Response(
-      `Decision request for ${request.licencePlate} successfullycreated. Admin approval is required`,
+      `Decision request for ${request.licencePlate} successfully created. Admin approval is required`,
       {
         status: 200,
       },
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
 
-  return new NextResponse(`Decision request for ${request.licencePlate} successfullycreated and provisioned.`, {
+  return new NextResponse(`Decision request for ${request.licencePlate} successfully created and provisioned.`, {
     status: 200,
   });
 }
