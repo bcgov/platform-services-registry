@@ -193,5 +193,4 @@ export async function getProductAWSRoles(licencePlate: string = 'eu9cfk'): Promi
       return findObjectByValueSubstring(projectTeamGroups[0].subGroups, 'name', licencePlate);
     }
   }
-  return;
 }
