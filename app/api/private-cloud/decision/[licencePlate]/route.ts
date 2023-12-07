@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
     sendRejectionEmails(request, comment);
-    return new NextResponse(`Request for ${request.licencePlate} succesfully created as rejected.`, {
+    return new NextResponse(`Request for ${request.licencePlate} successfully created as rejected.`, {
       status: 200,
     });
   }
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   // Send emails
   sendRequestApprovalEmails(request);
 
-  return new NextResponse(`Decision request for ${request.licencePlate} succesfully created.`, {
+  return new NextResponse(`Decision request for ${request.licencePlate} successfully created.`, {
     status: 200,
   });
 }

@@ -75,7 +75,7 @@ export default function SignInPage() {
       <p className="mb-4 max-w-7xl">If you haven&apos;t attended an onboarding session, please contact:</p>
       <ul>
         <li>
-          Private Cloud Platform Adminstrators{' '}
+          Private Cloud Platform Administrators{' '}
           <a href="mailto:PlatformServicesTeam@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
             PlatformServicesTeam@gov.bc.ca
           </a>{' '}
@@ -88,7 +88,7 @@ export default function SignInPage() {
           </a>
         </li>
         <li>
-          Public Cloud Platform Adminstrators{' '}
+          Public Cloud Platform Administrators{' '}
           <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
             Cloud.Pathfinder@gov.bc.ca
           </a>{' '}

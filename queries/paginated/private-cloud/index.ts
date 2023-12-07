@@ -11,7 +11,7 @@ export async function privateCloudProjectsPaginated(
   pageNumber: number,
   searchTerm?: string | null,
   ministry?: string | null,
-  cluster?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  cluster?: string | null, // Non admins will be required to pass this field that will filter projects for their user
   userEmail?: string | null,
   ministryRoles?: string[],
 ): Promise<{
