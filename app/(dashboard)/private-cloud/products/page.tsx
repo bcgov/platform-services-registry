@@ -29,11 +29,13 @@ export default async function ProductsTable({
   const { search, page, pageSize, ministry, cluster } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
+  // console.log('SEARCH', search);
+
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  const effectivePageSize = +pageSize || 10;
+  const effectivePageSize = +pageSize || defaultPageSize;
 
   const { data: requestsData, total: requestsTotal } = await privateCloudRequestsPaginated(
     effectivePageSize,
@@ -72,7 +74,7 @@ export default async function ProductsTable({
   // NOTE: 0 is interpreted as no limit. So if projectsPageSize is 0, we want to skip the query altogether
 
   const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
-    projectsPageSize,
+    0,
     projectsCurrentPage,
     search,
     ministry,
@@ -82,11 +84,21 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  console.log('Projects Data length', data.length);
+  console.log('');
+  console.log('SEARCH', search);
+  console.log('Projects Page Size', projectsPageSize);
+  console.log('Projects Current Page', projectsCurrentPage);
+
+  console.log('Total', total);
+  console.log('requestsTotal', requestsTotal);
+  console.log('current page', currentPage);
+
+  console.log('Table total', total + requestsTotal);
+  console.log('');
 
   // data.forEach((project) => console.log(project));
 
-  const projects = data.map(privateCloudProjectDataToRow);
+  const projects = projectsPageSize === 0 ? [] : data.map(privateCloudProjectDataToRow);
 
   return (
     <Table

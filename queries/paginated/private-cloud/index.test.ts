@@ -287,6 +287,7 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       undefined,
+      undefined,
       'christopher.tan@gov.bc.ca',
       ['ministry-citz-admin'],
     );
@@ -311,9 +312,31 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       undefined,
+      undefined,
       'christopher.tan@gov.bc.ca',
       ['ministry-citz-admin'],
     );
+
+    projects.data.forEach((project) => {
+      const projectOwner1 = project.requestedProject.projectOwner as User;
+      const primaryTechnicalLead1 = project.requestedProject.primaryTechnicalLead as User;
+      const secondaryTechnicalLead1 = project.requestedProject.secondaryTechnicalLead as User;
+
+      const projectOwner2 = project.userRequestedProject.projectOwner as User;
+      const primaryTechnicalLead2 = project.userRequestedProject.primaryTechnicalLead as User;
+      const secondaryTechnicalLead2 = project.userRequestedProject.secondaryTechnicalLead as User;
+
+      console.log(
+        new Set([
+          projectOwner1.email,
+          primaryTechnicalLead1.email,
+          secondaryTechnicalLead1.email,
+          projectOwner2.email,
+          primaryTechnicalLead2.email,
+          secondaryTechnicalLead2.email,
+        ]),
+      );
+    });
 
     expect(projects.data.length).toBe(3);
   });

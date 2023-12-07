@@ -53,7 +53,7 @@ export async function privateCloudRequestsPaginated(
   ministry?: string,
   cluster?: string,
   type?: string,
-  userEmail?: string | null,
+  userEmail?: string,
   ministryRoles: string[] = [],
   active: boolean = true,
 ): Promise<{
@@ -112,6 +112,36 @@ export async function privateCloudRequestsPaginated(
   if (cluster) {
     filterQuery['requestedProject.cluster'] = cluster;
     filterQuery['userRequestedProject.cluster'] = cluster;
+  }
+
+  if (userEmail) {
+    searchQuery.$and = [
+      {
+        $or: [
+          {
+            'projectOwner.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'primaryTechnicalLead.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'secondaryTechnicalLead.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'requestedProject.ministry': { $in: ministryRoles },
+          },
+        ],
+      },
+    ];
   }
 
   // Aggregation pipeline
