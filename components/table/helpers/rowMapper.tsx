@@ -79,8 +79,8 @@ export const privateCloudProjectDataToRow = (project: any) => {
     name: project.name,
     ministry: project.ministry,
     cluster: project.cluster,
-    requestDecisionStatus: project?.activeRequest[0]?.decisionStatus,
-    requestType: project?.activeRequest[0]?.type,
+    requestDecisionStatus: project?.activeRequest ? project?.activeRequest[0]?.decisionStatus : null,
+    requestType: project?.activeRequest ? project?.activeRequest[0]?.type : null,
     projectOwner: {
       name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
       email: project.projectOwner.email,
@@ -97,19 +97,6 @@ export const privateCloudProjectDataToRow = (project: any) => {
       : null,
     created: formatDate(project.created.$date),
     licencePlate: project.licencePlate,
-    edit: (
-      <div
-        className="pr-4 sm:pr-6 lg:pr-8
-      >"
-      >
-        <div
-          className=" w-4 h-3 "
-          // pr-4 sm:pr-6 lg:pr-8
-        >
-          <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
-        </div>
-      </div>
-    ),
   };
 };
 

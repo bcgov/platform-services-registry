@@ -1,6 +1,6 @@
 import Table from '@/components/table/Table';
 import NewTableBody from '@/components/table/TableBodyNew';
-import { privateCloudProjectsPaginated, Data, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
+import { privateCloudProjectsPaginated, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
@@ -43,14 +43,17 @@ export default async function ProductsTable({
     search,
     ministry,
     cluster,
-    undefined,
     userEmail,
     ministryRoles,
-    true,
   );
 
+  // console.log('Requests Data', requestsData);
+
+  // return null;
+
   // console.log('Create Requests Data length', requestsData.length);
-  console.log('Create Requests Total', requestsTotal);
+  console.log('Requests Total', requestsTotal);
+  console.log('Requests returned', requestsData.length);
   // console.log('Search', search);
   // requestsData.forEach((project) => console.log(project));
 
@@ -66,37 +69,43 @@ export default async function ProductsTable({
 
   const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
 
+  // console.log('activeRequests', activeRequests.length);
+
   const projectsPageSize = Math.max(effectivePageSize - activeRequests.length, 0);
   const projectsCurrentPage = Math.max(currentPage - Math.ceil(requestsTotal / effectivePageSize), 1);
 
-  console.log('projectsPageSize', projectsPageSize);
+  // console.log('projectsPageSize', projectsPageSize);
 
   // NOTE: 0 is interpreted as no limit. So if projectsPageSize is 0, we want to skip the query altogether
 
-  const { data, total }: { data: Data[]; total: number } = await privateCloudProjectsPaginated(
-    0,
+  const { data, total }: { data: any; total: number } = await privateCloudProjectsPaginated(
+    projectsPageSize,
     projectsCurrentPage,
     search,
     ministry,
     cluster,
     userEmail,
-    true,
     ministryRoles,
   );
 
-  console.log('');
-  console.log('SEARCH', search);
-  console.log('Projects Page Size', projectsPageSize);
-  console.log('Projects Current Page', projectsCurrentPage);
+  // data.forEach((project) => console.log(project));
+  // console.log('');
+  // console.log('SEARCH', search);
+  // console.log('Projects Page Size', projectsPageSize);
+  // console.log('Projects Current Page', projectsCurrentPage);
 
-  console.log('Total', total);
-  console.log('requestsTotal', requestsTotal);
-  console.log('current page', currentPage);
+  // console.log('Total', total);
+  // console.log('requestsTotal', requestsTotal);
+  // console.log('current page', currentPage);
 
-  console.log('Table total', total + requestsTotal);
-  console.log('');
+  // console.log('Table total', total + requestsTotal);
+  // console.log('');
 
   // data.forEach((project) => console.log(project));
+
+  console.log('Projects Data length', data.length);
+  console.log('');
+  console.log('');
 
   const projects = projectsPageSize === 0 ? [] : data.map(privateCloudProjectDataToRow);
 

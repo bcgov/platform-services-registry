@@ -6,14 +6,12 @@ export async function getPrivateCloudProjectsQuery({
   ministry,
   cluster,
   userEmail,
-  excludeProjectsWithActiveRequest = false,
   ministryRoles,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | string[] | null;
   userEmail?: string | null;
-  excludeProjectsWithActiveRequest?: boolean;
   ministryRoles?: string[];
 }) {
   // Initialize the search/filter query
@@ -130,41 +128,12 @@ export async function getPrivateCloudProjectsQuery({
     }
   }
 
-  if (excludeProjectsWithActiveRequest) {
-    // Add a condition to exclude projects with active requests
-    searchQuery.$nor = [
-      {
-        activeRequest: { $elemMatch: { active: true } },
-      },
-    ];
-  }
-
   return searchQuery;
 }
 
 export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
   const result: unknown = await prisma.privateCloudProject.aggregateRaw({
     pipeline: [
-      {
-        $lookup: {
-          from: 'PrivateCloudRequest', // The foreign collection
-          let: { projectId: '$_id' }, // Define variable for use in the pipeline
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$projectId', '$$projectId'] }, // Match projectId
-                    { $eq: ['$active', true] }, // Match active requests
-                  ],
-                },
-              },
-            },
-            // You can add other stages here if needed
-          ],
-          as: 'activeRequest', // Output array field
-        },
-      },
       {
         $lookup: {
           from: 'User',
@@ -181,7 +150,6 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           as: 'primaryTechnicalLead',
         },
       },
-
       {
         $lookup: {
           from: 'User',
@@ -219,27 +187,6 @@ export async function getPrivateCloudProjectsResult({
     pipeline: [
       {
         $lookup: {
-          from: 'PrivateCloudRequest', // The foreign collection
-          let: { projectId: '$_id' }, // Define variable for use in the pipeline
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$projectId', '$$projectId'] }, // Match projectId
-                    { $eq: ['$active', true] }, // Match active requests
-                  ],
-                },
-              },
-            },
-            // You can add other stages here if needed
-          ],
-          as: 'activeRequest', // Output array field
-        },
-      },
-
-      {
-        $lookup: {
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
@@ -259,7 +206,7 @@ export async function getPrivateCloudProjectsResult({
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnical',
+          as: 'secondaryTechnicalLead',
         },
       },
       { $match: searchQuery },
@@ -271,17 +218,6 @@ export async function getPrivateCloudProjectsResult({
           preserveNullAndEmptyArrays: true,
         },
       },
-      {
-        $addFields: {
-          activeRequestCount: { $size: '$activeRequest' },
-        },
-      },
-      {
-        $sort: { name: 1 },
-      },
-      // {
-      //   $sort: { activeRequestCount: -1 },
-      // },
       ...paginationPipelines,
       {
         $addFields: {
