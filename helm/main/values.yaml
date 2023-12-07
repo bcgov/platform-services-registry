@@ -100,4 +100,5 @@ mongodb:
 
 backup:
   cronExpression: 0 1 * * *
-  storage: 10Gi
+  storageSize: 10Gi
+  rocketchatPrefix:
