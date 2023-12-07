@@ -28,4 +28,4 @@ mongodb:
 backup:
   cronExpression: 0 1 * * *
   storageSize: 10Gi
-  rocketchatPrefix: "[DEV]"
+  rocketchatPrefix: "[Registry DEV]"
