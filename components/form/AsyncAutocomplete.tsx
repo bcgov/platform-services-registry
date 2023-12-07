@@ -95,7 +95,7 @@ export default function AsyncAutocomplete({
       setError(name, {
         type: 'manual',
         message:
-          'The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry',
+          'The IDIR account associated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry',
       });
     } else {
       clearErrors(name);

@@ -24,7 +24,7 @@ export default function NavBar() {
                 />
               </Link>
               <span className="ml-5 hidden items-center text-2xl leading-none text-white md:inline">
-                <span className="mr-2 font-roboto font-thin">BC Plaftorm Services</span>
+                <span className="mr-2 font-roboto font-thin">BC Platform Services</span>
                 <span className="font-roboto font-normal">Product Registry</span>
               </span>
             </div>
