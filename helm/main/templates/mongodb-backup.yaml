@@ -44,9 +44,9 @@ spec:
         - name: MONGOARCHIVE__CRON_EXPRESSION
           value: {{ .Values.backup.cronExpression }}
         - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_URL
-          value: {{ b64dec (default "" (index $secret.data "rocketchat-webhook-url")) }}
+          value: {{ if and $secret.data (index $secret.data "rocketchat-webhook-url") }}{{ b64dec (index $secret.data "rocketchat-webhook-url") }}{{ else }}{{ "" }}{{ end }}
         - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_PREFIX
-          value: {{ .Values.backup.rocketchatPrefix }}
+          value: {{ .Values.backup.rocketchatPrefix | quote }}
         resources:
           limits:
             cpu: 200m
