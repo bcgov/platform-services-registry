@@ -61,27 +61,62 @@ export async function privateCloudRequestsPaginated(
   total: number;
 }> {
   // Constructing the search and filter query
+
   const searchQuery: any = {};
+  const filterQuery: any = {};
+
+  if (searchTerm) {
+    // Add other filter conditions here
+    searchQuery.$or = [
+      { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.name': { $regex: searchTerm, $options: 'i' } },
+      { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
+    ];
+  }
+
   if (active) {
-    searchQuery.active = true;
+    filterQuery.active = true;
   }
   if (type) {
-    searchQuery.type = type;
+    filterQuery.type = type;
   }
 
   // Ministry and Cluster Filters
   if (ministry) {
-    searchQuery['requestedProject.ministry'] = ministry;
-    searchQuery['userRequestedProject.ministry'] = ministry;
+    filterQuery['requestedProject.ministry'] = ministry;
+    filterQuery['userRequestedProject.ministry'] = ministry;
   }
+
   if (cluster) {
-    searchQuery['requestedProject.cluster'] = cluster;
-    searchQuery['userRequestedProject.cluster'] = cluster;
+    filterQuery['requestedProject.cluster'] = cluster;
+    filterQuery['userRequestedProject.cluster'] = cluster;
   }
 
   // Aggregation pipeline
   const pipeline = [
-    { $match: searchQuery },
+    { $match: filterQuery },
     {
       $lookup: {
         from: 'PrivateCloudRequestedProject',
@@ -156,74 +191,56 @@ export async function privateCloudRequestsPaginated(
         as: 'projectOwnerDetails',
       },
     },
+    { $match: searchQuery },
 
-    { $unwind: { path: '$userRequestedProjectProjectOwnerDetails', preserveNullAndEmptyArrays: true } },
-    { $unwind: { path: '$userRequestedProjectPrimaryTechnicalLeadDetails', preserveNullAndEmptyArrays: true } },
-    { $unwind: { path: '$userRequestedProjectSecondaryTechnicalLeadDetails', preserveNullAndEmptyArrays: true } },
-    { $unwind: { path: '$requestedProjectProjectOwnerDetails', preserveNullAndEmptyArrays: true } },
-    { $unwind: { path: '$requestedProjectPrimaryTechnicalLeadDetails', preserveNullAndEmptyArrays: true } },
-    { $unwind: { path: '$requestedProjectSecondaryTechnicalLeadDetails', preserveNullAndEmptyArrays: true } },
-
-    // Apply additional filters and search conditions
-    {
-      $match: {
-        // Add other filter conditions here
-        $or: [
-          { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
-          { 'userRequestedProject.name': { $regex: searchTerm, $options: 'i' } },
-          { 'projectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'userRequestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'userRequestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'userRequestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectPrimaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectSecondaryTechnicalLeadDetails.email': { $regex: searchTerm, $options: 'i' } },
-          { 'requestedProjectProjectOwnerDetails.email': { $regex: searchTerm, $options: 'i' } },
-          // Add other searchable fields here
-        ],
-      },
-    },
-    // Apply sort, skip, and limit for pagination
     {
       $sort: {
         type: 1, // Sorting by type in ascending order, use -1 for descending
       },
     },
-    { $skip: (pageNumber - 1) * pageSize },
-    { $limit: pageSize },
-    // Project the required fields
+    // { $skip: (pageNumber - 1) * pageSize },
+    // { $limit: pageSize },
+    //     // Project the required fields
+
     {
       $project: {
         _id: 0,
         id: { $toString: '$_id' },
-        userRequestedProject: 1,
-        requestedProject: 1,
-        projectOwnerDetails: 1,
-        primaryTechnicalLeadDetails: 1,
-        secondaryTechnicalLeadDetails: 1,
-        // Add other fields to project as needed
+        type: 1,
+        active: 1,
+        created: 1,
+        licencePlate: 1,
+
+        requestedProject: {
+          _id: 1,
+          name: 1,
+          cluster: 1,
+          ministry: 1,
+          projectOwner: { $arrayElemAt: ['$requestedProjectProjectOwnerDetails', 0] },
+          primaryTechnicalLead: { $arrayElemAt: ['$requestedProjectPrimaryTechnicalLeadDetails', 0] },
+          secondaryTechnicalLead: { $arrayElemAt: ['$requestedProjectSecondaryTechnicalLeadDetails', 0] },
+        },
+
+        userRequestedProject: {
+          _id: 1,
+          name: 1,
+          cluster: 1,
+          ministry: 1,
+          projectOwner: { $arrayElemAt: ['$userRequestedProjectProjectOwnerDetails', 0] },
+          primaryTechnicalLead: { $arrayElemAt: ['$userRequestedProjectPrimaryTechnicalLeadDetails', 0] },
+          secondaryTechnicalLead: { $arrayElemAt: ['$userRequestedProjectSecondaryTechnicalLeadDetails', 0] },
+        },
       },
     },
   ];
 
   // Execute the aggregation pipeline
-  const result = await prisma.privateCloudRequest.aggregateRaw({ pipeline });
-  const total = await prisma.privateCloudRequest.count({ where: searchQuery });
+  const result = await prisma.privateCloudRequest.aggregateRaw({
+    pipeline: [...pipeline, ...[{ $skip: (pageNumber - 1) * pageSize }, { $limit: pageSize }]],
+  });
+  const total = await prisma.privateCloudRequest.aggregateRaw({ pipeline });
 
-  return { data: result, total };
+  const count = total.length;
+
+  return { data: result, total: count };
 }

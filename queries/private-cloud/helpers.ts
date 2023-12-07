@@ -25,55 +25,55 @@ export async function getPrivateCloudProjectsQuery({
   if (searchTerm) {
     searchQuery.$or = [
       {
-        'projectOwnerDetails.email': {
+        'projectOwner.email': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'projectOwnerDetails.firstName': {
+        'projectOwner.firstName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'projectOwnerDetails.lastName': {
+        'projectOwner.lastName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'primaryTechnicalLeadDetails.email': {
+        'primaryTechnicalLead.email': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'primaryTechnicalLeadDetails.firstName': {
+        'primaryTechnicalLead.firstName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'primaryTechnicalLeadDetails.lastName': {
+        'primaryTechnicalLead.lastName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'secondaryTechnicalLeadDetails.email': {
+        'secondaryTechnicalLead.email': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'secondaryTechnicalLeadDetails.firstName': {
+        'secondaryTechnicalLead.firstName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'secondaryTechnicalLeadDetails.lastName': {
+        'secondaryTechnicalLead.lastName': {
           $regex: searchTerm,
           $options: 'i',
         },
@@ -97,19 +97,19 @@ export async function getPrivateCloudProjectsQuery({
       {
         $or: [
           {
-            'projectOwnerDetails.email': {
+            'projectOwner.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'primaryTechnicalLeadDetails.email': {
+            'primaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'secondaryTechnicalLeadDetails.email': {
+            'secondaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
@@ -161,7 +161,7 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwnerDetails',
+          as: 'projectOwner',
         },
       },
       {
@@ -169,7 +169,7 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           from: 'User',
           localField: 'primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLeadDetails',
+          as: 'primaryTechnicalLead',
         },
       },
 
@@ -178,11 +178,11 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLeadDetails',
+          as: 'secondaryTechnicalLead',
         },
       },
       { $match: searchQuery },
-      { $unwind: '$projectOwnerDetails' },
+      { $unwind: '$projectOwner' },
       { $count: 'totalCount' },
     ],
   });
@@ -234,7 +234,7 @@ export async function getPrivateCloudProjectsResult({
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwnerDetails',
+          as: 'projectOwner',
         },
       },
       {
@@ -242,7 +242,7 @@ export async function getPrivateCloudProjectsResult({
           from: 'User',
           localField: 'primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLeadDetails',
+          as: 'primaryTechnicalLead',
         },
       },
       {
@@ -250,15 +250,15 @@ export async function getPrivateCloudProjectsResult({
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLeadDetails',
+          as: 'secondaryTechnical',
         },
       },
       { $match: searchQuery },
-      { $unwind: '$projectOwnerDetails' },
-      { $unwind: '$primaryTechnicalLeadDetails' },
+      { $unwind: '$projectOwner' },
+      { $unwind: '$primaryTechnicalLead' },
       {
         $unwind: {
-          path: '$secondaryTechnicalLeadDetails',
+          path: '$secondaryTechnicalLead',
           preserveNullAndEmptyArrays: true,
         },
       },

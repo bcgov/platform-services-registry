@@ -53,15 +53,16 @@ export default async function RequestsTable({
     search,
     ministry,
     cluster,
+    undefined,
     userEmail,
-    null,
     ministryRoles,
     false,
   );
 
-  data.forEach((request) => console.log(request));
+  // data.forEach((request) => console.log(request));
+  console.log('Requests Data length', total);
 
-  return null;
+  data.forEach((request) => console.log(request));
 
   const rows = data.map(privateCloudRequestDataToRow).reverse();
 

@@ -47,21 +47,20 @@ export default async function ProductsTable({
     true,
   );
 
-  console.log('Create Requests Data length', requestsData.length);
-  console.log('Create Requests Total', requestsTotal);
-  console.log('Search', search);
-  requestsData.forEach((project) => console.log(project));
+  // console.log('Create Requests Data length', requestsData.length);
+  // console.log('Create Requests Total', requestsTotal);
+  // console.log('Search', search);
+  // requestsData.forEach((project) => console.log(project));
 
   // console.log('requestsTotal', requestsTotal);
 
   const transformCreateRequests = requestsData.map((request) => ({
     ...request.requestedProject,
-    projectOwnerDetails: request.projectOwner,
-    primaryTechnicalLeadDetails: request.primaryTechnicalLead,
-    secondaryTechnicalLeadDetails: request.secondaryTechnicalLead,
     created: request.created,
     activeRequest: [request],
   }));
+
+  // console.log('transformCreateRequests', transformCreateRequests);
 
   const createRequests = transformCreateRequests.map(privateCloudProjectDataToRow);
 
@@ -78,6 +77,8 @@ export default async function ProductsTable({
     true,
     ministryRoles,
   );
+
+  // data.forEach((project) => console.log(project));
 
   const rows = data.map(privateCloudProjectDataToRow);
   const activeRequestRows = data.filter((row) => row.activeRequest.length > 0).map(privateCloudProjectDataToRow);

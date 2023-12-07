@@ -76,24 +76,23 @@ export const privateCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: project.description,
-    description: <p className="line-clamp-2">{project.description}</p>,
+    name: project.name,
     ministry: project.ministry,
     cluster: project.cluster,
     requestDecisionStatus: project?.activeRequest[0]?.decisionStatus,
     requestType: project?.activeRequest[0]?.type,
     projectOwner: {
-      name: `${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`,
-      email: project.projectOwnerDetails.email,
+      name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
+      email: project.projectOwner.email,
     },
     primaryTechnicalLead: {
-      name: `${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`,
-      email: project.primaryTechnicalLeadDetails.email,
+      name: `${project.primaryTechnicalLead.firstName} ${project.primaryTechnicalLead.lastName}`,
+      email: project.primaryTechnicalLead.email,
     },
-    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails
+    secondaryTechnicalLead: project.secondaryTechnicalLead
       ? {
-          name: `${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`,
-          email: project.secondaryTechnicalLeadDetails.email,
+          name: `${project.secondaryTechnicalLead.firstName} ${project.secondaryTechnicalLead.lastName}`,
+          email: project.secondaryTechnicalLead.email,
         }
       : null,
     created: formatDate(project.created.$date),
@@ -124,22 +123,22 @@ export const publicCloudProjectDataToRow = (project: any) => {
     ministry: project.ministry,
     projectOwner: (
       <Avtar
-        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
-        email={project.projectOwnerDetails.email}
+        name={`${project.projectOwner.firstName} ${project.projectOwner.lastName}`}
+        email={project.projectOwner.email}
         userRole="Product Owner"
       />
     ),
     primaryTechnicalLead: (
       <Avtar
-        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
-        email={project.primaryTechnicalLeadDetails.email}
+        name={`${project.primaryTechnicalLead.firstName} ${project.primaryTechnicalLead.lastName}`}
+        email={project.primaryTechnicalLead.email}
         userRole="Technical Lead"
       />
     ),
-    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
+    secondaryTechnicalLead: project.secondaryTechnicalLead ? (
       <Avtar
-        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
-        email={project.secondaryTechnicalLeadDetails.email}
+        name={`${project.secondaryTechnicalLead.firstName} ${project.secondaryTechnicalLead.lastName}`}
+        email={project.secondaryTechnicalLead.email}
         userRole="Technical Lead"
       />
     ) : null,
@@ -170,12 +169,14 @@ export const privateCloudRequestDataToRow = (request: any) => {
     name: request.requestedProject.name,
     ministry: request.requestedProject.ministry,
     cluster: request.requestedProject.cluster,
-    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
-      request?.secondaryTechnicalLead ? ',' : ''
-    } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
+    projectOwner: `${request.requestedProject.projectOwner.firstName} ${request.requestedProject.projectOwner.lastName}`,
+    technicalLeads: `${request.requestedProject.primaryTechnicalLead.firstName} ${
+      request.requestedProject.primaryTechnicalLead.lastName
+    } ${request?.requestedProject.secondaryTechnicalLead ? ',' : ''} ${
+      request?.requestedProject.secondaryTechnicalLead?.firstName || ''
+    } ${request?.requestedProject.secondaryTechnicalLead?.lastName || ''}`,
     created: <p className="w-28">{formatDate(request.created.$date)}</p>,
-    licencePlate: <p className="w-28">{request.licencePlate}</p>,
+    licencePlate: <p className="w-28">{request.requestedProject.licencePlate}</p>,
   };
 };
 
