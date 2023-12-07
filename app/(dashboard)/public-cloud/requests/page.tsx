@@ -55,7 +55,7 @@ export default async function RequestsTable({
     provider,
     userEmail,
     ministryRoles,
-    JSON.parse(active || 'true'),
+    active,
   );
 
   const rows = data.map(publicCloudRequestDataToRow);

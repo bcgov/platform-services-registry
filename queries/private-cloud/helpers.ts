@@ -14,10 +14,12 @@ export async function getPrivateCloudProjectsQuery({
   cluster?: string | string[] | null;
   userEmail?: string | null;
   ministryRoles?: string[];
-  active?: boolean;
+  active?: string | null;
 }) {
+  const setActive = active === 'false' ? false : true;
+
   // Initialize the search/filter query
-  const searchQuery: any = active ? { status: 'ACTIVE' } : {};
+  const searchQuery: any = setActive ? { status: 'ACTIVE' } : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {

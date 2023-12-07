@@ -56,7 +56,7 @@ export default async function RequestsTable({
     cluster,
     userEmail,
     ministryRoles,
-    JSON.parse(active || 'true'),
+    active,
   );
 
   const rows = data.map(privateCloudRequestDataToRow).reverse();

@@ -54,7 +54,7 @@ export default async function ProductsTable({
     provider,
     userEmail,
     ministryRoles,
-    JSON.parse(active || 'true'),
+    active,
   );
 
   const rows = data.map(publicCloudProjectDataToRow);
