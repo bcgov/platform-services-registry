@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    sendRejectionEmails(request, comment);
+    sendRejectionEmails(request.requestedProject, comment);
     return new NextResponse(`Request for ${request.licencePlate} successfully created as rejected.`, {
       status: 200,
     });
