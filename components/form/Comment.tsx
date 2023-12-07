@@ -17,7 +17,17 @@ export default function AdminComment() {
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
         If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
-        Platform Services team. Reach out to <b>Faisal Hamood</b> to get started.
+        Platform Services team. Reach out to{' '}
+        {
+          <a
+            className="text-blue-600 dark:text-blue-500 hover:underline"
+            href={'mailto:platformservicesteam@gov.bc.ca'}
+          >
+            {' '}
+            PlatformServicesTeam@gov.bc.ca{' '}
+          </a>
+        }{' '}
+        to get started.
       </p>
 
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -34,7 +44,7 @@ export default function AdminComment() {
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-            Please provide a descriptibe product name with no acronyms
+            Please provide a descriptive product name with no acronyms
           </p>
         </div>
 
@@ -94,7 +104,7 @@ export default function AdminComment() {
               <option>KLAB</option>
             </select>
             <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select your cluster Select CLAB or KLAB for testing purposes
+              Select your cluster, select CLAB or KLAB for testing purposes
             </p>
           </div>
         </div>

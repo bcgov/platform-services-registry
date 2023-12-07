@@ -61,7 +61,7 @@ export default async function RequestsTable({
   return (
     <Table
       title="Requests for Public Cloud Landing Zones"
-      description="These are the submitted requests for your products the Public Cloud Landing Zones"
+      description="These are the submitted requests for your products in the Public Cloud Landing Zones"
       tableBody={<TableBody headers={headers} rows={rows} />}
       total={total}
       currentPage={currentPage}

@@ -17,13 +17,13 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
         3. Project Budget
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
-        Please indicate your estimated monthly budget &#40;Try the
+        Please indicate your estimated monthly budget &#40;Try the{' '}
         <a
           className="text-blue-600 dark:text-blue-500 hover:underline"
           href={'https://www.thoughtco.com/html-code-for-common-symbols-and-signs-2654021'}
         >
           AWS Cost Calculator
-        </a>
+        </a>{' '}
         to get an estimate&#41;. Provide an estimated average monthly spend allocated to your cloud service usage for
         this project. As a part of this request, you will be provisioned with four accounts - Dev, Test, Prod and Tools.
         Please specify the estimate for each of these accounts.{' '}
