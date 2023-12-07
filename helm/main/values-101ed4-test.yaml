@@ -24,3 +24,7 @@ app:
 
 mongodb:
   enabled: true
+
+backup:
+  cronExpression: 0 1 * * *
+  storage: 10Gi
