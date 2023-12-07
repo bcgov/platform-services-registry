@@ -16,10 +16,10 @@ export async function getPrivateCloudProjectsQuery({
   ministryRoles?: string[];
   active?: string | null;
 }) {
-  const setActive = active === 'false' ? false : true;
+  const isActive = active === 'false' ? false : true;
 
   // Initialize the search/filter query
-  const searchQuery: any = setActive ? { status: 'ACTIVE' } : {};
+  const searchQuery: any = isActive ? { status: 'ACTIVE' } : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
