@@ -97,3 +97,7 @@ mongodb:
       enabled: false
     containerSecurityContext:
       enabled: false
+
+backup:
+  cronExpression: 0 1 * * *
+  storage: 10Gi
