@@ -4,7 +4,7 @@ export async function privateCloudProjects(
   searchTerm?: string | null,
   ministry?: string | null,
   cluster?: string | string[] | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for their user
   ministryRoles?: string[],
 ): Promise<any> {
   // Initialize the search/filter query
