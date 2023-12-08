@@ -1,12 +1,17 @@
 import prisma from '@/lib/prisma';
+import {
+  getPublicCloudProjectsQuery,
+  getPublicCloudProjectsResult,
+  getPublicCloudProjectsTotalCount,
+} from '@/queries/public-cloud/helpers';
 import { PublicProject } from '@/queries/types';
 
 export async function publicCloudProjectsPaginated(
   pageSize: number,
-  pageNumber: number,
+  skip: number,
   searchTerm?: string | null,
   ministry?: string | null,
-  provider?: string | null,
+  provider?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
   userEmail?: string | null,
   ministryRoles?: string[],
 ): Promise<{
@@ -14,205 +19,26 @@ export async function publicCloudProjectsPaginated(
   total: number;
 }> {
   // Initialize the search/filter query
-  const searchQuery: any = {
-    status: 'ACTIVE',
-  };
-
-  // Construct search/filter conditions based on provided parameters
-  if (searchTerm) {
-    searchQuery.$or = [
-      {
-        'projectOwnerDetails.email': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'projectOwnerDetails.firstName': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'projectOwnerDetails.lastName': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'primaryTechnicalLeadDetails.email': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'primaryTechnicalLeadDetails.firstName': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'primaryTechnicalLeadDetails.lastName': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'secondaryTechnicalLeadDetails.email': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'secondaryTechnicalLeadDetails.firstName': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      {
-        'secondaryTechnicalLeadDetails.lastName': {
-          $regex: searchTerm,
-          $options: 'i',
-        },
-      },
-      { name: { $regex: searchTerm, $options: 'i' } },
-      { description: { $regex: searchTerm, $options: 'i' } },
-      { licencePlate: { $regex: searchTerm, $options: 'i' } },
-      { provider: { $regex: searchTerm, $options: 'i' } },
-      { ministry: { $regex: searchTerm, $options: 'i' } },
-
-      // include other fields as necessary
-    ];
-  }
-
-  if (ministry) {
-    searchQuery.ministry = ministry;
-  }
-
-  if (provider) {
-    searchQuery.provider = provider;
-  }
-
-  if (userEmail) {
-    searchQuery.$and = [
-      {
-        $or: [
-          {
-            'projectOwnerDetails.email': {
-              $regex: userEmail,
-              $options: 'i',
-            },
-          },
-          {
-            'primaryTechnicalLeadDetails.email': {
-              $regex: userEmail,
-              $options: 'i',
-            },
-          },
-          {
-            'secondaryTechnicalLeadDetails.email': {
-              $regex: userEmail,
-              $options: 'i',
-            },
-          },
-          {
-            ministry: { $in: ministryRoles },
-          },
-        ],
-      },
-    ];
-  }
-
-  // First, get the total count of matching documents
-  const totalCountResult = await prisma.publicCloudProject.aggregateRaw({
-    pipeline: [
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'projectOwnerId',
-          foreignField: '_id',
-          as: 'projectOwnerDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'primaryTechnicalLeadId',
-          foreignField: '_id',
-          as: 'primaryTechnicalLeadDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'secondaryTechnicalLeadId',
-          foreignField: '_id',
-          as: 'secondaryTechnicalLeadDetails',
-        },
-      },
-      { $match: searchQuery },
-      { $unwind: '$projectOwnerDetails' },
-      { $count: 'totalCount' },
-    ],
+  const searchQuery = await getPublicCloudProjectsQuery({
+    searchTerm,
+    ministry,
+    provider,
+    userEmail,
+    ministryRoles,
   });
+
+  const proms = [];
+  // First, get the total count of matching documents
+  proms.push(getPublicCloudProjectsTotalCount({ searchQuery }));
 
   // Then, get the actual page of data
-  const result = await prisma.publicCloudProject.aggregateRaw({
-    pipeline: [
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'projectOwnerId',
-          foreignField: '_id',
-          as: 'projectOwnerDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'primaryTechnicalLeadId',
-          foreignField: '_id',
-          as: 'primaryTechnicalLeadDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'secondaryTechnicalLeadId',
-          foreignField: '_id',
-          as: 'secondaryTechnicalLeadDetails',
-        },
-      },
-      { $match: searchQuery },
-      { $unwind: '$projectOwnerDetails' },
-      { $unwind: '$primaryTechnicalLeadDetails' },
-      {
-        $unwind: {
-          path: '$secondaryTechnicalLeadDetails',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      { $skip: (pageNumber - 1) * pageSize },
-      { $limit: pageSize },
-      {
-        $addFields: {
-          id: { $toString: '$_id' }, // Convert _id to string
-        },
-      },
-      {
-        $project: {
-          _id: 0, // Exclude _id field from the result
-        },
-      },
-    ],
-  });
+  proms.push(getPublicCloudProjectsResult({ searchQuery, skip, pageSize }));
 
-  // @ts-ignore
-  const totalCount = totalCountResult[0]?.totalCount || 0;
+  const [total, data] = await Promise.all(proms);
 
   return {
-    data: result as unknown as PublicProject[],
-    total: totalCount || 0,
+    data: data as PublicProject[],
+    total: total as number,
   };
 }
 

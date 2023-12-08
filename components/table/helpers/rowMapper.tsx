@@ -104,46 +104,27 @@ export const publicCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: <p className="line-clamp-2 w-60">{project.description}</p>,
-    provider: project.provider,
-    description: project.description,
+    name: project.name,
     ministry: project.ministry,
-    projectOwner: (
-      <Avtar
-        name={`${project.projectOwner.firstName} ${project.projectOwner.lastName}`}
-        email={project.projectOwner.email}
-        userRole="Product Owner"
-      />
-    ),
-    primaryTechnicalLead: (
-      <Avtar
-        name={`${project.primaryTechnicalLead.firstName} ${project.primaryTechnicalLead.lastName}`}
-        email={project.primaryTechnicalLead.email}
-        userRole="Technical Lead"
-      />
-    ),
-    secondaryTechnicalLead: project.secondaryTechnicalLead ? (
-      <Avtar
-        name={`${project.secondaryTechnicalLead.firstName} ${project.secondaryTechnicalLead.lastName}`}
-        email={project.secondaryTechnicalLead.email}
-        userRole="Technical Lead"
-      />
-    ) : null,
-    created: <p className="w-28">{formatDate(project.created.$date)}</p>,
-    licencePlate: <p className="w-28">{project.licencePlate}</p>,
-    edit: (
-      <div
-        className="pr-4 sm:pr-6 lg:pr-8
-      >"
-      >
-        <div
-          className=" w-4 h-3 "
-          // pr-4 sm:pr-6 lg:pr-8
-        >
-          <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
-        </div>
-      </div>
-    ),
+    cluster: project.provider,
+    requestDecisionStatus: project?.activeRequest ? project?.activeRequest[0]?.decisionStatus : null,
+    requestType: project?.activeRequest ? project?.activeRequest[0]?.type : null,
+    projectOwner: {
+      name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
+      email: project.projectOwner.email,
+    },
+    primaryTechnicalLead: {
+      name: `${project.primaryTechnicalLead.firstName} ${project.primaryTechnicalLead.lastName}`,
+      email: project.primaryTechnicalLead.email,
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLead
+      ? {
+          name: `${project.secondaryTechnicalLead.firstName} ${project.secondaryTechnicalLead.lastName}`,
+          email: project.secondaryTechnicalLead.email,
+        }
+      : null,
+    created: formatDate(project.created.$date),
+    licencePlate: project.licencePlate,
   };
 };
 

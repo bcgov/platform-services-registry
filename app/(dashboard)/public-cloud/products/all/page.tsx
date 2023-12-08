@@ -1,8 +1,8 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBodyNew';
-import { privateCloudProjectsPaginated, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
-import { PrivateProject } from '@/queries/types';
-import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
+import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
+import { PublicProject } from '@/queries/types';
+import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
@@ -16,7 +16,7 @@ export default async function ProductsTable({
     page: number;
     pageSize: number;
     ministry: string;
-    cluster: string;
+    provider: string;
   };
 }) {
   // Authenticate the user
@@ -26,7 +26,7 @@ export default async function ProductsTable({
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
-  const { search, page, pageSize, ministry, cluster } = searchParams;
+  const { search, page, pageSize, ministry, provider } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
@@ -35,28 +35,27 @@ export default async function ProductsTable({
 
   const effectivePageSize = +pageSize || defaultPageSize;
 
-  const { data, total }: { data: any; total: number } = await privateCloudProjectsPaginated(
+  const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
     effectivePageSize,
-    (currentPage - 1) * effectivePageSize,
+    currentPage,
     search,
     ministry,
-    cluster,
+    provider,
     userEmail,
     ministryRoles,
   );
 
-  const projects = data.map(privateCloudProjectDataToRow);
+  const rows = data.map(publicCloudProjectDataToRow);
 
   return (
     <Table
-      title="Products in Private Cloud OpenShift Platform"
-      description="These are your products hosted on Private Cloud OpenShift platform"
-      tableBody={<TableBody rows={projects} />}
+      title="Products in Public Cloud Landing Zones"
+      description="These are your products using the Public Cloud Landing Zones"
+      tableBody={<TableBody rows={rows} />}
       total={total}
       currentPage={currentPage}
-      pageSize={effectivePageSize}
+      pageSize={pageSize || defaultPageSize}
       showDownloadButton
-      apiContext="private-cloud"
     />
   );
 }

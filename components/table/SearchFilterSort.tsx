@@ -84,7 +84,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
 
   return (
     <Disclosure>
-      <div className="flex justify-end space-x-2.5">
+      <div className="flex flex-grow-0 w-[500px] justify-end space-x-2.5">
         <form className="flex-grow flex-shrink max-w-sm">
           <label htmlFor="simple-search" className="sr-only">
             Search

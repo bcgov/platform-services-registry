@@ -59,11 +59,6 @@ export default async function RequestsTable({
     false,
   );
 
-  // data.forEach((request) => console.log(request));
-  console.log('Requests Data length', total);
-
-  data.forEach((request) => console.log(request));
-
   const rows = data.map(privateCloudRequestDataToRow).reverse();
 
   return (
