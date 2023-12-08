@@ -10,5 +10,9 @@ RUN mkdir /.npm
 RUN chgrp -R 0 /.npm && \
     chmod -R g=u /.npm
 
+RUN mkdir /.react-email-temp
+RUN chgrp -R 0 /.react-email-temp && \
+    chmod -R g=u /.react-email-temp
+
 EXPOSE 3001
 CMD ["npm", "run", "email"]
