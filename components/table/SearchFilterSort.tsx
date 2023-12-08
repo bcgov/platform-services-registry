@@ -36,7 +36,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       } else {
         params.delete('search');
       }
-      params.delete('page');
+      // params.delete('page');
 
       startTransition(() => {
         replace(`${pathname}?${params.toString()}`);

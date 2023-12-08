@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
+import { number } from 'zod';
 
 export default async function ProductsTable({
   searchParams,
@@ -29,8 +30,6 @@ export default async function ProductsTable({
   const { search, page, pageSize, ministry, cluster } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
-  // console.log('SEARCH', search);
-
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
@@ -47,40 +46,25 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  // console.log('Requests Data', requestsData);
-
-  // return null;
-
-  console.log('Requests Data length', requestsData.length);
-  console.log('Requests Total', requestsTotal);
-  // console.log('Requests returned', requestsData.length);
-  // console.log('Search', search);
-  // requestsData.forEach((project) => console.log(project));
-
-  // console.log('requestsTotal', requestsTotal);
-
   const transformActiveRequests = requestsData.map((request) => ({
-    ...request.requestedProject,
+    ...request.userRequestedProject,
     created: request.created,
     activeRequest: [request],
   }));
 
-  // console.log('transformCreateRequests', transformCreateRequests);
-
   const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
 
-  // console.log('activeRequests', activeRequests.length);
+  const startIndex = (currentPage - 1) * effectivePageSize;
+  const requestsRemaining = Math.min(Math.max(requestsTotal - startIndex, 0), effectivePageSize);
+  const productsRemaining = Math.max(effectivePageSize - requestsRemaining, 0);
 
-  const projectsPageSize = Math.max(effectivePageSize - activeRequests.length, 0);
-  const projectsCurrentPage = Math.max(currentPage - Math.ceil(requestsTotal / effectivePageSize), 1);
-
-  // console.log('projectsPageSize', projectsPageSize);
-
-  // NOTE: 0 is interpreted as no limit. So if projectsPageSize is 0, we want to skip the query altogether
+  const totalRowsDisplayedUntilPrevPage = (currentPage - 1) * effectivePageSize;
+  const totalProductsDisplayedInPrevPages = Math.max(totalRowsDisplayedUntilPrevPage - requestsTotal, 0);
+  const productsSkip = requestsRemaining === 0 ? totalProductsDisplayedInPrevPages : 0;
 
   const { data, total }: { data: any; total: number } = await privateCloudProjectsPaginated(
-    projectsPageSize,
-    projectsCurrentPage,
+    productsRemaining,
+    productsSkip,
     search,
     ministry,
     cluster,
@@ -88,26 +72,7 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  // data.forEach((project) => console.log(project));
-  // console.log('');
-  // console.log('SEARCH', search);
-  // console.log('Projects Page Size', projectsPageSize);
-  // console.log('Projects Current Page', projectsCurrentPage);
-
-  // console.log('Total', total);
-  // console.log('requestsTotal', requestsTotal);
-  // console.log('current page', currentPage);
-
-  // console.log('Table total', total + requestsTotal);
-  // console.log('');
-
-  // data.forEach((project) => console.log(project));
-
-  console.log('Projects Data length', data.length);
-  console.log('');
-  console.log('');
-
-  const projects = projectsPageSize === 0 ? [] : data.map(privateCloudProjectDataToRow);
+  const projects = data.map(privateCloudProjectDataToRow);
 
   return (
     <Table
@@ -117,7 +82,7 @@ export default async function ProductsTable({
         <div>
           {activeRequests.length > 0 ? (
             <div>
-              <div className="px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 mt-5 text-gray-700">
+              <div className=" bg-white px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 pt-4 text-gray-700 ">
                 <h1 className="text-lg">Products with Active Requests</h1>
                 <p className="text-sm text-gray-400 mt-1">An administrator is currently reviewing these requests</p>
               </div>
@@ -126,8 +91,8 @@ export default async function ProductsTable({
           ) : null}
           {projects.length > 0 ? (
             <div>
-              <div className="px-4 py-4 sm:px-6 lg:px-8 text-lg font-bcsans mb-0 mt-5 text-gray-700">
-                <h1>Products</h1>
+              <div className=" bg-white px-4 py-4 sm:px-6 lg:px-8 font-bcsans mb-0 pt-4 text-gray-700 ">
+                <h1 className="text-lg">Products</h1>
                 <p className="text-sm text-gray-400 mt-1">Select a product to make an edit request</p>
               </div>
               <NewTableBody rows={projects} />

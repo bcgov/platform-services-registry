@@ -171,17 +171,19 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
 
 export async function getPrivateCloudProjectsResult({
   searchQuery,
-  pageNumber,
+  skip,
   pageSize,
 }: {
   searchQuery: any;
-  pageNumber?: number;
+  skip?: number;
   pageSize?: number;
 }) {
-  let paginationPipelines: any[] = [];
-  if (pageNumber && pageSize) {
-    paginationPipelines = [{ $skip: (pageNumber - 1) * pageSize }, { $limit: pageSize }];
+  if (pageSize === 0) {
+    return [];
   }
+
+  let paginationPipelines: any[] = [];
+  paginationPipelines = [{ $skip: skip }, { $limit: pageSize }];
 
   const result = await prisma.privateCloudProject.aggregateRaw({
     pipeline: [
@@ -209,7 +211,6 @@ export async function getPrivateCloudProjectsResult({
           as: 'secondaryTechnicalLead',
         },
       },
-      { $match: searchQuery },
       { $unwind: '$projectOwner' },
       { $unwind: '$primaryTechnicalLead' },
       {
@@ -218,6 +219,8 @@ export async function getPrivateCloudProjectsResult({
           preserveNullAndEmptyArrays: true,
         },
       },
+      { $match: searchQuery },
+
       ...paginationPipelines,
       {
         $addFields: {

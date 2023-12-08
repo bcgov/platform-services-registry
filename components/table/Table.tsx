@@ -28,7 +28,7 @@ export default function Table({
         <div className="border-b-2 px-4 py-2 w-full">
           <SearchFilterSort showDownloadButton={showDownloadButton} apiContext={apiContext} />
         </div>
-        {tableBody}
+        <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
