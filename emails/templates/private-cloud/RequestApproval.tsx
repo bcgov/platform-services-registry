@@ -7,6 +7,7 @@ import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
+import { EMAIL_PREFIX } from '../../../config';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
@@ -14,8 +15,6 @@ interface EmailProp {
 
 export const RequestApprovalTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
-  const prefix = process.env.APP_ENV === 'Prod' ? '' : `[${process.env.APP_ENV}] `;
-
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -25,7 +24,7 @@ export const RequestApprovalTemplate = ({ request }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  {prefix}Hurray! Your provisioning request was approved and completed!
+                  {EMAIL_PREFIX}Hurray! Your provisioning request was approved and completed!
                 </Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">

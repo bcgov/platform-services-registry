@@ -7,6 +7,7 @@ import { TailwindConfig } from '../../components/TailwindConfig';
 import ProductDetails from '../../components/ProductDetails';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { EMAIL_PREFIX } from '../../../config';
 
 interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
@@ -14,7 +15,6 @@ interface EmailProp {
 
 const DeleteApprovalTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
-  const prefix = process.env.APP_ENV === 'Prod' ? '' : `[${process.env.APP_ENV}] `;
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -23,7 +23,9 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">{prefix}Your deletion request has been completed!</Heading>
+                <Heading className="text-lg text-black">
+                  {EMAIL_PREFIX}Your deletion request has been completed!
+                </Heading>
                 <Text>Hi {product.name} Team,</Text>
                 <Text className="">{`Your request for a project set deletion for ${product.name} is complete.`}</Text>
               </div>

@@ -4,6 +4,7 @@ import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
+import { EMAIL_PREFIX } from '../../../config';
 
 interface EmailProp {
   productName: string;
@@ -11,8 +12,6 @@ interface EmailProp {
 }
 export const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
   if (!productName) return <></>;
-  const prefix = process.env.APP_ENV === 'Prod' ? '' : `[${process.env.APP_ENV}] `;
-
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -21,7 +20,7 @@ export const RequestRejectionTemplate = ({ productName, comment }: EmailProp) =>
           <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">{prefix}Sorry, your request was rejected</Heading>
+                <Heading className="text-lg text-black">{EMAIL_PREFIX}Sorry, your request was rejected</Heading>
                 <Text>Hi {productName} team, </Text>
                 <Text className="">
                   Your request regarding the product {productName} on the Private Cloud Openshift platform has been
