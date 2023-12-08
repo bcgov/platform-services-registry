@@ -26,7 +26,12 @@ export default function ProjectDescriptionPublic({
       <p className="font-bcsans text-base leading-6 mt-5">
         If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
         Cloud Accelerator Service team. Reach out to
-        {/* <a className="text-blue-600 dark:text-blue-500 hover:underline" href={"mailto:cloud.pathfinder@gov.bc.ca"}> Cloud Pathfinder </a>  */}
+        {
+          <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:cloud.pathfinder@gov.bc.ca">
+            {' '}
+            Cloud.Pathfinder@gov.bc.ca{' '}
+          </a>
+        }
         to get started.
       </p>
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -125,7 +130,7 @@ export default function ProjectDescriptionPublic({
               {/* <option>GCP</option> */}
             </select>
             <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the Cloud Service Provider (AWS or GCP)
+              Select the Cloud Service Provider
             </p>
           </div>
         </div>
