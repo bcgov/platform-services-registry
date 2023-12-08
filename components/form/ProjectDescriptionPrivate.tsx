@@ -29,12 +29,8 @@ export default function ProjectDescription({
         If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
         Platform Services team. Reach out to{' '}
         {
-          <a
-            className="text-blue-600 dark:text-blue-500 hover:underline"
-            href={'mailto:platformservicesteam@gov.bc.ca'}
-          >
-            {' '}
-            PlatformServicesTeam@gov.bc.ca{' '}
+          <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:platformservicesteam@gov.bc.ca">
+            PlatformServicesTeam@gov.bc.ca
           </a>
         }{' '}
         to get started.
