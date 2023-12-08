@@ -17,7 +17,7 @@ For detailed instructions, refer to the GitHub documentation:
 
 - [Generating a New SSH Key and Adding it to the SSH Agent](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
 
-### Clonning Repository
+### Cloning Repository
 
 To clone a repository using SSH and set up essential Git configurations, you can execute the following shell commands:
 

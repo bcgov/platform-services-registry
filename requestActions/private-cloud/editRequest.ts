@@ -79,7 +79,7 @@ export default async function editRequest(
       : undefined,
   };
 
-  // The edit request will requre manual admin approval if any of the quotas are being changed.
+  // The edit request will require manual admin approval if any of the quotas are being changed.
   const isQuotaChanged = !(
     JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
     JSON.stringify(formData.testQuota) === JSON.stringify(project.testQuota) &&

@@ -77,7 +77,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     sendEditRequestEmails(request, comment);
     return new NextResponse(
-      'Successfuly edited project, admin approval will be required for this request to be provisioned ',
+      'Successfully edited project, admin approval will be required for this request to be provisioned ',
       { status: 200 },
     );
   }

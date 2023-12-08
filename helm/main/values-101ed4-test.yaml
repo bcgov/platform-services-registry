@@ -24,3 +24,8 @@ app:
 
 mongodb:
   enabled: true
+
+backup:
+  cronExpression: 0 1 * * *
+  storageSize: 10Gi
+  rocketchatPrefix: "[Registry TEST]"

@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import { ModelService } from '../modelService';
 
 export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRequestWhereInput> {
-  async secureFilter() {
+  async readFilter() {
     let baseFilter!: Prisma.PublicCloudRequestWhereInput;
     if (!this.session.isAdmin) {
       const res = await this.client.publicCloudRequestedProject.findMany({
@@ -15,6 +15,18 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
 
       baseFilter = {
         requestedProjectId: { in: ids },
+      };
+    }
+
+    return baseFilter;
+  }
+
+  async writeFilter() {
+    let baseFilter!: Prisma.PublicCloudRequestWhereInput;
+    if (!this.session.isAdmin) {
+      baseFilter = {
+        // Adding a dummy query to ensure no documents match
+        created: new Date(),
       };
     }
 

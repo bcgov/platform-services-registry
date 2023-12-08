@@ -16,7 +16,16 @@ const prisma =
       async $allOperations({ model, operation, args, query }) {
         if (
           !model ||
-          !['findUnique', 'findUniqueOrThrow', 'findFirst', 'findFirstOrThrow', 'findMany'].includes(operation)
+          ![
+            'findUnique',
+            'findUniqueOrThrow',
+            'findFirst',
+            'findFirstOrThrow',
+            'findMany',
+            'update',
+            'upsert',
+            'updateMany',
+          ].includes(operation)
         ) {
           return query(args);
         }
@@ -24,15 +33,19 @@ const prisma =
         const { session, ...validArgs } = args;
         if (session === undefined) return query(validArgs);
 
-        const multi = ['findMany'].includes(operation);
-        if (!session?.userId) return multi ? [] : null;
-
         const svc = getService(model, prisma, session);
-        if (!svc) return query(args);
+        if (!svc) return query(validArgs);
+
+        const multi = ['findMany'].includes(operation);
+        const writeOp = ['update', 'upsert', 'updateMany'].includes(operation);
 
         const { where, ...otherArgs } = validArgs;
-        const filter = await svc.genFilter(where);
+        const filter = await svc.genFilter(where, writeOp ? 'write' : 'read');
         const result = await query({ ...otherArgs, where: filter });
+
+        if (operation === 'updateMany') {
+          return result;
+        }
 
         const decorated = multi ? await Promise.all(result.map(svc.decorate)) : await svc.decorate(result);
         return decorated;

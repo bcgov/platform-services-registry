@@ -70,13 +70,13 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
 
     await prisma.$transaction([updateRequest, upsertProject]);
 
-    console.log(`Successfuly marked ${licencePlate} as provisioned.`);
+    console.log(`Successfully marked ${licencePlate} as provisioned.`);
 
     // revalidatePath('/private-cloud/requests', 'page');
     // revalidatePath('/private-cloud/products', 'page');
 
     // sendProvisionedEmails(request);
-    return new NextResponse(`Successfuly marked ${licencePlate} as provisioned.`, { status: 200 });
+    return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
     return new NextResponse(error.message, { status: 500 });

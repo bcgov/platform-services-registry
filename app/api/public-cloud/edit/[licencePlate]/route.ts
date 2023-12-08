@@ -86,5 +86,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   //   editRequest.requestedProject
   // );
 
-  return new NextResponse('Successfuly created and provisioned edit request ', { status: 200 });
+  return new NextResponse('Successfully created and provisioned edit request ', { status: 200 });
 }
