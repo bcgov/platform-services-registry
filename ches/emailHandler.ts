@@ -21,22 +21,18 @@ export const sendNewRequestEmails = async (request: PrivateCloudRequestWithReque
     const contacts = sendEmail({
       body: email,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
-      to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
-      ],
+      to: ['christopher.tan@gov.bc.ca'],
       subject: `${prefix}${request.requestedProject.name} provisioning request received`,
     });
 
-    const admins = sendEmail({
-      bodyType: 'html',
-      body: email,
-      to: adminEmails,
-      subject: `${prefix}New Provisioning request in Registry waiting for your approval`,
-    });
+    // const admins = sendEmail({
+    //   bodyType: 'html',
+    //   body: email,
+    //   to: adminEmails,
+    //   subject: `${prefix}New Provisioning request in Registry waiting for your approval`,
+    // });
 
-    await Promise.all([contacts, admins]);
+    await Promise.all([contacts]);
   } catch (error) {
     console.log('ERROR SENDING NEW REQUEST EMAIL');
   }
