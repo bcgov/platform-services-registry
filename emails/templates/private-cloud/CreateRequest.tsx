@@ -7,7 +7,7 @@ import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
-const defaultTheme = require('tailwindcss/defaultTheme');
+import { EMAIL_PREFIX } from '../../../config';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
@@ -15,7 +15,6 @@ interface EmailProp {
 
 export const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
-  const prefix = process.env.APP_ENV === 'Prod' ? '' : `[${process.env.APP_ENV}] `;
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -24,7 +23,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">{prefix}New Request!</Heading>
+                <Heading className="text-lg">{EMAIL_PREFIX}New Request!</Heading>
                 <Text>Hi {request.requestedProject.name} Team, </Text>
                 <Text className="">
                   You have requested a new project set for your product on the Private Cloud Openshift platform. Our
