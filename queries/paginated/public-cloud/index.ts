@@ -9,14 +9,15 @@ export async function publicCloudProjectsPaginated(
   provider?: string | null,
   userEmail?: string | null,
   ministryRoles?: string[],
+  active?: string | null,
 ): Promise<{
   data: PublicProject[];
   total: number;
 }> {
+  const isActive = active === 'false' ? false : true;
+
   // Initialize the search/filter query
-  const searchQuery: any = {
-    status: 'ACTIVE',
-  };
+  const searchQuery: any = isActive ? { status: 'ACTIVE' } : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
@@ -224,12 +225,13 @@ export async function publicCloudRequestsPaginated(
   provider?: string,
   userEmail?: string | null,
   ministryRoles?: string[],
-  active: boolean = true,
+  active?: string | null,
 ): Promise<{
   data: any[];
   total: number;
 }> {
-  const searchQuery: any = active ? { active: true } : {};
+  const isActive = active === 'false' ? false : true;
+  const searchQuery: any = isActive ? {} : { active: true };
 
   if (searchTerm) {
     searchQuery.$or = [

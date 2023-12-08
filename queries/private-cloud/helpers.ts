@@ -7,17 +7,19 @@ export async function getPrivateCloudProjectsQuery({
   cluster,
   userEmail,
   ministryRoles,
+  active,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   cluster?: string | string[] | null;
   userEmail?: string | null;
   ministryRoles?: string[];
+  active?: string | null;
 }) {
+  const isActive = active === 'false' ? false : true;
+
   // Initialize the search/filter query
-  const searchQuery: any = {
-    status: 'ACTIVE',
-  };
+  const searchQuery: any = isActive ? { status: 'ACTIVE' } : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
