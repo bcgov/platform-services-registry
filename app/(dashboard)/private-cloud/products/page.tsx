@@ -51,9 +51,9 @@ export default async function ProductsTable({
 
   // return null;
 
-  // console.log('Create Requests Data length', requestsData.length);
+  console.log('Requests Data length', requestsData.length);
   console.log('Requests Total', requestsTotal);
-  console.log('Requests returned', requestsData.length);
+  // console.log('Requests returned', requestsData.length);
   // console.log('Search', search);
   // requestsData.forEach((project) => console.log(project));
 
