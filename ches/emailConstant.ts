@@ -147,11 +147,6 @@ export const ministriesNames = [
     name: 'TRAN',
     humanFriendlyName: 'Transportation and Infrastructure',
   },
-  {
-    id: 30,
-    name: 'HOUS',
-    humanFriendlyName: 'Housing',
-  },
 ];
 
 // const ministriesNamesUpdated = [
@@ -210,7 +205,7 @@ export const ministriesNames = [
 //     name: "HLTH",
 //     humanFriendlyName: "Health"
 //   },
-//  {
+//   {
 //     id: 12,
 //     name: "HOUS",
 //     humanFriendlyName: "Housing"
