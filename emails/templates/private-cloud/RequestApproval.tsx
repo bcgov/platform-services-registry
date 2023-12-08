@@ -14,6 +14,7 @@ interface EmailProp {
 
 export const RequestApprovalTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
+  const prefix = process.env.APP_ENV === 'Prod' ? '' : `[${process.env.APP_ENV}] `;
 
   return (
     <Html>
@@ -24,7 +25,7 @@ export const RequestApprovalTemplate = ({ request }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  Hurray! Your provisioning request was approved and completed!
+                  {prefix}Hurray! Your provisioning request was approved and completed!
                 </Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">

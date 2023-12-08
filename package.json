@@ -34,7 +34,7 @@
     "@react-email/components": "^0.0.12",
     "@react-email/html": "0.0.7",
     "@react-email/render": "0.0.10",
-    "@react-email/tailwind": "0.0.13-canary.4",
+    "@react-email/tailwind": "^0.0.13",
     "@tailwindcss/forms": "^0.5.3",
     "@tanstack/react-query": "^5.4.3",
     "@types/lodash.isstring": "^4.0.9",
