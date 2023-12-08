@@ -14,6 +14,8 @@ interface EmailProp {
 
 const ProvisionedTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
+  const prefix = process.env.APP_ENV === 'Prod' ? '' : `[${process.env.APP_ENV}] `;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -23,7 +25,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  Hurray! Your Edit Product request was approved and completed!
+                  {prefix}Hurray! Your Edit Product request was approved and completed!
                 </Heading>
                 <Text>Hi {product.name} Team, </Text>
                 <Text className="">
