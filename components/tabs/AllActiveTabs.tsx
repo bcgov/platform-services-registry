@@ -10,6 +10,8 @@ export default function Tabs() {
   const selectedTab = pathname.split('/')[3];
   const isProducts = pathname.split('/')[2] === 'products';
 
+  console.log(selectedTab);
+
   if (!isProducts) {
     return null;
   }
@@ -20,7 +22,7 @@ export default function Tabs() {
         href={`/${pathname.split('/')[1]}/products/all`}
         type="button"
         className={classNames(
-          'w-24 relative inline-flex justify-center items-center rounded-l-lg bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10',
+          'w-24 relative inline-flex justify-center items-center rounded-l-lg px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10',
           selectedTab === 'all' ? 'bg-gray-200 hover:bg-gray-200' : 'bg-white',
         )}
       >

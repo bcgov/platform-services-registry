@@ -46,7 +46,7 @@ export default function Tabs({ className }: { className?: string }) {
               {tabs.map((tab) => (
                 <Link
                   key={tab.name}
-                  href={`/${tab.href}/${pathname.split('/')[2]}/all`}
+                  href={`/${tab.href}/${pathname.split('/')[2]}/${pathname.split('/')[3] || ''}`}
                   className={classNames(
                     pathname.split('/')[1] === tab.href
                       ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"

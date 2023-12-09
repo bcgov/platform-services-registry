@@ -41,26 +41,45 @@ export async function publicCloudProjectsPaginated(
     total: total as number,
   };
 }
-
 export async function publicCloudRequestsPaginated(
   pageSize: number,
   pageNumber: number,
   searchTerm?: string,
   ministry?: string,
   provider?: string,
-  userEmail?: string | null,
-  ministryRoles?: string[],
+  userEmail?: string,
+  ministryRoles: string[] = [],
   active: boolean = true,
 ): Promise<{
   data: any[];
   total: number;
 }> {
-  const searchQuery: any = active ? { active: true } : {};
+  // const searchQuery: any = active ? { active: true } : {};
+  const searchQuery: any = {};
 
   if (searchTerm) {
     searchQuery.$or = [
       { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
       { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+    ];
+  }
+
+  if (searchTerm) {
+    // Add other filter conditions here
+    searchQuery.$or = [
+      { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.provider': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.licencePlate': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.projectOwner.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.projectOwner.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.projectOwner.lastName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.primaryTechnicalLead.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.primaryTechnicalLead.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.primaryTechnicalLead.lastName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.secondaryTechnicalLead.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.secondaryTechnicalLead.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.secondaryTechnicalLead.lastName': { $regex: searchTerm, $options: 'i' } },
     ];
   }
 
@@ -72,41 +91,89 @@ export async function publicCloudRequestsPaginated(
     searchQuery['requestedProject.provider'] = provider;
   }
 
+  if (provider) {
+    searchQuery['requestedProject.provider'] = provider;
+  }
+
   if (userEmail) {
     searchQuery.$and = [
       {
         $or: [
           {
-            'projectOwner.email': {
+            'requestedProject.projectOwner.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'primaryTechnicalLead.email': {
+            'requestedProject.primaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'secondaryTechnicalLead.email': {
+            'requestedProject.secondaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'requestedProject.ministry': { $in: ministryRoles },
+            'requestedProject.requestedProject.ministry': { $in: ministryRoles },
           },
         ],
       },
     ];
   }
 
-  const totalCountResult = await prisma.publicCloudRequest.aggregateRaw({
+  const count = await prisma.publicCloudRequest.aggregateRaw({
     pipeline: [
+      // User Requested Project
       {
         $lookup: {
-          from: 'PublicCloudRequestedProject',
+          from: 'PrivateCloudRequestedProject',
+          localField: 'userRequestedProjectId',
+          foreignField: '_id',
+          as: 'userRequestedProject',
+        },
+      },
+      { $unwind: '$userRequestedProject' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'userRequestedProject.projectOwnerId',
+          foreignField: '_id',
+          as: 'userRequestedProject.projectOwner',
+        },
+      },
+      { $unwind: '$userRequestedProject.projectOwner' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'userRequestedProject.primaryTechnicalLeadId',
+          foreignField: '_id',
+          as: 'userRequestedProject.primaryTechnicalLead',
+        },
+      },
+      { $unwind: '$userRequestedProject.primaryTechnicalLead' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'userRequestedProject.secondaryTechnicalLeadId',
+          foreignField: '_id',
+          as: 'userRequestedProject.secondaryTechnicalLead',
+        },
+      },
+      {
+        $unwind: {
+          path: '$userRequestedProject.secondaryTechnicalLead',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // Requested Project
+      {
+        $lookup: {
+          from: 'PrivateCloudRequestedProject',
           localField: 'requestedProjectId',
           foreignField: '_id',
           as: 'requestedProject',
@@ -118,44 +185,53 @@ export async function publicCloudRequestsPaginated(
           from: 'User',
           localField: 'requestedProject.projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwner',
+          as: 'requestedProject.projectOwner',
         },
       },
-      { $unwind: '$projectOwner' },
+      { $unwind: '$requestedProject.projectOwner' },
       {
         $lookup: {
           from: 'User',
           localField: 'requestedProject.primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLead',
+          as: 'requestedProject.primaryTechnicalLead',
         },
       },
-      { $unwind: '$primaryTechnicalLead' },
+      { $unwind: '$requestedProject.primaryTechnicalLead' },
       {
         $lookup: {
           from: 'User',
           localField: 'requestedProject.secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLead',
+          as: 'requestedProject.secondaryTechnicalLead',
         },
       },
       {
         $unwind: {
-          path: '$secondaryTechnicalLead',
+          path: '$requestedProject.secondaryTechnicalLead',
           preserveNullAndEmptyArrays: true,
         },
       },
-      { $unwind: '$requestedProject' },
       { $match: searchQuery },
-      { $count: 'totalCount' },
+      {
+        $addFields: {
+          id: { $toString: '$_id' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
     ],
   });
 
   const result = await prisma.publicCloudRequest.aggregateRaw({
     pipeline: [
+      // Requested Project
       {
         $lookup: {
-          from: 'PublicCloudRequestedProject',
+          from: 'PrivateCloudRequestedProject',
           localField: 'requestedProjectId',
           foreignField: '_id',
           as: 'requestedProject',
@@ -167,30 +243,30 @@ export async function publicCloudRequestsPaginated(
           from: 'User',
           localField: 'requestedProject.projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwner',
+          as: 'requestedProject.projectOwner',
         },
       },
-      { $unwind: '$projectOwner' },
+      { $unwind: '$requestedProject.projectOwner' },
       {
         $lookup: {
           from: 'User',
           localField: 'requestedProject.primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLead',
+          as: 'requestedProject.primaryTechnicalLead',
         },
       },
-      { $unwind: '$primaryTechnicalLead' },
+      { $unwind: '$requestedProject.primaryTechnicalLead' },
       {
         $lookup: {
           from: 'User',
           localField: 'requestedProject.secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLead',
+          as: 'requestedProject.secondaryTechnicalLead',
         },
       },
       {
         $unwind: {
-          path: '$secondaryTechnicalLead',
+          path: '$requestedProject.secondaryTechnicalLead',
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -211,8 +287,7 @@ export async function publicCloudRequestsPaginated(
   });
 
   // @ts-ignore
-  const totalCount = totalCountResult[0]?.totalCount || 0;
-
+  const totalCount = count.length;
   return {
     data: result as any,
     total: totalCount,
