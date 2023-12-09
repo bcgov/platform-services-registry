@@ -55,7 +55,7 @@ const circleStatus = {
 
 const requestTypes = {
   CREATE: 'text-gray-400 bg-green-400/10 ring-green-400/20',
-  EDIT: 'text-indigo-400 bg-indigo-400/10 ring-indigo-400/30',
+  EDIT: 'text-grey-600 bg-indigo-300/10 ring-indigo-400/30',
   DELETE: 'text-red-400 bg-red-400/10 ring-red-400/20',
 };
 
@@ -147,7 +147,7 @@ export default function TableBody({ rows }: TableProps) {
 
   return (
     <main className="">
-      <ul className="divide-y divide-grey-200/5 overflow-auto">
+      <ul className="divide-y divide-grey-200/5 ">
         {rows.map((deployment) => (
           <li key={deployment.id}>
             <div
@@ -181,14 +181,17 @@ export default function TableBody({ rows }: TableProps) {
                   </div>
                 </div>
                 <div className="mt-1 w-28">
-                  <div
-                    hidden={!deployment.requestType}
-                    className={classNames(
-                      requestTypes[deployment.requestType as keyof typeof requestTypes],
-                      'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset mr-4',
-                    )}
-                  >
-                    {typeof deployment?.requestType === 'string' ? deployment?.requestType.toLowerCase() : null} request
+                  <div>
+                    <span
+                      className={classNames(
+                        requestTypes[deployment.requestType as keyof typeof requestTypes],
+                        'inline-flex items-center rounded-md  px-2 py-1 text-sm font-medium capitalize text-gray-700',
+                      )}
+                    >
+                      {typeof deployment?.requestType === 'string'
+                        ? deployment?.requestType.toLocaleLowerCase() + ' request'
+                        : null}
+                    </span>
                   </div>
                 </div>
               </div>

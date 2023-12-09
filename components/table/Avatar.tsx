@@ -24,9 +24,9 @@ export default function Avatar({
   return (
     <div className={'group block flex-shrink-0 px-5 w-50 overflow-hidden' + className}>
       <div className="flex items-center">
-        <div>
+        <div className="4xl:inline-block hidden">
           <Image
-            className="inline-block rounded-full"
+            className="rounded-full "
             layout="fixed"
             width={36}
             height={36}
