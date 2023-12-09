@@ -61,7 +61,7 @@ const requestTypes = {
 
 function circleColor(requestType: string) {
   if (requestType === 'CREATE') {
-    return circleStatus.blue;
+    return circleStatus.green;
   }
 
   if (requestType === 'EDIT') {
@@ -72,7 +72,7 @@ function circleColor(requestType: string) {
     return circleStatus.red;
   }
 
-  return circleStatus.green;
+  return circleStatus.grey;
 }
 
 function deploymentText(requestType: string, requestDecisionStatus?: string) {
