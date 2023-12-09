@@ -61,7 +61,7 @@ const requestTypes = {
 
 function circleColor(requestType: string) {
   if (requestType === 'CREATE') {
-    return circleStatus.grey;
+    return circleStatus.blue;
   }
 
   if (requestType === 'EDIT') {
@@ -108,7 +108,7 @@ export default function TableBody({ rows }: TableProps) {
 
   const onRowClickHandler = (row: any) => {
     switch (pathname) {
-      case '/private-cloud/products':
+      case '/private-cloud/products/all' || '/private-cloud/products/active-requests':
         if (isAdmin) {
           if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
             router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
@@ -140,6 +140,8 @@ export default function TableBody({ rows }: TableProps) {
           router.push(path.join('/public-cloud', 'request', row.id));
         }
         break;
+
+        console.log('END');
     }
   };
 
@@ -155,7 +157,7 @@ export default function TableBody({ rows }: TableProps) {
               onClick={() => onRowClickHandler(deployment)}
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
-              <div className="flex justify-between">
+              <div className="flex ">
                 <div className="w-[500px] 2xl:w-[600px]">
                   <div className="flex items-center gap-x-3">
                     <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
@@ -163,7 +165,7 @@ export default function TableBody({ rows }: TableProps) {
                     </div>
                     <h2 className="min-w-0 text-base font-semibold leading-6 text-gray-700">
                       <div className="flex gap-x-2">
-                        <span className="">{deployment.ministry}</span>
+                        <span className="">{deployment.cluster}</span>
                         <span className="text-gray-400">/</span>
                         <span className="truncate">{deployment.name}</span>
                         <span className="absolute inset-0" />
@@ -171,54 +173,54 @@ export default function TableBody({ rows }: TableProps) {
                     </h2>
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
-                    <p className="truncate">
-                      {deploymentText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.cluster}
-                    </p>
+                    <p className="truncate">Ministry {deployment.ministry}</p>
                     <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
                       <circle cx={1} cy={1} r={0.7} />
                     </svg>
                     <p className="whitespace-nowrap">Created on {deployment.created}</p>
                   </div>
                 </div>
-                <div className="md:flex hidden justify-left mt-1 w-max">
-                  <div className="gap-x-0 2xl:flex hidden">
-                    <Avatar
-                      name={deployment.projectOwner.name}
-                      email={deployment.projectOwner.email}
-                      userRole={'Product Owner'}
-                    />
-                    <Avatar
-                      name={deployment.primaryTechnicalLead.name}
-                      email={deployment.primaryTechnicalLead.email}
-                      userRole="Technical Lead"
-                    />
-                    {deployment?.secondaryTechnicalLead && (
-                      <Avatar
-                        name={deployment.secondaryTechnicalLead?.name}
-                        email={deployment.primaryTechnicalLead?.email}
-                        userRole="Technical Lead"
-                      />
+                <div className="mt-1 w-28">
+                  <div
+                    hidden={!deployment.requestType}
+                    className={classNames(
+                      requestTypes[deployment.requestType as keyof typeof requestTypes],
+                      'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset mr-4',
                     )}
-                  </div>
-                  <div className="2xl:hidden flex">
-                    <Avatars
-                      productOwnerEmail={deployment.projectOwner.email}
-                      primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
-                      secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
-                    />
+                  >
+                    {typeof deployment?.requestType === 'string' ? deployment?.requestType.toLowerCase() : null} request
                   </div>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div
-                  hidden={!deployment.requestType}
-                  className={classNames(
-                    requestTypes[deployment.requestType as keyof typeof requestTypes],
-                    'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset mr-4',
-                  )}
-                >
-                  {typeof deployment?.requestType === 'string' ? deployment?.requestType.toLowerCase() : null} request
+                <div className="hidden items-center gap-x-3 w-[400px] 3xl:flex">
+                  <Avatar
+                    name={deployment.projectOwner.name}
+                    email={deployment.projectOwner.email}
+                    userRole={'Product Owner'}
+                  />
+                  <Avatar
+                    name={deployment.primaryTechnicalLead.name}
+                    email={deployment.primaryTechnicalLead.email}
+                    userRole="Technical Lead"
+                  />
+                  {deployment?.secondaryTechnicalLead ? (
+                    <Avatar
+                      name={deployment.secondaryTechnicalLead?.name}
+                      email={deployment.primaryTechnicalLead?.email}
+                      userRole="Technical Lead"
+                    />
+                  ) : null}
                 </div>
+                <div className="3xl:hidden flex">
+                  <Avatars
+                    productOwnerEmail={deployment.projectOwner.email}
+                    primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
+                    secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
+                  />
+                </div>
+              </div>
+              <div className="flex">
                 <div className="text-gray-700 w-20">{deployment.licencePlate}</div>
                 <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
               </div>
