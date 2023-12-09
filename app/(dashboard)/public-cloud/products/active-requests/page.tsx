@@ -1,24 +1,12 @@
 import Table from '@/components/table/Table';
-import TableBody from '@/components/table/TableBody';
-import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
+import TableBody from '@/components/table/TableBodyNew';
+import { publicCloudRequestsPaginated } from '@/queries/paginated/public-cloud';
 import { PublicProject } from '@/queries/types';
 import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
-
-const headers = [
-  { field: 'name', headerName: 'Name' },
-  { field: 'ministry', headerName: 'Ministry' },
-  { field: 'provider', headerName: 'Provider' },
-  { field: 'projectOwner', headerName: 'Project Owner' },
-  { field: 'primaryTechnicalLead', headerName: 'Technical Leads' },
-  { field: 'secondaryTechnicalLead', headerName: '' },
-  { field: 'created', headerName: 'Created' },
-  { field: 'licencePlate', headerName: 'Licence Plate' },
-  { field: 'edit', headerName: '' },
-];
 
 export default async function ProductsTable({
   searchParams,
@@ -45,8 +33,10 @@ export default async function ProductsTable({
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
-    +pageSize || defaultPageSize,
+  const effectivePageSize = +pageSize || defaultPageSize;
+
+  const { data: requestsData, total: requestsTotal } = await publicCloudRequestsPaginated(
+    effectivePageSize,
     currentPage,
     search,
     ministry,
@@ -55,14 +45,20 @@ export default async function ProductsTable({
     ministryRoles,
   );
 
-  const rows = data.map(publicCloudProjectDataToRow);
+  const transformActiveRequests = requestsData.map((request) => ({
+    ...request.requestedProject,
+    created: request.created,
+    activeRequest: [request],
+  }));
+
+  const activeRequests = transformActiveRequests.map(publicCloudProjectDataToRow);
 
   return (
     <Table
       title="Products in Public Cloud Landing Zones"
       description="These are your products using the Public Cloud Landing Zones"
-      tableBody={<TableBody headers={headers} rows={rows} />}
-      total={total}
+      tableBody={<TableBody rows={activeRequests} />}
+      total={requestsTotal}
       currentPage={currentPage}
       pageSize={pageSize || defaultPageSize}
       showDownloadButton
