@@ -33,6 +33,7 @@
     "no-else-return": "error",
     "react/react-in-jsx-scope": "off",
     "prefer-destructuring": "off",
-    "sort-imports": "off"
+    "sort-imports": "off",
+    "react/no-unescaped-entities": 0
   }
 }

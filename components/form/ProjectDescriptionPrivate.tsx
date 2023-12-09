@@ -1,6 +1,5 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
-import { useRouter } from 'next/navigation';
 import { clusters, ministries } from '@/constants';
 
 export default function ProjectDescription({
@@ -14,8 +13,6 @@ export default function ProjectDescription({
     register,
     formState: { errors },
   } = useFormContext();
-
-  const router = useRouter();
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -71,7 +68,7 @@ export default function ProjectDescription({
                 disabled
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
-              )} // defaultValue={""}
+              )}
             />
           </div>
           <p className={classNames(errors.description ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>

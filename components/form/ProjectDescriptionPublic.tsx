@@ -1,7 +1,7 @@
-'use client';
-
-import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
+import classNames from '@/components/utils/classnames';
+import { useRouter } from 'next/navigation';
+import { clusters, ministries } from '@/constants';
 
 export default function ProjectDescriptionPublic({
   disabled,
@@ -18,7 +18,7 @@ export default function ProjectDescriptionPublic({
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
-        BC Gov’s Landing Zone in AWS - Project Set Provisioning Request
+        BC Gov's Landing Zone in AWS - Project Set Provisioning Request
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
@@ -26,7 +26,12 @@ export default function ProjectDescriptionPublic({
       <p className="font-bcsans text-base leading-6 mt-5">
         If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
         Cloud Accelerator Service team. Reach out to
-        {/* <a className="text-blue-600 dark:text-blue-500 hover:underline" href={"mailto:cloud.pathfinder@gov.bc.ca"}> Cloud Pathfinder </a>  */}
+        <a
+          className="ml-1 mr-1 text-blue-600 dark:text-blue-500 hover:underline"
+          href={'mailto:cloud.pathfinder@gov.bc.ca'}
+        >
+          Cloud Pathfinder
+        </a>
         to get started.
       </p>
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -94,9 +99,11 @@ export default function ProjectDescriptionPublic({
               )}
             >
               <option value="">Select Ministry</option>
-              <option>CITZ</option>
-              <option>PSA</option>
-              <option>HLTH</option>
+              {ministries.map((ministry) => (
+                <option key={ministry} value={ministry}>
+                  {ministry}
+                </option>
+              ))}
             </select>
 
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>

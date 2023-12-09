@@ -221,33 +221,29 @@ enum PublicCloudRequestType {
 }
 
 enum Ministry {
-  AEST
+  AF
   AG
-  AGRI
-  ALC
-  BCPC
+  MCFD
   CITZ
-  DBC
-  EAO
-  EDUC
-  EMBC
-  EMPR
+  ECC
+  EMCR
+  EMLI
   ENV
   FIN
-  FLNR
+  FOR
   HLTH
+  HOUS
   IRR
-  JEDC
+  JEDI
   LBR
-  LDB
-  MAH
-  MCF
   MMHA
-  PSA
+  MUNI
+  PSFS
   PSSG
   SDPR
-  TCA
-  TRAN
+  TACS
+  MOTI
+  WLRS
 }
 
 enum Cluster {
