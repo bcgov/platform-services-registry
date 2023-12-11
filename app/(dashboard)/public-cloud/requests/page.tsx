@@ -28,6 +28,7 @@ export default async function RequestsTable({
     pageSize: number;
     ministry: string;
     provider: string;
+    active: string;
   };
 }) {
   // Authenticate the user
@@ -37,7 +38,7 @@ export default async function RequestsTable({
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
-  const { search, page, pageSize, ministry, provider } = searchParams;
+  const { search, page, pageSize, ministry, provider, active } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
@@ -54,6 +55,7 @@ export default async function RequestsTable({
     provider,
     userEmail,
     ministryRoles,
+    active,
   );
 
   const rows = data.map(publicCloudRequestDataToRow);
@@ -61,7 +63,7 @@ export default async function RequestsTable({
   return (
     <Table
       title="Requests for Public Cloud Landing Zones"
-      description="These are the submitted requests for your products the Public Cloud Landing Zones"
+      description="These are the submitted requests for your products in the Public Cloud Landing Zones"
       tableBody={<TableBody headers={headers} rows={rows} />}
       total={total}
       currentPage={currentPage}
