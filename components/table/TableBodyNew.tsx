@@ -120,6 +120,8 @@ export default function TableBody({ rows }: TableProps) {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
+  console.log(pathname);
+
   const isAdmin = session?.user?.roles?.includes('admin');
 
   if (rows.length === 0) {
@@ -128,7 +130,22 @@ export default function TableBody({ rows }: TableProps) {
 
   const onRowClickHandler = (row: any) => {
     switch (pathname) {
-      case '/private-cloud/products/all' || '/private-cloud/products/active-requests':
+      case '/private-cloud/products/active-requests':
+        if (isAdmin) {
+          if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
+            router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
+            break;
+          }
+        }
+
+        if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
+          router.push(path.join('/private-cloud', 'request', row.id));
+          break;
+        }
+
+        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
+        break;
+      case '/private-cloud/products/all':
         if (isAdmin) {
           if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
             router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
