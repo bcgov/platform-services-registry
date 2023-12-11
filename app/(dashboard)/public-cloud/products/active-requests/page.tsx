@@ -1,5 +1,5 @@
 import Table from '@/components/table/Table';
-import TableBody from '@/components/table/TableBodyNew';
+import TableBody from '@/components/table/TableBodyProducts';
 import { publicCloudRequestsPaginated } from '@/queries/paginated/public-cloud';
 import { PublicProject } from '@/queries/types';
 import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';

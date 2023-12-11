@@ -134,7 +134,7 @@ export const privateCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
     licencePlateValue: request.licencePlate,
-    type: request.type,
+    type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
     ministry: request.requestedProject.ministry,

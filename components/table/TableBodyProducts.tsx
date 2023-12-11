@@ -75,26 +75,6 @@ function circleColor(requestType: string) {
   return circleStatus.grey;
 }
 
-// function deploymentText(requestType: string, requestDecisionStatus?: string) {
-//   if (requestDecisionStatus === 'APPROVED') {
-//     return 'Provisioning on';
-//   }
-
-//   if (requestType === 'CREATE') {
-//     return 'Pending deployment on';
-//   }
-
-//   if (requestType === 'EDIT') {
-//     return 'Requested changes on';
-//   }
-
-//   if (requestType === 'DELETE') {
-//     return 'Requested deletion on';
-//   }
-
-//   return 'Deployed on';
-// }
-
 function createdText(requestType: string, requestDecisionStatus?: string) {
   if (requestDecisionStatus === 'APPROVED') {
     return 'Last updated on';
@@ -132,50 +112,51 @@ export default function TableBody({ rows }: TableProps) {
     switch (pathname) {
       case '/private-cloud/products/active-requests':
         if (isAdmin) {
-          if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
-            router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-            break;
-          }
-        }
-
-        if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
-          router.push(path.join('/private-cloud', 'request', row.id));
+          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
           break;
         }
 
-        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
+        router.push(path.join('/private-cloud', 'request', row.id));
         break;
+
       case '/private-cloud/products/all':
         if (isAdmin) {
-          if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
+          if (!!row?.requestType) {
             router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
             break;
           }
         }
 
-        if (row.requestType === 'CREATE' || row.requestType === 'EDIT' || row.requestType === 'DELETE') {
+        if (!!row?.requestType) {
           router.push(path.join('/private-cloud', 'request', row.id));
           break;
         }
 
         router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
         break;
-      case '/private-cloud/requests':
-        if (isAdmin) {
-          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-        } else {
-          router.push(path.join('/private-cloud', 'request', row.id));
-        }
-        break;
-      case '/public-cloud/products':
-        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
-        break;
-      case '/public-cloud/requests':
+      case '/public-cloud/products/active-requests':
         if (isAdmin) {
           router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-        } else {
-          router.push(path.join('/public-cloud', 'request', row.id));
+          break;
         }
+
+        router.push(path.join('/public-cloud', 'request', row.id));
+        break;
+
+      case '/public-cloud/products/all':
+        if (isAdmin) {
+          if (!!row?.requestType) {
+            router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
+            break;
+          }
+        }
+
+        if (!!row?.requestType) {
+          router.push(path.join('/public-cloud', 'request', row.id));
+          break;
+        }
+
+        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
         break;
     }
   };

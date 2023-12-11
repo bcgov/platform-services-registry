@@ -11,14 +11,14 @@ import { userInfo } from '@/queries/user';
 export const revalidate = 0;
 
 const headers = [
+  { field: 'created', headerName: 'Date' },
+  { field: 'name', headerName: 'Name' },
   { field: 'type', headerName: 'Type' },
   { field: 'status', headerName: 'Status' },
-  { field: 'name', headerName: 'Name' },
   { field: 'ministry', headerName: 'Ministry' },
   { field: 'cluster', headerName: 'Cluster' },
-  { field: 'projectOwner', headerName: 'Project Owner' },
-  { field: 'technicalLeads', headerName: 'Technical Leads' },
-  { field: 'created', headerName: 'Created' },
+  // { field: 'projectOwner', headerName: 'Project Owner' },
+  // { field: 'technicalLeads', headerName: 'Technical Leads' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
 ];
 
@@ -53,7 +53,6 @@ export default async function RequestsTable({
     search,
     ministry,
     cluster,
-    undefined,
     userEmail,
     ministryRoles,
     false,

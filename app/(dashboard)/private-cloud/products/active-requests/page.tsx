@@ -1,5 +1,5 @@
 import Table from '@/components/table/Table';
-import NewTableBody from '@/components/table/TableBodyNew';
+import NewTableBody from '@/components/table/TableBodyProducts';
 import { privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
