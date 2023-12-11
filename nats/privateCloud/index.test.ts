@@ -14,18 +14,18 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
   name: 'Sample Project',
   description: 'This is a sample project description.',
   cluster: 'SILVER',
-  ministry: 'AGRI',
+  ministry: 'AG',
   projectOwner: {
     firstName: 'John',
     lastName: 'Doe',
     email: 'oamar.kanji@gov.bc.ca',
-    ministry: 'AGRI',
+    ministry: 'AG',
   },
   primaryTechnicalLead: {
     firstName: 'Jane',
     lastName: 'Smith',
     email: 'jane.smith@example.com',
-    ministry: 'AGRI',
+    ministry: 'AG',
   },
   commonComponents: {
     addressAndGeolocation: {

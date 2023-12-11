@@ -4,15 +4,22 @@ FROM node:20-alpine as builder
 WORKDIR /app
 
 COPY . .
+
+ENV SECURE_HEADERS true
 RUN npm install
+RUN npm run email-build
 
-RUN mkdir /.npm
-RUN chgrp -R 0 /.npm && \
-    chmod -R g=u /.npm
+# 2nd stage to copy image and create a smaller final image
+FROM node:20-alpine
 
-RUN mkdir /.react-email-temp
-RUN chgrp -R 0 /.react-email-temp && \
-    chmod -R g=u /.react-email-temp
+WORKDIR /app/.react-email/
 
-EXPOSE 3001
-CMD ["npm", "run", "email"]
+COPY --from=builder /app/.react-email/.next ./.next
+COPY --from=builder /app/.react-email/next.config.js ./
+COPY --from=builder /app/.react-email/package.json ./
+COPY --from=builder /app/.react-email/node_modules ./node_modules
+
+ENV NEXTAUTH_SECRET changeme
+
+EXPOSE 3000
+CMD ["node_modules/.bin/next", "start"]

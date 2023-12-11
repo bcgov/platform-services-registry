@@ -7,7 +7,7 @@
   "cluster_name": "silver",
   "display_name": "Sample Project",
   "description": "This is a sample project description.",
-  "ministry_id": "AGRI",
+  "ministry_id": "AG",
   "merge_type": "auto",
   "alliance": "none",
   "namespaces": [

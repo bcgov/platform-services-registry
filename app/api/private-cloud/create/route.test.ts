@@ -15,18 +15,18 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
   name: 'Sample Project',
   description: 'This is a sample project description.',
   cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
+  ministry: 'AG', // Assuming AG is a valid enum value for Ministry
   projectOwner: {
     firstName: 'John',
     lastName: 'Doe',
     email: 'oamar.kanji@gov.bc.ca',
-    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
+    ministry: 'AG', // Assuming AG is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: 'Jane',
     lastName: 'Smith',
     email: 'jane.smith@example.com',
-    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
+    ministry: 'AG', // Assuming AG is a valid enum value for Ministry
   },
   commonComponents: {
     addressAndGeolocation: {
