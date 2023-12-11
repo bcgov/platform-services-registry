@@ -41,4 +41,6 @@ next-env.d.ts
 mnt
 
 #react-emails
-.react-email
+.react-email/node_modules
+.react-email/.next
+emails-export

@@ -199,7 +199,7 @@ export const testMessage = {
   cluster_name: 'clab',
   display_name: 'Oamar test',
   description: 'asdf',
-  ministry_id: 'AGRI',
+  ministry_id: 'AG',
   merge_type: 'auto',
   namespaces: [
     {

@@ -35,6 +35,7 @@
     "no-unneeded-ternary": "error",
     "react/react-in-jsx-scope": "off",
     "prefer-destructuring": "off",
-    "sort-imports": "off"
+    "sort-imports": "off",
+    "no-warning-comments": "off"
   }
 }
