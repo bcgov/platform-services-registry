@@ -75,13 +75,33 @@ function circleColor(requestType: string) {
   return circleStatus.grey;
 }
 
-function deploymentText(requestType: string, requestDecisionStatus?: string) {
+// function deploymentText(requestType: string, requestDecisionStatus?: string) {
+//   if (requestDecisionStatus === 'APPROVED') {
+//     return 'Provisioning on';
+//   }
+
+//   if (requestType === 'CREATE') {
+//     return 'Pending deployment on';
+//   }
+
+//   if (requestType === 'EDIT') {
+//     return 'Requested changes on';
+//   }
+
+//   if (requestType === 'DELETE') {
+//     return 'Requested deletion on';
+//   }
+
+//   return 'Deployed on';
+// }
+
+function createdText(requestType: string, requestDecisionStatus?: string) {
   if (requestDecisionStatus === 'APPROVED') {
-    return 'Provisioning on';
+    return 'Last updated on';
   }
 
   if (requestType === 'CREATE') {
-    return 'Pending deployment on';
+    return 'Requested create on';
   }
 
   if (requestType === 'EDIT') {
@@ -140,8 +160,6 @@ export default function TableBody({ rows }: TableProps) {
           router.push(path.join('/public-cloud', 'request', row.id));
         }
         break;
-
-        console.log('END');
     }
   };
 
@@ -177,7 +195,9 @@ export default function TableBody({ rows }: TableProps) {
                     <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
                       <circle cx={1} cy={1} r={0.7} />
                     </svg>
-                    <p className="whitespace-nowrap">Created on {deployment.created}</p>
+                    <p className="whitespace-nowrap">
+                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}
+                    </p>
                   </div>
                 </div>
                 <div className="mt-1 w-28">

@@ -42,6 +42,7 @@ export default async function ProductsTable({
     cluster,
     userEmail,
     ministryRoles,
+    true,
   );
 
   const transformActiveRequests = requestsData.map((request) => ({

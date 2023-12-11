@@ -96,6 +96,8 @@ export const privateCloudProjectDataToRow = (project: any) => {
         }
       : null,
     created: formatDate(project.created.$date),
+    requestCreated: formatDate(project?.activeRequest ? project?.activeRequest[0]?.created.$date : null),
+    // requestDecisionDate: formatDate(project?.activeRequest ? project?.activeRequest[0]?.decisionDate.$date : null),
     licencePlate: project.licencePlate,
   };
 };
