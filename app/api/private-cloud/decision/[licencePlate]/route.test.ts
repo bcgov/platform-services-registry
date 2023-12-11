@@ -14,18 +14,18 @@ const createRequestBody = {
   name: 'Sample Project',
   description: 'This is a sample project description.',
   cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: 'AG', // Assuming AG is a valid enum value for Ministry
+  ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
   projectOwner: {
     firstName: 'John',
     lastName: 'Doe',
     email: 'oamar.kanji@gov.bc.ca',
-    ministry: 'AG', // Assuming AG is a valid enum value for Ministry
+    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
   },
   primaryTechnicalLead: {
     firstName: 'Jane',
     lastName: 'Smith',
     email: 'jane.smith@example.com',
-    ministry: 'AG', // Assuming AG is a valid enum value for Ministry
+    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
   },
   commonComponents: {
     addressAndGeolocation: {
@@ -82,7 +82,7 @@ const adminChanges = {
     firstName: 'James',
     lastName: 'Tim',
     email: 'jamestim@gov.bc.ca',
-    ministry: 'AG',
+    ministry: 'AGRI',
   },
   testQuota: {
     cpu: 'CPU_REQUEST_8_LIMIT_16',
