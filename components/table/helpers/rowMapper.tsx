@@ -154,8 +154,8 @@ export const publicCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
     licencePlateValue: request.licencePlate,
-    type: <TypeBadge status={request.decisionStatus} />,
-    status: request.decisionStatus,
+    type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
+    status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
     cluster: request.requestedProject.provider,
     ministry: request.requestedProject.ministry,
