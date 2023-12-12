@@ -78,6 +78,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     },
   });
 
+  const { formState } = methods;
+
   useEffect(() => {
     if (requestData) {
       setDisabled(true);
@@ -133,7 +135,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT REQUEST" />
+                <SubmitButton text="SUBMIT REQUEST" disabled={!formState.isDirty} />
               </div>
             ) : null}
           </div>
