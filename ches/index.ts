@@ -1,6 +1,7 @@
 import compact from 'lodash.compact';
 import uniq from 'lodash.uniq';
 import castArray from 'lodash.castarray';
+import { EMAIL_PREFIX } from '@/config';
 
 type NullOrString = string | null | undefined;
 type EmailAddress = string | undefined;
@@ -95,6 +96,7 @@ const sendEmail = async (email: Email): Promise<void> => {
 
   try {
     const apiUrl = process.env.CHES_API_URL || '';
+    const subject = `${EMAIL_PREFIX}${email.subject}`;
 
     const response = await fetchWithTimeout(`${apiUrl}/email`, {
       method: 'POST',
@@ -105,7 +107,7 @@ const sendEmail = async (email: Email): Promise<void> => {
       body: JSON.stringify({
         bodyType: email.bodyType || 'html',
         from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
-        subject: email.subject,
+        subject: subject,
         body: email.body,
         to: safeEmails(email.to),
         // Provide an empty array as a fallback if bcc or cc is undefined

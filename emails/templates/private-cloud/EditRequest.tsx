@@ -9,7 +9,6 @@ import { compareProjects } from '../../components/Edit/compareProjects';
 import ContactChanges from '../../components/Edit/ContactChanges';
 import QuotaChanges from '../../components/Edit/QuotaChanges';
 import DescriptionChanges from '../../components/Edit/DescriptionChanges';
-import { EMAIL_PREFIX } from '../../../config';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
@@ -30,7 +29,7 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">{EMAIL_PREFIX}New Edit Product Request!</Heading>
+                <Heading className="text-lg text-black">New Edit Product Request!</Heading>
                 <Text>Hi {current.name} Team, </Text>
                 <Text className="">
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
