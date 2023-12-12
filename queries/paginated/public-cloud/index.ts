@@ -56,11 +56,7 @@ export async function publicCloudRequestsPaginated(
   data: any[];
   total: number;
 }> {
-  const searchQuery: any = active
-    ? {
-        status: 'ACTIVE',
-      }
-    : {};
+  const searchQuery: any = active ? { active: true } : {};
 
   if (searchTerm) {
     // Add other filter conditions here

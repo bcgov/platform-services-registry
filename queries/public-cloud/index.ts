@@ -1,21 +1,23 @@
-import { getPrivateCloudProjectsQuery, getPrivateCloudProjectsResult } from '@/queries/private-cloud/helpers';
+import { getPublicCloudProjectsQuery, getPublicCloudProjectsTotalCount } from '@/queries/public-cloud/helpers';
 
-export async function privateCloudProjects(
+export async function publicCloudProjects(
   searchTerm?: string | null,
   ministry?: string | null,
-  cluster?: string | string[] | null,
-  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  provider?: string | string[] | null,
+  userEmail?: string | null, // Non admins will be required to pass this field that will filter projects for their user
   ministryRoles?: string[],
+  active: boolean = true,
 ): Promise<any> {
   // Initialize the search/filter query
-  const searchQuery = await getPrivateCloudProjectsQuery({
+  const searchQuery = await getPublicCloudProjectsQuery({
     searchTerm,
     ministry,
-    cluster,
+    provider,
     userEmail,
     ministryRoles,
+    active,
   });
 
-  const data = await getPrivateCloudProjectsResult({ searchQuery });
+  const data = await getPublicCloudProjectsTotalCount({ searchQuery });
   return data;
 }
