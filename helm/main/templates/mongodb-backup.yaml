@@ -1,0 +1,75 @@
+{{- $secretName := printf "%s-%s" (include "main.fullname" .) "mongodb" }}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName ) }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "main.fullname" . }}-db-backup
+  labels:
+    {{- include "main.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "main.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: backup-job
+        image: ghcr.io/egose/database-tools:0.6.0
+        imagePullPolicy: IfNotPresent
+        command: [/bin/sh, -c]
+        args:
+        - |
+          mongo-archive --db=pltsvc --read-preference=primary --force-table-scan
+        env:
+        - name: MONGOARCHIVE__URI
+          value: "mongodb://pltsvc-mongodb-headless/?authSource=admin"
+        - name: MONGO__USERNAME
+          value: root
+        - name: MONGO__PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: mongodb-root-password
+        - name: MONGO__LOCAL_PATH
+          value: /home/nonroot/backup
+        - name: MONGOARCHIVE__CRON
+          value: "true"
+        - name: MONGOARCHIVE__CRON_EXPRESSION
+          value: {{ .Values.backup.cronExpression }}
+        - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_URL
+          value: {{ if and $secret.data (index $secret.data "rocketchat-webhook-url") }}{{ b64dec (index $secret.data "rocketchat-webhook-url") }}{{ else }}{{ "" }}{{ end }}
+        - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_PREFIX
+          value: {{ .Values.backup.rocketchatPrefix | quote }}
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /home/nonroot/backup
+          name: backup-volume
+      volumes:
+      - name: backup-volume
+        persistentVolumeClaim:
+          claimName: {{ include "main.fullname" . }}-db-backup-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "main.fullname" . }}-db-backup-pvc
+spec:
+  storageClassName: netapp-file-backup
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.backup.storageSize }}

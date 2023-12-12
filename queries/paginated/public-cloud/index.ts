@@ -11,9 +11,10 @@ export async function publicCloudProjectsPaginated(
   skip: number,
   searchTerm?: string | null,
   ministry?: string | null,
-  provider?: string | null, // Non admins will be required to pass this field that will filter projects for thier user
+  provider?: string | null, // Non admins will be required to pass this field that will filter projects for their user
   userEmail?: string | null,
   ministryRoles?: string[],
+  active: boolean = true,
 ): Promise<{
   data: PublicProject[];
   total: number;
@@ -25,6 +26,7 @@ export async function publicCloudProjectsPaginated(
     provider,
     userEmail,
     ministryRoles,
+    active,
   });
 
   const proms = [];
@@ -54,8 +56,11 @@ export async function publicCloudRequestsPaginated(
   data: any[];
   total: number;
 }> {
-  // const searchQuery: any = active ? { active: true } : {};
-  const searchQuery: any = {};
+  const searchQuery: any = active
+    ? {
+        status: 'ACTIVE',
+      }
+    : {};
 
   if (searchTerm) {
     // Add other filter conditions here

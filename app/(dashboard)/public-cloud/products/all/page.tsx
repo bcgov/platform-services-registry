@@ -17,6 +17,7 @@ export default async function ProductsTable({
     pageSize: number;
     ministry: string;
     provider: string;
+    active: boolean;
   };
 }) {
   // Authenticate the user
@@ -26,7 +27,7 @@ export default async function ProductsTable({
     redirect('/login?callbackUrl=/private-cloud/products');
   }
 
-  const { search, page, pageSize, ministry, provider } = searchParams;
+  const { search, page, pageSize, ministry, provider, active } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
@@ -43,6 +44,7 @@ export default async function ProductsTable({
     provider,
     userEmail,
     ministryRoles,
+    active,
   );
 
   const rows = data.map(publicCloudProjectDataToRow);

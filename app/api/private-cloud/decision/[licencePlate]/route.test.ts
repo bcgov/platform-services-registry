@@ -139,8 +139,6 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     await createRequest(req);
-    const privateCloudRequests = await prisma.privateCloudRequest.findMany();
-
     const request = await prisma.privateCloudRequest.findFirst();
 
     if (!request) {

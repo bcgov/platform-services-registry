@@ -54,7 +54,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { comment: '', decision: '', ...data?.requestedProject },
+    values: { humanCommnet: '', decision: '', ...data?.requestedProject },
   });
 
   useEffect(() => {
@@ -126,6 +126,13 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
               currentProject={data?.project as PrivateCloudProject}
             />
           </div>
+          <div className="border-b border-gray-900/10 pb-14">
+            <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+              4. User Comments
+            </h2>
+            <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.userComment}</p>
+          </div>
+
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
             {!isDisabled && session?.user?.roles?.includes('admin') ? (

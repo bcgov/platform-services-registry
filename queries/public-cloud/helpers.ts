@@ -7,17 +7,21 @@ export async function getPublicCloudProjectsQuery({
   provider,
   userEmail,
   ministryRoles,
+  active,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
   provider?: string | string[] | null;
   userEmail?: string | null;
   ministryRoles?: string[];
+  active?: boolean;
 }) {
   // Initialize the search/filter query
-  const searchQuery: any = {
-    status: 'ACTIVE',
-  };
+  const searchQuery: any = active
+    ? {
+        status: 'ACTIVE',
+      }
+    : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {

@@ -67,7 +67,7 @@ export default async function openshiftDeletionCheck(
     pvcDeletability: false,
     provisionerDeletionChecked: true,
   };
-  console.log(`Deleting namesapce: ${namespacePrefix}`);
+  console.log(`Deleting namespace: ${namespacePrefix}`);
   if (namespacePrefix === '261403') {
     console.log(` Special case for Ian's test, for deleting gold project 261403`);
     return {
@@ -95,7 +95,7 @@ export default async function openshiftDeletionCheck(
     const checker = (arr: string[], target: string[]) => target.every((v) => arr.includes(v));
 
     checkResult.namespaceDeletability = checker(allAvailableNamespacesOnCluster, allNamespacesUnderProject);
-    console.log(`namespace in  ${clusterName} existance is ${checkResult.namespaceDeletability}`);
+    console.log(`namespace in  ${clusterName} existence is ${checkResult.namespaceDeletability}`);
   } catch (err) {
     const message = `Namespace check failed, can not fetch all namespaces in cluster`;
     console.log(`${message}, err = ${err}`);
