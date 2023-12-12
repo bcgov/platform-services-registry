@@ -1,5 +1,5 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { clusters, ministries } from '@/constants';
+import { clusters, ministries, providers } from '@/constants';
 import { useRef, useState } from 'react';
 
 export default function FilterPanel() {
@@ -7,9 +7,10 @@ export default function FilterPanel() {
   const { replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
-  const clusterRef = useRef<HTMLSelectElement>(null);
+  const clusterProviderRef = useRef<HTMLSelectElement>(null);
   const ministryRef = useRef<HTMLSelectElement>(null);
-
+  const currentClusterProvider = pathname.includes('private') ? 'Cluster' : 'Provider';
+  const currentClusterProviderList = pathname.includes('private') ? clusters : providers;
   const isRequests = pathname.includes('/requests');
   const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Projects';
 
@@ -33,11 +34,11 @@ export default function FilterPanel() {
 
   const clearFilters = () => {
     const urlSearchParams = new URLSearchParams();
-    urlSearchParams.delete('cluster');
+    urlSearchParams.delete(currentClusterProvider.toLowerCase());
     urlSearchParams.delete('ministry');
 
-    if (clusterRef.current) {
-      clusterRef.current.value = '';
+    if (clusterProviderRef.current) {
+      clusterProviderRef.current.value = '';
     }
     if (ministryRef.current) {
       ministryRef.current.value = '';
@@ -52,23 +53,26 @@ export default function FilterPanel() {
       <div className="flex flex-col md:flex-row">
         <fieldset className="w-full md:w-48 2xl:w-96">
           <div>
-            <label htmlFor="cluster" className="block text-sm font-medium leading-6 text-gray-900">
-              Cluster
+            <label
+              htmlFor={currentClusterProvider.toLowerCase()}
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
+              {currentClusterProvider}
             </label>
             <select
-              ref={clusterRef}
-              id="cluster"
-              name="cluster"
+              ref={clusterProviderRef}
+              id={currentClusterProvider.toLowerCase()}
+              name={currentClusterProvider.toLowerCase()}
               autoComplete="cluster-name"
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={(e) => handleFilterChange('cluster', e.target.value)}
+              onChange={(e) => handleFilterChange(currentClusterProvider.toLowerCase(), e.target.value)}
             >
               <option selected={true} disabled value="">
-                Select Cluster
+                Select {currentClusterProvider}
               </option>
-              {clusters.map((cluster) => (
-                <option key={cluster} value={cluster}>
-                  {cluster}
+              {currentClusterProviderList.map((item) => (
+                <option key={item} value={item}>
+                  {item}
                 </option>
               ))}
             </select>
