@@ -7,7 +7,6 @@ import { TailwindConfig } from '../../components/TailwindConfig';
 import ProductDetails from '../../components/ProductDetails';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
-import { EMAIL_PREFIX } from '../../../config';
 
 interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
@@ -24,7 +23,7 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  {EMAIL_PREFIX}Your deletion request for Private Cloud Openshift Platform has been received!
+                  Your deletion request for Private Cloud Openshift Platform has been received!
                 </Heading>
                 <Text>Hi {product.name} Team,</Text>
                 <Text className="">
