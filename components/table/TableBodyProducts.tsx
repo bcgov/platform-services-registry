@@ -95,6 +95,22 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
   return 'Deployed on';
 }
 
+function getStatus(requestDecisionStatus: string) {
+  if (requestDecisionStatus === 'APPROVED') {
+    return 'Provisioning..';
+  }
+
+  if (requestDecisionStatus === 'PENDING') {
+    return 'Pending';
+  }
+
+  if (requestDecisionStatus === 'REJECTED') {
+    return 'Rejected';
+  }
+
+  return '';
+}
+
 export default function TableBody({ rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -176,9 +192,9 @@ export default function TableBody({ rows }: TableProps) {
               <div className="flex ">
                 <div className="w-[500px] 2xl:w-[600px]">
                   <div className="flex items-center gap-x-3">
-                    <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
+                    {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
-                    </div>
+                    </div> */}
                     <h2 className="min-w-0 text-base font-semibold leading-6 text-gray-700">
                       <div className="flex gap-x-2">
                         <span className="">{deployment.cluster}</span>
@@ -198,7 +214,7 @@ export default function TableBody({ rows }: TableProps) {
                     </p>
                   </div>
                 </div>
-                <div className="mt-1 w-28">
+                <div className="mt-1 w-32">
                   <div>
                     <span
                       className={classNames(
@@ -210,6 +226,17 @@ export default function TableBody({ rows }: TableProps) {
                         ? deployment?.requestType.toLocaleLowerCase() + ' request'
                         : null}
                     </span>
+                    <div>
+                      <span
+                        className={classNames(
+                          'pt-2 inline-flex items-center rounded-md  px-2 py-1 text-sm  capitalize text-gray-700',
+                        )}
+                      >
+                        {typeof deployment?.requestType === 'string'
+                          ? getStatus(deployment?.requestDecisionStatus)
+                          : null}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
