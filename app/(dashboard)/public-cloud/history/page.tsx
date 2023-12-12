@@ -8,14 +8,14 @@ import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
 
 const headers = [
+  { field: 'created', headerName: 'Date' },
+  { field: 'name', headerName: 'Name' },
   { field: 'type', headerName: 'Type' },
   { field: 'status', headerName: 'Status' },
-  { field: 'name', headerName: 'Name' },
   { field: 'ministry', headerName: 'Ministry' },
-  { field: 'csp', headerName: 'Cluster' },
-  { field: 'projectOwner', headerName: 'Project Owner' },
-  { field: 'technicalLeads', headerName: 'Technical Leads' },
-  { field: 'created', headerName: 'Created' },
+  { field: 'cluster', headerName: 'Provider' },
+  // { field: 'projectOwner', headerName: 'Project Owner' },
+  // { field: 'technicalLeads', headerName: 'Technical Leads' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
 ];
 

@@ -157,13 +157,15 @@ export const publicCloudRequestDataToRow = (request: any) => {
     type: <TypeBadge status={request.decisionStatus} />,
     status: request.decisionStatus,
     name: request.requestedProject.name,
-    csp: request.requestedProject.provider,
+    cluster: request.requestedProject.provider,
     ministry: request.requestedProject.ministry,
-    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
-      request?.secondaryTechnicalLead ? ',' : ''
-    } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
-    licencePlate: <p className="w-28">{request.licencePlate}</p>,
+    projectOwner: `${request.requestedProject.projectOwner.firstName} ${request.requestedProject.projectOwner.lastName}`,
+    technicalLeads: `${request.requestedProject.primaryTechnicalLead.firstName} ${
+      request.requestedProject.primaryTechnicalLead.lastName
+    } ${request?.requestedProject.secondaryTechnicalLead ? ',' : ''} ${
+      request?.requestedProject?.secondaryTechnicalLead?.firstName || ''
+    } ${request?.requestedProject?.secondaryTechnicalLead?.lastName || ''}`,
+    created: <p className="w-28">{formatDate(request?.requestedProject.created.$date)}</p>,
+    licencePlate: <p className="w-28">{request?.requestedProject?.licencePlate}</p>,
   };
 };

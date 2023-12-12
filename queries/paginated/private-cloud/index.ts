@@ -58,12 +58,12 @@ export async function privateCloudRequestsPaginated(
   const searchQuery: any = active ? { active: true } : {};
   // const searchQuery: any = {};
 
-  if (searchTerm) {
-    searchQuery.$or = [
-      { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
-      { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
-    ];
-  }
+  // if (searchTerm) {
+  //   searchQuery.$or = [
+  //     { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
+  //     { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+  //   ];
+  // }
 
   if (searchTerm) {
     // Add other filter conditions here
@@ -351,6 +351,7 @@ export async function privateCloudRequestsPaginated(
         },
       },
       { $match: searchQuery },
+      { $sort: { created: -1 } },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {

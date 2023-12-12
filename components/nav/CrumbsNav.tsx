@@ -1,18 +1,21 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Arrow from '@/components/assets/arrow.svg';
 import Link from 'next/link';
 
 export default function CrumbsNav({
-  backUrl,
   cloudLabel,
   previousLabel,
   currentLabel,
 }: {
-  backUrl: string;
   cloudLabel: string;
   previousLabel?: string;
   currentLabel?: string;
 }) {
+  const router = useRouter();
+
   return (
     <div className="">
       <div className="flex h-16 justify-left items-center">
@@ -21,20 +24,18 @@ export default function CrumbsNav({
         <nav className="flex" aria-label="Breadcrumb">
           <ol className="flex items-center">
             <li>
-              <div>
-                <Link href={backUrl}>
-                  <Image
-                    alt="Arrow"
-                    src={Arrow}
-                    width={20}
-                    height={20}
-                    style={{
-                      maxWidth: '100%',
-                      height: 'auto',
-                    }}
-                  />
-                </Link>
-              </div>
+              <button onClick={() => router.back()}>
+                <Image
+                  alt="Arrow"
+                  src={Arrow}
+                  width={20}
+                  height={20}
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                  }}
+                />
+              </button>
             </li>
             <li>
               <div className="flex items-center">

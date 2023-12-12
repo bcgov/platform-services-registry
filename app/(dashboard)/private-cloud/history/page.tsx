@@ -58,7 +58,7 @@ export default async function RequestsTable({
     false,
   );
 
-  const rows = data.map(privateCloudRequestDataToRow).reverse();
+  const rows = data.map(privateCloudRequestDataToRow);
 
   return (
     <Table

@@ -58,13 +58,6 @@ export async function publicCloudRequestsPaginated(
   const searchQuery: any = {};
 
   if (searchTerm) {
-    searchQuery.$or = [
-      { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
-      { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
-    ];
-  }
-
-  if (searchTerm) {
     // Add other filter conditions here
     searchQuery.$or = [
       { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
@@ -130,7 +123,7 @@ export async function publicCloudRequestsPaginated(
       // User Requested Project
       {
         $lookup: {
-          from: 'PrivateCloudRequestedProject',
+          from: 'PublicCloudRequestedProject',
           localField: 'userRequestedProjectId',
           foreignField: '_id',
           as: 'userRequestedProject',
@@ -173,7 +166,7 @@ export async function publicCloudRequestsPaginated(
       // Requested Project
       {
         $lookup: {
-          from: 'PrivateCloudRequestedProject',
+          from: 'PublicCloudRequestedProject',
           localField: 'requestedProjectId',
           foreignField: '_id',
           as: 'requestedProject',
@@ -231,7 +224,7 @@ export async function publicCloudRequestsPaginated(
       // Requested Project
       {
         $lookup: {
-          from: 'PrivateCloudRequestedProject',
+          from: 'PublicCloudRequestedProject',
           localField: 'requestedProjectId',
           foreignField: '_id',
           as: 'requestedProject',
@@ -271,6 +264,7 @@ export async function publicCloudRequestsPaginated(
         },
       },
       { $match: searchQuery },
+      { $sort: { created: -1 } },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {
