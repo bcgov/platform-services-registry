@@ -5,7 +5,7 @@ react-emails is a package that allows for the creation of emails using React and
 1. Website: https://react.email/
 1. Github: https://github.com/resendlabs/react-email
 
-## Development Email-Templates server
+## Development Email-Templates Server
 
 This package comes with a [CLI](https://react.email/docs/cli) that creates a dev server for you to view the emails.
 
@@ -23,6 +23,31 @@ This package comes with a [CLI](https://react.email/docs/cli) that creates a dev
    - The `templates` folder contains the templates that are called by the emailHandler
    - `/components/params.tsx` contains the mock data to view the email templates
 
-npm run email creates a folder called .react-emails which contains the files needed for the dev server that displays the email templates. You can also treat this .react-emails folder as a normal project folder, meaning you can cd into the folder and run `npm i` and `npm run dev` to start the server. It is important to note that running `npm run email` in the root project will overwrite some of the folders in .react-emails, meaning any changes made to files like .react-email/package.json will be overwritten.
+## React-Email Commands
 
-## Other CLI commands from react-emails
+react-email comes with a `dev`, `build`, `start` and `export` command. The way these commands can be called are found within the `package.json` script.
+
+The `dev`, `build` and `start` commands work like your normal npm commands, with the difference being that project it generates is a dashboard which shows your email templates. They create a folder called .react-emails which can essentially be treated as another project folder. It is important to note that running these commands in the will overwrite some of the folders in .react-emails, such as the package.json file.
+
+`export` creates a folder called email-export containing the html renders for all the existing templates. It works similarly to how the render() function works.
+
+## Deploying the email Dashboard
+
+The problem when trying to deploy the dashboard was that `npm run build` was failing due to linting and typescript errors that exists in how `.react-email` imports the email templates
+
+```sh
+import Mail from '../../emails/PrivateCloudAdminCreateRequest.tsx';`
+```
+
+We can always update the config manually to ignore the above error, but the initial creation of the .react-email folder (if it does not already exist) will not include those changes. For that reason, the .react-email folder will have to be included to the repo, so that the following config can be added to `.react-email/next.config.js`:
+
+```sh
+   typescript: {
+      ignoreBuildErrors: true,
+   },
+   eslint: {
+      ignoreBuildErrors: true,
+   },
+```
+
+The Dockerfile for the email-dashboard will then be pretty much the same as a normal deployment, with the exception of the context for `build` and `start`
