@@ -15,29 +15,31 @@ export default function Tabs() {
   }
 
   return (
-    <span className="isolate inline-flex rounded-md shadow-sm m-1">
-      <Link
-        href={`/${pathname.split('/')[1]}/products/all`}
-        type="button"
-        className={classNames(
-          'w-24 relative inline-flex justify-center items-center rounded-l-lg px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10',
-          selectedTab === 'all' ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100',
-        )}
-      >
-        View All
-      </Link>
+    <div>
+      <span className="isolate inline-flex rounded-md shadow-sm m-1">
+        <Link
+          href={`/${pathname.split('/')[1]}/products/all`}
+          type="button"
+          className={classNames(
+            'w-24 relative inline-flex justify-center items-center rounded-l-lg px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10',
+            selectedTab === 'all' ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100',
+          )}
+        >
+          View All
+        </Link>
 
-      <Link
-        href={`/${pathname.split('/')[1]}/products/active-requests`}
-        type="button"
-        className={classNames(
-          'w-28 relative -ml-px inline-flex justify-center items-center rounded-r-lg  px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10',
-          selectedTab === 'active-requests' ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100 ',
-        )}
-      >
-        In Progress
-      </Link>
-    </span>
+        <Link
+          href={`/${pathname.split('/')[1]}/products/active-requests`}
+          type="button"
+          className={classNames(
+            'w-28 relative -ml-px inline-flex justify-center items-center rounded-r-lg  px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10',
+            selectedTab === 'active-requests' ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100 ',
+          )}
+        >
+          In Progress
+        </Link>
+      </span>
+    </div>
   );
 }
 
