@@ -14,6 +14,7 @@ interface EmailProp {
 
 export const RequestApprovalTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
