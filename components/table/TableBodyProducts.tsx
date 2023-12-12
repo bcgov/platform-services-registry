@@ -95,6 +95,10 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
   return 'Deployed on';
 }
 
+function truncateText(str: string, n: number) {
+  return str.length > n ? str.substring(0, n - 1) + '...' : str;
+}
+
 function getStatus(requestDecisionStatus: string) {
   if (requestDecisionStatus === 'APPROVED') {
     return 'Provisioning..';
@@ -190,16 +194,19 @@ export default function TableBody({ rows }: TableProps) {
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
               <div className="flex ">
-                <div className="w-[500px] 2xl:w-[600px]">
+                <div className="w-[500px] 2xl:w-[550px]">
                   <div className="flex items-center gap-x-3">
                     {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
                     </div> */}
-                    <h2 className="min-w-0 text-base font-semibold leading-6 text-gray-700">
+                    <h2 className="min-w-0 text-base  text-gray-700">
                       <div className="flex gap-x-2">
-                        <span className="">{deployment.cluster}</span>
-                        <span className="text-gray-400">/</span>
-                        <span className="truncate">{deployment.name}</span>
+                        <span className="">
+                          <span className="font-semibold leading-6"> {deployment.cluster}</span>{' '}
+                          <span className="text-gray-400">/</span>{' '}
+                          <span className="">{truncateText(deployment.name, 130)}</span>
+                        </span>
+
                         <span className="absolute inset-0" />
                       </div>
                     </h2>
