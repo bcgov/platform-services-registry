@@ -9,7 +9,6 @@ import { compareProjects } from '../../components/Edit/compareProjects';
 import ContactChanges from '../../components/Edit/ContactChanges';
 import QuotaChanges from '../../components/Edit/QuotaChanges';
 import DescriptionChanges from '../../components/Edit/DescriptionChanges';
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;

@@ -7,7 +7,6 @@ import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;

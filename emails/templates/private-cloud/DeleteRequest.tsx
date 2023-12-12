@@ -14,6 +14,7 @@ interface EmailProp {
 
 const DeleteRequestTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
