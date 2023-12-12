@@ -22,7 +22,7 @@ export default function Avatar({
   });
 
   return (
-    <div className={'group block flex-shrink-0 px-5 w-50 overflow-hidden' + className}>
+    <div className={'group block flex-shrink-0 px-2 w-50 overflow-hidden' + className}>
       <div className="flex items-center">
         <div className="4xl:inline-block hidden">
           <Image

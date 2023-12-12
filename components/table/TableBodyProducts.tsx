@@ -193,13 +193,13 @@ export default function TableBody({ rows }: TableProps) {
               onClick={() => onRowClickHandler(deployment)}
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
-              <div className="flex ">
-                <div className="w-[500px] 2xl:w-[550px]">
+              <div className="flex  justify-between w-full">
+                <div className="w-[300px] lg:w-[550px]">
                   <div className="flex items-center gap-x-3">
                     {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
                     </div> */}
-                    <h2 className="min-w-0 text-base  text-gray-700">
+                    <h2 className="min-w-0 text-base text-gray-700">
                       <div className="flex gap-x-2">
                         <span className="">
                           <span className="font-semibold leading-6"> {deployment.cluster}</span>{' '}
@@ -221,7 +221,7 @@ export default function TableBody({ rows }: TableProps) {
                     </p>
                   </div>
                 </div>
-                <div className="mt-1 w-32">
+                <div className="mt-1 w-32 ml-3">
                   <div>
                     <span
                       className={classNames(
@@ -246,35 +246,36 @@ export default function TableBody({ rows }: TableProps) {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="hidden items-center gap-x-3 w-[400px] 3xl:flex">
-                  <Avatar
-                    name={deployment.projectOwner.name}
-                    email={deployment.projectOwner.email}
-                    userRole={'Product Owner'}
-                  />
-                  <Avatar
-                    name={deployment.primaryTechnicalLead.name}
-                    email={deployment.primaryTechnicalLead.email}
-                    userRole="Technical Lead"
-                  />
-                  {deployment?.secondaryTechnicalLead ? (
+                <div className="flex items-center space-x-2 w-2/5">
+                  <div className="hidden items-center gap-x-2 2xl:flex">
                     <Avatar
-                      name={deployment.secondaryTechnicalLead?.name}
-                      email={deployment.primaryTechnicalLead?.email}
+                      name={deployment.projectOwner.name}
+                      email={deployment.projectOwner.email}
+                      userRole={'Product Owner'}
+                    />
+                    <Avatar
+                      name={deployment.primaryTechnicalLead.name}
+                      email={deployment.primaryTechnicalLead.email}
                       userRole="Technical Lead"
                     />
-                  ) : null}
-                </div>
-                <div className="3xl:hidden flex">
-                  <Avatars
-                    productOwnerEmail={deployment.projectOwner.email}
-                    primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
-                    secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
-                  />
+                    {deployment?.secondaryTechnicalLead ? (
+                      <Avatar
+                        name={deployment.secondaryTechnicalLead?.name}
+                        email={deployment.primaryTechnicalLead?.email}
+                        userRole="Technical Lead"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="2xl:hidden flex">
+                    <Avatars
+                      productOwnerEmail={deployment.projectOwner.email}
+                      primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
+                      secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
+                    />
+                  </div>
                 </div>
               </div>
+
               <div className="flex">
                 <div className="text-gray-700 w-20">{deployment.licencePlate}</div>
                 <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
