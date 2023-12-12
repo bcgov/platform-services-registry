@@ -131,8 +131,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
     onSubmit({ ...methods.getValues(), userComment });
   };
 
-  console.log(isDirty);
-
   return (
     <div>
       <FormProvider {...methods}>
