@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
-import ReturnModal from '@/components/modal/Return';
+import ReturnModal from '@/components/modal/ReturnDecision';
 import Comment from '@/components/modal/Comment';
 import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -41,11 +41,11 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   const router = useRouter();
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -83,7 +83,10 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
       setOpenCreate(false);
       setOpenComment(false);
-      setOpenReturn(true);
+      if (isRejected) {
+      } else {
+        setOpenReturn(true);
+      }
     } catch (error) {
       setIsLoading(false);
       console.error('Error:', error);
@@ -98,6 +101,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   };
 
   const setComment = (comment: string) => {
+    setIsRejected(true);
     onSubmit({ ...methods.getValues(), comment });
   };
 

@@ -61,8 +61,8 @@ export default function Modal({
                     All Set?
                   </Dialog.Title>
                   <p className="text-sm text-gray-900 font-medium mb-4">
-                    Tell us a little bit about why you are requesting a quota change. This will be taken into
-                    consideration when your request is reviewed.
+                    Tell us a little bit about why you are requesting a change. This will be taken into consideration
+                    when your request is reviewed.
                   </p>
                   <textarea
                     onChange={handleCommentChange}

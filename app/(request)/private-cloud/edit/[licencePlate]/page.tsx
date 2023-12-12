@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useFormState } from 'react-hook-form';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -17,6 +17,7 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
 import CommonComponents from '@/components/form/CommonComponents';
+import { isDirty } from 'zod';
 
 async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
   const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
@@ -88,7 +89,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
     },
   });
 
-  console.log(methods.watch());
+  const { formState } = methods;
 
   useEffect(() => {
     if (requestData) {
@@ -130,6 +131,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     onSubmit({ ...methods.getValues(), userComment });
   };
 
+  console.log(isDirty);
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -152,7 +155,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT REQUEST" />
+                <SubmitButton text="SUBMIT REQUEST" disabled={!formState.isDirty} />
               </div>
             ) : null}
           </div>
