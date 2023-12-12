@@ -11,7 +11,7 @@ export default function FilterPanel() {
   const ministryRef = useRef<HTMLSelectElement>(null);
 
   const isRequests = pathname.includes('/requests');
-  const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Projects';
+  const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Products';
 
   const handleFilterChange = (name: string, value: string | null) => {
     const urlSearchParams = new URLSearchParams(searchParams?.toString());
