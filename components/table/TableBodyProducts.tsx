@@ -193,7 +193,7 @@ export default function TableBody({ rows }: TableProps) {
               onClick={() => onRowClickHandler(deployment)}
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
-              <div className="flex  justify-between w-full">
+              <div className="flex justify-between w-full">
                 <div className="w-[300px] lg:w-[550px]">
                   <div className="flex items-center gap-x-3">
                     {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
@@ -246,8 +246,8 @@ export default function TableBody({ rows }: TableProps) {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 w-2/5">
-                  <div className="hidden items-center gap-x-2 2xl:flex">
+                <div className="flex mt-1.5 space-x-2 w-2/5">
+                  <div className="hidden  gap-x-2 2xl:flex">
                     <Avatar
                       name={deployment.projectOwner.name}
                       email={deployment.projectOwner.email}
