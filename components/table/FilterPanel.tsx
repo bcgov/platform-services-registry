@@ -37,7 +37,7 @@ export default function FilterPanel() {
   };
 
   return (
-    <div className="flex gap-10 mr-10">
+    <div className="flex gap-8 mr-10">
       <div className="grid auto-rows-min grid-cols-1 gap-y-8 md:grid-cols-2 md:gap-x-6">
         <fieldset>
           <div className="mt-2">

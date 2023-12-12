@@ -8,7 +8,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
-import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
@@ -52,8 +51,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { data: session, status } = useSession({
     required: true,
   });
-
-  const router = useRouter();
 
   const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -132,7 +129,12 @@ export default function EditProject({ params }: { params: { licencePlate: string
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
-          <div className="space-y-12">
+          <div className="mb-12 mt-8">
+            {isDisabled && (
+              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
+                There is already an active request for this project. You can not edit this project at this time.
+              </h3>
+            )}
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
             <TeamContacts
               disabled={isDisabled}

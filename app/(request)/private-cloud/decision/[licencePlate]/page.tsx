@@ -9,7 +9,6 @@ import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import Comment from '@/components/modal/Comment';
-import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
@@ -39,8 +38,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const { data: session, status } = useSession({
     required: true,
   });
-
-  const router = useRouter();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -111,7 +108,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
-          <div className="space-y-12">
+          <div className="mb-12 mt-8">
+            {isDisabled && (
+              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
+                A decision has already been made for this project
+              </h3>
+            )}
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
             <TeamContacts
               disabled={isDisabled}

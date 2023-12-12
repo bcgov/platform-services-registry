@@ -89,7 +89,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
         <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
           <div className="flex w-full justify-between items-center">
             <AllActiveTabs />
-            <div className="flex-grow"></div>
+            <div className="flex-grow h-12"></div>
 
             <form className="flex-grow flex-shrink max-w-sm">
               <label htmlFor="simple-search" className="sr-only">
