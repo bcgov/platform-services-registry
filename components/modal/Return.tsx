@@ -13,8 +13,8 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
     router.refresh();
   };
 
-  const isEdit = pathname.includes('edit') ? true : false;
-  const isPublic = pathname.includes('public-cloud') ? true : false;
+  const isEdit = pathname.includes('edit');
+  const isPublic = pathname.includes('public-cloud');
 
   return (
     <Transition.Root show={open} as={Fragment}>
