@@ -12,7 +12,6 @@ import classNames from '@/components/utils/classnames';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import Avatar from '@/components/table/Avatar';
 import Avatars from '@/components/table/Avatars';
-import { de } from '@faker-js/faker';
 
 interface TableProps {
   rows: Record<string, any>[];

@@ -28,7 +28,7 @@ export default async function RequestsTable({
     pageSize: number;
     ministry: string;
     provider: string;
-    active: string;
+    active: boolean;
   };
 }) {
   // Authenticate the user

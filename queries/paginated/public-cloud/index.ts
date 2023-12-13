@@ -286,6 +286,6 @@ export async function publicCloudRequestsPaginated(
   const totalCount = count.length;
   return {
     data: result as any,
-    total: totalCount,
+    total: totalCount as number,
   };
 }
