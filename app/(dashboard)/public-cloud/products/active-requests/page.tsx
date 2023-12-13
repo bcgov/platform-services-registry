@@ -49,9 +49,8 @@ export default async function ProductsTable({
     ...request.requestedProject,
     created: request.created,
     activeRequest: [request],
+    id: request.id,
   }));
-
-  console.log(transformActiveRequests);
 
   const activeRequests = transformActiveRequests.map(publicCloudProjectDataToRow);
 
