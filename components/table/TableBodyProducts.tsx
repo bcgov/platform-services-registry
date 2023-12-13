@@ -178,7 +178,7 @@ export default function TableBody({ rows }: TableProps) {
           break;
         }
 
-        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
+        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue, 'product'));
         break;
     }
   };
