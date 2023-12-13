@@ -36,9 +36,6 @@ export async function GET(req: NextRequest) {
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
-    console.log('userEmail', session.user.email);
-    console.log('ministryRoles', ministryRoles);
-
     const { data } = await privateCloudProjectsPaginated(
       0,
       0,
