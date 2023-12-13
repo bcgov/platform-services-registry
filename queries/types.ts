@@ -1,4 +1,4 @@
-export interface ProjectOwnerDetails {
+export interface User {
   email: string;
   firstName: string;
   lastName: string;
@@ -15,9 +15,9 @@ export interface Project {
   projectOwnerId: string;
   primaryTechnicalLeadId: string;
   secondaryTechnicalLeadId: string;
-  projectOwnerDetails: ProjectOwnerDetails;
-  primaryTechnicalLeadDetails: ProjectOwnerDetails;
-  secondaryTechnicalLeadDetails: ProjectOwnerDetails;
+  projectOwner: User;
+  primaryTechnicalLead: User;
+  secondaryTechnicalLead: User;
 }
 
 export interface PrivateProject extends Project {

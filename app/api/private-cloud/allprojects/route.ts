@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 import { PrivateProject } from '@/queries/types';
-import { privateCloudProjects } from '@/queries/private-cloud';
+import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
 import formatDate from '@/components/utils/formatdates';
 import { formatFullName } from '@/components/utils/formatFullName';
 import { z } from 'zod';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
+import { userInfo } from '@/queries/user';
 
 const searchParamsSchema = z.object({
   search: z.string().nullable(),
   ministry: z.string().nullable(),
-  cluster: z.array(z.string()),
+  cluster: z.string().nullable(),
+  active: z.boolean().nullable(),
 });
 
 export async function GET(req: NextRequest) {
@@ -28,36 +30,35 @@ export async function GET(req: NextRequest) {
     const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
-      cluster: searchParams.getAll('cluster'),
+      cluster: searchParams.get('cluster'),
+      active: searchParams.get('active'),
     });
 
-    let email = null;
+    const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
-    if (!session.user.roles.includes('admin')) {
-      email = session.user.email;
-    }
-
-    const projects = await privateCloudProjects(
+    const { data } = await privateCloudProjectsPaginated(
+      0,
+      0,
       parsedSearchParams.search,
       parsedSearchParams.ministry,
       parsedSearchParams.cluster,
-      email,
+      userEmail,
+      ministryRoles,
+      parsedSearchParams.active,
     );
 
     // Map the data to the correct format for CSV conversion
-    const formattedData = projects.map((project: PrivateProject) => ({
+    const formattedData = data.map((project: PrivateProject) => ({
       name: project.name,
       description: project.description,
       ministry: project.ministry,
       cluster: project.cluster,
-      projectOwnerEmail: project.projectOwnerDetails.email,
-      projectOwnerName: formatFullName(project.projectOwnerDetails),
-      primaryTechnicalLeadEmail: project.primaryTechnicalLeadDetails.email,
-      primaryTechnicalLeadName: formatFullName(project.primaryTechnicalLeadDetails),
-      secondaryTechnicalLeadEmail: project.secondaryTechnicalLeadDetails
-        ? project.secondaryTechnicalLeadDetails.email
-        : '',
-      secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLeadDetails),
+      projectOwnerEmail: project.projectOwner.email,
+      projectOwnerName: formatFullName(project.projectOwner),
+      primaryTechnicalLeadEmail: project.primaryTechnicalLead.email,
+      primaryTechnicalLeadName: formatFullName(project.primaryTechnicalLead),
+      secondaryTechnicalLeadEmail: project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
+      secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
       created: formatDate(project.created.$date),
       licencePlate: project.licencePlate,
     }));

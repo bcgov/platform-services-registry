@@ -1,0 +1,186 @@
+# See https://helm.sh/docs/chart_template_guide/subcharts_and_globals/#global-chart-values
+global:
+  licensePlate: 101ed4
+  vault:
+    # licensePlate-nonprod or licensePlate-prod
+    role:
+    # sub-path of the vault secret
+    subPath:
+    podAnnotations:
+      # See https://developer.hashicorp.com/vault/docs/platform/k8s/injector/annotations#agent-annotations
+      vault.hashicorp.com/auth-path: auth/k8s-silver
+      vault.hashicorp.com/namespace: platform-services
+      vault.hashicorp.com/agent-inject: "true"
+      vault.hashicorp.com/agent-inject-token: "false"
+      vault.hashicorp.com/agent-pre-populate: "true"
+      vault.hashicorp.com/agent-pre-populate-only: "true"
+      vault.hashicorp.com/agent-requests-cpu: 50m
+      vault.hashicorp.com/agent-limits-cpu: 100m
+      vault.hashicorp.com/agent-requests-mem: 32Mi
+      vault.hashicorp.com/agent-limits-mem: 64Mi
+  env:
+    "Env": ""
+
+  serviceAccountName: 101ed4-vault
+
+nameOverride: secdash
+fullnameOverride: secdash
+
+dags:
+  sha:
+  # The following configurations will be populated dynamically by the Makefile
+  # based on the DAG filenames in the dag directory.
+  volumeMounts: []
+
+# See https://github.com/apache/airflow/blob/main/chart/values.yaml
+airflow:
+  enabled: false
+  route:
+    host:
+
+  fullnameOverride: airflow
+  nameOverride: airflow
+  useStandardNaming: true
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L46
+  uid:
+  gid:
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L77
+  airflowVersion: "2.7.3"
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L80
+  images:
+    useDefaultImageForMigration: true
+    migrationsWaitTimeout: 60
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L257
+  rbac:
+    create: true
+    createSCCRoleBinding: false
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L264
+  executor: KubernetesExecutor
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L379
+  data:
+    metadataSecretName: secdash-postgresql # pragma: allowlist secret
+    # metadataConnection:
+    #   user: nonroot
+    #   pass: nonroot
+    #   protocol: postgresql
+    #   host: secdash-postgresql
+    #   port: 5432
+    #   db: airflow
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L430
+  webserverSecretKeySecretName: secdash-airflow-webserver # pragma: allowlist secret
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L490
+  workers:
+    extraVolumes:
+      - name: secdash-airflow-dags
+        persistentVolumeClaim:
+          claimName: secdash-airflow-dags
+    extraVolumeMounts:
+      - name: secdash-airflow-dags
+        mountPath: /opt/airflow/dags
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L770
+  scheduler:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 500Mi
+
+    extraVolumes:
+      - name: secdash-airflow-dags
+        persistentVolumeClaim:
+          claimName: secdash-airflow-dags
+    extraVolumeMounts:
+      - name: secdash-airflow-dags
+        mountPath: /opt/airflow/dags
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1130
+  webserver:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 50m
+        memory: 700Mi
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1342
+  triggerer:
+    enabled: false
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1807
+  statsd:
+    enabled: false
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L2278
+  postgresql:
+    enabled: false
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L2298
+  config:
+    core:
+      dag_concurrency: 5
+      max_active_runs_per_dag: 1
+      min_serialized_dag_update_interval: 10
+      min_serialized_dag_fetch_interval: 5
+      dags_are_paused_at_creation: False
+    webserver:
+      web_server_worker_timeout: 300
+      workers: 2
+
+    smtp:
+      smtp_host: apps.smtp.gov.bc.ca
+      smtp_starttls: false
+      smtp_mail_from: pltsvc@gov.bc.ca
+
+    scheduler:
+      min_file_process_interval: 30
+
+    kubernetes_executor:
+      run_as_user: "{{ .Values.uid }}"
+      delete_worker_pods: "True"
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L2397
+  dags:
+    persistence:
+      enabled: false
+
+    gitSync:
+      enabled: false
+
+# See https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+postgresql:
+  enabled: true
+  primary:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+    persistence:
+      size: 1Gi
+  readReplicas:
+    persistence:
+      size: 1Gi
+  global:
+    postgresql:
+      auth:
+        database: airflow
+        username: nonroot
+        replicationUsername: replication
+        existingSecret: secdash-postgresql # pragma: allowlist secret
+        secretKeys:
+          adminPasswordKey: admin-password # pragma: allowlist secret
+          userPasswordKey: user-password # pragma: allowlist secret
+          replicationPasswordKey: replication-password # pragma: allowlist secret

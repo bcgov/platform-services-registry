@@ -28,6 +28,8 @@ export default function Tabs({ tabs }: { tabs: Tab[] }, { className }: { classNa
     return '';
   };
 
+  const cloud = `${pathname.split('/')[2]}`;
+
   return (
     <div className="w-full">
       <div className="md:hidden">

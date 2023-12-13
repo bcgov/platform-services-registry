@@ -16,7 +16,7 @@ export default function FilterPanel() {
   const currentClusterProvider = pathname.includes('private') ? 'cluster' : 'provider';
   const currentClusterProviderList = pathname.includes('private') ? clusters : providers;
   const isRequests = pathname.includes('/requests');
-  const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Projects';
+  const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Products';
 
   const handleFilterChange = (name: string, value: string | null) => {
     const urlSearchParams = new URLSearchParams(searchParams?.toString());
@@ -53,10 +53,10 @@ export default function FilterPanel() {
   };
 
   return (
-    <div className="flex flex-col justify-between md:flex-row ">
-      <div className="flex flex-col md:flex-row">
-        <fieldset className="w-full md:w-48 2xl:w-96">
-          <div>
+    <div className="flex gap-8 mr-10">
+      <div className="grid auto-rows-min grid-cols-1 gap-y-8 md:grid-cols-2 md:gap-x-6">
+        <fieldset>
+          <div className="">
             <label htmlFor={currentClusterProvider} className="block text-sm font-medium leading-6 text-gray-900">
               {capitalizeFirstLetter(currentClusterProvider)}
             </label>
@@ -103,7 +103,7 @@ export default function FilterPanel() {
             </select>
           </div>
         </fieldset>
-        <label className="cursor-pointer select-none flex flex-row mt-4 md:ml-8 md:mt-7">
+        <label className="cursor-pointer select-none flex flex-row mt-4  md:mt-7">
           <input
             type="checkbox"
             name="autoSaver"

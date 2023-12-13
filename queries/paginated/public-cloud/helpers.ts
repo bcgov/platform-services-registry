@@ -1,79 +1,81 @@
 import prisma from '@/lib/prisma';
-import { PrivateProject } from '@/queries/types';
+import { PublicProject } from '@/queries/types';
 
-export async function getPrivateCloudProjectsQuery({
+export async function getPublicCloudProjectsQuery({
   searchTerm,
   ministry,
-  cluster,
+  provider,
   userEmail,
   ministryRoles,
   active,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
-  cluster?: string | string[] | null;
+  provider?: string | string[] | null;
   userEmail?: string | null;
   ministryRoles?: string[];
-  active?: string | null;
+  active?: boolean;
 }) {
-  const isActive = active !== 'false';
-
   // Initialize the search/filter query
-  const searchQuery: any = isActive ? { status: 'ACTIVE' } : {};
+  const searchQuery: any = active
+    ? {
+        status: 'ACTIVE',
+      }
+    : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
     searchQuery.$or = [
       {
-        'projectOwnerDetails.email': {
+        'projectOwner.email': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'projectOwnerDetails.firstName': {
+        'projectOwner.firstName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'projectOwnerDetails.lastName': {
+        'projectOwner.lastName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'primaryTechnicalLeadDetails.email': {
+        'primaryTechnicalLead.email': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'primaryTechnicalLeadDetails.firstName': {
+        'primaryTechnicalLead.firstName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'primaryTechnicalLeadDetails.lastName': {
+        'primaryTechnicalLead.lastName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'secondaryTechnicalLeadDetails.email': {
+        'secondaryTechnicalLead.email': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'secondaryTechnicalLeadDetails.firstName': {
+        'secondaryTechnicalLead.firstName': {
           $regex: searchTerm,
           $options: 'i',
         },
       },
       {
-        'secondaryTechnicalLeadDetails.lastName': {
+        'secondaryTechnicalLead.lastName': {
           $regex: searchTerm,
           $options: 'i',
         },
@@ -81,7 +83,7 @@ export async function getPrivateCloudProjectsQuery({
       { name: { $regex: searchTerm, $options: 'i' } },
       { description: { $regex: searchTerm, $options: 'i' } },
       { licencePlate: { $regex: searchTerm, $options: 'i' } },
-      { cluster: { $regex: searchTerm, $options: 'i' } },
+      { provider: { $regex: searchTerm, $options: 'i' } },
       { ministry: { $regex: searchTerm, $options: 'i' } },
 
       // include other fields as necessary
@@ -97,19 +99,19 @@ export async function getPrivateCloudProjectsQuery({
       {
         $or: [
           {
-            'projectOwnerDetails.email': {
+            'projectOwner.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'primaryTechnicalLeadDetails.email': {
+            'primaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'secondaryTechnicalLeadDetails.email': {
+            'secondaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
@@ -122,26 +124,26 @@ export async function getPrivateCloudProjectsQuery({
     ];
   }
 
-  if (cluster) {
-    if (Array.isArray(cluster)) {
-      if (cluster.length > 0) searchQuery.cluster = { $in: cluster };
+  if (provider) {
+    if (Array.isArray(provider)) {
+      if (provider.length > 0) searchQuery.provider = { $in: provider };
     } else {
-      searchQuery.cluster = cluster;
+      searchQuery.provider = provider;
     }
   }
 
   return searchQuery;
 }
 
-export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
-  const result: unknown = await prisma.privateCloudProject.aggregateRaw({
+export async function getPublicCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
+  const result: unknown = await prisma.publicCloudProject.aggregateRaw({
     pipeline: [
       {
         $lookup: {
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwnerDetails',
+          as: 'projectOwner',
         },
       },
       {
@@ -149,7 +151,7 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           from: 'User',
           localField: 'primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLeadDetails',
+          as: 'primaryTechnicalLead',
         },
       },
       {
@@ -157,11 +159,11 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLeadDetails',
+          as: 'secondaryTechnicalLead',
         },
       },
       { $match: searchQuery },
-      { $unwind: '$projectOwnerDetails' },
+      { $unwind: '$projectOwner' },
       { $count: 'totalCount' },
     ],
   });
@@ -171,28 +173,54 @@ export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searc
   return 0;
 }
 
-export async function getPrivateCloudProjectsResult({
+export async function getPublicCloudProjectsResult({
   searchQuery,
-  pageNumber,
+  skip,
   pageSize,
 }: {
   searchQuery: any;
-  pageNumber?: number;
+  skip?: number;
   pageSize?: number;
 }) {
-  let paginationPipelines: any[] = [];
-  if (pageNumber && pageSize) {
-    paginationPipelines = [{ $skip: (pageNumber - 1) * pageSize }, { $limit: pageSize }];
+  if (pageSize === 0) {
+    return [];
   }
 
-  const result = await prisma.privateCloudProject.aggregateRaw({
+  const paginationPipelines = pageSize === 0 ? [] : [{ $skip: skip }, { $limit: pageSize }];
+
+  const result = await prisma.publicCloudProject.aggregateRaw({
     pipeline: [
+      {
+        $lookup: {
+          from: 'PublicCloudRequest', // The foreign collection
+          let: { projectId: '$_id' }, // Define variable for use in the pipeline
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$projectId', '$$projectId'] }, // Match projectId
+                    { $eq: ['$active', true] }, // Match active requests
+                  ],
+                },
+              },
+            },
+            // You can add other stages here if needed
+          ],
+          as: 'activeRequest', // Output array field
+        },
+      },
+      {
+        $addFields: {
+          activeRequestCount: { $size: '$activeRequest' },
+        },
+      },
       {
         $lookup: {
           from: 'User',
           localField: 'projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwnerDetails',
+          as: 'projectOwner',
         },
       },
       {
@@ -200,7 +228,7 @@ export async function getPrivateCloudProjectsResult({
           from: 'User',
           localField: 'primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLeadDetails',
+          as: 'primaryTechnicalLead',
         },
       },
       {
@@ -208,18 +236,19 @@ export async function getPrivateCloudProjectsResult({
           from: 'User',
           localField: 'secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLeadDetails',
+          as: 'secondaryTechnicalLead',
         },
       },
-      { $match: searchQuery },
-      { $unwind: '$projectOwnerDetails' },
-      { $unwind: '$primaryTechnicalLeadDetails' },
+      { $unwind: '$projectOwner' },
+      { $unwind: '$primaryTechnicalLead' },
       {
         $unwind: {
-          path: '$secondaryTechnicalLeadDetails',
+          path: '$secondaryTechnicalLead',
           preserveNullAndEmptyArrays: true,
         },
       },
+      { $match: searchQuery },
+
       ...paginationPipelines,
       {
         $addFields: {
@@ -234,5 +263,5 @@ export async function getPrivateCloudProjectsResult({
     ],
   });
 
-  return result as unknown as PrivateProject[];
+  return result as unknown as PublicProject[];
 }

@@ -65,8 +65,36 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
+  build-push-emails:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-emails
+        docker-context: .
+        docker-file: Dockerfile.email
+        metadata-tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+
   deploy:
-    needs: [build-push-app, build-push-pre]
+    needs: [build-push-app, build-push-pre, build-push-emails]
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:

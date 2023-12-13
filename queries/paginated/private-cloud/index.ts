@@ -3,18 +3,18 @@ import {
   getPrivateCloudProjectsQuery,
   getPrivateCloudProjectsResult,
   getPrivateCloudProjectsTotalCount,
-} from '@/queries/private-cloud/helpers';
+} from '@/queries/paginated/private-cloud/helpers';
 import { PrivateProject } from '@/queries/types';
 
 export async function privateCloudProjectsPaginated(
   pageSize: number,
-  pageNumber: number,
+  skip: number,
   searchTerm?: string | null,
   ministry?: string | null,
   cluster?: string | null, // Non admins will be required to pass this field that will filter projects for their user
   userEmail?: string | null,
   ministryRoles?: string[],
-  active?: string | null,
+  active?: boolean | null,
 ): Promise<{
   data: PrivateProject[];
   total: number;
@@ -26,7 +26,7 @@ export async function privateCloudProjectsPaginated(
     cluster,
     userEmail,
     ministryRoles,
-    active,
+    active: !!active,
   });
 
   const proms = [];
@@ -34,7 +34,7 @@ export async function privateCloudProjectsPaginated(
   proms.push(getPrivateCloudProjectsTotalCount({ searchQuery }));
 
   // Then, get the actual page of data
-  proms.push(getPrivateCloudProjectsResult({ searchQuery, pageNumber, pageSize }));
+  proms.push(getPrivateCloudProjectsResult({ searchQuery, skip, pageSize }));
 
   const [total, data] = await Promise.all(proms);
 
@@ -50,20 +50,53 @@ export async function privateCloudRequestsPaginated(
   searchTerm?: string,
   ministry?: string,
   cluster?: string,
-  userEmail?: string | null,
+  userEmail?: string,
   ministryRoles: string[] = [],
-  active?: string | null,
+  active: boolean = true,
 ): Promise<{
   data: any[];
   total: number;
 }> {
-  const isActive = active !== 'false';
-  const searchQuery: any = isActive ? {} : { active: true };
+  const searchQuery: any = active ? { active: true } : {};
+  // const searchQuery: any = {};
+
+  // if (searchTerm) {
+  //   searchQuery.$or = [
+  //     { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
+  //     { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+  //   ];
+  // }
 
   if (searchTerm) {
+    // Add other filter conditions here
     searchQuery.$or = [
+      { 'userRequestedProject.name': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.cluster': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.licencePlate': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.projectOwner.email': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.projectOwner.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.projectOwner.lastName': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.primaryTechnicalLead.email': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.primaryTechnicalLead.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.primaryTechnicalLead.lastName': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.secondaryTechnicalLead.email': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.secondaryTechnicalLead.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'userRequestedProject.secondaryTechnicalLead.lastName': { $regex: searchTerm, $options: 'i' } },
+
       { 'requestedProject.name': { $regex: searchTerm, $options: 'i' } },
       { 'requestedProject.ministry': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.cluster': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.licencePlate': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.projectOwner.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.projectOwner.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.projectOwner.lastName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.primaryTechnicalLead.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.primaryTechnicalLead.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.primaryTechnicalLead.lastName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.secondaryTechnicalLead.email': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.secondaryTechnicalLead.firstName': { $regex: searchTerm, $options: 'i' } },
+      { 'requestedProject.secondaryTechnicalLead.lastName': { $regex: searchTerm, $options: 'i' } },
     ];
   }
 
@@ -84,82 +117,99 @@ export async function privateCloudRequestsPaginated(
       {
         $or: [
           {
-            'projectOwner.email': {
+            'requestedProject.projectOwner.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'primaryTechnicalLead.email': {
+            'requestedProject.primaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'secondaryTechnicalLead.email': {
+            'requestedProject.secondaryTechnicalLead.email': {
               $regex: userEmail,
               $options: 'i',
             },
           },
           {
-            'requestedProject.ministry': { $in: ministryRoles },
+            'requestedProject.requestedProject.ministry': { $in: ministryRoles },
+          },
+
+          {
+            'userRequestedProject.projectOwner.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'userRequestedProject.primaryTechnicalLead.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'userRequestedProject.secondaryTechnicalLead.email': {
+              $regex: userEmail,
+              $options: 'i',
+            },
+          },
+          {
+            'userRequestedProject.requestedProject.ministry': { $in: ministryRoles },
           },
         ],
       },
     ];
   }
 
-  const totalCountResult = await prisma.privateCloudRequest.aggregateRaw({
+  const count = await prisma.privateCloudRequest.aggregateRaw({
     pipeline: [
+      // User Requested Project
       {
         $lookup: {
           from: 'PrivateCloudRequestedProject',
-          localField: 'requestedProjectId',
+          localField: 'userRequestedProjectId',
           foreignField: '_id',
-          as: 'requestedProject',
+          as: 'userRequestedProject',
         },
       },
-      { $unwind: '$requestedProject' },
+      { $unwind: '$userRequestedProject' },
       {
         $lookup: {
           from: 'User',
-          localField: 'requestedProject.projectOwnerId',
+          localField: 'userRequestedProject.projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwner',
+          as: 'userRequestedProject.projectOwner',
         },
       },
-      { $unwind: '$projectOwner' },
+      { $unwind: '$userRequestedProject.projectOwner' },
       {
         $lookup: {
           from: 'User',
-          localField: 'requestedProject.primaryTechnicalLeadId',
+          localField: 'userRequestedProject.primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLead',
+          as: 'userRequestedProject.primaryTechnicalLead',
         },
       },
-      { $unwind: '$primaryTechnicalLead' },
+      { $unwind: '$userRequestedProject.primaryTechnicalLead' },
       {
         $lookup: {
           from: 'User',
-          localField: 'requestedProject.secondaryTechnicalLeadId',
+          localField: 'userRequestedProject.secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLead',
+          as: 'userRequestedProject.secondaryTechnicalLead',
         },
       },
       {
         $unwind: {
-          path: '$secondaryTechnicalLead',
+          path: '$userRequestedProject.secondaryTechnicalLead',
           preserveNullAndEmptyArrays: true,
         },
       },
-      { $unwind: '$requestedProject' },
-      { $match: searchQuery },
-      { $count: 'totalCount' },
-    ],
-  });
 
-  const result = await prisma.privateCloudRequest.aggregateRaw({
-    pipeline: [
+      // Requested Project
       {
         $lookup: {
           from: 'PrivateCloudRequestedProject',
@@ -174,36 +224,34 @@ export async function privateCloudRequestsPaginated(
           from: 'User',
           localField: 'requestedProject.projectOwnerId',
           foreignField: '_id',
-          as: 'projectOwner',
+          as: 'requestedProject.projectOwner',
         },
       },
-      { $unwind: '$projectOwner' },
+      { $unwind: '$requestedProject.projectOwner' },
       {
         $lookup: {
           from: 'User',
           localField: 'requestedProject.primaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'primaryTechnicalLead',
+          as: 'requestedProject.primaryTechnicalLead',
         },
       },
-      { $unwind: '$primaryTechnicalLead' },
+      { $unwind: '$requestedProject.primaryTechnicalLead' },
       {
         $lookup: {
           from: 'User',
           localField: 'requestedProject.secondaryTechnicalLeadId',
           foreignField: '_id',
-          as: 'secondaryTechnicalLead',
+          as: 'requestedProject.secondaryTechnicalLead',
         },
       },
       {
         $unwind: {
-          path: '$secondaryTechnicalLead',
+          path: '$requestedProject.secondaryTechnicalLead',
           preserveNullAndEmptyArrays: true,
         },
       },
       { $match: searchQuery },
-      { $skip: (pageNumber - 1) * pageSize },
-      { $limit: pageSize },
       {
         $addFields: {
           id: { $toString: '$_id' },
@@ -217,10 +265,116 @@ export async function privateCloudRequestsPaginated(
     ],
   });
 
+  const result = await prisma.privateCloudRequest.aggregateRaw({
+    pipeline: [
+      // User Requested Project
+      {
+        $lookup: {
+          from: 'PrivateCloudRequestedProject',
+          localField: 'userRequestedProjectId',
+          foreignField: '_id',
+          as: 'userRequestedProject',
+        },
+      },
+      { $unwind: '$userRequestedProject' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'userRequestedProject.projectOwnerId',
+          foreignField: '_id',
+          as: 'userRequestedProject.projectOwner',
+        },
+      },
+      { $unwind: '$userRequestedProject.projectOwner' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'userRequestedProject.primaryTechnicalLeadId',
+          foreignField: '_id',
+          as: 'userRequestedProject.primaryTechnicalLead',
+        },
+      },
+      { $unwind: '$userRequestedProject.primaryTechnicalLead' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'userRequestedProject.secondaryTechnicalLeadId',
+          foreignField: '_id',
+          as: 'userRequestedProject.secondaryTechnicalLead',
+        },
+      },
+      {
+        $unwind: {
+          path: '$userRequestedProject.secondaryTechnicalLead',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // Requested Project
+      {
+        $lookup: {
+          from: 'PrivateCloudRequestedProject',
+          localField: 'requestedProjectId',
+          foreignField: '_id',
+          as: 'requestedProject',
+        },
+      },
+      { $unwind: '$requestedProject' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'requestedProject.projectOwnerId',
+          foreignField: '_id',
+          as: 'requestedProject.projectOwner',
+        },
+      },
+      { $unwind: '$requestedProject.projectOwner' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'requestedProject.primaryTechnicalLeadId',
+          foreignField: '_id',
+          as: 'requestedProject.primaryTechnicalLead',
+        },
+      },
+      { $unwind: '$requestedProject.primaryTechnicalLead' },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'requestedProject.secondaryTechnicalLeadId',
+          foreignField: '_id',
+          as: 'requestedProject.secondaryTechnicalLead',
+        },
+      },
+      {
+        $unwind: {
+          path: '$requestedProject.secondaryTechnicalLead',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      { $match: searchQuery },
+      { $sort: { created: -1 } },
+      { $skip: (pageNumber - 1) * pageSize },
+      { $limit: pageSize },
+      {
+        $addFields: {
+          id: { $toString: '$_id' },
+          'requestedProject.id': { $toString: '$requestedProject._id' },
+          'userRequestedProject.id': { $toString: '$userRequestedProject._id' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ],
+  });
+
   // @ts-ignore
-  const totalCount = totalCountResult[0]?.totalCount || 0;
+  const totalCount = count.length;
   return {
     data: result as any,
-    total: totalCount,
+    total: totalCount as number,
   };
 }
