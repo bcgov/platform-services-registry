@@ -19,8 +19,11 @@ interface TableProps {
 }
 
 function EmptyBody() {
+  const pathname = usePathname();
+
+  if (!pathname) return null;
   return (
-    <div className="flex flex-col items-center justify-center py-12">
+    <div className="flex flex-col items-center justify-center py-12 mt-12">
       <Image
         alt="Empty"
         src={Empty}
@@ -38,7 +41,7 @@ function EmptyBody() {
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
       <Link
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
-        href="/private-cloud/products/all"
+        href={`/${pathname.split('/')[1]}/create`}
       >
         REQUEST A NEW PROJECT SET
       </Link>

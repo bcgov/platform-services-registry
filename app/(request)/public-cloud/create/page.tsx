@@ -63,7 +63,7 @@ export default function Page() {
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
-          <div className="space-y-12">
+          <div className="space-y-12 mt-8">
             <ProjectDescription />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <Budget />

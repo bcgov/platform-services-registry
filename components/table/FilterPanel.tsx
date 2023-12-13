@@ -56,7 +56,7 @@ export default function FilterPanel() {
     <div className="flex gap-8 mr-10">
       <div className="grid auto-rows-min grid-cols-1 gap-y-8 md:grid-cols-2 md:gap-x-6">
         <fieldset>
-          <div className="mt-2">
+          <div className="">
             <label htmlFor={currentClusterProvider} className="block text-sm font-medium leading-6 text-gray-900">
               {capitalizeFirstLetter(currentClusterProvider)}
             </label>
@@ -103,7 +103,7 @@ export default function FilterPanel() {
             </select>
           </div>
         </fieldset>
-        <label className="cursor-pointer select-none flex flex-row mt-4 md:ml-8 md:mt-7">
+        <label className="cursor-pointer select-none flex flex-row mt-4  md:mt-7">
           <input
             type="checkbox"
             name="autoSaver"
