@@ -65,7 +65,7 @@ export default function TableBody({ headers, rows }: TableProps) {
         }
         break;
       case '/public-cloud/products':
-        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
+        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue, 'product'));
         break;
       case '/public-cloud/requests':
         if (isAdmin) {
