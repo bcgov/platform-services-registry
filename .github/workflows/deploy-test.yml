@@ -93,7 +93,6 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
-
   deploy:
     needs: [build-push-app, build-push-pre, build-push-emails]
     runs-on: ubuntu-22.04
