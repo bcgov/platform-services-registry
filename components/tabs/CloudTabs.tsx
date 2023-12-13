@@ -11,6 +11,12 @@ interface Tab {
   subHref: string;
 }
 
+interface Tab {
+  name: string;
+  href: string;
+  subHref: string;
+}
+
 const createLink = (path: string[], elem: string): string[] => {
   path.splice(path.length - 1, 1, elem);
   return path;
@@ -27,6 +33,8 @@ export default function Tabs({ tabs }: { tabs: Tab[] }, { className }: { classNa
     }
     return '';
   };
+
+  const cloud = `${pathname.split('/')[2]}`;
 
   return (
     <div className="w-full">
