@@ -178,10 +178,6 @@ export async function getPrivateCloudProjectsResult({
   skip?: number;
   pageSize?: number;
 }) {
-  // if (pageSize === 0) {
-  //   return [];
-  // }
-
   const paginationPipelines = pageSize === 0 ? [] : [{ $skip: skip }, { $limit: pageSize }];
 
   const result = await prisma.privateCloudProject.aggregateRaw({
