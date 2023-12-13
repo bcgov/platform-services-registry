@@ -3,6 +3,9 @@ import {
   DefaultMemoryOptions,
   DefaultStorageOptions,
   snapshot,
+  DefaultCpuOptionsKey,
+  DefaultMemoryOptionsKey,
+  DefaultStorageOptionsKey,
 } from '@/nats/privateCloud/constants';
 import { Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 
@@ -69,23 +72,26 @@ export default function createPrivateCloudNatsMessage(
     ].map(({ quotaName, quota }) => ({
       name: `${licencePlate}-${quotaName}`,
       quota: {
-        cpu: DefaultCpuOptions[quota.cpu].name,
-        memory: DefaultMemoryOptions[quota.memory].name,
-        storage: DefaultStorageOptions[quota.storage].name,
+        cpu: DefaultCpuOptions[quota.cpu as DefaultCpuOptionsKey].name,
+        memory: DefaultMemoryOptions[quota.memory as DefaultMemoryOptionsKey].name,
+        storage: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].name,
         snapshot: snapshot.name,
       },
       quotas: {
-        cpu: { requests: DefaultCpuOptions[quota.cpu].cpuRequests, limits: DefaultCpuOptions[quota.cpu].cpuLimits },
+        cpu: {
+          requests: DefaultCpuOptions[quota.cpu as DefaultCpuOptionsKey].cpuRequests,
+          limits: DefaultCpuOptions[quota.cpu as DefaultCpuOptionsKey].cpuLimits,
+        },
         memory: {
-          requests: DefaultMemoryOptions[quota.memory].memoryRequests,
-          limits: DefaultMemoryOptions[quota.memory].memoryLimits,
+          requests: DefaultMemoryOptions[quota.memory as DefaultMemoryOptionsKey].memoryRequests,
+          limits: DefaultMemoryOptions[quota.memory as DefaultMemoryOptionsKey].memoryLimits,
         },
         storage: {
-          block: DefaultStorageOptions[quota.storage].storageBlock,
-          file: DefaultStorageOptions[quota.storage].storageFile,
-          backup: DefaultStorageOptions[quota.storage].storageBackup,
-          capacity: DefaultStorageOptions[quota.storage].storageCapacity,
-          pvc_count: DefaultStorageOptions[quota.storage].storagePvcCount,
+          block: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageBlock,
+          file: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageFile,
+          backup: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageBackup,
+          capacity: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageCapacity,
+          pvc_count: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storagePvcCount,
         },
         snapshot: { count: snapshot.snapshotCount },
       },
