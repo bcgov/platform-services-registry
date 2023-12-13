@@ -41,11 +41,11 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   const router = useRouter();
+
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
-  const [isRejected, setIsRejected] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -83,10 +83,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
       setOpenCreate(false);
       setOpenComment(false);
-      if (isRejected) {
-      } else {
-        setOpenReturn(true);
-      }
+      setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
       console.error('Error:', error);
@@ -101,7 +98,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   };
 
   const setComment = (comment: string) => {
-    setIsRejected(true);
     onSubmit({ ...methods.getValues(), comment });
   };
 
