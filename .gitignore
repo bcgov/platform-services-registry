@@ -40,5 +40,6 @@ yarn-error.log*
 next-env.d.ts
 mnt
 
-#email
+#react-emails
 .react-email
+emails-export
