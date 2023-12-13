@@ -1,4 +1,7 @@
-import { getPublicCloudProjectsQuery, getPublicCloudProjectsTotalCount } from '@/queries/public-cloud/helpers';
+import {
+  getPublicCloudProjectsQuery,
+  getPublicCloudProjectsTotalCount,
+} from '@/queries/paginated/public-cloud/helpers';
 
 export async function publicCloudProjects(
   searchTerm?: string | null,

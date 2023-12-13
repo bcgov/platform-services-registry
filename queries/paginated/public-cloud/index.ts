@@ -3,7 +3,7 @@ import {
   getPublicCloudProjectsQuery,
   getPublicCloudProjectsResult,
   getPublicCloudProjectsTotalCount,
-} from '@/queries/public-cloud/helpers';
+} from '@/queries/paginated/public-cloud/helpers';
 import { PublicProject } from '@/queries/types';
 
 export async function publicCloudProjectsPaginated(
@@ -14,7 +14,7 @@ export async function publicCloudProjectsPaginated(
   provider?: string | null, // Non admins will be required to pass this field that will filter projects for their user
   userEmail?: string | null,
   ministryRoles?: string[],
-  active: boolean = true,
+  active?: boolean | null,
 ): Promise<{
   data: PublicProject[];
   total: number;
@@ -26,7 +26,7 @@ export async function publicCloudProjectsPaginated(
     provider,
     userEmail,
     ministryRoles,
-    active,
+    active: !!active,
   });
 
   const proms = [];

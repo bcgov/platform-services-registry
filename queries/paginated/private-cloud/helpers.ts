@@ -1,27 +1,23 @@
 import prisma from '@/lib/prisma';
-import { PublicProject } from '@/queries/types';
+import { PrivateProject } from '@/queries/types';
 
-export async function getPublicCloudProjectsQuery({
+export async function getPrivateCloudProjectsQuery({
   searchTerm,
   ministry,
-  provider,
+  cluster,
   userEmail,
   ministryRoles,
   active,
 }: {
   searchTerm?: string | null;
   ministry?: string | null;
-  provider?: string | string[] | null;
+  cluster?: string | string[] | null;
   userEmail?: string | null;
   ministryRoles?: string[];
-  active?: boolean;
+  active: boolean;
 }) {
   // Initialize the search/filter query
-  const searchQuery: any = active
-    ? {
-        status: 'ACTIVE',
-      }
-    : {};
+  const searchQuery: any = active ? { status: 'ACTIVE' } : {};
 
   // Construct search/filter conditions based on provided parameters
   if (searchTerm) {
@@ -83,7 +79,7 @@ export async function getPublicCloudProjectsQuery({
       { name: { $regex: searchTerm, $options: 'i' } },
       { description: { $regex: searchTerm, $options: 'i' } },
       { licencePlate: { $regex: searchTerm, $options: 'i' } },
-      { provider: { $regex: searchTerm, $options: 'i' } },
+      { cluster: { $regex: searchTerm, $options: 'i' } },
       { ministry: { $regex: searchTerm, $options: 'i' } },
 
       // include other fields as necessary
@@ -124,19 +120,19 @@ export async function getPublicCloudProjectsQuery({
     ];
   }
 
-  if (provider) {
-    if (Array.isArray(provider)) {
-      if (provider.length > 0) searchQuery.provider = { $in: provider };
+  if (cluster) {
+    if (Array.isArray(cluster)) {
+      if (cluster.length > 0) searchQuery.cluster = { $in: cluster };
     } else {
-      searchQuery.provider = provider;
+      searchQuery.cluster = cluster;
     }
   }
 
   return searchQuery;
 }
 
-export async function getPublicCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
-  const result: unknown = await prisma.publicCloudProject.aggregateRaw({
+export async function getPrivateCloudProjectsTotalCount({ searchQuery }: { searchQuery: any }) {
+  const result: unknown = await prisma.privateCloudProject.aggregateRaw({
     pipeline: [
       {
         $lookup: {
@@ -173,7 +169,7 @@ export async function getPublicCloudProjectsTotalCount({ searchQuery }: { search
   return 0;
 }
 
-export async function getPublicCloudProjectsResult({
+export async function getPrivateCloudProjectsResult({
   searchQuery,
   skip,
   pageSize,
@@ -182,18 +178,17 @@ export async function getPublicCloudProjectsResult({
   skip?: number;
   pageSize?: number;
 }) {
-  if (pageSize === 0) {
-    return [];
-  }
+  // if (pageSize === 0) {
+  //   return [];
+  // }
 
-  let paginationPipelines: any[] = [];
-  paginationPipelines = [{ $skip: skip }, { $limit: pageSize }];
+  const paginationPipelines = pageSize === 0 ? [] : [{ $skip: skip }, { $limit: pageSize }];
 
-  const result = await prisma.publicCloudProject.aggregateRaw({
+  const result = await prisma.privateCloudProject.aggregateRaw({
     pipeline: [
       {
         $lookup: {
-          from: 'PublicCloudRequest', // The foreign collection
+          from: 'PrivateCloudRequest', // The foreign collection
           let: { projectId: '$_id' }, // Define variable for use in the pipeline
           pipeline: [
             {
@@ -264,5 +259,5 @@ export async function getPublicCloudProjectsResult({
     ],
   });
 
-  return result as unknown as PublicProject[];
+  return result as unknown as PrivateProject[];
 }

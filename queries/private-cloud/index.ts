@@ -1,4 +1,4 @@
-import { getPrivateCloudProjectsQuery, getPrivateCloudProjectsResult } from '@/queries/private-cloud/helpers';
+import { getPrivateCloudProjectsQuery, getPrivateCloudProjectsResult } from '@/queries/paginated/private-cloud/helpers';
 
 export async function privateCloudProjects(
   searchTerm?: string | null,

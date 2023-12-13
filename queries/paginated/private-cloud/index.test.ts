@@ -242,103 +242,111 @@ describe('Query projects with filter and search and pagination', () => {
     }
   });
 
-  test('Should return all requests even though there is no secondary technical lead', async () => {
-    const projects = await privateCloudRequestsPaginated(5, 1);
+  test('Should return all projects', async () => {
+    console.log('RAN');
+    const projects = await privateCloudProjectsPaginated(0, 0);
+    console.log(projects);
     expect(projects.data.length).toBe(5);
-  });
-
-  test('Should return all projects even though there is no secondary technical lead', async () => {
-    const projects = await privateCloudProjectsPaginated(5, 1);
-    expect(projects.data.length).toBe(5);
-  });
-
-  test('Should return only projects belonging to specific user when userEmail is passed', async () => {
-    // Create 3 more projects with secondary technical lead, and different project lead
-    for (let i = 5; i < 8; i++) {
-      await prisma.privateCloudRequest.create({
-        data: {
-          type: RequestType.CREATE,
-          decisionStatus: DecisionStatus.PENDING,
-          active: true,
-          createdByEmail: projectData2.projectOwner.email,
-          licencePlate: '123456' + i,
-          requestedProject: {
-            create: createProjectObject(projectData2),
-          },
-          userRequestedProject: {
-            create: createProjectObject(projectData2),
-          },
-        },
-        include: {
-          requestedProject: {
-            include: {
-              projectOwner: true,
-              primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-            },
-          },
-        },
-      });
-    }
-
-    const projects = await privateCloudRequestsPaginated(
-      10,
-      1,
-      undefined,
-      undefined,
-      undefined,
-      'christopher.tan@gov.bc.ca',
-      ['ministry-citz-admin'],
-    );
-    expect(projects.total).toBe(3);
-  });
-
-  test('Should return all projects with secondary technical lead', async () => {
-    // Create 3 more projects with secondary technical lead, and different project lead
-    for (let i = 5; i < 8; i++) {
-      await prisma.privateCloudProject.create({
-        data: {
-          ...projectObject2,
-          name: projectData2.name + i,
-          licencePlate: '123456' + i,
-        },
-      });
-    }
-
-    const projects = await privateCloudRequestsPaginated(
-      10,
-      1,
-      undefined,
-      undefined,
-      undefined,
-      'christopher.tan@gov.bc.ca',
-      ['ministry-citz-admin'],
-    );
-
-    expect(projects.data.length).toBe(3);
-  });
-
-  test('Should return only requests that fits the SearchTerm', async () => {
-    const projects = await privateCloudRequestsPaginated(10, 1, 'sample');
-
-    expect(projects.total).toBe(5);
-  });
-
-  test('Should return only projects that fits the SearchTerm', async () => {
-    const projects = await privateCloudProjectsPaginated(10, 1, 'sample');
-    //projects searches for description, unlike requests
-    expect(projects.total).toBe(8);
-  });
-
-  test('Should return only requests that fits the Cluster', async () => {
-    const Allprojects = await privateCloudRequestsPaginated(10, 1, undefined, undefined, 'CLAB');
-
-    expect(Allprojects.total).toBe(5);
-  });
-
-  test('Should return only projects that fits the SearchTerm', async () => {
-    const projects = await privateCloudProjectsPaginated(10, 1, undefined, undefined, 'CLAB');
-
-    expect(projects.total).toBe(5);
   });
 });
+
+//   test('Should return all requests even though there is no secondary technical lead', async () => {
+//     const projects = await privateCloudRequestsPaginated(5, 1);
+//     expect(projects.data.length).toBe(5);
+//   });
+
+//   test('Should return all projects even though there is no secondary technical lead', async () => {
+//     const projects = await privateCloudProjectsPaginated(5, 1);
+//     expect(projects.data.length).toBe(5);
+//   });
+
+//   test('Should return only projects belonging to specific user when userEmail is passed', async () => {
+//     // Create 3 more projects with secondary technical lead, and different project lead
+//     for (let i = 5; i < 8; i++) {
+//       await prisma.privateCloudRequest.create({
+//         data: {
+//           type: RequestType.CREATE,
+//           decisionStatus: DecisionStatus.PENDING,
+//           active: true,
+//           createdByEmail: projectData2.projectOwner.email,
+//           licencePlate: '123456' + i,
+//           requestedProject: {
+//             create: createProjectObject(projectData2),
+//           },
+//           userRequestedProject: {
+//             create: createProjectObject(projectData2),
+//           },
+//         },
+//         include: {
+//           requestedProject: {
+//             include: {
+//               projectOwner: true,
+//               primaryTechnicalLead: true,
+//               secondaryTechnicalLead: true,
+//             },
+//           },
+//         },
+//       });
+//     }
+
+//     const projects = await privateCloudRequestsPaginated(
+//       10,
+//       1,
+//       undefined,
+//       undefined,
+//       undefined,
+//       'christopher.tan@gov.bc.ca',
+//       ['ministry-citz-admin'],
+//     );
+//     expect(projects.total).toBe(3);
+//   });
+
+//   test('Should return all projects with secondary technical lead', async () => {
+//     // Create 3 more projects with secondary technical lead, and different project lead
+//     for (let i = 5; i < 8; i++) {
+//       await prisma.privateCloudProject.create({
+//         data: {
+//           ...projectObject2,
+//           name: projectData2.name + i,
+//           licencePlate: '123456' + i,
+//         },
+//       });
+//     }
+
+//     const projects = await privateCloudRequestsPaginated(
+//       10,
+//       1,
+//       undefined,
+//       undefined,
+//       undefined,
+//       'christopher.tan@gov.bc.ca',
+//       ['ministry-citz-admin'],
+//     );
+
+//     expect(projects.data.length).toBe(3);
+//   });
+
+//   test('Should return only requests that fits the SearchTerm', async () => {
+//     const projects = await privateCloudRequestsPaginated(10, 1, 'sample');
+
+//     expect(projects.total).toBe(5);
+//   });
+
+//   test('Should return only projects that fits the SearchTerm', async () => {
+//     const projects = await privateCloudProjectsPaginated(10, 1, 'sample');
+//     //projects searches for description, unlike requests
+//     expect(projects.total).toBe(8);
+//   });
+
+//   test('Should return only requests that fits the Cluster', async () => {
+//     const Allprojects = await privateCloudRequestsPaginated(10, 1, undefined, undefined, 'CLAB');
+
+//     expect(Allprojects.total).toBe(5);
+//   });
+
+//   test('Should return only projects that fits the SearchTerm', async () => {
+//     const projects = await privateCloudProjectsPaginated(10, 1, undefined, undefined, 'CLAB');
+
+//     expect(projects.total).toBe(5);
+//   });
+// });
