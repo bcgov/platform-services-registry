@@ -226,7 +226,7 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
     projectOwnerId: 'd',
     primaryTechnicalLeadId: 'd',
     secondaryTechnicalLeadId: null,
-    ministry: 'AG',
+    ministry: 'AGRI',
     cluster: 'GOLD',
     projectOwner: {
       id: 'd',
