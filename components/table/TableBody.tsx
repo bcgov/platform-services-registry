@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import classNames from '@/components/utils/classnames';
 
-
 interface TableProps {
   headers: Record<string, string>[];
   rows: Record<string, any>[];
