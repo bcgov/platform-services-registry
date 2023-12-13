@@ -1,0 +1,11 @@
+global:
+  env:
+    "Env": "tools"
+
+airflow:
+  enabled: true
+  route:
+    host: secdash-airflow.apps.silver.devops.gov.bc.ca
+
+postgresql:
+  enabled: true
