@@ -1,23 +1,30 @@
 # 1st stage to build the image
-FROM node:20-alpine as builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY . .
 
-ENV SECURE_HEADERS true
+ENV BASE_URL https://dev-pltsvc.apps.silver.devops.gov.bc.ca
+
 RUN npm install
+RUN npm run email-build
+COPY next.config_.react-email.js .react-email/
 RUN npm run email-build
 
 # 2nd stage to copy image and create a smaller final image
 FROM node:20-alpine
 
-WORKDIR /app/.react-email/
+WORKDIR /app
 
 COPY --from=builder /app/.react-email/.next ./.next
 COPY --from=builder /app/.react-email/next.config.js ./
+COPY --from=builder /app/.react-email/public ./public
 COPY --from=builder /app/.react-email/package.json ./
 COPY --from=builder /app/.react-email/node_modules ./node_modules
+
+RUN mkdir -p .next/cache/images &&\
+    chmod -R 777 .next/cache/images
 
 ENV NEXTAUTH_SECRET changeme
 

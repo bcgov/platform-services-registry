@@ -2,4 +2,4 @@
 **/*.jsx
 **/*.mjs
 localdev/mnt
-.react-email/
+.react-email

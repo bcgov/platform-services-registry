@@ -14,7 +14,7 @@
     "prisma-migrate-test": "dotenv -e .env.test -- npx prisma generate && dotenv -e .env.test -- npx prisma db push",
     "public-cloud-projects-to-csv": "dotenv -e .env -- node scripts/public-cloud-projects-to-csv.js",
     "email": "dotenv -e .env -- email dev --dir emails --port 3001",
-    "email-build": "dotenv -e .env -- email build",
+    "email-build": "email build",
     "email-start": "dotenv -e .env -- email start --port 3001",
     "email-export": "email export --pretty --outDir emails-export --dir emails",
     "release": "release-it",

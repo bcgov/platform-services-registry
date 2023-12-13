@@ -37,11 +37,9 @@ repos:
     files: \.tsx?$
     verbose: true
     pass_filenames: true
-    exclude: .react-email
 - repo: https://github.com/codespell-project/codespell
   rev: v2.2.6
   hooks:
   - id: codespell
-    exclude: .react-email
 
-exclude: ^(CHANGELOG\.md)$
+exclude: ^(.react-email|CHANGELOG\.md)$
