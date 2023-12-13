@@ -33,7 +33,7 @@ function EmptyBody() {
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
       <Link
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
-        href="/private-cloud/products"
+        href="/private-cloud/products/all"
       >
         REQUEST A NEW PROJECT SET
       </Link>

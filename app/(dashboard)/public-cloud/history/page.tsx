@@ -35,7 +35,7 @@ export default async function RequestsTable({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products');
+    redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
   const { search, page, pageSize, ministry, provider, active } = searchParams;

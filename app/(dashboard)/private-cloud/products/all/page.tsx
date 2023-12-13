@@ -23,7 +23,7 @@ export default async function ProductsTable({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products');
+    redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
   const { search, page, pageSize, ministry, cluster, active } = searchParams;

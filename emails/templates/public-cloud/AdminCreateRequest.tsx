@@ -31,7 +31,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
                   Registry
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/private-cloud/products/all"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Review Request
