@@ -34,7 +34,7 @@ export const DenialTemplate = ({ request, comment }: EmailProp) => {
                   applies
                 </Text>
                 <Button
-                  href="https://registry.developer.gov.bc.ca/private-cloud/products/all"
+                  href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Log in to Registry
