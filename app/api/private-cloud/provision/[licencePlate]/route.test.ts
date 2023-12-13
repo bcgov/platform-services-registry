@@ -82,12 +82,12 @@ const adminChanges = {
     firstName: 'James',
     lastName: 'Tim',
     email: 'jamestim@gov.bc.ca',
-    ministry: 'AG',
+    ministry: 'AGRI',
   },
   testQuota: {
     cpu: 'CPU_REQUEST_8_LIMIT_16',
     memory: 'MEMORY_REQUEST_4_LIMIT_8',
-    storage: 'STORAGRIE_2',
+    storage: 'STORAGE_2',
   },
 };
 
