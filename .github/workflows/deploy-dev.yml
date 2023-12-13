@@ -123,3 +123,10 @@ jobs:
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${{ github.sha }}
       working-directory: ./helm/main
+
+    - name: Deploy emails with Helm chart
+      run: |
+        make upgrade \
+        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
+        IMAGE_TAG=${{ github.sha }}
+      working-directory: ./helm/main

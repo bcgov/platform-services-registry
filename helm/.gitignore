@@ -1,3 +1,4 @@
 charts/
 template.yaml
+template-emails.yaml
 *.secret.yaml
