@@ -108,23 +108,3 @@ git config gpg.program gpg
 1. Make a PR from the feature branch into the target branch via UI.
 1. Wait until the checks pass before requesting the peer review via UI.
 1. Once the PR is approved, merge the PR via UI.
-   <<<<<<< HEAD
-
-## Viewing the Email-Templates dashboard
-
-The email-templates along with the dashboard comes from [react-email](https://react.email/)
-
-1. Run the react-email development server that will run on `localhost :3001`
-
-   ```sh
-   npm run email
-   ```
-
-   - If you want to view images, you will also have to run the normal development server with `npm run dev`
-
-1. Go to http://localhost:3001/ to view the email dashboard
-
-1. react-email will only display the .tsx files in the base `emails` folder
-   - The `templates` folder contains the templates that are called by the emailHandler
-   - # `/components/params.tsx` contains the mock data to view the email templates
-     > > > > > > > 8062d629 (add react-email in docs)
