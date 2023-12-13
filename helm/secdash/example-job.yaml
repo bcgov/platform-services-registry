@@ -11,5 +11,5 @@ spec:
         args: ["db", "init"]
         env:
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: postgresql://nonroot:nonroot@secdash-postgresql:5432/airflow # pragma: allowlist secret
+            value: postgresql://<username>:<password>@secdash-postgresql:5432/airflow # pragma: allowlist secret
       restartPolicy: Never
