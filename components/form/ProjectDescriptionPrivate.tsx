@@ -6,9 +6,11 @@ import { clusters, ministries } from '@/constants';
 export default function ProjectDescription({
   disabled,
   clusterDisabled,
+  isCreatePage,
 }: {
   disabled?: boolean;
   clusterDisabled?: boolean;
+  isCreatePage?: boolean;
 }) {
   const {
     register,
@@ -25,16 +27,21 @@ export default function ProjectDescription({
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
-      <p className="font-bcsans text-base leading-6 mt-5">
-        If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
-        Platform Services team. Reach out to{' '}
-        {
-          <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:platformservicesteam@gov.bc.ca">
-            PlatformServicesTeam@gov.bc.ca
-          </a>
-        }{' '}
-        to get started.
-      </p>
+      {isCreatePage && (
+        <p className="font-bcsans text-base leading-6 mt-5">
+          If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
+          Platform Services team. Reach out to{' '}
+          {
+            <a
+              className="text-blue-600 dark:text-blue-500 hover:underline"
+              href="mailto:platformservicesteam@gov.bc.ca"
+            >
+              PlatformServicesTeam@gov.bc.ca
+            </a>
+          }{' '}
+          to get started.
+        </p>
+      )}
 
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
