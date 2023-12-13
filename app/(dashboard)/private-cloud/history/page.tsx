@@ -1,26 +1,28 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBody';
-import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
-import { PublicProject } from '@/queries/types';
-import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
+import { privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
+import { privateCloudRequestDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
+import { PrivateCloudRequest } from '@prisma/client';
 import { userInfo } from '@/queries/user';
 
+export const revalidate = 0;
+
 const headers = [
+  { field: 'created', headerName: 'Date' },
   { field: 'name', headerName: 'Name' },
+  { field: 'type', headerName: 'Type' },
+  { field: 'status', headerName: 'Status' },
   { field: 'ministry', headerName: 'Ministry' },
-  { field: 'provider', headerName: 'Provider' },
-  { field: 'projectOwner', headerName: 'Product Owner' },
-  { field: 'primaryTechnicalLead', headerName: 'Technical Leads' },
-  { field: 'secondaryTechnicalLead', headerName: '' },
-  { field: 'created', headerName: 'Created' },
+  { field: 'cluster', headerName: 'Cluster' },
+  // { field: 'projectOwner', headerName: 'Project Owner' },
+  // { field: 'technicalLeads', headerName: 'Technical Leads' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
-  { field: 'edit', headerName: '' },
 ];
 
-export default async function ProductsTable({
+export default async function RequestsTable({
   searchParams,
 }: {
   searchParams: {
@@ -28,47 +30,45 @@ export default async function ProductsTable({
     page: number;
     pageSize: number;
     ministry: string;
-    provider: string;
-    active: string;
+    cluster: string;
+    active: boolean;
   };
 }) {
   // Authenticate the user
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products');
+    redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
-  const { search, page, pageSize, ministry, provider, active } = searchParams;
+  const { search, page, pageSize, ministry, cluster, active } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;
   const defaultPageSize = 10;
 
-  const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
+  const { data, total }: { data: PrivateCloudRequest[]; total: number } = await privateCloudRequestsPaginated(
     +pageSize || defaultPageSize,
     currentPage,
     search,
     ministry,
-    provider,
+    cluster,
     userEmail,
     ministryRoles,
     active,
   );
 
-  const rows = data.map(publicCloudProjectDataToRow);
+  const rows = data.map(privateCloudRequestDataToRow);
 
   return (
     <Table
-      title="Products in Public Cloud Landing Zones"
-      description="These are your products using the Public Cloud Landing Zones"
+      title="Requests in Private Cloud OpenShift Platform"
+      description="These are the submitted requests for the Private Cloud OpenShift platform"
       tableBody={<TableBody headers={headers} rows={rows} />}
       total={total}
       currentPage={currentPage}
-      pageSize={pageSize || defaultPageSize}
-      showDownloadButton
-      apiContext="public-cloud"
+      pageSize={+pageSize || defaultPageSize}
     />
   );
 }

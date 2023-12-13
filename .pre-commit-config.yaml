@@ -42,4 +42,4 @@ repos:
   hooks:
   - id: codespell
 
-exclude: ^(CHANGELOG\.md)$
+exclude: ^(.react-email|CHANGELOG\.md)$

@@ -11,7 +11,7 @@ export default function NavBar() {
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">{/* Mobile menu button */}</div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
-              <Link href="/private-cloud/products">
+              <Link href="/private-cloud/products/all">
                 <Image
                   alt="BC Platform Services Product Registry"
                   src={Logo}

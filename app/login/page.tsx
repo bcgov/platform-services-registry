@@ -11,7 +11,7 @@ export default function SignInPage() {
   const { data: session } = useSession();
 
   if (session) {
-    router.push('/private-cloud/products');
+    router.push('/private-cloud/products/all');
   }
 
   return (
