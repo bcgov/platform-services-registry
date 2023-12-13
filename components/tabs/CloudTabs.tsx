@@ -5,19 +5,28 @@ import classNames from '@/components/utils/classnames';
 import { usePathname } from 'next/navigation';
 import CreateButton from '@/components/buttons/CreateButton';
 
-const tabs = [
-  {
-    name: 'PRIVATE CLOUD OPENSHIFT',
-    href: 'private-cloud',
-  },
-  {
-    name: 'PUBLIC CLOUD LANDING ZONES',
-    href: 'public-cloud',
-  },
-];
+interface Tab {
+  name: string;
+  href: string;
+  subHref: string;
+}
 
-export default function Tabs({ className }: { className?: string }) {
+const createLink = (path: string[], elem: string): string[] => {
+  path.splice(path.length - 1, 1, elem);
+  return path;
+};
+
+export default function Tabs({ tabs }: { tabs: Tab[] }, { className }: { className?: string }) {
   const pathname = usePathname();
+  const getTabLinkURL = (tab: Tab): string => {
+    if (tab.href) {
+      return `/${tab.href}/${pathname.split('/').slice(2).join('/')}`;
+    }
+    if (tab.subHref) {
+      return createLink(pathname.split('/'), tab.subHref).join('/');
+    }
+    return '';
+  };
 
   const cloud = `${pathname.split('/')[2]}`;
 
@@ -46,9 +55,10 @@ export default function Tabs({ className }: { className?: string }) {
               {tabs.map((tab) => (
                 <Link
                   key={tab.name}
-                  href={`/${tab.href}/${pathname.split('/')[2]}/${pathname.split('/')[3] || ''}`}
+                  href={getTabLinkURL(tab)}
                   className={classNames(
-                    pathname.split('/')[1] === tab.href
+                    (tab.href && pathname.split('/')[1] === tab.href) ||
+                      (tab.subHref && pathname.split('/')[pathname.split('/').length - 1] === tab.subHref)
                       ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                       : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
                     'lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold',
