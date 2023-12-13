@@ -9,7 +9,7 @@ ENV BASE_URL https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
 RUN npm install
 RUN npm run email-build
-COPY next.config_.react-email.js .react-email/
+COPY next.config_.react-email.js .react-email/next.config.js
 RUN npm run email-build
 
 # 2nd stage to copy image and create a smaller final image
