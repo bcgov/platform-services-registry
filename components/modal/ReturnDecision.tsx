@@ -13,7 +13,6 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
     router.refresh();
   };
 
-  const isEdit = pathname.includes('edit');
   const isPublic = pathname.includes('public-cloud');
 
   return (
@@ -49,18 +48,12 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                       as="h3"
                       className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
-                      Thank you! We have received your
-                      {isEdit ? ' edit ' : ' project set '}
-                      request
+                      Your decision has been shared successfully!
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
-                        We have received your
-                        {isEdit ? ' edit request. ' : ' request for a new project set. '}
-                        The Product Owner and Technical Lead will receive the approval/denial decision via email.
-                      </p>
-                      <p className="font-bcsans text-sm text-gray-900 mt-4">
-                        Alternatively, you can also track the status of your requests from the Registry App Dashboard
+                        The registry has been updated to reflect your decision. The Product Owner and Technical Lead
+                        will receive the notification regarding the decision via email.
                       </p>
                     </div>
                     {isPublic && (
