@@ -46,8 +46,6 @@ export default async function ProductsTable({
     active,
   );
 
-  console.log(data)
-
   const projects = data.map(privateCloudProjectDataToRow);
 
   return (
