@@ -210,6 +210,7 @@ export async function publicCloudRequestsPaginated(
       {
         $addFields: {
           id: { $toString: '$_id' },
+          'requestedProject.id': { $toString: '$requestedProject._id' },
         },
       },
       {

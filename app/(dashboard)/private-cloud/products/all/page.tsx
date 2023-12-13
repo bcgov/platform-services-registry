@@ -1,7 +1,6 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
 import { privateCloudProjectsPaginated, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
-import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
@@ -46,6 +45,8 @@ export default async function ProductsTable({
     ministryRoles,
     active,
   );
+
+  console.log(data)
 
   const projects = data.map(privateCloudProjectDataToRow);
 

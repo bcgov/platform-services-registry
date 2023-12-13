@@ -359,6 +359,8 @@ export async function privateCloudRequestsPaginated(
       {
         $addFields: {
           id: { $toString: '$_id' },
+          'requestedProject.id': { $toString: '$requestedProject._id' },
+          'userRequestedProject.id': { $toString: '$userRequestedProject._id' },
         },
       },
       {
