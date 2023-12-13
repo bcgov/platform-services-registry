@@ -6,5 +6,10 @@ next-env.d.ts
 .env.test
 .vscode
 localdev
+<<<<<<< HEAD
 .react-email
+=======
+.react-email/node_modules
+.react-email/.next
+>>>>>>> c4a13575 (remove .react-email from eslint)
 emails-export

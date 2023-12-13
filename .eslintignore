@@ -2,4 +2,8 @@
 **/*.jsx
 **/*.mjs
 localdev/mnt
+<<<<<<< HEAD
 .react-email
+=======
+.react-email/
+>>>>>>> c4a13575 (remove .react-email from eslint)
