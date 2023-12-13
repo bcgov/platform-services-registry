@@ -57,7 +57,7 @@ export async function privateCloudRequestsPaginated(
   data: any[];
   total: number;
 }> {
-  const isActive = active === 'false' ? false : true;
+  const isActive = active !== 'false';
   const searchQuery: any = isActive ? {} : { active: true };
 
   if (searchTerm) {

@@ -16,7 +16,7 @@ export async function getPrivateCloudProjectsQuery({
   ministryRoles?: string[];
   active?: string | null;
 }) {
-  const isActive = active === 'false' ? false : true;
+  const isActive = active !== 'false';
 
   // Initialize the search/filter query
   const searchQuery: any = isActive ? { status: 'ACTIVE' } : {};

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useFormState } from 'react-hook-form';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -88,7 +88,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
     },
   });
 
-  console.log(methods.watch());
+  const { formState } = methods;
 
   useEffect(() => {
     if (requestData) {
@@ -152,7 +152,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT REQUEST" />
+                <SubmitButton text="SUBMIT REQUEST" disabled={!formState.isDirty} />
               </div>
             ) : null}
           </div>

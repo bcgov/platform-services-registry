@@ -14,7 +14,7 @@ export async function publicCloudProjectsPaginated(
   data: PublicProject[];
   total: number;
 }> {
-  const isActive = active === 'false' ? false : true;
+  const isActive = active !== 'false';
 
   // Initialize the search/filter query
   const searchQuery: any = isActive ? { status: 'ACTIVE' } : {};
@@ -230,7 +230,7 @@ export async function publicCloudRequestsPaginated(
   data: any[];
   total: number;
 }> {
-  const isActive = active === 'false' ? false : true;
+  const isActive = active !== 'false';
   const searchQuery: any = isActive ? {} : { active: true };
 
   if (searchTerm) {
