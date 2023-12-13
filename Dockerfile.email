@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY . .
 
+ENV BASE_URL https://dev-pltsvc.apps.silver.devops.gov.bc.ca
+
 RUN npm install
 RUN npm run email-build
 COPY next.config_.react-email.js .react-email/
