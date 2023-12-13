@@ -167,7 +167,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         isLoading={isLoading}
         type="create"
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
     </div>
   );
 }

@@ -157,7 +157,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         isLoading={isLoading}
         type={data?.type}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
     </div>
   );
 }
