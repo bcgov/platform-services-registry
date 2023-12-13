@@ -9,7 +9,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
-import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 
@@ -61,7 +60,7 @@ export default function Page() {
     <div>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
-          <div className="space-y-12">
+          <div className="space-y-12 mt-8">
             <ProjectDescription />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <CommonComponents />
@@ -83,7 +82,7 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
     </div>
   );
 }

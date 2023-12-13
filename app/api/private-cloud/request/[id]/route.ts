@@ -62,7 +62,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }): Pro
       });
 
     if (!request) {
-      return new NextResponse('No project found with this licece plate.', {
+      return new NextResponse('No project found with this id.', {
         status: 404,
       });
     }
