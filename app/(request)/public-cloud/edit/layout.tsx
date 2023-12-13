@@ -1,10 +1,9 @@
 import CloudTabs from '@/components/tabs/CloudTabs';
-import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
-//public-cloud/edit/yFEeAiU/product
+
 const tabsData = [
   {
     name: 'PUBLIC CLOUD EDIT',
-    href: ``,
+    href: '',
     subHref: 'product',
   },
   {
