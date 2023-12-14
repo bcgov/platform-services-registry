@@ -1,3 +1,5 @@
+import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+
 export const Cluster = {
   CLAB: 'clab',
   KLAB: 'klab',
@@ -20,7 +22,11 @@ export interface CpuOption {
   cpuLimits: number;
 }
 
-export const DefaultCpuOptions: Record<string, CpuOption> = {
+export type DefaultCpuOptionsKey = (typeof DefaultCpuOptionsSchema)['_type'];
+export type DefaultMemoryOptionsKey = (typeof DefaultMemoryOptionsSchema)['_type'];
+export type DefaultStorageOptionsKey = (typeof DefaultStorageOptionsSchema)['_type'];
+
+export const DefaultCpuOptions: Record<DefaultCpuOptionsKey, CpuOption> = {
   CPU_REQUEST_0_5_LIMIT_1_5: {
     name: 'cpu-request-0.5-limit-1.5',
     cpuRequests: 0.5,
@@ -56,6 +62,11 @@ export const DefaultCpuOptions: Record<string, CpuOption> = {
     cpuRequests: 32,
     cpuLimits: 64,
   },
+  CPU_REQUEST_64_LIMIT_128: {
+    name: 'cpu-request-64-limit-128',
+    cpuRequests: 64,
+    cpuLimits: 128,
+  },
 };
 
 export interface MemoryOption {
@@ -64,7 +75,7 @@ export interface MemoryOption {
   memoryLimits: string;
 }
 
-export const DefaultMemoryOptions: Record<string, MemoryOption> = {
+export const DefaultMemoryOptions: Record<DefaultMemoryOptionsKey, MemoryOption> = {
   MEMORY_REQUEST_2_LIMIT_4: {
     name: 'memory-request-2-limit-4',
     memoryRequests: '2Gi',
@@ -106,7 +117,7 @@ export interface StorageOption {
   storageBlock: string;
 }
 
-export const DefaultStorageOptions: Record<string, StorageOption> = {
+export const DefaultStorageOptions: Record<DefaultStorageOptionsKey, StorageOption> = {
   STORAGE_1: {
     name: 'storage-1',
     storagePvcCount: 60,
