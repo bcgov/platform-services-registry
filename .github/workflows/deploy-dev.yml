@@ -128,5 +128,5 @@ jobs:
       run: |
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
-        IMAGE_TAG=${{ github.sha }}-emails
+        IMAGE_TAG=${{ github.sha }}
       working-directory: ./helm/main
