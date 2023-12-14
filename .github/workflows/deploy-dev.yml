@@ -1,4 +1,4 @@
-name: 1.Deploy Dev Environment
+name: 01.Deploy Dev Environment
 
 on:
   push:
