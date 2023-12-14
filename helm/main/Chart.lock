@@ -5,5 +5,8 @@ dependencies:
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
   version: 14.4.2
+- name: emails
+  repository: file://../_emails
+  version: 0.1.0
 digest: sha256:6a86f55dda1a53fbc69b5f1e0409fa0553e21c88ffd015aa689c75a228874910
 generated: "2023-12-07T21:01:04.719712625Z"
