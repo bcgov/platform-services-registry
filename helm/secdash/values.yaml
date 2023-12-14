@@ -34,7 +34,7 @@ dags:
 
 # See https://github.com/apache/airflow/blob/main/chart/values.yaml
 airflow:
-  enabled: false
+  enabled: true
   route:
     host:
 

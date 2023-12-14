@@ -2,22 +2,17 @@
 
 ## Overview
 
-The primary Helm chart for deployment relies on two subordinate Helm charts: `Airflow` and `PostgreSql`. Given that `Airflow` is dependent on `PostgreSql`, the initial deployment sequence involves deploying `PostgreSql` before initiating the deployment of `Airflow` instances.
+The primary Helm chart for deployment relies on two subordinate Helm charts: `Airflow` and `PostgreSql`.
 
 ## Deployment Steps
 
-1. In the Helm values file specific to the environment (e.g., `values-101ed4-tools.yaml`), set the value of `airflow.enabled` to `false`.
-2. Deploy the `PostgreSQL` database:
+1. Execute the following command to deploy the Helm charts:
 
 ```sh
 make upgrade NAMESPACE=101ed4-tools
 ```
 
-3. Once the database deployment is complete, proceed to deploy `Airflow`:
-
-```sh
-make upgrade NAMESPACE=101ed4-tools
-```
+- In case the initial deployment fails due to the dependency of `Airflow` on `PostgreSQL`, please rerun the command above.
 
 ## Considerations
 
