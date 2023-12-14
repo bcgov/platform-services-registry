@@ -92,7 +92,8 @@ export const UserInputSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().email().toLowerCase(),
-  ministry: z.nativeEnum(Ministry),
+  ministry: z.string(),
+  // ministry: z.nativeEnum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
 });
 
 export const PrivateCloudCreateRequestBodySchema = z.object({
