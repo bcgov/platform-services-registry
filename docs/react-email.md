@@ -39,13 +39,10 @@ The problem when trying to deploy the dashboard was that `npm run build` was fai
 import Mail from '../../emails/PrivateCloudAdminCreateRequest.tsx';`
 ```
 
-We can always update the config manually to ignore the above error, but the initial creation of the .react-email folder (if it does not already exist) will not include those changes. For that reason, the .react-email folder will have to be included to the repo, so that the following config can be added to `.react-email/next.config.js`:
+We can always update the config manually to ignore the above error, but the initial creation of the .react-email folder (if it does not already exist) will not include those changes. For that reason, our docker image will run `build` command twice. Once to generate the .react-email folder for our image, and once more after we update the next.config.js file with the following rule.
 
 ```sh
    typescript: {
-      ignoreBuildErrors: true,
-   },
-   eslint: {
       ignoreBuildErrors: true,
    },
 ```
