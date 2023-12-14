@@ -5,7 +5,6 @@ NAME_EMAILS := pltsvc-emails
 
 NAMESPACE=
 IMAGE_TAG=
-IMAGE_TAG_EMAILS=
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
@@ -15,20 +14,15 @@ ifndef IMAGE_TAG
 $(error IMAGE_TAG is not set)
 endif
 
-ifndef IMAGE_TAG_EMAILS
-$(error IMAGE_TAG is not set)
-endif
-
 define arguments_app
-	"${NAME_APP}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
+	"${NAME_APP}" . -n "${NAMESPACE}" -f values.yaml \
 	--set app.image.tag="${IMAGE_TAG}" \
 	--set app.preImage.tag="${IMAGE_TAG}"
 endef
 
 define arguments_emails
 	"${NAME_EMAILS}" . -n "${NAMESPACE}" -f values-emails.yaml \
-	--set app.image.tag="${IMAGE_TAG_EMAILS}" \
-	--set app.preImage.tag="${IMAGE_TAG_EMAILS}"
+	--set emails.image.tag="${IMAGE_TAG}"
 endef
 
 .PHONY: helm-dep
@@ -38,13 +32,13 @@ helm-dep:
 .PHONY: install
 install: helm-dep
 install:
-	@helm install $(call arguments_app)
+	# @helm install $(call arguments_app)
 	@helm install $(call arguments_emails)
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments_app) --atomic
+	# @helm upgrade --install $(call arguments_app) --atomic
 	@helm upgrade --install $(call arguments_emails) --atomic
 
 .PHONY: lint
