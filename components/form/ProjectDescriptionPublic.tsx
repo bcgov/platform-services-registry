@@ -116,7 +116,7 @@ export default function ProjectDescriptionPublic({
           </div>
         </div>
 
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-3 sm:ml-10">
           <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
             Cloud Service Provider
           </label>
