@@ -236,6 +236,7 @@ enum Ministry {
   FIN
   FLNR
   HLTH
+  HOUS
   IRR
   JEDC
   LBR
@@ -261,6 +262,6 @@ enum Cluster {
 }
 
 enum Provider {
-  GOOGLE
+  // GOOGLE
   AWS
 }

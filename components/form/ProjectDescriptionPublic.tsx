@@ -2,7 +2,7 @@
 
 import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
-
+import { providers, ministries } from '@/constants';
 export default function ProjectDescriptionPublic({
   disabled,
   providerDisabled,
@@ -103,9 +103,11 @@ export default function ProjectDescriptionPublic({
               )}
             >
               <option value="">Select Ministry</option>
-              <option>CITZ</option>
-              <option>PSA</option>
-              <option>HLTH</option>
+              {ministries.map((ministry) => (
+                <option key={ministry} value={ministry}>
+                  {ministry}
+                </option>
+              ))}
             </select>
 
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -130,8 +132,11 @@ export default function ProjectDescriptionPublic({
               )}
             >
               <option value="">Select Provider</option>
-              <option>AWS</option>
-              {/* <option>GCP</option> */}
+              {providers.map((provider) => (
+                <option key={provider} value={provider}>
+                  {provider}
+                </option>
+              ))}
             </select>
             <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the Cloud Service Provider
