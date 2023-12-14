@@ -1,4 +1,4 @@
-{{ if gt .Release.Revision 1 }}
+{{- if and .Values.airflow.enabled (gt .Release.Revision 1)}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -10,24 +10,18 @@ metadata:
     "helm.sh/hook-weight": "-5"
 spec:
   backoffLimit: 0
-  activeDeadlineSeconds: 1200
+  activeDeadlineSeconds: 100
   template:
     metadata:
       name: {{ include "main.fullname" . }}-airflow-dags-copy
     spec:
       containers:
         - name: {{ include "main.fullname" . }}-airflow-dags-copy
-          image: busybox:1.36.1
+          image: junminahn/rsync:latest
           command: [/bin/sh, -c]
           args:
             - |
-              # Copy new files
-              cp -R /newdags/* /dags/;
-              echo "Files copied successfully!";
-
-              # Remove "py" files in /dags that are not present in /newdags
-              comm -23 <(find /dags -type f -name '*.py' -exec basename {} \; | sort) <(find /newdags -type f -name '*.py' -exec basename {} \; | sort) | xargs -I {} rm /dags/{}
-              echo "Unused files deleted!";
+              rsync --verbose --archive --omit-dir-times --no-perms --delete --exclude=__pycache__ "/newdags/" "/dags";
           resources:
             limits:
               cpu: 100m
