@@ -4,20 +4,16 @@ export default function DescriptionChanges({
   nameCurrent,
   descCurrent,
   ministryCurrent,
-  clusterCurrent,
   nameRequested,
   descRequested,
   ministryRequested,
-  clusterRequested,
 }: {
   nameCurrent: string;
   descCurrent: string;
   ministryCurrent: string;
-  clusterCurrent: string;
   nameRequested: string;
   descRequested: string;
   ministryRequested: string;
-  clusterRequested: string;
 }) {
   return (
     <div>
@@ -48,15 +44,6 @@ export default function DescriptionChanges({
             <Text className="mt-1 mb-0 h-4">{ministryCurrent}</Text>
             <Text className="mt-2 mb-0 font-medium h-3">Requested Ministry</Text>
             <Text className="mt-1 mb-0 h-4">{ministryRequested}</Text>
-          </div>
-        )}
-        {clusterCurrent !== clusterRequested && (
-          <div>
-            <Text className="mt-6 mb-0 font-semibold h-4">Cluster</Text>
-            <Text className="mt-2 mb-0 font-medium h-3">Current Cluster</Text>
-            <Text className="mt-1 mb-0 h-4">{clusterCurrent}</Text>
-            <Text className="mt-2 mb-0 font-medium h-3">Requested Cluster</Text>
-            <Text className="mt-1 mb-0 h-4">{clusterRequested}</Text>
           </div>
         )}
       </div>

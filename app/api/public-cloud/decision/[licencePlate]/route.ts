@@ -9,7 +9,7 @@ import makeDecisionRequest, {
 } from '@/requestActions/public-cloud/decisionRequest';
 import { sendPublicCloudNatsMessage } from '@/nats';
 import { subscribeUsersToMautic } from '@/mautic';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
+import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/ches/public-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -69,6 +69,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
+    sendRequestRejectionEmails(request.requestedProject, humanComment);
     return new Response(
       `Decision request for ${request.licencePlate} successfully created. Admin approval is required`,
       {
@@ -87,6 +88,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   ].filter((user): user is User => Boolean(user));
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
+
+  sendRequestApprovalEmails(request);
 
   return new NextResponse(`Decision request for ${request.licencePlate} successfully created and provisioned.`, {
     status: 200,
