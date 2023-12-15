@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import {
-  DecisionStatus,
-  Prisma,
-  PrivateCloudProject,
-  PrivateCloudRequest,
-  ProjectStatus,
-  RequestType,
-  User,
-} from '@prisma/client';
+import { DecisionStatus, Prisma, PrivateCloudProject, ProjectStatus, RequestType, User } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
-// import { sendDeleteRequestEmails } from "../../ches/emailHandlers.js";
+import { sendDeleteRequestEmails } from '@/ches/private-cloud/emailHandler';
+import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 
 const ParamsSchema = z.object({
   id: string(),
@@ -39,7 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   const { id: projectId } = parsedParams.data;
 
-  let createRequest: PrivateCloudRequest;
+  let createRequest: PrivateCloudRequestWithRequestedProject;
 
   try {
     const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
@@ -88,6 +81,13 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         },
       },
       include: {
+        requestedProject: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
         project: {
           include: {
             projectOwner: true,
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw e;
   }
 
-  // sendDeleteRequestEmails(createRequest.project);
+  sendDeleteRequestEmails(createRequest.requestedProject);
 
   return new Response('Success', { status: 200 });
 }

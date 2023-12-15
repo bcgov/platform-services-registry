@@ -6,7 +6,7 @@ import { PrivateCloudCreateRequestBody, PrivateCloudCreateRequestBodySchema } fr
 import createRequest, {
   PrivateCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/private-cloud/createRequest';
-import { sendNewRequestEmails } from '@/ches/emailHandler';
+import { sendCreateRequestEmails } from '@/ches/private-cloud/emailHandler';
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
   // Authentication
@@ -45,7 +45,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   // Action
   const request: PrivateCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
-  sendNewRequestEmails(request);
+  sendCreateRequestEmails(request);
 
   return new NextResponse('Success creating request', {
     status: 200,
