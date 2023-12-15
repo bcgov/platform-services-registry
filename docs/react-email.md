@@ -27,7 +27,7 @@ This package comes with a [CLI](https://react.email/docs/cli) that creates a dev
 
 react-email comes with a `dev`, `build`, `start` and `export` command. The way these commands can be called are found within the `package.json` script.
 
-The `dev`, `build` and `start` commands work like your normal npm commands, with the difference being that project it generates is a dashboard which shows your email templates. They create a folder called .react-emails which can essentially be treated as another project folder. It is important to note that running these commands in the will overwrite some of the folders in .react-emails, such as the package.json file.
+The `dev`, `build` and `start` commands work like your normal npm commands, with the difference being that project it generates is a dashboard which shows your email templates. They create a folder called .react-email which can essentially be treated as another project folder. It is important to note that running these commands in the will overwrite some of the folders in .react-email, such as the package.json file.
 
 `export` creates a folder called email-export containing the html renders for all the existing templates. It works similarly to how the render() function works.
 
@@ -39,13 +39,10 @@ The problem when trying to deploy the dashboard was that `npm run build` was fai
 import Mail from '../../emails/PrivateCloudAdminCreateRequest.tsx';`
 ```
 
-We can always update the config manually to ignore the above error, but the initial creation of the .react-email folder (if it does not already exist) will not include those changes. For that reason, the .react-email folder will have to be included to the repo, so that the following config can be added to `.react-email/next.config.js`:
+We can always update the config manually to ignore the above error, but the initial creation of the .react-email folder (if it does not already exist) will not include those changes. For that reason, our docker image will run `build` command twice. Once to generate the .react-email folder for our image, and once more after we update the next.config.js file with the following rule.
 
 ```sh
    typescript: {
-      ignoreBuildErrors: true,
-   },
-   eslint: {
       ignoreBuildErrors: true,
    },
 ```
