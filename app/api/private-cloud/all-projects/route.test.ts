@@ -245,7 +245,6 @@ describe('CSV Download Route', () => {
   // Clean up database after tests are done
   afterAll(async () => {
     console.log('Cleaning up database');
-    console.log('Cleaning up database');
     await prisma.privateCloudProject.deleteMany({});
   });
 
