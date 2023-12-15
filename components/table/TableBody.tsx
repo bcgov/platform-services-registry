@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import path from 'path';
 import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
@@ -14,8 +14,11 @@ interface TableProps {
 }
 
 function EmptyBody() {
+  const pathname = usePathname();
+
+  if (!pathname) return null;
   return (
-    <div className="flex flex-col items-center justify-center py-12">
+    <div className="flex flex-col items-center justify-center py-12 mt-12">
       <Image
         alt="Empty"
         src={Empty}
@@ -33,7 +36,7 @@ function EmptyBody() {
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
       <Link
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
-        href="/private-cloud/products"
+        href={`/${pathname.split('/')[1]}/create`}
       >
         REQUEST A NEW PROJECT SET
       </Link>
@@ -54,25 +57,19 @@ export default function TableBody({ headers, rows }: TableProps) {
 
   const onRowClickHandler = (row: any) => {
     switch (pathname) {
-      case '/private-cloud/products':
-        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
-        break;
-      case '/private-cloud/requests':
+      case '/private-cloud/history':
         if (isAdmin) {
           router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-        } else {
-          router.push(path.join('/private-cloud', 'request', row.id));
         }
+        router.push(path.join('/private-cloud', 'request', row.id));
+
         break;
-      case '/public-cloud/products':
-        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
-        break;
-      case '/public-cloud/requests':
+      case '/public-cloud/history':
         if (isAdmin) {
           router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-        } else {
-          router.push(path.join('/public-cloud', 'request', row.id));
         }
+        router.push(path.join('/public-cloud', 'request', row.id));
+
         break;
     }
   };
@@ -107,12 +104,12 @@ export default function TableBody({ headers, rows }: TableProps) {
                   >
                     {headers.map((value, index) => (
                       <td
-                        key={value['field'] + index}
+                        key={value.field + index}
                         className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
                           index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                         } `}
                       >
-                        {row[value['field']]}
+                        {row[value.field]}
                       </td>
                     ))}
                   </tr>

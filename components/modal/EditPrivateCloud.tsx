@@ -25,8 +25,8 @@ export default function Modal({
   };
 
   const handleCommentChange = (event: any) => {
-    const comment = event.target.value;
-    setComment(comment);
+    const comm = event.target.value;
+    setComment(comm);
   };
 
   return (
@@ -61,8 +61,8 @@ export default function Modal({
                     All Set?
                   </Dialog.Title>
                   <p className="text-sm text-gray-900 font-medium mb-4">
-                    Tell us a little bit about why you are requesting a quota change. This will be taken into
-                    consideration when your request is reviewed.
+                    Tell us a little bit about why you are requesting a change. This will be taken into consideration
+                    when your request is reviewed.
                   </p>
                   <textarea
                     onChange={handleCommentChange}
@@ -78,33 +78,6 @@ export default function Modal({
                     Also, look out for our Notification emails that will provide you with valuable information regarding
                     your product status and details.
                   </p>
-                  <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
-                    <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
-                      <span className="font-bold text-blue-700 font-sans text-xs">i</span>
-                    </div>
-                    <div>
-                      <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
-                      <p className="font-bcsans text-sm text-blue-700 mt-1">
-                        The approval of new project set creation request is subject to having a signed Memorandum of
-                        Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please email
-                        us at
-                        <span> </span>
-                        <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                          cloud.pathfinder@gov.bc.ca
-                        </a>
-                        .
-                      </p>
-                      <p className="font-bcsans text-sm text-blue-700 mt-4">
-                        In order to request a project deletion, please email us at
-                        <span> </span>
-                        <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                          cloud.pathfinder@gov.bc.ca
-                        </a>
-                        .
-                      </p>
-                    </div>
-                  </div>
-
                   <div className="flex border-t-1 mt-8 pt-4">
                     <input
                       id="none"
@@ -117,9 +90,7 @@ export default function Modal({
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
                       By checking this box, I confirm that I have read and understood the roles and responsibilities as
                       described in the <span> </span>
-                      <a href="" className="underline text-blue-700">
-                        Onboarding Guide.
-                      </a>
+                      <span className="underline text-blue-700">Onboarding Guide.</span>
                     </p>
                   </div>
                 </div>
@@ -142,8 +113,8 @@ export default function Modal({
                       isLoading
                         ? 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2'
                         : confirm
-                        ? 'justify-center bg-bcorange text-bcblue hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2'
-                        : 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2',
+                        ? 'justify-center bg-bcorange text-bcblue hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2' // eslint-disable-line prettier/prettier
+                        : 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2', // eslint-disable-line prettier/prettier
                     )}
                   >
                     {isLoading ? (

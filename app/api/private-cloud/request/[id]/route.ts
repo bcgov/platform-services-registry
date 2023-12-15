@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PublicCloudProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { string, z } from 'zod';
@@ -63,7 +62,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }): Pro
       });
 
     if (!request) {
-      return new NextResponse('No project found with this licece plate.', {
+      return new NextResponse('No project found with this id.', {
         status: 404,
       });
     }

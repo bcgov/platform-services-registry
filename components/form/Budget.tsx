@@ -17,13 +17,13 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
         3. Project Budget
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
-        Please indicate your estimated monthly budget &#40;Try the
+        Please indicate your estimated monthly budget &#40;Try the{' '}
         <a
           className="text-blue-600 dark:text-blue-500 hover:underline"
           href={'https://www.thoughtco.com/html-code-for-common-symbols-and-signs-2654021'}
         >
           AWS Cost Calculator
-        </a>
+        </a>{' '}
         to get an estimate&#41;. Provide an estimated average monthly spend allocated to your cloud service usage for
         this project. As a part of this request, you will be provisioned with four accounts - Dev, Test, Prod and Tools.
         Please specify the estimate for each of these accounts.{' '}
@@ -69,10 +69,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
             value={Number(budget.dev) + Number(budget.test) + Number(budget.prod) + Number(budget.tools) || 0}
           />
           <Question />
-          <label
-            htmlFor="total"
-            className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-          ></label>
+          <span className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"></span>
           {errors.budget && (
             <p className={classNames(errors.budget ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Budget is required, Every value should be no less than USD 50

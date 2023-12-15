@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PublicCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -49,10 +49,6 @@ async function fetchActiveRequest(licencePlate: string): Promise<PublicCloudRequ
 }
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
@@ -84,14 +80,16 @@ export default function EditProject({ params }: { params: { licencePlate: string
     },
   });
 
+  const { formState } = methods;
+
   useEffect(() => {
     if (requestData) {
       setDisabled(true);
     }
   }, [requestData]);
 
-  const onSubmit = async (data: any) => {
-    console.log('SUBMIT', data);
+  const onSubmit = async (val: any) => {
+    console.log('SUBMIT', val);
     setIsLoading(true);
     try {
       const response = await fetch(`/api/public-cloud/edit/${params.licencePlate}`, {
@@ -99,7 +97,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(val),
       });
 
       if (!response.ok) {
@@ -139,7 +137,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT REQUEST" />
+                <SubmitButton text="SUBMIT REQUEST" disabled={!formState.isDirty} />
               </div>
             ) : null}
           </div>

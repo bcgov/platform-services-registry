@@ -9,7 +9,6 @@ import { comparePublicCloudProjects } from '../../components/Edit/utils/compareP
 import ContactChanges from '../../components/Edit/ContactChanges';
 import QuotaChanges from '../../components/Edit/QuotaChanges';
 import DescriptionChanges from '../../components/Edit/DescriptionChanges';
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
   request: PublicCloudRequestWithProjectAndRequestedProject;
@@ -45,7 +44,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 <Text className="mb-0">{comment}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['name'] || changed['description'] || changed['ministry']) && (
+                {(changed.name || changed.description || changed.ministry) && (
                   <DescriptionChanges
                     nameCurrent={current.name}
                     descCurrent={current.description}
@@ -57,9 +56,7 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['projectOwnerId'] ||
-                  changed['primaryTechnicalLeadId'] ||
-                  changed['secondaryTechnicalLeadId']) && (
+                {(changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
                   <ContactChanges
                     poCurrent={current.projectOwner}
                     tl1Current={current.primaryTechnicalLead}
@@ -71,47 +68,9 @@ export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed['accountCoding'] || changed['budget']) && (
+                {(changed.accountCoding || changed.budget) && (
                   <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>
                 )}
-                <div className="flex flex-row flex-wrap">
-                  {changed['productionQuota'] && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-prod`}
-                      quotaCurrent={current.productionQuota}
-                      quotaRequested={requested.productionQuota}
-                      type="Production"
-                      cluster={current.cluster}
-                    />
-                  )}
-                  {changed['testQuota'] && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-test`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
-                      type="Test"
-                      cluster={current.cluster}
-                    />
-                  )}
-                  {changed['developmentQuota'] && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-dev`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
-                      type="Development"
-                      cluster={current.cluster}
-                    />
-                  )}
-                  {changed['toolsQuota'] && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-tools`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
-                      type="Tools"
-                      cluster={current.cluster}
-                    />
-                  )}
-                </div>
               </div>
               <div>
                 <Closing />

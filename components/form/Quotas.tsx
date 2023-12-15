@@ -1,7 +1,6 @@
-// @ts-nocheck
-
 import Link from 'next/link';
 import { useFormContext } from 'react-hook-form';
+import { z } from 'zod';
 import classNames from '@/components/utils/classnames';
 import { PrivateCloudProject, Quota } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
@@ -10,7 +9,7 @@ type CpuOptionKeys = z.infer<typeof DefaultCpuOptionsSchema>;
 type MemoryOptionKeys = z.infer<typeof DefaultMemoryOptionsSchema>;
 type StorageOptionKeys = z.infer<typeof DefaultStorageOptionsSchema>;
 
-type QuotaOptions<K extends string> = {
+type QuotaOptions<K extends string = any> = {
   [key in K]: string;
 };
 
@@ -119,7 +118,7 @@ function QuotaInput({
             </option>
           )}
         </select>
-        {errors?.[nameSpace + 'Quota']?.[quotaName] && (
+        {(errors?.[nameSpace + 'Quota'] as { [key: string]: any })?.[quotaName] && (
           <p className="text-red-400 mt-3 text-sm leading-6">
             Select the {quotaName} for the {nameSpace} namespace
           </p>
@@ -146,16 +145,22 @@ export default function Quotas({
   disabled: boolean;
   currentProject?: PrivateCloudProject | null | undefined;
 }) {
+  const namespaceSuffixes = {
+    production: '-prod',
+    tools: '-tools',
+    test: '-test',
+    development: '-dev',
+  };
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         3. Quotas
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
-        All quota increase requests require <b>Platform Services Team’s</b>
+        All quota increase requests require <b> Platform Services Team’s </b>
         approval must have supporting information as per the Quota Increase Request Process. The Quota Requests without
         supporting information
-        <b> will</b> not be processed.
+        <b> will </b> not be processed.
       </p>
       <div className="mt-10 grid grid-cols-1 gap-x-8 xl:gap-x-16 gap-y-8 sm:grid-cols-8 ">
         {(['production', 'test', 'tools', 'development'] as const).map((nameSpace) => (
@@ -163,7 +168,10 @@ export default function Quotas({
             <h3 className="font-bcsans text-base 2xl:text-lg font-semibold leading-7 text-gray-900">
               {nameSpace.charAt(0).toUpperCase() + nameSpace.slice(1)} Namespace
             </h3>
-            <Link href="#">{licensePlate}-prod</Link>
+            <span>
+              {licensePlate}
+              {namespaceSuffixes[nameSpace] || ''}
+            </span>
             {(['cpu', 'memory', 'storage'] as const).map((quotaName) => (
               <QuotaInput
                 key={quotaName}
@@ -172,8 +180,7 @@ export default function Quotas({
                 licensePlate={licensePlate}
                 nameSpace={nameSpace}
                 disabled={disabled}
-                // @ts-ignore
-                quota={currentProject?.[nameSpace + 'Quota'][quotaName]}
+                quota={(currentProject as { [key: string]: any })?.[nameSpace + 'Quota'][quotaName]}
               />
             ))}
           </div>

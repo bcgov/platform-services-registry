@@ -1,4 +1,4 @@
-import NextAuth, { JWT, DefaultSession } from 'next-auth/jwt';
+import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
   /**
@@ -10,6 +10,14 @@ declare module 'next-auth' {
       /** The user's postal address. */
       roles: string[];
     } & DefaultSession['user'];
+    userId: string | null;
+    isAdmin: boolean;
+    roles: string[];
+    ministries: {
+      admin: string[];
+      readonly: string[];
+      [key: string]: string[];
+    };
   }
 }
 

@@ -1,7 +1,6 @@
-import { useCallback } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { useCallback, useEffect, useState } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Question } from '@/components/assets/question';
-import { useEffect, useState, useRef } from 'react';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import classNames from '@/components/utils/classnames';
 
@@ -35,7 +34,7 @@ export default function AccountCoding({
   }, [accountCodingInitial, accountCodingSeparation]);
 
   useEffect(() => {
-    setValue('accountCoding', Object.values(accountCoding).join('').toLocaleUpperCase());
+    setValue('accountCoding', Object.values(accountCoding).join('').toLocaleUpperCase(), { shouldDirty: true });
   }, [setValue, accountCoding]);
 
   return (

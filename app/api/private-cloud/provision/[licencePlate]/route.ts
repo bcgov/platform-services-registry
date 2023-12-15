@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DecisionStatus, PrivateCloudRequest, PrivateCloudRequestedProject, Prisma } from '@prisma/client';
+import { DecisionStatus, Prisma, PrivateCloudRequest, PrivateCloudRequestedProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
+import { revalidatePath } from 'next/cache';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
 // See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
@@ -69,8 +70,13 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
 
     await prisma.$transaction([updateRequest, upsertProject]);
 
+    console.log(`Successfully marked ${licencePlate} as provisioned.`);
+
+    // revalidatePath('/private-cloud/requests', 'page');
+    // revalidatePath('/private-cloud/products', 'page');
+
     // sendProvisionedEmails(request);
-    return new NextResponse(`Successfuly marked ${licencePlate} as provisioned.`, { status: 200 });
+    return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
     return new NextResponse(error.message, { status: 500 });

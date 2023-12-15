@@ -71,9 +71,9 @@ export default async function fetchUserImage(email: string): Promise<string> {
     const imageUrl = URL.createObjectURL(blob);
 
     return imageUrl;
-  } else {
-    const imageUrl = await generateAvatar(email);
-
-    return imageUrl;
   }
+
+  const imageUrl = await generateAvatar(email);
+
+  return imageUrl;
 }

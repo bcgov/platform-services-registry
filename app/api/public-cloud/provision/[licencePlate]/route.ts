@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DecisionStatus, PublicCloudRequestedProject, Prisma } from '@prisma/client';
+import { DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
@@ -70,7 +70,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     await prisma.$transaction([updateRequest, upsertProject]);
 
     // sendProvisionedEmails(request);
-    return new NextResponse(`Successfuly marked ${licencePlate} as provisioned.`, { status: 200 });
+    return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
     return new NextResponse(error.message, { status: 500 });

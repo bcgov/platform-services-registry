@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
@@ -78,7 +78,10 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpen(true))}>
-          <div className="space-y-12">
+          <div className="mb-12 mt-8">
+            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
+              A decision has already been made for this project
+            </h3>
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
             <TeamContacts
               disabled={isDisabled}

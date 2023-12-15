@@ -1,12 +1,12 @@
 const navigation = {
   main: [
-    { name: 'Home', href: '#' },
-    { name: 'Disclamer', href: '#' },
-    { name: 'Privacy', href: '#' },
-    { name: 'Accessibility', href: '#' },
-    { name: 'Copyright', href: '#' },
-    { name: 'Contact Us', href: '#' },
-    { name: 'Report a bug/Request a feature', href: '#' },
+    //{ name: 'Home', href: '#' }, a home page does not currently exist
+    { name: 'Disclaimer', href: 'https://www2.gov.bc.ca/gov/content/home/disclaimer' },
+    { name: 'Privacy', href: 'https://www2.gov.bc.ca/gov/content/home/privacy' },
+    { name: 'Accessibility', href: 'https://www2.gov.bc.ca/gov/content/home/accessible-government' },
+    { name: 'Copyright', href: 'https://www2.gov.bc.ca/gov/content/home/copyright' },
+    { name: 'Contact Us', href: 'https://chat.developer.gov.bc.ca/channel/devops-registry' },
+    { name: 'Report a bug/Request a feature', href: 'https://github.com/bcgov/platform-services-registry/issues' },
   ],
 };
 

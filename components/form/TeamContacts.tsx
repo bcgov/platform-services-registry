@@ -33,7 +33,7 @@ export default function TeamContacts({
             name="projectOwner"
             className="mt-8"
             label="Product Owner Email"
-            placeHolder="Search project owner's IDIR email address"
+            placeHolder="Search product owner's IDIR email address"
           />
         </div>
 
@@ -53,7 +53,7 @@ export default function TeamContacts({
             name="primaryTechnicalLead"
             className="mt-8"
             label="Technical Lead Email"
-            placeHolder="Search project owner's IDIR email address"
+            placeHolder="Search technical lead's IDIR email address"
           />
         </div>
 
@@ -77,7 +77,7 @@ export default function TeamContacts({
                 name="secondaryTechnicalLead"
                 className="mt-8"
                 label="Technical Lead Email"
-                placeHolder="Search project owner's IDIR email address"
+                placeHolder="Search secondary technical lead's IDIR email address"
               />
             </div>
           ) : null}

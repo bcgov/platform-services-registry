@@ -1,13 +1,13 @@
 import { privateCloudProjectsPaginated, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
 import prisma from '@/lib/prisma';
 import {
-  Prisma,
-  RequestType,
-  DecisionStatus,
-  ProjectStatus,
-  PrivateCloudProject,
-  Ministry,
   Cluster,
+  DecisionStatus,
+  Ministry,
+  Prisma,
+  PrivateCloudProject,
+  ProjectStatus,
+  RequestType,
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
@@ -242,14 +242,29 @@ describe('Query projects with filter and search and pagination', () => {
     }
   });
 
-  test('Should return all requests even though there is no secondary technical lead', async () => {
-    const projects = await privateCloudRequestsPaginated(5, 1);
+  test('Should return all projects when pageSize is 0 and limit is 0', async () => {
+    const projects = await privateCloudProjectsPaginated(0, 0);
     expect(projects.data.length).toBe(5);
   });
 
-  test('Should return all projects even though there is no secondary technical lead', async () => {
-    const projects = await privateCloudProjectsPaginated(5, 1);
+  test('Should return all projects when the pageSize is the total and the skip is 0', async () => {
+    const projects = await privateCloudProjectsPaginated(5, 0);
     expect(projects.data.length).toBe(5);
+  });
+
+  test('Should return all requests when the pageSize is the total (5) and the page is 1', async () => {
+    const requests = await privateCloudRequestsPaginated(5, 1);
+    expect(requests.data.length).toBe(5);
+  });
+
+  test('There should be 3 projects if the page size is 3 and the page is 1', async () => {
+    const requests = await privateCloudRequestsPaginated(3, 1);
+    expect(requests.data.length).toBe(3);
+  });
+
+  test('There should be 2 projects if the page size is 3 and the page is 2', async () => {
+    const requests = await privateCloudRequestsPaginated(3, 2);
+    expect(requests.data.length).toBe(2);
   });
 
   test('Should return only projects belonging to specific user when userEmail is passed', async () => {
@@ -325,7 +340,7 @@ describe('Query projects with filter and search and pagination', () => {
   });
 
   test('Should return only projects that fits the SearchTerm', async () => {
-    const projects = await privateCloudProjectsPaginated(10, 1, 'sample');
+    const projects = await privateCloudProjectsPaginated(10, 0, 'sample');
     //projects searches for description, unlike requests
     expect(projects.total).toBe(8);
   });
@@ -337,7 +352,7 @@ describe('Query projects with filter and search and pagination', () => {
   });
 
   test('Should return only projects that fits the SearchTerm', async () => {
-    const projects = await privateCloudProjectsPaginated(10, 1, undefined, undefined, 'CLAB');
+    const projects = await privateCloudProjectsPaginated(10, 0, undefined, undefined, 'CLAB');
 
     expect(projects.total).toBe(5);
   });

@@ -46,6 +46,7 @@ model PrivateCloudRequest {
   type                   RequestType
   decisionStatus         DecisionStatus
   humanComment           String?
+  userComment            String?
   active                 Boolean                       @default(true)
   created                DateTime                      @default(now())
   decisionDate           DateTime?
@@ -235,6 +236,7 @@ enum Ministry {
   FIN
   FLNR
   HLTH
+  HOUS
   IRR
   JEDC
   LBR
@@ -260,6 +262,6 @@ enum Cluster {
 }
 
 enum Provider {
-  GOOGLE
+  // GOOGLE
   AWS
 }

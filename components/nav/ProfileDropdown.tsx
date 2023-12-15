@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from '@/components/utils/classnames';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
@@ -77,7 +77,7 @@ export default function ProfileDropdown() {
                     href="#"
                     onClick={() =>
                       signIn('keycloak', {
-                        callbackUrl: '/private-cloud/products',
+                        callbackUrl: '/private-cloud/products/all',
                       })
                     }
                     className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}

@@ -5,8 +5,17 @@ import { PrivateProject } from '@/queries/types';
 import classNames from '@/components/utils/classnames';
 import Avtar from '@/components/table/Avatar';
 
+const tailwindColors = {
+  red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
+  blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
+  green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
+  grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
+  // ... add other colors here
+};
+
 function TypeBadge({ status }: { status: string }) {
-  let text, colour;
+  let text = '';
+  let colour!: keyof typeof tailwindColors;
 
   switch (status) {
     case 'APPROVED':
@@ -30,15 +39,6 @@ function TypeBadge({ status }: { status: string }) {
       colour = 'grey';
   }
 
-  const tailwindColors = {
-    red: ['bg-red-100', 'text-red-700', 'fill-red-500'],
-    blue: ['bg-blue-100', 'text-blue-700', 'fill-blue-500'],
-    green: ['bg-green-100', 'text-green-700', 'fill-green-500'],
-    grey: ['bg-gray-100', 'text-gray-700', 'fill-gray-500'],
-    // ... add other colors here
-  };
-
-  //@ts-ignore
   const classes = tailwindColors[colour] || [];
 
   return (
@@ -72,47 +72,33 @@ function TypeBadge({ status }: { status: string }) {
   );
 }
 
-export const privateCloudProjectDataToRow = (project: PrivateProject) => {
+export const privateCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: <p className="line-clamp-2 w-60">{project.description}</p>,
-    description: <p className="line-clamp-2">{project.description}</p>,
+    name: project.name,
     ministry: project.ministry,
     cluster: project.cluster,
-    projectOwner: (
-      <Avtar
-        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
-        email={project.projectOwnerDetails.email}
-      />
-    ),
-    primaryTechnicalLead: (
-      <Avtar
-        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
-        email={project.primaryTechnicalLeadDetails.email}
-      />
-    ),
-    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
-      <Avtar
-        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
-        email={project.secondaryTechnicalLeadDetails.email}
-      />
-    ) : null,
-    created: <p className="w-28">{formatDate(project.created['$date'])}</p>,
-    licencePlate: <p className="w-28">{project.licencePlate}</p>,
-    edit: (
-      <div
-        className="pr-4 sm:pr-6 lg:pr-8
-      >"
-      >
-        <div
-          className=" w-4 h-3 "
-          // pr-4 sm:pr-6 lg:pr-8
-        >
-          <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
-        </div>
-      </div>
-    ),
+    requestDecisionStatus: project?.activeRequest ? project?.activeRequest[0]?.decisionStatus : null,
+    requestType: project?.activeRequest ? project?.activeRequest[0]?.type : null,
+    projectOwner: {
+      name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
+      email: project.projectOwner.email,
+    },
+    primaryTechnicalLead: {
+      name: `${project.primaryTechnicalLead.firstName} ${project.primaryTechnicalLead.lastName}`,
+      email: project.primaryTechnicalLead.email,
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLead
+      ? {
+          name: `${project.secondaryTechnicalLead.firstName} ${project.secondaryTechnicalLead.lastName}`,
+          email: project.secondaryTechnicalLead.email,
+        }
+      : null,
+    created: formatDate(project.created.$date),
+    requestCreated: formatDate(project?.activeRequest ? project?.activeRequest[0]?.created.$date : null),
+    // requestDecisionDate: formatDate(project?.activeRequest ? project?.activeRequest[0]?.decisionDate.$date : null),
+    licencePlate: project.licencePlate,
   };
 };
 
@@ -120,43 +106,27 @@ export const publicCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
     licencePlateValue: project.licencePlate,
-    name: <p className="line-clamp-2 w-60">{project.description}</p>,
-    provider: project.provider,
-    description: project.description,
+    name: project.name,
     ministry: project.ministry,
-    projectOwner: (
-      <Avtar
-        name={`${project.projectOwnerDetails.firstName} ${project.projectOwnerDetails.lastName}`}
-        email={project.projectOwnerDetails.email}
-      />
-    ),
-    primaryTechnicalLead: (
-      <Avtar
-        name={`${project.primaryTechnicalLeadDetails.firstName} ${project.primaryTechnicalLeadDetails.lastName}`}
-        email={project.primaryTechnicalLeadDetails.email}
-      />
-    ),
-    secondaryTechnicalLead: project.secondaryTechnicalLeadDetails ? (
-      <Avtar
-        name={`${project.secondaryTechnicalLeadDetails.firstName} ${project.secondaryTechnicalLeadDetails.lastName}`}
-        email={project.secondaryTechnicalLeadDetails.email}
-      />
-    ) : null,
-    created: <p className="w-28">{formatDate(project.created['$date'])}</p>,
-    licencePlate: <p className="w-28">{project.licencePlate}</p>,
-    edit: (
-      <div
-        className="pr-4 sm:pr-6 lg:pr-8
-      >"
-      >
-        <div
-          className=" w-4 h-3 "
-          // pr-4 sm:pr-6 lg:pr-8
-        >
-          <Image alt="Edit icon" src={Edit} width={16} height={12.5} />
-        </div>
-      </div>
-    ),
+    cluster: project.provider,
+    requestDecisionStatus: project?.activeRequest ? project?.activeRequest[0]?.decisionStatus : null,
+    requestType: project?.activeRequest ? project?.activeRequest[0]?.type : null,
+    projectOwner: {
+      name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
+      email: project.projectOwner.email,
+    },
+    primaryTechnicalLead: {
+      name: `${project.primaryTechnicalLead.firstName} ${project.primaryTechnicalLead.lastName}`,
+      email: project.primaryTechnicalLead.email,
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLead
+      ? {
+          name: `${project.secondaryTechnicalLead.firstName} ${project.secondaryTechnicalLead.lastName}`,
+          email: project.secondaryTechnicalLead.email,
+        }
+      : null,
+    created: formatDate(project.created.$date),
+    licencePlate: project.licencePlate,
   };
 };
 
@@ -164,17 +134,19 @@ export const privateCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
     licencePlateValue: request.licencePlate,
-    type: request.type,
+    type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
     ministry: request.requestedProject.ministry,
     cluster: request.requestedProject.cluster,
-    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
-      request?.secondaryTechnicalLead ? ',' : ''
-    } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created['$date'])}</p>,
-    licencePlate: <p className="w-28">{request.licencePlate}</p>,
+    projectOwner: `${request.requestedProject.projectOwner.firstName} ${request.requestedProject.projectOwner.lastName}`,
+    technicalLeads: `${request.requestedProject.primaryTechnicalLead.firstName} ${
+      request.requestedProject.primaryTechnicalLead.lastName
+    } ${request?.requestedProject.secondaryTechnicalLead ? ',' : ''} ${
+      request?.requestedProject.secondaryTechnicalLead?.firstName || ''
+    } ${request?.requestedProject.secondaryTechnicalLead?.lastName || ''}`,
+    created: <p className="w-28">{formatDate(request.created.$date)}</p>,
+    licencePlate: <p className="w-28">{request.requestedProject.licencePlate}</p>,
   };
 };
 
@@ -182,16 +154,18 @@ export const publicCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
     licencePlateValue: request.licencePlate,
-    type: <TypeBadge status={request.decisionStatus} />,
-    status: request.decisionStatus,
+    type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
+    status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
-    csp: request.requestedProject.provider,
+    cluster: request.requestedProject.provider,
     ministry: request.requestedProject.ministry,
-    projectOwner: `${request.projectOwner.firstName} ${request.projectOwner.lastName}`,
-    technicalLeads: `${request.primaryTechnicalLead.firstName} ${request.primaryTechnicalLead.lastName} ${
-      request?.secondaryTechnicalLead ? ',' : ''
-    } ${request?.secondaryTechnicalLead?.firstName || ''} ${request?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request.created['$date'])}</p>,
-    licencePlate: <p className="w-28">{request.licencePlate}</p>,
+    projectOwner: `${request.requestedProject.projectOwner.firstName} ${request.requestedProject.projectOwner.lastName}`,
+    technicalLeads: `${request.requestedProject.primaryTechnicalLead.firstName} ${
+      request.requestedProject.primaryTechnicalLead.lastName
+    } ${request?.requestedProject.secondaryTechnicalLead ? ',' : ''} ${
+      request?.requestedProject?.secondaryTechnicalLead?.firstName || ''
+    } ${request?.requestedProject?.secondaryTechnicalLead?.lastName || ''}`,
+    created: <p className="w-28">{formatDate(request?.requestedProject.created.$date)}</p>,
+    licencePlate: <p className="w-28">{request?.requestedProject?.licencePlate}</p>,
   };
 };

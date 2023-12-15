@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudCreateRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CommonComponents from '@/components/form/CommonComponents';
@@ -9,7 +9,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
-import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 
@@ -62,7 +61,7 @@ export default function Page() {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
           <div className="space-y-12">
-            <ProjectDescription />
+            <ProjectDescription isCreatePage />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <CommonComponents />
           </div>
@@ -83,7 +82,7 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
     </div>
   );
 }

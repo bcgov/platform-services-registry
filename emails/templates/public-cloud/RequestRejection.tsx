@@ -22,19 +22,19 @@ export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Sorry, your provisioning request was Rejected</Heading>
-                <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
+                <Heading className="text-lg text-black">Sorry, your request was Rejected</Heading>
+                <Text>Hi {request.requestedProject.name} team, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  rejected due to the following reason(s):
+                  Your request for the product on the Private Cloud Openshift platform has been rejected due to the
+                  following reason(s):
                 </Text>
-                <Text className="">sample reason</Text>
+                <Text className="">{comment}</Text>
                 <Text>
                   Log in to your registry account and raise a new request if the above rejection reason no longer
                   applies
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Log in to Registry
