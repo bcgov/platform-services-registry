@@ -45,7 +45,7 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
     primaryTechnicalLeadId: 'primary-lead-id',
     secondaryTechnicalLeadId: 'secondary-lead-id',
     ministry: 'EDUC', // or any other enum value from Ministry
-    provider: 'GOOGLE', // or AWS
+    provider: 'AWS',
     projectOwner: {
       id: 'd',
       firstName: 'John',
@@ -155,7 +155,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
     primaryTechnicalLeadId: 'new-primary-lead-id',
     secondaryTechnicalLeadId: 'new-secondary-lead-id',
     ministry: 'EDUC', // or other Ministry enum value
-    provider: 'GOOGLE', // or AWS
+    provider: 'AWS', // or AWS
     projectOwner: {
       id: 'd',
       firstName: 'John',
@@ -204,7 +204,7 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
   primaryTechnicalLeadId: 'primary-lead-id',
   secondaryTechnicalLeadId: 'secondary-lead-id',
   ministry: 'EDUC', // or any other enum value from Ministry
-  provider: 'GOOGLE', // or AWS
+  provider: 'AWS',
   projectOwner: {
     id: 'd',
     firstName: 'John',
