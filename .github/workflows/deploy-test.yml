@@ -65,7 +65,7 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
-  build-push-emails:
+  build-push-email:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -85,7 +85,7 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-emails
+        image-name: bcgov/pltsvc-email
         docker-context: .
         docker-file: Dockerfile.email
         metadata-tags: |
@@ -94,7 +94,7 @@ jobs:
           type=semver,pattern={{major}}
 
   deploy:
-    needs: [build-push-app, build-push-pre, build-push-emails]
+    needs: [build-push-app, build-push-pre, build-push-email]
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
