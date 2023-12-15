@@ -6,8 +6,8 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: pltsvc-emails
-fullnameOverride: pltsvc-emails
+nameOverride: pltsvc-email
+fullnameOverride: pltsvc-email
 
 podAnnotations: {}
 podLabels: {}

@@ -27,7 +27,7 @@ This package comes with a [CLI](https://react.email/docs/cli) that creates a dev
 
 react-email comes with a `dev`, `build`, `start` and `export` command. The way these commands can be called are found within the `package.json` script.
 
-The `dev`, `build` and `start` commands work like your normal npm commands, with the difference being that project it generates is a dashboard which shows your email templates. They create a folder called .react-emails which can essentially be treated as another project folder. It is important to note that running these commands in the will overwrite some of the folders in .react-emails, such as the package.json file.
+The `dev`, `build` and `start` commands work like your normal npm commands, with the difference being that project it generates is a dashboard which shows your email templates. They create a folder called .react-email which can essentially be treated as another project folder. It is important to note that running these commands in the will overwrite some of the folders in .react-email, such as the package.json file.
 
 `export` creates a folder called email-export containing the html renders for all the existing templates. It works similarly to how the render() function works.
 
