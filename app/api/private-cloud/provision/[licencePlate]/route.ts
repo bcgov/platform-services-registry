@@ -34,13 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
         active: true,
       },
       include: {
-        requestedProject: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
+        requestedProject: true,
       },
     });
 
@@ -79,8 +73,19 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     // revalidatePath('/private-cloud/requests', 'page');
     // revalidatePath('/private-cloud/products', 'page');
 
-    sendProvisionedEmails(request.requestedProject as PrivateCloudRequestedProjectWithContacts);
+    // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
+    const project = await prisma.privateCloudProject.findUnique({
+      where: {
+        licencePlate,
+      },
+      include: {
+        projectOwner: true,
+        primaryTechnicalLead: true,
+        secondaryTechnicalLead: true,
+      },
+    });
 
+    sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts);
     return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
