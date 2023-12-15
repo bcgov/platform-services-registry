@@ -7,12 +7,12 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
+  productName: string;
   comment: string;
 }
 
-export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
-  if (!request) return <></>;
+const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
+  if (!productName) return <></>;
 
   return (
     <Html>
@@ -23,7 +23,7 @@ export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Sorry, your request was Rejected</Heading>
-                <Text>Hi {request.requestedProject.name} team, </Text>
+                <Text>Hi {productName} team, </Text>
                 <Text className="">
                   Your request for the product on the Private Cloud Openshift platform has been rejected due to the
                   following reason(s):

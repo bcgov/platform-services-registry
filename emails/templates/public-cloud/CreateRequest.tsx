@@ -13,7 +13,7 @@ interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
 }
 
-export const NewRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
   return (

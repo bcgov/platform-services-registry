@@ -49,11 +49,9 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                     nameCurrent={current.name}
                     descCurrent={current.description}
                     ministryCurrent={current.ministry}
-                    clusterCurrent={current.cluster}
                     nameRequested={requested.name}
                     descRequested={requested.description}
                     ministryRequested={requested.ministry}
-                    clusterRequested={requested.cluster}
                   />
                 )}
               </div>

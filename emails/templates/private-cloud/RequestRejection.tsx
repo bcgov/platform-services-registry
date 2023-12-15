@@ -9,7 +9,8 @@ interface EmailProp {
   productName: string;
   comment: string;
 }
-export const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
+
+const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
   if (!productName) return <></>;
 
   return (

@@ -15,7 +15,7 @@ interface EmailProp {
   comment: string;
 }
 
-export const EditRequestTemplate = ({ request, comment }: EmailProp) => {
+const EditRequestTemplate = ({ request, comment }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
