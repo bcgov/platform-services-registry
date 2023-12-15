@@ -48,6 +48,7 @@
     "axios": "^1.5.1",
     "axios-oauth-client": "^2.0.4",
     "bson": "^6.0.0",
+    "csv-parse": "^5.5.3",
     "csv-stringify": "^6.4.4",
     "https-proxy-agent": "^7.0.2",
     "jest-environment-jsdom": "^29.7.0",

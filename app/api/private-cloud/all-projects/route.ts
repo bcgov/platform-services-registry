@@ -31,8 +31,10 @@ export async function GET(req: NextRequest) {
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
       cluster: searchParams.get('cluster'),
-      active: searchParams.get('active'),
+      active: searchParams.get('active') === 'true', //Converts 'true' string to true boolean
     });
+
+    console.log(`Parsed Search Params: ${JSON.stringify(parsedSearchParams)}`); // Log the parsed search parameters
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
