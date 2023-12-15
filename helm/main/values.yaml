@@ -58,6 +58,25 @@ app:
     "NATS_HOST": ""
     "NATS_PORT": ""
 
+email:
+  enabled: true
+  image:
+    pullPolicy: IfNotPresent
+
+  preImage:
+    pullPolicy: IfNotPresent
+
+  nameOverride: pltsvc-email
+  fullnameOverride: pltsvc-email
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
 mongodb:
   enabled: false
 

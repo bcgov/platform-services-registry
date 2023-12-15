@@ -22,6 +22,11 @@ app:
     enabled: true
     host: dev-pltsvc.apps.silver.devops.gov.bc.ca
 
+email:
+  route:
+    enabled: true
+    host: dev-pltsvc-email.apps.silver.devops.gov.bc.ca
+
 mongodb:
   enabled: true
 
