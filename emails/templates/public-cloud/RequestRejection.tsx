@@ -8,7 +8,7 @@ import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
   productName: string;
-  comment: string;
+  comment?: string;
 }
 
 const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {

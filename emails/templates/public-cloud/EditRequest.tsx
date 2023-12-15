@@ -12,10 +12,9 @@ import DescriptionChanges from '../../components/Edit/DescriptionChanges';
 
 interface EmailProp {
   request: PublicCloudRequestWithProjectAndRequestedProject;
-  comment: string;
 }
 
-const EditRequestTemplate = ({ request, comment }: EmailProp) => {
+const EditRequestTemplate = ({ request }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
@@ -38,10 +37,6 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 <Button href={process.env.BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
                   Review Request
                 </Button>
-              </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Comments</Heading>
-                <Text className="mb-0">{comment}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 {(changed.name || changed.description || changed.ministry) && (

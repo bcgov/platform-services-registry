@@ -12,7 +12,7 @@ import DescriptionChanges from '../../components/Edit/DescriptionChanges';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
-  comment: string;
+  comment?: string;
 }
 
 const EditRequestTemplate = ({ request, comment }: EmailProp) => {

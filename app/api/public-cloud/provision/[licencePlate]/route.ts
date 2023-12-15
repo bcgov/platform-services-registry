@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
-// import { sendProvisionedEmails } from "../ches/emailHandlers.js";
-
-// See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
+import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import { sendProvisionedEmails } from '@/ches/public-cloud/emailHandler';
 
 export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {
@@ -35,7 +34,13 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
         active: true,
       },
       include: {
-        requestedProject: true,
+        requestedProject: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
       },
     });
 
@@ -69,7 +74,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
 
     await prisma.$transaction([updateRequest, upsertProject]);
 
-    // sendProvisionedEmails(request);
+    sendProvisionedEmails(requestedProject as PublicCloudRequestedProjectWithContacts);
     return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
