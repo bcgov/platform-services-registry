@@ -107,7 +107,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  sendEditRequestEmails(request, comment);
+  sendEditRequestEmails(request, formData.userComment);
 
   return new NextResponse('success', { status: 200 });
 }
