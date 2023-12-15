@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { sampleRequest } from './components/Params';
-import { RequestApprovalTemplate } from './templates/private-cloud/RequestApproval';
+import { samplePrivateRequest } from './components/Params';
+import RequestApprovalTemplate from './templates/private-cloud/RequestApproval';
 
 export const RequestApproval = () => {
-  return <RequestApprovalTemplate request={sampleRequest} />;
+  return <RequestApprovalTemplate request={samplePrivateRequest} />;
 };
 
 export default RequestApproval;

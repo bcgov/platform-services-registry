@@ -5,7 +5,7 @@ import { PublicCloudCreateRequestBody, PublicCloudCreateRequestBodySchema } from
 import createRequest, {
   PublicCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/public-cloud/createRequest';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
+import { sendCreateRequestEmails } from '@/ches/public-cloud/emailHandler';
 
 export async function POST(req: NextRequest) {
   // Authentication
@@ -44,11 +44,7 @@ export async function POST(req: NextRequest) {
   // Action
   const request: PublicCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
 
-  // sendCreateRequestEmails(createRequest.requestedProject);
-
-  // return NextResponse.json(request, {
-  //   status: 200,
-  // });
+  sendCreateRequestEmails(request);
 
   return new NextResponse('Created successfuly', {
     status: 200,
