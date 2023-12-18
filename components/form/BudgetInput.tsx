@@ -1,5 +1,4 @@
-import { Controller, useFormContext } from 'react-hook-form';
-import { Question } from '@/components/assets/question';
+import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
 
 export default function BudgetInput({ disabled, title, name }: { disabled?: boolean; title: string; name: string }) {
@@ -29,7 +28,6 @@ export default function BudgetInput({ disabled, title, name }: { disabled?: bool
           valueAsNumber: true,
         })}
       />
-      <Question />
     </div>
   );
 }

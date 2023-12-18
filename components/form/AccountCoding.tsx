@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Question } from '@/components/assets/question';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import classNames from '@/components/utils/classnames';
 
@@ -112,7 +111,6 @@ export default function AccountCoding({
             ? Object.values(accountCoding).join(' ').toLocaleUpperCase()
             : 'Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code'}
         </p>
-        <Question />
         <p
           className={classNames(
             errors.accountCoding ? 'text-red-400' : '',
