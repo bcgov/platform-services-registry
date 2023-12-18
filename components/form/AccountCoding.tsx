@@ -48,11 +48,9 @@ export default function AccountCoding({
         <b>
           If the account coding is changed at any point, all charges in the current quarter will be applied to the new
           account coding.
-        </b>
+        </b>{' '}
+        The Account Coding can only contain digits and upper case letters.
       </p>
-      <div>
-        <label htmlFor="name">Name:</label>
-      </div>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <AccountCodingInput
           disabled={disabled}

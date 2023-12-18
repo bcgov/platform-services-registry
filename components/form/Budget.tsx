@@ -34,7 +34,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
         </b>
       </p>
       <p className="bg-blue-50 mt-8 py-2 px-5 rounded-3xl flex font-bcsans text-sm text-blue-700">
-        There will be a base charge of CAD 400 to 600 per month for each project set created
+        There will be a base charge of USD 400 to 600 per month for each project set created
       </p>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <BudgetInput
@@ -67,7 +67,9 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
             id="total"
             placeholder="Value populated from Dev+Test+Prod+Tools"
             disabled={true}
-            value={Number(budget.dev) + Number(budget.test) + Number(budget.prod) + Number(budget.tools) || 0}
+            value={[budget.dev, budget.test, budget.prod, budget.tools]
+              .map((value) => Number(value) || 0)
+              .reduce((sum, value) => sum + value, 0)}
           />
           <span className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"></span>
           {errors.budget && (
