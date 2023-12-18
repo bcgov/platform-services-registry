@@ -19,11 +19,26 @@ jest.mock('@/nats', () => ({
 }));
 
 // Mock CHES
-jest.mock('@/ches/emailHandler', () => ({
-  ...jest.requireActual('@/ches'),
-  sendNewRequestEmails: jest.fn(async () => [200]),
+jest.mock('@/ches/private-cloud/emailHandler', () => ({
+  ...jest.requireActual('@/ches/helpers'),
+  sendCreateRequestEmails: jest.fn(async () => [200]),
+  sendEditRequestEmails: jest.fn(async () => [200]),
   sendRequestApprovalEmails: jest.fn(async () => [200]),
-  sendRequestDenialEmails: jest.fn(async () => [200]),
+  sendRequestRejectionEmails: jest.fn(async () => [200]),
+  sendDeleteRequestEmails: jest.fn(async () => [200]),
+  sendDeleteRequestApprovalEmails: jest.fn(async () => [200]),
+  sendProvisionedEmails: jest.fn(async () => [200]),
+}));
+
+jest.mock('@/ches/private-cloud/emailHandler', () => ({
+  ...jest.requireActual('@/ches/helpers'),
+  sendCreateRequestEmails: jest.fn(async () => [200]),
+  sendEditRequestEmails: jest.fn(async () => [200]),
+  sendRequestApprovalEmails: jest.fn(async () => [200]),
+  sendRequestRejectionEmails: jest.fn(async () => [200]),
+  sendDeleteRequestEmails: jest.fn(async () => [200]),
+  sendDeleteRequestApprovalEmails: jest.fn(async () => [200]),
+  sendProvisionedEmails: jest.fn(async () => [200]),
 }));
 
 export async function cleanUp() {

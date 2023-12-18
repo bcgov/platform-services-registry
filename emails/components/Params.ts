@@ -2,10 +2,239 @@ import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
+
+import {
+  PublicCloudRequestWithProjectAndRequestedProject,
+  PublicCloudRequestWithRequestedProject,
+} from '@/requestActions/public-cloud/decisionRequest';
+
 import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
 
 const sampleDate = new Date();
-export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
+
+export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
+  id: 'some-id',
+  licencePlate: 'ABC123',
+  createdByEmail: 'user@example.com',
+  decisionMakerEmail: 'manager@example.com',
+  type: 'CREATE', // or EDIT
+  decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
+  humanComment: 'This is a sample request',
+  active: true,
+  created: new Date('2023-11-30T00:00:00Z'),
+  decisionDate: new Date('2023-12-01T00:00:00Z'),
+  projectId: 'project-id',
+  requestedProjectId: 'requested-project-id',
+  userRequestedProjectId: 'user-requested-project-id',
+  requestedProject: {
+    id: 'requested-project-id',
+    licencePlate: 'XYZ789',
+    name: 'Sample Project',
+    description: 'This is a sample project description',
+    status: 'ACTIVE', // or INACTIVE
+    created: new Date('2023-11-30T00:00:00Z'),
+    accountCoding: '12345',
+    budget: {
+      dev: 1000.0,
+      test: 2000.0,
+      prod: 3000.0,
+      tools: 500.0,
+    },
+    projectOwnerId: 'project-owner-id',
+    primaryTechnicalLeadId: 'primary-lead-id',
+    secondaryTechnicalLeadId: 'secondary-lead-id',
+    ministry: 'EDUC', // or any other enum value from Ministry
+    provider: 'AWS',
+    projectOwner: {
+      id: 'd',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'John.Doe@gov.bc.ca',
+      idir: 'JDOE',
+    },
+    primaryTechnicalLead: {
+      id: 'c',
+      firstName: 'Sarah',
+      lastName: 'Williams',
+      email: 'sarah.williams@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
+    },
+    secondaryTechnicalLead: null,
+  },
+};
+
+export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedProject = {
+  id: 'unique-id',
+  licencePlate: 'LIC123',
+  createdByEmail: 'creator@example.com',
+  decisionMakerEmail: 'decider@example.com',
+  type: 'CREATE', // or EDIT
+  decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
+  humanComment: 'This is an example request',
+  active: true,
+  created: new Date('2023-11-30T00:00:00Z'),
+  decisionDate: new Date('2023-12-01T00:00:00Z'),
+  projectId: 'existing-project-id',
+  requestedProjectId: 'new-project-id',
+  userRequestedProjectId: 'user-request-project-id',
+  project: {
+    id: 'existing-project-id',
+    licencePlate: 'LIC456',
+    name: 'Existing Project',
+    description: 'Description of the existing project',
+    status: 'ACTIVE', // or INACTIVE
+    created: new Date('2023-11-30T00:00:00Z'),
+    accountCoding: 'AC12345',
+    budget: {
+      dev: 1500.0,
+      test: 2500.0,
+      prod: 3500.0,
+      tools: 750.0,
+    },
+    projectOwnerId: 'owner-id',
+    primaryTechnicalLeadId: 'primary-lead-id',
+    secondaryTechnicalLeadId: 'secondary-lead-id',
+    ministry: 'FIN', // or other Ministry enum value
+    provider: 'AWS', // or GOOGLE
+    projectOwner: {
+      id: 'd',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'John.Doe@gov.bc.ca',
+      idir: 'JDOE',
+    },
+    primaryTechnicalLead: {
+      id: 'c',
+      firstName: 'Sarah',
+      lastName: 'Williams',
+      email: 'sarah.williams@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
+    },
+    secondaryTechnicalLead: null,
+  },
+  requestedProject: {
+    id: 'new-project-id',
+    licencePlate: 'LIC789',
+    name: 'Requested Project',
+    description: 'Description of the requested project',
+    status: 'INACTIVE', // or ACTIVE
+    created: new Date('2023-11-30T00:00:00Z'),
+    accountCoding: 'AC67890',
+    budget: {
+      dev: 2000.0,
+      test: 3000.0,
+      prod: 4000.0,
+      tools: 1000.0,
+    },
+    projectOwnerId: 'new-owner-id',
+    primaryTechnicalLeadId: 'new-primary-lead-id',
+    secondaryTechnicalLeadId: 'new-secondary-lead-id',
+    ministry: 'EDUC', // or other Ministry enum value
+    provider: 'AWS', // or AWS
+    projectOwner: {
+      id: 'd',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'John.Doe@gov.bc.ca',
+      idir: 'JDOE',
+    },
+    primaryTechnicalLead: {
+      id: 'c',
+      firstName: 'Sarah',
+      lastName: 'Williams',
+      email: 'sarah.williams@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
+    },
+    secondaryTechnicalLead: null,
+  },
+};
+
+export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
+  id: 'requested-project-id',
+  licencePlate: 'XYZ789',
+  name: 'Sample Project',
+  description: 'This is a sample project description',
+  status: 'ACTIVE', // or INACTIVE
+  created: new Date('2023-11-30T00:00:00Z'),
+  accountCoding: '12345',
+  budget: {
+    dev: 1000.0,
+    test: 2000.0,
+    prod: 3000.0,
+    tools: 500.0,
+  },
+  projectOwnerId: 'project-owner-id',
+  primaryTechnicalLeadId: 'primary-lead-id',
+  secondaryTechnicalLeadId: 'secondary-lead-id',
+  ministry: 'EDUC', // or any other enum value from Ministry
+  provider: 'AWS',
+  projectOwner: {
+    id: 'd',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@gov.bc.ca',
+    image: null,
+    ministry: 'CITZ',
+    archived: false,
+    created: sampleDate,
+    lastSeen: sampleDate,
+    upn: 'John.Doe@gov.bc.ca',
+    idir: 'JDOE',
+  },
+  primaryTechnicalLead: {
+    id: 'c',
+    firstName: 'Sarah',
+    lastName: 'Williams',
+    email: 'sarah.williams@gov.bc.ca',
+    image: null,
+    ministry: 'CITZ',
+    archived: false,
+    created: sampleDate,
+    lastSeen: sampleDate,
+    upn: 'Sarah.Williams@gov.bc.ca',
+    idir: 'SWILLIAMS',
+  },
+  secondaryTechnicalLead: null,
+};
+
+export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
   id: 'a',
   licencePlate: 'be74f8',
   createdByEmail: 'john.doe@gov.bc.ca',
@@ -95,7 +324,7 @@ export const sampleRequest: PrivateCloudRequestWithRequestedProject = {
   },
 };
 
-export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProject = {
+export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequestedProject = {
   id: 'a',
   licencePlate: 'be74f8',
   createdByEmail: 'john.doe@gov.bc.ca',
@@ -269,7 +498,6 @@ export const sampleEditRequest: PrivateCloudRequestWithProjectAndRequestedProjec
     },
   },
 };
-// Edit name, description and primary TL, prod quotas, test quota
 
 export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
   id: 'a',

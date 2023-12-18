@@ -12,7 +12,7 @@ interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
 }
 
-export const RequestApprovalTemplate = ({ request }: EmailProp) => {
+const RequestApprovalTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
   return (

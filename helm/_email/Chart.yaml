@@ -1,0 +1,6 @@
+apiVersion: v2
+name: email
+description: A Helm chart for Platform Registry Email Dashboard
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
