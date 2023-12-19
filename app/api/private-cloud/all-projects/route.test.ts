@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GET as downloadCsv } from '@/app/api/private-cloud/allprojects/route';
+import { GET as downloadCsv } from '@/app/api/private-cloud/all-projects/route';
 import { getServerSession } from 'next-auth/next';
 import { MockedFunction } from 'jest-mock';
 import { expect } from '@jest/globals';
@@ -20,7 +20,7 @@ import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOpti
 // import { cleanUp } from "@/jest.setup";
 
 const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/private-cloud/allprojects`;
+const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
 
 // Mocking getServerSession
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
@@ -242,11 +242,9 @@ describe('CSV Download Route', () => {
     console.log('Seeding database with projects');
     for (let i = 0; i < projectData.length; i++) {
       const project = createProjectObject(projectData[i], i);
-      //console.log(`Creating project: ${project.name}`);
       await prisma.privateCloudProject.create({ data: project });
     }
     const allProjects = await prisma.privateCloudProject.findMany({});
-    // console.log(`Seeded Projects: ${JSON.stringify(allProjects)}`);
   });
 
   // Clean up database after tests are done
@@ -256,19 +254,16 @@ describe('CSV Download Route', () => {
   });
 
   test('should return 401 if user is not authenticated', async () => {
-    //console.log('Testing unauthenticated request');
     mockedGetServerSession.mockResolvedValue(null);
 
     const req = new NextRequest(API_URL, {
       method: 'GET',
     });
     const response = await downloadCsv(req);
-    //console.log(`Response Status: ${response.status}`);
     expect(response.status).toBe(401);
   });
 
   test('should return CSV data for all projects', async () => {
-    //console.log('Testing CSV data for all projects');
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
       user: { email: 'user@example.com', roles: ['admin'] },
@@ -277,7 +272,6 @@ describe('CSV Download Route', () => {
     const req = new NextRequest(API_URL, { method: 'GET' });
 
     const response = await downloadCsv(req);
-    //console.log(`Response Status: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`);
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toBe('text/csv');
   });
@@ -300,13 +294,10 @@ describe('CSV Download Route', () => {
     );
 
     const response = await downloadCsv(req);
-    console.log('Response:', response);
-    expect(response.status).toBe(204); //handling empty datasets differently, such as 204 No Content
+    expect(response.status).toBe(204);
   });
 
   test('should return correct CSV data with all query parameters', async () => {
-    // console.log('Testing with all query parameters');
-    // Mock a valid session and setup query parameters
     mockedGetServerSession.mockResolvedValue({
       user: { email: 'admin@example.com', roles: ['admin'] },
     });
@@ -316,49 +307,39 @@ describe('CSV Download Route', () => {
     });
 
     const response = await downloadCsv(req);
-    //console.log(`Response Status: ${response.status}`);
     expect(response.status).toBe(200);
 
     // Parse the CSV content
     const csvContent = await response.text();
-    //console.log(`CSV Content: ${csvContent}`);
     const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
-    //console.log(`Full CSV Content: ${JSON.stringify(records)}`); // Log full CSV content
-
-    // Assertions to check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
+    // check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
     const relevantRecord = records.find(
       (record: CsvRecord) =>
         record.name.includes('TestProject') && record.ministry === 'AG' && record.cluster === 'SILVER',
     );
-    //console.log(`Relevant Record: ${JSON.stringify(relevantRecord)}`);
     expect(relevantRecord).toBeDefined();
   });
 
-  /*test('should handle invalid query parameters correctly', async () => {
-      console.log('Testing with invalid query parameters');
-      // Mock a valid session
-      mockedGetServerSession.mockResolvedValue({
-        user: { email: 'admin@example.com', roles: ['admin'] },
-      });
+  test('should handle invalid query parameters correctly', async () => {
+    // Mock a valid session
+    mockedGetServerSession.mockResolvedValue({
+      user: { email: 'admin@example.com', roles: ['admin'] },
+    });
 
-      // Create a request with invalid query parameters
-      const req = new NextRequest(`${API_URL}?search=*&ministry=InvalidMinistry&cluster=InvalidCluster&active=maybe`, {
-        method: 'GET',
-      });
+    // Create a request with invalid query parameters
+    const req = new NextRequest(`${API_URL}?search=*&ministry=InvalidMinistry&cluster=InvalidCluster&active=maybe`, {
+      method: 'GET',
+    });
 
-      // Call the downloadCsv function with the request
-      const response = await downloadCsv(req);
-      console.log(`Response Status: ${response.status}`);
+    // Call the downloadCsv function with the request
+    const response = await downloadCsv(req);
+    expect(response.status).toBe(204);
+    const csvContent = await response.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
-
-      expect(response.status).toBe(500);
-      const csvContent = await response.text();
-      console.log(`CSV Content: ${csvContent}`);
-      const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
-
-      expect(records.length).toBe(0);
-  });*/
+    expect(records.length).toBe(0);
+  });
 
   test('should return correct data for combined search and filter parameters', async () => {
     // Mock user session
