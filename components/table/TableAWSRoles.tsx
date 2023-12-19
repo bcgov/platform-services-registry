@@ -5,7 +5,7 @@ import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 import { getGroups } from '@/app/api/public-cloud/aws-roles/routes';
 import { usePathname } from 'next/navigation';
-//server actions next.js
+
 export default function TableAWSRoles({
   currentPage,
   pageSize,
@@ -18,8 +18,7 @@ export default function TableAWSRoles({
   tableBody: React.ReactNode;
 }) {
   const pathname = usePathname();
-
-  return (
+    return (
     <div className="border-2 rounded-xl overflow-hidden">
       <UserAWSRolesTableTop
         title="BC Gov’s Landing Zone in AWS - Manage Users"
@@ -27,7 +26,7 @@ export default function TableAWSRoles({
         description="Assign roles to grant users access below"
       />
       <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
-      <nav
+           <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
         aria-label="Pagination"
       >
