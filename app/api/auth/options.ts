@@ -67,7 +67,7 @@ export const authOptions: AuthOptions = {
 
       const decodedToken = jwt.decode(token.accessToken || '') as any;
 
-      token.roles = decodedToken?.resource_access?.['registry-web']?.roles;
+      token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
 
       return token;
     },
