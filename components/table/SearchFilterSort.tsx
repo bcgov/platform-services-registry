@@ -53,6 +53,12 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
         throw new Error('Network response was not ok');
       }
 
+      if (response.status === 204) {
+        console.log('No data to download');
+        alert('No data available for download.');
+        return;
+      }
+
       const blob = await response.blob();
 
       const url = window.URL.createObjectURL(blob);

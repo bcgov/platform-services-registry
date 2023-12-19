@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      console.log('No session, sending 401');
+      //console.log('No session, sending 401');
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       active: searchParams.get('active') === 'true', //Converts 'true' string to true boolean
     });
 
-    console.log(`Parsed Search Params: ${JSON.stringify(parsedSearchParams)}`); // Log the parsed search parameters
+    //console.log(`Parsed Search Params: ${JSON.stringify(parsedSearchParams)}`); // Log the parsed search parameters
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
@@ -48,6 +48,12 @@ export async function GET(req: NextRequest) {
       ministryRoles,
       parsedSearchParams.active,
     );
+
+    console.log(`Data: ${JSON.stringify(data)}`);
+
+    if (data.length === 0) {
+      return new NextResponse(null, { status: 204 });
+    }
 
     // Map the data to the correct format for CSV conversion
     const formattedData = data.map((project: PrivateProject) => ({
