@@ -36,13 +36,26 @@ export async function publicCloudProjectsPaginated(
   // Then, get the actual page of data
   proms.push(getPublicCloudProjectsResult({ searchQuery, skip, pageSize }));
 
-  const [total, data] = await Promise.all(proms);
+  let result;
+
+  try {
+    result = await Promise.all(proms);
+  } catch (e) {
+    console.log(e);
+    return {
+      data: [],
+      total: 0,
+    };
+  }
+
+  const [total, data] = result;
 
   return {
     data: data as PublicProject[],
     total: total as number,
   };
 }
+
 export async function publicCloudRequestsPaginated(
   pageSize: number,
   pageNumber: number,
@@ -221,7 +234,7 @@ export async function publicCloudRequestsPaginated(
     ],
   });
 
-  const result = await prisma.publicCloudRequest.aggregateRaw({
+  const requests = await prisma.publicCloudRequest.aggregateRaw({
     pipeline: [
       // Requested Project
       {
@@ -282,10 +295,24 @@ export async function publicCloudRequestsPaginated(
     ],
   });
 
+  let result;
+
+  try {
+    result = await Promise.all([count, requests]);
+  } catch (e) {
+    console.log(e);
+    return {
+      data: [],
+      total: 0,
+    };
+  }
+
+  const [total, data] = result;
+
   // @ts-ignore
-  const totalCount = count.length;
+  const totalCount = total.length;
   return {
-    data: result as any,
+    data: data as any,
     total: totalCount as number,
   };
 }
