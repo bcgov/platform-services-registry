@@ -16,7 +16,7 @@ export default function Tabs() {
       type="button"
       href={`/${pathname.split('/')[1]}/create`}
     >
-      <Image src={Plus} alt="plus" width={20} height={20} className="mr-2 mt-[3px]" />
+      <Image src={Plus} alt="plus" width={20} height={20} className="mr-4 mt-[3px]" />
       REQUEST A NEW PROJECT SET
     </Link>
   );
