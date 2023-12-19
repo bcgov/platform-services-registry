@@ -98,6 +98,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     onSubmit({ ...methods.getValues(), comment });
   };
 
+  useEffect(() => {
+    if (data?.requestedProject.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   return (
     <div>
       <FormProvider {...methods}>

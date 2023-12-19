@@ -94,6 +94,18 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [requestData]);
 
+  useEffect(() => {
+    if (data?.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
