@@ -7,12 +7,12 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
-  comment: string;
+  productName: string;
+  comment?: string;
 }
 
-export const DenialTemplate = ({ request, comment }: EmailProp) => {
-  if (!request) return <></>;
+const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
+  if (!productName) return <></>;
 
   return (
     <Html>
@@ -23,10 +23,10 @@ export const DenialTemplate = ({ request, comment }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Sorry, your request was Rejected</Heading>
-                <Text>Hi {request.requestedProject.name} team, </Text>
+                <Text>Hi {productName} team, </Text>
                 <Text className="">
-                  Your request for the product on the Private Cloud Openshift platform has rejected due to the following
-                  reason(s):
+                  Your request for the product on the Private Cloud Openshift platform has been rejected due to the
+                  following reason(s):
                 </Text>
                 <Text className="">{comment}</Text>
                 <Text>
@@ -34,11 +34,15 @@ export const DenialTemplate = ({ request, comment }: EmailProp) => {
                   applies
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Log in to Registry
                 </Button>
+              </div>
+              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+                <Heading className="text-lg text-black">Comments</Heading>
+                <Text className="mb-0">{comment}</Text>
               </div>
               <div>
                 <Closing />
@@ -51,4 +55,4 @@ export const DenialTemplate = ({ request, comment }: EmailProp) => {
   );
 };
 
-export default DenialTemplate;
+export default RequestRejectionTemplate;

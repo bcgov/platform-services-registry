@@ -1,4 +1,4 @@
-name: 3.Deploy Prod Environment
+name: 03.Deploy Prod Environment
 
 on:
   release:

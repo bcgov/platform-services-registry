@@ -31,8 +31,11 @@
     "@typescript-eslint/no-var-requires": "off",
     "import/no-extraneous-dependencies": "off",
     "no-else-return": "error",
+    "no-nested-ternary": "off",
+    "no-unneeded-ternary": "error",
     "react/react-in-jsx-scope": "off",
     "prefer-destructuring": "off",
-    "sort-imports": "off"
+    "sort-imports": "off",
+    "no-warning-comments": "off"
   }
 }

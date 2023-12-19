@@ -7,13 +7,12 @@ import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
 }
 
-export const NewRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
   return (
@@ -31,7 +30,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
                   administrators have been notified and will review your request.
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Review Request

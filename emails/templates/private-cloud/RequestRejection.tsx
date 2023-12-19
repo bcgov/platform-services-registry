@@ -1,4 +1,3 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../../components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
@@ -7,12 +6,12 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
-  comment: string;
+  productName: string;
+  comment?: string;
 }
 
-export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
-  if (!request) return <></>;
+const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
+  if (!productName) return <></>;
 
   return (
     <Html>
@@ -23,10 +22,10 @@ export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
-                <Text>Hi {request.requestedProject.name} team, </Text>
+                <Text>Hi {productName} team, </Text>
                 <Text className="">
-                  Your request regarding the product {request.requestedProject.name} on the Private Cloud Openshift
-                  platform has rejected due to the following reason(s):
+                  Your request regarding the product {productName} on the Private Cloud Openshift platform has been
+                  rejected due to the following reason(s):
                 </Text>
                 <Text className="">{comment}</Text>
                 <Text>
@@ -34,7 +33,7 @@ export const RequestRejectionTemplate = ({ request, comment }: EmailProp) => {
                   applies
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Log in to Registry

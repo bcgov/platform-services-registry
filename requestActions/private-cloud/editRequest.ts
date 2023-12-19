@@ -42,9 +42,11 @@ export default async function editRequest(
     throw new Error('Project does not exist.');
   }
 
+  const { userComment, ...rest } = formData;
+
   // merge the form data with the existing project data
   const requestedProject = {
-    ...formData,
+    ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
     cluster: project.cluster,
@@ -77,7 +79,7 @@ export default async function editRequest(
       : undefined,
   };
 
-  // The edit request will requre manual admin approval if any of the quotas are being changed.
+  // The edit request will require manual admin approval if any of the quotas are being changed.
   const isQuotaChanged = !(
     JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
     JSON.stringify(formData.testQuota) === JSON.stringify(project.testQuota) &&
@@ -101,6 +103,7 @@ export default async function editRequest(
       active: true,
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
+      userComment,
       requestedProject: {
         create: requestedProject,
       },

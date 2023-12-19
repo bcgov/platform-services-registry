@@ -4,17 +4,17 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/private-cloud/products',
+        destination: '/private-cloud/products/all',
         permanent: true,
       },
       {
         source: '/private-cloud',
-        destination: '/private-cloud/products',
+        destination: '/private-cloud/products/all',
         permanent: true,
       },
       {
         source: '/public-cloud',
-        destination: '/public-cloud/products',
+        destination: '/public-cloud/products/all',
         permanent: true,
       },
     ];

@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DecisionStatus, Prisma, PrivateCloudRequest, PrivateCloudRequestedProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
-// import { sendProvisionedEmails } from "../ches/emailHandlers.js";
-
-// See this for pagination: https://github.com/Puppo/it-s-prisma-time/blob/10-pagination/src/index.ts
+import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { sendProvisionedEmails } from '@/ches/private-cloud/emailHandler';
 
 export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {
@@ -69,8 +68,25 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
 
     await prisma.$transaction([updateRequest, upsertProject]);
 
-    // sendProvisionedEmails(request);
-    return new NextResponse(`Successfuly marked ${licencePlate} as provisioned.`, { status: 200 });
+    console.log(`Successfully marked ${licencePlate} as provisioned.`);
+
+    // revalidatePath('/private-cloud/requests', 'page');
+    // revalidatePath('/private-cloud/products', 'page');
+
+    // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
+    const project = await prisma.privateCloudProject.findUnique({
+      where: {
+        licencePlate,
+      },
+      include: {
+        projectOwner: true,
+        primaryTechnicalLead: true,
+        secondaryTechnicalLead: true,
+      },
+    });
+
+    sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts);
+    return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);
     return new NextResponse(error.message, { status: 500 });

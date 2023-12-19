@@ -9,7 +9,7 @@ import editRequest from '@/requestActions/public-cloud/editRequest';
 import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/createRequest';
 import { subscribeUsersToMautic } from '@/mautic';
 import { sendPublicCloudNatsMessage } from '@/nats';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
+import { sendEditRequestEmails } from '@/ches/public-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -81,10 +81,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
 
-  // await sendEditRequestEmails(
-  //   editRequest.project,
-  //   editRequest.requestedProject
-  // );
+  await sendEditRequestEmails(request);
 
-  return new NextResponse('Successfuly created and provisioned edit request ', { status: 200 });
+  return new NextResponse('Successfully created and provisioned edit request ', { status: 200 });
 }

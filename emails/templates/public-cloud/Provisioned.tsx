@@ -5,11 +5,11 @@ import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 import ProductDetails from '../../components/ProductDetails';
-import NamespaceDetails from '../../components/NamespaceDetails';
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import ProviderDetails from '../../components/ProviderDetails';
+import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
 
 interface EmailProp {
-  product: PrivateCloudRequestedProjectWithContacts;
+  product: PublicCloudRequestedProjectWithContacts;
 }
 
 const ProvisionedTemplate = ({ product }: EmailProp) => {
@@ -26,30 +26,19 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 </Heading>
                 <Text>Hi {product.name} Team, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete.{' '}
-                  <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
-                    Log in to the cluster console
-                  </Link>{' '}
-                  using the button below and you&apos;ll see all four namespaces included in a project set. If you have
-                  any more questions reach out to the Platform Services team in the RocketChat channel{' '}
+                  Your request for a new project set for your product on the Public Cloud platform is complete. If you
+                  have any more questions reach out to the Platform Services team in the RocketChat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops&#8209;operations
                   </Link>
                 </Text>
                 <Text className="">
                   The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
-                  above and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is
+                  below and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is
                   removed as a project contact in the Platform Registry, they will lose their access to the project set
                   namespaces in Openshift. The new Product or Technical Lead provided on the product details page will
                   gain the administrative access to the namespaces.
                 </Text>
-                <Button
-                  href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}
-                  className="bg-bcorange rounded-md px-4 py-2 text-white"
-                >
-                  Log in to console
-                </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
@@ -62,7 +51,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={product.cluster} licencePlate={product.licencePlate} />
+                <ProviderDetails provider={product.provider} />
               </div>
               <div>
                 <Closing />

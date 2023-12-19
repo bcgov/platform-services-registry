@@ -2,8 +2,11 @@ dependencies:
 - name: app
   repository: file://../_app
   version: 0.1.0
+- name: email
+  repository: file://../_email
+  version: 0.1.0
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
-  version: 14.4.0
-digest: sha256:983bb23aad1e13333e8cef10cb35225d07dae605e4abb13743a41ffb7acd9205
-generated: "2023-12-04T16:57:09.648836726Z"
+  version: 14.4.3
+digest: sha256:a1292c9c73821a4fbce25db905ba83a8466306d78d2d2e2ddee3dc451b6f286f
+generated: "2023-12-18T17:33:35.641851009Z"

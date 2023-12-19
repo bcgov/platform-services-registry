@@ -1,0 +1,9 @@
+dependencies:
+- name: airflow
+  repository: https://airflow.apache.org/
+  version: 1.11.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 13.2.24
+digest: sha256:e84c805cbfa54c5d2042462300a88d69087646aa634353eaeff0daa8e8de71a0
+generated: "2023-12-13T21:11:11.723800904Z"

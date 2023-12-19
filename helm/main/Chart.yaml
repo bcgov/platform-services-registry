@@ -9,7 +9,11 @@ dependencies:
     version: '0.1.0'
     repository: 'file://../_app'
     condition: app.enabled
+  - name: email
+    version: '0.1.0'
+    repository: 'file://../_email'
+    condition: email.enabled
   - name: mongodb
-    version: '14.4.0'
+    version: '14.4.3'
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled

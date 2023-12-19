@@ -95,18 +95,22 @@ export default function AsyncAutocomplete({
       setError(name, {
         type: 'manual',
         message:
-          'The IDIR account assosiated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry',
+          'The IDIR account associated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry',
       });
     } else {
       clearErrors(name);
     }
 
-    setValue(name, {
-      firstName,
-      lastName,
-      email: mail,
-      ministry,
-    });
+    setValue(
+      name,
+      {
+        firstName,
+        lastName,
+        email: mail,
+        ministry,
+      },
+      { shouldDirty: true },
+    );
   };
 
   useEffect(() => {
@@ -203,7 +207,7 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            value={isString(selected) ? selected : selected.givenName}
+            // value={isString(selected) ? selected : selected.givenName}
             placeholder="Autofilled from IDIR"
             type="text"
             id="first-name"
@@ -220,7 +224,7 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            value={isString(selected) ? selected : selected.surname}
+            // value={isString(selected) ? selected : selected.surname}
             placeholder="Autofilled from IDIR"
             type="text"
             id="last-name"
@@ -237,7 +241,7 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            value={parseMinistryFromDisplayName(isString(selected) ? selected : selected.displayName)}
+            // value={parseMinistryFromDisplayName(isString(selected) ? selected : selected.displayName)}
             placeholder="Autofilled from IDIR"
             type="text"
             id="ministry"

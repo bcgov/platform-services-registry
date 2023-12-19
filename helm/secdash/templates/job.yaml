@@ -1,0 +1,49 @@
+{{- if and .Values.airflow.enabled (gt .Release.Revision 1)}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "main.fullname" . }}-airflow-dags-copy
+  labels: {{ include "main.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade,pre-rollback"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-weight": "-5"
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 100
+  template:
+    metadata:
+      name: {{ include "main.fullname" . }}-airflow-dags-copy
+    spec:
+      containers:
+        - name: {{ include "main.fullname" . }}-airflow-dags-copy
+          image: junminahn/rsync:latest
+          command: [/bin/sh, -c]
+          args:
+            - |
+              rsync --verbose --archive --omit-dir-times --no-perms --delete --exclude=__pycache__ "/newdags/" "/dags";
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          env:
+            - name: DAGS_SHA
+              value: {{ .Values.dags.sha }}
+          volumeMounts:
+            - name: secdash-airflow-dags
+              mountPath: /dags
+            {{- if .Values.dags.volumeMounts }}
+              {{- toYaml .Values.dags.volumeMounts | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: secdash-airflow-dags-copy
+          configMap:
+            name: secdash-airflow-dags
+        - name: secdash-airflow-dags
+          persistentVolumeClaim:
+            claimName: secdash-airflow-dags
+      restartPolicy: Never
+{{- end }}

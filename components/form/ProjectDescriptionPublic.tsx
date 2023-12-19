@@ -2,13 +2,15 @@
 
 import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
-
+import { providers, ministries } from '@/constants';
 export default function ProjectDescriptionPublic({
   disabled,
   providerDisabled,
+  isCreatePage,
 }: {
   disabled?: boolean;
   providerDisabled?: boolean;
+  isCreatePage?: boolean;
 }) {
   const {
     register,
@@ -17,18 +19,25 @@ export default function ProjectDescriptionPublic({
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
-      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-20">
+      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-14">
         BC Gov’s Landing Zone in AWS - Project Set Provisioning Request
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
-      <p className="font-bcsans text-base leading-6 mt-5">
-        If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
-        Cloud Accelerator Service team. Reach out to
-        {/* <a className="text-blue-600 dark:text-blue-500 hover:underline" href={"mailto:cloud.pathfinder@gov.bc.ca"}> Cloud Pathfinder </a>  */}
-        to get started.
-      </p>
+      {isCreatePage && (
+        <p className="font-bcsans text-base leading-6 mt-5">
+          If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
+          Cloud Accelerator Service team. Reach out to
+          {
+            <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:cloud.pathfinder@gov.bc.ca">
+              {' '}
+              Cloud.Pathfinder@gov.bc.ca{' '}
+            </a>
+          }
+          to get started.
+        </p>
+      )}
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
@@ -50,7 +59,7 @@ export default function ProjectDescriptionPublic({
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-            {errors.name?.message?.toString()}
+            Please provide a descriptive product name with no acronyms {errors.name?.message?.toString()}
           </p>
         </div>
 
@@ -94,9 +103,11 @@ export default function ProjectDescriptionPublic({
               )}
             >
               <option value="">Select Ministry</option>
-              <option>CITZ</option>
-              <option>PSA</option>
-              <option>HLTH</option>
+              {ministries.map((ministry) => (
+                <option key={ministry} value={ministry}>
+                  {ministry}
+                </option>
+              ))}
             </select>
 
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -105,7 +116,7 @@ export default function ProjectDescriptionPublic({
           </div>
         </div>
 
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-3 sm:ml-10">
           <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
             Cloud Service Provider
           </label>
@@ -121,11 +132,14 @@ export default function ProjectDescriptionPublic({
               )}
             >
               <option value="">Select Provider</option>
-              <option>AWS</option>
-              {/* <option>GCP</option> */}
+              {providers.map((provider) => (
+                <option key={provider} value={provider}>
+                  {provider}
+                </option>
+              ))}
             </select>
             <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the Cloud Service Provider (AWS or GCP)
+              Select the Cloud Service Provider
             </p>
           </div>
         </div>

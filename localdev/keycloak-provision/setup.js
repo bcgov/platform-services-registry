@@ -54,7 +54,7 @@ async function main() {
 
   let scope = null;
 
-  // Upate Realm
+  // Update Realm
   realm = await findRealm();
   if (realm) {
     await kcAdminClient.realms.update(

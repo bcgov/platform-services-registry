@@ -9,7 +9,7 @@ import makeDecisionRequest, {
 } from '@/requestActions/private-cloud/decisionRequest';
 import { sendPrivateCloudNatsMessage } from '@/nats';
 import { subscribeUsersToMautic } from '@/mautic';
-import { sendRequestApprovalEmails, sendRejectionEmails } from '@/ches/emailHandler';
+import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/ches/private-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -36,11 +36,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const body = await req.json();
-  const { comment, ...data } = body;
 
   // Validation
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(data);
+  const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
     console.log(parsedParams.error.message);
@@ -70,8 +69,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    sendRejectionEmails(request, comment);
-    return new NextResponse(`Request for ${request.licencePlate} succesfully created as rejected.`, {
+    sendRequestRejectionEmails(request.requestedProject, humanComment);
+    return new NextResponse(`Request for ${request.licencePlate} successfully created as rejected.`, {
       status: 200,
     });
   }
@@ -105,7 +104,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   // Send emails
   sendRequestApprovalEmails(request);
 
-  return new NextResponse(`Decision request for ${request.licencePlate} succesfully created.`, {
+  return new NextResponse(`Decision request for ${request.licencePlate} successfully created.`, {
     status: 200,
   });
 }

@@ -69,12 +69,14 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
   // };
 
   const handleCheckboxChange = (name: string, field: string, checked: boolean) => {
-    setValue(`commonComponents.${name}.${field}`, checked);
+    setValue(`commonComponents.${name}.${field}`, checked, { shouldDirty: true });
     // Uncheck the other checkbox if this one is checked
     if (checked) {
-      setValue(`commonComponents.${name}.${field === 'implemented' ? 'planningToUse' : 'implemented'}`, false);
+      setValue(`commonComponents.${name}.${field === 'implemented' ? 'planningToUse' : 'implemented'}`, false, {
+        shouldDirty: true,
+      });
     }
-    setValue('commonComponents.noServices', false);
+    setValue('commonComponents.noServices', false, { shouldDirty: true });
     clearErrors('commonComponents.noServices');
   };
 

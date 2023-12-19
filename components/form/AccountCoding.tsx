@@ -34,7 +34,7 @@ export default function AccountCoding({
   }, [accountCodingInitial, accountCodingSeparation]);
 
   useEffect(() => {
-    setValue('accountCoding', Object.values(accountCoding).join('').toLocaleUpperCase());
+    setValue('accountCoding', Object.values(accountCoding).join('').toLocaleUpperCase(), { shouldDirty: true });
   }, [setValue, accountCoding]);
 
   return (

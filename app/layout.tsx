@@ -4,7 +4,6 @@ import Provider from '@/components/Provider';
 import Nav from '@/components/nav/Nav';
 import classNames from '@/components/utils/classnames';
 import Footer from '@/components/Footer';
-// import Footer from '@/components/FooterLarge';
 
 const inter = Inter({
   subsets: ['latin'],

@@ -10,8 +10,7 @@ import editRequest, {
 } from '@/requestActions/private-cloud/editRequest';
 import { subscribeUsersToMautic } from '@/mautic';
 import { sendPrivateCloudNatsMessage } from '@/nats';
-import { sendEditRequestEmails } from '@/ches/emailHandler';
-// import { sendCreateRequestEmails } from "@/ches/emailHandlers.js";
+import { sendEditRequestEmails } from '@/ches/private-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -31,10 +30,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { email: authEmail, roles: authRoles } = session.user;
 
   const body = await req.json();
-  const { comment, ...data } = body;
 
   const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PrivateCloudEditRequestBodySchema.safeParse(data);
+  const parsedBody = PrivateCloudEditRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
     return new NextResponse(parsedParams.error.message, { status: 400 });
@@ -75,9 +73,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   );
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendEditRequestEmails(request, comment);
+    sendEditRequestEmails(request, formData.userComment);
     return new NextResponse(
-      'Successfuly edited project, admin approval will be required for this request to be provisioned ',
+      'Successfully edited project, admin approval will be required for this request to be provisioned ',
       { status: 200 },
     );
   }
@@ -109,7 +107,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  sendEditRequestEmails(request, comment);
+  sendEditRequestEmails(request, formData.userComment);
 
   return new NextResponse('success', { status: 200 });
 }

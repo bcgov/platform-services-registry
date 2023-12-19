@@ -1,4 +1,4 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../../components/Header';
 import ProductDetails from '../../components/ProductDetails';
@@ -9,7 +9,7 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
+  request: PublicCloudRequestWithRequestedProject;
 }
 
 export const NewRequestTemplate = ({ request }: EmailProp) => {
@@ -31,7 +31,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
                   Registry
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Review Request
@@ -48,7 +48,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={request.requestedProject.cluster} />
+                <NamespaceDetails cluster={request.requestedProject.provider} />
               </div>
               <div>
                 <Closing />
