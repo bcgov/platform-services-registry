@@ -241,7 +241,7 @@ describe('CSV Download Route', () => {
     console.log('Seeding database with projects');
     for (let i = 0; i < projectData.length; i++) {
       const project = createProjectObject(projectData[i], i);
-      console.log(`Creating project: ${project.name}`);
+      //console.log(`Creating project: ${project.name}`);
       await prisma.privateCloudProject.create({ data: project });
     }
     const allProjects = await prisma.privateCloudProject.findMany({});
@@ -254,19 +254,19 @@ describe('CSV Download Route', () => {
   });
 
   test('should return 401 if user is not authenticated', async () => {
-    console.log('Testing unauthenticated request');
+    //console.log('Testing unauthenticated request');
     mockedGetServerSession.mockResolvedValue(null);
 
     const req = new NextRequest(API_URL, {
       method: 'GET',
     });
     const response = await downloadCsv(req);
-    console.log(`Response Status: ${response.status}`);
+    //console.log(`Response Status: ${response.status}`);
     expect(response.status).toBe(401);
   });
 
   test('should return CSV data for all projects', async () => {
-    console.log('Testing CSV data for all projects');
+    //console.log('Testing CSV data for all projects');
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
       user: { email: 'user@example.com', roles: ['admin'] },
@@ -275,12 +275,12 @@ describe('CSV Download Route', () => {
     const req = new NextRequest(API_URL, { method: 'GET' });
 
     const response = await downloadCsv(req);
-    console.log(`Response Status: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`);
+    //console.log(`Response Status: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`);
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toBe('text/csv');
   });
 
-  /* test('should handle empty data sets correctly', async () => {
+  test('should handle empty data sets correctly', async () => {
     // Mock a valid session and an empty dataset scenario
     mockedGetServerSession.mockResolvedValue({
       user: {
