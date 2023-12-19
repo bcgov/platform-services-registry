@@ -174,7 +174,9 @@ export default function SignInPage() {
           >
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
-          <span>Provide an estimate for your project&apos;s projected budget if using AWS</span>
+          <span>
+            Provide an estimate for your project&apos;s projected budget if using AWS <strong>(must be in USD)</strong>
+          </span>
         </li>
       </ul>
       <br></br>
@@ -184,9 +186,9 @@ export default function SignInPage() {
           <span className="font-bold text-blue-700 font-sans text-xs">i</span>
         </div>
         <div>
-          <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
+          <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note for Public Cloud:</p>
           <p className="font-bcsans text-sm text-blue-700 mt-1">
-            The approval of new project set creation request is subject to having a signed Memorandum of Understanding
+            The approval of a new project set creation request is subject to having a signed Memorandum of Understanding
             (MoU) with the Public Cloud Team. If you do not have a MoU in place, please email us at
             <span> </span>
             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
