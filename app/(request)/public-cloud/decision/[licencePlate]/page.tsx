@@ -94,6 +94,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
+  useEffect(() => {
+    if (data?.requestedProject.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -125,7 +131,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
     </div>
   );
 }

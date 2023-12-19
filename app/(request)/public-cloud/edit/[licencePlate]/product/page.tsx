@@ -117,6 +117,12 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
+  useEffect(() => {
+    if (data?.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -147,7 +153,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
     </div>
   );
 }

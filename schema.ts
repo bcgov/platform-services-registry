@@ -82,10 +82,10 @@ export const QuotaInputSchema = z.object({
 export const DecisionOptionsSchema = z.enum(['APPROVED', 'REJECTED']);
 
 export const BudgetInputSchema = z.object({
-  dev: z.number().min(50, 'Value should be no less than USD 50').default(50),
-  test: z.number().min(50, 'Value should be no less than USD 50').default(50),
-  prod: z.number().min(50, 'Value should be no less than USD 50').default(50),
-  tools: z.number().min(50, 'Value should be no less than USD 50').default(50),
+  dev: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
+  test: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
+  prod: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
+  tools: z.number().min(50.0, 'Value should be no less than USD 50').default(5.0),
 });
 
 export const UserInputSchema = z.object({
