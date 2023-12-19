@@ -98,10 +98,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
-  const setComment = (comment: string) => {
-    onSubmit({ ...methods.getValues(), comment });
-  };
-
   useEffect(() => {
     if (data?.requestedProject.secondaryTechnicalLead) {
       setSecondTechLead(true);
@@ -156,14 +152,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
-      />
-      <Comment
-        open={openComment}
-        setOpen={setOpenComment}
-        onSubmit={setComment}
-        isLoading={isLoading}
-        type={data?.type}
-        action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
     </div>
