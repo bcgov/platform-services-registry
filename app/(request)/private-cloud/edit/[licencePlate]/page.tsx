@@ -16,6 +16,7 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
 import CommonComponents from '@/components/form/CommonComponents';
+import { PrivateCloudProject } from '@prisma/client';
 
 async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
   const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
@@ -93,6 +94,18 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [requestData]);
 
+  useEffect(() => {
+    if (data?.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   const onSubmit = async (val: any) => {
     setIsLoading(true);
     try {
@@ -146,7 +159,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <Quotas
               licensePlate={data?.licencePlate as string}
               disabled={isDisabled}
-              // currentProject={data as PrivateCloudProject}
+              currentProject={data as PrivateCloudProject}
             />
             <CommonComponents disabled={isDisabled} />
           </div>

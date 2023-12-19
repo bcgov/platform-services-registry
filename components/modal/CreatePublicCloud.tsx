@@ -129,8 +129,7 @@ export default function Modal({
                     />
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
                       By checking this box, I confirm that the ministry product team is liable to pay the base charge of
-                      CAD 400 to 600 per month for each project set created. This value may fluctuate depending on the
-                      USD to CAD exchange rate changes.
+                      USD 400 to 600 per month for each project set created.
                     </p>
                   </div>
                 </div>
