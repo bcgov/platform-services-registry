@@ -41,7 +41,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
       REALM_NAME: platform-services
-      CLIENT_ID: registry-web
+      CLIENT_ID: pltsvc
       CLIENT_SECRET: testsecret # pragma: allowlist secret
     depends_on:
     - keycloak
