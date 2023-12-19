@@ -119,6 +119,12 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
+  useEffect(() => {
+    if (data?.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   return (
     <div>
       <FormProvider {...methods}>

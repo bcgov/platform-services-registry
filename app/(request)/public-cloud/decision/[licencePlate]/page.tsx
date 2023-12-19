@@ -94,6 +94,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
+  useEffect(() => {
+    if (data?.requestedProject.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [data]);
+
   return (
     <div>
       <FormProvider {...methods}>
