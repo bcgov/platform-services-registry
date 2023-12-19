@@ -23,7 +23,8 @@ const parseError = (error: unknown): void => {
     console.log(error.message);
   } else console.log(String(error));
 };
-const getToken = async (): Promise<string | undefined> => {
+
+export const getToken = async (): Promise<string | undefined> => {
   try {
     const apiUrl = `${process.env.AWS_ROLES_BASE_URL}/realms/${process.env.AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
     const requestBody = {
@@ -59,7 +60,7 @@ awsRolesApiInstance.interceptors.request.use(
   },
 );
 
-const getGroups: Promise<Group[] | undefined> = awsRolesApiInstance
+export const getGroups: Promise<Group[] | undefined> = awsRolesApiInstance
   .get('/groups')
   .then((response) => {
     return response.data;

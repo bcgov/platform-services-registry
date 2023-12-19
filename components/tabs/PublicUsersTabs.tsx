@@ -7,27 +7,27 @@ import { usePathname } from 'next/navigation';
 const tabs = [
   {
     name: 'Admins',
-    href: 'admins',
+    href: 'Admins',
   },
   {
     name: 'Billing Viewers',
-    href: 'billing-viewers',
+    href: '/BillingViewers',
   },
   {
     name: 'Developers',
-    href: 'developers',
+    href: '/Developers',
   },
   {
     name: 'Security Auditors',
-    href: 'security-auditors',
+    href: '/SecurityAuditors',
   },
   {
     name: 'Viewers',
-    href: 'viewers',
+    href: '/Viewers',
   },
 ];
 
-export default function PublicUsersTabs({ className }: { className?: string }) {
+export default function PublicUsersTabs() {
   const pathname = usePathname();
   return (
     <div>

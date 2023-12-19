@@ -55,7 +55,7 @@ export default function PublicProductTabs({ className }: { className?: string })
               </Link>
               <Link
                 key="PUBLIC CLOUD USER ROLES"
-                href={`${pathname.split('/').splice(0, 4).join('/')}/roles/admins`}
+                href={`${pathname.split('/').splice(0, 4).join('/')}/roles/Admins`}
                 className={classNames(
                   pathname.split('/').includes('roles')
                     ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
