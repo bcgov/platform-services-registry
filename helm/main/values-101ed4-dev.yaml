@@ -6,6 +6,7 @@ global:
     "Env": "dev"
 
 app:
+  enabled: true
   env:
     "APP_ENV": "dev"
     "BASE_URL": "https://dev-pltsvc.apps.silver.devops.gov.bc.ca"

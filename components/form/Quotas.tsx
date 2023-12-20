@@ -168,10 +168,19 @@ export default function Quotas({
             <h3 className="font-bcsans text-base 2xl:text-lg font-semibold leading-7 text-gray-900">
               {nameSpace.charAt(0).toUpperCase() + nameSpace.slice(1)} Namespace
             </h3>
+
             <span>
-              {licensePlate}
-              {namespaceSuffixes[nameSpace] || ''}
+              <a
+                className="text-blue-500 hover:text-blue-400"
+                href={`https://console.apps.${currentProject?.cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licensePlate}${namespaceSuffixes[nameSpace]}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {licensePlate}
+                {namespaceSuffixes[nameSpace] || ''}
+              </a>
             </span>
+
             {(['cpu', 'memory', 'storage'] as const).map((quotaName) => (
               <QuotaInput
                 key={quotaName}
