@@ -17,7 +17,7 @@ export default function Tabs() {
       href={`/${pathname.split('/')[1]}/create`}
     >
       <Image src={Plus} alt="plus" width={20} height={20} className="mr-4 mt-[3px]" />
-      REQUEST A NEW PROJECT SET
+      REQUEST A NEW PRODUCT
     </Link>
   );
 }
