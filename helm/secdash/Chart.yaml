@@ -10,6 +10,6 @@ dependencies:
     repository: "https://airflow.apache.org/"
     condition: airflow.enabled
   - name: postgresql
-    version: "13.2.24"
+    version: "13.2.25"
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
