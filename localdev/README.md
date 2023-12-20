@@ -48,7 +48,7 @@ Within the local Docker container context, `5 services` are established:
 - `Keycloak HTTP`: http://localhost:8080
 - `Keycloak HTTPS`: https://localhost:8443
 - `Keycloak Realm`: platform-services
-- `Keycloak Client ID`: registry-web
+- `Keycloak Client ID`: pltsvc
 - `Keyclaok Client Secret`: testsecret
 - `MongoDB URL`: mongodb@localhost:27017
 - `Microsoft 365 Proxy Url`: http://localhost:8000

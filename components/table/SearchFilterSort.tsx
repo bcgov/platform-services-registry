@@ -48,9 +48,15 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(`/api/${apiContext}/allprojects?${searchParams.toString()}`);
+      const response = await fetch(`/api/${apiContext}/all-projects?${searchParams.toString()}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
+      }
+
+      if (response.status === 204) {
+        console.log('No data to download');
+        alert('No data available for download.');
+        return;
       }
 
       const blob = await response.blob();

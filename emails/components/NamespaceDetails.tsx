@@ -1,4 +1,4 @@
-import { Heading, Text } from '@react-email/components';
+import { Heading, Text, Link } from '@react-email/components';
 
 export default function NamespaceDetails({ cluster, licencePlate }: { cluster: string; licencePlate?: string }) {
   return (
@@ -11,13 +11,34 @@ export default function NamespaceDetails({ cluster, licencePlate }: { cluster: s
       {licencePlate && (
         <>
           <Text className="mb-0 font-semibold h-4">Development Namespace: </Text>
-          <Text className="mt-0 h-4">{licencePlate}-dev</Text>
+          <Link
+            className="mt-0 h-4"
+            href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-dev`}
+          >
+            <Text className="mt-0 h-4">{licencePlate}-dev</Text>
+          </Link>
           <Text className="mb-0 font-semibold h-4">Test Namespace: </Text>
-          <Text className="mt-0 h-4">{licencePlate}-test</Text>
+          <Link
+            className="mt-0 h-4"
+            href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-test`}
+          >
+            <Text className="mt-0 h-4">{licencePlate}-test</Text>
+          </Link>
           <Text className="mb-0 font-semibold h-4">Production Namespace: </Text>
-          <Text className="mt-0 h-4">{licencePlate}-prod</Text>
+          <Link
+            className="mt-0 h-4"
+            href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-prod`}
+          >
+            <Text className="mt-0 h-4">{licencePlate}-prod</Text>
+          </Link>
+
           <Text className="mb-0 font-semibold h-4">Tools Namespace: </Text>
-          <Text className="mt-0 h-4">{licencePlate}-tools</Text>
+          <Link
+            className="mt-0 h-4"
+            href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-tools`}
+          >
+            <Text className="mt-0 h-4">{licencePlate}-tools</Text>
+          </Link>
         </>
       )}
     </div>

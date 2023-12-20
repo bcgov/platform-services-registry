@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
-import { PrivateProject } from '@/queries/types';
-import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
+import { PublicProject } from '@/queries/types';
+import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
 import formatDate from '@/components/utils/formatdates';
 import { formatFullName } from '@/components/utils/formatFullName';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ import { userInfo } from '@/queries/user';
 const searchParamsSchema = z.object({
   search: z.string().nullable(),
   ministry: z.string().nullable(),
-  cluster: z.string().nullable(),
+  provider: z.string().nullable(),
   active: z.boolean().nullable(),
 });
 
@@ -30,29 +30,29 @@ export async function GET(req: NextRequest) {
     const parsedSearchParams = searchParamsSchema.parse({
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
-      cluster: searchParams.get('cluster'),
+      provider: searchParams.get('provider'),
       active: searchParams.get('active'),
     });
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
-    const { data } = await privateCloudProjectsPaginated(
+    const { data } = await publicCloudProjectsPaginated(
       0,
       0,
       parsedSearchParams.search,
       parsedSearchParams.ministry,
-      parsedSearchParams.cluster,
+      parsedSearchParams.provider,
       userEmail,
       ministryRoles,
       parsedSearchParams.active,
     );
 
     // Map the data to the correct format for CSV conversion
-    const formattedData = data.map((project: PrivateProject) => ({
+    const formattedData = data.map((project: PublicProject) => ({
       name: project.name,
       description: project.description,
       ministry: project.ministry,
-      cluster: project.cluster,
+      provider: project.provider,
       projectOwnerEmail: project.projectOwner.email,
       projectOwnerName: formatFullName(project.projectOwner),
       primaryTechnicalLeadEmail: project.primaryTechnicalLead.email,
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
         'name',
         'description',
         'ministry',
-        'cluster',
+        'provider',
         'projectOwnerEmail',
         'projectOwnerName',
         'primaryTechnicalLeadEmail',

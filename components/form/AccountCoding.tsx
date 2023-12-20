@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Question } from '@/components/assets/question';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import classNames from '@/components/utils/classnames';
 
@@ -49,11 +48,9 @@ export default function AccountCoding({
         <b>
           If the account coding is changed at any point, all charges in the current quarter will be applied to the new
           account coding.
-        </b>
+        </b>{' '}
+        The Account Coding can only contain digits and upper case letters.
       </p>
-      <div>
-        <label htmlFor="name">Name:</label>
-      </div>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <AccountCodingInput
           disabled={disabled}
@@ -112,7 +109,6 @@ export default function AccountCoding({
             ? Object.values(accountCoding).join(' ').toLocaleUpperCase()
             : 'Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code'}
         </p>
-        <Question />
         <p
           className={classNames(
             errors.accountCoding ? 'text-red-400' : '',
