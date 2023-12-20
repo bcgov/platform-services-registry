@@ -16,6 +16,7 @@ resource "keycloak_openid_client" "pltsvc" {
 
   access_type = "CONFIDENTIAL"
   valid_redirect_uris = [
-    "https://dev-pltsvc.apps.silver.devops.gov.bc.ca/*"
+    "https://dev-pltsvc.apps.silver.devops.gov.bc.ca/*",
+    "http://localhost:3000/*"
   ]
 }
