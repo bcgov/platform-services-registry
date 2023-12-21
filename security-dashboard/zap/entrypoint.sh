@@ -3,6 +3,25 @@
 echo "hit entrypoint..."
 
 echo "$PROJECTS"
+# An example:
+# [
+#     {
+#         "licencePlate": "34w22a",
+#         "cluster": "KLAB",
+#         "hosts": [
+#             "app1.34w22a-prod.apps.klab.devops.gov.bc.ca",
+#             "app2.34w22a-prod.apps.klab.devops.gov.bc.ca"
+#         ]
+#     },
+#     {
+#         "licencePlate": "3744e3",
+#         "cluster": "KLAB",
+#         "hosts": [
+#             "app1.3744e3-prod.apps.klab.devops.gov.bc.ca",
+#             "app2.3744e3-prod.apps.klab.devops.gov.bc.ca"
+#         ]
+#     }
+# ]
 
 while read -r proj; do
     echo "$proj"
