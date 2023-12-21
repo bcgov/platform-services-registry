@@ -37,7 +37,6 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       } else {
         params.delete('search');
       }
-      // params.delete('page');
 
       startTransition(() => {
         replace(`${pathname}?${params.toString()}`);
@@ -82,7 +81,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
 
   useEffect(() => {
     if (debouncedValue == '') {
-      // remove search param
+      // Remove search param
       const params = new URLSearchParams(searchParams?.toString());
       params.delete('search');
       replace(`${pathname}?${params.toString()}`);

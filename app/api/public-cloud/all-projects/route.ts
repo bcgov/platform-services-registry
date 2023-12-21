@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
       provider: searchParams.get('provider'),
-      active: searchParams.get('active') === 'true', //Converts 'true' string to true boolean
+      active: searchParams.get('active') === 'true', // Converts 'true' string to true boolean
     });
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
