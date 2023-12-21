@@ -85,8 +85,9 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
                 continue
 
             headers = {"Authorization": f"Bearer {token}"}
-            response = requests.get(f"https://api.{cluster}.devops.gov.bc.ca:6443/apis/route.openshift.io/v1/namespaces/{
-                                    project['licencePlate']}-prod/routes", headers=headers)
+            apiUrl = f"https://api.{cluster}.devops.gov.bc.ca:6443/apis/route.openshift.io/v1"
+            url = f"{apiUrl}/namespaces/{project['licencePlate']}-prod/routes"
+            response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 data = response.json()
                 project['hosts'] = []
