@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths:
-    - helm/secdash
+    - helm/secdash/**
 
 jobs:
   deploy:
