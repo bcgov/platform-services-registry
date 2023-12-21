@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="projects.csv"',
+        'Content-Disposition': 'attachment; filename=public-cloud-products.csv',
       },
     });
 

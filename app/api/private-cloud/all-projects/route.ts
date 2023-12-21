@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="projects.csv"',
+        'Content-Disposition': 'attachment; filename=private-cloud-products.csv',
       },
     });
 
