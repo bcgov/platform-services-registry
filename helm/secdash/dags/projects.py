@@ -6,7 +6,21 @@ import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
 
 
+target_directory = '/opt/airflow/shared/reports'
+
+
 def split_array(original_array, num_subarrays):
+    """
+    Split an array into a specified number of subarrays.
+
+    Parameters:
+    - original_array: The original array to be split.
+    - num_subarrays: The desired number of subarrays.
+
+    Returns:
+    A list of subarrays, where each subarray is a portion of the original array.
+    """
+
     array_length = len(original_array)
     subarray_size = array_length // max(num_subarrays, 1)
     remainder = array_length % max(num_subarrays, 1)
@@ -20,10 +34,17 @@ def split_array(original_array, num_subarrays):
     return subarrays
 
 
-target_directory = '/opt/airflow/shared/reports'
-
-
 def get_mongo_db(mongo_conn_id):
+    """
+    Connect to MongoDB using the specified connection ID.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+
+    Returns:
+    The MongoDB database named 'pltsvc'.
+    """
+
     hook = MongoHook(conn_id=mongo_conn_id)
     client = hook.get_conn()
     print(f"Connected to MongoDB - {client.server_info()}")
@@ -31,6 +52,22 @@ def get_mongo_db(mongo_conn_id):
 
 
 def fetch_projects(mongo_conn_id, concurrency, **context):
+    """
+    Fetch active projects from MongoDB, retrieve information about their hosts,
+    and push the results into XCom.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+    - concurrency: The number of subarrays for parallel processing.
+    - **context: Additional context parameters.
+
+    Note: This function assumes the existence of a 'get_mongo_db' function.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
     try:
         db = get_mongo_db(mongo_conn_id)
         projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
@@ -71,6 +108,17 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
 
 
 def load_zap_results(mongo_conn_id):
+    """
+    Load Zap scan results into MongoDB.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
     try:
         db = get_mongo_db(mongo_conn_id)
 
