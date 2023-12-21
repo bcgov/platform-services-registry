@@ -9,6 +9,8 @@ on:
     - .pre-commit-config.yaml
     - .conventional-changelog.mjs
     - .release-it.json
+    - security-dashboard/**
+    - helm/secdash/**
 
 env:
   GITHUB_REGISTRY: ghcr.io
