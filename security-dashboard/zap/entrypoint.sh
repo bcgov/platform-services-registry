@@ -23,6 +23,8 @@ echo "$PROJECTS"
 #     }
 # ]
 
+mkdir -p /zap/wrk/reports
+
 while read -r proj; do
     echo "$proj"
     licencePlate=$(echo "$proj" | jq -r '.licencePlate')
