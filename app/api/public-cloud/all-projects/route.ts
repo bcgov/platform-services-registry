@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
       provider: searchParams.get('provider'),
-      active: searchParams.get('active'),
+      active: searchParams.get('active') === 'true', //Converts 'true' string to true boolean
     });
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
@@ -46,6 +46,10 @@ export async function GET(req: NextRequest) {
       ministryRoles,
       parsedSearchParams.active,
     );
+
+    if (data.length === 0) {
+      return new NextResponse(null, { status: 204 });
+    }
 
     // Map the data to the correct format for CSV conversion
     const formattedData = data.map((project: PublicProject) => ({
