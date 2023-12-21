@@ -37,6 +37,13 @@ repos:
     files: \.tsx?$
     verbose: true
     pass_filenames: true
+  - id: python-format
+    name: autopep8
+    entry: .bin/autopep8.sh
+    language: script
+    files: \.py$
+    verbose: true
+    pass_filenames: true
 - repo: https://github.com/codespell-project/codespell
   rev: v2.2.6
   hooks:
