@@ -169,12 +169,9 @@ describe('CSV Download Route', () => {
     console.log('Seeding database with projects');
     for (let i = 0; i < projectData.length; i++) {
       const project = createProjectObject(projectData[i], i);
-      //await prisma.publicCloudProject.create({ data: project });
       const createdProject = await prisma.publicCloudProject.create({ data: project });
-      console.log(`Created project: ${JSON.stringify(createdProject)}`);
     }
     const allProjects = await prisma.publicCloudProject.findMany({});
-    console.log(`All projects in DB: ${JSON.stringify(allProjects)}`);
   });
 
   // Clean up database after tests are done
@@ -243,9 +240,7 @@ describe('CSV Download Route', () => {
       active: req.nextUrl.searchParams.get('active'),
     };
 
-    console.log(`Query parameters: ${JSON.stringify(queryParams)}`);
     const response = await downloadCsv(req);
-    console.log(`Response status: ${response.status}`);
     expect(response.status).toBe(200);
 
     // Parse the CSV content
@@ -298,9 +293,7 @@ describe('CSV Download Route', () => {
       const queryParams = new URLSearchParams(definedParams).toString();
       const req = new NextRequest(`${API_URL}?${queryParams}`, { method: 'GET' });
 
-      console.log(`Test combination: ${JSON.stringify(combo)}`);
       const response = await downloadCsv(req);
-      console.log(`Response status: ${response.status}`);
       expect(response.status).toBe(200);
 
       const csvContent = await response.text();
