@@ -167,7 +167,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT REQUEST" disabled={!formState.isDirty} />
+                <SubmitButton text="SUBMIT EDIT REQUEST" disabled={!formState.isDirty} />
               </div>
             ) : null}
           </div>
