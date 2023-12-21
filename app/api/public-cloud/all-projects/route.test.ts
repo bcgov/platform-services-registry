@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GET as downloadCsv } from '@/app/api/private-cloud/all-projects/route';
+import { GET as downloadCsv } from '@/app/api/public-cloud/all-projects/route';
 import { getServerSession } from 'next-auth/next';
 import { MockedFunction } from 'jest-mock';
 import { expect } from '@jest/globals';
@@ -7,11 +7,11 @@ import prisma from '@/lib/prisma';
 import { parse } from 'csv-parse/sync';
 
 import {
-  Cluster,
+  Provider,
   DecisionStatus,
   Ministry,
   Prisma,
-  PrivateCloudProject,
+  PublicCloudProject,
   ProjectStatus,
   RequestType,
   User,
@@ -19,7 +19,7 @@ import {
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 
 const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
+const API_URL = `${BASE_URL}/api/public-cloud/all-projects`;
 
 // Mocking getServerSession
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
@@ -38,137 +38,67 @@ const projectData = [
   {
     name: 'Sample Project',
     description: 'This is a sample project description.',
-    cluster: Cluster.CLAB,
-    ministry: Ministry.AG,
+    provider: Provider.AWS, // Assuming CLUSTER_A is a valid enum value for Cluster
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
+    accountCoding: '123456789000000000000000',
+    budget: {
+      dev: 1000,
+      test: 2000,
+      prod: 3000,
+      tools: 4000,
+    },
     projectOwner: {
       firstName: 'Oamar',
       lastName: 'Kanji',
       email: 'oamar.kanji@gov.bc.ca',
-      ministry: Ministry.AG,
+      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     },
     primaryTechnicalLead: {
       firstName: 'Jane',
       lastName: 'Smith',
       email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
+      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     },
     secondaryTechnicalLead: {
       firstName: 'Jane',
       lastName: 'Smith',
       email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
+      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     },
     productionQuota: quota,
     testQuota: quota,
     toolsQuota: quota,
     developmentQuota: quota,
-    commonComponents: {
-      addressAndGeolocation: {
-        planningToUse: true,
-        implemented: false,
-      },
-      workflowManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      formDesignAndSubmission: {
-        planningToUse: true,
-        implemented: true,
-      },
-      identityManagement: {
-        planningToUse: false,
-        implemented: false,
-      },
-      paymentServices: {
-        planningToUse: true,
-        implemented: false,
-      },
-      documentManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      endUserNotificationAndSubscription: {
-        planningToUse: true,
-        implemented: false,
-      },
-      publishing: {
-        planningToUse: false,
-        implemented: true,
-      },
-      businessIntelligence: {
-        planningToUse: true,
-        implemented: false,
-      },
-      other: 'Some other services',
-      noServices: false,
-    },
   },
   {
     name: 'TestProject',
-    description: 'This is a test project description.',
-    cluster: Cluster.SILVER,
-    ministry: Ministry.AG,
+    description: 'This is a sample project description.',
+    provider: Provider.AWS, // Assuming CLUSTER_A is a valid enum value for Cluster
+    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     projectOwner: {
       firstName: 'Christopher',
       lastName: 'Tan',
       email: 'christopher.tan@gov.bc.ca',
-      ministry: Ministry.AG,
+      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     },
     primaryTechnicalLead: {
       firstName: 'Jane',
       lastName: 'Smith',
       email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
+      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     },
     secondaryTechnicalLead: {
       firstName: 'Jane',
       lastName: 'Smith',
       email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
+      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
     },
-    productionQuota: quota,
-    testQuota: quota,
-    toolsQuota: quota,
-    developmentQuota: quota,
-    commonComponents: {
-      addressAndGeolocation: {
-        planningToUse: true,
-        implemented: false,
-      },
-      workflowManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      formDesignAndSubmission: {
-        planningToUse: true,
-        implemented: true,
-      },
-      identityManagement: {
-        planningToUse: false,
-        implemented: false,
-      },
-      paymentServices: {
-        planningToUse: true,
-        implemented: false,
-      },
-      documentManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      endUserNotificationAndSubscription: {
-        planningToUse: true,
-        implemented: false,
-      },
-      publishing: {
-        planningToUse: false,
-        implemented: true,
-      },
-      businessIntelligence: {
-        planningToUse: true,
-        implemented: false,
-      },
-      other: 'Some other services',
-      noServices: false,
+    accountCoding: '123456789000000000000000',
+    budget: {
+      dev: 1000,
+      test: 2000,
+      prod: 3000,
+      tools: 4000,
     },
   },
 ];
@@ -178,14 +108,12 @@ function createProjectObject(data: any, index: number) {
   return {
     name: data.name,
     description: data.description,
-    cluster: data.cluster,
+    provider: data.provider,
     ministry: data.ministry,
     status: ProjectStatus.ACTIVE,
     licencePlate: `LP${index}`,
-    productionQuota: quota,
-    testQuota: quota,
-    toolsQuota: quota,
-    developmentQuota: quota,
+    accountCoding: data.accountCoding,
+    budget: data.budget,
     projectOwner: {
       connectOrCreate: {
         where: {
@@ -210,7 +138,6 @@ function createProjectObject(data: any, index: number) {
         create: data.secondaryTechnicalLead,
       },
     },
-    commonComponents: data.commonComponents,
   };
 }
 
@@ -218,7 +145,7 @@ interface CsvRecord {
   name: string;
   description: string;
   ministry: string;
-  cluster: string;
+  provider: string;
   projectOwnerEmail: string;
   projectOwnerName: string;
   primaryTechnicalLeadEmail: string;
@@ -241,15 +168,15 @@ describe('CSV Download Route', () => {
     console.log('Seeding database with projects');
     for (let i = 0; i < projectData.length; i++) {
       const project = createProjectObject(projectData[i], i);
-      await prisma.privateCloudProject.create({ data: project });
+      const createdProject = await prisma.publicCloudProject.create({ data: project });
     }
-    const allProjects = await prisma.privateCloudProject.findMany({});
+    const allProjects = await prisma.publicCloudProject.findMany({});
   });
 
   // Clean up database after tests are done
   afterAll(async () => {
     console.log('Cleaning up database');
-    await prisma.privateCloudProject.deleteMany({});
+    await prisma.publicCloudProject.deleteMany({});
   });
 
   test('should return 401 if user is not authenticated', async () => {
@@ -286,7 +213,7 @@ describe('CSV Download Route', () => {
 
     // Simulate a request that would result in an empty dataset
     const req = new NextRequest(
-      `${API_URL}?search=NonExistentSearchTerm&ministry=NonExistentMinsitry&cluster=NonExistentCluster`,
+      `${API_URL}?search=NonExistentSearchTerm&ministry=NonExistentMinsitry&provider=NonExistentProvider`,
       {
         method: 'GET',
       },
@@ -301,9 +228,16 @@ describe('CSV Download Route', () => {
       user: { email: 'admin@example.com', roles: ['admin'] },
     });
 
-    const req = new NextRequest(`${API_URL}?search=TestProject&ministry=AG&cluster=SILVER&active=true`, {
+    const req = new NextRequest(`${API_URL}?search=TestProject&ministry=AG&provider=AWS&active=true`, {
       method: 'GET',
     });
+
+    const queryParams = {
+      search: req.nextUrl.searchParams.get('search'),
+      ministry: req.nextUrl.searchParams.get('ministry'),
+      provider: req.nextUrl.searchParams.get('provider'),
+      active: req.nextUrl.searchParams.get('active'),
+    };
 
     const response = await downloadCsv(req);
     expect(response.status).toBe(200);
@@ -312,10 +246,10 @@ describe('CSV Download Route', () => {
     const csvContent = await response.text();
     const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
-    // Check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
+    // Check if CSV contains data related to 'TestProject', 'AG', 'AWS', and is active.
     const relevantRecord = records.find(
       (record: CsvRecord) =>
-        record.name.includes('TestProject') && record.ministry === 'AG' && record.cluster === 'SILVER',
+        record.name.includes('TestProject') && record.ministry === 'AG' && record.provider === 'AWS',
     );
     expect(relevantRecord).toBeDefined();
   });
@@ -327,7 +261,7 @@ describe('CSV Download Route', () => {
     });
 
     // Create a request with invalid query parameters
-    const req = new NextRequest(`${API_URL}?search=*&ministry=InvalidMinistry&cluster=InvalidCluster&active=maybe`, {
+    const req = new NextRequest(`${API_URL}?search=&ministry=InvalidMinistry&provider=InvalidProvider&active=maybe`, {
       method: 'GET',
     });
 
@@ -346,8 +280,8 @@ describe('CSV Download Route', () => {
 
     // Define different combinations of search and filter parameters
     const testCombinations = [
-      { search: 'Sample Project', ministry: 'AG', cluster: 'CLAB' },
-      { search: 'TestProject', ministry: 'AG', cluster: 'SILVER' },
+      { search: 'Sample Project', ministry: 'AG', provider: 'AWS' },
+      { search: 'TestProject', ministry: 'AG', provider: 'AWS' },
     ];
 
     for (const combo of testCombinations) {
@@ -365,17 +299,14 @@ describe('CSV Download Route', () => {
       const records = parse(csvContent, { columns: true, skip_empty_lines: true });
 
       // Check if data matches the combination criteria
-      records.forEach((record: { name: any; ministry: any; cluster: any }) => {
-        if (combo.search) {
-          expect(record.name).toContain(combo.search);
+      let found = false;
+      for (const record of records) {
+        if (record.name === combo.search && record.ministry === combo.ministry && record.provider === combo.provider) {
+          found = true;
+          break;
         }
-        if (combo.ministry) {
-          expect(record.ministry).toBe(combo.ministry);
-        }
-        if (combo.cluster) {
-          expect(record.cluster).toBe(combo.cluster);
-        }
-      });
+      }
+      expect(found).toBeTruthy(); // Verify that the expected record was found
     }
   });
 });

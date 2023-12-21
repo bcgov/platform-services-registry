@@ -37,7 +37,6 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       } else {
         params.delete('search');
       }
-      // params.delete('page');
 
       startTransition(() => {
         replace(`${pathname}?${params.toString()}`);
@@ -54,19 +53,21 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       }
 
       if (response.status === 204) {
-        console.log('No data to download');
         alert('No data available for download.');
         return;
       }
 
       const blob = await response.blob();
-
+      const contentDisposition = response.headers.get('Content-Disposition');
+      const filename = contentDisposition
+        ? contentDisposition.split('filename=')[1].replace(/['"]/g, '')
+        : 'product-data.csv';
       const url = window.URL.createObjectURL(blob);
 
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = 'download.csv';
+      a.download = filename;
 
       // Append the link, trigger the download, then clean up
       document.body.appendChild(a);
@@ -80,7 +81,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
 
   useEffect(() => {
     if (debouncedValue == '') {
-      // remove search param
+      // Remove search param
       const params = new URLSearchParams(searchParams?.toString());
       params.delete('search');
       replace(`${pathname}?${params.toString()}`);
