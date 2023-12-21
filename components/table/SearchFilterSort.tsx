@@ -62,7 +62,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       const contentDisposition = response.headers.get('Content-Disposition');
       const filename = contentDisposition
         ? contentDisposition.split('filename=')[1].replace(/['"]/g, '')
-        : 'default-filename.csv';
+        : 'product-data.csv';
       const url = window.URL.createObjectURL(blob);
 
       const a = document.createElement('a');
