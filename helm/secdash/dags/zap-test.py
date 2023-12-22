@@ -42,9 +42,10 @@ with DAG(
             task_id='zap-baseline-{}'.format(i),
             name='zap-baseline-{}'.format(i),
             namespace='101ed4-tools',
-            image='junminahn/zap:build.7',
+            image='ghcr.io/bcgov/pltsvc-secdashboard-zap:1bc16dca17c474ff80e221096b25002ea73b75aa',
             env_vars={
                 "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-projects-test', key='{}')".format(i) + "}}",
+                "CONTEXT": MONGO_CONN_ID,
             },
             container_resources=V1ResourceRequirements(
                 limits={"memory": "1Gi", "cpu": "500m"},

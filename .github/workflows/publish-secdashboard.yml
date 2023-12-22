@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths:
-    - .github/workflows/deploy-secdashboard.yml
+    - .github/workflows/publish-secdashboard.yml
     - security-dashboard/**
   workflow_dispatch:
 

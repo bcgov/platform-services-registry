@@ -6,7 +6,7 @@ import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
 
 
-target_directory = '/opt/airflow/shared/reports'
+shared_directory = '/opt/airflow/shared'
 
 
 def split_array(original_array, num_subarrays):
@@ -102,7 +102,7 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
-        shutil.rmtree(target_directory)
+        shutil.rmtree(f"{shared_directory}/zap/{mongo_conn_id}")
 
     except Exception as e:
         print(f"[fetch_projects] Error: {e}")
@@ -123,8 +123,12 @@ def load_zap_results(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
 
-        subdirectories = [os.path.join(target_directory, d) for d in os.listdir(
-            target_directory) if os.path.isdir(os.path.join(target_directory, d))]
+        report_directory = f"{shared_directory}/zap/{mongo_conn_id}"
+
+        subdirectories = [
+            os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
+        ]
+
         for subdirectory in subdirectories:
             print(f"Processing files in subdirectory: {subdirectory}")
             doc = {}
