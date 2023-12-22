@@ -12,7 +12,6 @@ app:
     "AUTH_BASE_URL": "https://test.loginproxy.gov.bc.ca"
     "AUTH_SERVER_URL": "https://test.loginproxy.gov.bc.ca/auth"
     "AUTH_RELM": "platform-services"
-    "NEXTAUTH_URL": "https://test-pltsvc.apps.silver.devops.gov.bc.ca/"
     "CHES_TOKEN_URL": "https://test.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token"
     "CHES_API_URL": "https://ches-test.api.gov.bc.ca/api/v1/"
     "NATS_HOST": "nats://nats.platform-provisioner-test.svc"

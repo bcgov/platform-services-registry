@@ -21,6 +21,7 @@ global:
   env:
     "Env": ""
     "SECURE_HEADERS": "true"
+    "AUTH_TRUST_HOST": "true"
 
   serviceAccountName: 101ed4-vault
 
