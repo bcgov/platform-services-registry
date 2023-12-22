@@ -34,7 +34,7 @@ jobs:
         docker-context: security-dashboard/airflow
         docker-file: security-dashboard/airflow/Dockerfile
         metadata-tags: |
-          type=raw,value=latest
+          type=sha,format=long,prefix=,suffix=
 
   build-push-zap:
     runs-on: ubuntu-22.04
@@ -57,4 +57,4 @@ jobs:
         docker-context: security-dashboard/zap
         docker-file: security-dashboard/zap/Dockerfile
         metadata-tags: |
-          type=raw,value=latest
+          type=sha,format=long,prefix=,suffix=

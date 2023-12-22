@@ -38,7 +38,7 @@ jobs:
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
-        cp .env.localdev .env.test
+        cp .env.example .env.test
         npm run test
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
