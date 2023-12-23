@@ -17,7 +17,7 @@ const GetParamsSchema = z.object({
 
 type Params = z.infer<typeof GetParamsSchema>;
 
-export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
+export async function GET({ params }: { params: Params }): Promise<NextResponse> {
   const parsedParams = GetParamsSchema.safeParse(params);
 
   if (!parsedParams.success) {
