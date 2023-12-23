@@ -8,18 +8,11 @@ const headers = [
   { field: 'firstName', headerName: 'First Name' },
   { field: 'lastName', headerName: 'Last Name' },
 ];
+interface TableProps {
+  rows: Record<string, any>[];
+}
 
-const rows: Record<string, any>[] = [
-  {
-    id: '1111',
-    createdTimestamp: 1699473638027,
-    firstName: 'Krishna',
-    lastName: 'Nyshadham',
-    email: 'krinysha@amazon.com',
-  },
-];
-//rows : Record<string, any>[]
-export default function TableBodyAWSRoles() {
+export default function TableBodyAWSRoles({ rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, status } = useSession();
@@ -31,6 +24,7 @@ export default function TableBodyAWSRoles() {
     { field: 'firstName', headerName: 'First Name' },
     { field: 'lastName', headerName: 'Last Name' },
   ];
+
   return (
     <>
       <div className="flow-root overflow-y-auto h-[55vh]">
@@ -61,7 +55,7 @@ export default function TableBodyAWSRoles() {
                         i === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                       } `}
                     >
-                      admin
+                      {Object.keys(row)[0]}
                     </td>
                     {subHeader.map((value, index) => (
                       <td
@@ -70,7 +64,7 @@ export default function TableBodyAWSRoles() {
                           index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                         } `}
                       >
-                        {row[value.field]}
+                        {row[Object.keys(row)[0]].firstName}
                       </td>
                     ))}
                   </tr>

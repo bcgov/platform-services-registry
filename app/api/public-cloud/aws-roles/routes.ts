@@ -1,21 +1,48 @@
 import axios from 'axios';
+import prisma from '@/lib/prisma';
+import { getUserById } from '@/queries/user';
 
-interface Group {
+export interface Group {
   id: string;
   name: string;
   path: string;
   subGroups: Group[];
 }
-
-interface User {
+export interface User {
   id: string;
-  username: string;
-  enabled: boolean;
-  totp: boolean;
-  emailVerified: boolean;
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+}
+
+export async function getPublicCloudProjectUsers(
+  searchLicencePlate: string,
+): Promise<Record<string, User>[] | undefined> {
+  const result: Record<string, User>[] = [];
+  const project = await prisma.publicCloudProject.findFirst({
+    where: {
+      licencePlate: {
+        contains: searchLicencePlate,
+      },
+    },
+  });
+
+  if (project?.projectOwnerId) {
+    const projectOwner = await getUserById(project.projectOwnerId);
+    if (projectOwner !== null) result.push({ 'Project Owner': projectOwner });
+  }
+
+  if (project?.primaryTechnicalLeadId) {
+    const primaryTechnicalLead = await getUserById(project.primaryTechnicalLeadId);
+    if (primaryTechnicalLead !== null) result.push({ 'Primary Technical Lead': primaryTechnicalLead });
+  }
+
+  if (project?.secondaryTechnicalLeadId) {
+    const secondaryTechnicalLead = await getUserById(project.secondaryTechnicalLeadId);
+    if (secondaryTechnicalLead !== null) result.push({ 'Secondary Technical Lead': secondaryTechnicalLead });
+  }
+
+  return result;
 }
 
 const parseError = (error: unknown): void => {
@@ -93,7 +120,7 @@ export const getUsers: Promise<Group[] | undefined> = awsRolesApiInstance
     parseError(error);
   });
 
-export const getMembersByGroupId = (groupId: string): Promise<Group[] | undefined> =>
+export const getMembersByGroupId = async (groupId: string): Promise<User[] | undefined> =>
   awsRolesApiInstance
     .get(`/groups/${groupId}/members`)
     .then((response) => {
@@ -145,7 +172,7 @@ const findObjectByValueSubstring = (array: Group[], key: keyof Group, value: any
   return array.filter((obj) => obj[key].includes(value));
 };
 
-export async function getProductAWSRoles(licencePlate: string = 'eu9cfk'): Promise<Group[] | undefined> {
+export async function getProductAWSRoles(licencePlate: string): Promise<Group[] | undefined> {
   const keyClockGroups = await getGroups;
   if (keyClockGroups) {
     const projectTeamGroups = findObjectByValue(keyClockGroups, 'name', 'Project Team Groups');
@@ -153,4 +180,32 @@ export async function getProductAWSRoles(licencePlate: string = 'eu9cfk'): Promi
       return findObjectByValueSubstring(projectTeamGroups[0].subGroups, 'name', licencePlate);
     }
   }
+}
+
+const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
+  const roleUser: Record<K, V> = {} as Record<K, V>;
+  roleUser[role] = user;
+  return roleUser;
+};
+
+export async function getSubGroupMembersByLicencePlateAndName(
+  licencePlate: string,
+  groupName: string,
+  role: string,
+): Promise<Record<string, User>[] | undefined> {
+  const productRolesGroups: Group[] | undefined = await getProductAWSRoles(licencePlate);
+
+  if (productRolesGroups) {
+    let groupId: string = '';
+    productRolesGroups[0].subGroups.map((group) => {
+      if (group.name === groupName) {
+        groupId = group.id;
+      }
+    });
+    if (groupId) {
+      const groupsUsers: User[] | undefined = await getMembersByGroupId(groupId);
+      return groupsUsers?.map((user) => userRole(role, user));
+    }
+  }
+  return;
 }

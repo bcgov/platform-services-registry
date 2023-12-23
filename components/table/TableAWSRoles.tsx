@@ -5,31 +5,20 @@ import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 import { getGroups } from '@/app/api/public-cloud/aws-roles/routes';
 import { usePathname } from 'next/navigation';
+//server actions next.js
 export default function TableAWSRoles({
   currentPage,
   pageSize,
   total,
+  tableBody,
 }: {
   currentPage: number;
   pageSize: number;
   total: number;
+  tableBody: React.ReactNode;
 }) {
   const pathname = usePathname();
-  // console.log(getGroups)
-  // getGroups.then(
-  //   (result) => {
-  //     console.log('result', result);
-  //   },
-  //   (error) => {
-  //     console.log(error);
-  //   },
-  // );
-  // const data = await getProductAWSRoles('eu9cfk')
-  // let tmp: string
-  // if (data) {
-  //   tmp = data[0].subGroups.filter((item) => item.name.indexOf('BillingViewers') !== -1)[0].id;
-  //   tmp && console.log(await getMembersByGroupId(tmp))
-  // }
+
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <UserAWSRolesTableTop
@@ -37,9 +26,7 @@ export default function TableAWSRoles({
         subtitle="User Access"
         description="Assign roles to grant users access below"
       />
-      <div className="h-[60vh] overflow-y-auto scroll-smooth">
-        <TableBodyAWSRoles />
-      </div>
+      <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
         aria-label="Pagination"
