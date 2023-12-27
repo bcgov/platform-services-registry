@@ -28,15 +28,11 @@ export default function TableAWSRoles({
         <div className="hidden sm:block">
           {total == 0 ? (
             <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
-          ) : total < pageSize * currentPage ? (
-            <p className="text-sm text-gray-700">
-              Showing <span>{pageSize * (currentPage - 1) + 1}</span> to <span>{total}</span> of <span>{total}</span>{' '}
-              results
-            </p>
           ) : (
             <p className="text-sm text-gray-700">
-              Showing <span>{pageSize * (currentPage - 1) + 1}</span> to <span>{pageSize * currentPage}</span> of{' '}
-              <span>{total}</span> results
+              Showing <span>{pageSize * (currentPage - 1) + 1}</span> to{' '}
+              <span>{total < pageSize * currentPage ? total : pageSize * currentPage}</span> of <span>{total}</span>{' '}
+              results
             </p>
           )}
         </div>
