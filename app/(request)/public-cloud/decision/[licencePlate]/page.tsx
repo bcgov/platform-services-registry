@@ -48,6 +48,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
   const { data } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
@@ -113,7 +114,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(() => {
-            if (methods.getValues('decision') === 'APPROVED') setOpenCreate(true);
+            if (methods.getValues('decision') === 'APPROVED') setOpenComment(true);
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
@@ -131,8 +132,20 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             <PreviousButton />
             {!isDisabled && session?.user?.roles?.includes('admin') ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="REJECT REQUEST" onClick={() => methods.setValue('decision', 'REJECTED')} />
-                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />
+                <SubmitButton
+                  text="REJECT REQUEST"
+                  onClick={() => {
+                    methods.setValue('decision', 'REJECTED');
+                    setCurrentAction('REJECT');
+                  }}
+                />
+                <SubmitButton
+                  text="APPROVE REQUEST"
+                  onClick={() => {
+                    methods.setValue('decision', 'APPROVED');
+                    setCurrentAction('APPROVE');
+                  }}
+                />
               </div>
             ) : null}
           </div>
@@ -150,6 +163,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         onSubmit={setComment}
         isLoading={isLoading}
         type={data?.type}
+        action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
     </div>
