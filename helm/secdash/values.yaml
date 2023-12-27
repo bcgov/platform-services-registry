@@ -47,7 +47,7 @@ airflow:
   gid:
 
   defaultAirflowRepository: ghcr.io/bcgov/pltsvc-secdashboard-airflow
-  defaultAirflowTag: "1bc16dca17c474ff80e221096b25002ea73b75aa" # pragma: allowlist secret
+  defaultAirflowTag: "4692f1e60d8f00f302d476059284449ea722ac1e" # pragma: allowlist secret
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L77
   airflowVersion: "2.7.3"
