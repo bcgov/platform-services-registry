@@ -197,7 +197,7 @@ export async function getSubGroupMembersByLicencePlateAndName(
 
   if (productRolesGroups) {
     let groupId: string = '';
-    productRolesGroups[0].subGroups.map((group) => {
+    productRolesGroups[0].subGroups.forEach((group) => {
       if (group.name === groupName) {
         groupId = group.id;
       }
