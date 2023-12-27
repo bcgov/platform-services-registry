@@ -1,3 +1,57 @@
+## [0.5.0](https://github.com/bcgov/platform-services-registry/compare/v0.4.0...v0.5.0) (2023-12-27)
+
+
+### Features
+
+* add api wrapper ([9c30b00](https://github.com/bcgov/platform-services-registry/commit/9c30b00e88d4148a83383b27c1cc2c75c8099b8e))
+* add db backup cronjob ([75fbd3a](https://github.com/bcgov/platform-services-registry/commit/75fbd3a76be3767ebd83e86a8462fe1ea8988a6d))
+* add helm chart for airflow deployment ([7cf85e1](https://github.com/bcgov/platform-services-registry/commit/7cf85e1ee2e34bb139ebad46e2fd51cc57b58eec))
+* add prisma extension to apply security layer ([23c6d0f](https://github.com/bcgov/platform-services-registry/commit/23c6d0f9d7848780cb7edc1fce9a680bfe5ac875))
+* add prisma extension to apply security layer ([ad2a8f1](https://github.com/bcgov/platform-services-registry/commit/ad2a8f13f6e8fffd998e07ea456cea90b6cc2d33))
+* add wirte base filter in security layer ([6b9a120](https://github.com/bcgov/platform-services-registry/commit/6b9a12048dab5dcdda9f96623e66957a11f811ed))
+* add zap vulnerability scanning airflow dag ([e2e8a5f](https://github.com/bcgov/platform-services-registry/commit/e2e8a5ffdbc5eb6f3daab29ade2eead1b7bc593d))
+* create config.ts for common variables ([5d0fb96](https://github.com/bcgov/platform-services-registry/commit/5d0fb969b3426a6d2db7324ce428cd8f59b4632a))
+* csv export with filtering ([6a23ebd](https://github.com/bcgov/platform-services-registry/commit/6a23ebdba2052bda96574699768634a96658bd14))
+* enhance eslint rules ([4f17273](https://github.com/bcgov/platform-services-registry/commit/4f1727382c4da528d3bfaabd30caf8a43bd20552))
+* enhance session context in higher level ([99c8929](https://github.com/bcgov/platform-services-registry/commit/99c8929987acf0af20e83b4ad22574ce055578a3))
+* new kc clients for new UI ([9b728da](https://github.com/bcgov/platform-services-registry/commit/9b728dab911913078bbc3cd54019c12423d2dfb2))
+* new modal for approve/deny an edit request. ([3cbfbb9](https://github.com/bcgov/platform-services-registry/commit/3cbfbb905217541c3a0a9e9e471cb94630a4a17d))
+* publish security dashboard related images ([1527f54](https://github.com/bcgov/platform-services-registry/commit/1527f549b86c6a5a366da5ccac9013e7fd0943d4))
+* show inactive projects/requests in private cloud ([5c68075](https://github.com/bcgov/platform-services-registry/commit/5c680757fc4fa168875ac0ea01e7e1211231e65e))
+* toggle changes depending on requests/products ([6e12d44](https://github.com/bcgov/platform-services-registry/commit/6e12d448ba097071d5ff02768265d0ae339fc48b))
+* toggle for public cloud ([39e59e2](https://github.com/bcgov/platform-services-registry/commit/39e59e2c939c622e6a44e6962a059fda377bc005))
+* update react-email doc ([68a8baa](https://github.com/bcgov/platform-services-registry/commit/68a8baa4b2d072161a66fd600c7fc3d636ff0755))
+* updated favicon ([524b214](https://github.com/bcgov/platform-services-registry/commit/524b214d1a95d13a89b088982eba543ab1a025a8))
+
+
+### Bug Fixes
+
+* .react-email in .gitignore ([697b5d9](https://github.com/bcgov/platform-services-registry/commit/697b5d9aa3b8f289723da7bcc6d18ee66d279338))
+* border not showing in email header ([be75fdb](https://github.com/bcgov/platform-services-registry/commit/be75fdb4a3215b4087a1717c95bf2fd429328444))
+* capitalized rejection ([aa883ef](https://github.com/bcgov/platform-services-registry/commit/aa883efa355d3fea4303580d74db0f22040c7a66))
+* change logic to handle if active != false or true ([7419d52](https://github.com/bcgov/platform-services-registry/commit/7419d5296f6ef71fbbfe3929ca311ce5624ffab0))
+* corrected download button on public-cloud ([11bb232](https://github.com/bcgov/platform-services-registry/commit/11bb23221494b9eead9d3003afe1fb32c7fe03e4))
+* fix wording in emails ([ead0ccd](https://github.com/bcgov/platform-services-registry/commit/ead0ccd7e6a5fedd9daa7d5ddf42ac9677b24f6d))
+* fix wording in emails ([7f6b1c5](https://github.com/bcgov/platform-services-registry/commit/7f6b1c58ea45f6857628fbf3d0d8d67eadd700dc))
+* prefix applies to sendEmail level ([f946581](https://github.com/bcgov/platform-services-registry/commit/f9465816dba4dc7809b2ffb757ab3d7e009bc30c))
+* react-email misspell ([bcde965](https://github.com/bcgov/platform-services-registry/commit/bcde9654a93955bcd343a32556757b845ad54d30))
+* remove commented out lines ([8debf21](https://github.com/bcgov/platform-services-registry/commit/8debf2158a7e1a27713b9f8922b4a945d5b92f70))
+* rename rejection to denial, fix comment modals ([fade899](https://github.com/bcgov/platform-services-registry/commit/fade899d187d46f4eb2e2578c86e68442a0a7f49))
+* rename variable name ([7ce297e](https://github.com/bcgov/platform-services-registry/commit/7ce297e0b21fd0d2cf0978d51159eec36969bf52))
+* resolved build error for download button behavior ([06b0e03](https://github.com/bcgov/platform-services-registry/commit/06b0e0311cd06acf5a36c9c6862ffbaae62778c1))
+* return modal displays note only if its public-cloud ([28f699e](https://github.com/bcgov/platform-services-registry/commit/28f699e96d6653d9a15031de5976903738cddd46))
+* update .gitignore for react-email ([b939026](https://github.com/bcgov/platform-services-registry/commit/b939026cabb1f1f2563a84078803bd34f420f61b))
+* update db backup deployment config ([69f6255](https://github.com/bcgov/platform-services-registry/commit/69f6255e53eab34294c501446e29f4961a0e8749))
+* update wording for rejection emails ([3c03729](https://github.com/bcgov/platform-services-registry/commit/3c03729391708afae54810e1473329dbbd1e6cba))
+* updated emailHandler to grab value from config.ts ([b2786d5](https://github.com/bcgov/platform-services-registry/commit/b2786d50ef5aa8fa1be9e2ad5344b9eb854baf9f))
+* wording on privatecloud modal and links in modals ([a741c7c](https://github.com/bcgov/platform-services-registry/commit/a741c7cfdc39a48b65d30d89e050b9a446cbce0d))
+* wording on privatecloud modal and links in modals ([584d176](https://github.com/bcgov/platform-services-registry/commit/584d1764a1e093cca76416847349fa1fe02b1d20))
+
+
+### Docs
+
+* add database documents ([91e367c](https://github.com/bcgov/platform-services-registry/commit/91e367c6333e55a3b2fbc943b0ad051de6fe3c36))
+
 ## [0.4.0](https://github.com/bcgov/platform-services-registry/compare/v0.3.0...v0.4.0) (2023-11-28)
 
 
