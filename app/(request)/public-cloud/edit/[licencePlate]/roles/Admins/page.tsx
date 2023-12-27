@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import TableAWSRoles from '@/components/table/TableAWSRoles';
 import {
   getSubGroupMembersByLicencePlateAndName,
@@ -23,6 +24,16 @@ export default async function ProductAWSRoles() {
         pageSize={10}
         total={rows ? rows.length : 0}
       />
+=======
+'use client';
+
+import TableAWSRoles from '@/components/table/TableAWSRoles';
+
+export default function ProductAWSRoles() {
+  return (
+    <div className="w-full">
+      <TableAWSRoles currentPage={5} pageSize={5} total={5} />
+>>>>>>> 76c55f5e (merge commit)
     </div>
   );
 }

@@ -2,10 +2,7 @@
 
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
-import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
-import { getGroups } from '@/app/api/public-cloud/aws-roles/routes';
 import { usePathname } from 'next/navigation';
-
 export default function TableAWSRoles({
   currentPage,
   pageSize,
