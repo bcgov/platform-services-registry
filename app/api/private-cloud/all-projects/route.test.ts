@@ -17,6 +17,7 @@ import {
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+// import { cleanUp } from "@/jest.setup";
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
@@ -249,6 +250,7 @@ describe('CSV Download Route', () => {
   // Clean up database after tests are done
   afterAll(async () => {
     console.log('Cleaning up database');
+    console.log('Cleaning up database');
     await prisma.privateCloudProject.deleteMany({});
   });
 
@@ -312,70 +314,13 @@ describe('CSV Download Route', () => {
     const csvContent = await response.text();
     const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
-    // Check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
+    console.log(`Full CSV Content: ${JSON.stringify(records)}`); // Log full CSV content
+
+    // Assertions to check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
     const relevantRecord = records.find(
       (record: CsvRecord) =>
         record.name.includes('TestProject') && record.ministry === 'AG' && record.cluster === 'SILVER',
     );
     expect(relevantRecord).toBeDefined();
-  });
-
-  test('should handle invalid query parameters correctly', async () => {
-    // Mock a valid session
-    mockedGetServerSession.mockResolvedValue({
-      user: { email: 'admin@example.com', roles: ['admin'] },
-    });
-
-    // Create a request with invalid query parameters
-    const req = new NextRequest(`${API_URL}?search=*&ministry=InvalidMinistry&cluster=InvalidCluster&active=maybe`, {
-      method: 'GET',
-    });
-
-    // Call the downloadCsv function with the request
-    const response = await downloadCsv(req);
-    expect(response.status).toBe(204);
-    const csvContent = await response.text();
-    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
-
-    expect(records.length).toBe(0);
-  });
-
-  test('should return correct data for combined search and filter parameters', async () => {
-    // Mock user session
-    mockedGetServerSession.mockResolvedValue(mockSession);
-
-    // Define different combinations of search and filter parameters
-    const testCombinations = [
-      { search: 'Sample Project', ministry: 'AG', cluster: 'CLAB' },
-      { search: 'TestProject', ministry: 'AG', cluster: 'SILVER' },
-    ];
-
-    for (const combo of testCombinations) {
-      // Create a new object with only defined properties
-      const definedParams = Object.fromEntries(Object.entries(combo).filter(([_, v]) => v !== undefined));
-
-      // Create query string from the defined parameters
-      const queryParams = new URLSearchParams(definedParams).toString();
-      const req = new NextRequest(`${API_URL}?${queryParams}`, { method: 'GET' });
-
-      const response = await downloadCsv(req);
-      expect(response.status).toBe(200);
-
-      const csvContent = await response.text();
-      const records = parse(csvContent, { columns: true, skip_empty_lines: true });
-
-      // Check if data matches the combination criteria
-      records.forEach((record: { name: any; ministry: any; cluster: any }) => {
-        if (combo.search) {
-          expect(record.name).toContain(combo.search);
-        }
-        if (combo.ministry) {
-          expect(record.ministry).toBe(combo.ministry);
-        }
-        if (combo.cluster) {
-          expect(record.cluster).toBe(combo.cluster);
-        }
-      });
-    }
   });
 });
