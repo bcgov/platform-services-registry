@@ -7,12 +7,14 @@ export default function Modal({
   onSubmit,
   isLoading,
   type,
+  action,
 }: {
   open: boolean;
   setOpen: any;
   onSubmit: any;
   isLoading: boolean;
   type?: string;
+  action?: 'APPROVE' | 'REJECT' | null;
 }) {
   const [comment, setComment] = useState('');
   const [confirm, setConfirm] = useState(false);
@@ -68,7 +70,9 @@ export default function Modal({
                       as="h3"
                       className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
-                      Are you sure you want to reject this {type} Project request?
+                      {action === 'APPROVE'
+                        ? `Are you sure you want to approve this ${type} Project request?`
+                        : `Are you sure you want to reject this ${type} Project request?`}
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
@@ -115,7 +119,7 @@ export default function Modal({
                       onClick={() => onSubmit(comment)}
                       className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
                     >
-                      CONFIRM
+                      {action === 'APPROVE' ? 'CONFIRM APPROVAL' : 'CONFIRM REJECTION'}
                     </button>
                   ) : (
                     <button
@@ -123,7 +127,7 @@ export default function Modal({
                       disabled
                       className="inline-flex justify-center rounded-md bg-bcorange/50 px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
                     >
-                      CONFIRM
+                      {action === 'APPROVE' ? 'CONFIRM APPROVAL' : 'CONFIRM REJECTION'}
                     </button>
                   )}
                 </div>
