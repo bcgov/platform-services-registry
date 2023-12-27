@@ -2,7 +2,6 @@
 
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
-import { usePathname } from 'next/navigation';
 export default function TableAWSRoles({
   currentPage,
   pageSize,
@@ -14,8 +13,7 @@ export default function TableAWSRoles({
   total: number;
   tableBody: React.ReactNode;
 }) {
-  const pathname = usePathname();
-    return (
+  return (
     <div className="border-2 rounded-xl overflow-hidden">
       <UserAWSRolesTableTop
         title="BC Gov’s Landing Zone in AWS - Manage Users"
@@ -23,7 +21,7 @@ export default function TableAWSRoles({
         description="Assign roles to grant users access below"
       />
       <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
-           <nav
+      <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
         aria-label="Pagination"
       >
