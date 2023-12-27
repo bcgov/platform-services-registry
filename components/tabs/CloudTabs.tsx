@@ -11,12 +11,6 @@ interface Tab {
   subHref: string;
 }
 
-interface Tab {
-  name: string;
-  href: string;
-  subHref: string;
-}
-
 const createLink = (path: string[], elem: string): string[] => {
   path.splice(path.length - 1, 1, elem);
   return path;
