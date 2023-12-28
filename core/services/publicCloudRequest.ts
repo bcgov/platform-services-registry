@@ -1,12 +1,14 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { Session } from 'next-auth';
+import prisma from '@/lib/prisma';
 import { ModelService } from '../modelService';
 
 export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRequestWhereInput> {
   async readFilter() {
     let baseFilter!: Prisma.PublicCloudRequestWhereInput;
+
+    if (!this.session) return false;
     if (!this.session.isAdmin) {
-      const res = await this.client.publicCloudRequestedProject.findMany({
+      const res = await prisma.publicCloudRequestedProject.findMany({
         select: { id: true },
         session: this.session as never,
       });
@@ -23,11 +25,9 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
 
   async writeFilter() {
     let baseFilter!: Prisma.PublicCloudRequestWhereInput;
-    if (!this.session.isAdmin) {
-      baseFilter = {
-        // Adding a dummy query to ensure no documents match
-        created: new Date(),
-      };
+
+    if (!this.session?.isAdmin) {
+      return false;
     }
 
     return baseFilter;
