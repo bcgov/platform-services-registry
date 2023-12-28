@@ -1,4 +1,3 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import { Session } from 'next-auth';
 
 import { PrivateCloudProjectService } from './privateCloudProject';
@@ -7,21 +6,24 @@ import { PrivateCloudRequestedProjectService } from './privateCloudRequestedProj
 import { PublicCloudProjectService } from './publicCloudProject';
 import { PublicCloudRequestService } from './publicCloudRequest';
 import { PublicCloudRequestedProjectService } from './publicCloudRequestedProject';
+import { PrivateCloudProjectZapResultService } from './privateCloudProjectZapResult';
 
-export function getService(model: string, client: PrismaClient, session: Session) {
+export function getService(model: string, session: Session) {
   switch (model) {
     case 'PrivateCloudProject':
-      return new PrivateCloudProjectService(client, session);
+      return new PrivateCloudProjectService(session);
     case 'PrivateCloudRequest':
-      return new PrivateCloudRequestService(client, session);
+      return new PrivateCloudRequestService(session);
     case 'PrivateCloudRequestedProject':
-      return new PrivateCloudRequestedProjectService(client, session);
+      return new PrivateCloudRequestedProjectService(session);
     case 'PublicCloudProject':
-      return new PublicCloudProjectService(client, session);
+      return new PublicCloudProjectService(session);
     case 'PublicCloudRequest':
-      return new PublicCloudRequestService(client, session);
+      return new PublicCloudRequestService(session);
     case 'PublicCloudRequestedProject':
-      return new PublicCloudRequestedProjectService(client, session);
+      return new PublicCloudRequestedProjectService(session);
+    case 'PrivateCloudProjectZapResult':
+      return new PrivateCloudProjectZapResultService(session);
     default:
       return null;
   }

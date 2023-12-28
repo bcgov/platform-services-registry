@@ -1,11 +1,12 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { Session } from 'next-auth';
 import { ModelService } from '../modelService';
 
 export class PrivateCloudRequestedProjectService extends ModelService<Prisma.PrivateCloudRequestedProjectWhereInput> {
   async readFilter() {
     let baseFilter!: Prisma.PrivateCloudRequestedProjectWhereInput;
-    if (!this.session.isAdmin) {
+
+    if (!this.session) return false;
+    if (!this.session?.isAdmin) {
       baseFilter = {
         OR: [
           { projectOwnerId: this.session.userId as string },
@@ -22,11 +23,9 @@ export class PrivateCloudRequestedProjectService extends ModelService<Prisma.Pri
 
   async writeFilter() {
     let baseFilter!: Prisma.PrivateCloudRequestedProjectWhereInput;
-    if (!this.session.isAdmin) {
-      baseFilter = {
-        // Adding a dummy query to ensure no documents match
-        created: new Date(),
-      };
+
+    if (!this.session?.isAdmin) {
+      return false;
     }
 
     return baseFilter;
