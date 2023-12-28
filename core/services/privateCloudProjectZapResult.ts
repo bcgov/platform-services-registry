@@ -1,21 +1,19 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { ModelService } from '../modelService';
 import prisma from '@/lib/prisma';
+import { ModelService } from '../modelService';
 
-export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloudRequestWhereInput> {
+export class PrivateCloudProjectZapResultService extends ModelService<Prisma.PrivateCloudProjectZapResultWhereInput> {
   async readFilter() {
-    let baseFilter!: Prisma.PrivateCloudRequestWhereInput;
+    let baseFilter!: Prisma.PrivateCloudProjectZapResultWhereInput;
 
     if (!this.session) return false;
     if (!this.session.isAdmin) {
       const res = await prisma.privateCloudRequestedProject.findMany({
-        select: { id: true },
+        select: { cluster: true, licencePlate: true },
       });
 
-      const ids = res.map(({ id }) => id);
-
       baseFilter = {
-        requestedProjectId: { in: ids },
+        OR: res.map(({ cluster, licencePlate }) => ({ cluster, licencePlate })),
       };
     }
 
@@ -23,13 +21,7 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
   }
 
   async writeFilter() {
-    let baseFilter!: Prisma.PrivateCloudRequestWhereInput;
-
-    if (!this.session?.isAdmin) {
-      return false;
-    }
-
-    return baseFilter;
+    return false;
   }
 
   async decorate(doc: any) {

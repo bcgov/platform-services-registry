@@ -25,6 +25,7 @@ const prisma =
             'update',
             'upsert',
             'updateMany',
+            'count',
           ].includes(operation)
         ) {
           return query(args);
@@ -33,7 +34,7 @@ const prisma =
         const { session, ...validArgs } = args;
         if (session === undefined) return query(validArgs);
 
-        const svc = getService(model, prisma, session);
+        const svc = getService(model, session);
         if (!svc) return query(validArgs);
 
         const multi = ['findMany'].includes(operation);
@@ -41,7 +42,17 @@ const prisma =
 
         const { where, ...otherArgs } = validArgs;
         const filter = await svc.genFilter(where, writeOp ? 'write' : 'read');
+
+        if (filter === false) {
+          if (operation === 'count') return 0;
+          return multi ? [] : null;
+        }
+
         const result = await query({ ...otherArgs, where: filter });
+
+        if (operation === 'count') {
+          return result;
+        }
 
         if (operation === 'updateMany') {
           return result;
