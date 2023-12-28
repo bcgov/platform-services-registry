@@ -6,6 +6,7 @@ const headers = [
   { field: 'role', headerName: 'Role' },
   { field: 'firstName', headerName: 'First Name' },
   { field: 'lastName', headerName: 'Last Name' },
+  { field: 'email', headerName: 'Email' },
 ];
 
 interface TableProps {
@@ -21,6 +22,7 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
   const subHeader = [
     { field: 'firstName', headerName: 'First Name' },
     { field: 'lastName', headerName: 'Last Name' },
+    { field: 'email', headerName: 'Email' },
   ];
 
   return (
@@ -56,12 +58,12 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
                   </td>
                   {subHeader.map((value, index) => (
                     <td
-                      key={value.field + index}
+                      key={index + i}
                       className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
                         index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                       } `}
                     >
-                      {row[Object.keys(row)[0]].firstName}
+                      {row[Object.keys(row)[0]][value.field]}
                     </td>
                   ))}
                 </tr>

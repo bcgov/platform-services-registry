@@ -5,9 +5,13 @@ import {
   User,
 } from '@/app/api/public-cloud/aws-roles/routes';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
-export default async function ProductAWSRoles() {
+
+type params = { params: { licencePlate: string } };
+
+export default async function ProductAWSRoles(req: params) {
+  const licencePlate = req.params.licencePlate;
   const users = await getSubGroupMembersByLicencePlateAndName('eu9cfk', 'Admins', 'Admin');
-  const registryUsers = await getPublicCloudProjectUsers('A1VEcjg');
+  const registryUsers = await getPublicCloudProjectUsers(licencePlate);
 
   let rows: Record<string, User>[] = [];
 

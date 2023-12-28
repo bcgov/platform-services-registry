@@ -4,6 +4,7 @@ import Link from 'next/link';
 import classNames from '@/components/utils/classnames';
 import { usePathname } from 'next/navigation';
 import CreateButton from '@/components/buttons/CreateButton';
+import { extractPathSegments, hasSegmentAtPosition } from '@/helpers/pathSegments';
 
 const tabs = [
   {
@@ -43,9 +44,9 @@ export default function PublicProductTabs({ className }: { className?: string })
             <div className=" -mb-px flex justify-start">
               <Link
                 key={'PUBLIC CLOUD EDIT'}
-                href={`${pathname.split('/').splice(0, 4).join('/')}/product`}
+                href={`${extractPathSegments(pathname, 4)}/product`}
                 className={classNames(
-                  pathname.split('/').includes('product')
+                  hasSegmentAtPosition(pathname, 'product', 4)
                     ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                     : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
                   'lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold',
@@ -55,9 +56,9 @@ export default function PublicProductTabs({ className }: { className?: string })
               </Link>
               <Link
                 key="PUBLIC CLOUD USER ROLES"
-                href={`${pathname.split('/').splice(0, 4).join('/')}/roles/Admins`}
+                href={`${extractPathSegments(pathname, 4)}/roles/admins`}
                 className={classNames(
-                  pathname.split('/').includes('roles')
+                  hasSegmentAtPosition(pathname, 'roles', 4)
                     ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                     : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
                   'lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold',

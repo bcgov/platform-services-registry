@@ -3,27 +3,28 @@
 import Link from 'next/link';
 import classNames from '@/components/utils/classnames';
 import { usePathname } from 'next/navigation';
+import { extractPathSegments } from '@/helpers/pathSegments';
 
 const tabs = [
   {
     name: 'Admins',
-    href: 'Admins',
+    href: 'admins',
   },
   {
     name: 'Billing Viewers',
-    href: '/BillingViewers',
+    href: 'billing-viewers',
   },
   {
     name: 'Developers',
-    href: '/Developers',
+    href: 'developers',
   },
   {
     name: 'Security Auditors',
-    href: '/SecurityAuditors',
+    href: 'security-auditors',
   },
   {
     name: 'Viewers',
-    href: '/Viewers',
+    href: 'viewers',
   },
 ];
 
@@ -35,7 +36,7 @@ export default function PublicUsersTabs() {
         {tabs.map((tab, index) => (
           <Link
             key={index}
-            href={`${pathname.split('/').splice(0, 5).join('/')}/${tab.href}`}
+            href={`${extractPathSegments(pathname, 5)}/${tab.href}`}
             type="button"
             className={classNames(
               (pathname.split('/').includes(tab.href) ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100') +
