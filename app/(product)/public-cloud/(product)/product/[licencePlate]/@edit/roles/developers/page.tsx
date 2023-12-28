@@ -1,19 +1,12 @@
 import TableAWSRoles from '@/components/table/TableAWSRoles';
-import { getSubGroupMembersByLicencePlateAndName, User, paramsURL } from '@/app/api/public-cloud/aws-roles/route';
+import { getSubGroupMembersByLicencePlateAndName, User } from '@/app/api/public-cloud/aws-roles/routes';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
-
-export default async function ProductAWSRoles(req: paramsURL) {
-  const licencePlate = req.params.licencePlate;
-  const currentPage: number = +req.searchParams.page || 1;
-  const pageSize: number = +req.searchParams.pageSize || 5;
-  const users = await getSubGroupMembersByLicencePlateAndName(licencePlate, 'Developer', {
-    page: currentPage,
-    pageSize: pageSize,
-  });
+export default async function ProductAWSRoles() {
+  const users = await getSubGroupMembersByLicencePlateAndName('eu9cfk', 'Developers', 'Developer');
   let rows: Record<string, User>[] = [];
 
   if (users) {
-    rows = [...users.users];
+    rows = [...users];
   }
 
   return (
@@ -21,9 +14,8 @@ export default async function ProductAWSRoles(req: paramsURL) {
       <TableAWSRoles
         tableBody={<TableBodyAWSRoles rows={rows} />}
         currentPage={1}
-        pageSize={5}
-        total={users ? users.total : 0}
-        groupId={users.groupId}
+        pageSize={10}
+        total={rows ? rows.length : 0}
       />
     </div>
   );
