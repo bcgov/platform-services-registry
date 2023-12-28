@@ -46,6 +46,9 @@ airflow:
   uid:
   gid:
 
+  defaultAirflowRepository: ghcr.io/bcgov/pltsvc-secdashboard-airflow
+  defaultAirflowTag: "4692f1e60d8f00f302d476059284449ea722ac1e" # pragma: allowlist secret
+
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L77
   airflowVersion: "2.7.3"
 
@@ -61,6 +64,11 @@ airflow:
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L264
   executor: KubernetesExecutor
+
+  # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L370
+  extraEnvFrom: | # pragma: allowlist secret
+    - secretRef:
+        name: airflow-variables
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L379
   data:
@@ -82,9 +90,14 @@ airflow:
       - name: secdash-airflow-dags
         persistentVolumeClaim:
           claimName: secdash-airflow-dags
+      - name: secdash-airflow-shared
+        persistentVolumeClaim:
+          claimName: secdash-airflow-shared
     extraVolumeMounts:
       - name: secdash-airflow-dags
         mountPath: /opt/airflow/dags
+      - name: secdash-airflow-shared
+        mountPath: /opt/airflow/shared
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L770
   scheduler:
@@ -101,9 +114,14 @@ airflow:
       - name: secdash-airflow-dags
         persistentVolumeClaim:
           claimName: secdash-airflow-dags
+      - name: secdash-airflow-shared
+        persistentVolumeClaim:
+          claimName: secdash-airflow-shared
     extraVolumeMounts:
       - name: secdash-airflow-dags
         mountPath: /opt/airflow/dags
+      - name: secdash-airflow-shared
+        mountPath: /opt/airflow/shared
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1130
   webserver:

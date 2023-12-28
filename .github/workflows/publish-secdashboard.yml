@@ -1,0 +1,60 @@
+name: 22.Build and Publish Security Dashboard Images
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/publish-secdashboard.yml
+    - security-dashboard/**
+  workflow_dispatch:
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+jobs:
+  build-push-airflow:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-secdashboard-airflow
+        docker-context: security-dashboard/airflow
+        docker-file: security-dashboard/airflow/Dockerfile
+        metadata-tags: |
+          type=sha,format=long,prefix=,suffix=
+
+  build-push-zap:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-secdashboard-zap
+        docker-context: security-dashboard/zap
+        docker-file: security-dashboard/zap/Dockerfile
+        metadata-tags: |
+          type=sha,format=long,prefix=,suffix=

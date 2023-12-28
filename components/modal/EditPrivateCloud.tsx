@@ -15,18 +15,13 @@ export default function Modal({
   isLoading: boolean;
   type: string;
 }) {
-  const [confirm, setConfirm] = useState(false);
+  //const [confirm, setConfirm] = useState(false);
   const [comment, setComment] = useState('');
 
   const cancelButtonRef = useRef(null);
 
-  const handleCheck = () => {
-    setConfirm(!confirm);
-  };
-
   const handleCommentChange = (event: any) => {
-    const comm = event.target.value;
-    setComment(comm);
+    setComment(event.target.value);
   };
 
   return (
@@ -69,30 +64,11 @@ export default function Modal({
                     className="w-full border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3 h-24 mb-6"
                     placeholder="Type in your comment..."
                   />
-                  <p className="font-bcsans text-sm text-gray-900 mt-6">
-                    After hitting request, our smart robots will start working hard behind the scenes. There is one
-                    step, the approval process, where a human is involved. They will take the opportunity, if needed, to
-                    reach out and have an on-boarding conversation with you.
-                  </p>
+
                   <p className="font-bcsans text-sm text-gray-900 mt-4">
-                    Also, look out for our Notification emails that will provide you with valuable information regarding
-                    your product status and details.
+                    Also, look out for our notification emails, that will provide you with valuable information
+                    regarding your product status and details.
                   </p>
-                  <div className="flex border-t-1 mt-8 pt-4">
-                    <input
-                      id="none"
-                      name="none"
-                      type="checkbox"
-                      checked={confirm}
-                      onChange={handleCheck}
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 mt-5 mr-4"
-                    />
-                    <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      By checking this box, I confirm that I have read and understood the roles and responsibilities as
-                      described in the <span> </span>
-                      <span className="underline text-blue-700">Onboarding Guide.</span>
-                    </p>
-                  </div>
                 </div>
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
@@ -102,17 +78,17 @@ export default function Modal({
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >
-                    PREVIOUS
+                    CANCEL
                   </button>
                   <button
                     type="button"
-                    disabled={!confirm}
+                    disabled={comment.trim() === ''}
                     onClick={() => handleSubmit(comment)}
                     className={classNames(
                       'inline-flex rounded-md shadow-sm px-4 py-2.5 font-bcsans text-sm tracking-[.2em]',
                       isLoading
                         ? 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2'
-                        : confirm
+                        : comment.trim() !== ''
                         ? 'justify-center bg-bcorange text-bcblue hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2' // eslint-disable-line prettier/prettier
                         : 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2', // eslint-disable-line prettier/prettier
                     )}
@@ -126,7 +102,7 @@ export default function Modal({
                         Loading...
                       </>
                     ) : (
-                      'SUBMIT REQUEST'
+                      'SUBMIT EDIT REQUEST'
                     )}
                   </button>
                 </div>

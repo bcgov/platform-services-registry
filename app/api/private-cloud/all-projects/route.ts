@@ -21,7 +21,6 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      console.log('No session, sending 401');
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -31,7 +30,7 @@ export async function GET(req: NextRequest) {
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
       cluster: searchParams.get('cluster'),
-      active: searchParams.get('active'),
+      active: searchParams.get('active') === 'true', // Converts 'true' string to true boolean
     });
 
     const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
@@ -46,6 +45,10 @@ export async function GET(req: NextRequest) {
       ministryRoles,
       parsedSearchParams.active,
     );
+
+    if (data.length === 0) {
+      return new NextResponse(null, { status: 204 });
+    }
 
     // Map the data to the correct format for CSV conversion
     const formattedData = data.map((project: PrivateProject) => ({
@@ -87,7 +90,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="projects.csv"',
+        'Content-Disposition': 'attachment; filename=private-cloud-products.csv',
       },
     });
 
