@@ -87,15 +87,17 @@ awsRolesApiInstance.interceptors.request.use(
   },
 );
 
-export const getGroups: Promise<Group[] | undefined> = awsRolesApiInstance
-  .get('/groups')
-  .then((response) => {
-    return response.data;
-  })
-  .catch((error: unknown) => {
-    parseError(error);
-  });
-
+export const getGroups = async (): Promise<Group[]> => {
+  const groups = await awsRolesApiInstance
+    .get('/groups')
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error: unknown) => {
+      parseError(error);
+    });
+  return groups as Group[];
+};
 //search by substring, returns all of groups, which names includes searchParam
 export const getGroupByName = (groupName: string = 'Project Team Groups'): Promise<Group[] | undefined> =>
   awsRolesApiInstance
@@ -120,8 +122,8 @@ export const getUsers: Promise<Group[] | undefined> = awsRolesApiInstance
     parseError(error);
   });
 
-export const getMembersByGroupId = async (groupId: string): Promise<User[] | undefined> =>
-  awsRolesApiInstance
+export const getMembersByGroupId = async (groupId: string): Promise<User[]> => {
+  const members = await awsRolesApiInstance
     .get(`/groups/${groupId}/members`)
     .then((response) => {
       return response.data;
@@ -129,6 +131,8 @@ export const getMembersByGroupId = async (groupId: string): Promise<User[] | und
     .catch((error: unknown) => {
       parseError(error);
     });
+  return members as User[];
+};
 
 export const getUserByEmail = (email: string): Promise<User[] | undefined> =>
   awsRolesApiInstance
@@ -164,22 +168,23 @@ export const removeUserFromGroup = (userId: string, groupId: string) =>
       parseError(error);
     });
 
-const findObjectByValue = (array: Group[], key: keyof Group, value: any): Group[] | undefined => {
+const findObjectByValue = (array: Group[], key: keyof Group, value: any): Group[] => {
   return array.filter((obj) => obj[key] === value);
 };
 
-const findObjectByValueSubstring = (array: Group[], key: keyof Group, value: any): Group[] | undefined => {
+const findObjectByValueSubstring = (array: Group[], key: keyof Group, value: any): Group[] => {
   return array.filter((obj) => obj[key].includes(value));
 };
 
-export async function getProductAWSRoles(licencePlate: string): Promise<Group[] | undefined> {
-  const keyClockGroups = await getGroups;
+export async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
+  const keyClockGroups = await getGroups();
   if (keyClockGroups) {
     const projectTeamGroups = findObjectByValue(keyClockGroups, 'name', 'Project Team Groups');
-    if (projectTeamGroups) {
+    if (projectTeamGroups.length > 0) {
       return findObjectByValueSubstring(projectTeamGroups[0].subGroups, 'name', licencePlate);
     }
   }
+  return [];
 }
 
 const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
@@ -192,10 +197,10 @@ export async function getSubGroupMembersByLicencePlateAndName(
   licencePlate: string,
   groupName: string,
   role: string,
-): Promise<Record<string, User>[] | undefined> {
-  const productRolesGroups: Group[] | undefined = await getProductAWSRoles(licencePlate);
-
-  if (productRolesGroups) {
+): Promise<Record<string, User>[]> {
+  let groupsUsers: User[] = [];
+  const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
+  if (productRolesGroups.length > 0) {
     let groupId: string = '';
     productRolesGroups[0].subGroups.forEach((group) => {
       if (group.name === groupName) {
@@ -203,9 +208,8 @@ export async function getSubGroupMembersByLicencePlateAndName(
       }
     });
     if (groupId) {
-      const groupsUsers: User[] | undefined = await getMembersByGroupId(groupId);
-      return groupsUsers?.map((user) => userRole(role, user));
+      groupsUsers = await getMembersByGroupId(groupId);
     }
   }
-  return;
+  return groupsUsers.map((user) => userRole(role, user)) as Record<string, User>[];
 }
