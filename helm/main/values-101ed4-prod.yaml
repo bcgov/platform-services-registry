@@ -22,6 +22,7 @@ app:
     host: pltsvc.apps.silver.devops.gov.bc.ca
 
 email:
+  enabled: false
   route:
     enabled: true
     host: pltsvc-email.apps.silver.devops.gov.bc.ca
@@ -31,5 +32,5 @@ mongodb:
 
 backup:
   cronExpression: 0 1 * * *
-  storageSize: 15Gi
+  storageSize: 10Gi
   rocketchatPrefix: "[Registry PROD]"

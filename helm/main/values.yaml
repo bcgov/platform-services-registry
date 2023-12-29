@@ -118,6 +118,7 @@ mongodb:
       enabled: false
 
 backup:
+  enabled: true
   cronExpression: 0 1 * * *
   storageSize: 10Gi
   rocketchatPrefix:
