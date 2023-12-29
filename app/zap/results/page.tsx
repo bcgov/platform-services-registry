@@ -132,7 +132,7 @@ export default async function Page({
   }
 
   const { page: pageStr, pageSize: pageSizeStr } = searchParams;
-  let { search, cluster } = searchParams;
+  let { search = '', cluster } = searchParams;
   if (!cluster) cluster = [];
   else if (!Array.isArray(cluster)) cluster = [cluster];
 
@@ -188,7 +188,7 @@ export default async function Page({
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
         <TableTop title="Zap Results" description="" />
-        <SearchPanel clusters={clusters.concat('asdf')} />
+        <SearchPanel clusters={clusters} />
         <div className="flow-root overflow-y-auto h-[55vh]">
           <div className="w-full overflow-auto">
             <div className="inline-block min-w-full align-middle">
