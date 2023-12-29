@@ -83,15 +83,15 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
   }
 
   if (requestType === 'CREATE') {
-    return 'Requested create on';
+    return 'Create requested';
   }
 
   if (requestType === 'EDIT') {
-    return 'Requested changes on';
+    return 'Edit requested';
   }
 
   if (requestType === 'DELETE') {
-    return 'Requested deletion on';
+    return 'Delete requested';
   }
 
   return 'Deployed on';
@@ -107,7 +107,7 @@ function getStatus(requestDecisionStatus: string) {
   }
 
   if (requestDecisionStatus === 'PENDING') {
-    return 'Pending';
+    return 'Reviewing';
   }
 
   if (requestDecisionStatus === 'REJECTED') {

@@ -25,7 +25,7 @@ export default function Tabs() {
             selectedTab === 'all' ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100',
           )}
         >
-          View All
+          Products
         </Link>
 
         <Link
