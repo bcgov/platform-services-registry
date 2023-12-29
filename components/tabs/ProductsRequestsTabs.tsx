@@ -6,8 +6,6 @@ import { usePathname } from 'next/navigation';
 export default function Tabs() {
   const pathname = usePathname();
 
-  console.log(pathname.split('/')[2]);
-
   return (
     <span className="isolate inline-flex rounded-md h-10 mb-8">
       <Link
