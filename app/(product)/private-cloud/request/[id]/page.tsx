@@ -85,7 +85,7 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="mb-12 mt-8">
-            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
+            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-2">
               A decision has already been made for this project
             </h3>
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />

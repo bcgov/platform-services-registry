@@ -39,7 +39,7 @@ function EmptyBody() {
       </span>
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
       <Link
-        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
+        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/create`}
       >
         REQUEST A NEW PROJECT SET

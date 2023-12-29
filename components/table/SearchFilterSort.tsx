@@ -9,7 +9,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/components/utils/useDebounce';
 import FilterPanel from './FilterPanel';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import AllActiveTabs from '@/components/tabs/AllActiveTabs';
 
 type SearchFilterSortProps = {
   showDownloadButton?: boolean;
@@ -100,7 +99,6 @@ export default function SearchFilterSort({
       <Disclosure>
         <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
           <div className="flex w-full justify-between items-center">
-            <AllActiveTabs />
             <div className="flex-grow h-12"></div>
 
             {!removeSearch && (

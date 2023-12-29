@@ -121,12 +121,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
-          <div className="space-y-12">
-            {data && data.decisionStatus !== 'PENDING' && (
-              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
-                A decision has already been made for this project
-              </h3>
-            )}
+          {data && data.decisionStatus !== 'PENDING' && (
+            <div className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600">
+              A decision has already been made for this project
+            </div>
+          )}
+          <div className="mb-12">
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts
               disabled={isDisabled}
