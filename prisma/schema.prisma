@@ -165,6 +165,43 @@ model PublicCloudRequestedProject {
   userRequestedProject     PublicCloudRequest? @relation("publicCloudUserRequestedProject")
 }
 
+model PrivateCloudProjectZapResult {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String
+  cluster      String
+  host         String
+  html         String?
+  // json         ZapJson?
+  json         Json?
+  scannedAt    DateTime @default(now())
+}
+
+type ZapJson {
+  site ZapJsonSite[]
+}
+
+type ZapJsonSite {
+  alerts ZapJsonSiteAlert[]
+}
+
+type ZapJsonSiteAlert {
+  pluginid   String
+  alertRef   String
+  alert      String
+  name       String
+  riskcode   String
+  confidence String
+  riskdesc   String
+  desc       String
+  count      String
+  solution   String
+  otherinfo  String
+  reference  String
+  cweid      String
+  wascid     String
+  sourceid   String
+}
+
 type Quota {
   cpu     String
   memory  String
