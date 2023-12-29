@@ -1,0 +1,9 @@
+.zap-report table th,
+.zap-report table td {
+  border: 1px solid whitesmoke;
+}
+
+.zap-report a {
+  color: blue;
+  text-decoration: underline;
+}
