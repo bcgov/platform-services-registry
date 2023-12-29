@@ -20,8 +20,7 @@ export default function CrumbsNav({
     <div className="">
       <div className="flex h-16 justify-left items-center">
         <div className="font-bcsans text-xl text-cloudgrey ">{cloudLabel}</div>
-        <div className="border-l h-12 border-divider mx-5"></div>{' '}
-        <nav className="flex" aria-label="Breadcrumb">
+        <nav className="flex ml-10" aria-label="Breadcrumb">
           <ol className="flex items-center">
             <li>
               <button onClick={() => router.back()}>
@@ -31,6 +30,7 @@ export default function CrumbsNav({
                   width={20}
                   height={20}
                   style={{
+                    marginTop: '4px',
                     maxWidth: '100%',
                     height: 'auto',
                   }}
@@ -39,7 +39,13 @@ export default function CrumbsNav({
             </li>
             <li>
               <div className="flex items-center">
-                <span className="ml-4 font-bcsans text-lg font-medium text-gray-500 mb-0.5">{previousLabel}</span>
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="ml-4 font-bcsans text-lg font-medium text-gray-500 mb-0.5"
+                >
+                  {previousLabel}
+                </button>
                 {currentLabel && (
                   <svg
                     className="h-3 w-3 flex-shrink-0 text-gray-300"

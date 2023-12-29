@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import CloudTabs from '@/components/tabs/CloudTabsNew';
+import ProductHistoryTabs from '@/components/tabs/ProductHistoryTabs';
 import { useQuery } from '@tanstack/react-query';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
+import { useSession } from 'next-auth/react';
 
 const tabsData = [
   {
@@ -17,7 +18,7 @@ const tabsData = [
 ];
 
 async function fetchRequestedProject(licencePlate: string): Promise<PrivateCloudRequestWithCurrentAndRequestedProject> {
-  const res = await fetch(`/api/private-cloud/active-request/${licencePlate}`);
+  const res = await fetch(`/api/public-cloud/active-request/${licencePlate}`);
   if (!res.ok) {
     throw new Error('Network response was not ok');
   }
@@ -37,11 +38,16 @@ export default function Layout({
   params,
   edit,
   decision,
+  request,
 }: {
+  params: { licencePlate: string };
   edit: React.ReactNode;
   decision: React.ReactNode;
-  params: { licencePlate: string };
+  request: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
+  const isAdmin = session?.user?.roles?.includes('admin');
+
   const { data, isLoading } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
     queryFn: () => fetchRequestedProject(params.licencePlate),
@@ -54,10 +60,18 @@ export default function Layout({
     return null;
   }
 
+  if (selectedTab === 'history') {
+    return null;
+  }
+
   return (
-    <div>
-      <CloudTabs tabs={tabsData} selectedTab={selectedTab} onClick={(event) => setSelectedTab(event.target.name)} />
-      {selectedTab === 'history' ? null : data ? decision : edit}
+    <div className="mt-6">
+      <ProductHistoryTabs
+        tabs={tabsData}
+        selectedTab={selectedTab}
+        onClick={(event) => setSelectedTab(event.target.name)}
+      />
+      {data ? (isAdmin ? decision : request) : edit}
     </div>
   );
 }
