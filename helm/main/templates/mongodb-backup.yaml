@@ -1,6 +1,7 @@
 {{- $secretName := printf "%s-%s" (include "main.fullname" .) "mongodb" }}
 {{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName ) }}
 
+{{- if .Values.backup.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -73,3 +74,4 @@ spec:
   resources:
     requests:
       storage: {{ .Values.backup.storageSize }}
+{{- end }}
