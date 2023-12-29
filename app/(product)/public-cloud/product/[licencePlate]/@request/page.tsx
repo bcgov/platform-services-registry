@@ -43,7 +43,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const { data } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
     queryFn: () => fetchRequestedProject(params.licencePlate),
-    enabled: !!params.id,
+    enabled: !!params.licencePlate,
   });
 
   const methods = useForm({
