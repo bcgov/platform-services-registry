@@ -42,7 +42,7 @@ export default function PublicUsersTabs() {
               (pathname.split('/').includes(tab.href) ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100') +
                 (index === 0 ? ' rounded-l-lg' : '') +
                 (index === tabs.length - 1 ? ' rounded-r-lg' : '') +
-                ' w-24 relative inline-flex justify-center items-center  px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10',
+                ' min-w-min relative inline-flex justify-center items-center  px-3.5 py-2.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-10',
             )}
           >
             {tab.name}

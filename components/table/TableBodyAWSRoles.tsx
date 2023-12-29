@@ -50,9 +50,7 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
                 <tr key={row.id} className="hover:bg-tableheadergrey" onClick={() => onRowClickHandler(row)}>
                   <td
                     key={i}
-                    className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
-                      i === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
-                    } `}
+                    className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
                     {Object.keys(row)[0]}
                   </td>
