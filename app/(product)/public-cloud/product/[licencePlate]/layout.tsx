@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import ProductHistoryTabs from '@/components/tabs/ProductHistoryTabs';
 import { useQuery } from '@tanstack/react-query';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
-import { useSession } from 'next-auth/react';
 
 const tabsData = [
   {
@@ -45,9 +44,6 @@ export default function Layout({
   decision: React.ReactNode;
   request: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
-  const isAdmin = session?.user?.roles?.includes('admin');
-
   const { data, isLoading } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
     queryFn: () => fetchRequestedProject(params.licencePlate),
@@ -71,7 +67,7 @@ export default function Layout({
         selectedTab={selectedTab}
         onClick={(event) => setSelectedTab(event.target.name)}
       />
-      {data ? (isAdmin ? decision : request) : edit}
+      {data ? decision : edit}
     </div>
   );
 }

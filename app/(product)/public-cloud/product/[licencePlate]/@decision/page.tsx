@@ -9,7 +9,6 @@ import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import Comment from '@/components/modal/Comment';
-import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import { useQuery } from '@tanstack/react-query';
@@ -40,8 +39,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     required: true,
   });
 
-  const router = useRouter();
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
@@ -66,6 +63,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
       setDisabled(true);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!session?.user?.roles?.includes('admin')) {
+      setDisabled(true);
+    }
+  }, [session]);
 
   const onSubmit = async (val: any) => {
     setIsLoading(true);
@@ -119,6 +122,11 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
           })}
         >
           <div className="space-y-12">
+            {data && data.decisionStatus !== 'PENDING' && (
+              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
+                A decision has already been made for this project
+              </h3>
+            )}
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts
               disabled={isDisabled}

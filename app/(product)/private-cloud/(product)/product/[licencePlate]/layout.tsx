@@ -25,12 +25,10 @@ export default function Layout({
   params,
   edit,
   decision,
-  request,
 }: {
   params: { licencePlate: string };
   edit: React.ReactNode;
   decision: React.ReactNode;
-  request: React.ReactNode;
 }) {
   const { data: session, status } = useSession();
   const isAdmin = session?.user?.roles?.includes('admin');
@@ -45,5 +43,5 @@ export default function Layout({
     return null;
   }
 
-  return <div className="mt-6">{!data ? edit : isAdmin ? decision : request}</div>;
+  return <div className="mt-6">{!data ? edit : decision}</div>;
 }

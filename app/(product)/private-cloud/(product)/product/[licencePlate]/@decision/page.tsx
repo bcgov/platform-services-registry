@@ -58,6 +58,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   useEffect(() => {
+    if (!session?.user?.roles?.includes('admin')) {
+      setDisabled(true);
+    }
+  }, [session]);
+
+  useEffect(() => {
     if (data && data.decisionStatus !== 'PENDING') {
       setDisabled(true);
     }
@@ -115,7 +121,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
           })}
         >
           <div className="mb-12 mt-8">
-            {isDisabled && (
+            {data && data.decisionStatus !== 'PENDING' && (
               <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
                 A decision has already been made for this project
               </h3>
