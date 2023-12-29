@@ -17,7 +17,6 @@ import {
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
-// import { cleanUp } from "@/jest.setup";
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
@@ -313,7 +312,7 @@ describe('CSV Download Route', () => {
     const csvContent = await response.text();
     const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
-    // check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
+    // Check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
     const relevantRecord = records.find(
       (record: CsvRecord) =>
         record.name.includes('TestProject') && record.ministry === 'AG' && record.cluster === 'SILVER',
@@ -365,7 +364,7 @@ describe('CSV Download Route', () => {
       const csvContent = await response.text();
       const records = parse(csvContent, { columns: true, skip_empty_lines: true });
 
-      //check if data matches the combination criteria
+      // Check if data matches the combination criteria
       records.forEach((record: { name: any; ministry: any; cluster: any }) => {
         if (combo.search) {
           expect(record.name).toContain(combo.search);

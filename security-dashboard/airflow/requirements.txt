@@ -1,0 +1,2 @@
+openshift==0.13.2
+apache-airflow-providers-mongo==3.5.0

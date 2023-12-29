@@ -1,6 +1,6 @@
 {
   "name": "pltsrv-registry",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -42,7 +42,7 @@
     "@tanstack/react-query": "^5.4.3",
     "@types/lodash.isstring": "^4.0.9",
     "@types/node": "20.10.5",
-    "@types/react": "18.2.45",
+    "@types/react": "18.2.46",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.16",
     "axios": "^1.5.1",
@@ -57,6 +57,7 @@
     "lodash.compact": "^3.0.1",
     "lodash.isequal": "^4.5.0",
     "lodash.isstring": "^4.0.1",
+    "lodash.throttle": "^4.1.1",
     "lodash.uniq": "^4.5.0",
     "mongodb": "^6.0.0",
     "nats": "^2.17.0",
@@ -85,6 +86,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/lodash.castarray": "^4.4.8",
     "@types/lodash.compact": "^3.0.8",
+    "@types/lodash.throttle": "^4.1.9",
     "@types/lodash.uniq": "^4.5.8",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "conventional-changelog-cli": "^4.1.0",

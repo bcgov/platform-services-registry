@@ -32,7 +32,7 @@ install:
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments) --atomic
+	@helm upgrade --install $(call arguments)
 
 .PHONY: lint
 lint: helm-dep

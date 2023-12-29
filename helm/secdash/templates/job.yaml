@@ -21,7 +21,7 @@ spec:
           command: [/bin/sh, -c]
           args:
             - |
-              rsync --verbose --archive --omit-dir-times --no-perms --delete --exclude=__pycache__ "/newdags/" "/dags";
+              rsync --verbose --archive --omit-dir-times --no-perms --delete --exclude=__pycache__ "/newdags/" "/dags"
           resources:
             limits:
               cpu: 100m

@@ -21,6 +21,7 @@ global:
   env:
     "Env": ""
     "SECURE_HEADERS": "true"
+    "AUTH_TRUST_HOST": "true"
 
   serviceAccountName: 101ed4-vault
 
@@ -52,7 +53,6 @@ app:
     "AUTH_BASE_URL": ""
     "AUTH_SERVER_URL": ""
     "AUTH_RELM": ""
-    "NEXTAUTH_URL": ""
     "CHES_TOKEN_URL": ""
     "CHES_API_URL": ""
     "NATS_HOST": ""

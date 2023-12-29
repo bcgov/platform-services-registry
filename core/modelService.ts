@@ -1,34 +1,36 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import { Session } from 'next-auth';
 
 export abstract class ModelService<TFilter> {
-  abstract readFilter(): Promise<TFilter>;
-  abstract writeFilter(): Promise<TFilter>;
+  abstract readFilter(): Promise<TFilter | boolean>;
+  abstract writeFilter(): Promise<TFilter | boolean>;
   abstract decorate(doc: any): Promise<any>;
-
-  protected client!: PrismaClient;
 
   protected session!: Session;
 
-  constructor(client: PrismaClient, session: Session) {
-    this.client = client;
+  constructor(session: Session) {
     this.session = session;
   }
 
   async genFilter(where: TFilter, mode: 'read' | 'write') {
-    let filter = where;
-
-    const baseFilterFn = mode === 'read' ? this.readFilter : this.writeFilter;
+    const baseFilterFn = mode === 'read' ? this.readFilter.bind(this) : this.writeFilter.bind(this);
     const baseFilter = await baseFilterFn();
+
+    if (baseFilter === true) {
+      return where;
+    }
+
+    if (baseFilter === false) {
+      return false;
+    }
 
     if (baseFilter) {
       if (where) {
-        filter = { AND: [baseFilter, where] } as TFilter;
-      } else {
-        filter = baseFilter;
+        return { AND: [baseFilter, where] };
       }
+
+      return baseFilter;
     }
 
-    return filter;
+    return where;
   }
 }

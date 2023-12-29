@@ -53,7 +53,7 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
                         The registry has been updated to reflect your decision. The Product Owner and Technical Lead
-                        will receive the notification regarding the decision via email.
+                        will receive a notification regarding the decision via email.
                       </p>
                     </div>
                     {isPublic && (
