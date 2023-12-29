@@ -4,7 +4,7 @@ import Table from '@/components/table/Table';
 export default async function RequestsTableSkeleton() {
   return (
     <Table
-      title="Requests history for"
+      title="Request history for"
       description="These are the submitted requests for the Private Cloud OpenShift platform"
       tableBody={[...new Array(14)].map((_, i) => (
         <TableRowSkeleton key={i} />

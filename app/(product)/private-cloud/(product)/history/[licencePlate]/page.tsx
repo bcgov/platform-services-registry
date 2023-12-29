@@ -65,7 +65,7 @@ export default async function RequestsTable({
 
   return (
     <Table
-      title={`Requests history for ${params.licencePlate}`}
+      title={`Request history for ${params.licencePlate}`}
       description="These are the submitted requests for the Private Cloud OpenShift platform"
       tableBody={<TableBody headers={headers} rows={rows} />}
       total={total}
