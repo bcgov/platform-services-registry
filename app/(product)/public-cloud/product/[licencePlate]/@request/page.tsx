@@ -31,7 +31,7 @@ async function fetchRequestedProject(licencePlate: string): Promise<PublicCloudR
   return data;
 }
 
-export default function RequestDecision({ params }: { params: { id: string } }) {
+export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -41,8 +41,8 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   const { data } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
-    queryKey: ['requestedProject', params.id],
-    queryFn: () => fetchRequestedProject(params.id),
+    queryKey: ['requestedProject', params.licencePlate],
+    queryFn: () => fetchRequestedProject(params.licencePlate),
     enabled: !!params.id,
   });
 
