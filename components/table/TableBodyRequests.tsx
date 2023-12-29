@@ -56,21 +56,10 @@ export default function TableBody({ headers, rows }: TableProps) {
   }
 
   const onRowClickHandler = (row: any) => {
-    switch (pathname) {
-      case '/private-cloud/history':
-        if (isAdmin) {
-          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-        }
-        router.push(path.join('/private-cloud', 'request', row.id));
-
-        break;
-      case '/public-cloud/history':
-        if (isAdmin) {
-          router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-        }
-        router.push(path.join('/public-cloud', 'request', row.id));
-
-        break;
+    if (pathname.includes('/private-cloud')) {
+      router.push(path.join('/private-cloud', 'request', row.id));
+    } else if (pathname.includes('/public-cloud')) {
+      router.push(path.join('/public-cloud', 'request', row.id));
     }
   };
 

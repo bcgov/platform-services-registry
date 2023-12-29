@@ -44,20 +44,15 @@ export default function CrumbsNav({
             />
           </button>
         </li>
-        <li>
+        {/* <li>
           <div className="flex items-center">
-            <button
-              onClick={() => router.back()}
-              className="ml-1 text-gray-500 hover:text-gray-700 font-bcsans text-lg font-medium"
-            >
-              {previousLabel}
-            </button>
+            <div className="ml-1 text-gray-400  font-bcsans text-lg font-medium">{previousLabel}</div>
           </div>
-        </li>
+        </li> */}
         {licencePlate && (
           <li>
             <div className="flex items-center">
-              <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+              {/* <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" /> */}
               <div className="ml-2 text-gray-400 font-bcsans text-lg font-medium">{licencePlate}</div>
             </div>
           </li>

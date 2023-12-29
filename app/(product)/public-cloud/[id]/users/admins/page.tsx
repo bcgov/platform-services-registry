@@ -1,7 +1,7 @@
 'use client';
 
 import Table from '@/components/table/Table';
-import TableBody from '@/components/table/TableBody';
+import TableBody from '@/components/table/TableBodyRequests';
 import PublicUserTabs from '@/components/tabs/PublicUsersTabs';
 
 const headers = [
