@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [selectedTab, licencePlate, router]);
 
   return (
-    <div className="mt-12">
+    <div>
       <ProductHistoryTabs
         tabs={tabsData}
         selectedTab={selectedTab}
