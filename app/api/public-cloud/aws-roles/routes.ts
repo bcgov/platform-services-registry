@@ -15,6 +15,34 @@ export interface User {
   email: string | null;
 }
 
+export type paramsURL = {
+  params: { licencePlate: string };
+  searchParams: { page: string; pageSize: string };
+};
+
+interface UsersTotal {
+  users: Record<string, User>[];
+  total: number;
+}
+
+interface PaginationOptions {
+  page: number;
+  pageSize: number;
+}
+
+const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
+  const { page, pageSize } = options;
+
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  return users.slice(startIndex, endIndex);
+};
+
+const roleToGroupName = (role: string): string => {
+  return role.replace(/\s/g, '') + 's';
+};
+
 export async function getPublicCloudProjectUsers(
   searchLicencePlate: string,
 ): Promise<Record<string, User>[] | undefined> {
@@ -195,22 +223,34 @@ const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
 
 export async function getSubGroupMembersByLicencePlateAndName(
   licencePlate: string,
-  groupName: string,
   role: string,
-): Promise<Record<string, User>[]> {
-  let groupsUsers: User[] = [];
+  options: PaginationOptions,
+): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
+  let result: Record<string, User>[] = [];
+
   if (productRolesGroups.length > 0) {
     let groupId: string = '';
     productRolesGroups[0].subGroups.forEach((group) => {
-      if (group.name === groupName) {
+      if (group.name === roleToGroupName(role)) {
         groupId = group.id;
       }
     });
     if (groupId) {
-      groupsUsers = await getMembersByGroupId(groupId);
+      const groupsUsers = await getMembersByGroupId(groupId);
+      if (groupsUsers) {
+        result = [...groupsUsers.map((user) => userRole(role, user))];
+      }
+      if (role === 'Admin') {
+        const registryUsers = await getPublicCloudProjectUsers(licencePlate);
+        if (registryUsers) {
+          result = [...registryUsers, ...result];
+        }
+      }
     }
   }
-  return groupsUsers.map((user) => userRole(role, user)) as Record<string, User>[];
+
+  const total = result.length;
+  return { users: paginate(result, options) as Record<string, User>[], total };
 }
 

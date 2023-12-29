@@ -1,31 +1,27 @@
 import TableAWSRoles from '@/components/table/TableAWSRoles';
-import {
-  getSubGroupMembersByLicencePlateAndName,
-  getPublicCloudProjectUsers,
-  User,
-} from '@/app/api/public-cloud/aws-roles/routes';
+import { getSubGroupMembersByLicencePlateAndName, User, paramsURL } from '@/app/api/public-cloud/aws-roles/routes';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 
-type params = { params: { licencePlate: string } };
-
-export default async function ProductAWSRoles(req: params) {
+export default async function ProductAWSRoles(req: paramsURL) {
   const licencePlate = req.params.licencePlate;
-  const users = await getSubGroupMembersByLicencePlateAndName('eu9cfk', 'Admins', 'Admin');
-  const registryUsers = await getPublicCloudProjectUsers(licencePlate);
-
+  const currentPage: number = +req.searchParams.page || 1;
+  const pageSize: number = +req.searchParams.pageSize || 5;
+  const users = await getSubGroupMembersByLicencePlateAndName(licencePlate, 'Admin', {
+    page: currentPage,
+    pageSize: pageSize,
+  });
   let rows: Record<string, User>[] = [];
-
-  if (users && registryUsers) {
-    rows = [...registryUsers, ...users];
+  if (users) {
+    rows = [...users.users];
   }
 
   return (
     <div className="w-full">
       <TableAWSRoles
         tableBody={<TableBodyAWSRoles rows={rows} />}
-        currentPage={1}
-        pageSize={10}
-        total={rows ? rows.length : 0}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        total={users ? users.total : 0}
       />
     </div>
   );
