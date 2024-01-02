@@ -58,7 +58,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   useEffect(() => {
-    if (!session?.user?.roles?.includes('admin')) {
+    if (!session?.isAdmin) {
       setDisabled(true);
     }
   }, [session]);
@@ -147,7 +147,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {!isDisabled && session?.user?.roles?.includes('admin') ? (
+            {!isDisabled && session?.isAdmin ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton text="REJECT REQUEST" onClick={() => methods.setValue('decision', 'REJECTED')} />
                 <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />

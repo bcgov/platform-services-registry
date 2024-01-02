@@ -5,8 +5,6 @@ import path from 'path';
 import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import classNames from '@/components/utils/classnames';
 
 interface TableProps {
   headers: Record<string, string>[];
@@ -47,9 +45,6 @@ function EmptyBody() {
 export default function TableBody({ headers, rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session, status } = useSession();
-
-  const isAdmin = session?.user?.roles?.includes('admin');
 
   if (rows.length === 0) {
     return <EmptyBody />;
