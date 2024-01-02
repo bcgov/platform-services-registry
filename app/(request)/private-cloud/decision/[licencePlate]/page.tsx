@@ -6,7 +6,6 @@ import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import Comment from '@/components/modal/Comment';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -45,6 +44,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
   const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
@@ -110,7 +110,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(() => {
-            if (methods.getValues('decision') === 'APPROVED') setOpenCreate(true);
+            if (methods.getValues('decision') === 'APPROVED') setOpenComment(true);
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
@@ -143,25 +143,32 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             <PreviousButton />
             {!isDisabled && session?.user?.roles?.includes('admin') ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="REJECT REQUEST" onClick={() => methods.setValue('decision', 'REJECTED')} />
-                <SubmitButton text="APPROVE REQUEST" onClick={() => methods.setValue('decision', 'APPROVED')} />
+                <SubmitButton
+                  text="REJECT REQUEST"
+                  onClick={() => {
+                    methods.setValue('decision', 'REJECTED');
+                    setCurrentAction('REJECT');
+                  }}
+                />
+                <SubmitButton
+                  text="APPROVE REQUEST"
+                  onClick={() => {
+                    methods.setValue('decision', 'APPROVED');
+                    setCurrentAction('APPROVE');
+                  }}
+                />
               </div>
             ) : null}
           </div>
         </form>
       </FormProvider>
-      <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(onSubmit)}
-        isLoading={isLoading}
-      />
       <Comment
         open={openComment}
         setOpen={setOpenComment}
         onSubmit={setComment}
         isLoading={isLoading}
         type={data?.type}
+        action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
     </div>
