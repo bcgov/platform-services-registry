@@ -16,7 +16,7 @@ const headers = [
   { field: 'type', headerName: 'Type' },
   { field: 'status', headerName: 'Status' },
   { field: 'ministry', headerName: 'Ministry' },
-  { field: 'cluster', headerName: 'Cluster' },
+  { field: 'provider', headerName: 'Provider' },
   // { field: 'projectOwner', headerName: 'Project Owner' },
   // { field: 'technicalLeads', headerName: 'Technical Leads' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
@@ -32,7 +32,7 @@ export default async function RequestsTable({
     page: number;
     pageSize: number;
     ministry: string;
-    cluster: string;
+    provider: string;
     active: boolean;
   };
 }) {
@@ -43,7 +43,7 @@ export default async function RequestsTable({
     redirect('/login?callbackUrl=/public-cloud/products/all');
   }
 
-  const { search, page, pageSize, ministry, cluster, active } = searchParams;
+  const { search, page, pageSize, ministry, provider, active } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
 
   // If a page is not provided, default to 1
@@ -55,7 +55,7 @@ export default async function RequestsTable({
     currentPage,
     params.licencePlate,
     ministry,
-    cluster,
+    provider,
     userEmail,
     ministryRoles,
     active,
