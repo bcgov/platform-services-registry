@@ -10,6 +10,7 @@ import { useDebounce } from '@/components/utils/useDebounce';
 import FilterPanel from './FilterPanel';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import AllActiveTabs from '@/components/tabs/AllActiveTabs';
+import AlertBox from '@/components/modal/AlertBox';
 
 type SearchFilterSortProps = {
   showDownloadButton?: boolean;
@@ -27,6 +28,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedValue = useDebounce<string>(searchTerm, 450);
+  const [isAlertBoxOpen, setIsAlertBoxOpen] = useState(false);
 
   const handleSearch = useCallback(
     (term: string) => {
@@ -53,7 +55,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       }
 
       if (response.status === 204) {
-        alert('No data available for download.');
+        setIsAlertBoxOpen(true);
         return;
       }
 
@@ -89,6 +91,10 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       handleSearch(debouncedValue);
     }
   }, [searchParams, replace, pathname, debouncedValue, handleSearch]);
+
+  const handleCancelBox = () => {
+    setIsAlertBoxOpen(false);
+  };
 
   return (
     <div className="w-full">
@@ -152,6 +158,14 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
               <span className="md:inline hidden">Export</span>
             </button>
           )}
+          <AlertBox
+            isOpen={isAlertBoxOpen}
+            title="Nothing to export"
+            message="There is no data available for download."
+            onCancel={handleCancelBox}
+            cancelButtonText="DISMISS"
+            singleButton={true}
+          />
         </div>
         <Disclosure.Panel className="py-10 w-full flex justify-end ">
           <FilterPanel />
