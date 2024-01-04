@@ -1,6 +1,7 @@
 'use client';
 
 import classNames from '@/components/utils/classnames';
+import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 
 interface Tab {
   name: string;
@@ -50,6 +51,7 @@ export default function Tabs(
                 </button>
               ))}
             </div>
+            <PrivateCloudProductOptions />
           </div>
         </div>
       </div>

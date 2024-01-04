@@ -9,7 +9,7 @@ import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/privat
 import openshiftDeletionCheck from '@/scripts/deletioncheck';
 
 const ParamsSchema = z.object({
-  id: string(),
+  licencePlate: string(),
 });
 
 type Params = z.infer<typeof ParamsSchema>;
@@ -31,14 +31,14 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     return new Response(parsedParams.error.message, { status: 400 });
   }
 
-  const { id: projectId } = parsedParams.data;
+  const { licencePlate } = parsedParams.data;
 
   let createRequest: PrivateCloudRequestWithRequestedProject;
 
   try {
     const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
       where: {
-        id: projectId,
+        id: licencePlate,
       },
     });
 
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         },
         project: {
           connect: {
-            id: projectId,
+            licencePlate,
           },
         },
       },
