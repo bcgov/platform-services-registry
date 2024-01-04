@@ -29,6 +29,7 @@ model User {
   privateCloudRequestedProjectOwner                  PrivateCloudRequestedProject[] @relation("privateCloudRequestedProjectOwner")
   privateCloudRequestedProjectPrimaryTechnicalLead   PrivateCloudRequestedProject[] @relation("privateCloudRequestedPrimaryTechnicalLead")
   privateCloudRequestedProjectSecondaryTechnicalLead PrivateCloudRequestedProject[] @relation("privateCloudRequestedSecondaryTechnicalLead")
+  comment                                            Comment[]                      @relation("commentAuthor")
 
   publicCloudProjectOwner                           PublicCloudProject[]          @relation("publicCloudProjectOwner")
   publicCloudProjectPrimaryTechnicalLead            PublicCloudProject[]          @relation("publicCloudPrimaryTechnicalLead")
@@ -79,6 +80,7 @@ model PrivateCloudProject {
   toolsQuota               Quota
   commonComponents         CommonComponents
   requests                 PrivateCloudRequest[] @relation("privateCloudProject")
+  comments                 Comment[]             @relation("privateCloudComment")
 }
 
 model PrivateCloudRequestedProject {
@@ -103,6 +105,17 @@ model PrivateCloudRequestedProject {
   commonComponents         CommonComponents
   requestedProject         PrivateCloudRequest? @relation("privateCloudRequestedProject")
   userRequestedProject     PrivateCloudRequest? @relation("privateCloudUserRequestedProject")
+}
+
+model Comment {
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  created   DateTime             @default(now())
+  text      String
+  authorId  String               @db.ObjectId
+  author    User                 @relation("commentAuthor", fields: [authorId], references: [id])
+  projectId String               @db.ObjectId
+  project   PrivateCloudProject? @relation("privateCloudComment", fields: [projectId], references: [id])
+  // reactions field tbd
 }
 
 model PublicCloudRequest {
