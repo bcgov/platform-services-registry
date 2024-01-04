@@ -66,7 +66,7 @@ export default function Modal({ open, setOpen }: { open: boolean; setOpen: any }
     } else {
       setDisabled(true);
     }
-  }, [licencePlate, email]);
+  }, [projectData?.licencePlate, projectData?.licencePlate]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
