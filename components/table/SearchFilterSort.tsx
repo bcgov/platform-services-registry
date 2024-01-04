@@ -9,7 +9,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/components/utils/useDebounce';
 import FilterPanel from './FilterPanel';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import AllActiveTabs from '@/components/tabs/AllActiveTabs';
 import AlertBox from '@/components/modal/AlertBox';
 
 type SearchFilterSortProps = {
