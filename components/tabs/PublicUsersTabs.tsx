@@ -36,7 +36,7 @@ export default function PublicUsersTabs() {
         {tabs.map((tab, index) => (
           <Link
             key={index}
-            href={`${extractPathSegments(pathname, 5)}/${tab.href}`}
+            href={`${extractPathSegments(pathname, 4)}/${tab.href}`}
             type="button"
             className={classNames(
               (pathname.split('/').includes(tab.href) ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100') +

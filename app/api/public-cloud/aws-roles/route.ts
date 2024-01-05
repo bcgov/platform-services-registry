@@ -22,6 +22,7 @@ export type paramsURL = {
 
 interface UsersTotal {
   users: Record<string, User>[];
+  groupId: string;
   total: number;
 }
 
@@ -79,6 +80,10 @@ const parseError = (error: unknown): void => {
   } else console.log(String(error));
 };
 
+const awsRolesApiInstance = axios.create({
+  baseURL: `${process.env.AWS_ROLES_BASE_URL}/admin/realms/${process.env.AWS_ROLES_REALM_NAME}`,
+});
+
 export const getToken = async (): Promise<string | undefined> => {
   try {
     const apiUrl = `${process.env.AWS_ROLES_BASE_URL}/realms/${process.env.AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
@@ -97,10 +102,6 @@ export const getToken = async (): Promise<string | undefined> => {
     parseError(error);
   }
 };
-
-const awsRolesApiInstance = axios.create({
-  baseURL: `${process.env.AWS_ROLES_BASE_URL}/admin/realms/${process.env.AWS_ROLES_REALM_NAME}`,
-});
 
 awsRolesApiInstance.interceptors.request.use(
   async (config) => {
@@ -228,9 +229,8 @@ export async function getSubGroupMembersByLicencePlateAndName(
 ): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
   let result: Record<string, User>[] = [];
-
+  let groupId: string = '';
   if (productRolesGroups.length > 0) {
-    let groupId: string = '';
     productRolesGroups[0].subGroups.forEach((group) => {
       if (group.name === roleToGroupName(role)) {
         groupId = group.id;
@@ -241,15 +241,21 @@ export async function getSubGroupMembersByLicencePlateAndName(
       if (groupsUsers) {
         result = [...groupsUsers.map((user) => userRole(role, user))];
       }
-      if (role === 'Admin') {
-        const registryUsers = await getPublicCloudProjectUsers(licencePlate);
-        if (registryUsers) {
-          result = [...registryUsers, ...result];
-        }
-      }
     }
   }
-
+  if (role === 'Admin') {
+    const registryUsers = await getPublicCloudProjectUsers(licencePlate);
+    if (registryUsers) {
+      result = [...registryUsers, ...result];
+    }
+  }
   const total = result.length;
-  return { users: paginate(result, options) as Record<string, User>[], total };
+  return { users: paginate(result, options) as Record<string, User>[], groupId, total };
+}
+
+export async function addUserToGroupByEmail(userEmail: string, groupId: string) {
+  const userId = await getUserByEmail(userEmail);
+  if (userId) {
+    await addUserToGroup(userId[0].id, groupId);
+  }
 }
