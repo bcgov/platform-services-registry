@@ -1,5 +1,5 @@
 import TableAWSRoles from '@/components/table/TableAWSRoles';
-import { getSubGroupMembersByLicencePlateAndName, User, paramsURL } from '@/app/api/public-cloud/aws-roles/routes';
+import { getSubGroupMembersByLicencePlateAndName, User, paramsURL } from '@/app/api/public-cloud/aws-roles/route';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 
 export default async function ProductAWSRoles(req: paramsURL) {
@@ -23,6 +23,7 @@ export default async function ProductAWSRoles(req: paramsURL) {
         currentPage={1}
         pageSize={5}
         total={users ? users.total : 0}
+        groupId={users.groupId}
       />
     </div>
   );
