@@ -6,7 +6,7 @@ export default async function ProductAWSRoles(req: paramsURL) {
   const licencePlate = req.params.licencePlate;
   const currentPage: number = +req.searchParams.page || 1;
   const pageSize: number = +req.searchParams.pageSize || 5;
-  const users = await getSubGroupMembersByLicencePlateAndName(licencePlate, 'Developer', {
+  const users = await getSubGroupMembersByLicencePlateAndName(licencePlate, 'Security Auditor', {
     page: currentPage,
     pageSize: pageSize,
   });
@@ -28,3 +28,4 @@ export default async function ProductAWSRoles(req: paramsURL) {
     </div>
   );
 }
+
