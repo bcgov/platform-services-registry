@@ -55,7 +55,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
+  const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const { data } = useQuery<PublicCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
@@ -122,8 +122,11 @@ export default function EditProject({ params }: { params: { licencePlate: string
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
       methods.unregister('secondaryTechnicalLead');
+      setIsSecondaryTechLeadRemoved(true);
     }
   };
+
+  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
   useEffect(() => {
     if (data?.secondaryTechnicalLead) {
@@ -153,7 +156,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT EDIT REQUEST" disabled={!formState.isDirty} />
+                <SubmitButton text="SUBMIT EDIT REQUEST" disabled={!isSubmitEnabled} />
               </div>
             ) : null}
           </div>
