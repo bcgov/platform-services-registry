@@ -7,11 +7,13 @@ export default function TableAWSRoles({
   pageSize,
   total,
   tableBody,
+  groupId,
 }: {
   currentPage: number;
   pageSize: number;
   total: number;
   tableBody: React.ReactNode;
+  groupId: string;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
@@ -19,8 +21,9 @@ export default function TableAWSRoles({
         title="BC Gov’s Landing Zone in AWS - Manage Users"
         subtitle="User Access"
         description="Assign roles to grant users access below"
+        groupId={groupId}
       />
-      <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
+      <div className="h-max overflow-y-auto scroll-smooth">{tableBody}</div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
         aria-label="Pagination"

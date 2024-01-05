@@ -26,7 +26,7 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
   ];
 
   return (
-    <div className="flow-root overflow-y-auto h-[55vh]">
+    <div className="flow-root overflow-y-auto h-[50vh]">
       <div className="w-full overflow-auto">
         <div className="inline-block min-w-full align-middle">
           <table className="w-full text-left">
@@ -49,7 +49,7 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
               {rows.map((row, i) => (
                 <tr key={row.id} className="hover:bg-tableheadergrey" onClick={() => onRowClickHandler(row)}>
                   <td
-                    key={i}
+                    key={row.id + i}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
                     {Object.keys(row)[0]}
