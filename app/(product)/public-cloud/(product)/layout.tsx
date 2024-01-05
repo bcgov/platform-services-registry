@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import ProductHistoryTabs from '@/components/tabs/ProductHistoryTabs';
 import { useRouter, usePathname } from 'next/navigation';
-
 const tabsData = [
   {
     label: 'PRODUCT',
@@ -12,6 +11,10 @@ const tabsData = [
   {
     label: 'HISTORY',
     name: 'history',
+  },
+  {
+    label: 'ROLES',
+    name: 'aws-roles',
   },
 ];
 
@@ -23,7 +26,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [selectedTab, setSelectedTab] = useState('product');
 
   useEffect(() => {
-    router.replace(`/public-cloud/${selectedTab}/${licencePlate}`);
+    if (selectedTab === 'aws-roles') {
+      router.replace(`/public-cloud/${selectedTab}/${licencePlate}/admins`);
+    } else router.replace(`/public-cloud/${selectedTab}/${licencePlate}`);
   }, [selectedTab, licencePlate, router]);
 
   return (
