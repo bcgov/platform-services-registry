@@ -1,5 +1,7 @@
 import AsyncAutocomplete from '@/components/form/AsyncAutocomplete';
 import SecondTechLeadButton from '@/components/buttons/SecondTechLeadButton';
+import React, { useState } from 'react';
+import AlertBox from '@/components/modal/AlertBox';
 
 export default function TeamContacts({
   disabled,
@@ -10,6 +12,25 @@ export default function TeamContacts({
   secondTechLead: boolean;
   secondTechLeadOnClick: () => void;
 }) {
+  const [isAlertBoxOpen, setIsAlertBoxOpen] = useState(false);
+
+  const handleSecondTechLeadClick = () => {
+    if (secondTechLead) {
+      setIsAlertBoxOpen(true);
+    } else {
+      secondTechLeadOnClick();
+    }
+  };
+
+  const handleConfirmModal = () => {
+    secondTechLeadOnClick();
+    setIsAlertBoxOpen(false);
+  };
+
+  const handleCancelModal = () => {
+    setIsAlertBoxOpen(false);
+  };
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -57,8 +78,18 @@ export default function TeamContacts({
           />
         </div>
 
+        <AlertBox
+          isOpen={isAlertBoxOpen}
+          title="Confirm Removal of Secondary Technical Lead"
+          message="Are you sure you want to remove the secondary technical lead from this product?"
+          onConfirm={handleConfirmModal}
+          onCancel={handleCancelModal}
+          confirmButtonText="CONFIRM REMOVAL"
+          cancelButtonText="CANCEL"
+        />
+
         <div className="mt-6 flex flex-col justify-between sm:col-start-2">
-          <SecondTechLeadButton clicked={secondTechLead} onClick={secondTechLeadOnClick} />
+          <SecondTechLeadButton clicked={secondTechLead} onClick={handleSecondTechLeadClick} />
 
           {secondTechLead ? (
             <div className="mt-6">
