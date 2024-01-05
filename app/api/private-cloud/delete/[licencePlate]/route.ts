@@ -38,7 +38,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   try {
     const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
       where: {
-        id: licencePlate,
+        licencePlate,
       },
     });
 

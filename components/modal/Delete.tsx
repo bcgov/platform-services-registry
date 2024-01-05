@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import classNames from '@/components/utils/classnames';
@@ -44,8 +44,11 @@ export default function Modal({ open, setOpen }: { open: boolean; setOpen: any }
   const [isDisabled, setDisabled] = useState(true);
   const [email, setEmail] = useState('');
   const [licencePlate, setLicencePlate] = useState('');
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const router = useRouter();
 
   const onSubmit = async () => {
+    setIsSubmitLoading(true);
     try {
       const response = await fetch(`/api/private-cloud/delete/${params.licencePlate}`, {
         method: 'POST',
@@ -55,7 +58,9 @@ export default function Modal({ open, setOpen }: { open: boolean; setOpen: any }
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok for create request');
+        setIsSubmitLoading(false);
+      } else {
+        router.push('/private-cloud/products/all');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -83,7 +88,7 @@ export default function Modal({ open, setOpen }: { open: boolean; setOpen: any }
     } else {
       setDisabled(true);
     }
-  }, [projectData?.licencePlate, projectData?.licencePlate]);
+  }, [projectData?.licencePlate, projectData?.projectOwner?.email, licencePlate, email]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -232,19 +237,28 @@ export default function Modal({ open, setOpen }: { open: boolean; setOpen: any }
                   ) : (
                     <p className="text-sm text-gray-500">This operation cannot be undone.</p>
                   )}
-                  <button
-                    disabled={isDisabled}
-                    onSubmit={onSubmit}
-                    type="button"
-                    className={classNames(
-                      'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
-                      isDisabled
-                        ? 'bg-gray-400 text-white cursor-not-allowed'
-                        : 'bg-red-600 text-white hover:bg-red-700',
-                    )}
-                  >
-                    Delete
-                  </button>
+                  {isSubmitLoading ? (
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm bg-gray-400 text-white cursor-not-allowed"
+                    >
+                      Deleting...
+                    </button>
+                  ) : (
+                    <button
+                      disabled={isDisabled}
+                      type="button"
+                      onClick={onSubmit}
+                      className={classNames(
+                        'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
+                        isDisabled && deletionCheckData === 'OK_TO_DELETE'
+                          ? 'bg-gray-400 text-white cursor-not-allowed'
+                          : 'bg-red-600 text-white hover:bg-red-700',
+                      )}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
