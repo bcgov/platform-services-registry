@@ -1,9 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Arrow from '@/components/assets/arrow.svg';
-import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { ChevronRightIcon, HomeIcon } from '@heroicons/react/20/solid';
+
+const pages = [
+  { name: 'Projects', href: '#', current: false },
+  { name: 'Project Nero', href: '#', current: true },
+];
 
 export default function CrumbsNav({
   cloudLabel,
@@ -15,49 +20,44 @@ export default function CrumbsNav({
   currentLabel?: string;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const licencePlate = pathname.split('/')[3];
 
   return (
-    <div className="">
-      <div className="flex h-16 justify-left items-center">
-        <div className="font-bcsans text-xl text-cloudgrey ">{cloudLabel}</div>
-        <div className="border-l h-12 border-divider mx-5"></div>{' '}
-        <nav className="flex" aria-label="Breadcrumb">
-          <ol className="flex items-center">
-            <li>
-              <button onClick={() => router.back()}>
-                <Image
-                  alt="Arrow"
-                  src={Arrow}
-                  width={20}
-                  height={20}
-                  style={{
-                    maxWidth: '100%',
-                    height: 'auto',
-                  }}
-                />
-              </button>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <span className="ml-4 font-bcsans text-lg font-medium text-gray-500 mb-0.5">{previousLabel}</span>
-                {currentLabel && (
-                  <svg
-                    className="h-3 w-3 flex-shrink-0 text-gray-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    aria-hidden="true"
-                  >
-                    <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-                  </svg>
-                )}
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center font-bcsans text-xl">{currentLabel}</div>
-            </li>
-          </ol>
-        </nav>
-      </div>
-    </div>
+    <nav className="flex" aria-label="Breadcrumb">
+      <ol className="flex items-center space-x-2">
+        <li>
+          <div className="font-bcsans text-xl text-cloudgrey mr-4">{cloudLabel}</div>
+        </li>
+        <li>
+          <button onClick={() => router.back()} className="ml-4">
+            <Image
+              alt="Arrow"
+              src={Arrow}
+              width={20}
+              height={20}
+              style={{
+                marginTop: '7.5px',
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
+          </button>
+        </li>
+        {/* <li>
+          <div className="flex items-center">
+            <div className="ml-1 text-gray-400  font-bcsans text-lg font-medium">{previousLabel}</div>
+          </div>
+        </li> */}
+        {licencePlate && (
+          <li>
+            <div className="flex items-center">
+              {/* <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" /> */}
+              <div className="ml-2 text-gray-400 font-bcsans text-lg font-medium">{licencePlate}</div>
+            </div>
+          </li>
+        )}
+      </ol>
+    </nav>
   );
 }

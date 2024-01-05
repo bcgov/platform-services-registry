@@ -39,7 +39,7 @@ function EmptyBody() {
       </span>
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
       <Link
-        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
+        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/create`}
       >
         REQUEST A NEW PROJECT SET
@@ -83,15 +83,15 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
   }
 
   if (requestType === 'CREATE') {
-    return 'Requested create on';
+    return 'Create requested';
   }
 
   if (requestType === 'EDIT') {
-    return 'Requested changes on';
+    return 'Edit requested';
   }
 
   if (requestType === 'DELETE') {
-    return 'Requested deletion on';
+    return 'Delete requested';
   }
 
   return 'Deployed on';
@@ -107,7 +107,7 @@ function getStatus(requestDecisionStatus: string) {
   }
 
   if (requestDecisionStatus === 'PENDING') {
-    return 'Pending';
+    return 'Reviewing';
   }
 
   if (requestDecisionStatus === 'REJECTED') {
@@ -120,67 +120,14 @@ function getStatus(requestDecisionStatus: string) {
 export default function TableBody({ rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session, status } = useSession();
-
-  console.log(pathname);
-
-  const isAdmin = session?.user?.roles?.includes('admin');
+  const cloud = pathname.split('/')[1];
 
   if (rows.length === 0) {
     return <EmptyBody />;
   }
 
   const onRowClickHandler = (row: any) => {
-    switch (pathname) {
-      case '/private-cloud/products/active-requests':
-        if (isAdmin) {
-          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-          break;
-        }
-
-        router.push(path.join('/private-cloud', 'request', row.id));
-        break;
-
-      case '/private-cloud/products/all':
-        if (isAdmin) {
-          if (!!row?.requestType) {
-            router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-            break;
-          }
-        }
-
-        if (!!row?.requestType) {
-          router.push(path.join('/private-cloud', 'request', row.id));
-          break;
-        }
-
-        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
-        break;
-      case '/public-cloud/products/active-requests':
-        if (isAdmin) {
-          router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-          break;
-        }
-
-        router.push(path.join('/public-cloud', 'request', row.id));
-        break;
-
-      case '/public-cloud/products/all':
-        if (isAdmin) {
-          if (!!row?.requestType) {
-            router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-            break;
-          }
-        }
-
-        if (!!row?.requestType) {
-          router.push(path.join('/public-cloud', 'request', row.id));
-          break;
-        }
-
-        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue, 'product'));
-        break;
-    }
+    router.push(path.join(`/${cloud}/product/${row.licencePlateValue}`));
   };
 
   return (

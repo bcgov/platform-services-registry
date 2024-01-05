@@ -9,14 +9,19 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/components/utils/useDebounce';
 import FilterPanel from './FilterPanel';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import AllActiveTabs from '@/components/tabs/AllActiveTabs';
+import AlertBox from '@/components/modal/AlertBox';
 
 type SearchFilterSortProps = {
   showDownloadButton?: boolean;
   apiContext?: string;
+  removeSearch?: boolean;
 };
 
-export default function SearchFilterSort({ showDownloadButton = false, apiContext }: SearchFilterSortProps) {
+export default function SearchFilterSort({
+  showDownloadButton = false,
+  apiContext,
+  removeSearch = false,
+}: SearchFilterSortProps) {
   const [focused, setFocused] = useState(false);
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -27,6 +32,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const debouncedValue = useDebounce<string>(searchTerm, 450);
+  const [isAlertBoxOpen, setIsAlertBoxOpen] = useState(false);
 
   const handleSearch = useCallback(
     (term: string) => {
@@ -53,7 +59,7 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
       }
 
       if (response.status === 204) {
-        alert('No data available for download.');
+        setIsAlertBoxOpen(true);
         return;
       }
 
@@ -90,48 +96,53 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
     }
   }, [searchParams, replace, pathname, debouncedValue, handleSearch]);
 
+  const handleCancelBox = () => {
+    setIsAlertBoxOpen(false);
+  };
+
   return (
     <div className="w-full">
       <Disclosure>
         <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
           <div className="flex w-full justify-between items-center">
-            <AllActiveTabs />
             <div className="flex-grow h-12"></div>
 
-            <form className="flex-grow flex-shrink max-w-sm">
-              <label htmlFor="simple-search" className="sr-only">
-                Search
-              </label>
-              <div className="relative w-full">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <Image
-                    alt="Search"
-                    src={Search}
-                    width={15}
-                    height={15}
-                    style={{
-                      maxWidth: '100%',
-                      height: 'auto',
-                    }}
-                  />
-                </div>
-                <input
-                  type="text"
-                  id="simple-search"
-                  className="w-full h-9 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block pl-9 p-1.5 dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300"
-                  placeholder="Search"
-                  onFocus={() => setFocused(true)}
-                  onBlur={() => setFocused(false)}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  spellCheck={false}
-                />
-                {isPending && (
-                  <div className="absolute inset-y-0 right-0 mr-4 flex items-center pl-3 pointer-events-none">
-                    <span className=" border-gray-300 h-5 w-5 animate-spin rounded-full border-2 border-t-slate-400" />
+            {!removeSearch && (
+              <form className="flex-grow flex-shrink max-w-sm">
+                <label htmlFor="simple-search" className="sr-only">
+                  Search
+                </label>
+                <div className="relative w-full">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Image
+                      alt="Search"
+                      src={Search}
+                      width={15}
+                      height={15}
+                      style={{
+                        maxWidth: '100%',
+                        height: 'auto',
+                      }}
+                    />
                   </div>
-                )}
-              </div>
-            </form>
+                  <input
+                    type="text"
+                    id="simple-search"
+                    className="w-full h-9 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block pl-9 p-1.5 dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300"
+                    placeholder="Search"
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    spellCheck={false}
+                  />
+                  {isPending && (
+                    <div className="absolute inset-y-0 right-0 mr-4 flex items-center pl-3 pointer-events-none">
+                      <span className=" border-gray-300 h-5 w-5 animate-spin rounded-full border-2 border-t-slate-400" />
+                    </div>
+                  )}
+                </div>
+              </form>
+            )}
           </div>
           <Disclosure.Button
             type="button"
@@ -152,6 +163,14 @@ export default function SearchFilterSort({ showDownloadButton = false, apiContex
               <span className="md:inline hidden">Export</span>
             </button>
           )}
+          <AlertBox
+            isOpen={isAlertBoxOpen}
+            title="Nothing to export"
+            message="There is no data available for download."
+            onCancel={handleCancelBox}
+            cancelButtonText="DISMISS"
+            singleButton={true}
+          />
         </div>
         <Disclosure.Panel className="py-10 w-full flex justify-end ">
           <FilterPanel />

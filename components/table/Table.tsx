@@ -11,6 +11,7 @@ export default function Table({
   tableBody,
   showDownloadButton,
   apiContext,
+  removeSearch = false,
 }: {
   title: string;
   description: string;
@@ -20,13 +21,18 @@ export default function Table({
   tableBody: React.ReactNode;
   showDownloadButton?: boolean;
   apiContext?: string;
+  removeSearch?: boolean;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
         <TableTop title={title} description={description} />
         <div className="flex justify-between items-center border-b-2 px-4 py-2 w-full">
-          <SearchFilterSort showDownloadButton={showDownloadButton} apiContext={apiContext} />
+          <SearchFilterSort
+            showDownloadButton={showDownloadButton}
+            apiContext={apiContext}
+            removeSearch={removeSearch}
+          />
         </div>
 
         <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>

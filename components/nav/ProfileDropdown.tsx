@@ -12,6 +12,7 @@ import fetchUserImage from '@/components/nav/generateAvatar';
 export default function ProfileDropdown() {
   const { data: session, status } = useSession();
   const email = session?.user?.email;
+  const roles = session?.user?.roles;
 
   const { data, isLoading, error } = useQuery<string, Error>({
     queryKey: ['userImage', email],
