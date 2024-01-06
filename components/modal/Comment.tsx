@@ -71,8 +71,8 @@ export default function Modal({
                       className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
                       {action === 'APPROVE'
-                        ? `Are you sure you want to approve this ${type} Project request?`
-                        : `Are you sure you want to reject this ${type} Project request?`}
+                        ? `Are you sure you want to approve this ${type} Product request?`
+                        : `Are you sure you want to reject this ${type} Product request?`}
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
