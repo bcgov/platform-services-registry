@@ -55,6 +55,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
   const [openComment, setOpenComment] = useState(false);
 
   const { data } = useQuery<PublicCloudProjectWithUsers, Error>({
@@ -167,9 +168,16 @@ export default function EditProject({ params }: { params: { licencePlate: string
         setOpen={setOpenComment}
         handleSubmit={setComment}
         isLoading={isLoading}
-        type="edit"
+        type="create"
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
+      <ReturnModal
+        isEditRequest
+        isPublicCloud
+        isPublicEdit
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/public-cloud/products/active-requests"
+      />
     </div>
   );
 }
