@@ -6,7 +6,9 @@ export default async function ProductAWSRoles(req: paramsURL) {
   const licencePlate = req.params.licencePlate;
   const currentPage: number = +req.searchParams.page || 1;
   const pageSize: number = +req.searchParams.pageSize || 5;
-  const users = await getSubGroupMembersByLicencePlateAndName(licencePlate, 'Admin', {
+  const userRole = 'Admin';
+
+  const users = await getSubGroupMembersByLicencePlateAndName(licencePlate, userRole, {
     page: currentPage,
     pageSize: pageSize,
   });
@@ -18,7 +20,7 @@ export default async function ProductAWSRoles(req: paramsURL) {
   return (
     <div className="w-full">
       <TableAWSRoles
-        tableBody={<TableBodyAWSRoles rows={rows} />}
+        tableBody={<TableBodyAWSRoles rows={rows} groupId={users.groupId} userRole={userRole} />}
         currentPage={currentPage}
         pageSize={pageSize}
         total={users ? users.total : 0}

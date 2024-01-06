@@ -1,23 +1,41 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import Delete from '@/components/assets/delete.svg';
+import Image from 'next/image';
+import DeleteUserModal from '@/components/modal/DeleteUser';
+import { useState } from 'react';
 
 const headers = [
   { field: 'role', headerName: 'Role' },
   { field: 'firstName', headerName: 'First Name' },
   { field: 'lastName', headerName: 'Last Name' },
   { field: 'email', headerName: 'Email' },
+  { field: 'delete', headerName: '' },
 ];
 
 interface TableProps {
   rows: Record<string, any>[];
+  groupId: string;
+  userRole: string;
 }
 
-export default function TableBodyAWSRoles({ rows }: TableProps) {
+export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProps) {
+  const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
   const pathname = usePathname();
 
-  const onRowClickHandler = (row: any) => {
-    console.log(pathname);
+  const [deletePerson, setDeletePerson] = useState<Record<string, any>>({
+    '': {
+      id: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+    },
+  });
+
+  const onDeleteClickHandler = (row: any) => {
+    setDeletePerson(row);
+    setOpenDeleteUser(true);
   };
   const subHeader = [
     { field: 'firstName', headerName: 'First Name' },
@@ -47,7 +65,7 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr key={row.id} className="hover:bg-tableheadergrey" onClick={() => onRowClickHandler(row)}>
+                <tr key={row.id} className="hover:bg-tableheadergrey" onClick={() => onDeleteClickHandler(row)}>
                   <td
                     key={row.id + i}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
@@ -64,12 +82,32 @@ export default function TableBodyAWSRoles({ rows }: TableProps) {
                       {row[Object.keys(row)[0]][value.field]}
                     </td>
                   ))}
+                  <td
+                    key={row.id + i}
+                    className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
+                  >
+                    {Object.keys(row)[0] === userRole && (
+                      <Image
+                        alt="Delete"
+                        src={Delete}
+                        width={20}
+                        height={20}
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                        }}
+                        className="hover:cursor-pointer"
+                        onClick={() => onDeleteClickHandler(row)}
+                      />
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} groupId={groupId} person={deletePerson} />
     </div>
   );
 }
