@@ -3,13 +3,51 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid';
 import classNames from '@/components/utils/classnames';
 import DeleteModal from '@/components/modal/Delete';
+import ReturnModal from '@/components/modal/Return';
+import { useParams, useRouter } from 'next/navigation';
+import ErrorModal from '@/components/modal/Error';
 
 export default function Dropdown() {
   const [showModal, setShowModal] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
+  const router = useRouter();
+  const params = useParams();
+
+  const onSubmit = async () => {
+    setIsSubmitLoading(true);
+    try {
+      const response = await fetch(`/api/private-cloud/delete/${params.licencePlate}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.log('RESPONSE');
+        console.log(response);
+        setIsSubmitLoading(false);
+        setShowModal(false);
+        setShowErrorModal(true);
+      } else {
+        router.push('/private-cloud/products/all');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setIsSubmitLoading(false);
+      setShowModal(false);
+      setShowErrorModal(true);
+    }
+  };
 
   return (
     <>
-      <DeleteModal open={showModal} setOpen={setShowModal} />
+      <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
+      <ReturnModal open={showReturnModal} setOpen={setShowReturnModal} redirectUrl="/private-cloud/products/all" />
+      <ErrorModal open={showErrorModal} setOpen={setShowErrorModal} redirectUrl="/private-cloud/products/all" />
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">

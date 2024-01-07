@@ -25,7 +25,7 @@ export const GET = apiHandler(async ({ pathParams }) => {
     throw new Error('Product does not exist.');
   }
 
-  const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, project.cluster);
+  // const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, project.cluster);
 
   // let result = 'NOT_DELETABLE';
 

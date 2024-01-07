@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import classNames from '@/components/utils/classnames';
@@ -38,34 +38,22 @@ async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWi
   return data;
 }
 
-export default function Modal({ open, setOpen }: { open: boolean; setOpen: any }) {
+export default function Modal({
+  open,
+  setOpen,
+  isSubmitLoading,
+  onSubmit,
+}: {
+  open: boolean;
+  setOpen: any;
+  isSubmitLoading: boolean;
+  onSubmit: any;
+}) {
   const params = useParams();
   const cancelButtonRef = useRef(null);
   const [isDisabled, setDisabled] = useState(true);
   const [email, setEmail] = useState('');
   const [licencePlate, setLicencePlate] = useState('');
-  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
-  const router = useRouter();
-
-  const onSubmit = async () => {
-    setIsSubmitLoading(true);
-    try {
-      const response = await fetch(`/api/private-cloud/delete/${params.licencePlate}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        setIsSubmitLoading(false);
-      } else {
-        router.push('/private-cloud/products/all');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
 
   const { data: deletionCheckData, isLoading } = useQuery({
     queryKey: ['deletionCheck'],

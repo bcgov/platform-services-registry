@@ -63,13 +63,13 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       throw new Error('You need to be a contact on this project in order to delete it.');
     }
 
-    const deleteCheckList = await openshiftDeletionCheck(project.licencePlate, project.cluster);
+    // const deleteCheckList = await openshiftDeletionCheck(project.licencePlate, project.cluster);
 
-    if (!Object.values(deleteCheckList).every((field) => field)) {
-      throw new Error(
-        'This project is not deletable as it is not empty. Please delete all resources before deleting the project.',
-      );
-    }
+    // if (!Object.values(deleteCheckList).every((field) => field)) {
+    //   throw new Error(
+    //     'This project is not deletable as it is not empty. Please delete all resources before deleting the project.',
+    //   );
+    // }
 
     project.status = ProjectStatus.INACTIVE;
 
@@ -81,6 +81,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         createdByEmail: authEmail,
         licencePlate: project.licencePlate,
         requestedProject: {
+          create: project,
+        },
+        userRequestedProject: {
           create: project,
         },
         project: {
@@ -109,9 +112,14 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === 'P2002') {
-        throw new Error('There is already an active request for this project.');
+        console.log('HERE');
+        return new Response('There is already an active request for this project.', { status: 500 });
       }
     }
+    if (e instanceof Error) {
+      return new Response(e.message, { status: 500 });
+    }
+
     throw e;
   }
 
