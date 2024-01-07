@@ -1,8 +1,18 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; setOpen: any; redirectUrl: string }) {
+export default function Modal({
+  open,
+  setOpen,
+  redirectUrl,
+  errorMessage,
+}: {
+  open: boolean;
+  setOpen: any;
+  redirectUrl: string;
+  errorMessage: string;
+}) {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
@@ -45,7 +55,7 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                       as="h3"
                       className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
-                      An error has occurred.
+                      An error has occurred: {errorMessage}
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">

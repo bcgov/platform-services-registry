@@ -7,11 +7,12 @@ import ReturnModal from '@/components/modal/Return';
 import { useParams, useRouter } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
 
-export default function Dropdown() {
+export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
   const [showModal, setShowModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const router = useRouter();
   const params = useParams();
@@ -24,19 +25,21 @@ export default function Dropdown() {
         headers: {
           'Content-Type': 'application/json',
         },
+        cache: 'no-store',
       });
 
       if (!response.ok) {
-        console.log('RESPONSE');
-        console.log(response);
+        const requestErrorMessage = await response.text();
+        setErrorMessage(requestErrorMessage);
+
         setIsSubmitLoading(false);
         setShowModal(false);
         setShowErrorModal(true);
       } else {
-        router.push('/private-cloud/products/all');
+        setShowModal(false);
+        setShowReturnModal(true);
       }
     } catch (error) {
-      console.error('Error:', error);
       setIsSubmitLoading(false);
       setShowModal(false);
       setShowErrorModal(true);
@@ -47,7 +50,12 @@ export default function Dropdown() {
     <>
       <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
       <ReturnModal open={showReturnModal} setOpen={setShowReturnModal} redirectUrl="/private-cloud/products/all" />
-      <ErrorModal open={showErrorModal} setOpen={setShowErrorModal} redirectUrl="/private-cloud/products/all" />
+      <ErrorModal
+        open={showErrorModal}
+        setOpen={setShowErrorModal}
+        errorMessage={errorMessage}
+        redirectUrl="/private-cloud/products/all"
+      />
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
@@ -70,6 +78,7 @@ export default function Dropdown() {
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    disabled={disabled}
                     type="button"
                     onClick={() => setShowModal(true)}
                     className={classNames(

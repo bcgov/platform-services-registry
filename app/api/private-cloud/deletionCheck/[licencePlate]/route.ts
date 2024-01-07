@@ -25,15 +25,13 @@ export const GET = apiHandler(async ({ pathParams }) => {
     throw new Error('Product does not exist.');
   }
 
-  // const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, project.cluster);
+  const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, project.cluster);
 
-  // let result = 'NOT_DELETABLE';
+  let result = 'NOT_DELETABLE';
 
-  // if (Object.values(deleteCheckList).every((field) => field)) {
-  //   result = 'OK_TO_DELETE';
-  // }
-
-  const result = 'OK_TO_DELETE';
+  if (Object.values(deleteCheckList).every((field) => field)) {
+    result = 'OK_TO_DELETE';
+  }
 
   return NextResponse.json(result);
 });

@@ -9,7 +9,12 @@ interface Tab {
 }
 
 export default function Tabs(
-  { tabs, selectedTab, onClick }: { tabs: Tab[]; selectedTab: string; onClick: (event: any) => void },
+  {
+    tabs,
+    selectedTab,
+    onClick,
+    menuDisabled,
+  }: { tabs: Tab[]; selectedTab: string; onClick: (event: any) => void; menuDisabled?: boolean },
   { className }: { className?: string },
 ) {
   return (
@@ -51,7 +56,7 @@ export default function Tabs(
                 </button>
               ))}
             </div>
-            <PrivateCloudProductOptions />
+            <PrivateCloudProductOptions disabled={menuDisabled} />
           </div>
         </div>
       </div>

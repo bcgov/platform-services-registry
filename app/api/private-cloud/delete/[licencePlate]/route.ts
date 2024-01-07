@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import { DecisionStatus, Prisma, PrivateCloudProject, ProjectStatus, RequestType, User } from '@prisma/client';
+import {
+  DecisionStatus,
+  Prisma,
+  PrivateCloudProject,
+  PrivateCloudRequest,
+  ProjectStatus,
+  RequestType,
+  User,
+} from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 import { sendDeleteRequestEmails } from '@/ches/private-cloud/emailHandler';
@@ -33,95 +41,91 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   const { licencePlate } = parsedParams.data;
 
-  let createRequest: PrivateCloudRequestWithRequestedProject;
+  const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({
+    where: {
+      AND: [{ licencePlate }, { active: true }],
+    },
+  });
 
-  try {
-    const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
-      where: {
-        licencePlate,
-      },
-    });
-
-    if (!project) {
-      throw new Error('Product does not exist.');
-    }
-
-    const users: User[] = await prisma.user.findMany({
-      where: {
-        id: {
-          in: [project.projectOwnerId, project.primaryTechnicalLeadId, project.secondaryTechnicalLeadId].filter(
-            Boolean,
-          ) as string[],
-        },
-      },
-    });
-
-    if (
-      !users.map((user) => user.email).includes(authEmail) &&
-      !(authRoles.includes('admin') || authRoles.includes(`ministry-${project.ministry.toLocaleLowerCase()}-admin`))
-    ) {
-      throw new Error('You need to be a contact on this project in order to delete it.');
-    }
-
-    // const deleteCheckList = await openshiftDeletionCheck(project.licencePlate, project.cluster);
-
-    // if (!Object.values(deleteCheckList).every((field) => field)) {
-    //   throw new Error(
-    //     'This project is not deletable as it is not empty. Please delete all resources before deleting the project.',
-    //   );
-    // }
-
-    project.status = ProjectStatus.INACTIVE;
-
-    createRequest = await prisma.privateCloudRequest.create({
-      data: {
-        type: RequestType.DELETE,
-        decisionStatus: DecisionStatus.PENDING,
-        active: true,
-        createdByEmail: authEmail,
-        licencePlate: project.licencePlate,
-        requestedProject: {
-          create: project,
-        },
-        userRequestedProject: {
-          create: project,
-        },
-        project: {
-          connect: {
-            licencePlate,
-          },
-        },
-      },
-      include: {
-        requestedProject: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-        project: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-      },
-    });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === 'P2002') {
-        console.log('HERE');
-        return new Response('There is already an active request for this project.', { status: 500 });
-      }
-    }
-    if (e instanceof Error) {
-      return new Response(e.message, { status: 500 });
-    }
-
-    throw e;
+  if (existingRequest !== null) {
+    return new Response('There is already an active request for this project.', { status: 500 });
   }
+
+  const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
+    where: {
+      licencePlate,
+    },
+  });
+
+  if (!project) {
+    throw new Error('Product does not exist.');
+  }
+
+  const users: User[] = await prisma.user.findMany({
+    where: {
+      id: {
+        in: [project.projectOwnerId, project.primaryTechnicalLeadId, project.secondaryTechnicalLeadId].filter(
+          Boolean,
+        ) as string[],
+      },
+    },
+  });
+
+  if (
+    !users.map((user) => user.email).includes(authEmail) &&
+    !(authRoles.includes('admin') || authRoles.includes(`ministry-${project.ministry.toLocaleLowerCase()}-admin`))
+  ) {
+    throw new Error('You need to be a contact on this project in order to delete it.');
+  }
+
+  // const deleteCheckList = await openshiftDeletionCheck(project.licencePlate, project.cluster);
+
+  // if (!Object.values(deleteCheckList).every((field) => field)) {
+  //   throw new Error(
+  //     'This project is not deletable as it is not empty. Please delete all resources before deleting the project.',
+  //   );
+  // }
+
+  project.status = ProjectStatus.INACTIVE;
+
+  const { id, ...rest } = project;
+
+  const createRequest: PrivateCloudRequestWithRequestedProject = await prisma.privateCloudRequest.create({
+    data: {
+      type: RequestType.DELETE,
+      decisionStatus: DecisionStatus.PENDING,
+      active: true,
+      createdByEmail: authEmail,
+      licencePlate: project.licencePlate,
+      requestedProject: {
+        create: rest,
+      },
+      userRequestedProject: {
+        create: rest,
+      },
+      project: {
+        connect: {
+          licencePlate,
+        },
+      },
+    },
+    include: {
+      requestedProject: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+    },
+  });
 
   sendDeleteRequestEmails(createRequest.requestedProject);
 
