@@ -78,13 +78,13 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw new Error('You need to be a contact on this project in order to delete it.');
   }
 
-  // const deleteCheckList = await openshiftDeletionCheck(project.licencePlate, project.cluster);
+  const deleteCheckList = await openshiftDeletionCheck(project.licencePlate, project.cluster);
 
-  // if (!Object.values(deleteCheckList).every((field) => field)) {
-  //   throw new Error(
-  //     'This project is not deletable as it is not empty. Please delete all resources before deleting the project.',
-  //   );
-  // }
+  if (!Object.values(deleteCheckList).every((field) => field)) {
+    return new Response(
+      'This project is not deletable as it is not empty. Please delete all resources before deleting the project.',
+    );
+  }
 
   project.status = ProjectStatus.INACTIVE;
 
