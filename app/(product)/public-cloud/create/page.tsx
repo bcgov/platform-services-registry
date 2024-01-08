@@ -86,7 +86,13 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
+      <ReturnModal
+        isPublicCloud
+        isPublicCreate
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/public-cloud/products/active-requests"
+      />
     </div>
   );
 }

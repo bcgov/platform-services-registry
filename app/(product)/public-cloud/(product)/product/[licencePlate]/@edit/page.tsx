@@ -17,6 +17,7 @@ import { PublicCloudProjectWithUsers } from '@/app/api/public-cloud/project/[lic
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
+import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 
 async function fetchProject(licencePlate: string): Promise<PublicCloudProjectWithUsers> {
   const res = await fetch(`/api/public-cloud/project/${licencePlate}`);
@@ -55,6 +56,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
 
   const { data } = useQuery<PublicCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
@@ -89,6 +91,10 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [requestData]);
 
+  const handleOpenModal = () => {
+    setOpenComment(true);
+  };
+
   const onSubmit = async (val: any) => {
     console.log('SUBMIT', val);
     setIsLoading(true);
@@ -102,10 +108,10 @@ export default function EditProject({ params }: { params: { licencePlate: string
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok for create request');
+        throw new Error('Network response was not ok for edit request');
       }
 
-      setOpenCreate(false);
+      setOpenComment(false);
       setOpenReturn(true);
     } catch (error) {
       setIsLoading(false);
@@ -129,10 +135,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [data]);
 
+  const setComment = (userComment: string) => {
+    onSubmit({ ...methods.getValues(), userComment });
+  };
+
   return (
     <div>
       <FormProvider {...methods}>
-        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(handleOpenModal)}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts
@@ -153,13 +163,21 @@ export default function EditProject({ params }: { params: { licencePlate: string
           </div>
         </form>
       </FormProvider>
-      <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(onSubmit)}
+      <PrivateCloudEditModal
+        open={openComment}
+        setOpen={setOpenComment}
+        handleSubmit={setComment}
         isLoading={isLoading}
+        type="create"
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
+      <ReturnModal
+        isEditRequest
+        isPublicCloud
+        isPublicEdit
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/public-cloud/products/active-requests"
+      />
     </div>
   );
 }
