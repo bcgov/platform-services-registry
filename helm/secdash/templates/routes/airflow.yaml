@@ -1,3 +1,4 @@
+{{- if .Values.airflow.enabled }}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -16,3 +17,4 @@ spec:
   to:
     kind: Service
     name: airflow-webserver
+{{- end }}

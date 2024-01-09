@@ -1,3 +1,4 @@
+{{- if and .Values.migration.enabled (gt .Release.Revision 1)}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -43,3 +44,4 @@ spec:
             requests:
               cpu: 0.2
               memory: 200M
+{{- end }}
