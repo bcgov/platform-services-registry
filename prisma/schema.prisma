@@ -255,6 +255,7 @@ enum RequestType {
 enum PublicCloudRequestType {
   CREATE
   EDIT
+  DELETE
 }
 
 enum Ministry {

@@ -65,7 +65,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   }, [data]);
 
   useEffect(() => {
-    if (!session?.isAdmin) {
+    if (session && !session?.isAdmin) {
       setDisabled(true);
     }
   }, [session]);
