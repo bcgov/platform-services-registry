@@ -1,10 +1,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { clusters, ministries, providers } from '@/constants';
 import { useRef, useState } from 'react';
-
-const capitalizeFirstLetter = (name: string): string => {
-  return name.charAt(0).toUpperCase() + name.slice(1);
-};
+import { capitalizeFirstLetter } from '@/components/utils/capitalizeFirstLetter';
 
 export default function FilterPanel() {
   const [showInactive, setShowInactive] = useState(false);

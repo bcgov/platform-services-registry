@@ -14,7 +14,7 @@ interface HandlerProps {
   };
 }
 
-interface RouteProps<TPathParams, TQueryParams, TBody> {
+export interface RouteProps<TPathParams, TQueryParams, TBody> {
   session: Session | null;
   pathParams: TPathParams;
   queryParams: TQueryParams;
@@ -22,9 +22,17 @@ interface RouteProps<TPathParams, TQueryParams, TBody> {
 }
 
 function arrayIntersection(arr1: string[], arr2: string[]) {
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
+    console.error('Invalid input. Both parameters must be arrays.');
+    return [];
+  }
   const set2 = new Set(arr2);
-  const intersection = arr1.filter(set2.has);
-  return intersection;
+  if (set2 instanceof Set) {
+    const intersection = arr1.filter((value) => set2.has(value));
+    return intersection;
+  }
+  console.error('Invalid Set.');
+  return [];
 }
 
 function createApiHandler<TPathParams = any, TQueryParams = any, TBody = any>({ roles, validations }: HandlerProps) {

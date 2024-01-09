@@ -1,15 +1,15 @@
-import { addUserToGroupByEmail } from '@/app/api/public-cloud/aws-roles/helpers';
+import { removeUserFromGroup } from '@/app/api/public-cloud/aws-roles/helpers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/apiHandler';
 
 interface QueryParam {
-  userEmail: string;
+  userId: string;
   groupId: string;
 }
 
 const queryParamSchema = z.object({
-  userEmail: z.string(),
+  userId: z.string(),
   groupId: z.string(),
 });
 
@@ -18,12 +18,12 @@ const apiHandler = createApiHandler<unknown, QueryParam>({
   validations: { queryParams: queryParamSchema },
 });
 
-export const PUT = apiHandler(async ({ queryParams, session }) => {
-  const { userEmail, groupId } = queryParams;
+export const DELETE = apiHandler(async ({ queryParams, session }) => {
+  const { userId, groupId } = queryParams;
 
   let result;
-  if (userEmail && groupId) {
-    result = await addUserToGroupByEmail(userEmail, groupId);
+  if (userId && groupId) {
+    result = await removeUserFromGroup(userId, groupId);
   }
 
   return NextResponse.json(
