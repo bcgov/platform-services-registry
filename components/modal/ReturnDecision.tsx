@@ -64,8 +64,8 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                         <div>
                           <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
                           <p className="font-bcsans text-sm text-blue-700 mt-1">
-                            The approval of new project set creation request is subject to having a signed Memorandum of
-                            Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
+                            The approval of a new project set creation request is subject to having a signed Memorandum
+                            of Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
                             email us at
                             <span> </span>
                             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
