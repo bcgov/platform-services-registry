@@ -9,13 +9,14 @@ import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[l
 import classNames from '@/components/utils/classnames';
 
 async function fetchDeleteCheckResult(licencePlate: string) {
-  const res = await fetch(`/api/private-cloud/deletionCheck/${licencePlate}`);
+  const res = await fetch(`/api/private-cloud/deletion-check/${licencePlate}`, {
+    cache: 'no-store',
+  });
 
   if (!res.ok) {
     throw new Error('Network response was not ok for deletion check');
   }
 
-  // Re format data to work with form
   const data = await res.json();
 
   return data;
@@ -54,19 +55,32 @@ export default function Modal({
   const [isDisabled, setDisabled] = useState(true);
   const [email, setEmail] = useState('');
   const [licencePlate, setLicencePlate] = useState('');
+  const [deletionCheckData, setDeletionCheckData] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data: deletionCheckData, isLoading } = useQuery({
-    queryKey: ['deletionCheck'],
-    queryFn: () => fetchDeleteCheckResult(params.licencePlate as string),
-    enabled: !!params.licencePlate,
-    staleTime: 0, // Immediately mark data as stale
-    refetchOnMount: true, // Always refetch when the component mounts
-  });
+  useEffect(() => {
+    if (open) {
+      const fetchDeletionCheck = async () => {
+        try {
+          setIsLoading(true);
+          const data = await fetchDeleteCheckResult(params.licencePlate as string);
+          setDeletionCheckData(data);
+        } catch (error) {
+          console.error('Error fetching deletion check:', error);
+        }
+        setIsLoading(false);
+      };
+
+      fetchDeletionCheck();
+    } else {
+      setDeletionCheckData(null);
+    }
+  }, [open, params.licencePlate]);
 
   const { data: projectData } = useQuery({
-    queryKey: ['projectData'],
+    queryKey: ['project', params.licencePlate],
     queryFn: () => fetchProject(params.licencePlate as string),
-    enabled: !!params.licencePlate,
+    enabled: !!params.licencePlate && open,
     refetchOnMount: true,
   });
 
