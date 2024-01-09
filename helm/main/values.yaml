@@ -77,10 +77,10 @@ email:
       cpu: 10m
       memory: 128Mi
 
+# See https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
 mongodb:
   enabled: false
 
-  # See https://github.com/bitnami/charts/blob/main/bitnami/mongodb/README.md#parameters
   nameOverride: pltsvc-mongodb
   fullnameOverride: pltsvc-mongodb
 

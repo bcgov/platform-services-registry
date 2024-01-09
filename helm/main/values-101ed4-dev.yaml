@@ -22,6 +22,9 @@ app:
     enabled: true
     host: dev-pltsvc.apps.silver.devops.gov.bc.ca
 
+  migration:
+    enabled: true
+
 email:
   route:
     enabled: true

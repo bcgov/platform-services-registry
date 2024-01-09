@@ -7,5 +7,10 @@ airflow:
   route:
     host: secdash-airflow.apps.silver.devops.gov.bc.ca
 
+sonarqube:
+  enabled: true
+  route:
+    host: secdash-sonarqube.apps.silver.devops.gov.bc.ca
+
 postgresql:
   enabled: true
