@@ -14,7 +14,7 @@ interface HandlerProps {
   };
 }
 
-export interface RouteProps<TPathParams, TQueryParams, TBody> {
+interface RouteProps<TPathParams, TQueryParams, TBody> {
   session: Session | null;
   pathParams: TPathParams;
   queryParams: TQueryParams;
