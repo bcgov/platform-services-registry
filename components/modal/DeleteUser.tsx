@@ -21,9 +21,9 @@ async function deleteUser(userId: string, groupId: string): Promise<string | und
     if (response.ok) {
       return response.statusText;
     }
-    console.error('Failed to handle PUT request:', response.statusText);
+    console.error('Failed to handle DELETE request:', response.statusText);
   } catch (error) {
-    console.error('Error during PUT request:', error);
+    console.error('Error during DELETE request:', error);
   }
 }
 
@@ -35,7 +35,6 @@ export default function DeleteUserModal({ open, setOpen, groupId, person }: Prop
     queryFn: () => deleteUser(userId, groupId),
     enabled: !!userId,
   });
-  console.log('data', user);
 
   const handleDeleteUserBtn = () => {
     setUserId(person[Object.keys(person)[0]].id);

@@ -16,7 +16,7 @@ export interface User {
 }
 
 export type paramsURL = {
-  params: { licencePlate: string };
+  params: { licencePlate: string; role: string };
   searchParams: { page: string; pageSize: string };
 };
 
