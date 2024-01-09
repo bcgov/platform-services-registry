@@ -1,0 +1,20 @@
+{{- if .Values.sonarqube.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "main.fullname" . }}-sonarqube
+  annotations:
+    haproxy.router.openshift.io/balance: roundrobin
+    haproxy.router.openshift.io/disable_cookies: 'true'
+    haproxy.router.openshift.io/timeout: 600s
+spec:
+  {{- if .Values.sonarqube.route.host }}
+  host: {{ .Values.sonarqube.route.host }}
+  {{- end }}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: secdash-sonarqube
+{{- end }}

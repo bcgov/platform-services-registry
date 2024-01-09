@@ -202,3 +202,38 @@ postgresql:
           adminPasswordKey: admin-password # pragma: allowlist secret
           userPasswordKey: user-password # pragma: allowlist secret
           replicationPasswordKey: replication-password # pragma: allowlist secret
+
+# See https://github.com/SonarSource/helm-chart-sonarqube/blob/master/charts/sonarqube/values.yaml
+sonarqube:
+  enabled: true
+  route:
+    host:
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L37
+  securityContext:
+    fsGroup:
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L41C1-L41C25
+  containerSecurityContext:
+    runAsUser:
+    runAsGroup:
+
+  initContainers:
+    securityContext:
+      runAsUser:
+      runAsGroup:
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L236C1-L236C11
+  initSysctl:
+    enabled: false
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L420C1-L420C14
+  jdbcOverwrite:
+    enable: true
+    jdbcUrl: "jdbc:postgresql://secdash-postgresql/testdb?socketTimeout=1500"
+    jdbcUsername: nonroot
+    jdbcSecretName: secdash-postgresql # pragma: allowlist secret
+    jdbcSecretPasswordKey: user-password # pragma: allowlist secret
+
+  postgresql:
+    enabled: false
