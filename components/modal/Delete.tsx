@@ -113,7 +113,7 @@ export default function Modal({
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:p-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900">Please Confirm Your Delete Request</h3>
+                  <h3 className="text-lg font-medium leading-6 text-gray-900">Please confirm your delete request</h3>
 
                   {isLoading ? (
                     <div className="flex items-center">
@@ -234,12 +234,12 @@ export default function Modal({
                     </button>
                   ) : (
                     <button
-                      disabled={isDisabled}
+                      disabled={isDisabled || !(deletionCheckData !== 'OK_TO_DELETE')}
                       type="button"
                       onClick={onSubmit}
                       className={classNames(
                         'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
-                        isDisabled && deletionCheckData === 'OK_TO_DELETE'
+                        isDisabled || !(deletionCheckData !== 'OK_TO_DELETE')
                           ? 'bg-gray-400 text-white cursor-not-allowed'
                           : 'bg-red-600 text-white hover:bg-red-700',
                       )}

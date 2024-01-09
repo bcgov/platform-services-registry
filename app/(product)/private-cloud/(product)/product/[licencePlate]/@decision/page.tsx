@@ -34,6 +34,7 @@ async function fetchRequestedProject(licencePlate: string): Promise<PrivateCloud
 }
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
+  console.log('**** RequestDecision ****');
   const { data: session, status } = useSession({
     required: true,
   });
@@ -58,16 +59,22 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   useEffect(() => {
-    if (!session?.isAdmin) {
+    if (session && !session?.isAdmin) {
       setDisabled(true);
     }
   }, [session]);
 
+  console.log('SESSION: ', session);
+
   useEffect(() => {
+    console.log('DecisionStatus: ', data?.decisionStatus);
     if (data && data.decisionStatus !== 'PENDING') {
       setDisabled(true);
     }
-  }, [data]);
+  }, [data?.decisionStatus]);
+
+  console.log('IS DISABLED: ', isDisabled);
+  console.log('DATA', data);
 
   const onSubmit = async (val: any) => {
     setIsLoading(true);
