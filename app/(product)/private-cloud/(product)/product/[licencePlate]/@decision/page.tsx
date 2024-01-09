@@ -58,16 +58,18 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   useEffect(() => {
-    if (!session?.isAdmin) {
+    if (session && !session?.isAdmin) {
       setDisabled(true);
     }
   }, [session]);
+
+  console.log('SESSION: ', session);
 
   useEffect(() => {
     if (data && data.decisionStatus !== 'PENDING') {
       setDisabled(true);
     }
-  }, [data]);
+  }, [data?.decisionStatus]);
 
   const onSubmit = async (val: any) => {
     setIsLoading(true);

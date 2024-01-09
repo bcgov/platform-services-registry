@@ -36,6 +36,9 @@ route:
   enabled: false
   host:
 
+migration:
+  enabled: true
+
 serviceAccountName:
 envSecretName:
 env: {}

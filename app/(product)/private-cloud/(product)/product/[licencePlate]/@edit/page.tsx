@@ -58,6 +58,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
@@ -133,12 +134,15 @@ export default function EditProject({ params }: { params: { licencePlate: string
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
       methods.unregister('secondaryTechnicalLead');
+      setIsSecondaryTechLeadRemoved(true);
     }
   };
 
   const setComment = (userComment: string) => {
     onSubmit({ ...methods.getValues(), userComment });
   };
+
+  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
   return (
     <div>
@@ -167,7 +171,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT EDIT REQUEST" disabled={!formState.isDirty} />
+                <SubmitButton text="SUBMIT EDIT REQUEST" disabled={!isSubmitEnabled} />
               </div>
             ) : null}
           </div>
@@ -180,7 +184,12 @@ export default function EditProject({ params }: { params: { licencePlate: string
         isLoading={isLoading}
         type="create"
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
+      <ReturnModal
+        isEditRequest
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/private-cloud/products/active-requests"
+      />
     </div>
   );
 }

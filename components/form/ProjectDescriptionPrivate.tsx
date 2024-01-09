@@ -25,7 +25,7 @@ export default function ProjectDescription({
   });
 
   useEffect(() => {
-    if (!session?.isAdmin) {
+    if (session && !session?.isAdmin) {
       setClustersList(clusters.filter((cluster) => cluster.indexOf('LAB') === -1));
     }
   }, [session]);

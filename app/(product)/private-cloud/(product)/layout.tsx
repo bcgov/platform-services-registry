@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import ProductHistoryTabs from '@/components/tabs/ProductHistoryTabs';
+import ProductHistoryTabs from '@/components/tabs/PrivateCloudProductHistoryTabs';
 import { useRouter, usePathname } from 'next/navigation';
 
 const tabsData = [
