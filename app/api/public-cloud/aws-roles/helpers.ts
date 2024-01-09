@@ -44,9 +44,7 @@ const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
 
-export async function getPublicCloudProjectUsers(
-  searchLicencePlate: string,
-): Promise<Record<string, User>[] | undefined> {
+async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<Record<string, User>[] | undefined> {
   const result: Record<string, User>[] = [];
   const project = await prisma.publicCloudProject.findFirst({
     where: {
@@ -205,7 +203,7 @@ const findObjectByValueSubstring = (array: Group[], key: keyof Group, value: any
   return array.filter((obj) => obj[key].includes(value));
 };
 
-export async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
+async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
   const keyClockGroups = await getGroups();
   if (keyClockGroups) {
     const projectTeamGroups = findObjectByValue(keyClockGroups, 'name', 'Project Team Groups');
@@ -225,7 +223,8 @@ const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
 export async function getSubGroupMembersByLicencePlateAndName(
   licencePlate: string,
   role: string,
-  options: PaginationOptions,
+  page: number,
+  pageSize: number,
 ): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
   let result: Record<string, User>[] = [];
@@ -250,7 +249,7 @@ export async function getSubGroupMembersByLicencePlateAndName(
     }
   }
   const total = result.length;
-  return { users: paginate(result, options) as Record<string, User>[], groupId, total };
+  return { users: paginate(result, { page, pageSize }) as Record<string, User>[], groupId, total };
 }
 
 export async function addUserToGroupByEmail(userEmail: string, groupId: string) {

@@ -1,4 +1,4 @@
-import { removeUserFromGroup } from '@/app/api/public-cloud/aws-roles/route';
+import { removeUserFromGroup } from '@/app/api/public-cloud/aws-roles/helpers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/apiHandler';
