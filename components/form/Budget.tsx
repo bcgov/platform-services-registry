@@ -1,7 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
 import BudgetInput from '@/components/form/BudgetInput';
-import React, { useEffect } from 'react';
 
 export default function Budget({ disabled }: { disabled?: boolean }) {
   const {
@@ -10,8 +9,6 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   } = useFormContext();
 
   const budget = watch('budget', {});
-
-  useEffect(() => {}, [errors]);
 
   const totalBudget = [budget.dev, budget.test, budget.prod, budget.tools]
     .map((value) => Number(value) || 0)
