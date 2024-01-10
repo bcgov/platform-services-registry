@@ -17,7 +17,14 @@ const tabsData = [
     label: 'ROLES',
     name: 'aws-roles',
   },
-].filter((tab) => (process.env.APP_ENV === 'prod' ? (tab.label === 'ROLES' ? null : tab) : tab));
+];
+
+if (process.env.APP_ENV !== 'prod') {
+  tabsData.push({
+    label: 'ROLES',
+    name: 'aws-roles',
+  });
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
