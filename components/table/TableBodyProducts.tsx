@@ -103,11 +103,32 @@ function truncateText(str: string, n: number) {
 
 function getStatus(requestDecisionStatus: string) {
   if (requestDecisionStatus === 'APPROVED') {
-    return 'Provisioning..';
+    return (
+      <span className="flex">
+        <div className="mr-2">
+          <div className={classNames('mt-1 text-blue-400 bg-blue-400/10', 'flex-none rounded-full p-1')}>
+            <div className="h-1.5 w-1.5 rounded-full bg-current" />
+          </div>
+        </div>
+        Provisioning
+      </span>
+    );
   }
 
   if (requestDecisionStatus === 'PENDING') {
     return 'Reviewing';
+    // <span className="flex">
+    //   <div className="mr-2">
+    //     <svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    //       <path
+    //         d="M10.1782 12.9962C9.90499 10.5929 8.80819 9.59671 8.00708 8.8703C7.45321 8.36613 7.1869 8.10388 7.1869 7.64722C7.1869 7.19681 7.45227 6.93957 8.00458 6.44571C8.81507 5.72149 9.925 4.7294 10.1788 2.29356C10.1991 2.08891 10.1762 1.88229 10.1116 1.68705C10.047 1.49182 9.94209 1.31232 9.80372 1.16019C9.65596 0.997684 9.47579 0.867946 9.27482 0.779332C9.07385 0.690719 8.85654 0.645196 8.63691 0.645699H1.73603C1.51609 0.645012 1.29845 0.690442 1.09715 0.779059C0.89585 0.867676 0.715365 0.997511 0.56734 1.16019C0.42939 1.31253 0.324905 1.49211 0.260623 1.68732C0.196342 1.88253 0.173692 2.08905 0.194133 2.29356C0.447001 4.72159 1.55287 5.70649 2.36023 6.42539C2.91785 6.92206 3.18603 7.18118 3.18603 7.64722C3.18603 8.1192 2.91723 8.38363 2.35773 8.88968C1.56068 9.61171 0.466693 10.6004 0.194759 12.9962C0.172679 13.1999 0.193839 13.406 0.256857 13.601C0.319874 13.796 0.423331 13.9754 0.560463 14.1277C0.708799 14.2923 0.890157 14.4237 1.09271 14.5135C1.29527 14.6033 1.51447 14.6494 1.73603 14.6487H8.63691C8.85847 14.6494 9.07767 14.6033 9.28023 14.5135C9.48278 14.4237 9.66414 14.2923 9.81247 14.1277C9.94961 13.9754 10.0531 13.796 10.1161 13.601C10.1791 13.406 10.2003 13.1999 10.1782 12.9962ZM7.91519 13.1484H2.47119C1.98359 13.1484 1.84606 12.5858 2.188 12.237C3.01568 11.398 4.68636 10.7973 4.68636 9.8352V6.647C4.68636 6.02656 3.4986 5.55302 2.76375 4.54655C2.64248 4.38057 2.65467 4.14646 2.96286 4.14646H7.42414C7.68701 4.14646 7.74359 4.3787 7.62419 4.54498C6.89997 5.55302 5.68658 6.02343 5.68658 6.647V9.8352C5.68658 10.7895 7.42789 11.3043 8.19962 12.2379C8.51063 12.6142 8.40185 13.1484 7.91519 13.1484Z"
+    //         fill="black"
+    //         style={{ fill: 'black', fillOpacity: 1 }}
+    //       />
+    //     </svg>
+    //   </div>
+    //   Reviewing;
+    // </span>
   }
 
   if (requestDecisionStatus === 'REJECTED') {
@@ -162,9 +183,6 @@ export default function TableBody({ rows }: TableProps) {
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
                     <p className="truncate">Ministry {deployment.ministry}</p>
-                    <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
-                      <circle cx={1} cy={1} r={0.7} />
-                    </svg>
                     <p className="whitespace-nowrap">
                       {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}
                     </p>

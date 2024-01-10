@@ -124,7 +124,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         >
           <div className="mb-12 mt-8">
             {data && data.decisionStatus !== 'PENDING' && (
-              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-2">
+              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-blue-600 mb-8">
                 A decision has already been made for this project
               </h3>
             )}
