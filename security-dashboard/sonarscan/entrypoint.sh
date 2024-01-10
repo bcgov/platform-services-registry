@@ -182,6 +182,9 @@ while read -r proj; do
                 "sqale_rating": "'"$sqale_rating"'"
             }
         }' >"$repo_path/detail.json"
+
+        rm -rf "$repo_path/$directory"
+        rm -rf "$repo_path/$filename"
     done <<<"$repos"
 done < <(echo "$PROJECTS" | jq -c '.[]')
 
