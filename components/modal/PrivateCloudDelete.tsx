@@ -189,7 +189,9 @@ export default function Modal({
                       </span>
                     </div>
 
-                    {deletionCheckData !== 'OK_TO_DELETE' ? (
+                    {deletionCheckData === null ? (
+                      <div>Our deletion check is making sure there are no resources deployed in your namespaces.</div>
+                    ) : deletionCheckData !== 'OK_TO_DELETE' ? (
                       <div className="mt-8 text-sm font-medium">
                         Our deletion check did not pass, this means there are still resources deployed on your product.
                       </div>
