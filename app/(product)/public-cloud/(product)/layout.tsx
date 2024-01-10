@@ -13,10 +13,6 @@ const tabsData = [
     label: 'HISTORY',
     name: 'history',
   },
-  {
-    label: 'ROLES',
-    name: 'aws-roles',
-  },
 ];
 
 if (process.env.APP_ENV !== 'prod') {
