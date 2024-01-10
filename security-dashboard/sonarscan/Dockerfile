@@ -3,7 +3,7 @@ FROM sonarsource/sonar-scanner-cli:5.0.1
 WORKDIR /opt/sonar
 
 RUN apk update && \
-    apk add jq
+    apk add --no-cache jq
 
 COPY entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
