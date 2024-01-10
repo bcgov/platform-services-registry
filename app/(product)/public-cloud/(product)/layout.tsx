@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import ProductHistoryTabs from '@/components/tabs/PublicCloudProductHistoryTabs';
 import { useRouter, usePathname } from 'next/navigation';
+
 const tabsData = [
   {
     label: 'PRODUCT',
@@ -16,7 +17,7 @@ const tabsData = [
     label: 'ROLES',
     name: 'aws-roles',
   },
-];
+].filter((tab) => (process.env.APP_ENV === 'prod' ? (tab.label === 'ROLES' ? null : tab) : tab));
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
