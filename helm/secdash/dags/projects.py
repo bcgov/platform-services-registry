@@ -51,7 +51,7 @@ def get_mongo_db(mongo_conn_id):
     return client.pltsvc
 
 
-def fetch_projects(mongo_conn_id, concurrency, **context):
+def fetch_zap_projects(mongo_conn_id, concurrency, **context):
     """
     Fetch active projects from MongoDB, retrieve information about their hosts,
     and push the results into XCom.
@@ -105,7 +105,7 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
         shutil.rmtree(f"{shared_directory}/zap/{mongo_conn_id}")
 
     except Exception as e:
-        print(f"[fetch_projects] Error: {e}")
+        print(f"[fetch_zap_projects] Error: {e}")
 
 
 def load_zap_results(mongo_conn_id):
@@ -160,3 +160,41 @@ def load_zap_results(mongo_conn_id):
 
     except Exception as e:
         print(f"[load_zap_results] Error: {e}")
+
+
+def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
+    """
+    Fetch active projects from MongoDB, retrieve information about their codebase repository URLs,
+    and push the results into XCom.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+    - concurrency: The number of subarrays for parallel processing.
+    - **context: Additional context parameters.
+
+    Note: This function assumes the existence of a 'get_mongo_db' function.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
+    try:
+        db = get_mongo_db(mongo_conn_id)
+        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
+                                               "_id": False, "licencePlate": True, "cluster": True, "repositories": True})
+        result = []
+
+        for project in projects:
+            if len(project['repositories']) > 0:
+                result.append(project)
+
+        result_subarrays = split_array(result, concurrency)
+        task_instance = context['task_instance']
+        for i, subarray in enumerate(result_subarrays, start=1):
+            task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
+
+        shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
+
+    except Exception as e:
+        print(f"[fetch_sonarscan_projects] Error: {e}")

@@ -158,9 +158,17 @@ export default function Quotas({
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
         All quota increase requests require <b> Platform Services Team’s </b>
-        approval must have supporting information as per the Quota Increase Request Process. The Quota Requests without
-        supporting information
-        <b> will </b> not be processed.
+        approval, and must have supporting information as per the{' '}
+        <a
+          href="https://docs.developer.gov.bc.ca/request-quota-increase-for-openshift-project-set/"
+          className="text-blue-500 hover:text-blue-400"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Quota Increase Request Process
+        </a>
+        . Any Quota Requests without supporting information
+        <b> will not </b> be processed.
       </p>
       <div className="mt-10 grid grid-cols-1 gap-x-8 xl:gap-x-16 gap-y-8 sm:grid-cols-8 ">
         {(['production', 'test', 'tools', 'development'] as const).map((nameSpace) => (

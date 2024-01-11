@@ -15,6 +15,13 @@ const tabsData = [
   },
 ];
 
+if (process.env.APP_ENV !== 'prod') {
+  tabsData.push({
+    label: 'ROLES',
+    name: 'aws-roles',
+  });
+}
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -23,7 +30,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [selectedTab, setSelectedTab] = useState('product');
 
   useEffect(() => {
-    router.replace(`/public-cloud/${selectedTab}/${licencePlate}`);
+    if (selectedTab === 'aws-roles') {
+      router.replace(`/public-cloud/${selectedTab}/${licencePlate}/admins`);
+    } else router.replace(`/public-cloud/${selectedTab}/${licencePlate}`);
   }, [selectedTab, licencePlate, router]);
 
   return (
