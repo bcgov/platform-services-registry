@@ -2,13 +2,7 @@
 
 import SideTabs from '@/components/generic/SideTabs';
 
-export default async function Security({
-  params,
-  children,
-}: {
-  params: { licencePlate: string };
-  children: React.ReactNode;
-}) {
+export default function Layout({ params, children }: { params: { licencePlate: string }; children: React.ReactNode }) {
   const { licencePlate } = params;
 
   return (
