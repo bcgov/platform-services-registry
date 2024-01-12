@@ -11,8 +11,8 @@ const apiHandler = createApiHandler<null, null, SecurityConfig>({
 export const PUT = apiHandler(async ({ body, session }) => {
   const exists =
     body.context === $Enums.ProjectContext.PRIVATE
-      ? await prisma.privateCloudProject.count()
-      : await prisma.publicCloudProject.count();
+      ? await prisma.privateCloudProject.count({ where: {}, session: session as never })
+      : await prisma.publicCloudProject.count({ where: {}, session: session as never });
 
   if (exists === 0) {
     throw Error('invalid project');
@@ -25,6 +25,7 @@ export const PUT = apiHandler(async ({ body, session }) => {
     },
     update: body,
     create: body,
+    session: session as never,
   });
 
   return NextResponse.json(result);
