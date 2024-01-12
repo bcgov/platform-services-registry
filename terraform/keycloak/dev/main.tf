@@ -4,7 +4,7 @@ data "keycloak_realm" "pltsvc" {
 
 data "keycloak_authentication_flow" "idir_only" {
   realm_id = data.keycloak_realm.pltsvc.id
-  alias    = "browser - github - only"
+  alias    = "browser - idir - only"
 }
 
 resource "keycloak_openid_client" "pltsvc" {
