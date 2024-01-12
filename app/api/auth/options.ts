@@ -3,6 +3,7 @@ import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
+import { IS_PROD } from '@/config';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -77,6 +78,11 @@ export const authOptions: AuthOptions = {
       session.ministries = {
         admin: [],
         readonly: [],
+      };
+
+      session.previews = {
+        awsRoles: !IS_PROD,
+        security: !IS_PROD,
       };
 
       // Send properties to the client, like an access_token from a provider.

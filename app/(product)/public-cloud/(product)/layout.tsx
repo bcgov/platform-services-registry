@@ -1,33 +1,37 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import ProductHistoryTabs from '@/components/tabs/PublicCloudProductHistoryTabs';
 import { useRouter, usePathname } from 'next/navigation';
 
-const tabsData = [
-  {
-    label: 'PRODUCT',
-    name: 'product',
-  },
-  {
-    label: 'HISTORY',
-    name: 'history',
-  },
-];
-
-if (process.env.APP_ENV !== 'prod') {
-  tabsData.push({
-    label: 'ROLES',
-    name: 'aws-roles',
-  });
-}
-
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession({
+    required: true,
+  });
   const router = useRouter();
   const pathname = usePathname();
   const licencePlate = pathname.split('/')[3];
 
   const [selectedTab, setSelectedTab] = useState('product');
+
+  const tabsData = [
+    {
+      label: 'PRODUCT',
+      name: 'product',
+    },
+    {
+      label: 'HISTORY',
+      name: 'history',
+    },
+  ];
+
+  if (session?.previews.awsRoles) {
+    tabsData.push({
+      label: 'ROLES',
+      name: 'aws-roles',
+    });
+  }
 
   useEffect(() => {
     if (selectedTab === 'aws-roles') {
