@@ -1,10 +1,15 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/Tabs';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession({
+    required: true,
+  });
+
   const params = useParams<{ licencePlate: string }>();
   const { licencePlate } = params;
 
@@ -21,9 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   ];
 
-  console.log('process.env.APP_ENV', process.env.APP_ENV);
-
-  if (process.env.APP_ENV !== 'prod') {
+  if (session?.previews.security) {
     tabs.push({
       label: 'SECURITY',
       name: 'security',

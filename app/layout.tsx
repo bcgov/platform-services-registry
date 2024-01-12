@@ -1,4 +1,5 @@
 import './globals.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { Inter } from 'next/font/google';
 import Provider from '@/components/Provider';
 import Nav from '@/components/nav/Nav';
