@@ -2,15 +2,22 @@
 
 import { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { SecurityConfig } from '@prisma/client';
+import { SecurityConfig, $Enums } from '@prisma/client';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/security-config';
+import { SecurityConfigRequestBodySchema } from '@/schema';
 
 export default function Repository({ params }: { params: { licencePlate: string } }) {
   const { register, control, handleSubmit, getValues, setValue } = useForm<SecurityConfig>({
-    defaultValues: { licencePlate: params.licencePlate, context: 'PRIVATE', repositories: [{ url: 'https://' }] },
+    resolver: zodResolver(SecurityConfigRequestBodySchema),
+    defaultValues: {
+      licencePlate: params.licencePlate,
+      context: $Enums.ProjectContext.PRIVATE,
+      repositories: [{ url: 'https://' }],
+    },
   });
 
   const {
@@ -20,7 +27,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
     error: fetchingError,
   } = useQuery<SecurityConfig, Error>({
     queryKey: ['securityConfig', params.licencePlate],
-    queryFn: () => getSecurityConfig(params.licencePlate, 'PRIVATE'),
+    queryFn: () => getSecurityConfig(params.licencePlate, $Enums.ProjectContext.PRIVATE),
     enabled: !!params.licencePlate,
   });
 

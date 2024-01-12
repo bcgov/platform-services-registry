@@ -1,18 +1,12 @@
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { SecurityConfig, $Enums } from '@prisma/client';
 import createApiHandler from '@/core/apiHandler';
-
-const bodySchema = z.object({
-  licencePlate: z.string(),
-  repositories: z.array(z.object({ url: z.string() })).max(10),
-  context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
-});
+import { SecurityConfigRequestBodySchema } from '@/schema';
 
 const apiHandler = createApiHandler<null, null, SecurityConfig>({
   roles: ['user'],
-  validations: { body: bodySchema },
+  validations: { body: SecurityConfigRequestBodySchema },
 });
 export const PUT = apiHandler(async ({ body, session }) => {
   const exists =

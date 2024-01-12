@@ -1,4 +1,4 @@
-import { Cluster, Ministry, Provider } from '@prisma/client';
+import { Cluster, Ministry, Provider, $Enums } from '@prisma/client';
 import { string, z } from 'zod';
 
 export const DefaultCpuOptionsSchema = z.enum([
@@ -154,6 +154,12 @@ export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySc
     humanComment: string().optional(),
   }),
 );
+
+export const SecurityConfigRequestBodySchema = z.object({
+  licencePlate: z.string(),
+  repositories: z.array(z.object({ url: z.string().url() })).max(10),
+  context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
+});
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof PrivateCloudCreateRequestBodySchema>;
 export type PublicCloudCreateRequestBody = z.infer<typeof PublicCloudCreateRequestBodySchema>;
