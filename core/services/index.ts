@@ -7,6 +7,7 @@ import { PublicCloudProjectService } from './publicCloudProject';
 import { PublicCloudRequestService } from './publicCloudRequest';
 import { PublicCloudRequestedProjectService } from './publicCloudRequestedProject';
 import { PrivateCloudProjectZapResultService } from './privateCloudProjectZapResult';
+import { SecurityConfigService } from './securityConfig';
 
 export function getService(model: string, session: Session) {
   switch (model) {
@@ -24,6 +25,8 @@ export function getService(model: string, session: Session) {
       return new PublicCloudRequestedProjectService(session);
     case 'PrivateCloudProjectZapResult':
       return new PrivateCloudProjectZapResultService(session);
+    case 'SecurityConfig':
+      return new SecurityConfigService(session);
     default:
       return null;
   }
