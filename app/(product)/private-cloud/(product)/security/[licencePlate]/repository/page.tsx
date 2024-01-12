@@ -95,7 +95,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
                 className="ml-2 rounded-md bg-red-600 text-white px-4 py-2.5 font-bcsans text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
                 onClick={() => remove(index)}
               >
-                Delete
+                Remove
               </button>
             </li>
           ))}
