@@ -9,3 +9,24 @@ export const hasSegmentAtPosition = (pathname: string, targetSegment: string, po
   }
   return false;
 };
+
+export const compareUrlsIgnoreLastSegments = (url1: string, url2: string, numSegmentsToIgnore: number = 0) => {
+  // Remove trailing slashes from the URLs
+  url1 = url1.replace(/\/+$/, '');
+  url2 = url2.replace(/\/+$/, '');
+
+  if (numSegmentsToIgnore === 0) return url1 === url2;
+
+  // Split the URLs into segments
+  const segments1 = url1.split('/');
+  const segments2 = url2.split('/');
+
+  // Ensure the number of segments to ignore is within bounds
+  numSegmentsToIgnore = Math.min(numSegmentsToIgnore, segments1.length, segments2.length);
+
+  // Extract base URLs (excluding the specified number of last path segments)
+  const base1 = segments1.slice(0, -numSegmentsToIgnore).join('/');
+  const base2 = segments2.slice(0, -numSegmentsToIgnore).join('/');
+
+  return base1 === base2;
+};
