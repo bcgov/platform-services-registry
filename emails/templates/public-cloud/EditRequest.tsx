@@ -68,7 +68,7 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
                 )}
               </div>
               <div>
-                <Closing />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
             </div>
           </Body>

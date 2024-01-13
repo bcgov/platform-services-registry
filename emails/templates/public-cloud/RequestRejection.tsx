@@ -45,7 +45,7 @@ const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
                 <Text className="mb-0">{comment}</Text>
               </div>
               <div>
-                <Closing />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
             </div>
           </Body>

@@ -61,7 +61,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 <ProviderDetails provider={request.requestedProject.provider} />
               </div>
               <div>
-                <Closing />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
             </div>
           </Body>

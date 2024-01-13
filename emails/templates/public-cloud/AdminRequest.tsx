@@ -5,7 +5,6 @@ import ProductDetails from '../../components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../components/ProviderDetails';
-import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
@@ -48,11 +47,8 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   tl2={request.requestedProject.secondaryTechnicalLead}
                 />
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <ProviderDetails provider={request.requestedProject.provider} />
-              </div>
               <div>
-                <Closing />
+                <ProviderDetails provider={request.requestedProject.provider} />
               </div>
             </div>
           </Body>

@@ -54,7 +54,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <ProviderDetails provider={product.provider} />
               </div>
               <div>
-                <Closing />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
             </div>
           </Body>
