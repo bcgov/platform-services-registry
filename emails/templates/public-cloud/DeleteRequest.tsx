@@ -24,7 +24,7 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  Your deletion request for Private Cloud Openshift Platform has been received!
+                  Your deletion request for a product on the Public Cloud Landing Zone has been received!
                 </Heading>
                 <Text>Hi {product.name} Team,</Text>
                 <Text className="">
