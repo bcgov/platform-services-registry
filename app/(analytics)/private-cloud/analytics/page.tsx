@@ -21,7 +21,7 @@ export default function EditRequestsGraph() {
   }, []);
 
   if (!chartData) {
-    return 'Loading...';
+    return 'Fetching chart data...';
   }
 
   return (
@@ -34,8 +34,8 @@ export default function EditRequestsGraph() {
           data={chartData}
           index="date"
           yAxisWidth={65}
-          categories={['Quota requests']}
-          colors={['indigo', 'cyan']}
+          categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
+          colors={['indigo', 'green', 'red']}
           valueFormatter={valueFormatter}
         />
       </Card>

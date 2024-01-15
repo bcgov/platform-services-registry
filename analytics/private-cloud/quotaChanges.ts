@@ -37,21 +37,16 @@ export function sortDatesIntoMonths(dates: Date[]) {
 }
 
 export async function detectQuotaChangesByMonth(licencePlate: string, decisionStatus?: DecisionStatus) {
-  const projects = await prisma.privateCloudRequestedProject.findMany({
-    where: { licencePlate },
+  const requests = await prisma.privateCloudRequest.findMany({
+    where: { licencePlate, decisionStatus },
     orderBy: { created: 'asc' },
+
+    include: {
+      requestedProject: true,
+    },
   });
 
-  // const requests = await prisma.privateCloudRequest.findMany({
-  //   where: { licencePlate, decisionStatus },
-  //   orderBy: { created: 'asc' },
-
-  //   include: {
-  //     requestedProject: true,
-  //   },
-  // });
-
-  // const projects = requests.map((request) => request.requestedProject);
+  const projects = requests.map((request) => request.requestedProject);
 
   const quotaChangeDates = [];
 
