@@ -3,7 +3,9 @@ import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
+import { getUser } from '@/msal/service';
 import { IS_PROD } from '@/config';
+import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 
 interface KeycloakToken {
   exp: number;
@@ -86,7 +88,13 @@ export const authOptions: AuthOptions = {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakToken;
 
-      const data = { firstName: given_name, lastName: family_name, email };
+      const adUser = await getUser(email);
+      let ministry = '';
+      if (adUser) {
+        ministry = parseMinistryFromDisplayName(adUser.displayName);
+      }
+
+      const data = { firstName: given_name, lastName: family_name, email, ministry };
       await prisma.user.upsert({
         where: {
           email,
