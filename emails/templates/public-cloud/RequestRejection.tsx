@@ -25,8 +25,8 @@ const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
                 <Heading className="text-lg text-black">Sorry, your request was Rejected</Heading>
                 <Text>Hi {productName} team, </Text>
                 <Text className="">
-                  Your request for the product on the Private Cloud Openshift platform has been rejected due to the
-                  following reason(s):
+                  Your request for the product on the Public Cloud Landing Zone has been rejected due to the following
+                  reason(s):
                 </Text>
                 <Text className="">{comment}</Text>
                 <Text>

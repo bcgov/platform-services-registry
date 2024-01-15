@@ -16,6 +16,18 @@ interface EmailProp {
 const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
+  const {
+    name,
+    description,
+    ministry,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    provider,
+    accountCoding,
+    budget,
+  } = request.requestedProject;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -39,16 +51,16 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={request.requestedProject.name}
-                  description={request.requestedProject.description}
-                  ministry={request.requestedProject.ministry}
-                  po={request.requestedProject.projectOwner}
-                  tl1={request.requestedProject.primaryTechnicalLead}
-                  tl2={request.requestedProject.secondaryTechnicalLead}
+                  name={name}
+                  description={description}
+                  ministry={ministry}
+                  po={projectOwner}
+                  tl1={primaryTechnicalLead}
+                  tl2={secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <ProviderDetails provider={request.requestedProject.provider} />
+                <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" />

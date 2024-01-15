@@ -15,6 +15,18 @@ interface EmailProp {
 const DeleteApprovalTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
 
+  const {
+    name,
+    description,
+    ministry,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    provider,
+    accountCoding,
+    budget,
+  } = product;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -29,16 +41,16 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={product.name}
-                  description={product.description}
-                  ministry={product.ministry}
-                  po={product.projectOwner}
-                  tl1={product.primaryTechnicalLead}
-                  tl2={product.secondaryTechnicalLead}
+                  name={name}
+                  description={description}
+                  ministry={ministry}
+                  po={projectOwner}
+                  tl1={primaryTechnicalLead}
+                  tl2={secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <ProviderDetails provider={product.provider} />
+                <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" />

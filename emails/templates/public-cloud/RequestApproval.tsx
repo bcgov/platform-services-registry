@@ -15,6 +15,18 @@ interface EmailProp {
 const RequestApprovalTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
+  const {
+    name,
+    description,
+    ministry,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    provider,
+    accountCoding,
+    budget,
+  } = request.requestedProject;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -28,10 +40,10 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 </Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete. Log in to the cluster console using the button below and you&apos;ll see all four namespaces
-                  included in a project set. If you have any more questions, reach out to the Platform Services team in
-                  the RocketChat channel #devops-operations.
+                  Your request for a new project set for your product on the Public Cloud Landing Zone is complete. Log
+                  in to the cluster console using the button below and you&apos;ll see all four namespaces included in a
+                  project set. If you have any more questions, reach out to the Platform Services team in the RocketChat
+                  channel #devops-operations.
                 </Text>
                 <Text className="">
                   The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
@@ -49,16 +61,16 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={request.requestedProject.name}
-                  description={request.requestedProject.description}
-                  ministry={request.requestedProject.ministry}
-                  po={request.requestedProject.projectOwner}
-                  tl1={request.requestedProject.primaryTechnicalLead}
-                  tl2={request.requestedProject.secondaryTechnicalLead}
+                  name={name}
+                  description={description}
+                  ministry={ministry}
+                  po={projectOwner}
+                  tl1={primaryTechnicalLead}
+                  tl2={secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <ProviderDetails provider={request.requestedProject.provider} />
+                <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" />
