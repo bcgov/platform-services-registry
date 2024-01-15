@@ -58,7 +58,8 @@ const prisma =
           return result;
         }
 
-        const decorated = multi ? await Promise.all(result.map(svc.decorate)) : await svc.decorate(result);
+        const decorate = (doc: any) => (doc ? svc.decorate(doc) : null);
+        const decorated = multi ? await Promise.all(result.map(decorate)) : await decorate(result);
         return decorated;
       },
     },

@@ -4,18 +4,19 @@ import { ModelService } from '../modelService';
 
 export class PrivateCloudProjectZapResultService extends ModelService<Prisma.PrivateCloudProjectZapResultWhereInput> {
   async readFilter() {
-    let baseFilter!: Prisma.PrivateCloudProjectZapResultWhereInput;
-
     if (!this.session) return false;
-    if (!this.session.isAdmin) {
-      const res = await prisma.privateCloudRequestedProject.findMany({
-        select: { cluster: true, licencePlate: true },
-      });
+    if (this.session.isAdmin) return true;
 
-      baseFilter = {
-        OR: res.map(({ cluster, licencePlate }) => ({ cluster, licencePlate })),
-      };
-    }
+    const res = await prisma.privateCloudRequestedProject.findMany({
+      select: { cluster: true, licencePlate: true },
+      session: this.session as never,
+    });
+
+    if (res.length === 0) return false;
+
+    const baseFilter: Prisma.PrivateCloudProjectZapResultWhereInput = {
+      OR: res.map(({ cluster, licencePlate }) => ({ cluster, licencePlate })),
+    };
 
     return baseFilter;
   }

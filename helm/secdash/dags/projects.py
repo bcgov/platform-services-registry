@@ -181,8 +181,8 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
 
     try:
         db = get_mongo_db(mongo_conn_id)
-        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
-                                               "_id": False, "licencePlate": True, "cluster": True, "repositories": True})
+        projects = db.SecurityConfig.find(
+            {}, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
         result = []
 
         for project in projects:
@@ -198,3 +198,44 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
 
     except Exception as e:
         print(f"[fetch_sonarscan_projects] Error: {e}")
+
+
+def load_sonarscan_results(mongo_conn_id):
+    """
+    Load SonarScan results into MongoDB.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
+    try:
+        db = get_mongo_db(mongo_conn_id)
+
+        report_directory = f"{shared_directory}/output/{mongo_conn_id}"
+
+        subdirectories = [
+            os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
+        ]
+
+        for subdirectory in subdirectories:
+            print(f"Processing files in subdirectory: {subdirectory}")
+            file_path = os.path.join(subdirectory, 'detail.json')
+            with open(file_path, 'r') as file:
+                content = file.read().replace('\n', '').replace('\t', '')
+                doc = json.loads(content)
+                doc['scannedAt'] = datetime.datetime.now()
+
+                db.SonarScanResult.replace_one({
+                    'licencePlate': doc['licencePlate'],
+                    'context': doc['context'],
+                    'url': doc['url']},
+                    doc,
+                    True  # Create one if it does not exist
+                )
+
+    except Exception as e:
+        print(f"[load_sonarscan_results] Error: {e}")

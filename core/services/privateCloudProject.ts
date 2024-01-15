@@ -3,20 +3,18 @@ import { ModelService } from '../modelService';
 
 export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloudProjectWhereInput> {
   async readFilter() {
-    let baseFilter!: Prisma.PrivateCloudProjectWhereInput;
-
     if (!this.session) return false;
-    if (!this.session.isAdmin) {
-      baseFilter = {
-        OR: [
-          { projectOwnerId: this.session.userId as string },
-          { primaryTechnicalLeadId: this.session.userId as string },
-          { secondaryTechnicalLeadId: this.session.userId },
-          { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
-          { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
-        ],
-      };
-    }
+    if (this.session.isAdmin) return true;
+
+    const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
+      OR: [
+        { projectOwnerId: this.session.userId as string },
+        { primaryTechnicalLeadId: this.session.userId as string },
+        { secondaryTechnicalLeadId: this.session.userId },
+        { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
+        { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
+      ],
+    };
 
     return baseFilter;
   }

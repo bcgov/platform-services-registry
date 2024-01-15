@@ -7,7 +7,7 @@ echo "$PROJECTS"
 # [
 #     {
 #         "licencePlate": "34w22a",
-#         "cluster": "KLAB",
+#         "context": "PRIVATE",
 #         "repos": [
 #             "https://github.com/bcgov/platform-services-registry",
 #             "https://github.com/bcgov/platform-developer-docs"
@@ -15,7 +15,7 @@ echo "$PROJECTS"
 #     },
 #     {
 #         "licencePlate": "3744e3",
-#         "cluster": "KLAB",
+#         "context": "PUBLIC",
 #         "repos": [
 #             "https://github.com/bcgov/platform-services-registry-web",
 #             "https://github.com/bcgov/platform-services-registry-api"
@@ -117,7 +117,7 @@ while read -r proj; do
 
     # Extract project details from JSON using jq
     licencePlate=$(echo "$proj" | jq -r '.licencePlate')
-    cluster=$(echo "$proj" | jq -r '.cluster')
+    context=$(echo "$proj" | jq -r '.context')
     repos=$(echo "$proj" | jq -r '.repos[]')
 
     # Loop through each repository in the project
@@ -127,7 +127,7 @@ while read -r proj; do
 
         # Generate unique identifiers for the repository and folder
         repoid="$owner--$repo"
-        folder="$cluster-$licencePlate-$repoid"
+        folder="$context-$licencePlate-$repoid"
         repo_path="$full_path/$folder"
         mkdir -p "$repo_path"
 
@@ -166,7 +166,7 @@ while read -r proj; do
         # Store the project metadata along with the SonarQube scan results into the JSON file
         echo '{
             "licencePlate": "'"$licencePlate"'",
-            "cluster": "'"$cluster"'",
+            "context": "'"$context"'",
             "url": "'"$repourl"'",
             "result": {
                 "last_date": "'"$last_date"'",

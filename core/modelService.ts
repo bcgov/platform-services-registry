@@ -11,9 +11,9 @@ export abstract class ModelService<TFilter> {
     this.session = session;
   }
 
-  async genFilter(where: TFilter, mode: 'read' | 'write') {
+  async genFilter(where: any, mode: 'read' | 'write') {
     const baseFilterFn = mode === 'read' ? this.readFilter.bind(this) : this.writeFilter.bind(this);
-    const baseFilter = await baseFilterFn();
+    const baseFilter: any = await baseFilterFn();
 
     if (baseFilter === true) {
       return where;
@@ -25,7 +25,11 @@ export abstract class ModelService<TFilter> {
 
     if (baseFilter) {
       if (where) {
-        return { AND: [baseFilter, where] };
+        if (where.AND) {
+          return { AND: [baseFilter, where] };
+        }
+
+        return { ...where, AND: [baseFilter] };
       }
 
       return baseFilter;
