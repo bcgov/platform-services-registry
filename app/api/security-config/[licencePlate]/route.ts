@@ -30,6 +30,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
       licencePlate: pathParams.licencePlate,
       context: queryParams.context,
     },
+    session: session as never,
   });
 
   return NextResponse.json(result);

@@ -4,27 +4,30 @@ import { ModelService } from '../modelService';
 
 export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhereInput> {
   async readFilter() {
-    let baseFilter!: Prisma.SecurityConfigWhereInput;
-
     if (!this.session) return false;
-    if (!this.session.isAdmin) {
-      const [privateRes, publicRes] = await Promise.all([
-        prisma.privateCloudRequestedProject.findMany({ select: { licencePlate: true } }),
-        prisma.publicCloudRequestedProject.findMany({ select: { licencePlate: true } }),
-      ]);
+    if (this.session.isAdmin) return true;
 
-      const privateOR = privateRes.map(({ licencePlate }) => ({
-        licencePlate,
-        context: $Enums.ProjectContext.PRIVATE,
-      }));
-      const publicOR = publicRes.map(({ licencePlate }) => ({ licencePlate, context: $Enums.ProjectContext.PUBLIC }));
+    const [privateRes, publicRes] = await Promise.all([
+      prisma.privateCloudProject.findMany({
+        select: { licencePlate: true, projectOwnerId: true },
+        session: this.session as never,
+      }),
+      prisma.publicCloudProject.findMany({ select: { licencePlate: true }, session: this.session as never }),
+    ]);
 
-      const OR = [...privateOR, ...publicOR];
+    const privateOR = privateRes.map(({ licencePlate }) => ({
+      licencePlate,
+      context: $Enums.ProjectContext.PRIVATE,
+    }));
+    const publicOR = publicRes.map(({ licencePlate }) => ({ licencePlate, context: $Enums.ProjectContext.PUBLIC }));
 
-      baseFilter = {
-        OR,
-      };
-    }
+    const OR = [...privateOR, ...publicOR];
+
+    if (OR.length === 0) return false;
+
+    const baseFilter: Prisma.SecurityConfigWhereInput = {
+      OR,
+    };
 
     return baseFilter;
   }
