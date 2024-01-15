@@ -1,4 +1,4 @@
-import { PrivateCloudRequestedProject } from '@prisma/client';
+import { PrivateCloudRequestedProject, DecisionStatus } from '@prisma/client';
 import prisma from '@/lib/prisma';
 
 export type DataPoint = {
@@ -36,11 +36,22 @@ export function sortDatesIntoMonths(dates: Date[]) {
   return monthlyChanges;
 }
 
-export async function detectQuotaChangesByMonth(licencePlate: string) {
+export async function detectQuotaChangesByMonth(licencePlate: string, decisionStatus?: DecisionStatus) {
   const projects = await prisma.privateCloudRequestedProject.findMany({
     where: { licencePlate },
     orderBy: { created: 'asc' },
   });
+
+  // const requests = await prisma.privateCloudRequest.findMany({
+  //   where: { licencePlate, decisionStatus },
+  //   orderBy: { created: 'asc' },
+
+  //   include: {
+  //     requestedProject: true,
+  //   },
+  // });
+
+  // const projects = requests.map((request) => request.requestedProject);
 
   const quotaChangeDates = [];
 
@@ -54,7 +65,7 @@ export async function detectQuotaChangesByMonth(licencePlate: string) {
   return monthlyChanges;
 }
 
-export async function quotaEditRequests() {
+export async function quotaEditRequests(decisionStatus?: DecisionStatus) {
   const projects = await prisma.privateCloudProject.findMany();
 
   if (!projects) {
@@ -66,7 +77,7 @@ export async function quotaEditRequests() {
   const allMonthlyChanges: { [key: string]: Date[] } = {};
 
   for (const licencePlate of licencePlates) {
-    const monthlyChanges = await detectQuotaChangesByMonth(licencePlate);
+    const monthlyChanges = await detectQuotaChangesByMonth(licencePlate, decisionStatus);
 
     for (const monthKey in monthlyChanges) {
       if (!allMonthlyChanges[monthKey]) {
