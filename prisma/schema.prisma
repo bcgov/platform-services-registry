@@ -205,7 +205,7 @@ type ZapJsonSiteAlert {
 model SecurityConfig {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate String         @unique
-  context      ProjectContext @unique
+  context      ProjectContext
   repositories Repository[]
 }
 
