@@ -30,7 +30,7 @@ async function fetchRequestedProject(id: string): Promise<PublicCloudRequestWith
   return data;
 }
 
-export default function RequestDecision({ params }: { params: { id: string } }) {
+export default function Request({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -91,7 +91,7 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Budget disabled={false} />
-            <AccountCoding accountCodingInitial={data?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={data?.requestedProject?.accountCoding} disabled={false} />
           </div>
           <div className="mt-16 flex items-center justify-start gap-x-6">
             <PreviousButton />
