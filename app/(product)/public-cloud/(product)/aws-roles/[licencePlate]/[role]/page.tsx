@@ -89,7 +89,11 @@ export default function ProductAWSRoles() {
       email: '',
     },
   });
-  const { data: users, refetch } = useQuery<any, Error>({
+  const {
+    data: users,
+    refetch,
+    isFetching,
+  } = useQuery<any, Error>({
     queryKey: ['currentPage', currentPage, 'pageSize', pageSize, 'licencePlate', licencePlate],
     queryFn: () => GetUsersPaginatedList(licencePlate, userRole, currentPage, pageSize),
     enabled: !!licencePlate,
@@ -129,7 +133,7 @@ export default function ProductAWSRoles() {
           />
         }
         tableBody={
-          rows.length === 0 ? (
+          rows.length === 0 && !isFetching ? (
             <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
           ) : (
             <TableBodyAWSRoles
