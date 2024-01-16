@@ -228,6 +228,7 @@ model SonarScanResult {
 }
 
 type SonarScanResultDetail {
+  repoid                   String
   last_date                String
   bugs                     String
   vulnerabilities          String
