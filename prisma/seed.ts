@@ -1,8 +1,7 @@
-import { Cluster, Ministry, PrismaClient, Provider, RequestType } from '@prisma/client';
+import { Cluster, Ministry, PrismaClient, Provider } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '../schema';
-import { faker } from '@faker-js/faker';
-
 const prisma = new PrismaClient();
+import { faker } from '@faker-js/faker';
 
 const commonComponents = {
   addressAndGeolocation: {
@@ -44,42 +43,6 @@ const commonComponents = {
   other: 'Some other services',
   noServices: false,
 };
-
-function createRequestedProject({ userId, licencePlate }: { userId: string; licencePlate: string }) {
-  return {
-    licencePlate,
-    name: faker.company.name(),
-    description: faker.lorem.sentence(),
-    status: 'ACTIVE',
-    created: faker.date.past(),
-    projectOwnerId: userId,
-    primaryTechnicalLeadId: userId,
-    secondaryTechnicalLeadId: userId,
-    ministry: faker.helpers.arrayElement(Object.values(Ministry)),
-    cluster: faker.helpers.arrayElement(Object.values(Cluster)),
-    productionQuota: {
-      cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-      memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-      storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
-    },
-    testQuota: {
-      cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-      memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-      storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
-    },
-    developmentQuota: {
-      cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-      memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-      storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
-    },
-    toolsQuota: {
-      cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-      memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-      storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
-    },
-    commonComponents,
-  };
-}
 
 async function main() {
   const numOfUsers = 10; // Number of users to create
@@ -166,54 +129,6 @@ async function main() {
           commonComponents,
         },
       });
-    }
-
-    const projects = await prisma.privateCloudProject.findMany();
-
-    if (!projects) {
-      throw new Error('No projects found in the database');
-    }
-
-    const licencePlates = projects.map((project) => project.licencePlate);
-
-    for (const licencePlate of licencePlates) {
-      // Create a create request for this project
-      await prisma.privateCloudRequest.create({
-        data: {
-          licencePlate,
-          createdByEmail: user.email,
-          type: RequestType.EDIT,
-          active: true,
-          created: faker.date.past(),
-          requestedProject: {
-            create: createRequestedProject({ userId: user.id, licencePlate }) as any,
-          },
-          userRequestedProject: {
-            create: createRequestedProject({ userId: user.id, licencePlate }) as any,
-          },
-          decisionStatus: 'APPROVED',
-        },
-      });
-
-      // Create a few edit request for this project
-      for (let j = 0; j < 2; j++) {
-        await prisma.privateCloudRequest.create({
-          data: {
-            licencePlate,
-            createdByEmail: user.email,
-            type: RequestType.EDIT,
-            active: true,
-            created: faker.date.past(),
-            requestedProject: {
-              create: createRequestedProject({ userId: user.id, licencePlate }) as any,
-            },
-            userRequestedProject: {
-              create: createRequestedProject({ userId: user.id, licencePlate }) as any,
-            },
-            decisionStatus: 'APPROVED',
-          },
-        });
-      }
     }
   }
 }
