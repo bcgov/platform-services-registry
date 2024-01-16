@@ -1,5 +1,6 @@
 import { PrivateCloudRequestedProject, DecisionStatus } from '@prisma/client';
 import prisma from '@/lib/prisma';
+import _isEqual from 'lodash-es/isEqual';
 
 export type DataPoint = {
   date: string;
@@ -17,10 +18,10 @@ export function isQuotaChanged(
 ): boolean {
   // Assuming productionQuota, testQuota, developmentQuota, and toolsQuota are defined and comparable
   return !(
-    JSON.stringify(projectOne.productionQuota) === JSON.stringify(projectTwo.productionQuota) &&
-    JSON.stringify(projectOne.testQuota) === JSON.stringify(projectTwo.testQuota) &&
-    JSON.stringify(projectOne.developmentQuota) === JSON.stringify(projectTwo.developmentQuota) &&
-    JSON.stringify(projectOne.toolsQuota) === JSON.stringify(projectTwo.toolsQuota)
+    _isEqual(projectOne.productionQuota, projectTwo.productionQuota) &&
+    _isEqual(projectOne.testQuota, projectTwo.testQuota) &&
+    _isEqual(projectOne.developmentQuota, projectTwo.developmentQuota) &&
+    _isEqual(projectOne.toolsQuota, projectTwo.toolsQuota)
   );
 }
 
@@ -40,10 +41,7 @@ export async function detectQuotaChangesByMonth(licencePlate: string, decisionSt
   const requests = await prisma.privateCloudRequest.findMany({
     where: { licencePlate, decisionStatus },
     orderBy: { created: 'asc' },
-
-    include: {
-      requestedProject: true,
-    },
+    select: { requestedProject: true },
   });
 
   const projects = requests.map((request) => request.requestedProject);
@@ -61,11 +59,9 @@ export async function detectQuotaChangesByMonth(licencePlate: string, decisionSt
 }
 
 export async function quotaEditRequests(decisionStatus?: DecisionStatus) {
-  const projects = await prisma.privateCloudProject.findMany();
-
-  if (!projects) {
-    throw new Error('No projects found in the database');
-  }
+  const projects = await prisma.privateCloudProject.findMany({
+    select: { licencePlate: true },
+  });
 
   const licencePlates = projects.map((project) => project.licencePlate);
 
