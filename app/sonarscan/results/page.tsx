@@ -12,7 +12,7 @@ import SearchPanel from './SearchPanel';
 const headers = [
   { field: 'context', headerName: 'Context' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
-  { field: 'url', headerName: 'URL' },
+  { field: 'url', headerName: 'Repository URL' },
   { field: 'bugs', headerName: 'Bugs' },
   { field: 'codeSmells', headerName: 'Code Smells' },
   { field: 'vulnerabilities', headerName: 'Vulnerabilities' },
