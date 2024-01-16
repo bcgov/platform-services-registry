@@ -1,3 +1,32 @@
+## [0.6.0](https://github.com/bcgov/platform-services-registry/compare/v0.5.0...v0.6.0) (2024-01-16)
+
+
+### Features
+
+* **1728:** add security tab layout ([3271fd8](https://github.com/bcgov/platform-services-registry/commit/3271fd854ef661cf024505604608171d5cf45f39))
+* **1728:** update security - repository tab ([7cfb2f8](https://github.com/bcgov/platform-services-registry/commit/7cfb2f814b00545160c525d191a3c3f48d5821da))
+* add custom SonarQube scan Dockerfile with entrypoint ([68796d4](https://github.com/bcgov/platform-services-registry/commit/68796d4217ad96a77a0936a35b25892ec476a1ab))
+* add security service layer for privateCloudProjectZapResult ([f62a094](https://github.com/bcgov/platform-services-registry/commit/f62a094658564fcf2742fe2ac4890a78c3c9f725))
+* add zap results page ([c03d8b9](https://github.com/bcgov/platform-services-registry/commit/c03d8b910012a517c4f6b8857e8ad16f36a75250))
+* AlertBox modal for handling confirmation messaages and alerts ([0a8869e](https://github.com/bcgov/platform-services-registry/commit/0a8869e6b6863342893f5c5cbe1d489c3301485e))
+* allow idir login option only ([c013d44](https://github.com/bcgov/platform-services-registry/commit/c013d44ce061d53c262e0c20998177cdce0bf0e4))
+* **sonarscan:** update static analysis scheduler task ([6f3379b](https://github.com/bcgov/platform-services-registry/commit/6f3379b2f72b5dc1c0c1b2137f6164070ebd7c7d))
+* update ministry when user logs in ([bd70335](https://github.com/bcgov/platform-services-registry/commit/bd70335e7c2985663f2358341faae0ed2c51b5b6))
+* update security layer ([a5cd797](https://github.com/bcgov/platform-services-registry/commit/a5cd797371fde64e8ae5905bd258125f42878514))
+* updated favicon ([2795294](https://github.com/bcgov/platform-services-registry/commit/27952947c5f07888bb6117757c3b36ad3162d260))
+
+
+### Bug Fixes
+
+* add decimal values in budget field ([9677b39](https://github.com/bcgov/platform-services-registry/commit/9677b39da91544a35f17a55462a911fe751b0f9e))
+* added link to quota increase process ([53be5c1](https://github.com/bcgov/platform-services-registry/commit/53be5c13bdf5a822d60865277f355eab50373b99))
+* confirm box and isdirty submission for secondary lead form ([7c7605f](https://github.com/bcgov/platform-services-registry/commit/7c7605f759b02f145e8d5c92995c90322403cb9d))
+* handle non-string search values ([9d3fdee](https://github.com/bcgov/platform-services-registry/commit/9d3fdeef3d5b4ee164bb3f32af67baed72685237))
+* modals now display correct info given the context ([9a0e452](https://github.com/bcgov/platform-services-registry/commit/9a0e45274aa7c7a408d168254e6acda8704e299f))
+* redundant curly brackets ([21c9171](https://github.com/bcgov/platform-services-registry/commit/21c91713e75630f8912cf3eb7e0251759a75b149))
+* removed unused import ([e7b7760](https://github.com/bcgov/platform-services-registry/commit/e7b7760938e285053d15013d2ad8dd520a94a328))
+* use idir as the single IDP ([49bd5f3](https://github.com/bcgov/platform-services-registry/commit/49bd5f36fac1928454f3334e9fbf209a6d8faf3a))
+
 ## [0.5.0](https://github.com/bcgov/platform-services-registry/compare/v0.4.0...v0.5.0) (2023-12-27)
 
 
