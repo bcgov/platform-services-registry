@@ -56,7 +56,7 @@ async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<R
 
   if (project?.projectOwnerId) {
     const projectOwner = await getUserById(project.projectOwnerId);
-    if (projectOwner !== null) result.push({ 'Project Owner': projectOwner });
+    if (projectOwner !== null) result.push({ 'Product Owner': projectOwner });
   }
 
   if (project?.primaryTechnicalLeadId) {
