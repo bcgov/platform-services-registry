@@ -182,7 +182,7 @@ async function main() {
         data: {
           licencePlate,
           createdByEmail: user.email,
-          type: RequestType.CREATE,
+          type: RequestType.EDIT,
           active: true,
           created: faker.date.past(),
           requestedProject: {
