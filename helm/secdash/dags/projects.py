@@ -51,7 +51,7 @@ def get_mongo_db(mongo_conn_id):
     return client.pltsvc
 
 
-def fetch_projects(mongo_conn_id, concurrency, **context):
+def fetch_zap_projects(mongo_conn_id, concurrency, **context):
     """
     Fetch active projects from MongoDB, retrieve information about their hosts,
     and push the results into XCom.
@@ -105,7 +105,7 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
         shutil.rmtree(f"{shared_directory}/zap/{mongo_conn_id}")
 
     except Exception as e:
-        print(f"[fetch_projects] Error: {e}")
+        print(f"[fetch_zap_projects] Error: {e}")
 
 
 def load_zap_results(mongo_conn_id):
@@ -160,3 +160,82 @@ def load_zap_results(mongo_conn_id):
 
     except Exception as e:
         print(f"[load_zap_results] Error: {e}")
+
+
+def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
+    """
+    Fetch active projects from MongoDB, retrieve information about their codebase repository URLs,
+    and push the results into XCom.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+    - concurrency: The number of subarrays for parallel processing.
+    - **context: Additional context parameters.
+
+    Note: This function assumes the existence of a 'get_mongo_db' function.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
+    try:
+        db = get_mongo_db(mongo_conn_id)
+        projects = db.SecurityConfig.find(
+            {}, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
+        result = []
+
+        for project in projects:
+            if len(project['repositories']) > 0:
+                result.append(project)
+
+        result_subarrays = split_array(result, concurrency)
+        task_instance = context['task_instance']
+        for i, subarray in enumerate(result_subarrays, start=1):
+            task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
+
+        shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
+
+    except Exception as e:
+        print(f"[fetch_sonarscan_projects] Error: {e}")
+
+
+def load_sonarscan_results(mongo_conn_id):
+    """
+    Load SonarScan results into MongoDB.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
+    try:
+        db = get_mongo_db(mongo_conn_id)
+
+        report_directory = f"{shared_directory}/output/{mongo_conn_id}"
+
+        subdirectories = [
+            os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
+        ]
+
+        for subdirectory in subdirectories:
+            print(f"Processing files in subdirectory: {subdirectory}")
+            file_path = os.path.join(subdirectory, 'detail.json')
+            with open(file_path, 'r') as file:
+                content = file.read().replace('\n', '').replace('\t', '')
+                doc = json.loads(content)
+                doc['scannedAt'] = datetime.datetime.now()
+
+                db.SonarScanResult.replace_one({
+                    'licencePlate': doc['licencePlate'],
+                    'context': doc['context'],
+                    'url': doc['url']},
+                    doc,
+                    True  # Create one if it does not exist
+                )
+
+    except Exception as e:
+        print(f"[load_sonarscan_results] Error: {e}")

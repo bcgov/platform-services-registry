@@ -6,10 +6,10 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
-from projects import fetch_projects, load_zap_results
+from projects import fetch_zap_projects, load_zap_results
 
 YESTERDAY = datetime.datetime.now() - datetime.timedelta(days=1)
-CONCURRENCY = 2
+CONCURRENCY = 1
 MONGO_CONN_ID = 'pltsvc-test'
 
 with DAG(
@@ -22,7 +22,7 @@ with DAG(
     # Step 1. Identify and gather information for all currently active projects, including their host details.
     t1 = PythonOperator(
         task_id='fetch-projects-test',
-        python_callable=fetch_projects,
+        python_callable=fetch_zap_projects,
         op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY},
         provide_context=True,
         dag=dag

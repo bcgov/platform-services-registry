@@ -1,0 +1,139 @@
+{
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 10,
+    "total": 2
+  },
+  "measures": [
+    {
+      "metric": "ncloc",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "18717"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "36908"
+        }
+      ]
+    },
+    {
+      "metric": "coverage",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "0.0"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "0.0"
+        }
+      ]
+    },
+    {
+      "metric": "duplicated_lines_density",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "26.3"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "54.6"
+        }
+      ]
+    },
+    {
+      "metric": "code_smells",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "367"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "568"
+        }
+      ]
+    },
+    {
+      "metric": "bugs",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "1"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "metric": "vulnerabilities",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "0"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "metric": "sqale_index",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "1226"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "5736"
+        }
+      ]
+    },
+    {
+      "metric": "sqale_rating",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "1.0"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "1.0"
+        }
+      ]
+    },
+    {
+      "metric": "reliability_rating",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "3.0"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "1.0"
+        }
+      ]
+    },
+    {
+      "metric": "security_rating",
+      "history": [
+        {
+          "date": "2024-01-10T17:46:52+0000",
+          "value": "1.0"
+        },
+        {
+          "date": "2024-01-10T17:47:49+0000",
+          "value": "5.0"
+        }
+      ]
+    }
+  ]
+}
