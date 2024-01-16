@@ -27,7 +27,7 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">New Edit Product Request!</Heading>
@@ -36,7 +36,10 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
                   administrators have been notified and will review your request.
                 </Text>
-                <Button href={process.env.BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
+                <Button
+                  href={'https://registry.developer.gov.bc.ca/public-cloud/products/active-requests'}
+                  className="bg-bcorange rounded-md px-4 py-2 text-white"
+                >
                   Review Request
                 </Button>
               </div>
