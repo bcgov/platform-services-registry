@@ -118,7 +118,7 @@ while read -r proj; do
     # Extract project details from JSON using jq
     licencePlate=$(echo "$proj" | jq -r '.licencePlate')
     context=$(echo "$proj" | jq -r '.context')
-    repos=$(echo "$proj" | jq -r '.repos[]')
+    urls=$(echo "$proj" | jq -r '.repositories[] | .url')
 
     # Loop through each repository in the project
     while read -r repourl; do
@@ -185,7 +185,7 @@ while read -r proj; do
 
         rm -rf "$repo_path/$directory"
         rm -rf "$repo_path/$filename"
-    done <<<"$repos"
+    done <<<"$urls"
 done < <(echo "$PROJECTS" | jq -c '.[]')
 
 ls -al "$full_path"
