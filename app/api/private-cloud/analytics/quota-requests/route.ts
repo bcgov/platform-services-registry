@@ -16,7 +16,7 @@ const apiHandler = createApiHandler({
 
 export const GET = apiHandler(async ({ queryParams }) => {
   const getAllQuotaEditRequests = quotaEditRequests();
-  const getApprovedQuotaEditRequests = quotaEditRequests(DecisionStatus.APPROVED);
+  const getApprovedQuotaEditRequests = quotaEditRequests(DecisionStatus.PROVISIONED);
   const getRejectedQuotaEditRequests = quotaEditRequests(DecisionStatus.REJECTED);
 
   const [allData, approvedData, rejectedData] = await Promise.all([

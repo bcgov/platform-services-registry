@@ -1,4 +1,4 @@
-import { PrivateCloudRequestedProject, DecisionStatus } from '@prisma/client';
+import { PrivateCloudRequestedProject, DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import _isEqual from 'lodash-es/isEqual';
 
@@ -39,7 +39,7 @@ export function sortDatesIntoMonths(dates: Date[]) {
 
 export async function detectQuotaChangesByMonth(licencePlate: string, decisionStatus?: DecisionStatus) {
   const requests = await prisma.privateCloudRequest.findMany({
-    where: { licencePlate, decisionStatus },
+    where: { licencePlate, decisionStatus, type: RequestType.EDIT },
     orderBy: { created: 'asc' },
     select: { requestedProject: true },
   });
