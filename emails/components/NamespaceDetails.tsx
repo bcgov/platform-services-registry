@@ -5,7 +5,7 @@ export default function NamespaceDetails({ cluster, licencePlate }: { cluster: s
     <div>
       <Heading className="text-lg">Namespace Details</Heading>
       <div>
-        <Text className="mb-0 font-semibold h-4">OpenShift Cluster: </Text>
+        <Text className="mb-1 font-semibold h-4">OpenShift Cluster: </Text>
         <Text className="mt-0 h-4">{cluster}</Text>
       </div>
       {licencePlate && (
