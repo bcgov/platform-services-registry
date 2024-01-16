@@ -8,7 +8,7 @@ export default async function ProductsTableSkeleton() {
         <TableRowSkeleton key={i} />
       ))}
       total={10}
-      groupId={''}
+      tableTop={<></>}
       currentPage={1}
       pageSize={10}
     />
