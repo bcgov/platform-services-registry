@@ -63,8 +63,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [session]);
 
-  console.log('SESSION: ', session);
-
   useEffect(() => {
     if (data && data.decisionStatus !== 'PENDING') {
       setDisabled(true);
