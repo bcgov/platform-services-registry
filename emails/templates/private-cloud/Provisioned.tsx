@@ -20,16 +20,13 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">
-                  Hurray! Your Edit Product request was approved and completed!
-                </Heading>
+                <Heading className="text-lg text-black">Hurray! Your request was approved and completed!</Heading>
                 <Text>Hi {product.name} Team, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete.{' '}
+                  Your request for your product on the Private Cloud Openshift platform is complete.{' '}
                   <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
                     Log in to the cluster console
                   </Link>{' '}
@@ -41,10 +38,10 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 </Text>
                 <Text className="">
                   The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
-                  below and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is
-                  removed as a project contact in the Platform Registry, they will lose their access to the project set
-                  namespaces in Openshift. The new Product or Technical Lead provided on the product details page will
-                  gain the administrative access to the namespaces.
+                  below, and can add other users as necessary. Please note that if a Product Owner or a Technical Lead
+                  is removed as a project contact in the Platform Registry, they will lose their access to the project
+                  set namespaces in Openshift. The new Product or Technical Lead provided on the product details page
+                  will gain the administrative access to the namespaces.
                 </Text>
                 <Button
                   href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}
