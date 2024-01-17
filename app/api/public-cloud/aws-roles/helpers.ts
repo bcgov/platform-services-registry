@@ -72,10 +72,11 @@ async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<R
   return result;
 }
 
-const parseError = (error: unknown): void => {
+const parseError = (error: unknown) => {
   if (error instanceof Error) {
     console.log(error.message);
   } else console.log(String(error));
+  return Promise.reject(error);
 };
 
 const awsRolesApiInstance = axios.create({
@@ -125,6 +126,7 @@ export const getGroups = async (): Promise<Group[]> => {
     });
   return groups as Group[];
 };
+
 //search by substring, returns all of groups, which names includes searchParam
 export const getGroupByName = (groupName: string = 'Project Team Groups'): Promise<Group[] | undefined> =>
   awsRolesApiInstance

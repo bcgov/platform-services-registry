@@ -5,72 +5,23 @@ import { User } from '@/app/api/public-cloud/aws-roles/helpers';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 import { capitalizeFirstLetter } from '@/components/utils/capitalizeFirstLetter';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams, useParams } from 'next/navigation';
+import { useSearchParams, useParams, usePathname } from 'next/navigation';
 import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
 import AddUserModal from '@/components/modal/AddUser';
 import { useEffect, useState } from 'react';
 import DeleteUserModal from '@/components/modal/DeleteUser';
 import EmptyBody from '@/components/EmptyUsersList';
-
-async function addUser(userEmail: string, groupId: string): Promise<string | undefined> {
-  const url = `/api/public-cloud/aws-roles/addUser?userEmail=${userEmail}&groupId=${groupId}`;
-  try {
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      return response.statusText;
-    }
-    console.error('Failed to handle PUT request:', response.statusText);
-  } catch (error) {
-    console.error('Error during PUT request:', error);
-  }
-}
-
-async function deleteUser(userId: string, groupId: string): Promise<string | undefined> {
-  const url = `/api/public-cloud/aws-roles/deleteUser?userId=${userId}&groupId=${groupId}`;
-  try {
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      return response.statusText;
-    }
-    console.error('Failed to handle DELETE request:', response.statusText);
-  } catch (error) {
-    console.error('Error during DELETE request:', error);
-  }
-}
+import { GetUsersPaginatedList, addUser, deleteUser } from '@/services/aws-roles';
+import ErrorModal from '@/components/modal/Error';
 
 const pathParamRoleToRole = (pathRole: string): string => {
   const role = capitalizeFirstLetter(pathRole.replace(/-/g, ' ').slice(0, -1));
   return role;
 };
 
-async function GetUsersPaginatedList(
-  licencePlate: string,
-  role: string,
-  currentPage: string,
-  pageSize: string,
-): Promise<any> {
-  const res = await fetch(
-    `/api/public-cloud/aws-roles/getUsersList?licencePlate=${licencePlate}&role=${role}&page=${currentPage}&pageSize=${pageSize}`,
-  );
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch user image');
-  }
-  const data = await res.json();
-  return data;
-}
-
 export default function ProductAWSRoles() {
   let rows: Record<string, User>[] = [];
+  const pathName = usePathname();
   const searchParams = useSearchParams();
   const params = useParams();
   const licencePlate = params.licencePlate as string;
@@ -89,30 +40,48 @@ export default function ProductAWSRoles() {
       email: '',
     },
   });
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const {
     data: users,
     refetch,
-    isFetching,
+    isLoading: isUsersFetching,
+    error: fetchingUsersError,
   } = useQuery<any, Error>({
     queryKey: ['currentPage', currentPage, 'pageSize', pageSize, 'licencePlate', licencePlate],
     queryFn: () => GetUsersPaginatedList(licencePlate, userRole, currentPage, pageSize),
     enabled: !!licencePlate,
   });
 
-  const { data: userAdd } = useQuery<any, Error>({
+  if (fetchingUsersError) {
+    setShowErrorModal(true);
+    setErrorMessage(String(fetchingUsersError));
+  }
+
+  const { data: userAdd, error: fetchingUserAddError } = useQuery<string, Error>({
     queryKey: ['userEmail', userEmail],
-    queryFn: () => addUser(userEmail, users?.data.groupId),
+    queryFn: () => addUser(userEmail, users?.groupId),
     enabled: !!userEmail,
   });
 
-  const { data: userDel } = useQuery<any, Error>({
+  if (fetchingUserAddError) {
+    setShowErrorModal(true);
+    setErrorMessage(String(fetchingUserAddError));
+  }
+
+  const { data: userDel, error: fetchingUserDelError } = useQuery<string, Error>({
     queryKey: ['userId', userId],
-    queryFn: () => deleteUser(userId, users?.data.groupId),
+    queryFn: () => deleteUser(userId, users?.groupId),
     enabled: !!userId,
   });
 
+  if (fetchingUserDelError) {
+    setShowErrorModal(true);
+    setErrorMessage(String(fetchingUserDelError));
+  }
+
   if (users) {
-    rows = [...users?.data.users];
+    rows = [...users?.users];
   }
 
   useEffect(() => {
@@ -133,7 +102,7 @@ export default function ProductAWSRoles() {
           />
         }
         tableBody={
-          rows.length === 0 && !isFetching ? (
+          rows.length === 0 && !isUsersFetching ? (
             <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
           ) : (
             <TableBodyAWSRoles
@@ -146,10 +115,16 @@ export default function ProductAWSRoles() {
         }
         currentPage={+currentPage}
         pageSize={+pageSize}
-        total={users ? users?.data.total : 0}
+        total={users ? users?.total : 0}
       />
       <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} setUserId={setUserId} person={deletePerson} />
       <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
+      <ErrorModal
+        open={showErrorModal}
+        setOpen={setShowErrorModal}
+        errorMessage={errorMessage}
+        redirectUrl={pathName}
+      />
     </div>
   );
 }
