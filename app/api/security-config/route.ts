@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { SecurityConfig, $Enums } from '@prisma/client';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 import { SecurityConfigRequestBodySchema } from '@/schema';
 
 const apiHandler = createApiHandler<null, null, SecurityConfig>({

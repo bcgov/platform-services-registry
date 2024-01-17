@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 import { combinedRequests, type CombinedDataPoint } from '@/analytics/private-cloud/requests';
 
 const apiHandler = createApiHandler({
