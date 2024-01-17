@@ -5,12 +5,14 @@ import { combinedQuotaEditRequests } from '@/analytics/private-cloud/quotaChange
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
-import { useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/options';
 
 export default async function AnalyticsDashboard() {
-  const { data: session, status } = useSession({
-    required: true,
-  });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.isAdmin) {
+    return null;
+  }
 
   const quotaChangedChartData = await combinedQuotaEditRequests();
   const requestsChartData = await combinedRequests();
