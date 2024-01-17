@@ -67,7 +67,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     if (data && data.decisionStatus !== 'PENDING') {
       setDisabled(true);
     }
-  }, [data?.decisionStatus]);
+  }, [data, data?.decisionStatus]);
 
   const onSubmit = async (val: any) => {
     setIsLoading(true);
