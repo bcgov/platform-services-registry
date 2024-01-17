@@ -54,7 +54,7 @@ with DAG(
                 "SONARQUBE_PASS": os.environ['SONARQUBE_PASS'],
             },
             container_resources=V1ResourceRequirements(
-                limits={"memory": "3Gi", "cpu": "400m"},
+                limits={"memory": "3Gi", "cpu": "1000m"},
                 requests={"memory": "500Mi", "cpu": "50m"},
             ),
             volumes=[shared_volume, ],
