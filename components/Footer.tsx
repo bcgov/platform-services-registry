@@ -1,3 +1,5 @@
+import { DEPLOYMENT_TAG } from '@/config';
+
 const navigation = {
   main: [
     //{ name: 'Home', href: '#' }, a home page does not currently exist
@@ -22,6 +24,11 @@ export default function Footer() {
               </a>
             </div>
           ))}
+          <div className="pb-6">
+            <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
+              App Version: {DEPLOYMENT_TAG}
+            </span>
+          </div>
         </nav>
       </div>
     </footer>

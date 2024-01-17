@@ -26,13 +26,7 @@ export const PUT = apiHandler(async ({ queryParams, session }) => {
     result = await addUserToGroupByEmail(userEmail, groupId);
   }
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: result,
-    },
-    {
-      status: 201,
-    },
-  );
+  return NextResponse.json({
+    data: result,
+  });
 });
