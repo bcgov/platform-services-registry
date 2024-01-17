@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 ENV SECURE_HEADERS=true \
-  NEXT_PUBLIC_DEPLOYMENT_TAG=${deployment_tag}
+  DEPLOYMENT_TAG=${deployment_tag}
 
 RUN npm install
 RUN npm run build
