@@ -1,44 +1,38 @@
-'use client';
+import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
+import LineGraph from '@/components/analytics/LineGraph';
+import { combinedQuotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
+import { combinedRequests } from '@/analytics/private-cloud/requests';
+import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 
-import { AreaChart, Card, Title } from '@tremor/react';
-import { useState, useEffect } from 'react';
-import ExportButton from '@/components/buttons/ExportButton';
-
-const valueFormatter = function (number: number) {
-  return new Intl.NumberFormat('us').format(number).toString();
-};
-
-export default function EditRequestsGraph() {
-  const [chartData, setChartData] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      const res = await fetch('/api/private-cloud/analytics/quota-requests');
-      const data = await res.json();
-      setChartData(data);
-    }
-    fetchData();
-  }, []);
-
-  if (!chartData) {
-    return 'Fetching chart data...';
-  }
+export default async function AnalyticsDashboard() {
+  const quotaChangedChartData = await combinedQuotaEditRequests();
+  const requestsChartData = await combinedRequests();
+  const projectsChartData = await numberOfProductsOverTime();
 
   return (
-    <div className="flex flex-col m-12 items-end">
-      <ExportButton className="mb-4" apiEnpoint="/api/private-cloud/analytics/quota-requests/csv" />
-      <Card>
-        <Title>Quota requests over time</Title>
-        <AreaChart
-          className="h-72 mt-4"
-          data={chartData}
-          index="date"
-          yAxisWidth={65}
-          categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
-          colors={['indigo', 'green', 'red']}
-          valueFormatter={valueFormatter}
-        />
-      </Card>
+    <div className="flex flex-col gap-y-12 m-12 ">
+      <CombinedAreaGraph
+        title={'Requests over time'}
+        chartData={requestsChartData}
+        categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
+        colors={['indigo', 'yellow', 'green', 'red']}
+        exportApiEndpoint="/api/private-cloud/analytics/csv/requests"
+      />
+      <CombinedAreaGraph
+        title={'Quota requests over time'}
+        chartData={quotaChangedChartData}
+        categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
+        colors={['indigo', 'green', 'red']}
+        exportApiEndpoint="/api/private-cloud/analytics/csv/quota-requests"
+      />
+      <LineGraph
+        index="date"
+        title={'Products provisioned over time (including deleted)'}
+        chartData={projectsChartData}
+        categories={['Products']}
+        colors={['indigo']}
+        exportApiEndpoint="/api/private-cloud/analytics/csv/products"
+      />
     </div>
   );
 }

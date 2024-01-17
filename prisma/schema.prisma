@@ -45,6 +45,7 @@ model PrivateCloudRequest {
   decisionMakerEmail     String?
   type                   RequestType
   decisionStatus         DecisionStatus
+  isQuotaChanged         Boolean?                      @default(false)
   humanComment           String?
   userComment            String?
   active                 Boolean                       @default(true)
