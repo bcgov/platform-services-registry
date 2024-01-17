@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { samplePrivateProduct } from './components/Params';
-import DeleteApprovalTemplate from './templates/private-cloud/DeleteApproval';
+import { samplePublicProduct } from './components/Params';
+import DeleteApprovalTemplate from './templates/public-cloud/DeleteApproval';
 
 export const DeleteApproval = () => {
-  return <DeleteApprovalTemplate product={samplePrivateProduct} />;
+  return <DeleteApprovalTemplate product={samplePublicProduct} />;
 };
 
 export default DeleteApproval;

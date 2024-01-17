@@ -5,7 +5,6 @@ import ProductDetails from '../../components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../components/ProviderDetails';
-import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
@@ -16,12 +15,24 @@ interface EmailProp {
 const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
+  const {
+    name,
+    description,
+    ministry,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    provider,
+    accountCoding,
+    budget,
+  } = request.requestedProject;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg">New Request!</Heading>
@@ -32,7 +43,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   Registry
                 </Text>
                 <Button
-                  href="https://dev-pltsvc.apps.silver.devops.gov.bc.ca/private-cloud/products"
+                  href="https://registry.developer.gov.bc.ca/public-cloud/products/active-requests"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Review Request
@@ -40,19 +51,16 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={request.requestedProject.name}
-                  description={request.requestedProject.description}
-                  ministry={request.requestedProject.ministry}
-                  po={request.requestedProject.projectOwner}
-                  tl1={request.requestedProject.primaryTechnicalLead}
-                  tl2={request.requestedProject.secondaryTechnicalLead}
+                  name={name}
+                  description={description}
+                  ministry={ministry}
+                  po={projectOwner}
+                  tl1={primaryTechnicalLead}
+                  tl2={secondaryTechnicalLead}
                 />
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <ProviderDetails provider={request.requestedProject.provider} />
-              </div>
               <div>
-                <Closing />
+                <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
             </div>
           </Body>

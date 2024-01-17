@@ -17,36 +17,31 @@ export default function DescriptionChanges({
 }) {
   return (
     <div>
-      <Heading className="text-lg text-black">Description Changes</Heading>
+      <Heading className="text-lg text-black mb-2">Description Changes</Heading>
       {nameCurrent !== nameRequested && (
-        <div>
-          <Text className="mt-4 mb-0 font-semibold h-4">Product Name</Text>
-          <Text className="mt-2 mb-0 font-semibold h-4">Current Product Name</Text>
-          <Text className="mt-1 mb-0 h-4">{nameCurrent}</Text>
-          <Text className="mt-2 mb-0 font-semibold h-4">Requested Product Name</Text>
-          <Text className="mt-1 mb-0 h-4">{nameRequested}</Text>
+        <div className="mb-4">
+          <Text className="font-semibold">Current Product Name</Text>
+          <Text>{nameCurrent}</Text>
+          <Text className="font-semibold mt-2">Requested Product Name</Text>
+          <Text>{nameRequested}</Text>
         </div>
       )}
       {descCurrent !== descRequested && (
-        <div>
-          <Text className="mt-6 mb-0 font-semibold h-4">Product Description</Text>
-          <Text className="mt-2 mb-0 font-semibold h-4">Current Description</Text>
-          <Text className="mt-1 mb-0 h-4">{descCurrent}</Text>
-          <Text className="mt-2 mb-0 font-semibold h-4">Requested Description</Text>
-          <Text className="mt-1 mb-0 h-4">{descRequested}</Text>
+        <div className="mb-4">
+          <Text className="font-semibold">Current Description</Text>
+          <Text>{descCurrent}</Text>
+          <Text className="font-semibold mt-2">Requested Description</Text>
+          <Text>{descRequested}</Text>
         </div>
       )}
-      <div className="flex flex-row flex-wrap mt-4">
-        {ministryCurrent !== ministryRequested && (
-          <div className="mr-16">
-            <Text className="mt-6 mb-0 font-semibold h-4">Ministry</Text>
-            <Text className="mt-2 mb-0 font-medium h-3">Current Ministry</Text>
-            <Text className="mt-1 mb-0 h-4">{ministryCurrent}</Text>
-            <Text className="mt-2 mb-0 font-medium h-3">Requested Ministry</Text>
-            <Text className="mt-1 mb-0 h-4">{ministryRequested}</Text>
-          </div>
-        )}
-      </div>
+      {ministryCurrent !== ministryRequested && (
+        <div className="mb-4">
+          <Text className="font-semibold">Current Ministry</Text>
+          <Text>{ministryCurrent}</Text>
+          <Text className="font-semibold mt-2">Requested Ministry</Text>
+          <Text>{ministryRequested}</Text>
+        </div>
+      )}
     </div>
   );
 }

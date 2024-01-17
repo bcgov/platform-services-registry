@@ -1,3 +1,4 @@
+import os
 import datetime
 
 from airflow import DAG
@@ -42,14 +43,19 @@ with DAG(
             task_id='sonarscan-{}'.format(i),
             name='sonarscan-{}'.format(i),
             namespace='101ed4-tools',
-            image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:eeeaf9ca190beccb2a18f003df78fc24a7b619fd',
+            image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:489a5930cbcb0baae64e6686db4c532551dc8d39',
             env_vars={
                 "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-sonarscan-projects', key='{}')".format(i) + "}}",
                 "CONTEXT": MONGO_CONN_ID,
+                "GH_TOKEN": os.environ['GH_TOKEN'],
+                "SONARQUBE_URL": os.environ['SONARQUBE_URL'],
+                "SONARQUBE_TOKEN": os.environ['SONARQUBE_TOKEN'],
+                "SONARQUBE_USER": os.environ['SONARQUBE_USER'],
+                "SONARQUBE_PASS": os.environ['SONARQUBE_PASS'],
             },
             container_resources=V1ResourceRequirements(
-                limits={"memory": "1Gi", "cpu": "500m"},
-                requests={"memory": "500Mi", "cpu": "200m"},
+                limits={"memory": "3Gi", "cpu": "400m"},
+                requests={"memory": "500Mi", "cpu": "50m"},
             ),
             volumes=[shared_volume, ],
             volume_mounts=[shared_volume_mount, ],

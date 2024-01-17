@@ -5,7 +5,6 @@ import ProductDetails from '../../components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../components/NamespaceDetails';
-import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 
 interface EmailProp {
@@ -47,11 +46,8 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   tl2={request.requestedProject.secondaryTechnicalLead}
                 />
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={request.requestedProject.cluster} />
-              </div>
               <div>
-                <Closing />
+                <NamespaceDetails cluster={request.requestedProject.cluster} />
               </div>
             </div>
           </Body>

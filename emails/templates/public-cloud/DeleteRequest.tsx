@@ -15,16 +15,28 @@ interface EmailProp {
 const DeleteRequestTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
 
+  const {
+    name,
+    description,
+    ministry,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
+    provider,
+    accountCoding,
+    budget,
+  } = product;
+
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  Your deletion request for Private Cloud Openshift Platform has been received!
+                  Your deletion request for a product on the Public Cloud Landing Zone has been received!
                 </Heading>
                 <Text>Hi {product.name} Team,</Text>
                 <Text className="">
@@ -33,19 +45,19 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={product.name}
-                  description={product.description}
-                  ministry={product.ministry}
-                  po={product.projectOwner}
-                  tl1={product.primaryTechnicalLead}
-                  tl2={product.secondaryTechnicalLead}
+                  name={name}
+                  description={description}
+                  ministry={ministry}
+                  po={projectOwner}
+                  tl1={primaryTechnicalLead}
+                  tl2={secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <ProviderDetails provider={product.provider} />
+                <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
               <div>
-                <Closing />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
             </div>
           </Body>
