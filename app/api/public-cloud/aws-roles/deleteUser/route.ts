@@ -26,13 +26,7 @@ export const DELETE = apiHandler(async ({ queryParams, session }) => {
     result = await removeUserFromGroup(userId, groupId);
   }
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: result,
-    },
-    {
-      status: 201,
-    },
-  );
+  return NextResponse.json({
+    data: result,
+  });
 });
