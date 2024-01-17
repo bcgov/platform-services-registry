@@ -219,6 +219,30 @@ type Repository {
   url String
 }
 
+model SonarScanResult {
+  id           String                @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String
+  context      ProjectContext
+  url          String
+  result       SonarScanResultDetail
+  scannedAt    DateTime              @default(now())
+}
+
+type SonarScanResultDetail {
+  repoid                   String
+  last_date                String
+  bugs                     String
+  vulnerabilities          String
+  sqale_index              String
+  duplicated_lines_density String
+  ncloc                    String
+  coverage                 String
+  code_smells              String
+  reliability_rating       String
+  security_rating          String
+  sqale_rating             String
+}
+
 type Quota {
   cpu     String
   memory  String

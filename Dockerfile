@@ -1,3 +1,5 @@
+ARG deployment_tag
+
 # 1st stage to build the image
 FROM node:20-alpine as builder
 
@@ -5,7 +7,9 @@ WORKDIR /app
 
 COPY . .
 
-ENV SECURE_HEADERS true
+ENV SECURE_HEADERS=true \
+  DEPLOYMENT_TAG=${deployment_tag}
+
 RUN npm install
 RUN npm run build
 

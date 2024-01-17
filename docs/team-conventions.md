@@ -86,7 +86,11 @@ The Development environment undergoes continuous deployment whenever changes are
 
 ### Test
 
-The Test environment experiences continuous deployment upon the creation of a new Git tag. Within the pipeline, a new container image is generated and tagged with the Git tag version. It is then pushed to the GitHub container registry for use in the deployment.
+The Test environment experiences continuous deployment upon the `creation of a new Git tag`. Within the pipeline, a new container image is generated and tagged with the Git tag version. It is then pushed to the GitHub container registry for use in the deployment.
+
+- Please refer to [release-tag-changelog.yml](../.github/workflows/release-tag-changelog.yml) for more detailed information.
+
+It's important to note that the workflow pipeline automatically `initiates the deployment of the test environment` concurrently with the `generation of a PR that incorporates the changes log`. Kindly review the PR and merge it into the main branch.
 
 ### Production
 
@@ -137,3 +141,21 @@ To create or update a baseline file that captures the potential secrets currentl
 ```sh
 detect-secrets scan > .secrets.baseline
 ```
+
+## File Naming Conventions
+
+Within Next.js applications, adhering to proper file naming conventions is essential. Here are three widely adopted practices:
+
+1. Camel Case for File Names and Pascal Case for Component Names
+2. Kebab Case for File Names and Pascal Case for Component Names
+3. Pascal Case for Both File Names and Component Names
+
+Outside the Next.js application folder, `kebab case` is commonly utilized for naming `folders and files`, especially in URLs. This preference is driven by several reasons:
+
+- `URL Friendliness`: Kebab case, with its use of hyphens, contributes to URLs that are more readable and user-friendly. This enhances the overall user experience and facilitates easier navigation.
+
+- `Consistency Across Platforms`: Kebab case is supported consistently across various platforms, making it a pragmatic choice for ensuring compatibility and avoiding issues related to case sensitivity.
+
+- `SEO Considerations`: Search engines often interpret hyphens in URLs as space, potentially improving search result readability. This can positively impact your website's search engine optimization (SEO).
+
+Choosing the first option, which involves `Camel Case for file names and Pascal Case for component names`, is beneficial in scenarios where a more standardized and conventional naming approach is preferred within the Next.js application itself. This can promote code consistency and make it easier for developers to collaborate and understand the codebase. Additionally, adhering to a specific convention within the application can simplify naming-related decisions during development.

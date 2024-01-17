@@ -7,7 +7,7 @@ export class PrivateCloudProjectZapResultService extends ModelService<Prisma.Pri
     if (!this.session) return false;
     if (this.session.isAdmin) return true;
 
-    const res = await prisma.privateCloudRequestedProject.findMany({
+    const res = await prisma.privateCloudProject.findMany({
       select: { cluster: true, licencePlate: true },
       session: this.session as never,
     });
