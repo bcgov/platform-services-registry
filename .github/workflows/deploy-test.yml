@@ -32,6 +32,8 @@ jobs:
         image-name: bcgov/pltsvc
         docker-context: .
         docker-file: Dockerfile
+        docker-args: |
+          deployment_tag=${{ github.ref_name }}
         metadata-tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}

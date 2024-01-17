@@ -22,6 +22,11 @@ export default function Footer() {
               </a>
             </div>
           ))}
+          <div className="pb-6">
+            <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
+              App Version: {process.env.NEXT_PUBLIC_DEPLOYMENT_TAG || 'local'}
+            </span>
+          </div>
         </nav>
       </div>
     </footer>
