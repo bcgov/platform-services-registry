@@ -1,12 +1,16 @@
 import { Link, Text } from '@react-email/components';
 
-export default function Header() {
+interface HeaderProps {
+  email?: string;
+}
+
+export default function Header({ email = 'PlatformServicesTeam@gov.bc.ca' }: HeaderProps) {
   return (
     <div>
       <Text>
         If you have any questions, send us a message at{' '}
-        <Link className="mt-0 h-4" href={`mailto:PlatformServicesTeam@gov.bc.ca`}>
-          PlatformServicesTeam@gov.bc.ca
+        <Link className="mt-0 h-4" href={`mailto:${email}`}>
+          {email}
         </Link>
         . We&apos;d love to hear from you.
       </Text>
