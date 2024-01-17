@@ -118,7 +118,11 @@ while read -r proj; do
     # Extract project details from JSON using jq
     licencePlate=$(echo "$proj" | jq -r '.licencePlate')
     context=$(echo "$proj" | jq -r '.context')
-    repos=$(echo "$proj" | jq -r '.repos[]')
+    urls=$(echo "$proj" | jq -r '.repositories[] | .url')
+
+    if [ -z "$licencePlate" ] || [ -z "$context" ] || [ -z "$urls" ]; then
+        continue;
+    fi
 
     # Loop through each repository in the project
     while read -r repourl; do
@@ -148,6 +152,7 @@ while read -r proj; do
         sonar-scanner -Dsonar.host.url="$SONARQUBE_URL" -Dsonar.login="$SONARQUBE_TOKEN" -Dsonar.projectKey="$repoid"
 
         # Fetch SonarQube scan results from the SonarQube server
+        sleep 5
         read -r result < <(get_scan_result "$repoid")
 
         # Extract relevant metrics from the SonarQube scan results
@@ -169,6 +174,7 @@ while read -r proj; do
             "context": "'"$context"'",
             "url": "'"$repourl"'",
             "result": {
+                "repoid": "'"$repoid"'",
                 "last_date": "'"$last_date"'",
                 "bugs": "'"$bugs"'",
                 "vulnerabilities": "'"$vulnerabilities"'",
@@ -185,7 +191,7 @@ while read -r proj; do
 
         rm -rf "$repo_path/$directory"
         rm -rf "$repo_path/$filename"
-    done <<<"$repos"
+    done <<<"$urls"
 done < <(echo "$PROJECTS" | jq -c '.[]')
 
 ls -al "$full_path"

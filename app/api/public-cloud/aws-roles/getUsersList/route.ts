@@ -22,20 +22,12 @@ const apiHandler = createApiHandler<unknown, QueryParam>({
   validations: { queryParams: queryParamSchema },
 });
 
-export const GET = apiHandler(async ({ queryParams, session }) => {
+export const GET = apiHandler(async ({ queryParams }) => {
   const { licencePlate, role, page, pageSize } = queryParams;
   let result;
   if (licencePlate && role) {
     result = await getSubGroupMembersByLicencePlateAndName(licencePlate, role, page, pageSize);
   }
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: result,
-    },
-    {
-      status: 201,
-    },
-  );
+  return NextResponse.json(result);
 });

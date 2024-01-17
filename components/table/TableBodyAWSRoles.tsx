@@ -1,10 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import Delete from '@/components/assets/delete.svg';
 import Image from 'next/image';
-import DeleteUserModal from '@/components/modal/DeleteUser';
-import { useState } from 'react';
+import EmptyBody from '@/components/EmptyUsersList';
 
 const headers = [
   { field: 'role', headerName: 'Role' },
@@ -16,27 +14,17 @@ const headers = [
 
 interface TableProps {
   rows: Record<string, any>[];
-  groupId: string;
   userRole: string;
+  setOpenDeleteUser: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletePerson: React.Dispatch<React.SetStateAction<Record<string, any>>>;
 }
 
-export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProps) {
-  const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
-  const pathname = usePathname();
-
-  const [deletePerson, setDeletePerson] = useState<Record<string, any>>({
-    '': {
-      id: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-    },
-  });
-
+export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, setDeletePerson }: TableProps) {
   const onDeleteClickHandler = (row: any) => {
     setDeletePerson(row);
     setOpenDeleteUser(true);
   };
+
   const subHeader = [
     { field: 'firstName', headerName: 'First Name' },
     { field: 'lastName', headerName: 'Last Name' },
@@ -83,7 +71,7 @@ export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProp
                     </td>
                   ))}
                   <td
-                    key={row.id + i}
+                    key={row.id}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
                     {Object.keys(row)[0] === userRole && (
@@ -107,7 +95,6 @@ export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProp
           </table>
         </div>
       </div>
-      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} groupId={groupId} person={deletePerson} />
     </div>
   );
 }

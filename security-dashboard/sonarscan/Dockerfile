@@ -5,8 +5,8 @@ WORKDIR /opt/sonar
 RUN apk update && \
     apk add --no-cache jq
 
-COPY entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENV GH_TOKEN ''
 ENV PROJECTS ''
@@ -16,4 +16,4 @@ ENV SONARQUBE_TOKEN ''
 ENV SONARQUBE_USER ''
 ENV SONARQUBE_PASS ''
 
-ENTRYPOINT ["/opt/sonar/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

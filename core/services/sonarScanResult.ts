@@ -2,7 +2,7 @@ import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { ModelService } from '../modelService';
 
-export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhereInput> {
+export class SonarScanResultService extends ModelService<Prisma.SonarScanResultWhereInput> {
   async readFilter() {
     if (!this.session) return false;
     if (this.session.isAdmin) return true;
@@ -25,7 +25,7 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
 
     if (OR.length === 0) return false;
 
-    const baseFilter: Prisma.SecurityConfigWhereInput = {
+    const baseFilter: Prisma.SonarScanResultWhereInput = {
       OR,
     };
 
@@ -33,7 +33,7 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
   }
 
   async writeFilter() {
-    return this.readFilter();
+    return false;
   }
 
   async decorate(doc: any) {
