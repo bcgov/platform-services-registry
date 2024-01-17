@@ -7,8 +7,10 @@ import { parsePaginationParams } from '@/helpers/pagination';
 import SonarScanResults from '@/components/sonarscan/SonarScanResults';
 
 export default async function Page({
+  params,
   searchParams,
 }: {
+  params: { licencePlate: string };
   searchParams: {
     page: string;
     pageSize: string;
@@ -31,13 +33,19 @@ export default async function Page({
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr);
 
-  const where: Prisma.SonarScanResultWhereInput = {};
+  const where: Prisma.SonarScanResultWhereInput = { licencePlate: params.licencePlate };
   if (context.length > 0) {
     where.context = { in: context };
   }
 
   if (search.length > 0) {
     where.OR = [
+      {
+        licencePlate: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      },
       {
         url: {
           contains: search,

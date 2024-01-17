@@ -1,10 +1,10 @@
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import SonarScanResults from '@/components/sonarscan/SonarScanResults';
+import ZapScanResults from '@/components/zapscan/ZapScanResults';
 
 export default async function Page({
   searchParams,
@@ -13,7 +13,7 @@ export default async function Page({
     page: string;
     pageSize: string;
     search: string;
-    context: $Enums.ProjectContext | $Enums.ProjectContext[];
+    cluster: string | string[];
   };
 }) {
   const session = await getServerSession(authOptions);
@@ -23,23 +23,29 @@ export default async function Page({
   }
 
   const { page: pageStr, pageSize: pageSizeStr } = searchParams;
-  let { search = '', context } = searchParams;
-  if (!context) context = [];
-  else if (!Array.isArray(context)) context = [context];
+  let { search = '', cluster } = searchParams;
+  if (!cluster) cluster = [];
+  else if (!Array.isArray(cluster)) cluster = [cluster];
 
   search = search.trim();
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr);
 
-  const where: Prisma.SonarScanResultWhereInput = {};
-  if (context.length > 0) {
-    where.context = { in: context };
+  const where: Prisma.PrivateCloudProjectZapResultWhereInput = { html: { not: null }, json: { not: null } };
+  if (cluster.length > 0) {
+    where.cluster = { in: cluster };
   }
 
   if (search.length > 0) {
     where.OR = [
       {
-        url: {
+        licencePlate: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      },
+      {
+        host: {
           contains: search,
           mode: 'insensitive',
         },
@@ -48,25 +54,25 @@ export default async function Page({
   }
 
   const [rows, distinct, total] = await Promise.all([
-    prisma.sonarScanResult.findMany({
+    prisma.privateCloudProjectZapResult.findMany({
       where,
-      select: { id: true, licencePlate: true, context: true, url: true, result: true, scannedAt: true },
+      select: { id: true, licencePlate: true, cluster: true, host: true, json: true, scannedAt: true },
       skip,
       take,
       session: session as never,
     }),
-    prisma.sonarScanResult.findMany({
+    prisma.privateCloudProjectZapResult.findMany({
       where: {},
-      select: { context: true },
-      distinct: ['context'],
+      select: { cluster: true },
+      distinct: ['cluster'],
       session: session as never,
     }),
-    prisma.sonarScanResult.count({
+    prisma.privateCloudProjectZapResult.count({
       where,
       session: session as never,
     }),
   ]);
 
-  const contexts = distinct.map((row) => row.context);
-  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} />;
+  const clusters = distinct.map((row) => row.cluster);
+  return <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} />;
 }
