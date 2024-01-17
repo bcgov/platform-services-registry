@@ -1,13 +1,8 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
-import createApiHandler from '@/core/apiHandler';
 import { combinedQuotaEditRequests, type CombinedDataPoint } from '@/analytics/private-cloud/quotaChanges';
 
-const apiHandler = createApiHandler({
-  roles: ['admin'],
-});
-
-export const GET = apiHandler(async () => {
+export const GET = async () => {
   const data: CombinedDataPoint[] = await combinedQuotaEditRequests();
 
   // Convert the data to CSV
@@ -26,4 +21,4 @@ export const GET = apiHandler(async () => {
   });
 
   return response;
-});
+};

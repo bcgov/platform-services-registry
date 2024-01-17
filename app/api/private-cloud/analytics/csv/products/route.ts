@@ -1,13 +1,8 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
-import createApiHandler from '@/core/apiHandler';
 import { numberOfProductsOverTime, DataPoint } from '@/analytics/private-cloud/products';
 
-const apiHandler = createApiHandler({
-  roles: ['admin'],
-});
-
-export const GET = apiHandler(async () => {
+export const GET = async () => {
   const data: DataPoint[] = await numberOfProductsOverTime();
 
   // Convert the data to CSV
@@ -26,4 +21,4 @@ export const GET = apiHandler(async () => {
   });
 
   return response;
-});
+};
