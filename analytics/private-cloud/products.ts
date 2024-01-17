@@ -38,8 +38,6 @@ export async function productsCreatedPerMonth() {
 }
 
 export async function numberOfProductsOverTime() {
-  'use server';
-
   const projectsOverTime = await productsCreatedPerMonth();
 
   // Calculate cumulative products over time

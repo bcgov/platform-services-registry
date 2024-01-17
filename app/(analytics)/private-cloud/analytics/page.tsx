@@ -3,8 +3,15 @@ import LineGraph from '@/components/analytics/LineGraph';
 import { combinedQuotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/options';
 
 export default async function AnalyticsDashboard() {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.isAdmin) {
+    return null;
+  }
+
   const quotaChangedChartData = await combinedQuotaEditRequests();
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
