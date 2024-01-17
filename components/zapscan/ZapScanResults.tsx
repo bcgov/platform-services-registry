@@ -1,11 +1,6 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
-import { redirect } from 'next/navigation';
-import prisma from '@/lib/prisma';
-import { parsePaginationParams } from '@/helpers/pagination';
 import formatDate from '@/components/utils/formatdates';
 import SearchPanel from './SearchPanel';
 
@@ -115,79 +110,29 @@ const processCell = (value: any, field: string, headerName: string) => {
   return value;
 };
 
-export default async function Page({
-  searchParams,
+type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
+  select: { id: true; licencePlate: true; cluster: true; host: true; json: true; scannedAt: true };
+}>;
+
+export default async function ZapScanResults({
+  rows,
+  clusters,
+  total,
+  page,
+  skip,
+  take,
 }: {
-  searchParams: {
-    page: string;
-    pageSize: string;
-    search: string;
-    cluster: string | string[];
-  };
+  rows: ZapResultRows[];
+  clusters: string[];
+  total: number;
+  page: number;
+  skip: number;
+  take: number;
 }) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
-  }
-
-  const { page: pageStr, pageSize: pageSizeStr } = searchParams;
-  let { search = '', cluster } = searchParams;
-  if (!cluster) cluster = [];
-  else if (!Array.isArray(cluster)) cluster = [cluster];
-
-  search = search.trim();
-
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr);
-
-  const where: Prisma.PrivateCloudProjectZapResultWhereInput = { html: { not: null }, json: { not: null } };
-  if (cluster.length > 0) {
-    where.cluster = { in: cluster };
-  }
-
-  if (search.length > 0) {
-    where.OR = [
-      {
-        licencePlate: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-      {
-        host: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-    ];
-  }
-
-  const [rows, distinct, total] = await Promise.all([
-    prisma.privateCloudProjectZapResult.findMany({
-      where,
-      select: { id: true, licencePlate: true, cluster: true, host: true, json: true, scannedAt: true },
-      skip,
-      take,
-      session: session as never,
-    }),
-    prisma.privateCloudProjectZapResult.findMany({
-      where: {},
-      select: { cluster: true },
-      distinct: ['cluster'],
-      session: session as never,
-    }),
-    prisma.privateCloudProjectZapResult.count({
-      where,
-      session: session as never,
-    }),
-  ]);
-
-  const clusters = distinct.map((row) => row.cluster);
-
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
-        <TableTop title="Zap Results" description="" />
+        <TableTop title="Zap Scan Results" description="" />
         <SearchPanel clusters={clusters} />
         <div className="flow-root overflow-y-auto h-[55vh]">
           <div className="w-full overflow-auto">
