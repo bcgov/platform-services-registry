@@ -17,6 +17,8 @@ function createMonthKey(date: Date) {
 }
 
 export async function combinedRequests() {
+  'use server';
+
   const requests = await prisma.privateCloudRequest.findMany({
     select: {
       created: true,
