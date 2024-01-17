@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
+import createApiHandler from '@/core/apiHandler';
 import { combinedRequests, type CombinedDataPoint } from '@/analytics/private-cloud/requests';
 
-export const GET = async () => {
+const apiHandler = createApiHandler({
+  roles: ['admin'],
+});
+
+export const GET = apiHandler(async () => {
   const data: CombinedDataPoint[] = await combinedRequests();
 
   // Convert the data to CSV
@@ -16,9 +21,9 @@ export const GET = async () => {
     status: 200,
     headers: {
       'Content-Type': 'text/csv',
-      'Content-Disposition': 'attachment; filename=requests-over-time.csv',
+      'Content-Disposition': 'attachment; filename=requests.csv',
     },
   });
 
   return response;
-};
+});
