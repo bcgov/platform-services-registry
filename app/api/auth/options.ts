@@ -88,7 +88,7 @@ export const authOptions: AuthOptions = {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakToken;
 
-      const adUser = await getUser(email);
+      const adUser: any = await getUser(email);
       let ministry = '';
       if (adUser) {
         ministry = parseMinistryFromDisplayName(adUser.displayName);

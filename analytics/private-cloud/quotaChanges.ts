@@ -1,14 +1,36 @@
 import { PrivateCloudRequestedProject, DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import _isEqual from 'lodash-es/isEqual';
+import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+
+const defaultQuota = {
+  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
+  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
+};
+
+const defaultQuotaProject = {
+  productionQuota: defaultQuota,
+  testQuota: defaultQuota,
+  toolsQuota: defaultQuota,
+  developmentQuota: defaultQuota,
+};
 
 export type DataPoint = {
   date: string;
   'Quota requests': number;
 };
 
+export type CombinedDataPoint = {
+  date: string;
+  'All quota requests': number;
+  'Approved quota requests': number;
+  'Rejected quota requests': number;
+};
+
+const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
+
 function createMonthKey(date: Date) {
-  const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: '2-digit' });
   return formatter.format(date);
 }
 
@@ -25,67 +47,85 @@ export function isQuotaChanged(
   );
 }
 
-export function sortDatesIntoMonths(dates: Date[]) {
-  const monthlyChanges: { [key: string]: Date[] } = {};
-  dates.forEach((date) => {
-    const monthKey = createMonthKey(date);
-    if (!monthlyChanges[monthKey]) {
-      monthlyChanges[monthKey] = [];
-    }
-    monthlyChanges[monthKey].push(date);
-  });
-  return monthlyChanges;
-}
-
-export async function detectQuotaChangesByMonth(licencePlate: string, decisionStatus?: DecisionStatus) {
-  const requests = await prisma.privateCloudRequest.findMany({
-    where: { licencePlate, decisionStatus, type: RequestType.EDIT },
-    orderBy: { created: 'asc' },
-    select: { requestedProject: true },
-  });
-
-  const projects = requests.map((request) => request.requestedProject);
-
-  const quotaChangeDates = [];
-
-  for (let i = 0; i < projects.length - 1; i++) {
-    if (isQuotaChanged(projects[i], projects[i + 1])) {
-      quotaChangeDates.push(projects[i + 1].created);
-    }
-  }
-
-  const monthlyChanges = sortDatesIntoMonths(quotaChangeDates);
-  return monthlyChanges;
-}
-
 export async function quotaEditRequests(decisionStatus?: DecisionStatus) {
-  const projects = await prisma.privateCloudProject.findMany({
-    select: { licencePlate: true },
+  const requests = await prisma.privateCloudRequest.findMany({
+    where: {
+      type: RequestType.EDIT,
+      decisionStatus,
+    },
+    include: {
+      requestedProject: true,
+    },
+    orderBy: {
+      created: 'desc',
+    },
   });
 
-  const licencePlates = projects.map((project) => project.licencePlate);
+  const result: { [key: string]: number } = {};
+  const nonQuotaChangeResult: { [key: string]: number } = {};
 
-  const allMonthlyChanges: { [key: string]: Date[] } = {};
+  // Iterate through requests and compare the current edit requested with the previous edit request in time for the same licence plate.
+  // If the quota has changed, add it to the result object. If there is no previous request, compare it to the default quota.
+  for (let i = 0; i < requests.length; i++) {
+    const request = requests[i];
 
-  for (const licencePlate of licencePlates) {
-    const monthlyChanges = await detectQuotaChangesByMonth(licencePlate, decisionStatus);
+    const nextEditRequest = requests.slice(i + 1).find((r) => r.licencePlate === request.licencePlate);
 
-    for (const monthKey in monthlyChanges) {
-      if (!allMonthlyChanges[monthKey]) {
-        allMonthlyChanges[monthKey] = [];
-      }
-      allMonthlyChanges[monthKey].push(...monthlyChanges[monthKey]);
+    const nextRequest = !nextEditRequest
+      ? { requestedProject: defaultQuotaProject as PrivateCloudRequestedProject }
+      : nextEditRequest;
+
+    const quotaChanged: boolean = isQuotaChanged(request.requestedProject, nextRequest.requestedProject);
+    const date = createMonthKey(request.created);
+
+    if (quotaChanged) {
+      result[date] = (result[date] || 0) + 1;
     }
   }
 
-  const final: DataPoint[] = [];
+  const data = Object.entries(result).map(([date, count]) => ({
+    date,
+    'Quota requests': count,
+  }));
 
-  Object.keys(allMonthlyChanges).forEach((monthKey) => {
-    final.push({
-      date: monthKey,
-      'Quota requests': allMonthlyChanges[monthKey].length,
-    });
-  });
+  return data;
+}
 
-  return final;
+export async function combinedQuotaEditRequests() {
+  'use server';
+
+  const getAllQuotaEditRequests = quotaEditRequests();
+  const getApprovedQuotaEditRequests = quotaEditRequests(DecisionStatus.PROVISIONED);
+  const getRejectedQuotaEditRequests = quotaEditRequests(DecisionStatus.REJECTED);
+
+  const [allData, approvedData, rejectedData] = await Promise.all([
+    getAllQuotaEditRequests,
+    getApprovedQuotaEditRequests,
+    getRejectedQuotaEditRequests,
+  ]);
+
+  const allDates = Array.from(
+    new Set([
+      ...allData.map((item) => item.date),
+      ...approvedData.map((item) => item.date),
+      ...rejectedData.map((item) => item.date),
+    ]),
+  );
+
+  const data: CombinedDataPoint[] = allDates
+    .map((date) => {
+      const [all] = allData.filter((d) => d.date === date);
+      const [approved] = approvedData.filter((d) => d.date === date);
+      const [rejected] = rejectedData.filter((d) => d.date === date);
+
+      return {
+        date,
+        'All quota requests': all?.['Quota requests'] || 0,
+        'Approved quota requests': approved?.['Quota requests'] || 0,
+        'Rejected quota requests': rejected?.['Quota requests'] || 0,
+      };
+    })
+    .reverse();
+
+  return data;
 }
