@@ -1,6 +1,6 @@
-import compact from 'lodash.compact';
-import uniq from 'lodash.uniq';
-import castArray from 'lodash.castarray';
+import _compact from 'lodash-es/compact';
+import _uniq from 'lodash-es/uniq';
+import _castArray from 'lodash-es/castArray';
 import { EMAIL_PREFIX } from '@/config';
 
 type NullOrString = string | null | undefined;
@@ -26,7 +26,7 @@ interface TokenData {
   clientSecret: string;
 }
 
-const safeEmails = (emails: Array<NullOrString>): string[] => uniq(compact(castArray(emails)));
+const safeEmails = (emails: Array<NullOrString>): string[] => _uniq(_compact(_castArray(emails)));
 
 const fetchWithTimeout = async (
   resource: RequestInfo,
