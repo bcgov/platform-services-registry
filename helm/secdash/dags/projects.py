@@ -78,7 +78,13 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
             cluster = ''
             token = ''
 
-            if project['cluster'] == 'KLAB':
+            if project['cluster'] == 'SILVER':
+                cluster = 'silver'
+                token = os.environ['OC_TOKEN_SILVER']
+            elif project['cluster'] == 'GOLD':
+                cluster = 'gold'
+                token = os.environ['OC_TOKEN_GOLD']
+            elif project['cluster'] == 'KLAB':
                 cluster = 'klab'
                 token = os.environ['OC_TOKEN_KLAB']
             else:

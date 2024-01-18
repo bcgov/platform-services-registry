@@ -13,7 +13,7 @@ CONCURRENCY = 1
 MONGO_CONN_ID = 'pltsvc-dev'
 
 with DAG(
-    dag_id="zap_vulnerability_scanning_dev",
+    dag_id="zapscan_dev",
     schedule_interval=datetime.timedelta(days=1),
     start_date=YESTERDAY,
     concurrency=CONCURRENCY,
