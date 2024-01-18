@@ -1,3 +1,21 @@
+## [0.9.0](https://github.com/bcgov/platform-services-registry/compare/v0.7.0...v0.9.0) (2024-01-17)
+
+
+### Features
+
+* add security scan results tabs ([99d5151](https://github.com/bcgov/platform-services-registry/commit/99d5151a73a900a5589aeffd6540d41b7f4c03c5))
+* add sonarscan result page ([ab52b3a](https://github.com/bcgov/platform-services-registry/commit/ab52b3acbe05b9cd489f2d7b22d70939b10eeb2e))
+* add version # in footer ([2eff74f](https://github.com/bcgov/platform-services-registry/commit/2eff74f7ad2b32d3fc72036f9796449a56f2cad7))
+
+
+### Bug Fixes
+
+* BudgetChanges logic for PublicEdit ([07d4263](https://github.com/bcgov/platform-services-registry/commit/07d42637b64adc600adfd351c8d9011b78fba4a1))
+* email formatting and email changes ([907791a](https://github.com/bcgov/platform-services-registry/commit/907791a9aa06c093c6badd9b43b34d340b4604f7))
+* provider details component now completed ([c8789c1](https://github.com/bcgov/platform-services-registry/commit/c8789c112f0163ae4a0c4889f09f9fa8f42f4ea7))
+* wording ([e9dc830](https://github.com/bcgov/platform-services-registry/commit/e9dc830e2255cf7ff2a2354f4dc1dfb29fabb8f3))
+* wording, formatting, links ([3a72d78](https://github.com/bcgov/platform-services-registry/commit/3a72d786193b309ef44e656d602c1dc819e18988))
+
 ## [0.7.0](https://github.com/bcgov/platform-services-registry/compare/v0.5.0...v0.7.0) (2024-01-16)
 
 
