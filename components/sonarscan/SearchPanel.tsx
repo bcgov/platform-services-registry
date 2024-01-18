@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition, useRef } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Select, { MultiValue } from 'react-select';
-import _throttle from 'lodash.throttle';
+import _throttle from 'lodash-es/throttle';
 import { parseQueryString, stringifyQuery } from '@/lib/query-string';
 import Search from '@/components/assets/search.svg';
 

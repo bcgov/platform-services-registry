@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition, useRef } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Select, { MultiValue } from 'react-select';
-import throttle from 'lodash.throttle';
+import _throttle from 'lodash-es/throttle';
 import { parseQueryString, stringifyQuery } from '@/lib/query-string';
 import Search from '@/components/assets/search.svg';
 
@@ -19,7 +19,7 @@ export default function SearchPanel({ clusters }: { clusters: string[] }) {
   const [selectedClusters, setSelectedClusters] = useState<string[]>(searchParams.getAll('cluster'));
 
   const throttled = useRef(
-    throttle((r, newUrl) => startTransition(() => r(newUrl, { scroll: false })), 1000, { trailing: true }),
+    _throttle((r, newUrl) => startTransition(() => r(newUrl, { scroll: false })), 1000, { trailing: true }),
   );
 
   const handleClusterChange = (newValue: MultiValue<{ value: string; label: string }>) => {
