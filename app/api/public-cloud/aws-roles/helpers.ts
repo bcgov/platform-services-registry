@@ -1,7 +1,6 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
 import { getUserById } from '@/queries/user';
-import { Person } from '@/components/form/AsyncAutocomplete';
 
 export interface Group {
   id: string;
@@ -14,7 +13,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  [key: string]: string;
+  // [key: string]: string;
 }
 
 export type paramsURL = {
