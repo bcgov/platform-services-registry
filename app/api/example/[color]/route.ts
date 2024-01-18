@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 
 interface PathParam {
   color: string;

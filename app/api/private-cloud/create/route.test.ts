@@ -9,7 +9,7 @@ import { PrivateCloudCreateRequestBody } from '@/schema';
 import { expect } from '@jest/globals';
 
 const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/create/private-cloud`;
+const API_URL = `${BASE_URL}/api/private-cloud/create`;
 
 const createRequestBody: PrivateCloudCreateRequestBody = {
   name: 'Sample Project',
@@ -103,8 +103,9 @@ describe('Create Private Cloud Request Route', () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: 'oamar.kanji@gov.bc.ca',
-        roles: [],
       },
+      roles: ['user'],
+      isAdmin: false,
     });
 
     const requestsBefore: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();

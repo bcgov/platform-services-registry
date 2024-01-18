@@ -31,7 +31,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     });
   }
 
-  const { email: authEmail, roles: authRoles } = session.user;
+  const { isAdmin, user, roles: authRoles } = session ?? {};
+  const { email: authEmail } = user ?? {};
 
   const parsedParams = ParamsSchema.safeParse(params);
 
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   });
 
   if (
-    !users.map((user) => user.email).includes(authEmail) &&
+    !users.map((usr) => usr.email).includes(authEmail) &&
     !(authRoles.includes('admin') || authRoles.includes(`ministry-${project.ministry.toLocaleLowerCase()}-admin`))
   ) {
     throw new Error('You need to be a contact on this project in order to delete it.');
