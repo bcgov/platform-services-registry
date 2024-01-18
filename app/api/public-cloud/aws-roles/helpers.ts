@@ -1,6 +1,7 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
 import { getUserById } from '@/queries/user';
+import { Person } from '@/components/form/AsyncAutocomplete';
 
 export interface Group {
   id: string;
@@ -10,9 +11,10 @@ export interface Group {
 }
 export interface User {
   id: string;
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  [key: string]: string;
 }
 
 export type paramsURL = {
@@ -40,6 +42,44 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   return users.slice(startIndex, endIndex);
 };
 
+const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
+  const results = new Set<Record<string, User>>();
+
+  users.filter((userObj) =>
+    Object.values(userObj).some((user) => {
+      Object.values(user).forEach((value) => {
+        if (typeof value === 'string' && value.toLowerCase().includes(searchTerm?.toLowerCase())) {
+          results.add(userObj);
+          return;
+        }
+      });
+    }),
+  );
+
+  return Array.from(results);
+};
+
+const createUser = <V extends User>(data: Partial<V>): V => {
+  const newUser = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+  } as V;
+
+  for (const key in data) {
+    if (key in newUser) {
+      newUser[key as keyof V] = data[key] as V[keyof V];
+    }
+  }
+  return newUser;
+};
+
+const userRole = <K extends string, V extends User>(role: K, user: V): Record<string, V> => {
+  const roleUser = { [role]: createUser({ ...user }) } as Record<string, V>;
+  return roleUser;
+};
+
 const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
@@ -56,17 +96,19 @@ async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<R
 
   if (project?.projectOwnerId) {
     const projectOwner = await getUserById(project.projectOwnerId);
-    if (projectOwner !== null) result.push({ 'Product Owner': projectOwner });
+    if (projectOwner !== null) result.push(userRole('Product Owner', projectOwner as unknown as User));
   }
 
   if (project?.primaryTechnicalLeadId) {
     const primaryTechnicalLead = await getUserById(project.primaryTechnicalLeadId);
-    if (primaryTechnicalLead !== null) result.push({ 'Primary Technical Lead': primaryTechnicalLead });
+    if (primaryTechnicalLead !== null)
+      result.push(userRole('Primary Technical Lead', primaryTechnicalLead as unknown as User));
   }
 
   if (project?.secondaryTechnicalLeadId) {
     const secondaryTechnicalLead = await getUserById(project.secondaryTechnicalLeadId);
-    if (secondaryTechnicalLead !== null) result.push({ 'Secondary Technical Lead': secondaryTechnicalLead });
+    if (secondaryTechnicalLead !== null)
+      result.push(userRole('Secondary Technical Lead', secondaryTechnicalLead as unknown as User));
   }
 
   return result;
@@ -216,17 +258,12 @@ async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
   return [];
 }
 
-const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
-  const roleUser: Record<K, V> = {} as Record<K, V>;
-  roleUser[role] = user;
-  return roleUser;
-};
-
 export async function getSubGroupMembersByLicencePlateAndName(
   licencePlate: string,
   role: string,
   page: number,
   pageSize: number,
+  searchTerm: string,
 ): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
   let result: Record<string, User>[] = [];
@@ -250,6 +287,11 @@ export async function getSubGroupMembersByLicencePlateAndName(
       result = [...registryUsers, ...result];
     }
   }
+
+  if (searchTerm) {
+    result = searchSubstringInArray(searchTerm, result);
+  }
+
   const total = result.length;
   return { users: paginate(result, { page, pageSize }) as Record<string, User>[], groupId, total };
 }

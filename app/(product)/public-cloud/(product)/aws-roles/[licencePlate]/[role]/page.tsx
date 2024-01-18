@@ -28,6 +28,7 @@ export default function ProductAWSRoles() {
   const userRole = pathParamRoleToRole(params.role as string);
   const currentPage = searchParams.get('page') || '1';
   const pageSize = searchParams.get('pageSize') || '5';
+  const searchTerm = searchParams.get('search') || '';
   const [openAddUser, setOpenAddUser] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState('');
   const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
@@ -40,6 +41,7 @@ export default function ProductAWSRoles() {
       email: '',
     },
   });
+
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const {
@@ -49,7 +51,7 @@ export default function ProductAWSRoles() {
     error: fetchingUsersError,
   } = useQuery<any, Error>({
     queryKey: ['currentPage', currentPage, 'pageSize', pageSize, 'licencePlate', licencePlate],
-    queryFn: () => GetUsersPaginatedList(licencePlate, userRole, currentPage, pageSize),
+    queryFn: () => GetUsersPaginatedList(licencePlate, userRole, currentPage, pageSize, searchTerm),
     enabled: !!licencePlate,
   });
 
@@ -89,6 +91,10 @@ export default function ProductAWSRoles() {
       if (userAdd || userDel) refetch();
     }, 700);
   }, [userAdd, userDel, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [searchTerm, refetch]);
 
   return (
     <div className="w-full">
