@@ -3,7 +3,9 @@ import { stringify } from 'csv-stringify/sync';
 import createApiHandler from '@/core/apiHandler';
 import { combinedQuotaEditRequests, type CombinedDataPoint } from '@/analytics/private-cloud/quotaChanges';
 
-const apiHandler = createApiHandler({});
+const apiHandler = createApiHandler({
+  roles: ['user'],
+});
 
 export const GET = apiHandler(async () => {
   const data: CombinedDataPoint[] = await combinedQuotaEditRequests();

@@ -3,7 +3,9 @@ import { stringify } from 'csv-stringify/sync';
 import createApiHandler from '@/core/apiHandler';
 import { combinedRequests, type CombinedDataPoint } from '@/analytics/private-cloud/requests';
 
-const apiHandler = createApiHandler({});
+const apiHandler = createApiHandler({
+  roles: ['user'],
+});
 
 export const GET = apiHandler(async () => {
   const data: CombinedDataPoint[] = await combinedRequests();

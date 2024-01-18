@@ -3,7 +3,9 @@ import { stringify } from 'csv-stringify/sync';
 import createApiHandler from '@/core/apiHandler';
 import { requestDecisionTime, DataPoint } from '@/analytics/private-cloud/requestDecisionTime';
 
-const apiHandler = createApiHandler({});
+const apiHandler = createApiHandler({
+  roles: ['user'],
+});
 
 export const GET = apiHandler(async () => {
   const data: DataPoint[] = await requestDecisionTime();
