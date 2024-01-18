@@ -1,6 +1,8 @@
+type QueryObject = Record<string, string | readonly string[] | number | readonly number[] | boolean>;
+
 export function parseQueryString(queryString: string) {
   const params = new URLSearchParams(queryString);
-  const parsedParams: Record<string, string | string[]> = {};
+  const parsedParams: QueryObject = {};
 
   params.forEach((value, key) => {
     if (parsedParams[key]) {
@@ -15,4 +17,16 @@ export function parseQueryString(queryString: string) {
   });
 
   return parsedParams;
+}
+
+export function stringifyQuery(query: QueryObject) {
+  const queryString = Object.entries(query)
+    .map(([key, value]) =>
+      Array.isArray(value)
+        ? value.map((item) => `${encodeURIComponent(key)}=${encodeURIComponent(item)}`).join('&')
+        : `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
+    )
+    .join('&');
+
+  return queryString;
 }
