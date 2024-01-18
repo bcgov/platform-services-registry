@@ -44,7 +44,7 @@ export default async function RequestsTable({
   }
 
   const { search, page, pageSize, ministry, provider, active } = searchParams;
-  const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
+  const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
 
   // If a page is not provided, default to 1
   const currentPage = typeof searchParams.page === 'string' ? +page : 1;

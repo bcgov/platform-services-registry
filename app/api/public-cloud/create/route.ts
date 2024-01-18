@@ -17,7 +17,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { email: authEmail, roles: authRoles } = session.user;
+  const { isAdmin, user, roles: authRoles } = session ?? {};
+  const { email: authEmail } = user ?? {};
 
   // Validation
   const body = await req.json();
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
       formData.primaryTechnicalLead.email,
       formData.secondaryTechnicalLead?.email,
     ].includes(authEmail) &&
-    !authRoles.includes('admin')
+    !isAdmin
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }

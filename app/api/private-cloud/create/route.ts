@@ -9,13 +9,14 @@ const apiHandler = createApiHandler<any, any, PrivateCloudCreateRequestBody>({
   validations: { body: PrivateCloudCreateRequestBodySchema },
 });
 export const POST = apiHandler(async ({ body, session }) => {
-  const { email: authEmail, roles: authRoles } = session?.user ?? {};
+  const { isAdmin, user } = session ?? {};
+  const { email: authEmail } = user ?? {};
 
   if (
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
       authEmail,
     ) &&
-    !authRoles.includes('admin')
+    !isAdmin
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }

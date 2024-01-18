@@ -134,7 +134,6 @@ export const authOptions: AuthOptions = {
         const user = await prisma.user.findFirst({ where: { email: session.user.email } });
         session.userId = user?.id ?? null;
         session.accessToken = token.accessToken;
-        session.user.roles = token.roles || [];
         session.roles = token.roles || [];
 
         // Assign the 'user' role to users who log in to the system.
@@ -155,6 +154,8 @@ export const authOptions: AuthOptions = {
             session.ministries[ministryRole].push(ministryCode);
           }
         });
+
+        session.user.roles = session.roles;
       }
       // {
       //   ...
