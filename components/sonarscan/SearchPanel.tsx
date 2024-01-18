@@ -4,9 +4,8 @@ import { useEffect, useState, useTransition, useRef } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Select, { MultiValue } from 'react-select';
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import _throttle from 'lodash.throttle';
-import queryString from 'query-string';
+import { parseQueryString, stringifyQuery } from '@/lib/query-string';
 import Search from '@/components/assets/search.svg';
 
 export default function SearchPanel({ contexts }: { contexts: string[] }) {
@@ -28,8 +27,8 @@ export default function SearchPanel({ contexts }: { contexts: string[] }) {
   };
 
   useEffect(() => {
-    const currParams = queryString.parse(searchParams?.toString());
-    const newParams = queryString.stringify({
+    const currParams = parseQueryString(searchParams?.toString());
+    const newParams = stringifyQuery({
       ...currParams,
       search: searchTerm || '',
       context: selectedContexts,

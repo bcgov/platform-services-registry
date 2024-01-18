@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { z } from 'zod';
-import queryString from 'query-string';
+import { parseQueryString } from '@/lib/query-string';
 
 interface HandlerProps {
   roles?: string[];
@@ -23,7 +23,6 @@ interface RouteProps<TPathParams, TQueryParams, TBody> {
 
 function arrayIntersection(arr1: string[], arr2: string[]) {
   if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
-    console.error('Invalid input. Both parameters must be arrays.');
     return [];
   }
   const set2 = new Set(arr2);
@@ -31,7 +30,7 @@ function arrayIntersection(arr1: string[], arr2: string[]) {
     const intersection = arr1.filter((value) => set2.has(value));
     return intersection;
   }
-  console.error('Invalid Set.');
+
   return [];
 }
 
@@ -39,7 +38,7 @@ function createApiHandler<TPathParams = any, TQueryParams = any, TBody = any>({ 
   return function apiHandler(
     fn: (props: RouteProps<TPathParams, TQueryParams, TBody>) => Promise<NextResponse<unknown>>,
   ) {
-    return async function (req: NextRequest, { params }: { params: TQueryParams }) {
+    return async function (req: NextRequest, { params }: { params: TPathParams } = { params: {} as TPathParams }) {
       try {
         const session = await getServerSession(authOptions);
 
@@ -48,8 +47,8 @@ function createApiHandler<TPathParams = any, TQueryParams = any, TBody = any>({ 
           const allowed = session && arrayIntersection(roles, session.roles).length > 0;
           if (!allowed) {
             return NextResponse.json(
-              { message: 'Forbidden', error: 'not allowed to perform the task' },
-              { status: 403 },
+              { message: 'Unauthorized', error: 'not allowed to perform the task' },
+              { status: 401 },
             );
           }
         }
@@ -70,7 +69,7 @@ function createApiHandler<TPathParams = any, TQueryParams = any, TBody = any>({ 
 
         // Parse & validate query params
         if (validations?.queryParams) {
-          const query = queryString.parse(req.nextUrl.search);
+          const query = parseQueryString(req.nextUrl.search);
           const parsed = validations?.queryParams.safeParse(query);
           if (!parsed.success) {
             return NextResponse.json({ message: 'Bad Request', error: parsed.error }, { status: 400 });

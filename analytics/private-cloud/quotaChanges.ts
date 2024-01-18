@@ -92,8 +92,6 @@ export async function quotaEditRequests(decisionStatus?: DecisionStatus) {
 }
 
 export async function combinedQuotaEditRequests() {
-  'use server';
-
   const getAllQuotaEditRequests = quotaEditRequests();
   const getApprovedQuotaEditRequests = quotaEditRequests(DecisionStatus.PROVISIONED);
   const getRejectedQuotaEditRequests = quotaEditRequests(DecisionStatus.REJECTED);

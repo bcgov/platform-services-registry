@@ -1,13 +1,23 @@
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
+import Histogram from '@/components/analytics/Histogram';
 import { combinedQuotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
+import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/options';
 
 export default async function AnalyticsDashboard() {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.isAdmin) {
+    return null;
+  }
+
   const quotaChangedChartData = await combinedQuotaEditRequests();
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
+  const requestDecisionTimeChartData = await requestDecisionTime();
 
   return (
     <div className="flex flex-col gap-y-12 m-12 ">
@@ -32,6 +42,14 @@ export default async function AnalyticsDashboard() {
         categories={['Products']}
         colors={['indigo']}
         exportApiEndpoint="/api/private-cloud/analytics/csv/products"
+      />
+      <Histogram
+        index="time"
+        title={'Request decision time frequency (%)'}
+        chartData={requestDecisionTimeChartData}
+        categories={['Percentage']}
+        colors={['indigo']}
+        exportApiEndpoint="/api/private-cloud/analytics/csv/request-decision-time"
       />
     </div>
   );

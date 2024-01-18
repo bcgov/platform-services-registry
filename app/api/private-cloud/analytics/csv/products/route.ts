@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 import { numberOfProductsOverTime, DataPoint } from '@/analytics/private-cloud/products';
 
 const apiHandler = createApiHandler({
