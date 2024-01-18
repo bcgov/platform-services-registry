@@ -1,6 +1,6 @@
 import { instance } from './axios';
 
-export async function GetUsersPaginatedList(
+export async function getUsersPaginatedList(
   licencePlate: string,
   role: string,
   currentPage: string,

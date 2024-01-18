@@ -11,7 +11,7 @@ import AddUserModal from '@/components/modal/AddUser';
 import { useEffect, useState } from 'react';
 import DeleteUserModal from '@/components/modal/DeleteUser';
 import EmptyBody from '@/components/EmptyUsersList';
-import { GetUsersPaginatedList, addUser, deleteUser } from '@/services/aws-roles';
+import { getUsersPaginatedList, addUser, deleteUser } from '@/services/aws-roles';
 import ErrorModal from '@/components/modal/Error';
 
 const pathParamRoleToRole = (pathRole: string): string => {
@@ -51,7 +51,7 @@ export default function ProductAWSRoles() {
     error: fetchingUsersError,
   } = useQuery<any, Error>({
     queryKey: ['currentPage', currentPage, 'pageSize', pageSize, 'licencePlate', licencePlate],
-    queryFn: () => GetUsersPaginatedList(licencePlate, userRole, currentPage, pageSize, searchTerm),
+    queryFn: () => getUsersPaginatedList(licencePlate, userRole, currentPage, pageSize, searchTerm),
     enabled: !!licencePlate,
   });
 

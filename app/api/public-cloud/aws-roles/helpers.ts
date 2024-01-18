@@ -1,6 +1,5 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
-import { getUserById } from '@/queries/user';
 
 export interface Group {
   id: string;
@@ -13,7 +12,6 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  // [key: string]: string;
 }
 
 export type paramsURL = {
@@ -44,8 +42,8 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
 const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
   const results = new Set<Record<string, User>>();
 
-  users.filter((userObj) =>
-    Object.values(userObj).some((user) => {
+  users.forEach((userObj) =>
+    Object.values(userObj).forEach((user) => {
       Object.values(user).forEach((value) => {
         if (typeof value === 'string' && value.toLowerCase().includes(searchTerm?.toLowerCase())) {
           results.add(userObj);
@@ -74,7 +72,7 @@ const createUser = <V extends User>(data: Partial<V>): V => {
   return newUser;
 };
 
-const userRole = <K extends string, V extends User>(role: K, user: V): Record<string, V> => {
+const createUserRole = <K extends string, V extends User>(role: K, user: V): Record<string, V> => {
   const roleUser = { [role]: createUser({ ...user }) } as Record<string, V>;
   return roleUser;
 };
@@ -91,23 +89,23 @@ async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<R
         contains: searchLicencePlate,
       },
     },
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
   });
 
-  if (project?.projectOwnerId) {
-    const projectOwner = await getUserById(project.projectOwnerId);
-    if (projectOwner !== null) result.push(userRole('Product Owner', projectOwner as unknown as User));
+  if (project?.projectOwner) {
+    result.push(createUserRole('Product Owner', project?.projectOwner as unknown as User));
   }
 
-  if (project?.primaryTechnicalLeadId) {
-    const primaryTechnicalLead = await getUserById(project.primaryTechnicalLeadId);
-    if (primaryTechnicalLead !== null)
-      result.push(userRole('Primary Technical Lead', primaryTechnicalLead as unknown as User));
+  if (project?.primaryTechnicalLead) {
+    result.push(createUserRole('Primary Technical Lead', project?.primaryTechnicalLead as unknown as User));
   }
 
-  if (project?.secondaryTechnicalLeadId) {
-    const secondaryTechnicalLead = await getUserById(project.secondaryTechnicalLeadId);
-    if (secondaryTechnicalLead !== null)
-      result.push(userRole('Secondary Technical Lead', secondaryTechnicalLead as unknown as User));
+  if (project?.secondaryTechnicalLead) {
+    result.push(createUserRole('Secondary Technical Lead', project?.secondaryTechnicalLead as unknown as User));
   }
 
   return result;
@@ -276,7 +274,7 @@ export async function getSubGroupMembersByLicencePlateAndName(
     if (groupId) {
       const groupsUsers = await getMembersByGroupId(groupId);
       if (groupsUsers) {
-        result = [...groupsUsers.map((user) => userRole(role, user))];
+        result = [...groupsUsers.map((user) => createUserRole(role, user))];
       }
     }
   }
