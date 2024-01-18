@@ -1,6 +1,6 @@
 'use client';
 
-import { AreaChart, Card, Title } from '@tremor/react';
+import { AreaChart, Card, Title, Subtitle } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
 
 const valueFormatter = function (number: number) {
@@ -13,12 +13,14 @@ export type ChartDate = {
 
 export default function EditRequestsGraph({
   title,
+  subtitle,
   exportApiEndpoint,
   chartData,
   categories,
   colors,
 }: {
   title: string;
+  subtitle: string;
   exportApiEndpoint: string;
   chartData: any;
   categories: string[];
@@ -29,6 +31,7 @@ export default function EditRequestsGraph({
       <ExportButton className="mb-4" apiEnpoint={exportApiEndpoint} />
       <Card>
         <Title>{title}</Title>
+        <Subtitle>{subtitle}</Subtitle>
         <AreaChart
           className="h-72 mt-4"
           data={chartData}
