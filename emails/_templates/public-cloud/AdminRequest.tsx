@@ -1,11 +1,11 @@
 import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../../components/Header';
-import ProductDetails from '../../components/ProductDetails';
+import Header from '../../_components/Header';
+import ProductDetails from '../../_components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import ProviderDetails from '../../components/ProviderDetails';
-import { TailwindConfig } from '../../components/TailwindConfig';
+import ProviderDetails from '../../_components/ProviderDetails';
+import { TailwindConfig } from '../../_components/TailwindConfig';
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { samplePublicEditRequest } from './components/Params';
-import EditRequestTemplate from './templates/public-cloud/EditRequest';
+import { samplePublicEditRequest } from './_components/Params';
+import EditRequestTemplate from './_templates/public-cloud/EditRequest';
 
 const EditRequest = () => {
   return <EditRequestTemplate request={samplePublicEditRequest} comment="SAMPLE COMMENT" />;

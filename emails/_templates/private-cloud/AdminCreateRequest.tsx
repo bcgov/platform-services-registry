@@ -1,18 +1,17 @@
-import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
+import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../../components/Header';
-import ProductDetails from '../../components/ProductDetails';
+import Header from '../../_components/Header';
+import ProductDetails from '../../_components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../../components/NamespaceDetails';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
+import NamespaceDetails from '../../_components/NamespaceDetails';
+import { TailwindConfig } from '../../_components/TailwindConfig';
 
 interface EmailProp {
-  request: PublicCloudRequestWithRequestedProject;
+  request: PrivateCloudRequestWithRequestedProject;
 }
 
-export const NewRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
   return (
@@ -20,7 +19,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg">New Request!</Heading>
@@ -47,11 +46,8 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
                   tl2={request.requestedProject.secondaryTechnicalLead}
                 />
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={request.requestedProject.provider} />
-              </div>
               <div>
-                <Closing />
+                <NamespaceDetails cluster={request.requestedProject.cluster} />
               </div>
             </div>
           </Body>

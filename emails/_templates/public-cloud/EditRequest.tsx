@@ -1,17 +1,18 @@
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../../components/Header';
+import Header from '../../_components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
-import { comparePrivateCloudProjects } from '../../components/Edit/utils/compareProjects';
-import ContactChanges from '../../components/Edit/ContactChanges';
-import QuotaChanges from '../../components/Edit/QuotaChanges';
-import DescriptionChanges from '../../components/Edit/DescriptionChanges';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
+import { comparePublicCloudProjects } from '../../_components/Edit/utils/compareProjects';
+import ContactChanges from '../../_components/Edit/ContactChanges';
+import QuotaChanges from '../../_components/Edit/QuotaChanges';
+import DescriptionChanges from '../../_components/Edit/DescriptionChanges';
+import BudgetChanges from '../../_components/Edit/BudgetChanges';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithProjectAndRequestedProject;
+  request: PublicCloudRequestWithProjectAndRequestedProject;
   comment?: string;
 }
 
@@ -19,14 +20,14 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
-  const changed = comparePrivateCloudProjects(current, requested);
+  const changed = comparePublicCloudProjects(current, requested);
 
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">New Edit Product Request!</Heading>
@@ -35,7 +36,10 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
                   administrators have been notified and will review your request.
                 </Text>
-                <Button href={process.env.BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
+                <Button
+                  href={'https://registry.developer.gov.bc.ca/public-cloud/products/active-requests'}
+                  className="bg-bcorange rounded-md px-4 py-2 text-white"
+                >
                   Review Request
                 </Button>
               </div>
@@ -44,7 +48,7 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 <Text className="mb-0">{comment}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed.name || changed.description || changed.ministry || changed.cluster) && (
+                {(changed.name || changed.description || changed.ministry) && (
                   <DescriptionChanges
                     nameCurrent={current.name}
                     descCurrent={current.description}
@@ -68,50 +72,17 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 )}
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) && (
-                  <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>
+                {(changed.accountCoding || changed.budget) && (
+                  <BudgetChanges
+                    budgetCurrent={current.budget}
+                    budgetRequested={requested.budget}
+                    accountCodingCurrent={current.accountCoding}
+                    accountCodingRequested={requested.accountCoding}
+                  />
                 )}
-                <div className="flex flex-row flex-wrap">
-                  {changed.productionQuota && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-prod`}
-                      quotaCurrent={current.productionQuota}
-                      quotaRequested={requested.productionQuota}
-                      type="Production"
-                      cluster={current.cluster}
-                    />
-                  )}
-                  {changed.testQuota && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-test`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
-                      type="Test"
-                      cluster={current.cluster}
-                    />
-                  )}
-                  {changed.developmentQuota && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-dev`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
-                      type="Development"
-                      cluster={current.cluster}
-                    />
-                  )}
-                  {changed.toolsQuota && (
-                    <QuotaChanges
-                      licencePlate={`${request.licencePlate}-tools`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
-                      type="Tools"
-                      cluster={current.cluster}
-                    />
-                  )}
-                </div>
               </div>
               <div>
-                <Closing />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
             </div>
           </Body>

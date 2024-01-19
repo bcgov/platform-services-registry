@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Header from '../../components/Header';
+import Header from '../../_components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
 
 interface EmailProp {
   productName: string;

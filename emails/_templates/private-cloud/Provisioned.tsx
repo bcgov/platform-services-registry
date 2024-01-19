@@ -1,11 +1,11 @@
 import * as React from 'react';
-import Header from '../../components/Header';
+import Header from '../../_components/Header';
 import { Link, Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
-import ProductDetails from '../../components/ProductDetails';
-import NamespaceDetails from '../../components/NamespaceDetails';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
+import ProductDetails from '../../_components/ProductDetails';
+import NamespaceDetails from '../../_components/NamespaceDetails';
 import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 
 interface EmailProp {
