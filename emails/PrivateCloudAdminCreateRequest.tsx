@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { samplePrivateRequest } from './components/Params';
-import NewRequestTemplate from './templates/private-cloud/AdminCreateRequest';
+import { samplePrivateRequest } from './_components/Params';
+import NewRequestTemplate from './_templates/private-cloud/AdminCreateRequest';
 
 export const NewRequest = () => {
   return <NewRequestTemplate request={samplePrivateRequest} />;

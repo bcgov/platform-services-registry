@@ -1,18 +1,18 @@
 import * as React from 'react';
-import Header from '../../components/Header';
+import Header from '../../_components/Header';
 import { Body, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
-import ProductDetails from '../../components/ProductDetails';
-import ProviderDetails from '../../components/ProviderDetails';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
+import ProductDetails from '../../_components/ProductDetails';
+import ProviderDetails from '../../_components/ProviderDetails';
 import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
 
 interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;
 }
 
-const DeleteRequestTemplate = ({ product }: EmailProp) => {
+const DeleteApprovalTemplate = ({ product }: EmailProp) => {
   if (!product) return <></>;
 
   const {
@@ -35,13 +35,9 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">
-                  Your deletion request for a product on the Public Cloud Landing Zone has been received!
-                </Heading>
+                <Heading className="text-lg text-black">Your deletion request has been completed!</Heading>
                 <Text>Hi {product.name} Team,</Text>
-                <Text className="">
-                  {`We have received your deletion request for ${product.name}. You will receive an email once your request has been processed.`}
-                </Text>
+                <Text className="">{`Your request for a project set deletion for ${product.name} is complete.`}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
@@ -67,4 +63,4 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
   );
 };
 
-export default DeleteRequestTemplate;
+export default DeleteApprovalTemplate;

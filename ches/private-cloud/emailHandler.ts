@@ -8,15 +8,15 @@ import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches/helpers';
 import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
 
-import AdminCreateTemplate from '@/emails/templates/private-cloud/AdminCreateRequest';
-import AdminEditRequestTemplate from '@/emails/templates/private-cloud/AdminEditRequest';
-import CreateRequestTemplate from '@/emails/templates/private-cloud/CreateRequest';
-import DeleteApprovalTemplate from '@/emails/templates/private-cloud/DeleteApproval';
-import DeleteRequestTemplate from '@/emails/templates/private-cloud/DeleteRequest';
-import EditRequestTemplate from '@/emails/templates/private-cloud/EditRequest';
-import ProvisionedTemplate from '@/emails/templates/private-cloud/Provisioned';
-import RequestApprovalTemplate from '@/emails/templates/private-cloud/RequestApproval';
-import RequestRejectionTemplate from '@/emails/templates/private-cloud/RequestRejection';
+import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
+import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
+import CreateRequestTemplate from '@/emails/_templates/private-cloud/CreateRequest';
+import DeleteApprovalTemplate from '@/emails/_templates/private-cloud/DeleteApproval';
+import DeleteRequestTemplate from '@/emails/_templates/private-cloud/DeleteRequest';
+import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
+import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
+import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
+import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   try {

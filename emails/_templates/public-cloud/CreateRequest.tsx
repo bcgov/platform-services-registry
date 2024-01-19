@@ -1,19 +1,20 @@
+import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../../components/Header';
-import { Body, Heading, Html, Text } from '@react-email/components';
+import Header from '../../_components/Header';
+import ProductDetails from '../../_components/ProductDetails';
+import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
-import ProductDetails from '../../components/ProductDetails';
-import ProviderDetails from '../../components/ProviderDetails';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import ProviderDetails from '../../_components/ProviderDetails';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
+  request: PublicCloudRequestWithRequestedProject;
 }
 
-const DeleteApprovalTemplate = ({ product }: EmailProp) => {
-  if (!product) return <></>;
+const NewRequestTemplate = ({ request }: EmailProp) => {
+  if (!request) return <></>;
 
   const {
     name,
@@ -25,7 +26,7 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
     provider,
     accountCoding,
     budget,
-  } = product;
+  } = request.requestedProject;
 
   return (
     <Html>
@@ -35,9 +36,18 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Your deletion request has been completed!</Heading>
-                <Text>Hi {product.name} Team,</Text>
-                <Text className="">{`Your request for a project set deletion for ${product.name} is complete.`}</Text>
+                <Heading className="text-lg">New Request!</Heading>
+                <Text>Hi {request.requestedProject.name} Team, </Text>
+                <Text className="">
+                  You have requested a new project set for your product on the Public Cloud Landing Zone. Our
+                  administrators have been notified and will review your request.
+                </Text>
+                <Button
+                  href="https://registry.developer.gov.bc.ca/public-cloud/products/active-requests"
+                  className="bg-bcorange rounded-md px-4 py-2 text-white"
+                >
+                  Review Request
+                </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
@@ -63,4 +73,4 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
   );
 };
 
-export default DeleteApprovalTemplate;
+export default NewRequestTemplate;

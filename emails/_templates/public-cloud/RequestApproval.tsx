@@ -1,18 +1,20 @@
+import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../../components/Header';
+import Header from '../../_components/Header';
+import ProductDetails from '../../_components/ProductDetails';
 import { Link, Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
-import ProductDetails from '../../components/ProductDetails';
-import ProviderDetails from '../../components/ProviderDetails';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import ProviderDetails from '../../_components/ProviderDetails';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
 
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
+  request: PublicCloudRequestWithRequestedProject;
 }
 
-const ProvisionedTemplate = ({ product }: EmailProp) => {
+const RequestApprovalTemplate = ({ request }: EmailProp) => {
+  if (!request) return <></>;
+
   const {
     name,
     description,
@@ -23,7 +25,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
     provider,
     accountCoding,
     budget,
-  } = product;
+  } = request.requestedProject;
 
   return (
     <Html>
@@ -34,23 +36,29 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">
-                  Hurray! Your Edit Product request was approved and completed!
+                  Hurray! Your provisioning request was approved and completed!
                 </Heading>
-                <Text>Hi {product.name} Team, </Text>
+                <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Public Cloud platform is complete. If you
-                  have any more questions reach out to the Platform Services team in the RocketChat channel{' '}
+                  Your request for a new project set for your product on the Public Cloud Landing Zone is complete. If
+                  you have any more questions, reach out to the Platform Services team in the RocketChat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops&#8209;operations
                   </Link>
                 </Text>
                 <Text className="">
-                  The Product Owner and the Technical Lead have been provisioned with admin access and can add other
-                  users as necessary. Please note that if a Product Owner or a Technical Lead is removed as a project
-                  contact in the Platform Registry, they will lose their access to the project set namespaces. The new
-                  Product or Technical Lead provided on the product details page will gain the administrative access to
-                  the namespaces.
+                  The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces and
+                  can add other users as necessary. Please note that if a Product Owner or a Technical Lead is removed
+                  as a project contact in the Platform Registry, they will lose their access to the project set. The new
+                  Product or Technical Lead provided on the product details page will gain administrative access to the
+                  namespaces.
                 </Text>
+                <Button
+                  href="https://registry.developer.gov.bc.ca/public-cloud/products/all"
+                  className="bg-bcorange rounded-md px-4 py-2 text-white"
+                >
+                  Log in to Console
+                </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
@@ -76,4 +84,4 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
   );
 };
 
-export default ProvisionedTemplate;
+export default RequestApprovalTemplate;

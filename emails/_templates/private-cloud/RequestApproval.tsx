@@ -1,12 +1,12 @@
 import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
-import Header from '../../components/Header';
-import ProductDetails from '../../components/ProductDetails';
+import Header from '../../_components/Header';
+import ProductDetails from '../../_components/ProductDetails';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../../components/NamespaceDetails';
-import Closing from '../../components/Closing';
-import { TailwindConfig } from '../../components/TailwindConfig';
+import NamespaceDetails from '../../_components/NamespaceDetails';
+import Closing from '../../_components/Closing';
+import { TailwindConfig } from '../../_components/TailwindConfig';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
