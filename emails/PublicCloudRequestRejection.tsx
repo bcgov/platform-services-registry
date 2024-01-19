@@ -1,9 +1,13 @@
 import * as React from 'react';
-import { samplePrivateRequest } from './components/Params';
+import { samplePublicRequest } from './components/Params';
 import RequestRejectionTemplate from './templates/public-cloud/RequestRejection';
 
 export const RequestRejection = () => {
-  return <RequestRejectionTemplate productName={samplePrivateRequest.requestedProject.name} comment="SAMPLE COMMENT" />;
+  // Extract the product name and human comment from the samplePublicRequest
+  const productName = samplePublicRequest.requestedProject.name;
+  const humanComment = samplePublicRequest.humanComment || undefined;
+
+  return <RequestRejectionTemplate productName={productName} humanComment={humanComment} />;
 };
 
 export default RequestRejection;

@@ -7,6 +7,7 @@ import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../components/ProviderDetails';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
+import Comment from '../../components/Comment';
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
@@ -35,24 +36,23 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">
-                  Hurray! Your provisioning request was approved and completed!
-                </Heading>
+                <Heading className="text-lg text-black">Hurray! Your request was approved and completed!</Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Public Cloud Landing Zone is complete. If
-                  you have any more questions, reach out to the Platform Services team in the RocketChat channel{' '}
+                  Your request for your product on the Public Cloud Landing Zone is complete. If you have any more
+                  questions, reach out to the Platform Services team in the RocketChat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops&#8209;operations
                   </Link>
                 </Text>
                 <Text className="">
-                  The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces and
-                  can add other users as necessary. Please note that if a Product Owner or a Technical Lead is removed
-                  as a project contact in the Platform Registry, they will lose their access to the project set. The new
+                  The Product Owner and the Technical Lead have been provisioned with access to the namespaces and can
+                  add other users as necessary. Please note that if a Product Owner or a Technical Lead is removed as a
+                  project contact in the Platform Registry, they will lose their access to the project set. The new
                   Product or Technical Lead provided on the product details page will gain administrative access to the
                   namespaces.
                 </Text>
+                <Comment adminComment={request.humanComment ?? undefined} />
                 <Button
                   href="https://registry.developer.gov.bc.ca/public-cloud/products/all"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"

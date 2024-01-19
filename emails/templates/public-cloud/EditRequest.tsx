@@ -7,20 +7,21 @@ import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
 import { comparePublicCloudProjects } from '../../components/Edit/utils/compareProjects';
 import ContactChanges from '../../components/Edit/ContactChanges';
-import QuotaChanges from '../../components/Edit/QuotaChanges';
 import DescriptionChanges from '../../components/Edit/DescriptionChanges';
 import BudgetChanges from '../../components/Edit/BudgetChanges';
+import Comment from '../../components/Comment';
 
 interface EmailProp {
   request: PublicCloudRequestWithProjectAndRequestedProject;
-  comment?: string;
+  humanComment?: string;
 }
 
-const EditRequestTemplate = ({ request, comment }: EmailProp) => {
+const EditRequestTemplate = ({ request }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
   const changed = comparePublicCloudProjects(current, requested);
+  const humanComment = request.humanComment ?? undefined;
 
   return (
     <Html>
@@ -45,7 +46,7 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Comments</Heading>
-                <Text className="mb-0">{comment}</Text>
+                <Comment userComment={humanComment} />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 {(changed.name || changed.description || changed.ministry) && (

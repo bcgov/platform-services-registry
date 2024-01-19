@@ -2,11 +2,12 @@ import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/privat
 import * as React from 'react';
 import Header from '../../components/Header';
 import ProductDetails from '../../components/ProductDetails';
-import { Body, Button, Heading, Html, Text } from '@react-email/components';
+import { Link, Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../components/NamespaceDetails';
 import Closing from '../../components/Closing';
 import { TailwindConfig } from '../../components/TailwindConfig';
+import Comment from '../../components/Comment';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
@@ -23,15 +24,16 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">
-                  Hurray! Your provisioning request was approved and completed!
-                </Heading>
+                <Heading className="text-lg text-black">Hurray! Your request was approved and completed!</Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete. Log in to the cluster console using the button below and you&apos;ll see all four namespaces
-                  included in a project set. If you have any more questions, reach out to the Platform Services team in
-                  the RocketChat channel #devops-operations.
+                  Your request for your product on the Private Cloud Openshift platform is complete. Log in to the
+                  cluster console using the button below and you&apos;ll see all four namespaces included in a project
+                  set. If you have any more questions reach out to the Platform Services team in the RocketChat channel{' '}
+                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
+                    #devops&#8209;operations
+                  </Link>
+                  .
                 </Text>
                 <Text className="">
                   The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
@@ -40,6 +42,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                   namespaces in Openshift. The new Product or Technical Lead provided on the product details page will
                   gain the administrative access to the namespaces.
                 </Text>
+                <Comment adminComment={request.humanComment} />
                 <Button
                   href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"

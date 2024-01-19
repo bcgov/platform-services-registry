@@ -3,7 +3,10 @@ import { samplePrivateRequest } from './components/Params';
 import RequestRejectionTemplate from './templates/private-cloud/RequestRejection';
 
 export const RequestRejection = () => {
-  return <RequestRejectionTemplate productName={samplePrivateRequest.requestedProject.name} comment="SAMPLE COMMENT" />;
+  const productName = samplePrivateRequest.requestedProject.name;
+  const humanComment = samplePrivateRequest.humanComment || undefined;
+
+  return <RequestRejectionTemplate productName={productName} humanComment={humanComment} />;
 };
 
 export default RequestRejection;

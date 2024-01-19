@@ -3,7 +3,7 @@ import { samplePrivateEditRequest } from './components/Params';
 import EditRequestTemplate from './templates/private-cloud/EditRequest';
 
 export const EditRequest = () => {
-  return <EditRequestTemplate request={samplePrivateEditRequest} comment="SAMPLE COMMENT" />;
+  return <EditRequestTemplate request={samplePrivateEditRequest} />;
 };
 
 export default EditRequest;
