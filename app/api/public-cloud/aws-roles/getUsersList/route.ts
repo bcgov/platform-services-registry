@@ -8,6 +8,7 @@ interface QueryParam {
   role: string;
   page: number;
   pageSize: number;
+  searchTerm: string;
 }
 
 const queryParamSchema = z.object({
@@ -15,6 +16,7 @@ const queryParamSchema = z.object({
   role: z.string(),
   page: z.string(),
   pageSize: z.string(),
+  searchTerm: z.string(),
 });
 
 const apiHandler = createApiHandler<unknown, QueryParam>({
@@ -23,10 +25,10 @@ const apiHandler = createApiHandler<unknown, QueryParam>({
 });
 
 export const GET = apiHandler(async ({ queryParams }) => {
-  const { licencePlate, role, page, pageSize } = queryParams;
+  const { licencePlate, role, page, pageSize, searchTerm } = queryParams;
   let result;
   if (licencePlate && role) {
-    result = await getSubGroupMembersByLicencePlateAndName(licencePlate, role, page, pageSize);
+    result = await getSubGroupMembersByLicencePlateAndName(licencePlate, role, page, pageSize, searchTerm);
   }
 
   return NextResponse.json(result);

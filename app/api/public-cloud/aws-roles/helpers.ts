@@ -1,6 +1,5 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
-import { getUserById } from '@/queries/user';
 
 export interface Group {
   id: string;
@@ -10,9 +9,9 @@ export interface Group {
 }
 export interface User {
   id: string;
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export type paramsURL = {
@@ -40,6 +39,44 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   return users.slice(startIndex, endIndex);
 };
 
+const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
+  const results = new Set<Record<string, User>>();
+
+  users.forEach((userObj) =>
+    Object.values(userObj).forEach((user) => {
+      Object.values(user).forEach((value) => {
+        if (typeof value === 'string' && value.toLowerCase().includes(searchTerm?.toLowerCase())) {
+          results.add(userObj);
+          return;
+        }
+      });
+    }),
+  );
+
+  return Array.from(results);
+};
+
+const createUser = <V extends User>(data: Partial<V>): V => {
+  const newUser = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+  } as V;
+
+  for (const key in data) {
+    if (key in newUser) {
+      newUser[key as keyof V] = data[key] as V[keyof V];
+    }
+  }
+  return newUser;
+};
+
+const createUserRole = <K extends string, V extends User>(role: K, user: V): Record<string, V> => {
+  const roleUser = { [role]: createUser({ ...user }) } as Record<string, V>;
+  return roleUser;
+};
+
 const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
@@ -52,21 +89,23 @@ async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<R
         contains: searchLicencePlate,
       },
     },
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
   });
 
-  if (project?.projectOwnerId) {
-    const projectOwner = await getUserById(project.projectOwnerId);
-    if (projectOwner !== null) result.push({ 'Product Owner': projectOwner });
+  if (project?.projectOwner) {
+    result.push(createUserRole('Product Owner', project?.projectOwner as unknown as User));
   }
 
-  if (project?.primaryTechnicalLeadId) {
-    const primaryTechnicalLead = await getUserById(project.primaryTechnicalLeadId);
-    if (primaryTechnicalLead !== null) result.push({ 'Primary Technical Lead': primaryTechnicalLead });
+  if (project?.primaryTechnicalLead) {
+    result.push(createUserRole('Primary Technical Lead', project?.primaryTechnicalLead as unknown as User));
   }
 
-  if (project?.secondaryTechnicalLeadId) {
-    const secondaryTechnicalLead = await getUserById(project.secondaryTechnicalLeadId);
-    if (secondaryTechnicalLead !== null) result.push({ 'Secondary Technical Lead': secondaryTechnicalLead });
+  if (project?.secondaryTechnicalLead) {
+    result.push(createUserRole('Secondary Technical Lead', project?.secondaryTechnicalLead as unknown as User));
   }
 
   return result;
@@ -216,17 +255,12 @@ async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
   return [];
 }
 
-const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
-  const roleUser: Record<K, V> = {} as Record<K, V>;
-  roleUser[role] = user;
-  return roleUser;
-};
-
 export async function getSubGroupMembersByLicencePlateAndName(
   licencePlate: string,
   role: string,
   page: number,
   pageSize: number,
+  searchTerm: string,
 ): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
   let result: Record<string, User>[] = [];
@@ -240,7 +274,7 @@ export async function getSubGroupMembersByLicencePlateAndName(
     if (groupId) {
       const groupsUsers = await getMembersByGroupId(groupId);
       if (groupsUsers) {
-        result = [...groupsUsers.map((user) => userRole(role, user))];
+        result = [...groupsUsers.map((user) => createUserRole(role, user))];
       }
     }
   }
@@ -250,6 +284,11 @@ export async function getSubGroupMembersByLicencePlateAndName(
       result = [...registryUsers, ...result];
     }
   }
+
+  if (searchTerm) {
+    result = searchSubstringInArray(searchTerm, result);
+  }
+
   const total = result.length;
   return { users: paginate(result, { page, pageSize }) as Record<string, User>[], groupId, total };
 }
