@@ -1,0 +1,99 @@
+name: 51.Terraform - Sysdig
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - terraform/sysdig/**
+    - .github/workflows/terraform-sysdig.yml
+  pull_request:
+    paths:
+    - terraform/sysdig/**
+    - .github/workflows/terraform-sysdig.yml
+
+env:
+  TF_VERSION: 1.5.7
+
+jobs:
+  terraform:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    environment:
+      name: tf-sysdig
+    steps:
+    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@ed3a0531877aca392eb870f440d9ae7aba83a6bd
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@9b79eb6d8ec51bce42cb4e77f0a174fc80cf3cb9
+      with:
+        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+        openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+        namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
+        insecure_skip_tls_verify: true
+
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check
+      working-directory: ./terraform/sysdig
+
+    - name: Terraform Variables
+      run: |
+        cat >"ci.auto.tfvars" <<EOF
+        silver_101ed4_team_sysdig_monitor_api_token="${{ secrets.SILVER_101ED4_TEAM_SYSDIG_MONITOR_API_TOKEN }}"
+        EOF
+
+      working-directory: ./terraform/sysdig
+
+    - name: Terraform Init
+      id: init
+      run: terraform init -upgrade
+      working-directory: ./terraform/sysdig
+
+    - name: Terraform Plan
+      id: plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan -no-color
+      working-directory: ./terraform/sysdig
+      continue-on-error: true
+
+    - name: Create Comment
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+          <details><summary>Show Plan</summary>
+
+          \`\`\`${process.env.PLAN}\`\`\`
+
+          </details>
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    - name: Terraform Apply
+      if: github.event_name == 'push'
+      run: terraform apply -auto-approve
+      working-directory: ./terraform/sysdig

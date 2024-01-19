@@ -49,7 +49,7 @@ with DAG(
             },
             container_resources=V1ResourceRequirements(
                 limits={"memory": "1Gi", "cpu": "500m"},
-                requests={"memory": "500Mi", "cpu": "200m"},
+                requests={"memory": "300Mi", "cpu": "50m"},
             ),
             volumes=[shared_volume, ],
             volume_mounts=[shared_volume_mount, ],
