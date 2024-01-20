@@ -1,4 +1,4 @@
-import datetime
+from datetime import timedelta, datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -8,14 +8,16 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from projects import fetch_zap_projects, load_zap_results
 
-YESTERDAY = datetime.datetime.now() - datetime.timedelta(days=1)
-CONCURRENCY = 1
+CONCURRENCY = 5
 MONGO_CONN_ID = 'pltsvc-dev'
+
+# Set the execution time to 12 PM
+execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=12)
 
 with DAG(
     dag_id="zapscan_dev",
-    schedule_interval=datetime.timedelta(days=1),
-    start_date=YESTERDAY,
+    schedule_interval=timedelta(days=1),
+    start_date=execution_time,
     concurrency=CONCURRENCY,
 ) as dag:
 
@@ -48,8 +50,8 @@ with DAG(
                 "CONTEXT": MONGO_CONN_ID,
             },
             container_resources=V1ResourceRequirements(
-                limits={"memory": "1Gi", "cpu": "500m"},
-                requests={"memory": "300Mi", "cpu": "50m"},
+                limits={"memory": "1Gi", "cpu": "1000m"},
+                requests={"memory": "200Mi", "cpu": "50m"},
             ),
             volumes=[shared_volume, ],
             volume_mounts=[shared_volume_mount, ],

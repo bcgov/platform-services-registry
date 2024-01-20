@@ -22,9 +22,11 @@ echo "$PROJECTS"
 #         ]
 #     }
 # ]
+CONTEXT=${CONTEXT:-local}
 
-base_path="zap/$CONTEXT"
-full_path="/zap/wrk/$base_path"
+zap_path="/zap/wrk"
+base_path="zapscan/$CONTEXT"
+full_path="$zap_path/$base_path"
 mkdir -p "$full_path"
 
 while read -r proj; do
@@ -36,9 +38,9 @@ while read -r proj; do
     while read -r host; do
         folder="$cluster-$licencePlate-$host"
         report_path="$base_path/$folder"
-        mkdir -p "/zap/wrk/$report_path"
+        mkdir -p "$zap_path/$report_path"
         zap-baseline.py -t "https://$host" -J "$report_path/report.json" -w "$report_path/report.md" -r "$report_path/report.html"
-        echo "{\"licencePlate\":\"$licencePlate\",\"cluster\":\"$cluster\",\"host\":\"$host\"}" > "/zap/wrk/$report_path/detail.json"
+        echo "{\"licencePlate\":\"$licencePlate\",\"cluster\":\"$cluster\",\"host\":\"$host\"}" > "$zap_path/$report_path/detail.json"
     done <<< "$hosts"
 done < <(echo "$PROJECTS" | jq -c '.[]')
 

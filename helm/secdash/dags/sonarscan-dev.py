@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import timedelta, datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -9,14 +9,16 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from projects import fetch_sonarscan_projects, load_sonarscan_results
 
-YESTERDAY = datetime.datetime.now() - datetime.timedelta(days=1)
 CONCURRENCY = 1
 MONGO_CONN_ID = 'pltsvc-dev'
 
+# Set the execution time to 9 AM
+execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=9)
+
 with DAG(
     dag_id="sonarscan_dev",
-    schedule_interval=datetime.timedelta(days=1),
-    start_date=YESTERDAY,
+    schedule_interval=timedelta(days=1),
+    start_date=execution_time,
     concurrency=CONCURRENCY,
 ) as dag:
 
@@ -34,7 +36,7 @@ with DAG(
         persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(claim_name='secdash-airflow-shared'))
 
     shared_volume_mount = V1VolumeMount(
-        mount_path='/opt/sonar', name='secdash-airflow-shared')
+        mount_path='/mnt', name='secdash-airflow-shared')
 
     # Step 2. Execute one or multiple instances of Zap scan runners to analyze the identified projects.
     processing_tasks = []
