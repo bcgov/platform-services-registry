@@ -93,7 +93,7 @@ const processCell = (value: any, field: string, headerName: string) => {
 
   if (field === 'id') {
     return (
-      <a className="underline text-blue-500" href={`/zap/reports/${value}`} target="_blank" rel="noreferrer">
+      <a className="underline text-blue-500" href={`/zapscan/reports/${value}`} target="_blank" rel="noreferrer">
         Report
       </a>
     );

@@ -108,7 +108,7 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
-        shutil.rmtree(f"{shared_directory}/zap/{mongo_conn_id}")
+        shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
     except Exception as e:
         print(f"[fetch_zap_projects] Error: {e}")
@@ -129,7 +129,7 @@ def load_zap_results(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
 
-        report_directory = f"{shared_directory}/zap/{mongo_conn_id}"
+        report_directory = f"{shared_directory}/zapscan/{mongo_conn_id}"
 
         subdirectories = [
             os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
@@ -221,7 +221,7 @@ def load_sonarscan_results(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
 
-        report_directory = f"{shared_directory}/output/{mongo_conn_id}"
+        report_directory = f"{shared_directory}/sonarscan/{mongo_conn_id}"
 
         subdirectories = [
             os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
