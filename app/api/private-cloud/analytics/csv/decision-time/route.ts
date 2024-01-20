@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
-import createApiHandler from '@/core/api-handler';
-import { numberOfProductsOverTime, DataPoint } from '@/analytics/private-cloud/products';
+import createApiHandler from '@/core/apiHandler';
+import { requestDecisionTime, DataPoint } from '@/analytics/private-cloud/requestDecisionTime';
 
 const apiHandler = createApiHandler({
   roles: ['user'],
 });
 
 export const GET = apiHandler(async () => {
-  const data: DataPoint[] = await numberOfProductsOverTime();
+  const data: DataPoint[] = await requestDecisionTime();
 
   // Convert the data to CSV
   const csv = stringify(data, {
     header: true,
-    columns: ['date', 'Products'],
+    columns: ['time', 'Percentage'],
   });
 
   // Response for csv
@@ -21,7 +21,7 @@ export const GET = apiHandler(async () => {
     status: 200,
     headers: {
       'Content-Type': 'text/csv',
-      'Content-Disposition': 'attachment; filename=products-over-time.csv',
+      'Content-Disposition': 'attachment; filename=requst-decision-time.csv',
     },
   });
 

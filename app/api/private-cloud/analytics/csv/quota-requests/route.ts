@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { combinedQuotaEditRequests, type CombinedDataPoint } from '@/analytics/private-cloud/quotaChanges';
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: ['user'],
 });
 
 export const GET = apiHandler(async () => {

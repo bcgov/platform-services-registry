@@ -1,12 +1,13 @@
 'use client';
 
-import { Card, LineChart, Title } from '@tremor/react';
+import { Card, LineChart, Title, Subtitle } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
 
 const valueFormatter = (number: number) => ` ${new Intl.NumberFormat('us').format(number).toString()}`;
 
 export default function Chart({
   index,
+  subtitle,
   exportApiEndpoint,
   chartData,
   title,
@@ -14,6 +15,7 @@ export default function Chart({
   colors,
 }: {
   index: string;
+  subtitle: string;
   exportApiEndpoint: string;
   chartData: any;
   title: string;
@@ -25,6 +27,8 @@ export default function Chart({
       <ExportButton className="mb-4" apiEnpoint={exportApiEndpoint} />
       <Card>
         <Title>{title}</Title>
+        <Subtitle>{subtitle}</Subtitle>
+
         <LineChart
           className="mt-6"
           data={chartData}
