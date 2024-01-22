@@ -31,7 +31,7 @@ export default async function Page({
 
   search = search.trim();
 
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr);
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 5);
 
   const where: Prisma.SonarScanResultWhereInput = { licencePlate: params.licencePlate };
   if (context.length > 0) {
