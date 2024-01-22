@@ -17,8 +17,8 @@ execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timed
 with DAG(
     dag_id="zapscan_prod",
     schedule_interval=timedelta(days=1),
-    start_date=YESTERDAY,
-    concurrency=execution_time,
+    start_date=execution_time,
+    concurrency=CONCURRENCY,
 ) as dag:
 
     # Step 1. Identify and gather information for all currently active projects, including their host details.

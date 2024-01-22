@@ -29,7 +29,7 @@ export default async function Page({
 
   search = search.trim();
 
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr);
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
   const where: Prisma.PrivateCloudProjectZapResultWhereInput = { html: { not: null }, json: { not: null } };
   if (cluster.length > 0) {
