@@ -2,8 +2,21 @@ import Image from 'next/image';
 import Logo from '@/components/assets/logo.svg';
 import ProfileDropdown from '@/components/nav/ProfileDropdown';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 
-export default function NavBar() {
+export default async function NavBar() {
+  const headersList = headers();
+  const referer = headersList.get('referer');
+  let url = '/private-cloud/products/all';
+  if (typeof referer === 'string') {
+    if (referer.split('/')[3] === 'public-cloud') {
+      url = '/public-cloud/products/all';
+    }
+    if (referer.split('/')[3] === 'private-cloud') {
+      url = '/private-cloud/products/all';
+    }
+  }
+
   return (
     <nav className="border-b-3 border-bcorange bg-bcblue shadow">
       <div style={{ height: 65 }} className="test mx-auto border-y-4 border-bcblue px-2 sm:px-6 lg:px-8">
@@ -11,7 +24,7 @@ export default function NavBar() {
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">{/* Mobile menu button */}</div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
-              <Link href="/private-cloud/products/all">
+              <Link href={url}>
                 <Image
                   alt="BC Platform Services Product Registry"
                   src={Logo}
