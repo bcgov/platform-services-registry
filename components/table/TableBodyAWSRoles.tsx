@@ -2,7 +2,26 @@
 
 import Delete from '@/components/assets/delete.svg';
 import Image from 'next/image';
-import EmptyBody from '@/components/EmptyUsersList';
+import React from 'react';
+
+const rowValue = (value: string, header: string, index: number): React.ReactNode => {
+  return (
+    <td
+      key={value + header}
+      className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
+        index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
+      } `}
+    >
+      {header === 'email' ? (
+        <a href={`mailto:${value}`} className="text-blue-500 hover:text-blue-700">
+          {value}
+        </a>
+      ) : (
+        value
+      )}
+    </td>
+  );
+};
 
 const headers = [
   { field: 'role', headerName: 'Role' },
@@ -53,23 +72,14 @@ export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, s
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr key={row.id} className="hover:bg-tableheadergrey" onClick={() => onDeleteClickHandler(row)}>
+                <tr key={row.id} className="hover:bg-tableheadergrey">
                   <td
                     key={row.id + i}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
                     {Object.keys(row)[0]}
                   </td>
-                  {subHeader.map((value, index) => (
-                    <td
-                      key={index + i}
-                      className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
-                        index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
-                      } `}
-                    >
-                      {row[Object.keys(row)[0]][value.field]}
-                    </td>
-                  ))}
+                  {subHeader.map((value, index) => rowValue(row[Object.keys(row)[0]][value.field], value.field, index))}
                   <td
                     key={row.id}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
