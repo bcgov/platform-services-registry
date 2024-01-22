@@ -4,7 +4,7 @@ resource "sysdig_monitor_alert_metric" "test_pltsvc_db_pod_memory" {
   severity    = 4
   enabled     = true
 
-  metric                = "avg(max(sysdig_container_memory_limit_used_percent)) > 90"
+  metric                = "max(avg(sysdig_container_memory_limit_used_percent)) > 90"
   trigger_after_minutes = 60
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-test\") and kube_workload_name in (\"pltsvc-mongodb\")"
@@ -19,10 +19,10 @@ resource "sysdig_monitor_alert_metric" "test_pltsvc_db_pod_memory" {
 resource "sysdig_monitor_alert_metric" "test_pltsvc_db_pod_cpu" {
   name        = "[Test] Registry MongoDB - CPU"
   description = "Test: Any of Registry MongoDB pod is using more than 80% of limited CPU"
-  severity    = 3
+  severity    = 4
   enabled     = true
 
-  metric                = "avg(max(sysdig_container_cpu_cores_used_percent)) > 80"
+  metric                = "max(avg(sysdig_container_cpu_cores_used_percent)) > 80"
   trigger_after_minutes = 60
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-test\") and kube_workload_name in (\"pltsvc-mongodb\")"
@@ -40,7 +40,7 @@ resource "sysdig_monitor_alert_metric" "test_pltsvc_app_pod_memory" {
   severity    = 4
   enabled     = true
 
-  metric                = "avg(max(sysdig_container_memory_limit_used_percent)) > 90"
+  metric                = "max(avg(sysdig_container_memory_limit_used_percent)) > 90"
   trigger_after_minutes = 60
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-test\") and kube_workload_name in (\"pltsvc-app\")"
@@ -55,10 +55,10 @@ resource "sysdig_monitor_alert_metric" "test_pltsvc_app_pod_memory" {
 resource "sysdig_monitor_alert_metric" "test_pltsvc_app_pod_cpu" {
   name        = "[Test] Registry App - CPU"
   description = "Test: Any of Registry App pod is using more than 80% of limited CPU"
-  severity    = 3
+  severity    = 4
   enabled     = true
 
-  metric                = "avg(max(sysdig_container_cpu_cores_used_percent)) > 80"
+  metric                = "max(avg(sysdig_container_cpu_cores_used_percent)) > 80"
   trigger_after_minutes = 60
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-test\") and kube_workload_name in (\"pltsvc-app\")"
