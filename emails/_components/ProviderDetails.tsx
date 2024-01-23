@@ -22,19 +22,31 @@ export default function ProviderDetails({
     <div>
       <Heading className="text-lg">Landing Zone Details</Heading>
       <div>
-        <Text className="mb-1 font-semibold">Provider </Text>
-        <Text>{provider}</Text>
+        <div>
+          <Text className="mb-0 font-semibold">Provider </Text>
+          <Text className="mt-0">{provider}</Text>
+        </div>
 
         <Text className="font-semibold mt-2">Budget</Text>
         <div>
-          <Text>Dev: USD ${budget.dev.toFixed(2)}</Text>
-          <Text>Test: USD ${budget.test.toFixed(2)}</Text>
-          <Text>Prod: USD ${budget.prod.toFixed(2)}</Text>
-          <Text>Tools: USD ${budget.tools.toFixed(2)}</Text>
-          <Text>Total: USD ${totalBudget.toFixed(2)}</Text>
+          <Text className="mt-0 mb-1">
+            <b>Dev:</b> USD ${budget.dev.toFixed(2)}
+          </Text>
+          <Text className="mt-0 mb-1">
+            <b>Test:</b> USD ${budget.test.toFixed(2)}
+          </Text>
+          <Text className="mt-0 mb-1">
+            <b>Prod:</b> USD ${budget.prod.toFixed(2)}
+          </Text>
+          <Text className="mt-0 mb-3">
+            <b>Tools:</b> USD ${budget.tools.toFixed(2)}
+          </Text>
+          <Text className="mt-0">
+            <b>Total:</b> USD ${totalBudget.toFixed(2)}
+          </Text>
         </div>
-        <Text className="font-semibold mt-2">Account Coding</Text>
-        <Text>{accountCoding}</Text>
+        <Text className="font-semibold mt-2 mb-0">Account Coding</Text>
+        <Text className="mt-0">{accountCoding}</Text>
       </div>
     </div>
   );

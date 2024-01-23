@@ -167,7 +167,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             />
             <CommonComponents disabled={isDisabled} />
           </div>
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">

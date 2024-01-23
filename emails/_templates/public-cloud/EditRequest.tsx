@@ -47,8 +47,8 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                 <Heading className="text-lg text-black">Comments</Heading>
                 <Text className="mb-0">{comment}</Text>
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed.name || changed.description || changed.ministry) && (
+              {(changed.name || changed.description || changed.ministry) && (
+                <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                   <DescriptionChanges
                     nameCurrent={current.name}
                     descCurrent={current.description}
@@ -57,10 +57,10 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                     descRequested={requested.description}
                     ministryRequested={requested.ministry}
                   />
-                )}
-              </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
+                </div>
+              )}
+              {(changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
+                <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                   <ContactChanges
                     poCurrent={current.projectOwner}
                     tl1Current={current.primaryTechnicalLead}
@@ -69,18 +69,18 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                     tl1Requested={requested.primaryTechnicalLead}
                     tl2Requested={requested?.secondaryTechnicalLead}
                   />
-                )}
-              </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                {(changed.accountCoding || changed.budget) && (
+                </div>
+              )}
+              {(changed.accountCoding || changed.budget) && (
+                <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                   <BudgetChanges
                     budgetCurrent={current.budget}
                     budgetRequested={requested.budget}
                     accountCodingCurrent={current.accountCoding}
                     accountCodingRequested={requested.accountCoding}
                   />
-                )}
-              </div>
+                </div>
+              )}
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" />
               </div>
