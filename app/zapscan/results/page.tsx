@@ -31,7 +31,7 @@ export default async function Page({
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
-  const where: Prisma.PrivateCloudProjectZapResultWhereInput = { html: { not: null }, json: { not: null } };
+  const where: Prisma.PrivateCloudProjectZapResultWhereInput = { html: { not: null }, json: { isNot: null } };
   if (cluster.length > 0) {
     where.cluster = { in: cluster };
   }

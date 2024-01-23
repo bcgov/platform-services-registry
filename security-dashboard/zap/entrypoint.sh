@@ -39,7 +39,10 @@ while read -r proj; do
         folder="$cluster-$licencePlate-$host"
         report_path="$base_path/$folder"
         mkdir -p "$zap_path/$report_path"
-        zap-baseline.py -t "https://$host" -J "$report_path/report.json" -w "$report_path/report.md" -r "$report_path/report.html"
+
+        target="https://$host"
+        echo ">> $target"
+        zap-baseline.py -t "$target" -J "$report_path/report.json" -w "$report_path/report.md" -r "$report_path/report.html"
         echo "{\"licencePlate\":\"$licencePlate\",\"cluster\":\"$cluster\",\"host\":\"$host\"}" > "$zap_path/$report_path/detail.json"
     done <<< "$hosts"
 done < <(echo "$PROJECTS" | jq -c '.[]')

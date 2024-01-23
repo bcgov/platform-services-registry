@@ -11,13 +11,13 @@ from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V
 from projects import fetch_sonarscan_projects, load_sonarscan_results
 
 CONCURRENCY = 5
-MONGO_CONN_ID = 'pltsvc-dev'
+MONGO_CONN_ID = 'pltsvc-test'
 
-# Set the execution time to 3 AM
-execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=3)
+# Set the execution time to 6 AM
+execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=6)
 
 with DAG(
-    dag_id="sonarscan_dev",
+    dag_id="sonarscan_test",
     schedule_interval=timedelta(days=1),
     start_date=execution_time,
     concurrency=CONCURRENCY,
@@ -25,7 +25,7 @@ with DAG(
 
     # Step 1. Identify and gather information for all currently active projects, including their host details.
     t1 = PythonOperator(
-        task_id='fetch-sonarscan-projects-dev',
+        task_id='fetch-sonarscan-projects-test',
         python_callable=fetch_sonarscan_projects,
         op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY},
         provide_context=True,
@@ -48,7 +48,7 @@ with DAG(
             namespace='101ed4-tools',
             image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:a4917e3ca698e44b3fbfc56466393a4e83851541',
             env_vars={
-                "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-sonarscan-projects-dev', key='{}')".format(i) + "}}",
+                "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-sonarscan-projects-test', key='{}')".format(i) + "}}",
                 "CONTEXT": MONGO_CONN_ID,
                 "GH_TOKEN": os.environ['GH_TOKEN'],
                 "SONARQUBE_URL": os.environ['SONARQUBE_URL'],

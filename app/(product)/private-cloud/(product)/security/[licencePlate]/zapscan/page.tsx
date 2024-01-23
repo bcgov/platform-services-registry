@@ -35,7 +35,7 @@ export default async function Page({
 
   const where: Prisma.PrivateCloudProjectZapResultWhereInput = {
     html: { not: null },
-    json: { not: null },
+    json: { isNot: null },
     licencePlate: params.licencePlate,
   };
   if (cluster.length > 0) {
