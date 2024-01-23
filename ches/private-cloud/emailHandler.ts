@@ -47,19 +47,16 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
   }
 };
 
-export const sendEditRequestEmails = async (
-  request: PrivateCloudRequestWithProjectAndRequestedProject,
-  comment?: string,
-) => {
+export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
   try {
     const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
-    const userEmail = render(EditRequestTemplate({ request, comment }), { pretty: true });
+    const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
 
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
       to: adminEmails,
-      subject: `${request.requestedProject.name} has been approved`,
+      subject: `${request.requestedProject.name} edit request has been received`,
     });
 
     const contacts = sendEmail({
@@ -72,7 +69,7 @@ export const sendEditRequestEmails = async (
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
       ].filter(Boolean),
-      subject: `${request.requestedProject.name} has been approved`,
+      subject: `${request.requestedProject.name} edit request has been received`,
     });
 
     await Promise.all([contacts, admins]);
@@ -82,6 +79,7 @@ export const sendEditRequestEmails = async (
 };
 
 export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+  console.log(request);
   try {
     const email = render(RequestApprovalTemplate({ request }), { pretty: true });
 
@@ -101,16 +99,16 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 
 export const sendRequestRejectionEmails = async (
   request: PrivateCloudRequestedProjectWithContacts,
-  comment?: string,
+  humanComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name, comment }), {
+    const email = render(RequestRejectionTemplate({ productName: request.name, humanComment }), {
       pretty: true,
     });
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: `${request.name} has been approved`,
+      subject: `${request.name} has been rejected`,
     });
   } catch (error) {
     console.error('ERROR SENDING REQUEST REJECTION EMAIL');

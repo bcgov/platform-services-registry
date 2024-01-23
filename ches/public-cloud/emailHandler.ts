@@ -60,7 +60,7 @@ export const sendEditRequestEmails = async (request: PublicCloudRequestWithProje
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
       ].filter(Boolean),
-      subject: `${request.requestedProject.name} has been approved`,
+      subject: `${request.requestedProject.name} has requested an edit`,
     });
   } catch (error) {
     console.error('ERROR SENDING EDIT REQUEST EMAIL');
@@ -85,12 +85,9 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
   }
 };
 
-export const sendRequestRejectionEmails = async (
-  request: PublicCloudRequestedProjectWithContacts,
-  comment?: string,
-) => {
+export const sendRequestRejectionEmails = async (request: PublicCloudRequestedProjectWithContacts) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name, comment }), {
+    const email = render(RequestRejectionTemplate({ productName: request.name }), {
       pretty: true,
     });
     await sendEmail({

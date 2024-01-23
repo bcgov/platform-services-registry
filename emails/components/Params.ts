@@ -343,7 +343,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
   decisionMakerEmail: 'junmin.ahn@gov.bc.ca',
   type: 'CREATE',
   decisionStatus: 'APPROVED',
-  humanComment: null,
+  humanComment: 'comment from admin',
   active: true,
   created: sampleDate,
   decisionDate: sampleDate,
