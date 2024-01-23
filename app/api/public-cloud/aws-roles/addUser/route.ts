@@ -1,7 +1,7 @@
 import { addUserToGroupByEmail } from '@/app/api/public-cloud/aws-roles/helpers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 
 interface QueryParam {
   userEmail: string;

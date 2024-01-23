@@ -45,6 +45,7 @@ model PrivateCloudRequest {
   decisionMakerEmail     String?
   type                   RequestType
   decisionStatus         DecisionStatus
+  isQuotaChanged         Boolean?                      @default(false)
   humanComment           String?
   userComment            String?
   active                 Boolean                       @default(true)
@@ -171,8 +172,8 @@ model PrivateCloudProjectZapResult {
   cluster      String
   host         String
   html         String?
-  // json         ZapJson?
-  json         Json?
+  json         ZapJson?
+  available    Boolean?
   scannedAt    DateTime @default(now())
 }
 

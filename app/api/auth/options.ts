@@ -88,7 +88,7 @@ export const authOptions: AuthOptions = {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakToken;
 
-      const adUser = await getUser(email);
+      const adUser: any = await getUser(email);
       let ministry = '';
       if (adUser) {
         ministry = parseMinistryFromDisplayName(adUser.displayName);
@@ -134,7 +134,6 @@ export const authOptions: AuthOptions = {
         const user = await prisma.user.findFirst({ where: { email: session.user.email } });
         session.userId = user?.id ?? null;
         session.accessToken = token.accessToken;
-        session.user.roles = token.roles || [];
         session.roles = token.roles || [];
 
         // Assign the 'user' role to users who log in to the system.
@@ -155,6 +154,8 @@ export const authOptions: AuthOptions = {
             session.ministries[ministryRole].push(ministryCode);
           }
         });
+
+        session.user.roles = session.roles;
       }
       // {
       //   ...

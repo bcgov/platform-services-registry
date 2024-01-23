@@ -8,14 +8,14 @@ import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches/helpers';
 import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
 
-import AdminCreateTemplate from '@/emails/templates/public-cloud/AdminCreateRequest';
-import CreateRequestTemplate from '@/emails/templates/public-cloud/CreateRequest';
-import DeleteApprovalTemplate from '@/emails/templates/public-cloud/DeleteApproval';
-import DeleteRequestTemplate from '@/emails/templates/public-cloud/DeleteRequest';
-import EditRequestTemplate from '@/emails/templates/public-cloud/EditRequest';
-import ProvisionedTemplate from '@/emails/templates/public-cloud/Provisioned';
-import RequestApprovalTemplate from '@/emails/templates/public-cloud/RequestApproval';
-import RequestRejectionTemplate from '@/emails/templates/public-cloud/RequestRejection';
+import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
+import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
+import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
+import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
+import EditRequestTemplate from '@/emails/_templates/public-cloud/EditRequest';
+import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
+import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
+import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
 
 export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject) => {
   try {

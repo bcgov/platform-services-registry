@@ -1,9 +1,15 @@
 import { instance } from './axios';
 
-export async function GetUsersPaginatedList(licencePlate: string, role: string, currentPage: string, pageSize: string) {
+export async function getUsersPaginatedList(
+  licencePlate: string,
+  role: string,
+  currentPage: string,
+  pageSize: string,
+  searchTerm: string,
+) {
   const result = await instance
     .get(
-      `public-cloud/aws-roles/getUsersList?licencePlate=${licencePlate}&role=${role}&page=${currentPage}&pageSize=${pageSize}`,
+      `public-cloud/aws-roles/getUsersList?licencePlate=${licencePlate}&role=${role}&page=${currentPage}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
     )
     .then((res) => res.data);
   return result;

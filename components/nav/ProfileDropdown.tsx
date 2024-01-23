@@ -11,8 +11,8 @@ import fetchUserImage from '@/components/nav/generateAvatar';
 
 export default function ProfileDropdown() {
   const { data: session, status } = useSession();
-  const email = session?.user?.email;
-  const roles = session?.user?.roles;
+  const { user, isAdmin, roles } = session ?? {};
+  const { email } = user ?? {};
 
   const { data, isLoading, error } = useQuery<string, Error>({
     queryKey: ['userImage', email],
@@ -70,6 +70,36 @@ export default function ProfileDropdown() {
               </Link>
             )}
           </Menu.Item> */}
+          {isAdmin && (
+            <Menu.Item>
+              {({ active, close }) => (
+                <div>
+                  <Link
+                    href="/zapscan/results"
+                    onClick={close}
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                  >
+                    Zap Scan Results
+                  </Link>
+                </div>
+              )}
+            </Menu.Item>
+          )}
+          {isAdmin && (
+            <Menu.Item>
+              {({ active, close }) => (
+                <div>
+                  <Link
+                    href="/sonarscan/results"
+                    onClick={close}
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                  >
+                    Sonar Scan Results
+                  </Link>
+                </div>
+              )}
+            </Menu.Item>
+          )}
           <Menu.Item>
             {({ active }) => (
               <div>

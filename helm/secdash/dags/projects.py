@@ -78,7 +78,13 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
             cluster = ''
             token = ''
 
-            if project['cluster'] == 'KLAB':
+            if project['cluster'] == 'SILVER':
+                cluster = 'silver'
+                token = os.environ['OC_TOKEN_SILVER']
+            elif project['cluster'] == 'GOLD':
+                cluster = 'gold'
+                token = os.environ['OC_TOKEN_GOLD']
+            elif project['cluster'] == 'KLAB':
                 cluster = 'klab'
                 token = os.environ['OC_TOKEN_KLAB']
             else:
@@ -92,7 +98,37 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
                 data = response.json()
                 project['hosts'] = []
                 for item in data['items']:
-                    project['hosts'].append(item['spec']['host'])
+                    host = item['spec']['host']
+                    available = True
+                    status_code = 500
+
+                    try:
+                        print(f"head: {host}")
+                        avail_res = requests.head(f"https://{host}", timeout=3)
+                        status_code = avail_res.status_code
+                        print(f"{host}: {status_code}")
+                        available = status_code != 503
+                    except Exception as e:
+                        print(f"{host}: {e}")
+                        available = False
+
+                    if available == False:
+                        db.PrivateCloudProjectZapResult.replace_one({
+                            'licencePlate': project['licencePlate'],
+                            'cluster': cluster,
+                            'host': host},
+                            {
+                                'licencePlate': project['licencePlate'],
+                            'cluster': cluster,
+                            'host': host,
+                            'scannedAt': datetime.datetime.now(),
+                            'available': False
+                        },
+                            True  # Create one if it does not exist
+                        )
+                        continue
+
+                    project['hosts'].append(host)
 
                 if len(project['hosts']) > 0:
                     result.append(project)
@@ -102,7 +138,7 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
-        shutil.rmtree(f"{shared_directory}/zap/{mongo_conn_id}")
+        shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
     except Exception as e:
         print(f"[fetch_zap_projects] Error: {e}")
@@ -123,7 +159,7 @@ def load_zap_results(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
 
-        report_directory = f"{shared_directory}/zap/{mongo_conn_id}"
+        report_directory = f"{shared_directory}/zapscan/{mongo_conn_id}"
 
         subdirectories = [
             os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
@@ -149,14 +185,16 @@ def load_zap_results(mongo_conn_id):
                             doc['host'] = details['host']
 
             doc['scannedAt'] = datetime.datetime.now()
+            doc['available'] = True
 
-            db.PrivateCloudProjectZapResult.replace_one({
-                'licencePlate': doc['licencePlate'],
-                'cluster': doc['cluster'],
-                'host': doc['host']},
-                doc,
-                True  # Create one if it does not exist
-            )
+            if doc['licencePlate'] is not None:
+                db.PrivateCloudProjectZapResult.replace_one({
+                    'licencePlate': doc['licencePlate'],
+                    'cluster': doc['cluster'],
+                    'host': doc['host']},
+                    doc,
+                    True  # Create one if it does not exist
+                )
 
     except Exception as e:
         print(f"[load_zap_results] Error: {e}")
@@ -215,7 +253,7 @@ def load_sonarscan_results(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
 
-        report_directory = f"{shared_directory}/output/{mongo_conn_id}"
+        report_directory = f"{shared_directory}/sonarscan/{mongo_conn_id}"
 
         subdirectories = [
             os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))

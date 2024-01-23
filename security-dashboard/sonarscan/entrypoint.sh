@@ -107,8 +107,8 @@ get_scan_result() {
     echo "$data"
 }
 
-base_path="output/$CONTEXT"
-full_path="/opt/sonar/$base_path"
+base_path="sonarscan/$CONTEXT"
+full_path="/mnt/$base_path"
 mkdir -p "$full_path"
 
 # Loop through each project in the input
