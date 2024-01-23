@@ -3,16 +3,19 @@ import Logo from '@/components/assets/logo.svg';
 import ProfileDropdown from '@/components/nav/ProfileDropdown';
 import Link from 'next/link';
 import { headers } from 'next/headers';
+import _isString from 'lodash/isString';
 
 export default async function NavBar() {
   const headersList = headers();
   const referer = headersList.get('referer');
   let url = '/private-cloud/products/all';
-  if (typeof referer === 'string') {
-    if (referer.split('/')[3] === 'public-cloud') {
+
+  if (_isString(referer)) {
+    const currentURL = referer.split('/')[3];
+    if (currentURL === 'public-cloud') {
       url = '/public-cloud/products/all';
     }
-    if (referer.split('/')[3] === 'private-cloud') {
+    if (currentURL === 'private-cloud') {
       url = '/private-cloud/products/all';
     }
   }
