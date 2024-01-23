@@ -5,6 +5,7 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
+from airflow.utils.trigger_rule import TriggerRule
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from projects import fetch_zap_projects, load_zap_results
 
@@ -23,7 +24,7 @@ with DAG(
 
     # Step 1. Identify and gather information for all currently active projects, including their host details.
     t1 = PythonOperator(
-        task_id='fetch-projects-test',
+        task_id='fetch-zapscan-projects-test',
         python_callable=fetch_zap_projects,
         op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY},
         provide_context=True,
@@ -44,9 +45,9 @@ with DAG(
             task_id='zap-baseline-{}'.format(i),
             name='zap-baseline-{}'.format(i),
             namespace='101ed4-tools',
-            image='ghcr.io/bcgov/pltsvc-secdashboard-zap:1bc16dca17c474ff80e221096b25002ea73b75aa',
+            image='ghcr.io/bcgov/pltsvc-secdashboard-zap:a4917e3ca698e44b3fbfc56466393a4e83851541',
             env_vars={
-                "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-projects-test', key='{}')".format(i) + "}}",
+                "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-zapscan-projects-test', key='{}')".format(i) + "}}",
                 "CONTEXT": MONGO_CONN_ID,
             },
             container_resources=V1ResourceRequirements(
@@ -66,6 +67,7 @@ with DAG(
         task_id='load-zap-results',
         python_callable=load_zap_results,
         op_kwargs={'mongo_conn_id': MONGO_CONN_ID},
+        trigger_rule=TriggerRule.ALL_DONE,
         dag=dag
     )
 

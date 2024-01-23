@@ -98,7 +98,37 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
                 data = response.json()
                 project['hosts'] = []
                 for item in data['items']:
-                    project['hosts'].append(item['spec']['host'])
+                    host = item['spec']['host']
+                    available = True
+                    status_code = 500
+
+                    try:
+                        print(f"head: {host}")
+                        avail_res = requests.head(f"https://{host}", timeout=3)
+                        status_code = avail_res.status_code
+                        print(f"{host}: {status_code}")
+                        available = status_code != 503
+                    except Exception as e:
+                        print(f"{host}: {e}")
+                        available = False
+
+                    if available == False:
+                        db.PrivateCloudProjectZapResult.replace_one({
+                            'licencePlate': project['licencePlate'],
+                            'cluster': cluster,
+                            'host': host},
+                            {
+                                'licencePlate': project['licencePlate'],
+                            'cluster': cluster,
+                            'host': host,
+                            'scannedAt': datetime.datetime.now(),
+                            'available': False
+                        },
+                            True  # Create one if it does not exist
+                        )
+                        continue
+
+                    project['hosts'].append(host)
 
                 if len(project['hosts']) > 0:
                     result.append(project)
@@ -155,14 +185,16 @@ def load_zap_results(mongo_conn_id):
                             doc['host'] = details['host']
 
             doc['scannedAt'] = datetime.datetime.now()
+            doc['available'] = True
 
-            db.PrivateCloudProjectZapResult.replace_one({
-                'licencePlate': doc['licencePlate'],
-                'cluster': doc['cluster'],
-                'host': doc['host']},
-                doc,
-                True  # Create one if it does not exist
-            )
+            if doc['licencePlate'] is not None:
+                db.PrivateCloudProjectZapResult.replace_one({
+                    'licencePlate': doc['licencePlate'],
+                    'cluster': doc['cluster'],
+                    'host': doc['host']},
+                    doc,
+                    True  # Create one if it does not exist
+                )
 
     except Exception as e:
         print(f"[load_zap_results] Error: {e}")
