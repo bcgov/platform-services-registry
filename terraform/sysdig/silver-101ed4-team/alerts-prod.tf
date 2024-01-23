@@ -4,8 +4,8 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_db_pod_memory" {
   severity    = 2
   enabled     = true
 
-  metric                = "max(avg(sysdig_container_memory_limit_used_percent)) > 90"
-  trigger_after_minutes = 60
+  metric                = "avg(avg(sysdig_container_memory_limit_used_percent)) > 90"
+  trigger_after_minutes = 5
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-prod\") and kube_workload_name in (\"pltsvc-mongodb\")"
   multiple_alerts_by    = []
@@ -22,8 +22,8 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_db_pod_cpu" {
   severity    = 2
   enabled     = true
 
-  metric                = "max(avg(sysdig_container_cpu_cores_used_percent)) > 80"
-  trigger_after_minutes = 60
+  metric                = "avg(avg(sysdig_container_cpu_cores_used_percent)) > 80"
+  trigger_after_minutes = 5
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-prod\") and kube_workload_name in (\"pltsvc-mongodb\")"
   multiple_alerts_by    = []
@@ -40,8 +40,8 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_app_pod_memory" {
   severity    = 2
   enabled     = true
 
-  metric                = "max(avg(sysdig_container_memory_limit_used_percent)) > 90"
-  trigger_after_minutes = 60
+  metric                = "avg(avg(sysdig_container_memory_limit_used_percent)) > 90"
+  trigger_after_minutes = 5
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-prod\") and kube_workload_name in (\"pltsvc-app\")"
   multiple_alerts_by    = []
@@ -58,8 +58,8 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_app_pod_cpu" {
   severity    = 2
   enabled     = true
 
-  metric                = "max(avg(sysdig_container_cpu_cores_used_percent)) > 80"
-  trigger_after_minutes = 60
+  metric                = "avg(avg(sysdig_container_cpu_cores_used_percent)) > 80"
+  trigger_after_minutes = 5
 
   scope                 = "kubernetes.cluster.name in (\"silver\") and kube_namespace_name in (\"101ed4-prod\") and kube_workload_name in (\"pltsvc-app\")"
   multiple_alerts_by    = []

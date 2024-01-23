@@ -41,10 +41,10 @@ app:
 
   resources:
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 300m
+      memory: 512Mi
     requests:
-      cpu: 10m
+      cpu: 30m
       memory: 128Mi
 
   env:

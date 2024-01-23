@@ -6,6 +6,7 @@ global:
     "Env": "prod"
 
 app:
+  replicaCount: 2
   env:
     "APP_ENV": "prod"
     "BASE_URL": "https://pltsvc.apps.silver.devops.gov.bc.ca"

@@ -44,7 +44,7 @@ with DAG(
             task_id='sonarscan-{}'.format(i),
             name='sonarscan-{}'.format(i),
             namespace='101ed4-tools',
-            image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:a4917e3ca698e44b3fbfc56466393a4e83851541',
+            image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:848c7a3121da0a5669af904e4a77860832aac6a7',
             env_vars={
                 "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-sonarscan-projects-test', key='{}')".format(i) + "}}",
                 "CONTEXT": MONGO_CONN_ID,
