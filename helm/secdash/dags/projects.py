@@ -1,7 +1,7 @@
 import os
 import json
 import shutil
-import datetime
+from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
 
@@ -113,17 +113,19 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
                         available = False
 
                     if available == False:
-                        db.PrivateCloudProjectZapResult.replace_one({
-                            'licencePlate': project['licencePlate'],
-                            'cluster': cluster,
-                            'host': host},
+                        db.PrivateCloudProjectZapResult.replace_one(
                             {
                                 'licencePlate': project['licencePlate'],
-                            'cluster': cluster,
-                            'host': host,
-                            'scannedAt': datetime.datetime.now(),
-                            'available': False
-                        },
+                                'cluster': cluster,
+                                'host': host
+                            },
+                            {
+                                'licencePlate': project['licencePlate'],
+                                'cluster': cluster,
+                                'host': host,
+                                'scannedAt': datetime.now(),
+                                'available': False
+                            },
                             True  # Create one if it does not exist
                         )
                         continue
@@ -138,6 +140,9 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.PrivateCloudProjectZapResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
         shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
     except Exception as e:
@@ -184,7 +189,7 @@ def load_zap_results(mongo_conn_id):
                             doc['cluster'] = details['cluster']
                             doc['host'] = details['host']
 
-            doc['scannedAt'] = datetime.datetime.now()
+            doc['scannedAt'] = datetime.now()
             doc['available'] = True
 
             if doc['licencePlate'] is not None:
@@ -232,6 +237,10 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.SonarScanResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+
         shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
 
     except Exception as e:
@@ -265,7 +274,7 @@ def load_sonarscan_results(mongo_conn_id):
             with open(file_path, 'r') as file:
                 content = file.read().replace('\n', '').replace('\t', '')
                 doc = json.loads(content)
-                doc['scannedAt'] = datetime.datetime.now()
+                doc['scannedAt'] = datetime.now()
 
                 db.SonarScanResult.replace_one({
                     'licencePlate': doc['licencePlate'],
