@@ -10,16 +10,14 @@ from airflow.utils.trigger_rule import TriggerRule
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from projects import fetch_sonarscan_projects, load_sonarscan_results
 
+YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5
 MONGO_CONN_ID = 'pltsvc-test'
 
-# Set the execution time to 6 AM
-execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=6)
-
 with DAG(
     dag_id="sonarscan_test",
-    schedule_interval=timedelta(days=1),
-    start_date=execution_time,
+    schedule_interval="0 6 * * *",
+    start_date=YESTERDAY,
     concurrency=CONCURRENCY,
 ) as dag:
 

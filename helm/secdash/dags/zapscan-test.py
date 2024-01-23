@@ -9,16 +9,14 @@ from airflow.utils.trigger_rule import TriggerRule
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from projects import fetch_zap_projects, load_zap_results
 
+YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5
 MONGO_CONN_ID = 'pltsvc-test'
 
-# Set the execution time to 5 PM
-execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=17)
-
 with DAG(
     dag_id="zapscan_test",
-    schedule_interval=timedelta(days=1),
-    start_date=execution_time,
+    schedule_interval="0 17 * * *",
+    start_date=YESTERDAY,
     concurrency=CONCURRENCY,
 ) as dag:
 
