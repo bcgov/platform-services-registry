@@ -4,6 +4,10 @@ import PagninationButtons from '@/components/buttons/PaginationButtons';
 import formatDate from '@/components/utils/formatdates';
 import SearchPanel from './SearchPanel';
 
+type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
+  select: { id: true; licencePlate: true; cluster: true; host: true; json: true; scannedAt: true; available: true };
+}>;
+
 const headers = [
   { field: 'cluster', headerName: 'Cluster' },
   { field: 'licencePlate', headerName: 'Licence Plate' },
@@ -14,7 +18,7 @@ const headers = [
   { field: 'id', headerName: '' },
 ];
 
-const processCell = (value: any, field: string, headerName: string) => {
+const processCell = (value: any, field: string, headerName: string, row: ZapResultRows) => {
   if (!value) return null;
 
   if (field === 'scannedAt') {
@@ -22,10 +26,13 @@ const processCell = (value: any, field: string, headerName: string) => {
   }
 
   if (headerName === 'Total') {
+    if (!row.available) return '-';
     return value.site[0].alerts.length;
   }
 
   if (headerName === 'Alerts') {
+    if (!row.available) return '-';
+
     const meta = {
       info: 0,
       low: 0,
@@ -92,6 +99,8 @@ const processCell = (value: any, field: string, headerName: string) => {
   }
 
   if (field === 'id') {
+    if (!row.available) return 'Not Available';
+
     return (
       <a className="underline text-blue-500" href={`/zapscan/reports/${value}`} target="_blank" rel="noreferrer">
         Report
@@ -109,10 +118,6 @@ const processCell = (value: any, field: string, headerName: string) => {
 
   return value;
 };
-
-type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
-  select: { id: true; licencePlate: true; cluster: true; host: true; json: true; scannedAt: true };
-}>;
 
 export default async function ZapScanResults({
   rows,
@@ -167,6 +172,7 @@ export default async function ZapScanResults({
                             row[value.field as 'cluster' | 'licencePlate' | 'host' | 'scannedAt'],
                             value.field,
                             value.headerName,
+                            row,
                           )}
                         </td>
                       ))}

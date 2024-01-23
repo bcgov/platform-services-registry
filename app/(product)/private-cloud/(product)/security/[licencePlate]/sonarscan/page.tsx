@@ -61,6 +61,11 @@ export default async function Page({
       select: { id: true, licencePlate: true, context: true, url: true, result: true, scannedAt: true },
       skip,
       take,
+      orderBy: [
+        {
+          scannedAt: Prisma.SortOrder.desc,
+        },
+      ],
       session: session as never,
     }),
     prisma.sonarScanResult.findMany({
