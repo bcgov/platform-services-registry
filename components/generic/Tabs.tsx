@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import classNames from 'classnames';
-import { compareUrlsIgnoreLastSegments } from '@/helpers/pathSegments';
+import { compareUrlsIgnoreLastSegments, pathChangeTail } from '@/helpers/pathSegments';
 
 export interface ITab {
   name: string;
@@ -38,7 +38,7 @@ export default function Tabs({ tabs, children }: { tabs: ITab[]; children: React
             <div className=" -mb-px flex justify-start">
               {tabs.map((tab) => (
                 <Link
-                  href={tab.href}
+                  href={pathChangeTail(pathname, tab.ignoreSegments, tab.href)}
                   key={tab.name}
                   className={classNames(
                     'first:ml-0 lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold',

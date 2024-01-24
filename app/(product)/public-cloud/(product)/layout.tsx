@@ -31,6 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       label: 'ROLES',
       name: 'aws-roles',
       href: `/public-cloud/aws-roles/${licencePlate}/admins`,
+      ignoreSegments: 1,
     });
   }
 
