@@ -5,6 +5,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Select, { MultiValue } from 'react-select';
 import _throttle from 'lodash-es/throttle';
+import _isEqual from 'lodash-es/isEqual';
+import _castArray from 'lodash-es/castArray';
 import { parseQueryString, stringifyQuery } from '@/lib/query-string';
 import Search from '@/components/assets/search.svg';
 
@@ -28,8 +30,12 @@ export default function SearchPanel({ clusters }: { clusters: string[] }) {
 
   useEffect(() => {
     const currParams = parseQueryString(searchParams?.toString());
+    const hasFilterChanged =
+      !_isEqual(currParams.search, searchTerm) || !_isEqual(_castArray(currParams.cluster || []), selectedClusters);
+
     const newParams = stringifyQuery({
       ...currParams,
+      page: hasFilterChanged ? 1 : currParams.page,
       search: searchTerm || '',
       cluster: selectedClusters,
     });
