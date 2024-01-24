@@ -77,6 +77,7 @@ export const sendEditRequestEmails = async (
     await Promise.all([contacts, admins]);
   } catch (error) {
     console.error('ERROR SENDING EDIT REQUEST EMAIL');
+    console.log(error);
   }
 };
 
