@@ -1,23 +1,18 @@
+'use client';
 import Image from 'next/image';
 import Logo from '@/components/assets/logo.svg';
 import ProfileDropdown from '@/components/nav/ProfileDropdown';
 import Link from 'next/link';
-import { headers } from 'next/headers';
-import _isString from 'lodash/isString';
+import { usePathname } from 'next/navigation';
 
-export default async function NavBar() {
-  const headersList = headers();
-  const referer = headersList.get('referer');
+export default function NavBar() {
   let url = '/private-cloud/products/all';
+  const pathName = usePathname();
 
-  if (_isString(referer)) {
-    const currentURL = referer.split('/')[3];
-    if (currentURL === 'public-cloud') {
-      url = '/public-cloud/products/all';
-    }
-    if (currentURL === 'private-cloud') {
-      url = '/private-cloud/products/all';
-    }
+  if (pathName.includes('public-cloud')) {
+    url = '/public-cloud/products/all';
+  } else if (pathName.includes('private-cloud')) {
+    url = '/private-cloud/products/all';
   }
 
   return (
