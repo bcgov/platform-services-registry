@@ -96,7 +96,6 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 data = response.json()
-                project['hosts'] = []
                 for item in data['items']:
                     host = item['spec']['host']
                     available = True
@@ -130,10 +129,14 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
                         )
                         continue
 
-                    project['hosts'].append(host)
-
-                if len(project['hosts']) > 0:
-                    result.append(project)
+                    # Distribute workload evenly by assigning a host per project
+                    result.append(
+                        {
+                            'licencePlate': project['licencePlate'],
+                            'cluster': project['cluster'],
+                            'hosts': [host]
+                        }
+                    )
 
         result_subarrays = split_array(result, concurrency)
         task_instance = context['task_instance']

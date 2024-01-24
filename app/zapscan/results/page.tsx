@@ -70,7 +70,7 @@ export default async function Page({
       session: session as never,
     }),
     prisma.privateCloudProjectZapResult.findMany({
-      where: {},
+      where: { html: { not: null }, json: { isNot: null } },
       select: { cluster: true },
       distinct: ['cluster'],
       session: session as never,
