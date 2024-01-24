@@ -53,7 +53,9 @@ export default function SearchFilterSort({
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(`/api/${apiContext}/all-projects?${searchParams.toString()}`);
+      const response = await fetch(`/api/${apiContext}/all-projects?${searchParams.toString()}`, {
+        cache: 'force-cache',
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
