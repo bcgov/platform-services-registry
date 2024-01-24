@@ -56,13 +56,21 @@ export default async function Page({
   const [rows, distinct, total] = await Promise.all([
     prisma.privateCloudProjectZapResult.findMany({
       where,
-      select: { id: true, licencePlate: true, cluster: true, host: true, json: true, scannedAt: true },
+      select: { id: true, licencePlate: true, cluster: true, host: true, json: true, scannedAt: true, available: true },
       skip,
       take,
+      orderBy: [
+        {
+          scannedAt: Prisma.SortOrder.desc,
+        },
+        {
+          available: Prisma.SortOrder.desc,
+        },
+      ],
       session: session as never,
     }),
     prisma.privateCloudProjectZapResult.findMany({
-      where: {},
+      where: { html: { not: null }, json: { isNot: null } },
       select: { cluster: true },
       distinct: ['cluster'],
       session: session as never,

@@ -9,16 +9,14 @@ from airflow.utils.trigger_rule import TriggerRule
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from projects import fetch_zap_projects, load_zap_results
 
+YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5
 MONGO_CONN_ID = 'pltsvc-dev'
 
-# Set the execution time to 12 PM
-execution_time = datetime.combine(datetime.today(), datetime.min.time()) + timedelta(hours=12)
-
 with DAG(
     dag_id="zapscan_dev",
-    schedule_interval=timedelta(days=1),
-    start_date=execution_time,
+    schedule_interval="0 12 * * *",
+    start_date=YESTERDAY,
     concurrency=CONCURRENCY,
 ) as dag:
 
@@ -45,7 +43,7 @@ with DAG(
             task_id='zap-baseline-{}'.format(i),
             name='zap-baseline-{}'.format(i),
             namespace='101ed4-tools',
-            image='ghcr.io/bcgov/pltsvc-secdashboard-zap:a4917e3ca698e44b3fbfc56466393a4e83851541',
+            image='ghcr.io/bcgov/pltsvc-secdashboard-zap:848c7a3121da0a5669af904e4a77860832aac6a7',
             env_vars={
                 "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-zapscan-projects-dev', key='{}')".format(i) + "}}",
                 "CONTEXT": MONGO_CONN_ID,
