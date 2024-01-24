@@ -18,45 +18,46 @@ export default function ContactChanges({
 }) {
   return (
     <div>
-      <Heading className="text-lg text-black mb-2">Contact Changes</Heading>
+      <Heading className="text-lg text-black">Contact Changes</Heading>
       {poCurrent.id !== poRequested.id && (
         <div className="mb-4">
-          <Text className="font-semibold mb-0">Current Product Owner</Text>
-          <Text className="mb-1">
+          <Text className="font-semibold mb-0 ">Current Product Owner</Text>
+          <Text className="mb-1 mt-2">
             {poCurrent.firstName} {poCurrent.lastName}
           </Text>
           <Link className="mb-2" href={`mailto:${poCurrent.email}`}>
             {poCurrent.email}
           </Link>
           <Text className="font-semibold mb-0">Requested Product Owner</Text>
-          <Text className="mb-1">
+          <Text className="mb-1 mt-2">
             {poRequested.firstName} {poRequested.lastName}
           </Text>
           <Link href={`mailto:${poRequested.email}`}>{poRequested.email}</Link>
         </div>
       )}
       {tl1Current.id !== tl1Requested.id && (
-        <div className="mb-4">
-          <Text className="font-semibold mb-0">Current Primary Technical Lead</Text>
-          <Text className="mb-1">
+        <div className="mb-4 mt-10">
+          <Text className="font-semibold mb-0 ">Current Primary Technical Lead</Text>
+          <Text className="mb-1 mt-2">
             {tl1Current.firstName} {tl1Current.lastName}
           </Text>
           <Link className="mb-2" href={`mailto:${tl1Current.email}`}>
             {tl1Current.email}
           </Link>
           <Text className="font-semibold mb-0">Requested Primary Technical Lead</Text>
-          <Text className="mb-1">
+          <Text className="mb-1 mt-2">
             {tl1Requested.firstName} {tl1Requested.lastName}
           </Text>
           <Link href={`mailto:${tl1Requested.email}`}>{tl1Requested.email}</Link>
         </div>
       )}
       {tl2Current?.id !== tl2Requested?.id && (
-        <div className="mb-4">
+        <div className="mb-4 mt-10">
           <Text className="font-semibold mb-0">Current Secondary Technical Lead</Text>
           {tl2Current ? (
             <>
-              <Text className="mb-1">
+              <Text className="mb-1 mt-2">
+                {' '}
                 {tl2Current.firstName} {tl2Current.lastName}
               </Text>
               <Link className="mb-2" href={`mailto:${tl2Current.email}`}>
@@ -69,7 +70,8 @@ export default function ContactChanges({
           <Text className="font-semibold mb-0">Requested Secondary Technical Lead</Text>
           {tl2Requested ? (
             <>
-              <Text className="mb-1">
+              <Text className="mb-1 mt-2">
+                {' '}
                 {tl2Requested.firstName} {tl2Requested.lastName}
               </Text>
               <Link href={`mailto:${tl2Requested.email}`}>{tl2Requested.email}</Link>

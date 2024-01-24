@@ -50,6 +50,8 @@ export const sendEditRequestEmails = async (
   request: PrivateCloudRequestWithProjectAndRequestedProject,
   comment?: string,
 ) => {
+  console.log('SEND EDIT REQUEST');
+
   try {
     const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
     const userEmail = render(EditRequestTemplate({ request, comment }), { pretty: true });
@@ -77,6 +79,7 @@ export const sendEditRequestEmails = async (
     await Promise.all([contacts, admins]);
   } catch (error) {
     console.error('ERROR SENDING EDIT REQUEST EMAIL');
+    console.log(error);
   }
 };
 

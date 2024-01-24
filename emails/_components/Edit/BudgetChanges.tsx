@@ -31,8 +31,8 @@ export default function BudgetChanges({
               return (
                 <div key={key} className="mb-4">
                   <Text className="font-semibold">{key.toUpperCase()} Budget</Text>
-                  <Text className="font-medium mt-1">Current: USD ${currentValue.toFixed(2)}</Text>
-                  <Text className="font-medium mt-1">Requested: USD ${requestedValue.toFixed(2)}</Text>
+                  <Text className="mt-0 mb-0">Current: USD ${currentValue.toFixed(2)}</Text>
+                  <Text className="mt-0 mb-0">Requested: USD ${requestedValue.toFixed(2)}</Text>
                 </div>
               );
             }
@@ -45,8 +45,8 @@ export default function BudgetChanges({
         <>
           <Heading className="text-lg text-black mb-2">Account Coding Changes</Heading>
           <div>
-            <Text className="font-medium">Current Account Coding: {accountCodingCurrent}</Text>
-            <Text className="font-medium mt-1">Requested Account Coding: {accountCodingRequested}</Text>
+            <Text className="mb-0">Current Account Coding: {accountCodingCurrent}</Text>
+            <Text className="mt-0 mb-0">Requested Account Coding: {accountCodingRequested}</Text>
           </div>
         </>
       )}
