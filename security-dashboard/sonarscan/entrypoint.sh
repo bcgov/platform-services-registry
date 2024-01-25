@@ -8,17 +8,29 @@ echo "$PROJECTS"
 #     {
 #         "licencePlate": "34w22a",
 #         "context": "PRIVATE",
-#         "repos": [
-#             "https://github.com/bcgov/platform-services-registry",
-#             "https://github.com/bcgov/platform-developer-docs"
+#         "repositories": [
+#             {
+#                 "url": "https://github.com/bcgov/platform-services-registry",
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7b" # pragma: allowlist secret
+#             },
+#             {
+#                 "url": "https://github.com/bcgov/platform-developer-docs",
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7c" # pragma: allowlist secret
+#             }
 #         ]
 #     },
 #     {
 #         "licencePlate": "3744e3",
 #         "context": "PUBLIC",
-#         "repos": [
-#             "https://github.com/bcgov/platform-services-registry-web",
-#             "https://github.com/bcgov/platform-services-registry-api"
+#         "repositories": [
+#             {
+#                 "url": "https://github.com/bcgov/platform-services-registry-web",
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7d" # pragma: allowlist secret
+#             },
+#             {
+#                 "url": "https://github.com/bcgov/platform-services-registry-api",
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7e" # pragma: allowlist secret
+#             }
 #         ]
 #     }
 # ]
@@ -56,6 +68,28 @@ get_default_branch() {
 
     default_branch=$(echo "$data" | jq -r .default_branch)
     echo $default_branch
+}
+
+# Retrieves the last commit SHA of a GitHub repository using the GitHub API.
+get_sha() {
+    if [ "$#" -lt 2 ]; then exit 1; fi
+    owner="$1"
+    repo="$2"
+    ref="$3"
+
+    read -r status_code data < <(curl_http_code -X GET \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "https://api.github.com/repos/$owner/$repo/commits/$ref")
+
+    if [ "$status_code" -ne "200" ]; then
+        echo ""
+        return
+    fi
+
+    sha=$(echo "$data" | jq -r .sha)
+    echo $sha
 }
 
 # Downloads a ZIP archive of a specific reference from a GitHub repository using the GitHub API.
@@ -119,9 +153,11 @@ while read -r proj; do
     licencePlate=$(echo "$proj" | jq -r '.licencePlate')
     context=$(echo "$proj" | jq -r '.context')
     urls=$(echo "$proj" | jq -r '.repositories[] | .url')
+    sha=$(echo "$proj" | jq -r '.repositories[] | .sha')
 
     if [ -z "$licencePlate" ] || [ -z "$context" ] || [ -z "$urls" ]; then
-        continue;
+        echo "Invalid project: Missing required information. Please provide values for licencePlate, context, and urls."
+        continue
     fi
 
     # Loop through each repository in the project
@@ -129,14 +165,14 @@ while read -r proj; do
         # Extract owner and repo from the repository URL
         read -r owner repo < <(extract_owner_repo $repourl)
 
+        # Get the default branch of the GitHub repository
+        ref=$(get_default_branch $owner $repo)
+
         # Generate unique identifiers for the repository and folder
         repoid="$owner--$repo"
         folder="$context-$licencePlate-$repoid"
         repo_path="$full_path/$folder"
         mkdir -p "$repo_path"
-
-        # Get the default branch of the GitHub repository
-        ref=$(get_default_branch $owner $repo)
 
         # Download the repository ZIP file
         cd "$repo_path"
@@ -173,6 +209,7 @@ while read -r proj; do
             "licencePlate": "'"$licencePlate"'",
             "context": "'"$context"'",
             "url": "'"$repourl"'",
+            "sha": "'"$sha"'",
             "result": {
                 "repoid": "'"$repoid"'",
                 "last_date": "'"$last_date"'",

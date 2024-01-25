@@ -25,7 +25,7 @@ with DAG(
     t1 = PythonOperator(
         task_id='fetch-sonarscan-projects-dev',
         python_callable=fetch_sonarscan_projects,
-        op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY},
+        op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY, 'gh_token': os.environ['GH_TOKEN']},
         provide_context=True,
         dag=dag
     )
