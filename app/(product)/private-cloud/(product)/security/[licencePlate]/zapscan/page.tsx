@@ -37,6 +37,7 @@ export default async function Page({
     html: { not: null },
     licencePlate: params.licencePlate,
   };
+
   if (cluster.length > 0) {
     where.cluster = { in: cluster };
   }
