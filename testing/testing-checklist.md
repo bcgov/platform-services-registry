@@ -38,7 +38,7 @@
 4. Progress Tab shows only the products that are in Reviewing or Provisioning state.
 5. Products Tab shows both Provisioned and In Progress products.
 6. The Button Request a New Product leads to the Create Page of the corresponding Cloud (Private for Private Cloud and Public for Public Cloud).
-7. Search is made by name, contacts name, contacts emails and lisense plate at the Requests Tab. The same + Description at the Products Tab.
+7. Search is made by name, contacts name, contacts emails and license plate at the Requests Tab. The same + Description at the Products Tab.
 8. Changing number of rows is changing the number of Products / Requests to the desired number if there is enough items.
 9. Clicking next after changing rows shows the next portion of pagination. The last page shows the remaining products and correct numbers. Clicking Previous shows the previous portion of the pagination.
 10. Search made on the page of pagination that can’t be reached by the number of found entries should redirect to the first page of pagination.
