@@ -35,6 +35,13 @@ spec:
             export CHES_CLIENT_SECRET="{{ .Data.data.CHES_CLIENT_SECRET }}"
             export AWS_ROLES_CLIENT_ID="{{ .Data.data.AWS_ROLES_CLIENT_ID }}"
             export AWS_ROLES_CLIENT_SECRET="{{ .Data.data.AWS_ROLES_CLIENT_SECRET }}"
+            export CLAB_SERVICE_ACCOUNT_TOKEN="{{.Data.data.CLAB_SERVICE_ACCOUNT_TOKEN}}"
+            export KLAB_SERVICE_ACCOUNT_TOKEN="{{.Data.data.KLAB_SERVICE_ACCOUNT_TOKEN}}"
+            export KLAB2_SERVICE_ACCOUNT_TOKEN="{{.Data.data.KLAB2_SERVICE_ACCOUNT_TOKEN}}"
+            export SILVER_SERVICE_ACCOUNT_TOKEN="{{.Data.data.SILVER_SERVICE_ACCOUNT_TOKEN}}"
+            export GOLD_SERVICE_ACCOUNT_TOKEN="{{.Data.data.GOLD_SERVICE_ACCOUNT_TOKEN}}"
+            export GOLDDR_SERVICE_ACCOUNT_TOKEN="{{.Data.data.GOLDDR_SERVICE_ACCOUNT_TOKEN}}"
+            export EMERALD_SERVICE_ACCOUNT_TOKEN="{{.Data.data.EMERALD_SERVICE_ACCOUNT_TOKEN}}"
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
