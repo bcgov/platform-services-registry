@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
+import _get from 'lodash-es/get';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { SecurityConfig, $Enums } from '@prisma/client';
@@ -11,7 +12,14 @@ import { getSecurityConfig, upsertSecurityConfig } from '@/services/security-con
 import { SecurityConfigRequestBodySchema } from '@/schema';
 
 export default function Repository({ params }: { params: { licencePlate: string } }) {
-  const { register, control, handleSubmit, getValues, setValue } = useForm<SecurityConfig>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<SecurityConfig>({
     resolver: zodResolver(SecurityConfigRequestBodySchema),
     defaultValues: {
       licencePlate: params.licencePlate,
@@ -81,22 +89,27 @@ export default function Repository({ params }: { params: { licencePlate: string 
       >
         <ul>
           {fields.map((item, index) => (
-            <li key={item.id} className="flex mb-1">
-              <input
-                autoComplete="off"
-                className={classNames(
-                  'flex-auto rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                )}
-                {...register(`repositories.${index}.url`)}
-              />
+            <li key={item.id}>
+              <div className="flex mb-1">
+                <input
+                  autoComplete="off"
+                  className={classNames(
+                    'flex-auto rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                  )}
+                  {...register(`repositories.${index}.url`)}
+                />
 
-              <button
-                type="button"
-                className="ml-2 rounded-md bg-red-600 text-white px-4 py-2.5 font-bcsans text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
-                onClick={() => remove(index)}
-              >
-                Remove
-              </button>
+                <button
+                  type="button"
+                  className="ml-2 rounded-md bg-red-600 text-white px-4 py-2.5 font-bcsans text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+                  onClick={() => remove(index)}
+                >
+                  Remove
+                </button>
+              </div>
+              {_get(errors, `repositories.${index}.url`) && (
+                <span className="text-red-600">{_get(errors, `repositories.${index}.url.message`)}</span>
+              )}
             </li>
           ))}
         </ul>

@@ -3,16 +3,26 @@ import prisma from '@/lib/prisma';
 import { SecurityConfig, $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { SecurityConfigRequestBodySchema } from '@/schema';
+import { ProjectSetNamespace } from '@/scripts/deletioncheck';
 
 const apiHandler = createApiHandler<null, null, SecurityConfig>({
   roles: ['user'],
   validations: { body: SecurityConfigRequestBodySchema },
 });
 export const PUT = apiHandler(async ({ body, session }) => {
-  const exists =
+  const existQuery = { where: { licencePlate: body.licencePlate }, session: session as never };
+  let exists =
     body.context === $Enums.ProjectContext.PRIVATE
-      ? await prisma.privateCloudProject.count({ where: {}, session: session as never })
-      : await prisma.publicCloudProject.count({ where: {}, session: session as never });
+      ? await prisma.privateCloudProject.count(existQuery)
+      : await prisma.publicCloudProject.count(existQuery);
+
+  // Find the authority in the requested projects if not found in the existing projects.
+  if (exists === 0) {
+    exists =
+      body.context === $Enums.ProjectContext.PRIVATE
+        ? await prisma.privateCloudRequestedProject.count(existQuery)
+        : await prisma.publicCloudRequestedProject.count(existQuery);
+  }
 
   if (exists === 0) {
     throw Error('invalid project');
