@@ -5,7 +5,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Select, { MultiValue } from 'react-select';
 import _throttle from 'lodash-es/throttle';
-import { parseQueryString, stringifyQuery } from '@/lib/query-string';
+import _isEqual from 'lodash-es/isEqual';
+import _castArray from 'lodash-es/castArray';
+import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/lib/query-string';
 import Search from '@/components/assets/search.svg';
 
 export default function SearchPanel({ contexts }: { contexts: string[] }) {
@@ -27,13 +29,21 @@ export default function SearchPanel({ contexts }: { contexts: string[] }) {
   };
 
   useEffect(() => {
-    const currParams = parseQueryString(searchParams?.toString());
-    const newParams = stringifyQuery({
-      ...currParams,
+    const currParamObj = parseQueryString(searchParams?.toString());
+    const hasFilterChanged =
+      !_isEqual(currParamObj.search, searchTerm) || !_isEqual(_castArray(currParamObj.context || []), selectedContexts);
+
+    const newParamObj = {
+      ...currParamObj,
+      page: hasFilterChanged ? 1 : currParamObj.page,
       search: searchTerm || '',
       context: selectedContexts,
-    });
+    };
 
+    if (pathname.endsWith('/sonarscan')) return;
+    if (isSearchQueryEqual(currParamObj, newParamObj)) return;
+
+    const newParams = stringifyQuery(newParamObj);
     throttled.current(replace, `${pathname}?${newParams}`);
   }, [replace, pathname, searchParams, searchTerm, selectedContexts]);
 
