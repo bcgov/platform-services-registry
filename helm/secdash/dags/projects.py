@@ -4,6 +4,7 @@ import shutil
 from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
+from github import GitHubAPI, extract_owner_repo
 
 
 shared_directory = '/opt/airflow/shared'
@@ -208,7 +209,7 @@ def load_zap_results(mongo_conn_id):
         print(f"[load_zap_results] Error: {e}")
 
 
-def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
+def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
     """
     Fetch active projects from MongoDB, retrieve information about their codebase repository URLs,
     and push the results into XCom.
@@ -228,15 +229,57 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, **context):
     try:
         db = get_mongo_db(mongo_conn_id)
         projects = db.SecurityConfig.find(
-            {}, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
+            {
+                "$expr": {
+                    "$gt": [{"$size": "$repositories"}, 0]
+                }
+            }, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
         result = []
 
         for project in projects:
-            if len(project['repositories']) > 0:
-                result.append(project)
+            for repository in project["repositories"]:
+                prev_result = db.SonarScanResult.find_one({
+                    'licencePlate': project['licencePlate'],
+                    'context': project['context'],
+                    'url': repository['url']},
+                    projection={"_id": False, "sha": True},
+                )
 
-        result_subarrays = split_array(result, concurrency)
+                if prev_result is None:
+                    print(f"{repository['url']}: Has not been scanned yet.")
+                    result.append({
+                        'licencePlate': project['licencePlate'],
+                        'context': project['context'],
+                        'repositories': [{
+                            'url': repository['url'],
+                            'sha': ''
+                        }]
+                    })
+                    continue
+
+                try:
+                    owner, repo = extract_owner_repo(repository['url'])
+                    github_api = GitHubAPI(gh_token)
+                    default_branch = github_api.get_default_branch(owner, repo)
+                    commit_sha = github_api.get_sha(owner, repo, default_branch)
+
+                    if prev_result["sha"] == commit_sha:
+                        print(f"{repository['url']}: No changes detected. Skipping the update..")
+                        continue
+
+                    result.append({
+                        'licencePlate': project['licencePlate'],
+                        'context': project['context'],
+                        'repositories': [{
+                            'url': repository['url'],
+                            'sha': commit_sha
+                        }]
+                    })
+                except Exception as e:
+                    print(f"{repository['url']}: {e}")
+
         task_instance = context['task_instance']
+        result_subarrays = split_array(result, concurrency)
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 

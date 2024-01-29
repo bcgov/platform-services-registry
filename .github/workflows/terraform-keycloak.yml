@@ -1,16 +1,16 @@
-name: 51.Terraform - Sysdig
+name: 52.Terraform - Keycloak
 
 on:
   push:
     branches:
     - main
     paths:
-    - terraform/sysdig/**
-    - .github/workflows/terraform-sysdig.yml
+    - terraform/keycloak/**
+    - .github/workflows/terraform-keycloak.yml
   pull_request:
     paths:
-    - terraform/sysdig/**
-    - .github/workflows/terraform-sysdig.yml
+    - terraform/keycloak/**
+    - .github/workflows/terraform-keycloak.yml
 
 env:
   TF_VERSION: 1.5.7
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     environment:
-      name: tf-sysdig
+      name: tf-keycloak
     steps:
     - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
@@ -41,26 +41,28 @@ jobs:
     - name: Terraform Format
       id: fmt
       run: terraform fmt -check
-      working-directory: ./terraform/sysdig
+      working-directory: ./terraform/keycloak
 
     - name: Terraform Variables
       run: |
         cat >"ci.auto.tfvars" <<EOF
-        silver_101ed4_team_sysdig_monitor_api_token="${{ secrets.SILVER_101ED4_TEAM_SYSDIG_MONITOR_API_TOKEN }}"
+        dev_client_secret = "${{ secrets.DEV_CLIENT_SECRET }}"
+        test_client_secret = "${{ secrets.TEST_CLIENT_SECRET }}"
+        prod_client_secret = "${{ secrets.PROD_CLIENT_SECRET }}"
         EOF
 
-      working-directory: ./terraform/sysdig
+      working-directory: ./terraform/keycloak
 
     - name: Terraform Init
       id: init
       run: terraform init -upgrade
-      working-directory: ./terraform/sysdig
+      working-directory: ./terraform/keycloak
 
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
       run: terraform plan -no-color
-      working-directory: ./terraform/sysdig
+      working-directory: ./terraform/keycloak
       continue-on-error: true
 
     - name: Create Comment
@@ -96,4 +98,4 @@ jobs:
     - name: Terraform Apply
       if: github.event_name == 'push'
       run: terraform apply -auto-approve
-      working-directory: ./terraform/sysdig
+      working-directory: ./terraform/keycloak

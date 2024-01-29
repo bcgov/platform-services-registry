@@ -30,3 +30,16 @@ export const compareUrlsIgnoreLastSegments = (url1: string, url2: string, numSeg
 
   return base1 === base2;
 };
+
+export const pathChangeTail = (currentPath: string, numSegmentsToIgnore: number | undefined, href: string): string => {
+  if (numSegmentsToIgnore) {
+    const currentPathArr = currentPath.split('/');
+    const hrefArr = href.split('/');
+    const arrLast = currentPathArr[currentPathArr.length - 1];
+    const isPathDifferent = arrLast !== hrefArr[hrefArr.length - 1] && currentPathArr.length === hrefArr.length;
+    if (isPathDifferent) {
+      return hrefArr.slice(0, -numSegmentsToIgnore).concat(arrLast).join('/');
+    }
+  }
+  return href;
+};

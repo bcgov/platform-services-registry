@@ -24,11 +24,13 @@ export default function Footer() {
               </a>
             </div>
           ))}
-          <div className="pb-6">
-            <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
-              App Version: {DEPLOYMENT_TAG}
-            </span>
-          </div>
+          {DEPLOYMENT_TAG && (
+            <div className="pb-6">
+              <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
+                App Version: {DEPLOYMENT_TAG}
+              </span>
+            </div>
+          )}
         </nav>
       </div>
     </footer>

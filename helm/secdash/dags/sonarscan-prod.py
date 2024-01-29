@@ -25,7 +25,7 @@ with DAG(
     t1 = PythonOperator(
         task_id='fetch-sonarscan-projects-prod',
         python_callable=fetch_sonarscan_projects,
-        op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY},
+        op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY, 'gh_token': os.environ['GH_TOKEN']},
         provide_context=True,
         dag=dag
     )
@@ -44,7 +44,7 @@ with DAG(
             task_id='sonarscan-{}'.format(i),
             name='sonarscan-{}'.format(i),
             namespace='101ed4-tools',
-            image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:848c7a3121da0a5669af904e4a77860832aac6a7',
+            image='ghcr.io/bcgov/pltsvc-secdashboard-sonarscan:074cae260ff6ff0017bf74e78c32dce6d1bd8571',
             env_vars={
                 "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-sonarscan-projects-prod', key='{}')".format(i) + "}}",
                 "CONTEXT": MONGO_CONN_ID,
