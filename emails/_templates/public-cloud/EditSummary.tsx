@@ -32,8 +32,8 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
                 <Heading className="text-lg text-black">Your Edit Summary!</Heading>
                 <Text>Hi {current.name} Team, </Text>
                 <Text className="">
-                  You have edited your product with the license plate {request.licencePlate}. Here is a summary of your
-                  changes.
+                  You have edited your product in the Public Cloud Landing Zone with the license plate{' '}
+                  {request.licencePlate}. Here is a summary of your changes.
                 </Text>
                 <Button
                   href={'https://registry.developer.gov.bc.ca/public-cloud/products/active-requests'}
