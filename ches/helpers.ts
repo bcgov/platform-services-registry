@@ -1,7 +1,7 @@
 import _compact from 'lodash-es/compact';
 import _uniq from 'lodash-es/uniq';
 import _castArray from 'lodash-es/castArray';
-import { EMAIL_PREFIX } from '@/config';
+import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
 
 type NullOrString = string | null | undefined;
 type EmailAddress = string | undefined;
@@ -76,15 +76,15 @@ const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promis
 };
 
 const sendEmail = async (email: Email): Promise<void> => {
-  if (!process.env.CHES_TOKEN_URL || !process.env.CHES_CLIENT_ID || !process.env.CHES_CLIENT_SECRET) {
+  if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
     console.error('Missing environment variables for email service');
     return;
   }
 
   const tokenData: TokenData = {
-    tokenUrl: process.env.CHES_TOKEN_URL || '',
-    clientId: process.env.CHES_CLIENT_ID || '',
-    clientSecret: process.env.CHES_CLIENT_SECRET || '',
+    tokenUrl: CHES_TOKEN_URL || '',
+    clientId: CHES_CLIENT_ID || '',
+    clientSecret: CHES_CLIENT_SECRET || '',
   };
 
   const token = await getToken(tokenData);
@@ -95,7 +95,7 @@ const sendEmail = async (email: Email): Promise<void> => {
   }
 
   try {
-    const apiUrl = process.env.CHES_API_URL || '';
+    const apiUrl = CHES_API_URL || '';
     const subject = `${EMAIL_PREFIX}${email.subject}`;
 
     const response = await fetchWithTimeout(`${apiUrl}/email`, {

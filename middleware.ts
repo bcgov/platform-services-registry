@@ -1,10 +1,11 @@
 // See https://nextjs.org/docs/pages/building-your-application/configuring/content-security-policy
 import { NextRequest, NextResponse } from 'next/server';
+import { SECURE_HEADERS, AUTH_BASE_URL } from './config';
 
 export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
 
-  if (process.env.SECURE_HEADERS !== 'true') {
+  if (SECURE_HEADERS !== 'true') {
     return NextResponse.next({
       headers: requestHeaders,
       request: {
@@ -16,7 +17,7 @@ export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
   const loginproxy_gov =
-    process.env.AUTH_BASE_URL ??
+    AUTH_BASE_URL ??
     'https://loginproxy.gov.bc.ca/ https://dev.loginproxy.gov.bc.ca/ https://test.loginproxy.gov.bc.ca/';
 
   const gravatar_com = 'https://gravatar.com/';
