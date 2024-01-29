@@ -92,9 +92,6 @@ export default function Modal({
     }
   }, [projectData?.licencePlate, projectData?.projectOwner?.email, licencePlate, email]);
 
-  console.log('isDisabled: ', isDisabled);
-  console.log('deletionCheckData: ', deletionCheckData);
-
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
