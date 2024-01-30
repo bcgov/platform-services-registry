@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
-
+import { Suspense } from 'react';
 export default async function ProductsTable({
   searchParams,
 }: {
@@ -55,14 +55,16 @@ export default async function ProductsTable({
   const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
 
   return (
-    <Table
-      title="Products in Private Cloud OpenShift Platform"
-      description="These products have an active request. An admin is currently reviewing them"
-      tableBody={<NewTableBody rows={activeRequests} />}
-      total={requestsTotal}
-      currentPage={currentPage}
-      pageSize={effectivePageSize}
-      apiContext="private-cloud"
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <Table
+        title="Products in Private Cloud OpenShift Platform"
+        description="These products have an active request. An admin is currently reviewing them"
+        tableBody={<NewTableBody rows={activeRequests} />}
+        total={requestsTotal}
+        currentPage={currentPage}
+        pageSize={effectivePageSize}
+        apiContext="private-cloud"
+      />
+    </Suspense>
   );
 }
