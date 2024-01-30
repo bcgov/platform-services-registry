@@ -9,6 +9,7 @@ import { sendEmail } from '@/ches/helpers';
 import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
 
 import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
+import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
 import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
 import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
@@ -43,6 +44,20 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
     await Promise.all([contacts, admins]);
   } catch (error) {
     console.log('ERROR SENDING NEW REQUEST EMAIL');
+  }
+};
+
+export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
+  try {
+    const adminEmail = render(AdminDeleteRequestTemplate({ product }), { pretty: true });
+
+    await sendEmail({
+      body: adminEmail,
+      to: adminEmails,
+      subject: `${product.name} is marked for deletion`,
+    });
+  } catch (error) {
+    console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
   }
 };
 
