@@ -8,6 +8,7 @@ export default function ContactChanges({
   poRequested,
   tl1Requested,
   tl2Requested,
+  requestedLabel = 'Requested',
 }: {
   poCurrent: User;
   tl1Current: User;
@@ -15,6 +16,7 @@ export default function ContactChanges({
   poRequested: User;
   tl1Requested: User;
   tl2Requested: User | null;
+  requestedLabel?: string;
 }) {
   return (
     <div>
@@ -28,7 +30,7 @@ export default function ContactChanges({
           <Link className="mb-2" href={`mailto:${poCurrent.email}`}>
             {poCurrent.email}
           </Link>
-          <Text className="font-semibold mb-0">Requested Product Owner</Text>
+          <Text className="font-semibold mb-0">{requestedLabel} Product Owner</Text>
           <Text className="mb-1 mt-2">
             {poRequested.firstName} {poRequested.lastName}
           </Text>
@@ -44,7 +46,7 @@ export default function ContactChanges({
           <Link className="mb-2" href={`mailto:${tl1Current.email}`}>
             {tl1Current.email}
           </Link>
-          <Text className="font-semibold mb-0">Requested Primary Technical Lead</Text>
+          <Text className="font-semibold mb-0">{requestedLabel} Primary Technical Lead</Text>
           <Text className="mb-1 mt-2">
             {tl1Requested.firstName} {tl1Requested.lastName}
           </Text>
@@ -67,7 +69,7 @@ export default function ContactChanges({
           ) : (
             <Text className="mb-1">No Current Lead</Text>
           )}
-          <Text className="font-semibold mb-0">Requested Secondary Technical Lead</Text>
+          <Text className="font-semibold mb-0">{requestedLabel} Secondary Technical Lead</Text>
           {tl2Requested ? (
             <>
               <Text className="mb-1 mt-2">

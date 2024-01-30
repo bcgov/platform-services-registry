@@ -252,12 +252,12 @@ export default function Modal({
                     </button>
                   ) : (
                     <button
-                      disabled={isDisabled || !(deletionCheckData !== 'OK_TO_DELETE')}
+                      disabled={isDisabled || deletionCheckData !== 'OK_TO_DELETE'}
                       type="button"
                       onClick={onSubmit}
                       className={classNames(
                         'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
-                        isDisabled || !(deletionCheckData !== 'OK_TO_DELETE')
+                        isDisabled || deletionCheckData !== 'OK_TO_DELETE'
                           ? 'bg-gray-400 text-white cursor-not-allowed'
                           : 'bg-red-600 text-white hover:bg-red-700',
                       )}

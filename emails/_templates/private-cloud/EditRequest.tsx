@@ -9,6 +9,7 @@ import { comparePrivateCloudProjects } from '../../_components/Edit/utils/compar
 import ContactChanges from '../../_components/Edit/ContactChanges';
 import QuotaChanges from '../../_components/Edit/QuotaChanges';
 import DescriptionChanges from '../../_components/Edit/DescriptionChanges';
+import { BASE_URL } from '@/config';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
@@ -35,7 +36,7 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
                   administrators have been notified and will review your request.
                 </Text>
-                <Button href={process.env.BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
+                <Button href={BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
                   Review Request
                 </Button>
               </div>
