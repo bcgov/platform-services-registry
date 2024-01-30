@@ -38,7 +38,9 @@ export default function Table({
           </Suspense>
         </div>
 
-        <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
+        <div className="h-[60vh] overflow-y-auto scroll-smooth">
+          <Suspense>{tableBody}</Suspense>
+        </div>
       </div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
