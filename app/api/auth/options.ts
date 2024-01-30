@@ -4,7 +4,7 @@ import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
 import { getUser } from '@/msal/service';
-import { IS_PROD } from '@/config';
+import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
 import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 
 interface KeycloakToken {
@@ -38,9 +38,9 @@ export const authOptions: AuthOptions = {
     // }),
 
     KeycloakProvider({
-      clientId: process.env.AUTH_RESOURCE!,
-      clientSecret: process.env.AUTH_SECRET!,
-      issuer: `${process.env.AUTH_SERVER_URL}/realms/${process.env.AUTH_RELM}`,
+      clientId: AUTH_RESOURCE!,
+      clientSecret: AUTH_SECRET!,
+      issuer: `${AUTH_SERVER_URL}/realms/${AUTH_RELM}`,
       profile(profile) {
         return {
           id: profile.sub,
@@ -71,7 +71,7 @@ export const authOptions: AuthOptions = {
   //   return baseUrl;
   // },
   // },
-  secret: process.env.AUTH_SECRET,
+  secret: AUTH_SECRET,
 
   // pages: {
   //   signIn: "/auth/signin",

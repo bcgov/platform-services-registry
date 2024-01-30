@@ -6,7 +6,6 @@ import { POST as decisionRequest } from '@/app/api/private-cloud/decision/[licen
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import exp from 'constants';
 
 const BASE_URL = 'http://localhost:3000';
 

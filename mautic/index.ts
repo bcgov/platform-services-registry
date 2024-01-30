@@ -1,10 +1,16 @@
 import { URLSearchParams } from 'url';
 import { User } from '@prisma/client';
+import {
+  MAUTIC_TOKEN_URL,
+  MAUTIC_CLIENT_ID,
+  MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET,
+  MAUTIC_SUBSSCRIPTION_API_URL,
+} from '@/config';
 
 const getToken = async (): Promise<string> => {
-  const url = process.env.MAUTIC_TOKEN_URL || '';
+  const url = MAUTIC_TOKEN_URL || '';
 
-  const authString = `${process.env.MAUTIC_CLIENT_ID}:${process.env.MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET}`;
+  const authString = `${MAUTIC_CLIENT_ID}:${MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET}`;
   const encodedAuthString = Buffer.from(authString).toString('base64');
 
   const params = {
@@ -33,7 +39,7 @@ const getToken = async (): Promise<string> => {
 };
 
 export const getContactId = async (email: string, token: string): Promise<string> => {
-  const mauticSubscriptionUrlBase = process.env.MAUTIC_SUBSSCRIPTION_API_URL || '';
+  const mauticSubscriptionUrlBase = MAUTIC_SUBSSCRIPTION_API_URL || '';
 
   try {
     const response = await fetch(`${mauticSubscriptionUrlBase}/segments`, {
@@ -56,7 +62,7 @@ export const getContactId = async (email: string, token: string): Promise<string
 
 export const subscribe = async (user: User, token: string, cluster: string, platform: string): Promise<Response> => {
   const contactId = await getContactId(user.email, token);
-  const mauticSubscriptionUrlBase = process.env.MAUTIC_SUBSSCRIPTION_API_URL || '';
+  const mauticSubscriptionUrlBase = MAUTIC_SUBSSCRIPTION_API_URL || '';
 
   try {
     const response = await fetch(`${mauticSubscriptionUrlBase}/segments/contact/cluster/add`, {
