@@ -63,7 +63,9 @@ export default function Table({
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
           <div>
-            <PagninationButtons pageCount={total / pageSize} page={currentPage} pageSize={pageSize} />
+            <Suspense>
+              <PagninationButtons pageCount={total / pageSize} page={currentPage} pageSize={pageSize} />
+            </Suspense>
           </div>
         </div>
       </nav>
