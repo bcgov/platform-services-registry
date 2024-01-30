@@ -55,7 +55,11 @@ export default async function ProductsTable({
       <Table
         title="Products in Private Cloud OpenShift Platform"
         description="These are your products hosted on Private Cloud OpenShift platform"
-        tableBody={<TableBody rows={projects} />}
+        tableBody={
+          <Suspense>
+            <TableBody rows={projects} />
+          </Suspense>
+        }
         total={total}
         currentPage={currentPage}
         pageSize={effectivePageSize}
