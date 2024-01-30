@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
-import React, { Suspense } from 'react';
+
 export default async function ProductsTable({
   searchParams,
 }: {
@@ -58,11 +58,7 @@ export default async function ProductsTable({
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="These products have an active request. An admin is currently reviewing them"
-      tableBody={
-        <Suspense fallback={<div>Loading...</div>}>
-          <NewTableBody rows={activeRequests} />
-        </Suspense>
-      }
+      tableBody={<NewTableBody rows={activeRequests} />}
       total={requestsTotal}
       currentPage={currentPage}
       pageSize={effectivePageSize}
