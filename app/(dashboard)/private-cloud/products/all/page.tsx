@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
-
+import { Suspense } from 'react';
 export default async function ProductsTable({
   searchParams,
 }: {
@@ -51,15 +51,17 @@ export default async function ProductsTable({
   const projects = data.map(privateCloudProjectDataToRow);
 
   return (
-    <Table
-      title="Products in Private Cloud OpenShift Platform"
-      description="These are your products hosted on Private Cloud OpenShift platform"
-      tableBody={<TableBody rows={projects} />}
-      total={total}
-      currentPage={currentPage}
-      pageSize={effectivePageSize}
-      showDownloadButton
-      apiContext="private-cloud"
-    />
+    <Suspense>
+      <Table
+        title="Products in Private Cloud OpenShift Platform"
+        description="These are your products hosted on Private Cloud OpenShift platform"
+        tableBody={<TableBody rows={projects} />}
+        total={total}
+        currentPage={currentPage}
+        pageSize={effectivePageSize}
+        showDownloadButton
+        apiContext="private-cloud"
+      />
+    </Suspense>
   );
 }
