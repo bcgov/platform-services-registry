@@ -129,12 +129,13 @@ describe('Create Private Cloud Request Route', () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: 'oamar.kanji@gov.bc.ca',
-        roles: ['admin'],
       },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     // Make a create request
-    const createRequestObject = new NextRequest(`${BASE_URL}/api/create/private-cloud`, {
+    const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
       method: 'POST',
       body: JSON.stringify(createRequestBody),
     });

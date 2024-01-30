@@ -5,7 +5,7 @@
       "responseCode": 404
     },
     {
-      "url": "https://graph.microsoft.com/v1.0/users*",
+      "url": "https://graph.microsoft.com/v1.0/users?$filter*",
       "responseBody": {
         "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users",
         "@odata.count": 1000,
@@ -154,19 +154,6 @@
             "id": "a008b857-36c8-4a17-a79a-518e33effec0"
           },
           {
-            "displayName": "Ahn, Junmin CITZ:EX",
-            "surname": "Ahn",
-            "givenName": "Junmin",
-            "mail": "Junmin.Ahn@gov.bc.ca",
-            "userPrincipalName": "Junmin.Ahn@gov.bc.ca",
-            "jobTitle": "admin",
-            "businessPhones": [],
-            "mobilePhone": null,
-            "officeLocation": "DevOps and Cloud Services",
-            "preferredLanguage": null,
-            "id": "a008b857-36c8-4a17-a79a-518e33effec1"
-          },
-          {
             "displayName": "Kravchenko, Artem CITZ:EX",
             "surname": "Kravchenko",
             "givenName": "Artem",
@@ -206,6 +193,210 @@
             "id": "bbb8b857-36c8-4a17-a79a-518e33effbbb"
           }
         ]
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/admin.system@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "System, Admin CITZ:EX",
+        "surname": "System",
+        "givenName": "Admin",
+        "mail": "admin.system@gov.bc.ca",
+        "userPrincipalName": "admin.system@gov.bc.ca",
+        "jobTitle": "admin",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb0"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/john.doe@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Doe, John CITZ:EX",
+        "surname": "Doe",
+        "givenName": "John",
+        "mail": "john.doe@gov.bc.ca",
+        "userPrincipalName": "john.doe@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb1"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/james.smith@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Smith, James CITZ:EX",
+        "surname": "Smith",
+        "givenName": "James",
+        "mail": "james.smith@gov.bc.ca",
+        "userPrincipalName": "james.smith@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb2"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/david.johnson@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Johnson, David CITZ:EX",
+        "surname": "Johnson",
+        "givenName": "David",
+        "mail": "david.johnson@gov.bc.ca",
+        "userPrincipalName": "david.johnson@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb3"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/sarah.williams@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Williams, Sarah CITZ:EX",
+        "surname": "Williams",
+        "givenName": "Sarah",
+        "mail": "sarah.williams@gov.bc.ca",
+        "userPrincipalName": "sarah.williams@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb4"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/michael.brown@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Brown, Michael CITZ:EX",
+        "surname": "Brown",
+        "givenName": "Michael",
+        "mail": "michael.brown@gov.bc.ca",
+        "userPrincipalName": "michael.brown@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb5"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/jessica.davis@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Davis, Jessica CITZ:EX",
+        "surname": "Davis",
+        "givenName": "Jessica",
+        "mail": "jessica.davis@gov.bc.ca",
+        "userPrincipalName": "jessica.davis@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb6"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/kevin.taylor@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Taylor, Kevin CITZ:EX",
+        "surname": "Taylor",
+        "givenName": "Kevin",
+        "mail": "kevin.taylor@gov.bc.ca",
+        "userPrincipalName": "kevin.taylor@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb7"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/amanda.wilson@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Wilson, Amanda CITZ:EX",
+        "surname": "Wilson",
+        "givenName": "Amanda",
+        "mail": "amanda.wilson@gov.bc.ca",
+        "userPrincipalName": "amanda.wilson@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb8"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/jenna.anderson@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Anderson, Jenna CITZ:EX",
+        "surname": "Anderson",
+        "givenName": "Jenna",
+        "mail": "jenna.anderson@gov.bc.ca",
+        "userPrincipalName": "jenna.anderson@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effeb9"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/laura.martinez@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Martinez, Laura CITZ:EX",
+        "surname": "Martinez",
+        "givenName": "Laura",
+        "mail": "laura.martinez@gov.bc.ca",
+        "userPrincipalName": "laura.martinez@gov.bc.ca",
+        "jobTitle": "",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "a008b857-36c8-4a17-a79a-518e33effec0"
+      }
+    },
+    {
+      "url": "https://graph.microsoft.com/v1.0/users/platform.services.test.account@gov.bc.ca",
+      "responseBody": {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+        "displayName": "Platform Services, Test Account CITZ:EX",
+        "surname": "Test Account",
+        "givenName": "Platform Services",
+        "mail": "Platform.Services.Test.Account@gov.bc.ca",
+        "userPrincipalName": "Platform.Services.Test.Account@gov.bc.ca",
+        "jobTitle": "admin",
+        "businessPhones": [],
+        "mobilePhone": null,
+        "officeLocation": "DevOps and Cloud Services",
+        "preferredLanguage": null,
+        "id": "bbb8b857-aaaa-4a17-a79a-518e33effccc"
       }
     }
   ]

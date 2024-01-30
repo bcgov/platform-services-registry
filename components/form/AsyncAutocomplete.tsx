@@ -1,13 +1,13 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import isString from 'lodash.isstring';
+import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
 import { UserInputSchema } from '@/schema';
 import classNames from '@/components/utils/classnames';
 
-type Person = {
+export type Person = {
   id: number;
   surname: string;
   givenName: string;
@@ -15,23 +15,13 @@ type Person = {
   displayName: string;
 };
 
-async function fetchPeople(email: string): Promise<Person[]> {
+export async function fetchPeople(email: string): Promise<Person[]> {
   const res = await fetch(`/api/msal/userAutocomplete?email=${email}`);
   if (!res.ok) {
     throw new Error('Network response was not ok');
   }
   return res.json();
 }
-
-const parseMinistryFromDisplayName = (displayName: string | null) => {
-  if (displayName && displayName.length > 0) {
-    const dividedString = displayName.split(/(\s+)/);
-    if (dividedString[2]) {
-      const ministry = dividedString[dividedString.length - 1].split(':', 1)[0];
-      return ministry;
-    }
-  }
-};
 
 export default function AsyncAutocomplete({
   name,

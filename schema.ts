@@ -1,4 +1,4 @@
-import { Cluster, Ministry, Provider } from '@prisma/client';
+import { Cluster, Ministry, Provider, $Enums } from '@prisma/client';
 import { string, z } from 'zod';
 
 export const DefaultCpuOptionsSchema = z.enum([
@@ -85,7 +85,7 @@ export const BudgetInputSchema = z.object({
   dev: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
   test: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
   prod: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
-  tools: z.number().min(50.0, 'Value should be no less than USD 50').default(5.0),
+  tools: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
 });
 
 export const UserInputSchema = z.object({
@@ -154,6 +154,24 @@ export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySc
     humanComment: string().optional(),
   }),
 );
+
+export const SecurityConfigRequestBodySchema = z.object({
+  licencePlate: z.string(),
+  repositories: z
+    .array(
+      z.object({
+        url: z
+          .string()
+          .url()
+          .refine(
+            (value) => /^https:\/\/github\.com\/bcgov\/[a-zA-Z0-9_-]+$/.test(value),
+            "Please enter GitHub 'bcgov' organization's repository URL. (https://github.com/bcgov/<repo>)",
+          ),
+      }),
+    )
+    .max(10),
+  context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
+});
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof PrivateCloudCreateRequestBodySchema>;
 export type PublicCloudCreateRequestBody = z.infer<typeof PublicCloudCreateRequestBodySchema>;

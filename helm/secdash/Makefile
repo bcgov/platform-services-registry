@@ -31,6 +31,11 @@ define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set airflow.uid="${UID}" \
 	--set airflow.gid="${UID}" \
+	--set sonarqube.securityContext.fsGroup="${UID}" \
+	--set sonarqube.containerSecurityContext.runAsUser="${UID}" \
+	--set sonarqube.containerSecurityContext.runAsGroup="${UID}" \
+	--set sonarqube.initContainers.securityContext.runAsUser="${UID}" \
+	--set sonarqube.initContainers.securityContext.runAsGroup="${UID}" \
 	--set dags.sha="${SHA}" \
 	$(foreach filename,$(FILENAMES),\
 		--set "dags.volumeMounts[$(INDEX)].name=secdash-airflow-dags-copy" \

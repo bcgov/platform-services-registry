@@ -3,6 +3,31 @@ import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
+import { getUser } from '@/msal/service';
+import { IS_PROD } from '@/config';
+import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
+
+interface KeycloakToken {
+  exp: number;
+  iat: number;
+  auth_time: number;
+  jti: string;
+  iss: string;
+  aud: string;
+  sub: string;
+  typ: string;
+  azp: string;
+  session_state: string;
+  at_hash: string;
+  acr: string;
+  sid: string;
+  email_verified: boolean;
+  name: string;
+  preferred_username: string;
+  given_name: string;
+  family_name: string;
+  email: string;
+}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -60,6 +85,26 @@ export const authOptions: AuthOptions = {
   //   error: '/api/auth/error',
   // },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      const { given_name, family_name, email } = profile as KeycloakToken;
+
+      const adUser: any = await getUser(email);
+      let ministry = '';
+      if (adUser) {
+        ministry = parseMinistryFromDisplayName(adUser.displayName);
+      }
+
+      const data = { firstName: given_name, lastName: family_name, email, ministry };
+      await prisma.user.upsert({
+        where: {
+          email,
+        },
+        update: data,
+        create: data,
+      });
+
+      return true;
+    },
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
         token.accessToken = account?.access_token;
@@ -79,12 +124,16 @@ export const authOptions: AuthOptions = {
         readonly: [],
       };
 
+      session.previews = {
+        awsRoles: !IS_PROD,
+        security: !IS_PROD,
+      };
+
       // Send properties to the client, like an access_token from a provider.
       if (token) {
         const user = await prisma.user.findFirst({ where: { email: session.user.email } });
         session.userId = user?.id ?? null;
         session.accessToken = token.accessToken;
-        session.user.roles = token.roles || [];
         session.roles = token.roles || [];
 
         // Assign the 'user' role to users who log in to the system.
@@ -105,6 +154,8 @@ export const authOptions: AuthOptions = {
             session.ministries[ministryRole].push(ministryCode);
           }
         });
+
+        session.user.roles = session.roles;
       }
       // {
       //   ...

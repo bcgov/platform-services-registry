@@ -8,7 +8,6 @@ import { PrivateCloudCreateRequestBody } from '@/schema';
 import createPrivateCloudNatsMessage from '@/nats/privateCloud';
 
 const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/create/private-cloud`;
 
 const createRequestBody: PrivateCloudCreateRequestBody = {
   name: 'Sample Project',
@@ -89,11 +88,12 @@ beforeAll(async () => {
   mockedGetServerSession.mockResolvedValue({
     user: {
       email: 'oamar.kanji@gov.bc.ca',
-      roles: [],
     },
+    roles: ['user'],
+    isAdmin: false,
   });
 
-  const req = new NextRequest(`${BASE_URL}/api/create/private-cloud`, {
+  const req = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
     method: 'POST',
     body: JSON.stringify(createRequestBody),
   });

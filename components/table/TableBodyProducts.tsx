@@ -103,7 +103,16 @@ function truncateText(str: string, n: number) {
 
 function getStatus(requestDecisionStatus: string) {
   if (requestDecisionStatus === 'APPROVED') {
-    return 'Provisioning..';
+    return (
+      <span className="flex">
+        <div className="mr-2">
+          <div className={classNames('mt-1 text-blue-400 bg-blue-400/10', 'flex-none rounded-full p-1')}>
+            <div className="h-1.5 w-1.5 rounded-full bg-current" />
+          </div>
+        </div>
+        Provisioning
+      </span>
+    );
   }
 
   if (requestDecisionStatus === 'PENDING') {
@@ -162,8 +171,8 @@ export default function TableBody({ rows }: TableProps) {
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
                     <p className="truncate">Ministry {deployment.ministry}</p>
-                    <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
-                      <circle cx={1} cy={1} r={0.7} />
+                    <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
+                      <circle cx={1} cy={1} r={1} />
                     </svg>
                     <p className="whitespace-nowrap">
                       {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}

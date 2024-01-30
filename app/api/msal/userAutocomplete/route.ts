@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     const response = await callMsGraph(url, accessToken);
-    const data = await response.json();
+    const data: any = await response.json();
 
     return NextResponse.json(data.value);
   } catch (error) {

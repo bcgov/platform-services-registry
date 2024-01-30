@@ -69,7 +69,7 @@ export default function Page() {
             <Budget />
             <AccountCoding />
           </div>
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             <button
               type="submit"
@@ -86,7 +86,13 @@ export default function Page() {
         handleSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
+      <ReturnModal
+        isPublicCloud
+        isPublicCreate
+        open={openReturn}
+        setOpen={setOpenReturn}
+        redirectUrl="/public-cloud/products/active-requests"
+      />
     </div>
   );
 }

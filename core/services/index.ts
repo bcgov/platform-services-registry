@@ -7,6 +7,8 @@ import { PublicCloudProjectService } from './publicCloudProject';
 import { PublicCloudRequestService } from './publicCloudRequest';
 import { PublicCloudRequestedProjectService } from './publicCloudRequestedProject';
 import { PrivateCloudProjectZapResultService } from './privateCloudProjectZapResult';
+import { SecurityConfigService } from './securityConfig';
+import { SonarScanResultService } from './sonarScanResult';
 
 export function getService(model: string, session: Session) {
   switch (model) {
@@ -24,6 +26,10 @@ export function getService(model: string, session: Session) {
       return new PublicCloudRequestedProjectService(session);
     case 'PrivateCloudProjectZapResult':
       return new PrivateCloudProjectZapResultService(session);
+    case 'SecurityConfig':
+      return new SecurityConfigService(session);
+    case 'SonarScanResult':
+      return new SonarScanResultService(session);
     default:
       return null;
   }

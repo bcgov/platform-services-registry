@@ -7,12 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
-
+import Budget from '@/components/form/Budget';
+import AccountCoding from '@/components/form/AccountCoding';
 import TeamContacts from '@/components/form/TeamContacts';
 import { useQuery } from '@tanstack/react-query';
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
-import Budget from '@/components/form/Budget';
-import AccountCoding from '@/components/form/AccountCoding';
 
 async function fetchRequestedProject(id: string): Promise<PublicCloudRequestWithCurrentAndRequestedProject> {
   const res = await fetch(`/api/public-cloud/request/${id}`);
@@ -31,7 +30,7 @@ async function fetchRequestedProject(id: string): Promise<PublicCloudRequestWith
   return data;
 }
 
-export default function RequestDecision({ params }: { params: { id: string } }) {
+export default function Request({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -57,19 +56,19 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
     }
   }, [data]);
 
+  // If user is not an admin, set isDisabled to true
+  useEffect(() => {
+    if (session && !session.user.isAdmin) {
+      setDisabled(true);
+    }
+  }, [session]);
+
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
       methods.unregister('secondaryTechnicalLead');
     }
   };
-
-  // If user is not an admin, set isDisabled to true
-  useEffect(() => {
-    if (!session?.isAdmin) {
-      setDisabled(true);
-    }
-  }, [session]);
 
   useEffect(() => {
     if (data?.requestedProject.secondaryTechnicalLead) {
@@ -81,7 +80,10 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpen(true))}>
-          <div className="space-y-12">
+          <div className="mb-12 mt-8">
+            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
+              A decision has already been made for this product
+            </h3>
             <ProjectDescription disabled={isDisabled} />
             <TeamContacts
               disabled={isDisabled}
@@ -89,9 +91,9 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Budget disabled={false} />
-            <AccountCoding disabled={false} />
+            <AccountCoding accountCodingInitial={data?.requestedProject?.accountCoding} disabled={false} />
           </div>
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
           </div>
         </form>

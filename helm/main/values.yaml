@@ -41,10 +41,10 @@ app:
 
   resources:
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 300m
+      memory: 512Mi
     requests:
-      cpu: 10m
+      cpu: 30m
       memory: 128Mi
 
   env:
@@ -77,10 +77,10 @@ email:
       cpu: 10m
       memory: 128Mi
 
+# See https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
 mongodb:
   enabled: false
 
-  # See https://github.com/bitnami/charts/blob/main/bitnami/mongodb/README.md#parameters
   nameOverride: pltsvc-mongodb
   fullnameOverride: pltsvc-mongodb
 

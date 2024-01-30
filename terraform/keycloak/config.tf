@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.5.7"
+  required_version = "1.5.7"
 
   backend "kubernetes" {
     namespace     = "101ed4-prod"
@@ -10,7 +10,7 @@ terraform {
   required_providers {
     keycloak = {
       source  = "mrparkers/keycloak"
-      version = "4.3.1"
+      version = "4.4.0"
     }
   }
 }

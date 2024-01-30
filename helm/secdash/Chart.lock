@@ -4,6 +4,9 @@ dependencies:
   version: 1.11.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 13.2.27
-digest: sha256:669deb4e1736c9a688ab308d74f10f95cc1849d87b1d74f830d8ba92a1addea8
-generated: "2023-12-31T14:03:46.958101781Z"
+  version: 13.3.0
+- name: sonarqube
+  repository: https://SonarSource.github.io/helm-chart-sonarqube
+  version: 10.3.0+2009
+digest: sha256:6185cb06069e70a71fbdf147625d7b97e8d20343bda57b2d6d5a9a69993fa84d
+generated: "2024-01-17T17:48:57.187383048Z"

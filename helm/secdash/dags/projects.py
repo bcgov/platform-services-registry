@@ -1,9 +1,10 @@
 import os
 import json
 import shutil
-import datetime
+from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
+from github import GitHubAPI, extract_owner_repo
 
 
 shared_directory = '/opt/airflow/shared'
@@ -51,7 +52,7 @@ def get_mongo_db(mongo_conn_id):
     return client.pltsvc
 
 
-def fetch_projects(mongo_conn_id, concurrency, **context):
+def fetch_zap_projects(mongo_conn_id, concurrency, **context):
     """
     Fetch active projects from MongoDB, retrieve information about their hosts,
     and push the results into XCom.
@@ -78,7 +79,13 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
             cluster = ''
             token = ''
 
-            if project['cluster'] == 'KLAB':
+            if project['cluster'] == 'SILVER':
+                cluster = 'silver'
+                token = os.environ['OC_TOKEN_SILVER']
+            elif project['cluster'] == 'GOLD':
+                cluster = 'gold'
+                token = os.environ['OC_TOKEN_GOLD']
+            elif project['cluster'] == 'KLAB':
                 cluster = 'klab'
                 token = os.environ['OC_TOKEN_KLAB']
             else:
@@ -90,22 +97,60 @@ def fetch_projects(mongo_conn_id, concurrency, **context):
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 data = response.json()
-                project['hosts'] = []
                 for item in data['items']:
-                    project['hosts'].append(item['spec']['host'])
+                    host = item['spec']['host']
+                    available = True
+                    status_code = 500
 
-                if len(project['hosts']) > 0:
-                    result.append(project)
+                    try:
+                        print(f"head: {host}")
+                        avail_res = requests.head(f"https://{host}", timeout=3)
+                        status_code = avail_res.status_code
+                        print(f"{host}: {status_code}")
+                        available = status_code != 503
+                    except Exception as e:
+                        print(f"{host}: {e}")
+                        available = False
+
+                    if available == False:
+                        db.PrivateCloudProjectZapResult.replace_one(
+                            {
+                                'licencePlate': project['licencePlate'],
+                                'cluster': cluster,
+                                'host': host
+                            },
+                            {
+                                'licencePlate': project['licencePlate'],
+                                'cluster': cluster,
+                                'host': host,
+                                'scannedAt': datetime.now(),
+                                'available': False
+                            },
+                            True  # Create one if it does not exist
+                        )
+                        continue
+
+                    # Distribute workload evenly by assigning a host per project
+                    result.append(
+                        {
+                            'licencePlate': project['licencePlate'],
+                            'cluster': project['cluster'],
+                            'hosts': [host]
+                        }
+                    )
 
         result_subarrays = split_array(result, concurrency)
         task_instance = context['task_instance']
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
-        shutil.rmtree(f"{shared_directory}/zap/{mongo_conn_id}")
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.PrivateCloudProjectZapResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+        shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
     except Exception as e:
-        print(f"[fetch_projects] Error: {e}")
+        print(f"[fetch_zap_projects] Error: {e}")
 
 
 def load_zap_results(mongo_conn_id):
@@ -123,7 +168,7 @@ def load_zap_results(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
 
-        report_directory = f"{shared_directory}/zap/{mongo_conn_id}"
+        report_directory = f"{shared_directory}/zapscan/{mongo_conn_id}"
 
         subdirectories = [
             os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
@@ -148,15 +193,142 @@ def load_zap_results(mongo_conn_id):
                             doc['cluster'] = details['cluster']
                             doc['host'] = details['host']
 
-            doc['scannedAt'] = datetime.datetime.now()
+            doc['scannedAt'] = datetime.now()
+            doc['available'] = True
 
-            db.PrivateCloudProjectZapResult.replace_one({
-                'licencePlate': doc['licencePlate'],
-                'cluster': doc['cluster'],
-                'host': doc['host']},
-                doc,
-                True  # Create one if it does not exist
-            )
+            if doc['licencePlate'] is not None:
+                db.PrivateCloudProjectZapResult.replace_one({
+                    'licencePlate': doc['licencePlate'],
+                    'cluster': doc['cluster'],
+                    'host': doc['host']},
+                    doc,
+                    True  # Create one if it does not exist
+                )
 
     except Exception as e:
         print(f"[load_zap_results] Error: {e}")
+
+
+def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
+    """
+    Fetch active projects from MongoDB, retrieve information about their codebase repository URLs,
+    and push the results into XCom.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+    - concurrency: The number of subarrays for parallel processing.
+    - **context: Additional context parameters.
+
+    Note: This function assumes the existence of a 'get_mongo_db' function.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
+    try:
+        db = get_mongo_db(mongo_conn_id)
+        projects = db.SecurityConfig.find(
+            {
+                "$expr": {
+                    "$gt": [{"$size": "$repositories"}, 0]
+                }
+            }, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
+        result = []
+
+        for project in projects:
+            for repository in project["repositories"]:
+                prev_result = db.SonarScanResult.find_one({
+                    'licencePlate': project['licencePlate'],
+                    'context': project['context'],
+                    'url': repository['url']},
+                    projection={"_id": False, "sha": True},
+                )
+
+                if prev_result is None:
+                    print(f"{repository['url']}: Has not been scanned yet.")
+                    result.append({
+                        'licencePlate': project['licencePlate'],
+                        'context': project['context'],
+                        'repositories': [{
+                            'url': repository['url'],
+                            'sha': ''
+                        }]
+                    })
+                    continue
+
+                try:
+                    owner, repo = extract_owner_repo(repository['url'])
+                    github_api = GitHubAPI(gh_token)
+                    default_branch = github_api.get_default_branch(owner, repo)
+                    commit_sha = github_api.get_sha(owner, repo, default_branch)
+
+                    if prev_result["sha"] == commit_sha:
+                        print(f"{repository['url']}: No changes detected. Skipping the update..")
+                        continue
+
+                    result.append({
+                        'licencePlate': project['licencePlate'],
+                        'context': project['context'],
+                        'repositories': [{
+                            'url': repository['url'],
+                            'sha': commit_sha
+                        }]
+                    })
+                except Exception as e:
+                    print(f"{repository['url']}: {e}")
+
+        task_instance = context['task_instance']
+        result_subarrays = split_array(result, concurrency)
+        for i, subarray in enumerate(result_subarrays, start=1):
+            task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
+
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.SonarScanResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+
+        shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
+
+    except Exception as e:
+        print(f"[fetch_sonarscan_projects] Error: {e}")
+
+
+def load_sonarscan_results(mongo_conn_id):
+    """
+    Load SonarScan results into MongoDB.
+
+    Parameters:
+    - mongo_conn_id: The connection ID for MongoDB.
+
+    Raises:
+    - Any exceptions that occur during the execution.
+
+    """
+
+    try:
+        db = get_mongo_db(mongo_conn_id)
+
+        report_directory = f"{shared_directory}/sonarscan/{mongo_conn_id}"
+
+        subdirectories = [
+            os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
+        ]
+
+        for subdirectory in subdirectories:
+            print(f"Processing files in subdirectory: {subdirectory}")
+            file_path = os.path.join(subdirectory, 'detail.json')
+            with open(file_path, 'r') as file:
+                content = file.read().replace('\n', '').replace('\t', '')
+                doc = json.loads(content)
+                doc['scannedAt'] = datetime.now()
+
+                db.SonarScanResult.replace_one({
+                    'licencePlate': doc['licencePlate'],
+                    'context': doc['context'],
+                    'url': doc['url']},
+                    doc,
+                    True  # Create one if it does not exist
+                )
+
+    except Exception as e:
+        print(f"[load_sonarscan_results] Error: {e}")

@@ -58,7 +58,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   });
 
   useEffect(() => {
-    if (!session?.isAdmin) {
+    if (session && !session?.isAdmin) {
       setDisabled(true);
     }
   }, [session]);
@@ -67,7 +67,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     if (data && data.decisionStatus !== 'PENDING') {
       setDisabled(true);
     }
-  }, [data]);
+  }, [data, data?.decisionStatus]);
 
   const onSubmit = async (val: any) => {
     setIsLoading(true);
@@ -122,8 +122,8 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         >
           <div className="mb-12 mt-8">
             {data && data.decisionStatus !== 'PENDING' && (
-              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-2">
-                A decision has already been made for this project
+              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
+                A decision has already been made for this product
               </h3>
             )}
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
@@ -145,7 +145,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.userComment}</p>
           </div>
 
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             {!isDisabled && session?.isAdmin ? (
               <div className="flex items-center justify-start gap-x-6">

@@ -2,6 +2,11 @@ data "keycloak_realm" "pltsvc" {
   realm = "platform-services"
 }
 
+data "keycloak_authentication_flow" "idir_only" {
+  realm_id = data.keycloak_realm.pltsvc.id
+  alias    = "browser - idir - only"
+}
+
 resource "keycloak_openid_client" "pltsvc" {
   realm_id  = data.keycloak_realm.pltsvc.id
   client_id = "pltsvc"
@@ -24,4 +29,8 @@ resource "keycloak_openid_client" "pltsvc" {
     "http://localhost:3004/*",
     "http://localhost:3005/*"
   ]
+
+  authentication_flow_binding_overrides {
+    browser_id = data.keycloak_authentication_flow.idir_only.id
+  }
 }

@@ -2,7 +2,25 @@ import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
 
-export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; setOpen: any; redirectUrl: string }) {
+interface ModalProps {
+  open: boolean;
+  setOpen: any;
+  redirectUrl: string;
+  isEditRequest?: boolean;
+  isPublicCloud?: boolean;
+  isPublicCreate?: boolean;
+  isPublicEdit?: boolean;
+}
+
+export default function Modal({
+  open,
+  setOpen,
+  redirectUrl,
+  isEditRequest,
+  isPublicCloud,
+  isPublicCreate,
+  isPublicEdit,
+}: ModalProps) {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -12,9 +30,6 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
     router.push(redirectUrl);
     router.refresh();
   };
-
-  const isEdit = pathname.includes('edit');
-  const isPublic = pathname.includes('public-cloud');
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -50,20 +65,20 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                       className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
                       Thank you! We have received your
-                      {isEdit ? ' edit ' : ' project set '}
+                      {isEditRequest ? ' edit ' : ' product set '}
                       request
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
                         We have received your
-                        {isEdit ? ' edit request. ' : ' request for a new project set. '}
+                        {isEditRequest ? ' edit request. ' : ' request for a new product set. '}
                         The Product Owner and Technical Lead will receive the approval/denial decision via email.
                       </p>
                       <p className="font-bcsans text-sm text-gray-900 mt-4">
                         Alternatively, you can also track the status of your requests from the Registry App Dashboard
                       </p>
                     </div>
-                    {isPublic && (
+                    {isPublicCloud && isPublicCreate && (
                       <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
                         <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
                           <span className="font-bold text-blue-700 font-sans text-xs">i</span>
@@ -71,20 +86,30 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                         <div>
                           <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
                           <p className="font-bcsans text-sm text-blue-700 mt-1">
-                            The approval of new project set creation request is subject to having a signed Memorandum of
-                            Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
+                            The approval of a new product set creation request is subject to having a signed Memorandum
+                            of Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
                             email us at
                             <span> </span>
                             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                              cloud.pathfinder@gov.bc.ca
+                              Cloud.Pathfinder@gov.bc.ca
                             </a>
                             .
                           </p>
-                          <p className="font-bcsans text-sm text-blue-700 mt-4">
-                            In order to request a project deletion, please email us at
+                        </div>
+                      </div>
+                    )}
+                    {isPublicCloud && isPublicEdit && (
+                      <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
+                        <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
+                          <span className="font-bold text-blue-700 font-sans text-xs">i</span>
+                        </div>
+                        <div className="flex flex-row items-center">
+                          <p className="font-bcsans text-sm text-blue-700 font-semibold mr-2">Note:</p>
+                          <p className="font-bcsans text-sm text-blue-700">
+                            In order to request a product deletion, please email us at
                             <span> </span>
                             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                              cloud.pathfinder@gov.bc.ca
+                              Cloud.Pathfinder@gov.bc.ca
                             </a>
                             .
                           </p>

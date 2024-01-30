@@ -65,7 +65,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   }, [data]);
 
   useEffect(() => {
-    if (!session?.isAdmin) {
+    if (session && !session?.isAdmin) {
       setDisabled(true);
     }
   }, [session]);
@@ -122,9 +122,9 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
           })}
         >
           {data && data.decisionStatus !== 'PENDING' && (
-            <div className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600">
-              A decision has already been made for this project
-            </div>
+            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
+              A decision has already been made for this product
+            </h3>
           )}
           <div className="mb-12">
             <ProjectDescription disabled={isDisabled} />
@@ -136,7 +136,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             <Budget disabled={isDisabled} />
             <AccountCoding accountCodingInitial={data?.requestedProject?.accountCoding} disabled={false} />
           </div>
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             {!isDisabled && session?.isAdmin ? (
               <div className="flex items-center justify-start gap-x-6">
