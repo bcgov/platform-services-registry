@@ -55,16 +55,18 @@ export default async function ProductsTable({
   const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Table
-        title="Products in Private Cloud OpenShift Platform"
-        description="These products have an active request. An admin is currently reviewing them"
-        tableBody={<NewTableBody rows={activeRequests} />}
-        total={requestsTotal}
-        currentPage={currentPage}
-        pageSize={effectivePageSize}
-        apiContext="private-cloud"
-      />
-    </Suspense>
+    <Table
+      title="Products in Private Cloud OpenShift Platform"
+      description="These products have an active request. An admin is currently reviewing them"
+      tableBody={
+        <Suspense fallback={<div>Loading...</div>}>
+          <NewTableBody rows={activeRequests} />
+        </Suspense>
+      }
+      total={requestsTotal}
+      currentPage={currentPage}
+      pageSize={effectivePageSize}
+      apiContext="private-cloud"
+    />
   );
 }
