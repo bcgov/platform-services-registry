@@ -1,4 +1,3 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
