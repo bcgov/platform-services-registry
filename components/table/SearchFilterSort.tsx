@@ -102,13 +102,12 @@ export default function SearchFilterSort({
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className="w-full">
-        <Disclosure>
-          <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
-            <div className="flex w-full justify-between items-center">
-              <div className="flex-grow h-12"></div>
-
+    <div className="w-full">
+      <Disclosure>
+        <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
+          <div className="flex w-full justify-between items-center">
+            <div className="flex-grow h-12"></div>
+            <Suspense fallback={<div>Loading...</div>}>
               {!removeSearch && (
                 <form className="flex-grow flex-shrink max-w-sm">
                   <label htmlFor="simple-search" className="sr-only">
@@ -144,41 +143,41 @@ export default function SearchFilterSort({
                     )}
                   </div>
                 </form>
-              )}
-            </div>
-            <Disclosure.Button
+              )}{' '}
+            </Suspense>
+          </div>
+          <Disclosure.Button
+            type="button"
+            className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            <Image alt="Filter" src={Filter} width={16} height={10} />
+
+            <span className="md:inline hidden">Filters</span>
+          </Disclosure.Button>
+
+          {showDownloadButton && (
+            <button
+              onClick={handleDownload}
               type="button"
               className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
-              <Image alt="Filter" src={Filter} width={16} height={10} />
-
-              <span className="md:inline hidden">Filters</span>
-            </Disclosure.Button>
-
-            {showDownloadButton && (
-              <button
-                onClick={handleDownload}
-                type="button"
-                className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                <Image alt="Export" src={Export} width={16} height={12.5} />
-                <span className="md:inline hidden">Export</span>
-              </button>
-            )}
-            <AlertBox
-              isOpen={isAlertBoxOpen}
-              title="Nothing to export"
-              message="There is no data available for download."
-              onCancel={handleCancelBox}
-              cancelButtonText="DISMISS"
-              singleButton={true}
-            />
-          </div>
-          <Disclosure.Panel className="py-10 w-full flex justify-end ">
-            <FilterPanel />
-          </Disclosure.Panel>
-        </Disclosure>
-      </div>
-    </Suspense>
+              <Image alt="Export" src={Export} width={16} height={12.5} />
+              <span className="md:inline hidden">Export</span>
+            </button>
+          )}
+          <AlertBox
+            isOpen={isAlertBoxOpen}
+            title="Nothing to export"
+            message="There is no data available for download."
+            onCancel={handleCancelBox}
+            cancelButtonText="DISMISS"
+            singleButton={true}
+          />
+        </div>
+        <Disclosure.Panel className="py-10 w-full flex justify-end ">
+          <FilterPanel />
+        </Disclosure.Panel>
+      </Disclosure>
+    </div>
   );
 }
