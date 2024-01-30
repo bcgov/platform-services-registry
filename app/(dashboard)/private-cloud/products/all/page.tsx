@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
-import { Suspense } from 'react';
+
 export default async function ProductsTable({
   searchParams,
 }: {
@@ -25,9 +25,7 @@ export default async function ProductsTable({
   if (!session) {
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
-  if (!searchParams) {
-    return; // Don't execute further if searchParams is not available
-  }
+
   const { search, page, pageSize, ministry, cluster, active } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
 
@@ -51,21 +49,15 @@ export default async function ProductsTable({
   const projects = data.map(privateCloudProjectDataToRow);
 
   return (
-    <Suspense>
-      <Table
-        title="Products in Private Cloud OpenShift Platform"
-        description="These are your products hosted on Private Cloud OpenShift platform"
-        tableBody={
-          <Suspense>
-            <TableBody rows={projects} />
-          </Suspense>
-        }
-        total={total}
-        currentPage={currentPage}
-        pageSize={effectivePageSize}
-        showDownloadButton
-        apiContext="private-cloud"
-      />
-    </Suspense>
+    <Table
+      title="Products in Private Cloud OpenShift Platform"
+      description="These are your products hosted on Private Cloud OpenShift platform"
+      tableBody={<TableBody rows={projects} />}
+      total={total}
+      currentPage={currentPage}
+      pageSize={effectivePageSize}
+      showDownloadButton
+      apiContext="private-cloud"
+    />
   );
 }
