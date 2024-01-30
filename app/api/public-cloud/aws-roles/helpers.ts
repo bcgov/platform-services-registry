@@ -1,5 +1,6 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
+import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 
 export interface Group {
   id: string;
@@ -119,15 +120,15 @@ const parseError = (error: unknown) => {
 };
 
 const awsRolesApiInstance = axios.create({
-  baseURL: `${process.env.AWS_ROLES_BASE_URL}/admin/realms/${process.env.AWS_ROLES_REALM_NAME}`,
+  baseURL: `${AWS_ROLES_BASE_URL}/admin/realms/${AWS_ROLES_REALM_NAME}`,
 });
 
 export const getToken = async (): Promise<string | undefined> => {
   try {
-    const apiUrl = `${process.env.AWS_ROLES_BASE_URL}/realms/${process.env.AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
+    const apiUrl = `${AWS_ROLES_BASE_URL}/realms/${AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
     const requestBody = {
-      client_id: process.env.AWS_ROLES_CLIENT_ID,
-      client_secret: process.env.AWS_ROLES_CLIENT_SECRET,
+      client_id: AWS_ROLES_CLIENT_ID,
+      client_secret: AWS_ROLES_CLIENT_SECRET,
       grant_type: 'client_credentials',
     };
     const response = await axios.post(apiUrl, requestBody, {

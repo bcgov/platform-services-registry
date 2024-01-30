@@ -7,6 +7,7 @@ export default function DescriptionChanges({
   nameRequested,
   descRequested,
   ministryRequested,
+  requestedLabel = 'Requested',
 }: {
   nameCurrent: string;
   descCurrent: string;
@@ -14,6 +15,7 @@ export default function DescriptionChanges({
   nameRequested: string;
   descRequested: string;
   ministryRequested: string;
+  requestedLabel?: string;
 }) {
   return (
     <div>
@@ -22,7 +24,7 @@ export default function DescriptionChanges({
         <div className="mb-4">
           <Text className="font-semibold mb-0">Current Product Name</Text>
           <Text className="mt-0 mb-0">{nameCurrent}</Text>
-          <Text className="font-semibold mt-2 mb-0">Requested Product Name</Text>
+          <Text className="font-semibold mt-2 mb-0">{requestedLabel} Product Name</Text>
           <Text className="mt-0">{nameRequested}</Text>
         </div>
       )}
@@ -30,7 +32,7 @@ export default function DescriptionChanges({
         <div className="mb-4">
           <Text className="font-semibold mb-0">Current Description</Text>
           <Text className="mt-0 mb-0">{descCurrent}</Text>
-          <Text className="font-semibold mt-2 mb-0">Requested Description</Text>
+          <Text className="font-semibold mt-2 mb-0">{requestedLabel} Description</Text>
           <Text className="mt-0">{descRequested}</Text>
         </div>
       )}
@@ -38,7 +40,7 @@ export default function DescriptionChanges({
         <div className="mb-4">
           <Text className="font-semibold mb-0">Current Ministry</Text>
           <Text className="mt-0 mb-0">{ministryCurrent}</Text>
-          <Text className="font-semibold mt-2 mb-0">Requested Ministry</Text>
+          <Text className="font-semibold mt-2 mb-0">{requestedLabel} Ministry</Text>
           <Text className="mt-0">{ministryRequested}</Text>
         </div>
       )}
