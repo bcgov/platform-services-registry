@@ -25,7 +25,9 @@ export default async function ProductsTable({
   if (!session) {
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
-
+  if (!searchParams) {
+    return; // Don't execute further if searchParams is not available
+  }
   const { search, page, pageSize, ministry, cluster, active } = searchParams;
   const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
 
