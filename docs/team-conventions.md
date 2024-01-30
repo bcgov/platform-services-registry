@@ -159,3 +159,23 @@ Outside the Next.js application folder, `kebab case` is commonly utilized for na
 - `SEO Considerations`: Search engines often interpret hyphens in URLs as space, potentially improving search result readability. This can positively impact your website's search engine optimization (SEO).
 
 Choosing the first option, which involves `Camel Case for file names and Pascal Case for component names`, is beneficial in scenarios where a more standardized and conventional naming approach is preferred within the Next.js application itself. This can promote code consistency and make it easier for developers to collaborate and understand the codebase. Additionally, adhering to a specific convention within the application can simplify naming-related decisions during development.
+
+## Utilizing Sharable Functions
+
+To enhance readability and ease of maintenance in our business logic, we leverage 3rd party packages, such as `lodash-es`, for common function usage.
+
+If third-party packages do not provide suitable utilities, we create our own functions and organize them in designated project locations.
+We've identified three distinct use cases for these common functions, each following agreed-upon guidelines:
+
+- `Lower Level Functions`: Reserved for functions essential at the project's lower level, such as framework-level wrappers and helpers.
+
+  - These functions reside in the `/core` directory.
+
+- `Very Generic Functions`: Generic functions versatile enough for use in any project, not limited to the current one.
+
+  - These functions are stored in the `/utils` directory.
+
+- `Less Generic Functions`: Functions serving as helpers specifically within this project.
+  - These functions are housed in the `/helpers` directory.
+
+As a team consensus, we aim to include `one or multiple common functions per file` and refrain from using `export default`.
