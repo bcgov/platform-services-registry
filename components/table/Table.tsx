@@ -29,7 +29,6 @@ export default function Table({
         <TableTop title={title} description={description} />
         <div className="flex justify-between items-center border-b-2 px-4 py-2 w-full">
           <Suspense>
-            {' '}
             <SearchFilterSort
               showDownloadButton={showDownloadButton}
               apiContext={apiContext}
