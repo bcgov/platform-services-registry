@@ -12,7 +12,7 @@ import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateReq
 import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
 import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
 import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
-import EditRequestTemplate from '@/emails/_templates/public-cloud/EditRequest';
+import EditSummaryTemplate from '@/emails/_templates/public-cloud/EditSummary';
 import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
@@ -48,7 +48,7 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
 
 export const sendEditRequestEmails = async (request: PublicCloudRequestWithProjectAndRequestedProject) => {
   try {
-    const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(EditSummaryTemplate({ request }), { pretty: true });
 
     await sendEmail({
       body: userEmail,
