@@ -88,6 +88,9 @@ export default function SearchFilterSort({
   };
 
   useEffect(() => {
+    if (!searchParams) {
+      return; // Don't execute further if searchParams is not available
+    }
     if (debouncedValue == '') {
       // Remove search param
       const params = new URLSearchParams(searchParams?.toString());
