@@ -29,7 +29,7 @@ model User {
   privateCloudRequestedProjectOwner                  PrivateCloudRequestedProject[] @relation("privateCloudRequestedProjectOwner")
   privateCloudRequestedProjectPrimaryTechnicalLead   PrivateCloudRequestedProject[] @relation("privateCloudRequestedPrimaryTechnicalLead")
   privateCloudRequestedProjectSecondaryTechnicalLead PrivateCloudRequestedProject[] @relation("privateCloudRequestedSecondaryTechnicalLead")
-  comment                                            Comment[]                      @relation("commentAuthor")
+  comment                                            PrivateCloudComment[]          @relation("commentUser")
   reaction                                           Reaction[]                     @relation("reactionUser")
 
   publicCloudProjectOwner                           PublicCloudProject[]          @relation("publicCloudProjectOwner")
@@ -82,7 +82,7 @@ model PrivateCloudProject {
   toolsQuota               Quota
   commonComponents         CommonComponents
   requests                 PrivateCloudRequest[] @relation("privateCloudProject")
-  comments                 Comment[]             @relation("privateCloudComment")
+  comments                 PrivateCloudComment[] @relation("privateCloudComment")
 }
 
 model PrivateCloudRequestedProject {
@@ -109,28 +109,28 @@ model PrivateCloudRequestedProject {
   userRequestedProject     PrivateCloudRequest? @relation("privateCloudUserRequestedProject")
 }
 
-model Comment {
-  id        String               @id @default(auto()) @map("_id") @db.ObjectId
-  created   DateTime             @default(now())
+model PrivateCloudComment {
+  id        String                @id @default(auto()) @map("_id") @db.ObjectId
+  created   DateTime              @default(now())
   text      String
-  authorId  String               @db.ObjectId
-  author    User                 @relation("commentAuthor", fields: [authorId], references: [id])
-  projectId String               @db.ObjectId
-  project   PrivateCloudProject? @relation("privateCloudComment", fields: [projectId], references: [id])
-  replies   Comment[]            @relation("commentReplies")
-  parentId  String?              @db.ObjectId
-  parent    Comment?             @relation("commentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  reactions Reaction[]           @relation("commentReaction")
+  userId    String                @db.ObjectId
+  user      User                  @relation("commentUser", fields: [userId], references: [id])
+  projectId String                @db.ObjectId
+  project   PrivateCloudProject?  @relation("privateCloudComment", fields: [projectId], references: [id])
+  replies   PrivateCloudComment[] @relation("commentReplies")
+  parentId  String?               @db.ObjectId
+  parent    PrivateCloudComment?  @relation("commentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reactions Reaction[]            @relation("commentReaction")
 }
 
 model Reaction {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  created   DateTime @default(now())
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  created   DateTime            @default(now())
   emoji     String
-  userId    String   @db.ObjectId
-  user      User     @relation("reactionUser", fields: [userId], references: [id])
-  commentId String   @db.ObjectId
-  comment   Comment  @relation("commentReaction", fields: [commentId], references: [id])
+  userId    String              @db.ObjectId
+  user      User                @relation("reactionUser", fields: [userId], references: [id])
+  commentId String              @db.ObjectId
+  comment   PrivateCloudComment @relation("commentReaction", fields: [commentId], references: [id])
 }
 
 model PublicCloudRequest {
