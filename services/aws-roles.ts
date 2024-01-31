@@ -28,3 +28,15 @@ export async function deleteUser(userId: string, groupId: string) {
     .then((res) => res.data);
   return result;
 }
+
+export async function getRolesNames(licencePlate: string): Promise<
+  {
+    name: string;
+    href: string;
+  }[]
+> {
+  const result = await instance
+    .get(`public-cloud/aws-roles/getGroupRolesNames?licencePlate=${licencePlate}`)
+    .then((res) => res.data);
+  return result;
+}

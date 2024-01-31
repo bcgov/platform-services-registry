@@ -8,6 +8,7 @@ export interface Group {
   path: string;
   subGroups: Group[];
 }
+
 export interface User {
   id: string;
   firstName: string;
@@ -26,6 +27,11 @@ interface UsersTotal {
   total: number;
 }
 
+export type tabName = {
+  name: string;
+  href: string;
+};
+
 interface PaginationOptions {
   page: number;
   pageSize: number;
@@ -38,6 +44,26 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   const endIndex = startIndex + pageSize;
 
   return users.slice(startIndex, endIndex);
+};
+
+const isUpperCase = (char: string): boolean => {
+  const charCode = char.charCodeAt(0);
+  return charCode >= 65 && charCode <= 90;
+};
+
+const parseGroupNameToTab = (name: string): tabName => {
+  const roleArr = name.split('');
+  for (let i = 1; i < roleArr.length; i++) {
+    if (isUpperCase(name[i])) {
+      roleArr[i] = ' ' + roleArr[i];
+    }
+  }
+
+  const role = roleArr.join('');
+  return {
+    name: role,
+    href: role.replace(/\s+/g, '-').toLowerCase(),
+  };
 };
 
 const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
@@ -279,12 +305,12 @@ export async function getSubGroupMembersByLicencePlateAndName(
       }
     }
   }
-  if (role === 'Admin') {
-    const registryUsers = await getPublicCloudProjectUsers(licencePlate);
-    if (registryUsers) {
-      result = [...registryUsers, ...result];
-    }
-  }
+  // if (role === 'Admin') {
+  //   const registryUsers = await getPublicCloudProjectUsers(licencePlate);
+  //   if (registryUsers) {
+  //     result = [...registryUsers, ...result];
+  //   }
+  // }
 
   if (searchTerm) {
     result = searchSubstringInArray(searchTerm, result);
@@ -299,4 +325,15 @@ export async function addUserToGroupByEmail(userEmail: string, groupId: string) 
   if (userId) {
     await addUserToGroup(userId[0].id, groupId);
   }
+}
+
+export async function getGroupsNamesByLicencePlate(licencePlate: string): Promise<tabName[]> {
+  const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
+  if (productRolesGroups && productRolesGroups.length > 0) {
+    return productRolesGroups[0].subGroups.map((subGroup) => {
+      return parseGroupNameToTab(subGroup.name);
+    });
+  }
+
+  return [];
 }
