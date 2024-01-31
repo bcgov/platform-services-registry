@@ -31,7 +31,7 @@ export default async function Page({
 
   search = search.trim();
 
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 5);
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
   const where: Prisma.SonarScanResultWhereInput = { licencePlate: params.licencePlate };
   if (context.length > 0) {
@@ -69,7 +69,7 @@ export default async function Page({
       session: session as never,
     }),
     prisma.sonarScanResult.findMany({
-      where: {},
+      where: { licencePlate: params.licencePlate },
       select: { context: true },
       distinct: ['context'],
       session: session as never,
