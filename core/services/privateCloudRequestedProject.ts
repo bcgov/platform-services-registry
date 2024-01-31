@@ -1,32 +1,29 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { Session } from 'next-auth';
 import { ModelService } from '../modelService';
 
 export class PrivateCloudRequestedProjectService extends ModelService<Prisma.PrivateCloudRequestedProjectWhereInput> {
   async readFilter() {
-    let baseFilter!: Prisma.PrivateCloudRequestedProjectWhereInput;
-    if (!this.session.isAdmin) {
-      baseFilter = {
-        OR: [
-          { projectOwnerId: this.session.userId as string },
-          { primaryTechnicalLeadId: this.session.userId as string },
-          { secondaryTechnicalLeadId: this.session.userId },
-          { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
-          { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
-        ],
-      };
-    }
+    if (!this.session) return false;
+    if (this.session?.isAdmin) return true;
+
+    const baseFilter: Prisma.PrivateCloudRequestedProjectWhereInput = {
+      OR: [
+        { projectOwnerId: this.session.userId as string },
+        { primaryTechnicalLeadId: this.session.userId as string },
+        { secondaryTechnicalLeadId: this.session.userId },
+        { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
+        { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
+      ],
+    };
 
     return baseFilter;
   }
 
   async writeFilter() {
     let baseFilter!: Prisma.PrivateCloudRequestedProjectWhereInput;
-    if (!this.session.isAdmin) {
-      baseFilter = {
-        // Adding a dummy query to ensure no documents match
-        created: new Date(),
-      };
+
+    if (!this.session?.isAdmin) {
+      return false;
     }
 
     return baseFilter;

@@ -8,6 +8,7 @@
     "plugin:react/recommended",
     "airbnb-typescript",
     "plugin:@typescript-eslint/recommended",
+    "plugin:n/recommended",
     "plugin:import/recommended",
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
@@ -33,9 +34,22 @@
     "no-else-return": "error",
     "no-nested-ternary": "off",
     "no-unneeded-ternary": "error",
+    "no-process-env": "error",
     "react/react-in-jsx-scope": "off",
     "prefer-destructuring": "off",
     "sort-imports": "off",
-    "no-warning-comments": "off"
-  }
+    "no-warning-comments": "off",
+    "import/named": "off",
+    "n/no-missing-import": "off",
+    "n/no-extraneous-import": "off",
+    "n/no-process-exit": "off"
+  },
+  "overrides": [
+    {
+      "files": ["config.ts"],
+      "rules": {
+        "no-process-env": "off"
+      }
+    }
+  ]
 }

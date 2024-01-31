@@ -1,6 +1,7 @@
 {{- $secretName := printf "%s-%s" (include "main.fullname" .) "mongodb" }}
 {{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName ) }}
 
+{{- if and .Values.mongodb.enabled .Values.backup.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,7 +27,7 @@ spec:
         command: [/bin/sh, -c]
         args:
         - |
-          mongo-archive --db=pltsvc --read-preference=primary --force-table-scan
+          mongo-archive --db=pltsvc --read-preference=secondaryPreferred --force-table-scan
         env:
         - name: MONGOARCHIVE__URI
           value: "mongodb://pltsvc-mongodb-headless/?authSource=admin"
@@ -73,3 +74,4 @@ spec:
   resources:
     requests:
       storage: {{ .Values.backup.storageSize }}
+{{- end }}

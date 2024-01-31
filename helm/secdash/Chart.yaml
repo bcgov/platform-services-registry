@@ -10,6 +10,10 @@ dependencies:
     repository: "https://airflow.apache.org/"
     condition: airflow.enabled
   - name: postgresql
-    version: "13.2.24"
+    version: "13.3.0"
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
+  - name: sonarqube
+    version: "10.3.0"
+    repository: https://SonarSource.github.io/helm-chart-sonarqube
+    condition: sonarqube.enabled

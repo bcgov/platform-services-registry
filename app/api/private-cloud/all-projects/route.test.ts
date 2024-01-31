@@ -17,7 +17,6 @@ import {
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
-// import { cleanUp } from "@/jest.setup";
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
@@ -233,8 +232,9 @@ interface CsvRecord {
 const mockSession = {
   user: {
     email: 'admin@example.com',
-    roles: ['admin'],
   },
+  roles: ['user', 'admin'],
+  isAdmin: true,
 };
 
 describe('CSV Download Route', () => {
@@ -266,7 +266,9 @@ describe('CSV Download Route', () => {
   test('should return CSV data for all projects', async () => {
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
-      user: { email: 'user@example.com', roles: ['admin'] },
+      user: { email: 'user@example.com' },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     const req = new NextRequest(API_URL, { method: 'GET' });
@@ -281,8 +283,9 @@ describe('CSV Download Route', () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: 'user@example.com',
-        roles: ['admin'],
       },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     // Simulate a request that would result in an empty dataset
@@ -299,7 +302,9 @@ describe('CSV Download Route', () => {
 
   test('should return correct CSV data with all query parameters', async () => {
     mockedGetServerSession.mockResolvedValue({
-      user: { email: 'admin@example.com', roles: ['admin'] },
+      user: { email: 'admin@example.com' },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     const req = new NextRequest(`${API_URL}?search=TestProject&ministry=AG&cluster=SILVER&active=true`, {
@@ -313,7 +318,7 @@ describe('CSV Download Route', () => {
     const csvContent = await response.text();
     const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
-    // check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
+    // Check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
     const relevantRecord = records.find(
       (record: CsvRecord) =>
         record.name.includes('TestProject') && record.ministry === 'AG' && record.cluster === 'SILVER',
@@ -324,7 +329,9 @@ describe('CSV Download Route', () => {
   test('should handle invalid query parameters correctly', async () => {
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
-      user: { email: 'admin@example.com', roles: ['admin'] },
+      user: { email: 'admin@example.com' },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     // Create a request with invalid query parameters
@@ -365,7 +372,7 @@ describe('CSV Download Route', () => {
       const csvContent = await response.text();
       const records = parse(csvContent, { columns: true, skip_empty_lines: true });
 
-      //check if data matches the combination criteria
+      // Check if data matches the combination criteria
       records.forEach((record: { name: any; ministry: any; cluster: any }) => {
         if (combo.search) {
           expect(record.name).toContain(combo.search);

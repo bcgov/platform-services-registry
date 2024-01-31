@@ -1,7 +1,8 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
-import { useRouter } from 'next/navigation';
 import { clusters, ministries } from '@/constants';
+import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
 
 export default function ProjectDescription({
   disabled,
@@ -17,11 +18,21 @@ export default function ProjectDescription({
     formState: { errors },
   } = useFormContext();
 
-  const router = useRouter();
+  const [clustersList, setClustersList] = useState(clusters);
+
+  const { data: session } = useSession({
+    required: true,
+  });
+
+  useEffect(() => {
+    if (session && !session?.isAdmin) {
+      setClustersList(clusters.filter((cluster) => cluster.indexOf('LAB') === -1));
+    }
+  }, [session]);
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
-      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8">
+      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
         Private Cloud OpenShift Platform - Project Set Provisioning Request
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -137,15 +148,17 @@ export default function ProjectDescription({
               )}
             >
               <option value="">Select Cluster</option>
-              {clusters.map((cluster) => (
+              {clustersList.map((cluster) => (
                 <option key={cluster} value={cluster}>
                   {cluster}
                 </option>
               ))}
             </select>
-            <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select your cluster, select CLAB or KLAB for testing purposes
-            </p>
+            {session?.isAdmin && (
+              <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+                Select your cluster, select CLAB or KLAB for testing purposes
+              </p>
+            )}
           </div>
         </div>
       </div>

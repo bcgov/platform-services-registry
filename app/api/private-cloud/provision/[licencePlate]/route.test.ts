@@ -6,7 +6,6 @@ import { POST as decisionRequest } from '@/app/api/private-cloud/decision/[licen
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import exp from 'constants';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -129,12 +128,13 @@ describe('Create Private Cloud Request Route', () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: 'oamar.kanji@gov.bc.ca',
-        roles: ['admin'],
       },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     // Make a create request
-    const createRequestObject = new NextRequest(`${BASE_URL}/api/create/private-cloud`, {
+    const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
       method: 'POST',
       body: JSON.stringify(createRequestBody),
     });

@@ -19,8 +19,11 @@ jobs:
     - name: Run lint
       run: npm run lint
 
-    - name: Run build
+    - name: Run App build
       run: npm run build
+
+    - name: Run Email build
+      run: npm run email-build
 
     - name: Install Docker Compose v2
       # See https://docs.docker.com/compose/install/linux/
@@ -38,7 +41,7 @@ jobs:
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
-        cp .env.localdev .env.test
+        cp .env.example .env.test
         npm run test
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down

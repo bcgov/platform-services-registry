@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { getService } from '@/core/services';
+import { NODE_ENV } from '@/config';
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -25,6 +26,7 @@ const prisma =
             'update',
             'upsert',
             'updateMany',
+            'count',
           ].includes(operation)
         ) {
           return query(args);
@@ -33,7 +35,7 @@ const prisma =
         const { session, ...validArgs } = args;
         if (session === undefined) return query(validArgs);
 
-        const svc = getService(model, prisma, session);
+        const svc = getService(model, session);
         if (!svc) return query(validArgs);
 
         const multi = ['findMany'].includes(operation);
@@ -41,18 +43,29 @@ const prisma =
 
         const { where, ...otherArgs } = validArgs;
         const filter = await svc.genFilter(where, writeOp ? 'write' : 'read');
+
+        if (filter === false) {
+          if (operation === 'count') return 0;
+          return multi ? [] : null;
+        }
+
         const result = await query({ ...otherArgs, where: filter });
+
+        if (operation === 'count') {
+          return result;
+        }
 
         if (operation === 'updateMany') {
           return result;
         }
 
-        const decorated = multi ? await Promise.all(result.map(svc.decorate)) : await svc.decorate(result);
+        const decorate = (doc: any) => (doc ? svc.decorate(doc) : null);
+        const decorated = multi ? await Promise.all(result.map(decorate)) : await decorate(result);
         return decorated;
       },
     },
   });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 export default prisma;

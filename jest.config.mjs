@@ -14,6 +14,7 @@ const config = {
   setupFilesAfterEnv: ['./jest.setup.js'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
+    'lodash-es': 'lodash',
   },
 };
 

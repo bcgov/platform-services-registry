@@ -45,6 +45,7 @@ model PrivateCloudRequest {
   decisionMakerEmail     String?
   type                   RequestType
   decisionStatus         DecisionStatus
+  isQuotaChanged         Boolean?                      @default(false)
   humanComment           String?
   userComment            String?
   active                 Boolean                       @default(true)
@@ -165,6 +166,83 @@ model PublicCloudRequestedProject {
   userRequestedProject     PublicCloudRequest? @relation("publicCloudUserRequestedProject")
 }
 
+model PrivateCloudProjectZapResult {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String
+  cluster      String
+  host         String
+  html         String?
+  json         ZapJson?
+  available    Boolean?
+  scannedAt    DateTime @default(now())
+}
+
+type ZapJson {
+  site ZapJsonSite[]
+}
+
+type ZapJsonSite {
+  alerts ZapJsonSiteAlert[]
+}
+
+type ZapJsonSiteAlert {
+  pluginid   String
+  alertRef   String
+  alert      String
+  name       String
+  riskcode   String
+  confidence String
+  riskdesc   String
+  desc       String
+  count      String
+  solution   String
+  otherinfo  String
+  reference  String
+  cweid      String
+  wascid     String
+  sourceid   String
+}
+
+model SecurityConfig {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String         @unique
+  context      ProjectContext
+  repositories Repository[]
+}
+
+enum ProjectContext {
+  PRIVATE
+  PUBLIC
+}
+
+type Repository {
+  url String
+}
+
+model SonarScanResult {
+  id           String                @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String
+  context      ProjectContext
+  url          String
+  result       SonarScanResultDetail
+  scannedAt    DateTime              @default(now())
+}
+
+type SonarScanResultDetail {
+  repoid                   String
+  last_date                String
+  bugs                     String
+  vulnerabilities          String
+  sqale_index              String
+  duplicated_lines_density String
+  ncloc                    String
+  coverage                 String
+  code_smells              String
+  reliability_rating       String
+  security_rating          String
+  sqale_rating             String
+}
+
 type Quota {
   cpu     String
   memory  String
@@ -218,6 +296,7 @@ enum RequestType {
 enum PublicCloudRequestType {
   CREATE
   EDIT
+  DELETE
 }
 
 enum Ministry {

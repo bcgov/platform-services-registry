@@ -6,6 +6,9 @@ runs:
   steps:
   - name: Setup Tools
     uses: egose/actions/asdf-tools@fc10f2556d8e479a692a1560eea078dacf12f68a
+    with:
+      plugins: |
+        sonarscanner=https://github.com/virtualstaticvoid/asdf-sonarscanner.git
 
   - name: Install python tools
     run: |

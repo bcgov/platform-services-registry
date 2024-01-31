@@ -10,6 +10,12 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
   const budget = watch('budget', {});
 
+  const totalBudget = [budget.dev, budget.test, budget.prod, budget.tools]
+    .map((value) => Number(value) || 0)
+    .reduce((sum, value) => sum + value, 0);
+
+  const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
@@ -67,12 +73,10 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
             id="total"
             placeholder="Value populated from Dev+Test+Prod+Tools"
             disabled={true}
-            value={[budget.dev, budget.test, budget.prod, budget.tools]
-              .map((value) => Number(value) || 0)
-              .reduce((sum, value) => sum + value, 0)}
+            value={formattedTotalBudget}
           />
           <span className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"></span>
-          {errors.budget && (
+          {Object.keys(errors.budget || {}).length > 0 && (
             <p className={classNames(errors.budget ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Budget is required, Every value should be no less than USD 50
             </p>

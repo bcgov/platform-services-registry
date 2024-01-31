@@ -30,10 +30,10 @@ export async function GET(req: NextRequest) {
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
       cluster: searchParams.get('cluster'),
-      active: searchParams.get('active') === 'true', //Converts 'true' string to true boolean
+      active: searchParams.get('active') === 'true', // Converts 'true' string to true boolean
     });
 
-    const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
+    const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
 
     const { data } = await privateCloudProjectsPaginated(
       0,
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="projects.csv"',
+        'Content-Disposition': 'attachment; filename=private-cloud-products.csv',
       },
     });
 

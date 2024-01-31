@@ -1,5 +1,4 @@
 import { useFormContext } from 'react-hook-form';
-import classNames from '@/components/utils/classnames';
 
 export default function BudgetInput({ disabled, title, name }: { disabled?: boolean; title: string; name: string }) {
   const {
@@ -19,6 +18,8 @@ export default function BudgetInput({ disabled, title, name }: { disabled?: bool
         <input
           disabled={disabled}
           type="number"
+          id={name}
+          step="0.01"
           className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="50.00"
           defaultValue={50.0}
@@ -33,22 +34,6 @@ export default function BudgetInput({ disabled, title, name }: { disabled?: bool
           </span>
         </div>
       </div>
-      {/* <input
-        disabled={disabled}
-        defaultValue={50.00}
-        type="number"
-        step="any"
-        className={classNames(
-          "block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-          disabled
-            ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-            : '',
-        )}
-        placeholder={'Enter amount here'}
-        {...register(name, {
-          valueAsNumber: true,
-        })}
-      /> */}
     </div>
   );
 }

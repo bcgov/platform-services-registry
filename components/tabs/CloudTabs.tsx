@@ -3,23 +3,18 @@
 import Link from 'next/link';
 import classNames from '@/components/utils/classnames';
 import { usePathname } from 'next/navigation';
-import CreateButton from '@/components/buttons/CreateButton';
+import path from 'path';
 
-const tabs = [
-  {
-    name: 'PRIVATE CLOUD OPENSHIFT',
-    href: 'private-cloud',
-  },
-  {
-    name: 'PUBLIC CLOUD LANDING ZONES',
-    href: 'public-cloud',
-  },
-];
+interface Tab {
+  name: string;
+  label: string;
+}
 
-export default function Tabs({ className }: { className?: string }) {
+export default function Tabs(
+  { tabs, navItem, urlFn }: { tabs: Tab[]; navItem?: React.ReactNode; urlFn: (path: string, name: string) => string },
+  { className }: { className?: string },
+) {
   const pathname = usePathname();
-
-  const cloud = `${pathname.split('/')[2]}`;
 
   return (
     <div className="w-full">
@@ -46,19 +41,19 @@ export default function Tabs({ className }: { className?: string }) {
               {tabs.map((tab) => (
                 <Link
                   key={tab.name}
-                  href={`/${tab.href}/${pathname.split('/')[2]}/${pathname.split('/')[3] || ''}`}
+                  href={urlFn(pathname, tab.name)}
                   className={classNames(
-                    pathname.split('/')[1] === tab.href
+                    pathname === urlFn(pathname, tab.name)
                       ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-2/4 before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                       : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-2/4 hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
                     'lg:ml-20 w-50 py-5 text-center font-bcsans text-lg font-bold',
                   )}
                 >
-                  {tab.name}
+                  {tab.label}
                 </Link>
               ))}
             </div>
-            <CreateButton />
+            {navItem}
           </div>
         </div>
       </div>

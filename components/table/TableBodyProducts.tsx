@@ -39,7 +39,7 @@ function EmptyBody() {
       </span>
       <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
       <Link
-        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-2"
+        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/create`}
       >
         REQUEST A NEW PROJECT SET
@@ -83,15 +83,15 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
   }
 
   if (requestType === 'CREATE') {
-    return 'Requested create on';
+    return 'Create requested';
   }
 
   if (requestType === 'EDIT') {
-    return 'Requested changes on';
+    return 'Edit requested';
   }
 
   if (requestType === 'DELETE') {
-    return 'Requested deletion on';
+    return 'Delete requested';
   }
 
   return 'Deployed on';
@@ -103,11 +103,20 @@ function truncateText(str: string, n: number) {
 
 function getStatus(requestDecisionStatus: string) {
   if (requestDecisionStatus === 'APPROVED') {
-    return 'Provisioning..';
+    return (
+      <span className="flex">
+        <div className="mr-2">
+          <div className={classNames('mt-1 text-blue-400 bg-blue-400/10', 'flex-none rounded-full p-1')}>
+            <div className="h-1.5 w-1.5 rounded-full bg-current" />
+          </div>
+        </div>
+        Provisioning
+      </span>
+    );
   }
 
   if (requestDecisionStatus === 'PENDING') {
-    return 'Pending';
+    return 'Reviewing';
   }
 
   if (requestDecisionStatus === 'REJECTED') {
@@ -120,67 +129,14 @@ function getStatus(requestDecisionStatus: string) {
 export default function TableBody({ rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session, status } = useSession();
-
-  console.log(pathname);
-
-  const isAdmin = session?.user?.roles?.includes('admin');
+  const cloud = pathname.split('/')[1];
 
   if (rows.length === 0) {
     return <EmptyBody />;
   }
 
   const onRowClickHandler = (row: any) => {
-    switch (pathname) {
-      case '/private-cloud/products/active-requests':
-        if (isAdmin) {
-          router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-          break;
-        }
-
-        router.push(path.join('/private-cloud', 'request', row.id));
-        break;
-
-      case '/private-cloud/products/all':
-        if (isAdmin) {
-          if (!!row?.requestType) {
-            router.push(path.join('/private-cloud', 'decision', row.licencePlateValue));
-            break;
-          }
-        }
-
-        if (!!row?.requestType) {
-          router.push(path.join('/private-cloud', 'request', row.id));
-          break;
-        }
-
-        router.push(path.join('/private-cloud', 'edit', row.licencePlateValue));
-        break;
-      case '/public-cloud/products/active-requests':
-        if (isAdmin) {
-          router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-          break;
-        }
-
-        router.push(path.join('/public-cloud', 'request', row.id));
-        break;
-
-      case '/public-cloud/products/all':
-        if (isAdmin) {
-          if (!!row?.requestType) {
-            router.push(path.join('/public-cloud', 'decision', row.licencePlateValue));
-            break;
-          }
-        }
-
-        if (!!row?.requestType) {
-          router.push(path.join('/public-cloud', 'request', row.id));
-          break;
-        }
-
-        router.push(path.join('/public-cloud', 'edit', row.licencePlateValue));
-        break;
-    }
+    router.push(path.join(`/${cloud}/product/${row.licencePlateValue}`));
   };
 
   return (
@@ -215,8 +171,8 @@ export default function TableBody({ rows }: TableProps) {
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
                     <p className="truncate">Ministry {deployment.ministry}</p>
-                    <svg viewBox="0 0 2 2" className="h-1 w-1 flex-none fill-gray-300">
-                      <circle cx={1} cy={1} r={0.7} />
+                    <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
+                      <circle cx={1} cy={1} r={1} />
                     </svg>
                     <p className="whitespace-nowrap">
                       {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}

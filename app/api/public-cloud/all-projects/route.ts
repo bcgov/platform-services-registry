@@ -31,10 +31,10 @@ export async function GET(req: NextRequest) {
       search: searchParams.get('search'),
       ministry: searchParams.get('ministry'),
       provider: searchParams.get('provider'),
-      active: searchParams.get('active'),
+      active: searchParams.get('active') === 'true', // Converts 'true' string to true boolean
     });
 
-    const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
+    const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
 
     const { data } = await publicCloudProjectsPaginated(
       0,
@@ -46,6 +46,10 @@ export async function GET(req: NextRequest) {
       ministryRoles,
       parsedSearchParams.active,
     );
+
+    if (data.length === 0) {
+      return new NextResponse(null, { status: 204 });
+    }
 
     // Map the data to the correct format for CSV conversion
     const formattedData = data.map((project: PublicProject) => ({
@@ -87,7 +91,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="projects.csv"',
+        'Content-Disposition': 'attachment; filename=public-cloud-products.csv',
       },
     });
 
