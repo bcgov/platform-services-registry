@@ -91,7 +91,10 @@ async function main() {
         },
       });
     }
-
+    const comments = [];
+    for (let x = 0; x < 10; x++) {
+      comments.push({ text: 'abcd', userId: user.id });
+    }
     // Create fake projects for the user
     for (let j = 0; j < numOfProjectsPerUser; j++) {
       await prisma.privateCloudProject.create({
@@ -106,6 +109,7 @@ async function main() {
           secondaryTechnicalLeadId: user.id,
           ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
+          comments: { create: comments },
           productionQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
