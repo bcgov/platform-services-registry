@@ -26,7 +26,7 @@ jobs:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@521e78597400d2bff4171059223311208257c0d5
+      uses: hashicorp/setup-terraform@e12a01440e5748b5091248b30ddcef3ff73cdaf1
       with:
         terraform_version: ${{ env.TF_VERSION }}
 
