@@ -2,7 +2,6 @@ import { Cluster, Ministry, PrismaClient, Provider } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '../schema';
 const prisma = new PrismaClient();
 import { faker } from '@faker-js/faker';
-import { random } from 'cypress/types/lodash';
 
 const commonComponents = {
   addressAndGeolocation: {
@@ -94,7 +93,7 @@ async function main() {
     }
     const comments = [];
     for (let x = 0; x < 10; x++) {
-      comments.push({ text: 'abcd', authorId: user.id });
+      comments.push({ text: 'abcd', userId: user.id });
     }
     // Create fake projects for the user
     for (let j = 0; j < numOfProjectsPerUser; j++) {
