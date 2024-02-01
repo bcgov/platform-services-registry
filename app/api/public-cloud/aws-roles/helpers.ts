@@ -1,6 +1,8 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
+import startCase from 'lodash-es/startCase';
+import kebabCase from 'lodash-es/kebabCase';
 
 export interface Group {
   id: string;
@@ -46,26 +48,13 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   return users.slice(startIndex, endIndex);
 };
 
-const isUpperCase = (char: string): boolean => {
-  const charCode = char.charCodeAt(0);
-  return charCode >= 65 && charCode <= 90;
-};
-
 // aws group name format is "XxxxZzzz" or "Yyyyy",
 // for Tab we need name as "Xxxx Zzzz" or "Yyyyy",
 // and href as "xxxx-zzzz" or "yyyyy"
 const parseGroupNameToTab = (name: string): tabName => {
-  const roleArr = name.split('');
-  for (let i = 1; i < roleArr.length; i++) {
-    if (isUpperCase(name[i])) {
-      roleArr[i] = ' ' + roleArr[i];
-    }
-  }
-
-  const role = roleArr.join('');
   return {
-    name: role,
-    href: role.replace(/\s+/g, '-').toLowerCase(),
+    name: startCase(name),
+    href: kebabCase(name),
   };
 };
 
