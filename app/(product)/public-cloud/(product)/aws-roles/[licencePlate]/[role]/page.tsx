@@ -109,7 +109,7 @@ export default function ProductAWSRoles() {
   if (roles && roles.length === 0) {
     return (
       <div className="w-full">
-        Looks like role groups haven&apos;t been create for this product, please, reach out Public Cloud Platform
+        Looks like role groups haven&apos;t been created for this product, please, reach out Public Cloud Platform
         Administrators{' '}
         <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
           Cloud.Pathfinder@gov.bc.ca
