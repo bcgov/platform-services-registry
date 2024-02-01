@@ -1,4 +1,5 @@
 import { instance } from './axios';
+import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 
 export async function getUsersPaginatedList(
   licencePlate: string,
@@ -29,12 +30,7 @@ export async function deleteUser(userId: string, groupId: string) {
   return result;
 }
 
-export async function getRolesNames(licencePlate: string): Promise<
-  {
-    name: string;
-    href: string;
-  }[]
-> {
+export async function getRolesNames(licencePlate: string): Promise<tabName[]> {
   const result = await instance
     .get(`public-cloud/aws-roles/getGroupRolesNames?licencePlate=${licencePlate}`)
     .then((res) => res.data);
