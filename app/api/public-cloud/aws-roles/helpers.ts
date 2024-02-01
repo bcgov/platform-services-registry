@@ -51,6 +51,7 @@ const isUpperCase = (char: string): boolean => {
   return charCode >= 65 && charCode <= 90;
 };
 
+// aws group name format is "XxxxZzzz" or "Yyyyy", for Tab we need name as "Xxxx Zzzz" or "Yyyyy", and href as "xxxx-zzzz" or "yyyyy"
 const parseGroupNameToTab = (name: string): tabName => {
   const roleArr = name.split('');
   for (let i = 1; i < roleArr.length; i++) {
