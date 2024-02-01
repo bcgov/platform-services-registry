@@ -109,7 +109,7 @@ export default function ProductAWSRoles() {
   if (roles && roles.length === 0) {
     return (
       <div className="w-full">
-        Looks like role groups haven&apos;t been create for this product, please, reach out Public Cloud Platform
+        Looks like role groups haven&apos;t been created for this product, please, reach out Public Cloud Platform
         Administrators{' '}
         <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
           Cloud.Pathfinder@gov.bc.ca
@@ -118,50 +118,46 @@ export default function ProductAWSRoles() {
     );
   }
 
+  if (isRolesFetching && isUsersFetching) {
+    return <div className="w-full">Loading...</div>;
+  }
+
   return (
-    !isRolesFetching &&
-    !isUsersFetching && (
-      <div className="w-full">
-        <TableAWSRoles
-          tableTop={
-            <UserAWSRolesTableTop
-              title="BC Gov’s Landing Zone in AWS - Manage Users"
-              subtitle="User Access"
-              description="Assign roles to grant users access below"
-              setOpenAddUser={setOpenAddUser}
-              roles={roles}
+    <div className="w-full">
+      <TableAWSRoles
+        tableTop={
+          <UserAWSRolesTableTop
+            title="BC Gov’s Landing Zone in AWS - Manage Users"
+            subtitle="User Access"
+            description="Assign roles to grant users access below"
+            setOpenAddUser={setOpenAddUser}
+            roles={roles}
+          />
+        }
+        tableBody={
+          rows.length === 0 ? (
+            <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
+          ) : (
+            <TableBodyAWSRoles
+              rows={rows}
+              userRole={userRole}
+              setOpenDeleteUser={setOpenDeleteUser}
+              setDeletePerson={setDeletePerson}
             />
-          }
-          tableBody={
-            rows.length === 0 ? (
-              <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
-            ) : (
-              <TableBodyAWSRoles
-                rows={rows}
-                userRole={userRole}
-                setOpenDeleteUser={setOpenDeleteUser}
-                setDeletePerson={setDeletePerson}
-              />
-            )
-          }
-          currentPage={+currentPage}
-          pageSize={+pageSize}
-          total={users ? users?.total : 0}
-        />
-        <DeleteUserModal
-          open={openDeleteUser}
-          setOpen={setOpenDeleteUser}
-          setUserId={setUserId}
-          person={deletePerson}
-        />
-        <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
-        <ErrorModal
-          open={showErrorModal}
-          setOpen={setShowErrorModal}
-          errorMessage={errorMessage}
-          redirectUrl={pathName}
-        />
-      </div>
-    )
+          )
+        }
+        currentPage={+currentPage}
+        pageSize={+pageSize}
+        total={users ? users?.total : 0}
+      />
+      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} setUserId={setUserId} person={deletePerson} />
+      <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
+      <ErrorModal
+        open={showErrorModal}
+        setOpen={setShowErrorModal}
+        errorMessage={errorMessage}
+        redirectUrl={pathName}
+      />
+    </div>
   );
 }

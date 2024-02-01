@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import classNames from '@/components/utils/classnames';
-import { useParams, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { extractPathSegments } from '@/helpers/pathSegments';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 
 export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
   const pathname = usePathname();
-
+  if (!roles) {
+    return;
+  }
   return (
     <div>
       <span className="isolate inline-flex rounded-md shadow-sm py-2 px-4">
