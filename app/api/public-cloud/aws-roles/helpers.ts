@@ -1,8 +1,8 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
-import startCase from 'lodash-es/startCase';
-import kebabCase from 'lodash-es/kebabCase';
+import _startCase from 'lodash-es/startCase';
+import _kebabCase from 'lodash-es/kebabCase';
 
 export interface Group {
   id: string;
@@ -53,8 +53,8 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
 // and href as "xxxx-zzzz" or "yyyyy"
 const parseGroupNameToTab = (name: string): tabName => {
   return {
-    name: startCase(name),
-    href: kebabCase(name),
+    name: _startCase(name),
+    href: _kebabCase(name),
   };
 };
 
