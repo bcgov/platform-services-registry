@@ -118,50 +118,46 @@ export default function ProductAWSRoles() {
     );
   }
 
+  if (isRolesFetching && isUsersFetching) {
+    return null;
+  }
+
   return (
-    !isRolesFetching &&
-    !isUsersFetching && (
-      <div className="w-full">
-        <TableAWSRoles
-          tableTop={
-            <UserAWSRolesTableTop
-              title="BC Gov’s Landing Zone in AWS - Manage Users"
-              subtitle="User Access"
-              description="Assign roles to grant users access below"
-              setOpenAddUser={setOpenAddUser}
-              roles={roles}
+    <div className="w-full">
+      <TableAWSRoles
+        tableTop={
+          <UserAWSRolesTableTop
+            title="BC Gov’s Landing Zone in AWS - Manage Users"
+            subtitle="User Access"
+            description="Assign roles to grant users access below"
+            setOpenAddUser={setOpenAddUser}
+            roles={roles}
+          />
+        }
+        tableBody={
+          rows.length === 0 ? (
+            <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
+          ) : (
+            <TableBodyAWSRoles
+              rows={rows}
+              userRole={userRole}
+              setOpenDeleteUser={setOpenDeleteUser}
+              setDeletePerson={setDeletePerson}
             />
-          }
-          tableBody={
-            rows.length === 0 ? (
-              <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
-            ) : (
-              <TableBodyAWSRoles
-                rows={rows}
-                userRole={userRole}
-                setOpenDeleteUser={setOpenDeleteUser}
-                setDeletePerson={setDeletePerson}
-              />
-            )
-          }
-          currentPage={+currentPage}
-          pageSize={+pageSize}
-          total={users ? users?.total : 0}
-        />
-        <DeleteUserModal
-          open={openDeleteUser}
-          setOpen={setOpenDeleteUser}
-          setUserId={setUserId}
-          person={deletePerson}
-        />
-        <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
-        <ErrorModal
-          open={showErrorModal}
-          setOpen={setShowErrorModal}
-          errorMessage={errorMessage}
-          redirectUrl={pathName}
-        />
-      </div>
-    )
+          )
+        }
+        currentPage={+currentPage}
+        pageSize={+pageSize}
+        total={users ? users?.total : 0}
+      />
+      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} setUserId={setUserId} person={deletePerson} />
+      <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
+      <ErrorModal
+        open={showErrorModal}
+        setOpen={setShowErrorModal}
+        errorMessage={errorMessage}
+        redirectUrl={pathName}
+      />
+    </div>
   );
 }
