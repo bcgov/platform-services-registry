@@ -18,6 +18,10 @@ const apiHandler = createApiHandler<unknown, QueryParam>({
 
 export const GET = apiHandler(async ({ queryParams }) => {
   const { licencePlate } = queryParams;
-  const result = await getGroupsNamesByLicencePlate(licencePlate);
+  let result;
+  if (licencePlate) {
+    result = await getGroupsNamesByLicencePlate(licencePlate);
+  }
+
   return NextResponse.json(result);
 });

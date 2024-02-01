@@ -51,7 +51,7 @@ const isUpperCase = (char: string): boolean => {
   return charCode >= 65 && charCode <= 90;
 };
 
-const parseGroupNameToTabName = (name: string): tabName => {
+const parseGroupNameToTab = (name: string): tabName => {
   const roleArr = name.split('');
   for (let i = 1; i < roleArr.length; i++) {
     if (isUpperCase(name[i])) {
@@ -331,8 +331,7 @@ export async function getGroupsNamesByLicencePlate(licencePlate: string): Promis
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
   if (productRolesGroups && productRolesGroups.length > 0) {
     return productRolesGroups[0].subGroups.map((subGroup) => {
-      //group name format is XxxxZzzz, for Tab name needs Xxxx Zzzz, for Tab href xxxx-zzzz
-      return parseGroupNameToTabName(subGroup.name);
+      return parseGroupNameToTab(subGroup.name);
     });
   }
 
