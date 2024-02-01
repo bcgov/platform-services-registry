@@ -118,7 +118,7 @@ export default function ProductAWSRoles() {
     );
   }
 
-  if (isRolesFetching && isUsersFetching) {
+  if (isRolesFetching || isUsersFetching) {
     return null;
   }
 
