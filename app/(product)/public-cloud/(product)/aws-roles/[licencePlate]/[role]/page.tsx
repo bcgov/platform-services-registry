@@ -11,7 +11,7 @@ import AddUserModal from '@/components/modal/AddUser';
 import { useEffect, useState } from 'react';
 import DeleteUserModal from '@/components/modal/DeleteUser';
 import EmptyBody from '@/components/EmptyUsersList';
-import { getUsersPaginatedList, addUser, deleteUser } from '@/services/aws-roles';
+import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/aws-roles';
 import ErrorModal from '@/components/modal/Error';
 
 const pathParamRoleToRole = (pathRole: string): string => {
@@ -96,6 +96,32 @@ export default function ProductAWSRoles() {
     refetch();
   }, [searchTerm, refetch]);
 
+  const {
+    data: roles,
+    isLoading: isRolesFetching,
+    error: fetchingRolesError,
+  } = useQuery<any, Error>({
+    queryKey: ['licencePlate', licencePlate],
+    queryFn: () => getRolesNames(licencePlate),
+    enabled: !!licencePlate,
+  });
+
+  if (roles && roles.length === 0) {
+    return (
+      <div className="w-full">
+        Looks like role groups haven&apos;t been created for this product, please, reach out Public Cloud Platform
+        Administrators{' '}
+        <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
+          Cloud.Pathfinder@gov.bc.ca
+        </a>
+      </div>
+    );
+  }
+
+  if (isRolesFetching || isUsersFetching) {
+    return null;
+  }
+
   return (
     <div className="w-full">
       <TableAWSRoles
@@ -105,10 +131,11 @@ export default function ProductAWSRoles() {
             subtitle="User Access"
             description="Assign roles to grant users access below"
             setOpenAddUser={setOpenAddUser}
+            roles={roles}
           />
         }
         tableBody={
-          rows.length === 0 && !isUsersFetching ? (
+          rows.length === 0 ? (
             <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
           ) : (
             <TableBodyAWSRoles

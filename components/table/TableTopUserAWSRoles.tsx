@@ -5,17 +5,20 @@ import { useDebounce } from '@/components/utils/useDebounce';
 import Image from 'next/image';
 import Search from '@/components/assets/search.svg';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 
 export default function UserAWSRolesTableTop({
   title,
   subtitle,
   description,
   setOpenAddUser,
+  roles,
 }: {
   title: string;
   subtitle: string;
   description: string;
   setOpenAddUser: React.Dispatch<React.SetStateAction<boolean>>;
+  roles: tabName[];
 }) {
   const [isPending, startTransition] = useTransition();
   const [focused, setFocused] = useState(false);
@@ -66,7 +69,7 @@ export default function UserAWSRolesTableTop({
         <AddUserButton setOpenAddUser={setOpenAddUser} />
       </div>
       <div className="flex">
-        <PublicUsersTabs />
+        <PublicUsersTabs roles={roles} />
         <div className="flex  items-center relative pr-4 ml-auto">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <Image
