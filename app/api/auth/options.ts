@@ -4,7 +4,7 @@ import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
 import { getUser } from '@/msal/service';
-import { IS_PROD } from '@/config';
+import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
 import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 
 interface KeycloakToken {
@@ -38,9 +38,9 @@ export const authOptions: AuthOptions = {
     // }),
 
     KeycloakProvider({
-      clientId: process.env.AUTH_RESOURCE!,
-      clientSecret: process.env.AUTH_SECRET!,
-      issuer: `${process.env.AUTH_SERVER_URL}/realms/${process.env.AUTH_RELM}`,
+      clientId: AUTH_RESOURCE!,
+      clientSecret: AUTH_SECRET!,
+      issuer: `${AUTH_SERVER_URL}/realms/${AUTH_RELM}`,
       profile(profile) {
         return {
           id: profile.sub,
@@ -71,7 +71,7 @@ export const authOptions: AuthOptions = {
   //   return baseUrl;
   // },
   // },
-  secret: process.env.AUTH_SECRET,
+  secret: AUTH_SECRET,
 
   // pages: {
   //   signIn: "/auth/signin",
@@ -88,7 +88,7 @@ export const authOptions: AuthOptions = {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakToken;
 
-      const adUser = await getUser(email);
+      const adUser: any = await getUser(email);
       let ministry = '';
       if (adUser) {
         ministry = parseMinistryFromDisplayName(adUser.displayName);
@@ -134,7 +134,6 @@ export const authOptions: AuthOptions = {
         const user = await prisma.user.findFirst({ where: { email: session.user.email } });
         session.userId = user?.id ?? null;
         session.accessToken = token.accessToken;
-        session.user.roles = token.roles || [];
         session.roles = token.roles || [];
 
         // Assign the 'user' role to users who log in to the system.
@@ -155,6 +154,8 @@ export const authOptions: AuthOptions = {
             session.ministries[ministryRole].push(ministryCode);
           }
         });
+
+        session.user.roles = session.roles;
       }
       // {
       //   ...

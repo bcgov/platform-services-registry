@@ -1,7 +1,7 @@
 import SearchFilterSort from '@/components/table/SearchFilterSort';
 import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
-
+import { Suspense } from 'react';
 export default function Table({
   title,
   description,
@@ -28,13 +28,14 @@ export default function Table({
       <div>
         <TableTop title={title} description={description} />
         <div className="flex justify-between items-center border-b-2 px-4 py-2 w-full">
-          <SearchFilterSort
-            showDownloadButton={showDownloadButton}
-            apiContext={apiContext}
-            removeSearch={removeSearch}
-          />
+          <Suspense>
+            <SearchFilterSort
+              showDownloadButton={showDownloadButton}
+              apiContext={apiContext}
+              removeSearch={removeSearch}
+            />
+          </Suspense>
         </div>
-
         <div className="h-[60vh] overflow-y-auto scroll-smooth">{tableBody}</div>
       </div>
       <nav
@@ -58,7 +59,9 @@ export default function Table({
         </div>
         <div className="flex flex-1 justify-between sm:justify-end">
           <div>
-            <PagninationButtons pageCount={total / pageSize} page={currentPage} pageSize={pageSize} />
+            <Suspense>
+              <PagninationButtons pageCount={total / pageSize} page={currentPage} pageSize={pageSize} />
+            </Suspense>
           </div>
         </div>
       </nav>

@@ -1,4 +1,4 @@
-export function parsePaginationParams(page: string, pageSize: string) {
+export function parsePaginationParams(page: string, pageSize: string, defaultPageSize = 5) {
   let parsedPage = parseInt(page, 10);
   let parsedPageSize = parseInt(pageSize, 10);
 
@@ -7,7 +7,7 @@ export function parsePaginationParams(page: string, pageSize: string) {
   }
 
   if (isNaN(parsedPageSize) || parsedPageSize < 1) {
-    parsedPageSize = 5;
+    parsedPageSize = defaultPageSize;
   }
 
   const skip = (parsedPage - 1) * parsedPageSize;

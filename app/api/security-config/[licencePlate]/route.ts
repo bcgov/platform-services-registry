@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { SecurityConfig, $Enums } from '@prisma/client';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 
 interface PathParam {
   licencePlate: string;

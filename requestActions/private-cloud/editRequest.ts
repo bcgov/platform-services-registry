@@ -100,6 +100,7 @@ export default async function editRequest(
     data: {
       type: RequestType.EDIT,
       decisionStatus: decisionStatus,
+      isQuotaChanged,
       active: true,
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,

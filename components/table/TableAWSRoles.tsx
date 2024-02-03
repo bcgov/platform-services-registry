@@ -1,7 +1,6 @@
 'use client';
 
 import PagninationButtons from '@/components/buttons/PaginationButtons';
-import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
 import { parsePaginationParams } from '@/helpers/pagination';
 
 export default function TableAWSRoles({
@@ -9,24 +8,19 @@ export default function TableAWSRoles({
   pageSize,
   total,
   tableBody,
-  groupId,
+  tableTop,
 }: {
-  currentPage: string;
-  pageSize: string;
+  currentPage: number;
+  pageSize: number;
   total: number;
   tableBody: React.ReactNode;
-  groupId: string;
+  tableTop: React.ReactNode;
 }) {
-  const { page, skip, take } = parsePaginationParams(currentPage, pageSize);
+  const { page, skip, take } = parsePaginationParams(currentPage.toString(), pageSize.toString());
 
   return (
     <div className="border-2 rounded-xl overflow-hidden">
-      <UserAWSRolesTableTop
-        title="BC Gov’s Landing Zone in AWS - Manage Users"
-        subtitle="User Access"
-        description="Assign roles to grant users access below"
-        groupId={groupId}
-      />
+      {tableTop}
       <div className="h-max overflow-y-auto scroll-smooth">{tableBody}</div>
       <nav
         className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"

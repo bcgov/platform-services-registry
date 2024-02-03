@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { samplePublicRequest } from './components/Params';
-import RequestRejectionTemplate from './templates/public-cloud/RequestRejection';
+import { samplePrivateRequest } from './_components/Params';
+import RequestRejectionTemplate from './_templates/public-cloud/RequestRejection';
 
 export const RequestRejection = () => {
   // Extract the product name and human comment from the samplePublicRequest

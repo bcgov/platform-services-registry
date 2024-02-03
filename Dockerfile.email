@@ -11,6 +11,7 @@ RUN npm install
 RUN npm run email-build
 COPY next.config_.react-email.js .react-email/next.config.js
 RUN npm run email-build
+RUN mkdir -p .react-email/public
 
 # 2nd stage to copy image and create a smaller final image
 FROM node:20-alpine

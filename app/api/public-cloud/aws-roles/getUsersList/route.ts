@@ -1,13 +1,14 @@
 import { getSubGroupMembersByLicencePlateAndName } from '@/app/api/public-cloud/aws-roles/helpers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 
 interface QueryParam {
   licencePlate: string;
   role: string;
   page: number;
   pageSize: number;
+  searchTerm: string;
 }
 
 const queryParamSchema = z.object({
@@ -15,6 +16,7 @@ const queryParamSchema = z.object({
   role: z.string(),
   page: z.string(),
   pageSize: z.string(),
+  searchTerm: z.string(),
 });
 
 const apiHandler = createApiHandler<unknown, QueryParam>({
@@ -22,20 +24,12 @@ const apiHandler = createApiHandler<unknown, QueryParam>({
   validations: { queryParams: queryParamSchema },
 });
 
-export const GET = apiHandler(async ({ queryParams, session }) => {
-  const { licencePlate, role, page, pageSize } = queryParams;
+export const GET = apiHandler(async ({ queryParams }) => {
+  const { licencePlate, role, page, pageSize, searchTerm } = queryParams;
   let result;
   if (licencePlate && role) {
-    result = await getSubGroupMembersByLicencePlateAndName(licencePlate, role, page, pageSize);
+    result = await getSubGroupMembersByLicencePlateAndName(licencePlate, role, page, pageSize, searchTerm);
   }
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: result,
-    },
-    {
-      status: 201,
-    },
-  );
+  return NextResponse.json(result);
 });

@@ -1,4 +1,13 @@
 import axios from 'axios';
+import {
+  CLAB_SERVICE_ACCOUNT_TOKEN,
+  KLAB_SERVICE_ACCOUNT_TOKEN,
+  KLAB2_SERVICE_ACCOUNT_TOKEN,
+  GOLDDR_SERVICE_ACCOUNT_TOKEN,
+  GOLD_SERVICE_ACCOUNT_TOKEN,
+  SILVER_SERVICE_ACCOUNT_TOKEN,
+  EMERALD_SERVICE_ACCOUNT_TOKEN,
+} from '@/config';
 
 export interface DeletableField {
   namespaceDeletability: boolean;
@@ -42,13 +51,13 @@ export default async function openshiftDeletionCheck(
   clusterNameParam: string,
 ): Promise<DeletableField> {
   const CLUSTER_SERVICE_ACCOUNT_TOKEN = {
-    clab: process.env.CLAB_SERVICE_ACCOUNT_TOKEN || '',
-    klab: process.env.KLAB_SERVICE_ACCOUNT_TOKEN || '',
-    klab2: process.env.KLAB2_SERVICE_ACCOUNT_TOKEN || '',
-    golddr: process.env.GOLDDR_SERVICE_ACCOUNT_TOKEN || '',
-    gold: process.env.GOLD_SERVICE_ACCOUNT_TOKEN || '',
-    silver: process.env.SILVER_SERVICE_ACCOUNT_TOKEN || '',
-    emerald: process.env.EMERALD_SERVICE_ACCOUNT_TOKEN || '',
+    clab: CLAB_SERVICE_ACCOUNT_TOKEN || '',
+    klab: KLAB_SERVICE_ACCOUNT_TOKEN || '',
+    klab2: KLAB2_SERVICE_ACCOUNT_TOKEN || '',
+    golddr: GOLDDR_SERVICE_ACCOUNT_TOKEN || '',
+    gold: GOLD_SERVICE_ACCOUNT_TOKEN || '',
+    silver: SILVER_SERVICE_ACCOUNT_TOKEN || '',
+    emerald: EMERALD_SERVICE_ACCOUNT_TOKEN || '',
   };
 
   const clusterName = clusterNameParam.toLowerCase() as keyof typeof CLUSTER_SERVICE_ACCOUNT_TOKEN;

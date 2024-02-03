@@ -1,43 +1,16 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  groupId: string;
+  setUserId: React.Dispatch<React.SetStateAction<string>>;
   person: Record<string, any>;
 }
 
-async function deleteUser(userId: string, groupId: string): Promise<string | undefined> {
-  const url = `/api/public-cloud/aws-roles/deleteUser?userId=${userId}&groupId=${groupId}`;
-  try {
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      return response.statusText;
-    }
-    console.error('Failed to handle DELETE request:', response.statusText);
-  } catch (error) {
-    console.error('Error during DELETE request:', error);
-  }
-}
-
-export default function DeleteUserModal({ open, setOpen, groupId, person }: Props) {
-  const [userId, setUserId] = useState<string>('');
-
-  const { data: user } = useQuery<any, Error>({
-    queryKey: ['userId', userId],
-    queryFn: () => deleteUser(userId, groupId),
-    enabled: !!userId,
-  });
-
+export default function DeleteUserModal({ open, setOpen, setUserId, person }: Props) {
   const handleDeleteUserBtn = () => {
     setUserId(person[Object.keys(person)[0]].id);
     setOpen(false);

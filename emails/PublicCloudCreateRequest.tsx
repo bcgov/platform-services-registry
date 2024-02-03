@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { samplePublicRequest } from './components/Params';
-import NewRequestTemplate from './templates/public-cloud/CreateRequest';
+import { samplePublicRequest } from './_components/Params';
+import NewRequestTemplate from './_templates/public-cloud/CreateRequest';
 
 export const NewRequest = () => {
   return <NewRequestTemplate request={samplePublicRequest} />;

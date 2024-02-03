@@ -1,6 +1,8 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
-import { getUserById } from '@/queries/user';
+import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
+import _startCase from 'lodash-es/startCase';
+import _kebabCase from 'lodash-es/kebabCase';
 
 export interface Group {
   id: string;
@@ -8,11 +10,12 @@ export interface Group {
   path: string;
   subGroups: Group[];
 }
+
 export interface User {
   id: string;
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export type paramsURL = {
@@ -25,6 +28,11 @@ interface UsersTotal {
   groupId: string;
   total: number;
 }
+
+export type tabName = {
+  name: string;
+  href: string;
+};
 
 interface PaginationOptions {
   page: number;
@@ -40,6 +48,54 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   return users.slice(startIndex, endIndex);
 };
 
+// aws group name format is "XxxxZzzz" or "Yyyyy",
+// for Tab we need name as "Xxxx Zzzz" or "Yyyyy",
+// and href as "xxxx-zzzz" or "yyyyy"
+const parseGroupNameToTab = (name: string): tabName => {
+  return {
+    name: _startCase(name),
+    href: _kebabCase(name),
+  };
+};
+
+const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
+  const results = new Set<Record<string, User>>();
+
+  users.forEach((userObj) =>
+    Object.values(userObj).forEach((user) => {
+      Object.values(user).forEach((value) => {
+        if (typeof value === 'string' && value.toLowerCase().includes(searchTerm?.toLowerCase())) {
+          results.add(userObj);
+          return;
+        }
+      });
+    }),
+  );
+
+  return Array.from(results);
+};
+
+const createUser = <V extends User>(data: Partial<V>): V => {
+  const newUser = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+  } as V;
+
+  for (const key in data) {
+    if (key in newUser) {
+      newUser[key as keyof V] = data[key] as V[keyof V];
+    }
+  }
+  return newUser;
+};
+
+const createUserRole = <K extends string, V extends User>(role: K, user: V): Record<string, V> => {
+  const roleUser = { [role]: createUser({ ...user }) } as Record<string, V>;
+  return roleUser;
+};
+
 const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
@@ -52,42 +108,45 @@ async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<R
         contains: searchLicencePlate,
       },
     },
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
   });
 
-  if (project?.projectOwnerId) {
-    const projectOwner = await getUserById(project.projectOwnerId);
-    if (projectOwner !== null) result.push({ 'Project Owner': projectOwner });
+  if (project?.projectOwner) {
+    result.push(createUserRole('Product Owner', project?.projectOwner as unknown as User));
   }
 
-  if (project?.primaryTechnicalLeadId) {
-    const primaryTechnicalLead = await getUserById(project.primaryTechnicalLeadId);
-    if (primaryTechnicalLead !== null) result.push({ 'Primary Technical Lead': primaryTechnicalLead });
+  if (project?.primaryTechnicalLead) {
+    result.push(createUserRole('Primary Technical Lead', project?.primaryTechnicalLead as unknown as User));
   }
 
-  if (project?.secondaryTechnicalLeadId) {
-    const secondaryTechnicalLead = await getUserById(project.secondaryTechnicalLeadId);
-    if (secondaryTechnicalLead !== null) result.push({ 'Secondary Technical Lead': secondaryTechnicalLead });
+  if (project?.secondaryTechnicalLead) {
+    result.push(createUserRole('Secondary Technical Lead', project?.secondaryTechnicalLead as unknown as User));
   }
 
   return result;
 }
 
-const parseError = (error: unknown): void => {
+const parseError = (error: unknown) => {
   if (error instanceof Error) {
     console.log(error.message);
   } else console.log(String(error));
+  return Promise.reject(error);
 };
 
 const awsRolesApiInstance = axios.create({
-  baseURL: `${process.env.AWS_ROLES_BASE_URL}/admin/realms/${process.env.AWS_ROLES_REALM_NAME}`,
+  baseURL: `${AWS_ROLES_BASE_URL}/admin/realms/${AWS_ROLES_REALM_NAME}`,
 });
 
 export const getToken = async (): Promise<string | undefined> => {
   try {
-    const apiUrl = `${process.env.AWS_ROLES_BASE_URL}/realms/${process.env.AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
+    const apiUrl = `${AWS_ROLES_BASE_URL}/realms/${AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
     const requestBody = {
-      client_id: process.env.AWS_ROLES_CLIENT_ID,
-      client_secret: process.env.AWS_ROLES_CLIENT_SECRET,
+      client_id: AWS_ROLES_CLIENT_ID,
+      client_secret: AWS_ROLES_CLIENT_SECRET,
       grant_type: 'client_credentials',
     };
     const response = await axios.post(apiUrl, requestBody, {
@@ -125,6 +184,7 @@ export const getGroups = async (): Promise<Group[]> => {
     });
   return groups as Group[];
 };
+
 //search by substring, returns all of groups, which names includes searchParam
 export const getGroupByName = (groupName: string = 'Project Team Groups'): Promise<Group[] | undefined> =>
   awsRolesApiInstance
@@ -214,17 +274,12 @@ async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
   return [];
 }
 
-const userRole = <K extends string, V>(role: K, user: V): Record<string, V> => {
-  const roleUser: Record<K, V> = {} as Record<K, V>;
-  roleUser[role] = user;
-  return roleUser;
-};
-
 export async function getSubGroupMembersByLicencePlateAndName(
   licencePlate: string,
   role: string,
   page: number,
   pageSize: number,
+  searchTerm: string,
 ): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
   let result: Record<string, User>[] = [];
@@ -238,16 +293,21 @@ export async function getSubGroupMembersByLicencePlateAndName(
     if (groupId) {
       const groupsUsers = await getMembersByGroupId(groupId);
       if (groupsUsers) {
-        result = [...groupsUsers.map((user) => userRole(role, user))];
+        result = [...groupsUsers.map((user) => createUserRole(role, user))];
       }
     }
   }
-  if (role === 'Admin') {
-    const registryUsers = await getPublicCloudProjectUsers(licencePlate);
-    if (registryUsers) {
-      result = [...registryUsers, ...result];
-    }
+  // if (role === 'Admin') {
+  //   const registryUsers = await getPublicCloudProjectUsers(licencePlate);
+  //   if (registryUsers) {
+  //     result = [...registryUsers, ...result];
+  //   }
+  // }
+
+  if (searchTerm) {
+    result = searchSubstringInArray(searchTerm, result);
   }
+
   const total = result.length;
   return { users: paginate(result, { page, pageSize }) as Record<string, User>[], groupId, total };
 }
@@ -257,4 +317,15 @@ export async function addUserToGroupByEmail(userEmail: string, groupId: string) 
   if (userId) {
     await addUserToGroup(userId[0].id, groupId);
   }
+}
+
+export async function getGroupsNamesByLicencePlate(licencePlate: string): Promise<tabName[]> {
+  const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
+  if (productRolesGroups && productRolesGroups.length > 0) {
+    return productRolesGroups[0].subGroups.map((subGroup) => {
+      return parseGroupNameToTab(subGroup.name);
+    });
+  }
+
+  return [];
 }

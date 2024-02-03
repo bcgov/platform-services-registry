@@ -104,10 +104,10 @@ airflow:
     replicas: 1
     resources:
       limits:
-        cpu: 1000m
+        cpu: 200m
         memory: 1Gi
       requests:
-        cpu: 100m
+        cpu: 50m
         memory: 500Mi
 
     extraVolumes:
@@ -129,10 +129,10 @@ airflow:
     resources:
       limits:
         cpu: 500m
-        memory: 2Gi
+        memory: 1Gi
       requests:
         cpu: 50m
-        memory: 700Mi
+        memory: 500Mi
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1342
   triggerer:
@@ -226,6 +226,15 @@ sonarqube:
   # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L236C1-L236C11
   initSysctl:
     enabled: false
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/8aa02077c479aa2f5d7e205c0e158b8d81938ea1/charts/sonarqube/values.yaml#L366
+  resources:
+    limits:
+      cpu: 800m
+      memory: 3Gi
+    requests:
+      cpu: 400m
+      memory: 2Gi
 
   # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L420C1-L420C14
   jdbcOverwrite:

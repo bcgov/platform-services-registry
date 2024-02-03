@@ -1,10 +1,27 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import Delete from '@/components/assets/delete.svg';
 import Image from 'next/image';
-import DeleteUserModal from '@/components/modal/DeleteUser';
-import { useState } from 'react';
+import React from 'react';
+
+const rowValue = (value: string, header: string, index: number): React.ReactNode => {
+  return (
+    <td
+      key={value + header}
+      className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
+        index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
+      } `}
+    >
+      {header === 'email' ? (
+        <a href={`mailto:${value}`} className="text-blue-500 hover:text-blue-700">
+          {value}
+        </a>
+      ) : (
+        value
+      )}
+    </td>
+  );
+};
 
 const headers = [
   { field: 'role', headerName: 'Role' },
@@ -16,27 +33,17 @@ const headers = [
 
 interface TableProps {
   rows: Record<string, any>[];
-  groupId: string;
   userRole: string;
+  setOpenDeleteUser: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletePerson: React.Dispatch<React.SetStateAction<Record<string, any>>>;
 }
 
-export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProps) {
-  const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
-  const pathname = usePathname();
-
-  const [deletePerson, setDeletePerson] = useState<Record<string, any>>({
-    '': {
-      id: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-    },
-  });
-
+export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, setDeletePerson }: TableProps) {
   const onDeleteClickHandler = (row: any) => {
     setDeletePerson(row);
     setOpenDeleteUser(true);
   };
+
   const subHeader = [
     { field: 'firstName', headerName: 'First Name' },
     { field: 'lastName', headerName: 'Last Name' },
@@ -65,25 +72,16 @@ export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProp
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr key={row.id} className="hover:bg-tableheadergrey" onClick={() => onDeleteClickHandler(row)}>
+                <tr key={row.id} className="hover:bg-tableheadergrey">
                   <td
                     key={row.id + i}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
                     {Object.keys(row)[0]}
                   </td>
-                  {subHeader.map((value, index) => (
-                    <td
-                      key={index + i}
-                      className={`font-sans font-normal text-base px-3 py-4 text-mediumgrey md:table-cell border-b-1 ${
-                        index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
-                      } `}
-                    >
-                      {row[Object.keys(row)[0]][value.field]}
-                    </td>
-                  ))}
+                  {subHeader.map((value, index) => rowValue(row[Object.keys(row)[0]][value.field], value.field, index))}
                   <td
-                    key={row.id + i}
+                    key={row.id}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
                     {Object.keys(row)[0] === userRole && (
@@ -107,7 +105,6 @@ export default function TableBodyAWSRoles({ rows, groupId, userRole }: TableProp
           </table>
         </div>
       </div>
-      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} groupId={groupId} person={deletePerson} />
     </div>
   );
 }

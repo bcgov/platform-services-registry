@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { samplePublicProduct } from './components/Params';
-import DeleteTemplate from './templates/public-cloud/DeleteRequest';
+import { samplePublicProduct } from './_components/Params';
+import DeleteTemplate from './_templates/public-cloud/DeleteRequest';
 
 export const DeleteRequest = () => {
   return <DeleteTemplate product={samplePublicProduct} />;

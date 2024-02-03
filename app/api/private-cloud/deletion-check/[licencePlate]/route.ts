@@ -4,7 +4,7 @@ import openshiftDeletionCheck from '@/scripts/deletioncheck';
 import { PrivateCloudProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 
 export const fetchCache = 'force-no-store';
 

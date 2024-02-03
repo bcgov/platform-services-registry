@@ -2,21 +2,14 @@
 
 import Image from 'next/image';
 import Arrow from '@/components/assets/arrow.svg';
-import { useRouter, usePathname } from 'next/navigation';
-import { ChevronRightIcon, HomeIcon } from '@heroicons/react/20/solid';
+import { usePathname } from 'next/navigation';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import Link from 'next/link';
 
-export default function CrumbsNav({
-  cloudLabel,
-  previousLabel,
-  currentLabel,
-}: {
-  cloudLabel: string;
-  previousLabel?: string;
-  currentLabel?: string;
-}) {
-  const router = useRouter();
+export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: string; previousLabel?: string }) {
   const pathname = usePathname();
   const licencePlate = pathname.split('/')[3];
+  const backUrl = pathname.split('/')[1];
 
   return (
     <nav className="flex" aria-label="Breadcrumb">
@@ -25,7 +18,7 @@ export default function CrumbsNav({
           <div className="font-bcsans text-xl text-cloudgrey mr-4">{cloudLabel}</div>
         </li>
         <li>
-          <button onClick={() => router.back()} className="ml-4 mr-2">
+          <Link className="ml-4 mr-2" type="button" href={`/${backUrl}/products/all`}>
             <Image
               alt="Arrow"
               src={Arrow}
@@ -37,13 +30,8 @@ export default function CrumbsNav({
                 height: 'auto',
               }}
             />
-          </button>
+          </Link>
         </li>
-        {/* <li>
-          <div className="flex items-center">
-            <div className="ml-1 text-gray-400  font-bcsans text-lg font-medium">{currentLabel}</div>
-          </div>
-        </li> */}
         <li>
           <div className="flex items-center">
             <div className="ml-1 text-gray-400  font-bcsans text-lg font-medium">{previousLabel}</div>

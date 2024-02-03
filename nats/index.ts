@@ -6,8 +6,9 @@ import createPublicCloudNatsMessage, {
 } from '@/nats/publicCloud';
 import openshiftDeletionCheck, { DeletableField } from '@/scripts/deletioncheck';
 import { PrivateCloudRequest, RequestType } from '@prisma/client';
+import { NATS_HOST, NATS_PORT } from '@/config';
 
-const serverURL = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
+const serverURL = `${NATS_HOST}:${NATS_PORT}`;
 
 async function sendNatsMessage(natsSubject: string, messageBody: any) {
   try {

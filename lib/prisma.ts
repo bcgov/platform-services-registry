@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { getService } from '@/core/services';
+import { NODE_ENV } from '@/config';
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -65,6 +66,6 @@ const prisma =
     },
   });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 export default prisma;

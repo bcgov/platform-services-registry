@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       active: searchParams.get('active') === 'true', // Converts 'true' string to true boolean
     });
 
-    const { userEmail, ministryRoles } = userInfo(session.user.email, session.user.roles);
+    const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
 
     const { data } = await privateCloudProjectsPaginated(
       0,

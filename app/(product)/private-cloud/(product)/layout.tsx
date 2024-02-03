@@ -34,6 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ignoreSegments: 1,
     });
   }
+
   return (
     <div>
       <Tabs tabs={tabs}>

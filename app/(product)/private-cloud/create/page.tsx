@@ -65,7 +65,7 @@ export default function Page() {
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <CommonComponents />
           </div>
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             <button
               type="submit"

@@ -232,8 +232,9 @@ interface CsvRecord {
 const mockSession = {
   user: {
     email: 'admin@example.com',
-    roles: ['admin'],
   },
+  roles: ['user', 'admin'],
+  isAdmin: true,
 };
 
 describe('CSV Download Route', () => {
@@ -265,7 +266,9 @@ describe('CSV Download Route', () => {
   test('should return CSV data for all projects', async () => {
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
-      user: { email: 'user@example.com', roles: ['admin'] },
+      user: { email: 'user@example.com' },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     const req = new NextRequest(API_URL, { method: 'GET' });
@@ -280,8 +283,9 @@ describe('CSV Download Route', () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
         email: 'user@example.com',
-        roles: ['admin'],
       },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     // Simulate a request that would result in an empty dataset
@@ -298,7 +302,9 @@ describe('CSV Download Route', () => {
 
   test('should return correct CSV data with all query parameters', async () => {
     mockedGetServerSession.mockResolvedValue({
-      user: { email: 'admin@example.com', roles: ['admin'] },
+      user: { email: 'admin@example.com' },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     const req = new NextRequest(`${API_URL}?search=TestProject&ministry=AG&cluster=SILVER&active=true`, {
@@ -323,7 +329,9 @@ describe('CSV Download Route', () => {
   test('should handle invalid query parameters correctly', async () => {
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
-      user: { email: 'admin@example.com', roles: ['admin'] },
+      user: { email: 'admin@example.com' },
+      roles: ['user', 'admin'],
+      isAdmin: true,
     });
 
     // Create a request with invalid query parameters

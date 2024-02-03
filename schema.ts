@@ -157,7 +157,19 @@ export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySc
 
 export const SecurityConfigRequestBodySchema = z.object({
   licencePlate: z.string(),
-  repositories: z.array(z.object({ url: z.string().url() })).max(10),
+  repositories: z
+    .array(
+      z.object({
+        url: z
+          .string()
+          .url()
+          .refine(
+            (value) => /^https:\/\/github\.com\/bcgov\/[a-zA-Z0-9_-]+$/.test(value),
+            "Please enter GitHub 'bcgov' organization's repository URL. (https://github.com/bcgov/<repo>)",
+          ),
+      }),
+    )
+    .max(10),
   context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
 });
 

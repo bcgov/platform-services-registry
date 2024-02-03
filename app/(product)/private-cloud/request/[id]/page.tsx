@@ -85,8 +85,8 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpen(true))}>
           <div className="mb-12 mt-8">
-            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-2">
-              A decision has already been made for this project
+            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
+              A decision has already been made for this product
             </h3>
             <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
             <TeamContacts
@@ -100,7 +100,7 @@ export default function RequestDecision({ params }: { params: { id: string } }) 
               currentProject={data?.project as PrivateCloudProject}
             />
           </div>
-          <div className="mt-16 flex items-center justify-start gap-x-6">
+          <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
           </div>
         </form>

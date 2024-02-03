@@ -1,7 +1,7 @@
 import { removeUserFromGroup } from '@/app/api/public-cloud/aws-roles/helpers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import createApiHandler from '@/core/apiHandler';
+import createApiHandler from '@/core/api-handler';
 
 interface QueryParam {
   userId: string;
@@ -26,13 +26,7 @@ export const DELETE = apiHandler(async ({ queryParams, session }) => {
     result = await removeUserFromGroup(userId, groupId);
   }
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: result,
-    },
-    {
-      status: 201,
-    },
-  );
+  return NextResponse.json({
+    data: result,
+  });
 });

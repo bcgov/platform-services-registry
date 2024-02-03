@@ -1,5 +1,7 @@
-export const adminEmails = `${process.env.PRIVATE_ADMIN_EMAILS}`.split(',');
-export const adminPublicEmails = `${process.env.PUBLIC_ADMIN_EMAILS}`.split(',');
+import { PRIVATE_ADMIN_EMAILS, PUBLIC_ADMIN_EMAILS } from '@/config';
+
+export const adminEmails = `${PRIVATE_ADMIN_EMAILS}`.split(',');
+export const adminPublicEmails = `${PUBLIC_ADMIN_EMAILS}`.split(',');
 
 export const ministriesNames = [
   {

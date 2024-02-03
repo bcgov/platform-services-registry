@@ -9,7 +9,7 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
 
     const [privateRes, publicRes] = await Promise.all([
       prisma.privateCloudProject.findMany({
-        select: { licencePlate: true, projectOwnerId: true },
+        select: { licencePlate: true },
         session: this.session as never,
       }),
       prisma.publicCloudProject.findMany({ select: { licencePlate: true }, session: this.session as never }),

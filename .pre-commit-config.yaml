@@ -30,7 +30,7 @@ repos:
     exclude: package.lock.json
 - repo: local
   hooks:
-  - id: bash-format
+  - id: es-format
     name: eslint
     entry: .bin/eslint.sh
     language: script
@@ -42,6 +42,13 @@ repos:
     entry: .bin/autopep8.sh
     language: script
     files: \.py$
+    verbose: true
+    pass_filenames: true
+  - id: prisma-format
+    name: prisma
+    entry: .bin/prisma.sh
+    language: script
+    files: \.prisma$
     verbose: true
     pass_filenames: true
 - repo: https://github.com/codespell-project/codespell
