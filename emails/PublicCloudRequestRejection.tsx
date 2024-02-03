@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { samplePrivateRequest } from './_components/Params';
+import { samplePublicRequest } from './_components/Params';
 import RequestRejectionTemplate from './_templates/public-cloud/RequestRejection';
 
 export const RequestRejection = () => {

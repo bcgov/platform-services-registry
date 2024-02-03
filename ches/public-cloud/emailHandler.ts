@@ -100,7 +100,10 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
   }
 };
 
-export const sendRequestRejectionEmails = async (request: PublicCloudRequestedProjectWithContacts) => {
+export const sendRequestRejectionEmails = async (
+  request: PublicCloudRequestedProjectWithContacts,
+  comment?: string,
+) => {
   try {
     const email = render(RequestRejectionTemplate({ productName: request.name }), {
       pretty: true,

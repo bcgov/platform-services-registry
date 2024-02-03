@@ -46,7 +46,10 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
   }
 };
 
-export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+export const sendEditRequestEmails = async (
+  request: PrivateCloudRequestWithProjectAndRequestedProject,
+  userComment?: string,
+) => {
   try {
     const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
     const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
