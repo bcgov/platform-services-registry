@@ -57,7 +57,7 @@ export default async function Table<T extends { id: string }>({
   title: string;
   linkHref?: string;
   linkTitle?: string;
-  headers: Header[];
+  headers: Header<T>[];
   data: T[];
 }) {
   return (
