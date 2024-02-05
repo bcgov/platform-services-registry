@@ -344,20 +344,27 @@ def fetch_load_acs_projects(mongo_conn_id):
         for project in projects:
             cluster = project["cluster"]
             licencePlate = project["licencePlate"]
-            result = {'cluster': cluster, 'licencePlate': licencePlate}
 
-            base_url = "https://acs.developer.gov.bc.ca/v1"
+            base_url = "https://acs.developer.gov.bc.ca"
             token = os.environ['ACS_TOKEN']
 
             if cluster in ["CLAB", "KLAB", "KLAB2"]:
-                base_url = "https://acs-lab.developer.gov.bc.ca/v1"
+                base_url = "https://acs-lab.developer.gov.bc.ca"
                 token = os.environ['ACS_LAB_TOKEN']
+
+            api_url = f"{base_url}/v1"
+            ui_query = f"s[Cluster][0]={cluster}&s[Namespace][0]={licencePlate}-prod"
+            violation_url = f"{base_url}/main/violations?{ui_query}"
+            image_url = f"{base_url}/main/vulnerability-management/images?{ui_query}"
+
+            result = {'cluster': cluster, 'licencePlate': licencePlate,
+                      "violationUrl": violation_url, "imageUrl": image_url}
 
             headers = {"Authorization": f"Bearer {token}"}
             query_param = urllib.parse.quote(f'cluster:"{cluster}"+namespace:"{licencePlate}-prod"')
 
             # Collect alerts data
-            alerts_url = f"{base_url}/alerts?query={query_param}"
+            alerts_url = f"{api_url}/alerts?query={query_param}"
             alerts_response = requests.get(alerts_url, headers=headers)
             if alerts_response.status_code == 200:
                 data = alerts_response.json()
@@ -368,7 +375,7 @@ def fetch_load_acs_projects(mongo_conn_id):
                 continue
 
             # Collect images data
-            images_url = f"{base_url}/images?query={query_param}"
+            images_url = f"{api_url}/images?query={query_param}"
             images_response = requests.get(images_url, headers=headers)
 
             if images_response.status_code == 200:
