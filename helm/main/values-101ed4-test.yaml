@@ -16,6 +16,8 @@ app:
     "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
     "NATS_HOST": "nats://nats.eb6118-test.svc"
     "NATS_PORT": "4222"
+    "PUBLIC_ADMIN_EMAILS": "artem.kravchenko@gov.bc.ca"
+    "PRIVATE_ADMIN_EMAILS": "artem.kravchenko@gov.bc.ca"
 
   route:
     enabled: true
