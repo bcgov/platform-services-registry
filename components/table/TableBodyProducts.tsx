@@ -159,7 +159,7 @@ export default function TableBody({ rows }: TableProps) {
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
               <div className="flex justify-between w-full">
-                <div className="w-[300px] lg:w-[550px]">
+                <div className="min-w-[300px] lg:w-[500px]">
                   <div className="flex items-center gap-x-3">
                     {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
@@ -186,7 +186,7 @@ export default function TableBody({ rows }: TableProps) {
                     </p>
                   </div>
                 </div>
-                <div className="mt-1 w-32 ml-3">
+                <div className="mt-1 w-32 ml-3 mr-3">
                   <div>
                     <span
                       className={classNames(
@@ -212,26 +212,29 @@ export default function TableBody({ rows }: TableProps) {
                   </div>
                 </div>
                 <div className="flex mt-1.5 space-x-2 w-2/5">
-                  <div className="hidden  gap-x-2 2xl:flex">
+                  <div className="hidden md:flex flex-col gap-2 2xl:flex-row">
                     <Avatar
+                      className="min-w-56"
                       name={deployment.projectOwner.name}
                       email={deployment.projectOwner.email}
                       userRole={'Product Owner'}
                     />
-                    <Avatar
-                      name={deployment.primaryTechnicalLead.name}
-                      email={deployment.primaryTechnicalLead.email}
-                      userRole="Technical Lead"
-                    />
-                    {deployment?.secondaryTechnicalLead ? (
+                    <div className="flex flex-col space-y-4">
                       <Avatar
-                        name={deployment.secondaryTechnicalLead?.name}
-                        email={deployment.primaryTechnicalLead?.email}
+                        name={deployment.primaryTechnicalLead.name}
+                        email={deployment.primaryTechnicalLead.email}
                         userRole="Technical Lead"
                       />
-                    ) : null}
+                      {deployment?.secondaryTechnicalLead ? (
+                        <Avatar
+                          name={deployment.secondaryTechnicalLead?.name}
+                          email={deployment.primaryTechnicalLead?.email}
+                          userRole="Technical Lead"
+                        />
+                      ) : null}
+                    </div>
                   </div>
-                  <div className="2xl:hidden flex">
+                  <div className="md:hidden flex">
                     <Avatars
                       productOwnerEmail={deployment.projectOwner.email}
                       primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
