@@ -75,7 +75,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <div>
-                  <Heading className="text-lg">Comment</Heading>
+                  <Heading className="text-lg">Comments</Heading>
                   <div> {request.humanComment}</div>
                 </div>
               </div>

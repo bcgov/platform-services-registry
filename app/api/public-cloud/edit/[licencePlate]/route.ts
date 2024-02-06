@@ -41,7 +41,6 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   if (!parsedBody.success) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
-
   const formData: PublicCloudEditRequestBody = parsedBody.data;
   const { licencePlate } = parsedParams.data;
 

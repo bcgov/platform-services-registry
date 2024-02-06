@@ -13,7 +13,6 @@ interface EmailProp {
 
 const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
   if (!productName) return <></>;
-
   return (
     <Html>
       <Tailwind config={TailwindConfig}>

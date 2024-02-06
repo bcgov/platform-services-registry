@@ -74,7 +74,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   );
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendEditRequestEmails(request, formData.userComment);
+    sendEditRequestEmails(request);
     return new NextResponse(
       'Successfully edited project, admin approval will be required for this request to be provisioned ',
       { status: 200 },
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  sendEditRequestEmails(request, formData.userComment);
+  sendEditRequestEmails(request);
 
   return new NextResponse('success', { status: 200 });
 }

@@ -46,10 +46,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
   }
 };
 
-export const sendEditRequestEmails = async (
-  request: PrivateCloudRequestWithProjectAndRequestedProject,
-  userComment?: string,
-) => {
+export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
   try {
     const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
     const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
@@ -111,7 +108,7 @@ export const sendRequestRejectionEmails = async (
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: 'Request has been approved',
+      subject: 'Request has been rejected',
     });
   } catch (error) {
     console.error('ERROR SENDING REQUEST REJECTION EMAIL');

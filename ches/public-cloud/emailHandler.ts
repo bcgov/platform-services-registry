@@ -61,7 +61,11 @@ export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequested
   }
 };
 
-export const sendEditRequestEmails = async (request: PublicCloudRequestWithProjectAndRequestedProject) => {
+export const sendEditRequestEmails = async (
+  request: PublicCloudRequestWithProjectAndRequestedProject,
+  humanComment?: string,
+) => {
+  console.log('this is the request', request);
   try {
     const userEmail = render(EditSummaryTemplate({ request }), { pretty: true });
 
@@ -75,7 +79,7 @@ export const sendEditRequestEmails = async (request: PublicCloudRequestWithProje
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
       ].filter(Boolean),
-      subject: `${request.requestedProject.name} has requested an edit`,
+      subject: `${request.requestedProject.name} edit summary`,
     });
   } catch (error) {
     console.error('ERROR SENDING EDIT REQUEST EMAIL');
@@ -102,16 +106,16 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
 
 export const sendRequestRejectionEmails = async (
   request: PublicCloudRequestedProjectWithContacts,
-  comment?: string,
+  humanComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name }), {
+    const email = render(RequestRejectionTemplate({ productName: request.name, humanComment }), {
       pretty: true,
     });
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: `${request.name} has been approved`,
+      subject: `${request.name} has been rejected`,
     });
   } catch (error) {
     console.error('ERROR SENDING REQUEST REJECTION EMAIL');
