@@ -41,7 +41,7 @@ export default function Avatar({
           {/* <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 truncate lg:block hidden">
             {name}
           </p> */}
-          <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 truncate ">{shortenedName}</p>
+          <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 truncate ">{name}</p>
           <p className="text-sm text-gray-400 group-hover:text-gray-700">{userRole}</p>
         </div>
       </div>
