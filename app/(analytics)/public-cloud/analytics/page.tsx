@@ -17,7 +17,7 @@ export default async function AnalyticsDashboard() {
   return (
     <div className="m-12">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
-        public Cloud Data Analytics
+        Public Cloud Data Analytics
       </h1>
       <div className="flex flex-col gap-y-12 mt-14">
         <CombinedAreaGraph
