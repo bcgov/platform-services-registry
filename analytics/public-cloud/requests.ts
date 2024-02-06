@@ -17,57 +17,55 @@ function createMonthKey(date: Date) {
 }
 
 export async function combinedRequests() {
-  const requests = await prisma.publicCloudRequest.findMany({
-    select: {
-      created: true,
-    },
-
-    orderBy: {
-      created: 'asc',
-    },
-  });
-
-  const editRequests = await prisma.publicCloudRequest.findMany({
-    where: {
-      type: RequestType.EDIT,
-    },
-    select: {
-      created: true,
-    },
-    orderBy: {
-      created: 'asc',
-    },
-  });
-
-  const createRequests = await prisma.publicCloudRequest.findMany({
-    where: {
-      type: RequestType.CREATE,
-    },
-    select: {
-      created: true,
-    },
-    orderBy: {
-      created: 'asc',
-    },
-  });
-
-  const deleteRequests = await prisma.publicCloudRequest.findMany({
-    where: {
-      type: RequestType.DELETE,
-    },
-    select: {
-      created: true,
-    },
-    orderBy: {
-      created: 'asc',
-    },
-  });
+  const [requestsData, editRequestsData, createRequestsData, deleteRequestsData] = await Promise.all([
+    prisma.publicCloudRequest.findMany({
+      select: {
+        created: true,
+      },
+      orderBy: {
+        created: 'asc',
+      },
+    }),
+    prisma.publicCloudRequest.findMany({
+      where: {
+        type: RequestType.EDIT,
+      },
+      select: {
+        created: true,
+      },
+      orderBy: {
+        created: 'asc',
+      },
+    }),
+    prisma.publicCloudRequest.findMany({
+      where: {
+        type: RequestType.CREATE,
+      },
+      select: {
+        created: true,
+      },
+      orderBy: {
+        created: 'asc',
+      },
+    }),
+    prisma.publicCloudRequest.findMany({
+      where: {
+        type: RequestType.DELETE,
+      },
+      select: {
+        created: true,
+      },
+      orderBy: {
+        created: 'asc',
+      },
+    }),
+  ]);
 
   const combinedRequestsData: CombinedDataPoint[] = [];
 
   const dateMap = new Map<string, number>();
 
-  const combinedDates = [...requests, ...editRequests, ...createRequests, ...deleteRequests]
+  const combinedDates = [...requestsData, ...editRequestsData, ...createRequestsData, ...deleteRequestsData]
     .map((request) => request.created)
     .sort((a, b) => (a > b ? 1 : -1));
 
@@ -78,10 +76,10 @@ export async function combinedRequests() {
   });
 
   dateMap.forEach((count, date) => {
-    const allCount = requests.filter((request) => createMonthKey(request.created) === date).length;
-    const editCount = editRequests.filter((request) => createMonthKey(request.created) === date).length;
-    const createCount = createRequests.filter((request) => createMonthKey(request.created) === date).length;
-    const deleteCount = deleteRequests.filter((request) => createMonthKey(request.created) === date).length;
+    const allCount = requestsData.filter((request) => createMonthKey(request.created) === date).length;
+    const editCount = editRequestsData.filter((request) => createMonthKey(request.created) === date).length;
+    const createCount = createRequestsData.filter((request) => createMonthKey(request.created) === date).length;
+    const deleteCount = deleteRequestsData.filter((request) => createMonthKey(request.created) === date).length;
 
     combinedRequestsData.push({
       date,
