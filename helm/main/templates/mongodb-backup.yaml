@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: backup-job
-        image: ghcr.io/egose/database-tools:0.6.0
+        image: ghcr.io/egose/database-tools:0.7.0
         imagePullPolicy: IfNotPresent
         command: [/bin/sh, -c]
         args:
@@ -48,6 +48,8 @@ spec:
           value: {{ if and $secret.data (index $secret.data "rocketchat-webhook-url") }}{{ b64dec (index $secret.data "rocketchat-webhook-url") }}{{ else }}{{ "" }}{{ end }}
         - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_PREFIX
           value: {{ .Values.backup.rocketchatPrefix | quote }}
+        - name: ROCKETCHAT_NOTIFY_ON_FAILURE_ONLY
+          value: "true"
         resources:
           limits:
             cpu: 200m

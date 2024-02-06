@@ -243,6 +243,66 @@ type SonarScanResultDetail {
   sqale_rating             String
 }
 
+model AcsResult {
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String           @unique
+  cluster      String
+  alerts       AcsResultAlert[]
+  images       AcsResultImage[]
+  violationUrl String
+  imageUrl     String
+  scannedAt    DateTime         @default(now())
+}
+
+type AcsResultAlert {
+  id                String
+  lifecycleStage    String
+  time              String
+  state             String
+  enforcementCount  Int
+  enforcementAction String
+  policy            AcsResultAlertPolicy
+  commonEntityInfo  AcsResultAlertCommonEntityInfo
+  deployment        AcsResultAlertDeployment
+}
+
+type AcsResultAlertPolicy {
+  id          String
+  name        String
+  severity    String
+  description String
+  categories  String[]
+}
+
+type AcsResultAlertCommonEntityInfo {
+  clusterId    String
+  clusterName  String
+  namespaceId  String
+  namespace    String
+  resourceType String
+}
+
+type AcsResultAlertDeployment {
+  id          String
+  name        String
+  clusterId   String
+  clusterName String
+  namespaceId String
+  namespace   String
+  inactive    Boolean
+}
+
+type AcsResultImage {
+  id          String
+  name        String
+  components  Int
+  cves        Int
+  fixableCves Int
+  created     String
+  lastUpdated String
+  priority    String
+}
+
 type Quota {
   cpu     String
   memory  String

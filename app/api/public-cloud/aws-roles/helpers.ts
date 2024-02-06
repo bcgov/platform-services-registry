@@ -1,6 +1,8 @@
 import axios from 'axios';
 import prisma from '@/lib/prisma';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
+import _startCase from 'lodash-es/startCase';
+import _kebabCase from 'lodash-es/kebabCase';
 
 export interface Group {
   id: string;
@@ -8,6 +10,7 @@ export interface Group {
   path: string;
   subGroups: Group[];
 }
+
 export interface User {
   id: string;
   firstName: string;
@@ -26,6 +29,11 @@ interface UsersTotal {
   total: number;
 }
 
+export type tabName = {
+  name: string;
+  href: string;
+};
+
 interface PaginationOptions {
   page: number;
   pageSize: number;
@@ -38,6 +46,16 @@ const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   const endIndex = startIndex + pageSize;
 
   return users.slice(startIndex, endIndex);
+};
+
+// aws group name format is "XxxxZzzz" or "Yyyyy",
+// for Tab we need name as "Xxxx Zzzz" or "Yyyyy",
+// and href as "xxxx-zzzz" or "yyyyy"
+const parseGroupNameToTab = (name: string): tabName => {
+  return {
+    name: _startCase(name),
+    href: _kebabCase(name),
+  };
 };
 
 const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
@@ -279,12 +297,12 @@ export async function getSubGroupMembersByLicencePlateAndName(
       }
     }
   }
-  if (role === 'Admin') {
-    const registryUsers = await getPublicCloudProjectUsers(licencePlate);
-    if (registryUsers) {
-      result = [...registryUsers, ...result];
-    }
-  }
+  // if (role === 'Admin') {
+  //   const registryUsers = await getPublicCloudProjectUsers(licencePlate);
+  //   if (registryUsers) {
+  //     result = [...registryUsers, ...result];
+  //   }
+  // }
 
   if (searchTerm) {
     result = searchSubstringInArray(searchTerm, result);
@@ -299,4 +317,15 @@ export async function addUserToGroupByEmail(userEmail: string, groupId: string) 
   if (userId) {
     await addUserToGroup(userId[0].id, groupId);
   }
+}
+
+export async function getGroupsNamesByLicencePlate(licencePlate: string): Promise<tabName[]> {
+  const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
+  if (productRolesGroups && productRolesGroups.length > 0) {
+    return productRolesGroups[0].subGroups.map((subGroup) => {
+      return parseGroupNameToTab(subGroup.name);
+    });
+  }
+
+  return [];
 }

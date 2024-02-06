@@ -1,6 +1,7 @@
 import os
 import json
 import shutil
+import urllib
 from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
@@ -332,3 +333,71 @@ def load_sonarscan_results(mongo_conn_id):
 
     except Exception as e:
         print(f"[load_sonarscan_results] Error: {e}")
+
+
+def fetch_load_acs_projects(mongo_conn_id):
+    try:
+        db = get_mongo_db(mongo_conn_id)
+        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
+                                               "_id": False, "licencePlate": True, "cluster": True})
+
+        for project in projects:
+            cluster = project["cluster"]
+            licencePlate = project["licencePlate"]
+
+            base_url = "https://acs.developer.gov.bc.ca"
+            token = os.environ['ACS_TOKEN']
+
+            if cluster in ["CLAB", "KLAB", "KLAB2"]:
+                base_url = "https://acs-lab.developer.gov.bc.ca"
+                token = os.environ['ACS_LAB_TOKEN']
+
+            api_url = f"{base_url}/v1"
+            ui_query = f"s[Cluster][0]={cluster}&s[Namespace][0]={licencePlate}-prod"
+            violation_url = f"{base_url}/main/violations?{ui_query}"
+            image_url = f"{base_url}/main/vulnerability-management/images?{ui_query}"
+
+            result = {'cluster': cluster, 'licencePlate': licencePlate,
+                      "violationUrl": violation_url, "imageUrl": image_url}
+
+            headers = {"Authorization": f"Bearer {token}"}
+            query_param = urllib.parse.quote(f'cluster:"{cluster}"+namespace:"{licencePlate}-prod"')
+
+            # Collect alerts data
+            alerts_url = f"{api_url}/alerts?query={query_param}"
+            alerts_response = requests.get(alerts_url, headers=headers)
+            if alerts_response.status_code == 200:
+                data = alerts_response.json()
+                if data["alerts"] is None:
+                    continue
+                result["alerts"] = data["alerts"]
+            else:
+                continue
+
+            # Collect images data
+            images_url = f"{api_url}/images?query={query_param}"
+            images_response = requests.get(images_url, headers=headers)
+
+            if images_response.status_code == 200:
+                data = images_response.json()
+                if data["images"] is None:
+                    continue
+                result["images"] = data["images"]
+            else:
+                continue
+
+            result['scannedAt'] = datetime.now()
+
+            db.AcsResult.replace_one({
+                'cluster': cluster,
+                'licencePlate': licencePlate},
+                result,
+                True  # Create one if it does not exist
+            )
+
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.AcsResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+
+    except Exception as e:
+        print(f"[fetch_load_acs_projects] Error: {e}")
