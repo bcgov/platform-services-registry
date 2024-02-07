@@ -171,6 +171,7 @@ export const SecurityConfigRequestBodySchema = z.object({
     )
     .max(10),
   context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
+  clusterOrProvider: z.string().optional(),
 });
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof PrivateCloudCreateRequestBodySchema>;
