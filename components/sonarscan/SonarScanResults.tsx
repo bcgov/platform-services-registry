@@ -6,20 +6,21 @@ import PagninationButtons from '@/components/buttons/PaginationButtons';
 import formatDate from '@/components/utils/formatdates';
 import SearchPanel from './SearchPanel';
 
-const headers = [
-  { field: 'context', headerName: 'Context' },
-  { field: 'licencePlate', headerName: 'Licence Plate' },
-  { field: 'url', headerName: 'Repository URL' },
-  { field: 'bugs', headerName: 'Bugs' },
-  { field: 'codeSmells', headerName: 'Code Smells' },
-  { field: 'vulnerabilities', headerName: 'Vulnerabilities' },
-  { field: 'securityRating', headerName: 'Security Hotspots' },
-  { field: 'coverage', headerName: 'Coverage' },
-  { field: 'duplications', headerName: 'Duplications' },
-  { field: 'scannedAt', headerName: 'Scanned At' },
-];
+type SonarScanResultRows = Prisma.SonarScanResultGetPayload<{
+  select: {
+    id: true;
+    context: true;
+    clusterOrProvider: true;
+    licencePlate: true;
+    url: true;
+    sha: true;
+    source: true;
+    result: true;
+    scannedAt: true;
+  };
+}>;
 
-const processCell = (value: any, field: string, headerName: string) => {
+const processCell = (value: any, field: string, headerName: string, row: SonarScanResultRows) => {
   if (!value) return null;
 
   if (field === 'scannedAt') {
@@ -32,18 +33,21 @@ const processCell = (value: any, field: string, headerName: string) => {
 
   if (field === 'url') {
     return (
-      <a className="underline text-blue-500" href={value} target="_blank" rel="noreferrer">
-        {value}
-      </a>
+      <div>
+        <a className="underline text-blue-500" href={value} target="_blank" rel="noreferrer">
+          {value}
+        </a>
+        {row.source === 'ACS' && (
+          <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
+            ACS
+          </span>
+        )}
+      </div>
     );
   }
 
   return value;
 };
-
-type SonarScanResultRows = Prisma.SonarScanResultGetPayload<{
-  select: { id: true; licencePlate: true; context: true; url: true; result: true; scannedAt: true };
-}>;
 
 export default function SonarScanResults({
   rows,
@@ -52,6 +56,7 @@ export default function SonarScanResults({
   page,
   skip,
   take,
+  hideContext = false,
 }: {
   rows: SonarScanResultRows[];
   contexts: string[];
@@ -59,6 +64,7 @@ export default function SonarScanResults({
   page: number;
   skip: number;
   take: number;
+  hideContext?: boolean;
 }) {
   const data = rows.map((row) => {
     return {
@@ -71,6 +77,24 @@ export default function SonarScanResults({
       duplications: row.result.duplicated_lines_density,
     };
   });
+
+  const headers = [
+    { field: 'url', headerName: 'Repository URL' },
+    { field: 'bugs', headerName: 'Bugs' },
+    { field: 'codeSmells', headerName: 'Code Smells' },
+    { field: 'vulnerabilities', headerName: 'Vulnerabilities' },
+    { field: 'securityRating', headerName: 'Security Hotspots' },
+    { field: 'coverage', headerName: 'Coverage' },
+    { field: 'duplications', headerName: 'Duplications' },
+    { field: 'scannedAt', headerName: 'Scanned At' },
+  ];
+
+  if (!hideContext) {
+    headers.unshift(
+      { field: 'context', headerName: 'Context' },
+      { field: 'licencePlate', headerName: 'Licence Plate' },
+    );
+  }
 
   return (
     <div className="border-2 rounded-xl overflow-hidden">
@@ -106,7 +130,7 @@ export default function SonarScanResults({
                             index === 0 ? 'pl-4 sm:pl-6 lg:pl-8' : ''
                           } `}
                         >
-                          {processCell(row[value.field as never], value.field, value.headerName)}
+                          {processCell(row[value.field as never], value.field, value.headerName, row)}
                         </td>
                       ))}
                     </tr>

@@ -8,16 +8,6 @@ type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
   select: { id: true; licencePlate: true; cluster: true; host: true; json: true; scannedAt: true; available: true };
 }>;
 
-const headers = [
-  { field: 'cluster', headerName: 'Cluster' },
-  { field: 'licencePlate', headerName: 'Licence Plate' },
-  { field: 'host', headerName: 'Host' },
-  { field: 'json', headerName: 'Alerts' },
-  { field: 'json', headerName: 'Total' },
-  { field: 'scannedAt', headerName: 'Scanned At' },
-  { field: 'id', headerName: '' },
-];
-
 const processCell = (value: any, field: string, headerName: string, row: ZapResultRows) => {
   if (!value) return null;
 
@@ -126,6 +116,7 @@ export default async function ZapScanResults({
   page,
   skip,
   take,
+  hideContext = false,
 }: {
   rows: ZapResultRows[];
   clusters: string[];
@@ -133,7 +124,23 @@ export default async function ZapScanResults({
   page: number;
   skip: number;
   take: number;
+  hideContext?: boolean;
 }) {
+  const headers = [
+    { field: 'host', headerName: 'Host' },
+    { field: 'json', headerName: 'Alerts' },
+    { field: 'json', headerName: 'Total' },
+    { field: 'scannedAt', headerName: 'Scanned At' },
+    { field: 'id', headerName: '' },
+  ];
+
+  if (!hideContext) {
+    headers.unshift(
+      { field: 'cluster', headerName: 'Cluster' },
+      { field: 'licencePlate', headerName: 'Licence Plate' },
+    );
+  }
+
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <div>

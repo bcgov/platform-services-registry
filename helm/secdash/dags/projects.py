@@ -224,8 +224,9 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
             urls_from_acs = extract_github_bcgov_urls(project['cluster'], project['licencePlate'])
             for url in urls_from_acs:
                 candidates.append({
+                    'context': 'PRIVATE',
+                    'clusterOrProvider': project['cluster'],
                     'licencePlate': project['licencePlate'],
-                    'context': "PRIVATE",
                     'url': url,
                     'source': "ACS",
                 })
@@ -241,15 +242,16 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
                 "$expr": {
                     "$gt": [{"$size": "$repositories"}, 0]
                 }
-            }, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
+            }, projection={"_id": False, "licencePlate": True, "context": True, "clusterOrProvider": True, "repositories": True})
 
         for config in configs:
             for repository in config["repositories"]:
                 found_dict = next((can for can in candidates if can.get('url') == repository['url']), None)
                 if not found_dict:
                     candidates.append({
-                        'licencePlate': config['licencePlate'],
                         'context': config['context'],
+                        'clusterOrProvider': config['clusterOrProvider'],
+                        'licencePlate': config['licencePlate'],
                         'url': repository['url'],
                         'source': "USER",
                     })
@@ -286,8 +288,9 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
                     continue
 
                 result.append({
-                    'licencePlate': candy['licencePlate'],
                     'context': candy['context'],
+                    'clusterOrProvider': candy['clusterOrProvider'],
+                    'licencePlate': candy['licencePlate'],
                     'repositories': [{
                         'url': candy['url'],
                         'sha': commit_sha,
