@@ -18,7 +18,7 @@ const ParamsSchema = z.object({
 type Params = z.infer<typeof ParamsSchema>;
 
 export async function POST(req: NextRequest, { params }: { params: Params }) {
-  // Athentication
+  // Authentication
   const session = await getServerSession(authOptions);
 
   if (!session) {

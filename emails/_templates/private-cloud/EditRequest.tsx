@@ -10,24 +10,25 @@ import ContactChanges from '../../_components/Edit/ContactChanges';
 import QuotaChanges from '../../_components/Edit/QuotaChanges';
 import DescriptionChanges from '../../_components/Edit/DescriptionChanges';
 import { BASE_URL } from '@/config';
+import Comment from '@/emails/_components/Comment';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
-  comment?: string;
 }
 
-const EditRequestTemplate = ({ request, comment }: EmailProp) => {
+const EditRequestTemplate = ({ request }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
   const changed = comparePrivateCloudProjects(current, requested);
+  const userComment = request.userComment ?? undefined;
 
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">New Edit Product Request!</Heading>
@@ -42,7 +43,7 @@ const EditRequestTemplate = ({ request, comment }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Comments</Heading>
-                <Text className="mb-0">{comment}</Text>
+                <Comment userComment={userComment} />
               </div>
               {(changed.name || changed.description || changed.ministry || changed.cluster) && (
                 <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

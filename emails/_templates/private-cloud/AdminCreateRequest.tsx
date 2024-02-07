@@ -19,7 +19,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg">New Request!</Heading>
@@ -36,7 +36,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   Review Request
                 </Button>
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+              <div>
                 <ProductDetails
                   name={request.requestedProject.name}
                   description={request.requestedProject.description}
@@ -47,7 +47,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                 />
               </div>
               <div>
-                <NamespaceDetails cluster={request.requestedProject.cluster} />
+                <NamespaceDetails cluster={request.requestedProject.cluster} showNamespaceDetailsTitle={false} />
               </div>
             </div>
           </Body>

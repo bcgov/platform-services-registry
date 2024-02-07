@@ -4,21 +4,21 @@ import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
+import Comment from '@/emails/_components/Comment';
 
 interface EmailProp {
   productName: string;
-  comment?: string;
+  humanComment?: string;
 }
 
-const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
+const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
   if (!productName) return <></>;
-
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
@@ -27,7 +27,7 @@ const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
                   Your request regarding the product {productName} on the Private Cloud Openshift platform has been
                   rejected due to the following reason(s):
                 </Text>
-                <Text className="">{comment}</Text>
+                <Comment adminComment={humanComment} />
                 <Text>
                   Log in to your registry account and raise a new request if the above rejection reason no longer
                   applies
