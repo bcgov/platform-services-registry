@@ -18,7 +18,7 @@ const ParamsSchema = z.object({
 type Params = z.infer<typeof ParamsSchema>;
 
 export async function POST(req: NextRequest, { params }: { params: Params }) {
-  // Athentication
+  // Authentication
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -52,12 +52,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const { licencePlate } = parsedParams.data;
-  const { decision, humanComment, ...requestedProjectFormData } = parsedBody.data;
+  const { decision, adminComment, ...requestedProjectFormData } = parsedBody.data;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
     licencePlate,
     decision,
-    humanComment,
+    adminComment,
     requestedProjectFormData,
     authEmail,
   );
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendRequestRejectionEmails(request.requestedProject, humanComment);
+    sendRequestRejectionEmails(request.requestedProject, adminComment);
     return new Response(
       `Decision request for ${request.licencePlate} successfully created. Admin approval is required`,
       {

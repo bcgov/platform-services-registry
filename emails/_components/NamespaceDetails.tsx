@@ -1,9 +1,17 @@
 import { Heading, Text, Link } from '@react-email/components';
 
-export default function NamespaceDetails({ cluster, licencePlate }: { cluster: string; licencePlate?: string }) {
+export default function NamespaceDetails({
+  cluster,
+  licencePlate,
+  showNamespaceDetailsTitle = true,
+}: {
+  cluster: string;
+  licencePlate?: string;
+  showNamespaceDetailsTitle?: boolean;
+}) {
   return (
     <div>
-      <Heading className="text-lg">Namespace Details</Heading>
+      {showNamespaceDetailsTitle && <Heading className="text-lg">Namespace Details</Heading>}
       <div>
         <Text className="mb-1 font-semibold h-4">OpenShift Cluster: </Text>
         <Text className="mt-1 h-4">{cluster}</Text>
