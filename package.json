@@ -43,7 +43,7 @@
     "@tremor/react": "^3.13.1",
     "@types/node": "20.10.8",
     "@types/react": "18.2.55",
-    "@types/react-dom": "18.2.18",
+    "@types/react-dom": "18.2.19",
     "autoprefixer": "10.4.17",
     "axios": "^1.5.1",
     "axios-oauth-client": "^2.0.4",
