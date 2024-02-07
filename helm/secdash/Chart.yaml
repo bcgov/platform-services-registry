@@ -14,6 +14,6 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: sonarqube
-    version: "10.4.0+2288"
+    version: "10.3.0"
     repository: https://SonarSource.github.io/helm-chart-sonarqube
     condition: sonarqube.enabled
