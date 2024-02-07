@@ -4,15 +4,15 @@ import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
+import Comment from '@/emails/_components/Comment';
 
 interface EmailProp {
   productName: string;
-  comment?: string;
+  adminComment?: string;
 }
 
-const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
+const RequestRejectionTemplate = ({ productName, adminComment }: EmailProp) => {
   if (!productName) return <></>;
-
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -27,7 +27,7 @@ const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
                   Your request for the product on the Public Cloud Landing Zone has been rejected due to the following
                   reason(s):
                 </Text>
-                <Text className="">{comment}</Text>
+                <Comment adminComment={adminComment} />
                 <Text>
                   Log in to your registry account and raise a new request if the above rejection reason no longer
                   applies
@@ -38,10 +38,6 @@ const RequestRejectionTemplate = ({ productName, comment }: EmailProp) => {
                 >
                   Log in to Registry
                 </Button>
-              </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Comments</Heading>
-                <Text className="mb-0">{comment}</Text>
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" />

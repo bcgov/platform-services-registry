@@ -104,11 +104,11 @@ airflow:
     replicas: 1
     resources:
       limits:
-        cpu: 200m
+        cpu: 1
         memory: 1Gi
       requests:
-        cpu: 50m
-        memory: 500Mi
+        cpu: 200m
+        memory: 200Mi
 
     extraVolumes:
       - name: secdash-airflow-dags

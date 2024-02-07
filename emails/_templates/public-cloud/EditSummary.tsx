@@ -44,7 +44,7 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Comments</Heading>
-                <Text className="mb-0">{comment}</Text>
+                <Text className="mb-0">{request.adminComment}</Text>
               </div>
               {(changed.name || changed.description || changed.ministry) && (
                 <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

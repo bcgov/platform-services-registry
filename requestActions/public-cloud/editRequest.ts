@@ -42,9 +42,11 @@ export default async function editRequest(
     throw new Error('Project does not exist.');
   }
 
-  // merge the form data with the existing project data
+  const { adminComment, ...rest } = formData;
+
+  // Merge the form data with the existing project data
   const requestedProject: Prisma.PublicCloudRequestedProjectCreateInput = {
-    ...formData,
+    ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
     created: project.created,
@@ -83,6 +85,7 @@ export default async function editRequest(
       active: true,
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
+      adminComment,
       requestedProject: {
         create: requestedProject,
       },

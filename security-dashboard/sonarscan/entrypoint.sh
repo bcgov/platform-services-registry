@@ -6,30 +6,36 @@ echo "$PROJECTS"
 # An example:
 # [
 #     {
-#         "licencePlate": "34w22a",
 #         "context": "PRIVATE",
+#         "clusterOrProvider": "SILVER",
+#         "licencePlate": "34w22a",
 #         "repositories": [
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7b" # pragma: allowlist secret
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7b", # pragma: allowlist secret
+#                 "source": "USER"
 #             },
 #             {
 #                 "url": "https://github.com/bcgov/platform-developer-docs",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7c" # pragma: allowlist secret
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7c", # pragma: allowlist secret
+#                 "source": "USER"
 #             }
 #         ]
 #     },
 #     {
-#         "licencePlate": "3744e3",
 #         "context": "PUBLIC",
+#         "clusterOrProvider": "AWS",
+#         "licencePlate": "3744e3",
 #         "repositories": [
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry-web",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7d" # pragma: allowlist secret
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7d", # pragma: allowlist secret
+#                 "source": "ACS"
 #             },
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry-api",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7e" # pragma: allowlist secret
+#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7e", # pragma: allowlist secret
+#                 "source": "ACS"
 #             }
 #         ]
 #     }
@@ -150,20 +156,24 @@ while read -r proj; do
     echo "$proj"
 
     # Extract project details from JSON using jq
-    licencePlate=$(echo "$proj" | jq -r '.licencePlate')
     context=$(echo "$proj" | jq -r '.context')
-    urls=$(echo "$proj" | jq -r '.repositories[] | .url')
-    sha=$(echo "$proj" | jq -r '.repositories[] | .sha')
+    clusterOrProvider=$(echo "$proj" | jq -r '.clusterOrProvider // ""')
+    licencePlate=$(echo "$proj" | jq -r '.licencePlate')
+    repositories=$(echo "$proj" | jq -r '.repositories')
 
-    if [ -z "$licencePlate" ] || [ -z "$context" ] || [ -z "$urls" ]; then
+    if [ -z "$licencePlate" ] || [ -z "$context" ] || [ -z "$repositories" ]; then
         echo "Invalid project: Missing required information. Please provide values for licencePlate, context, and urls."
         continue
     fi
 
     # Loop through each repository in the project
-    while read -r repourl; do
+    while read -r repo; do
+        url=$(echo "$repo" | jq -r '.url')
+        sha=$(echo "$repo" | jq -r '.sha')
+        source=$(echo "$repo" | jq -r '.source')
+
         # Extract owner and repo from the repository URL
-        read -r owner repo < <(extract_owner_repo $repourl)
+        read -r owner repo < <(extract_owner_repo $url)
 
         # Get the default branch of the GitHub repository
         ref=$(get_default_branch $owner $repo)
@@ -206,10 +216,12 @@ while read -r proj; do
 
         # Store the project metadata along with the SonarQube scan results into the JSON file
         echo '{
-            "licencePlate": "'"$licencePlate"'",
             "context": "'"$context"'",
-            "url": "'"$repourl"'",
+            "clusterOrProvider": "'"$clusterOrProvider"'",
+            "licencePlate": "'"$licencePlate"'",
+            "url": "'"$url"'",
             "sha": "'"$sha"'",
+            "source": "'"$source"'",
             "result": {
                 "repoid": "'"$repoid"'",
                 "last_date": "'"$last_date"'",
@@ -228,7 +240,7 @@ while read -r proj; do
 
         rm -rf "$repo_path/$directory"
         rm -rf "$repo_path/$filename"
-    done <<<"$urls"
+    done < <(echo "$repositories" | jq -c '.[]')
 done < <(echo "$PROJECTS" | jq -c '.[]')
 
 ls -al "$full_path"

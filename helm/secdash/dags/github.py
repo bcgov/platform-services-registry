@@ -26,7 +26,7 @@ class GitHubAPI:
 
     def make_request(self, endpoint, method="GET"):
         url = f"{self.base_url}/{endpoint}"
-        response = requests.request(method, url, headers=self.headers)
+        response = requests.request(method, url, headers=self.headers, timeout=2)
         return response
 
     def get_default_branch(self, owner, repo):

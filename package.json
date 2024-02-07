@@ -1,6 +1,6 @@
 {
   "name": "pltsrv-registry",
-  "version": "0.9.1",
+  "version": "0.13.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -43,7 +43,7 @@
     "@tremor/react": "^3.13.1",
     "@types/node": "20.10.8",
     "@types/react": "18.2.55",
-    "@types/react-dom": "18.2.18",
+    "@types/react-dom": "18.2.19",
     "autoprefixer": "10.4.17",
     "axios": "^1.5.1",
     "axios-oauth-client": "^2.0.4",
@@ -61,7 +61,7 @@
     "next": "^14.0.0",
     "next-auth": "^4.23.1",
     "papaparse": "^5.4.1",
-    "postcss": "8.4.33",
+    "postcss": "8.4.35",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-email": "^2.0.0",
