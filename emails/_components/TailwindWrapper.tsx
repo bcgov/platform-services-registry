@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Html } from '@react-email/components';
+import { Head, Html } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import { TailwindConfig } from './TailwindConfig';
 
@@ -8,7 +8,7 @@ const TailwindWrapper = ({ children }: { children: React.ReactNode }) => {
     <Html>
       <Tailwind config={TailwindConfig}>
         {/* tag <head /> is needed according to Tailwind specification */}
-        <head />
+        <Head />
         {children}
       </Tailwind>
     </Html>

@@ -22,7 +22,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
           <div className="m-12">
             <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
               <Heading className="text-lg text-black">Hurray! Your Create request was approved and completed!</Heading>
-              <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
+              <Text>Hi {request.requestedProject.name} team, </Text>
               <Text className="">
                 Your request for a new project set for your product on the Private Cloud Openshift platform is complete.
                 Log in to the cluster console using the button below and you&apos;ll see all four namespaces included in
