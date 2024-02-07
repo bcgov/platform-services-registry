@@ -6,8 +6,9 @@ echo "$PROJECTS"
 # An example:
 # [
 #     {
-#         "licencePlate": "34w22a",
 #         "context": "PRIVATE",
+#         "clusterOrProvider": "SILVER",
+#         "licencePlate": "34w22a",
 #         "repositories": [
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry",
@@ -22,8 +23,9 @@ echo "$PROJECTS"
 #         ]
 #     },
 #     {
-#         "licencePlate": "3744e3",
 #         "context": "PUBLIC",
+#         "clusterOrProvider": "AWS",
+#         "licencePlate": "3744e3",
 #         "repositories": [
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry-web",
@@ -154,8 +156,9 @@ while read -r proj; do
     echo "$proj"
 
     # Extract project details from JSON using jq
-    licencePlate=$(echo "$proj" | jq -r '.licencePlate')
     context=$(echo "$proj" | jq -r '.context')
+    clusterOrProvider=$(echo "$proj" | jq -r '.clusterOrProvider // ""')
+    licencePlate=$(echo "$proj" | jq -r '.licencePlate')
     repositories=$(echo "$proj" | jq -r '.repositories')
 
     if [ -z "$licencePlate" ] || [ -z "$context" ] || [ -z "$repositories" ]; then
@@ -213,8 +216,9 @@ while read -r proj; do
 
         # Store the project metadata along with the SonarQube scan results into the JSON file
         echo '{
-            "licencePlate": "'"$licencePlate"'",
             "context": "'"$context"'",
+            "clusterOrProvider": "'"$clusterOrProvider"'",
+            "licencePlate": "'"$licencePlate"'",
             "url": "'"$url"'",
             "sha": "'"$sha"'",
             "source": "'"$source"'",
