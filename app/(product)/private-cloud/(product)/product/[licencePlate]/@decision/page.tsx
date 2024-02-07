@@ -54,7 +54,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { humanCommnet: '', decision: '', ...data?.requestedProject },
+    values: { humanComment: '', decision: '', ...data?.requestedProject },
   });
 
   useEffect(() => {

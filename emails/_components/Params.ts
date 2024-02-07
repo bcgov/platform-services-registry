@@ -20,7 +20,7 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
   decisionMakerEmail: 'manager@example.com',
   type: 'CREATE', // or EDIT
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
-  humanComment: 'This is a sample request',
+  adminComment: 'This is a sample request',
   active: true,
   created: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
@@ -83,7 +83,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
   decisionMakerEmail: 'decider@example.com',
   type: 'CREATE', // or EDIT
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
-  humanComment: 'This is an example request',
+  adminComment: 'This is an example request',
   active: true,
   created: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),

@@ -8,10 +8,10 @@ import Comment from '@/emails/_components/Comment';
 
 interface EmailProp {
   productName: string;
-  humanComment?: string;
+  adminComment?: string;
 }
 
-const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
+const RequestRejectionTemplate = ({ productName, adminComment }: EmailProp) => {
   if (!productName) return <></>;
   return (
     <Html>
@@ -27,7 +27,7 @@ const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
                   Your request for the product on the Public Cloud Landing Zone has been rejected due to the following
                   reason(s):
                 </Text>
-                <Comment adminComment={humanComment} />
+                <Comment adminComment={adminComment} />
                 <Text>
                   Log in to your registry account and raise a new request if the above rejection reason no longer
                   applies

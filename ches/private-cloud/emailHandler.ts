@@ -37,7 +37,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
         request.requestedProject.primaryTechnicalLead.email,
         request.requestedProject.secondaryTechnicalLead?.email,
       ],
-      subject: 'Rrovisioning request received',
+      subject: 'Provisioning request received',
     });
 
     await Promise.all([contacts, admins]);
@@ -55,7 +55,7 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
       bodyType: 'html',
       body: adminEmail,
       to: adminEmails,
-      subject: 'Request has been approved',
+      subject: 'Edit request submitted',
     });
 
     const contacts = sendEmail({
@@ -68,7 +68,7 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
       ].filter(Boolean),
-      subject: 'Request has been approved',
+      subject: 'Edit request submitted',
     });
 
     await Promise.all([contacts, admins]);
@@ -122,7 +122,7 @@ export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProj
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: 'Request deletion request has been received',
+      subject: 'Request to delete product received',
     });
   } catch (error) {
     console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
@@ -136,7 +136,7 @@ export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudReque
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: 'Deletion request has been approved',
+      subject: 'Delete request has been approved',
     });
   } catch (error) {
     console.error('ERROR SENDING NEW DELETE REQUEST APPROVAL EMAIL');

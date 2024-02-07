@@ -101,8 +101,8 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
-  const setComment = (humanComment: string) => {
-    onSubmit({ ...methods.getValues(), humanComment });
+  const setComment = (adminComment: string) => {
+    onSubmit({ ...methods.getValues(), adminComment });
   };
 
   useEffect(() => {

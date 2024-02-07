@@ -101,7 +101,7 @@ export default async function makeDecisionRequest(
     },
     data: {
       decisionStatus: decision,
-      humanComment: comment,
+      adminComment: comment,
       active: decision === DecisionStatus.APPROVED,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,

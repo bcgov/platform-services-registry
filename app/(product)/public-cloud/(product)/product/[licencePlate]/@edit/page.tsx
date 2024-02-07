@@ -135,8 +135,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   }, [data]);
 
-  const setComment = (humanComment: string) => {
-    onSubmit({ ...methods.getValues(), humanComment });
+  const setComment = (adminComment: string) => {
+    onSubmit({ ...methods.getValues(), adminComment });
   };
 
   return (
