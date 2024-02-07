@@ -17,7 +17,7 @@ app:
     "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
     "NATS_HOST": "nats://nats.eb6118-dev.svc"
     "NATS_PORT": "4222"
-    
+
   route:
     enabled: true
     host: dev-pltsvc.apps.silver.devops.gov.bc.ca
