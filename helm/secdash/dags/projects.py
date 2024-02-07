@@ -1,39 +1,14 @@
 import os
 import json
 import shutil
-import urllib
 from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
 from github import GitHubAPI, extract_owner_repo
-
+from _utils import split_array
+from _acs_api import get_acs_context, get_search_params, extract_github_bcgov_urls
 
 shared_directory = '/opt/airflow/shared'
-
-
-def split_array(original_array, num_subarrays):
-    """
-    Split an array into a specified number of subarrays.
-
-    Parameters:
-    - original_array: The original array to be split.
-    - num_subarrays: The desired number of subarrays.
-
-    Returns:
-    A list of subarrays, where each subarray is a portion of the original array.
-    """
-
-    array_length = len(original_array)
-    subarray_size = array_length // max(num_subarrays, 1)
-    remainder = array_length % max(num_subarrays, 1)
-
-    subarrays = [original_array[i * subarray_size:(i + 1) * subarray_size] for i in range(num_subarrays)]
-
-    # Distribute the remainder elements to the first few subarrays
-    for i in range(remainder):
-        subarrays[i].append(original_array[num_subarrays * subarray_size + i])
-
-    return subarrays
 
 
 def get_mongo_db(mongo_conn_id):
@@ -95,7 +70,7 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
             headers = {"Authorization": f"Bearer {token}"}
             apiUrl = f"https://api.{cluster}.devops.gov.bc.ca:6443/apis/route.openshift.io/v1"
             url = f"{apiUrl}/namespaces/{project['licencePlate']}-prod/routes"
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=2)
             if response.status_code == 200:
                 data = response.json()
                 for item in data['items']:
@@ -105,7 +80,7 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
                     try:
                         print(f"head: {host}")
-                        avail_res = requests.head(f"https://{host}", timeout=3)
+                        avail_res = requests.head(f"https://{host}", timeout=2)
                         status_code = avail_res.status_code
                         print(f"{host}: {status_code}")
                         available = status_code != 503
@@ -212,83 +187,122 @@ def load_zap_results(mongo_conn_id):
 
 def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
     """
-    Fetch active projects from MongoDB, retrieve information about their codebase repository URLs,
-    and push the results into XCom.
+    Fetches active projects from MongoDB, retrieves information about their codebase repository URLs,
+    and pushes the results into XCom.
 
     Parameters:
-    - mongo_conn_id: The connection ID for MongoDB.
-    - concurrency: The number of subarrays for parallel processing.
+    - mongo_conn_id (str): The connection ID for MongoDB.
+    - concurrency (int): The number of subarrays for parallel processing.
+    - gh_token (str): GitHub API token for accessing repository information.
     - **context: Additional context parameters.
 
     Note: This function assumes the existence of a 'get_mongo_db' function.
 
     Raises:
     - Any exceptions that occur during the execution.
-
     """
 
     try:
+        # Establish MongoDB connection
         db = get_mongo_db(mongo_conn_id)
-        projects = db.SecurityConfig.find(
+
+        # Delete documents older than two days ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.SonarScanResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+
+        # Remove directory related to SonarScan
+        shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
+
+        # Initialize list for storing URL candidates
+        candidates = []
+
+        # Collect URLs from ACS images
+        print("Start collecting URLs from ACS images.")
+        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
+                                               "_id": False, "licencePlate": True, "cluster": True})
+        for project in projects:
+            urls_from_acs = extract_github_bcgov_urls(project['cluster'], project['licencePlate'])
+            for url in urls_from_acs:
+                candidates.append({
+                    'licencePlate': project['licencePlate'],
+                    'context': "PRIVATE",
+                    'url': url,
+                    'source': "ACS",
+                })
+
+        # Count ACS URLs found
+        acsUrlCount = len(candidates)
+        print(f"Found {acsUrlCount} URLs.")
+
+        # Collect URLs from the project team
+        print("Start collecting URLs from the project team")
+        configs = db.SecurityConfig.find(
             {
                 "$expr": {
                     "$gt": [{"$size": "$repositories"}, 0]
                 }
             }, projection={"_id": False, "licencePlate": True, "context": True, "repositories": True})
-        result = []
 
-        for project in projects:
-            for repository in project["repositories"]:
+        for config in configs:
+            for repository in config["repositories"]:
+                found_dict = next((can for can in candidates if can.get('url') == repository['url']), None)
+                if not found_dict:
+                    candidates.append({
+                        'licencePlate': config['licencePlate'],
+                        'context': config['context'],
+                        'url': repository['url'],
+                        'source': "USER",
+                    })
+
+        # Count team URLs found
+        teamUrlCount = len(candidates) - acsUrlCount
+        print(f"Found {teamUrlCount} URLs.")
+
+        # Initialize list for storing results
+        result = []
+        github_api = GitHubAPI(gh_token)
+
+        # Iterate over candidates to check repositories
+        for candy in candidates:
+            print(f"Checking {candy['url']}...")
+
+            try:
+                # Get the commit SHA of the default branch
+                owner, repo = extract_owner_repo(candy['url'])
+                default_branch = github_api.get_default_branch(owner, repo)
+                commit_sha = github_api.get_sha(owner, repo, default_branch)
+
+                # Find the previous scan result in the database
                 prev_result = db.SonarScanResult.find_one({
-                    'licencePlate': project['licencePlate'],
-                    'context': project['context'],
-                    'url': repository['url']},
+                    'licencePlate': candy['licencePlate'],
+                    'context': candy['context'],
+                    'url': candy['url']},
                     projection={"_id": False, "sha": True},
                 )
 
-                if prev_result is None:
-                    print(f"{repository['url']}: Has not been scanned yet.")
-                    result.append({
-                        'licencePlate': project['licencePlate'],
-                        'context': project['context'],
-                        'repositories': [{
-                            'url': repository['url'],
-                            'sha': ''
-                        }]
-                    })
+                # If the previous SHA matches the current one, skip the update
+                if prev_result["sha"] == commit_sha:
+                    print(f"{candy['url']}: No changes detected. Skipping the update..")
                     continue
 
-                try:
-                    owner, repo = extract_owner_repo(repository['url'])
-                    github_api = GitHubAPI(gh_token)
-                    default_branch = github_api.get_default_branch(owner, repo)
-                    commit_sha = github_api.get_sha(owner, repo, default_branch)
+                result.append({
+                    'licencePlate': candy['licencePlate'],
+                    'context': candy['context'],
+                    'repositories': [{
+                        'url': candy['url'],
+                        'sha': commit_sha,
+                        'source': candy['source'],
+                    }]
+                })
 
-                    if prev_result["sha"] == commit_sha:
-                        print(f"{repository['url']}: No changes detected. Skipping the update..")
-                        continue
+            except Exception as e:
+                print(f"{repository['url']}: {e}")
 
-                    result.append({
-                        'licencePlate': project['licencePlate'],
-                        'context': project['context'],
-                        'repositories': [{
-                            'url': repository['url'],
-                            'sha': commit_sha
-                        }]
-                    })
-                except Exception as e:
-                    print(f"{repository['url']}: {e}")
-
+        # Push result to XCom
         task_instance = context['task_instance']
         result_subarrays = split_array(result, concurrency)
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
-
-        # Delete documents older than two_days_ago
-        two_days_ago = datetime.now() - timedelta(days=2)
-        db.SonarScanResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
-
-        shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
 
     except Exception as e:
         print(f"[fetch_sonarscan_projects] Error: {e}")
@@ -345,27 +359,18 @@ def fetch_load_acs_projects(mongo_conn_id):
             cluster = project["cluster"]
             licencePlate = project["licencePlate"]
 
-            base_url = "https://acs.developer.gov.bc.ca"
-            token = os.environ['ACS_TOKEN']
+            base_url, api_url, headers = get_acs_context(cluster)
+            ui_search_param, api_search_param = get_search_params(cluster, licencePlate)
 
-            if cluster in ["CLAB", "KLAB", "KLAB2"]:
-                base_url = "https://acs-lab.developer.gov.bc.ca"
-                token = os.environ['ACS_LAB_TOKEN']
-
-            api_url = f"{base_url}/v1"
-            ui_query = f"s[Cluster][0]={cluster}&s[Namespace][0]={licencePlate}-prod"
-            violation_url = f"{base_url}/main/violations?{ui_query}"
-            image_url = f"{base_url}/main/vulnerability-management/images?{ui_query}"
+            violation_url = f"{base_url}/main/violations?{ui_search_param}"
+            image_url = f"{base_url}/main/vulnerability-management/images?{ui_search_param}"
 
             result = {'cluster': cluster, 'licencePlate': licencePlate,
                       "violationUrl": violation_url, "imageUrl": image_url}
 
-            headers = {"Authorization": f"Bearer {token}"}
-            query_param = urllib.parse.quote(f'cluster:"{cluster}"+namespace:"{licencePlate}-prod"')
-
             # Collect alerts data
-            alerts_url = f"{api_url}/alerts?query={query_param}"
-            alerts_response = requests.get(alerts_url, headers=headers)
+            alerts_url = f"{api_url}/alerts?{api_search_param}"
+            alerts_response = requests.get(alerts_url, headers=headers, timeout=2)
             if alerts_response.status_code == 200:
                 data = alerts_response.json()
                 if data["alerts"] is None:
@@ -375,8 +380,8 @@ def fetch_load_acs_projects(mongo_conn_id):
                 continue
 
             # Collect images data
-            images_url = f"{api_url}/images?query={query_param}"
-            images_response = requests.get(images_url, headers=headers)
+            images_url = f"{api_url}/images?{api_search_param}"
+            images_response = requests.get(images_url, headers=headers, timeout=2)
 
             if images_response.status_code == 200:
                 data = images_response.json()
