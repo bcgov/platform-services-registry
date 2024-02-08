@@ -113,7 +113,7 @@ model PublicCloudRequest {
   decisionMakerEmail     String?
   type                   PublicCloudRequestType
   decisionStatus         DecisionStatus
-  humanComment           String?
+  adminComment           String?
   active                 Boolean                      @default(true)
   created                DateTime                     @default(now())
   decisionDate           DateTime?
@@ -204,10 +204,11 @@ type ZapJsonSiteAlert {
 }
 
 model SecurityConfig {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate String         @unique
-  context      ProjectContext
-  repositories Repository[]
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  context           ProjectContext
+  clusterOrProvider String?
+  licencePlate      String         @unique
+  repositories      Repository[]
 }
 
 enum ProjectContext {
@@ -220,12 +221,15 @@ type Repository {
 }
 
 model SonarScanResult {
-  id           String                @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate String
-  context      ProjectContext
-  url          String
-  result       SonarScanResultDetail
-  scannedAt    DateTime              @default(now())
+  id                String                @id @default(auto()) @map("_id") @db.ObjectId
+  context           ProjectContext
+  clusterOrProvider String?
+  licencePlate      String
+  url               String
+  sha               String
+  source            String
+  result            SonarScanResultDetail
+  scannedAt         DateTime              @default(now())
 }
 
 type SonarScanResultDetail {

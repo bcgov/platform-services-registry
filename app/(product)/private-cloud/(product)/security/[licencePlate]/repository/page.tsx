@@ -22,18 +22,19 @@ export default function Repository({ params }: { params: { licencePlate: string 
   } = useForm<SecurityConfig>({
     resolver: zodResolver(SecurityConfigRequestBodySchema),
     defaultValues: {
-      licencePlate: params.licencePlate,
       context: $Enums.ProjectContext.PRIVATE,
+      clusterOrProvider: '',
+      licencePlate: params.licencePlate,
       repositories: [{ url: 'https://' }],
     },
   });
 
   const {
-    data: config,
+    data: current,
     isLoading: isFetching,
     isError: isFetchingError,
     error: fetchingError,
-  } = useQuery<SecurityConfig, Error>({
+  } = useQuery<{ config: SecurityConfig; project: { cluster: string; provider: string } }, Error>({
     queryKey: ['securityConfig', params.licencePlate],
     queryFn: () => getSecurityConfig(params.licencePlate, $Enums.ProjectContext.PRIVATE),
     enabled: !!params.licencePlate,
@@ -54,9 +55,11 @@ export default function Repository({ params }: { params: { licencePlate: string 
   });
 
   useEffect(() => {
-    if (!config) return;
-    setValue('repositories', config.repositories);
-  }, [setValue, config]);
+    if (!current) return;
+
+    if (current.project?.cluster) setValue('clusterOrProvider', current.project.cluster);
+    if (current.config?.repositories) setValue('repositories', current.config.repositories);
+  }, [setValue, current]);
 
   if (isFetching) {
     return <div>Loading...</div>;

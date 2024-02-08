@@ -159,7 +159,7 @@ export default function TableBody({ rows }: TableProps) {
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
               <div className="flex justify-between w-full">
-                <div className="min-w-[300px] lg:w-[500px]">
+                <div className="min-w-[300px] lg:w-[365px]">
                   <div className="flex items-center gap-x-3">
                     {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
@@ -169,7 +169,7 @@ export default function TableBody({ rows }: TableProps) {
                         <span className="">
                           <span className="font-semibold leading-6"> {deployment.cluster}</span>{' '}
                           <span className="text-gray-400">/</span>{' '}
-                          <span className="">{truncateText(deployment.name, 130)}</span>
+                          <span className="">{truncateText(deployment.name, 100)}</span>
                         </span>
 
                         <span className="absolute inset-0" />
@@ -186,7 +186,7 @@ export default function TableBody({ rows }: TableProps) {
                     </p>
                   </div>
                 </div>
-                <div className="mt-1 w-32 ml-3 mr-3">
+                <div className="mt-1 w-full min-w-20 ml-10 mr-3">
                   <div>
                     <span
                       className={classNames(
@@ -211,10 +211,11 @@ export default function TableBody({ rows }: TableProps) {
                     </div>
                   </div>
                 </div>
-                <div className="flex mt-1.5 space-x-2 w-2/5">
-                  <div className="hidden md:flex flex-col gap-2 2xl:flex-row">
+                <div className="flex mt-1.5 space-x-2 w-3/5 justify-start min-w-0 xl:min-w-[450px] mr-10">
+                  {/* <div className="flex w-fit justify-start border"> */}
+                  <div className="hidden md:flex flex-col gap-2 xl:flex-row">
                     <Avatar
-                      className="min-w-56"
+                      className="min-w-52"
                       name={deployment.projectOwner.name}
                       email={deployment.projectOwner.email}
                       userRole={'Product Owner'}
@@ -233,6 +234,7 @@ export default function TableBody({ rows }: TableProps) {
                         />
                       ) : null}
                     </div>
+                    {/* </div> */}
                   </div>
                   <div className="md:hidden flex">
                     <Avatars

@@ -127,6 +127,7 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional(),
+  adminComment: string().optional(),
 });
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(
@@ -151,7 +152,7 @@ export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBody
 export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
-    humanComment: string().optional(),
+    adminComment: string().optional(),
   }),
 );
 
@@ -171,6 +172,7 @@ export const SecurityConfigRequestBodySchema = z.object({
     )
     .max(10),
   context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
+  clusterOrProvider: z.string().optional(),
 });
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof PrivateCloudCreateRequestBodySchema>;

@@ -10,8 +10,9 @@ const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 const clientScope = 'https://graph.microsoft.com/.default';
 
-const proxyUsers = m365ProxyResponse.responses.find((res) => res.url === 'https://graph.microsoft.com/v1.0/users*')
-  .responseBody.value;
+const proxyUsers = m365ProxyResponse.responses.find(
+  (res) => res.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
+).responseBody.value;
 
 async function main() {
   console.log('Starting Keycloak Provision...');

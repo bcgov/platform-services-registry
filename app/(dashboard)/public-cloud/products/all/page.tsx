@@ -38,7 +38,7 @@ export default async function ProductsTable({
 
   const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
     effectivePageSize,
-    currentPage,
+    (currentPage - 1) * effectivePageSize,
     search,
     ministry,
     provider,
