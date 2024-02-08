@@ -3,10 +3,9 @@ import * as React from 'react';
 import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';
 import { Body, Button, Heading, Html, Text, Link } from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../_components/NamespaceDetails';
 import Closing from '../../_components/Closing';
-import { TailwindConfig } from '../../_components/TailwindConfig';
+import TailwindWrapper from '../../_components/TailwindWrapper';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
@@ -17,7 +16,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
 
   return (
     <Html>
-      <Tailwind config={TailwindConfig}>
+      <TailwindWrapper>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
@@ -65,7 +64,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
             </div>
           </Body>
         </div>
-      </Tailwind>
+      </TailwindWrapper>
     </Html>
   );
 };
