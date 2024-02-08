@@ -11,7 +11,7 @@ import {
 } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
-import { sendDeleteRequestEmails } from '@/ches/public-cloud/emailHandler';
+import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/ches/public-cloud/emailHandler';
 import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 
 const ParamsSchema = z.object({
@@ -119,6 +119,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   });
 
   sendDeleteRequestEmails(createRequest.requestedProject);
+  sendAdminDeleteRequestEmails(createRequest.requestedProject);
 
   return new Response('Success', { status: 200 });
 }

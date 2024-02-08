@@ -46,8 +46,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   The Product Owner and the Technical Lead have been provisioned with access, and can add other users as
                   necessary. Please note that if a Product Owner or a Technical Lead is removed as a project contact in
                   the Platform Registry, they will lose their access to the project set namespaces. The new Product or
-                  Technical Lead provided on the product details page will gain the administrative access to the
-                  namespaces.
+                  Technical Lead provided on the product details page will gain the access to the namespaces.
                 </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
