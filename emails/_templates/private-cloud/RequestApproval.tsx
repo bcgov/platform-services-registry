@@ -6,6 +6,7 @@ import { Body, Button, Heading, Html, Text, Link } from '@react-email/components
 import NamespaceDetails from '../../_components/NamespaceDetails';
 import Closing from '../../_components/Closing';
 import TailwindWrapper from '../../_components/TailwindWrapper';
+import TailwindWrapper from '../../_components/TailwindWrapper';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
