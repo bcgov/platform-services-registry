@@ -83,7 +83,7 @@ export const ministriesNames = [
     humanFriendlyName: 'Health',
   },
   {
-    id: 15,
+    id: 16,
     name: 'IRR',
     humanFriendlyName: 'Indigenous Relations & Reconciliation',
   },
