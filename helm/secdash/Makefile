@@ -79,6 +79,12 @@ template: helm-dep
 template:
 	@helm template $(call arguments) --debug > template.yaml
 
+# Use when syncing only DAG files
+.PHONY: dags
+dags: helm-dep
+dags:
+	@helm upgrade $(call arguments) --set airflow.migrateDatabaseJob.enabled="false" --set airflow.webserver.defaultUser.enabled="false"
+
 .PHONY: force-install
 force-install: uninstall
 force-install: install

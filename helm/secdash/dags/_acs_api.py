@@ -26,14 +26,18 @@ def get_search_params(cluster, licencePlate):
     return ui_search_param, api_search_param
 
 
-def extract_image_build_sources(cluster, licencePlate):
+def extract_image_label_urls(cluster, licencePlate):
     base_url, api_url, headers = get_acs_context(cluster)
     ui_search_param, api_search_param = get_search_params(cluster, licencePlate)
 
-    images_url = f"{api_url}/images?{api_search_param}"
-    images_response = requests.get(images_url, headers=headers, timeout=2)
-
     result = []
+
+    images_url = f"{api_url}/images?{api_search_param}"
+    try:
+        images_response = requests.get(images_url, headers=headers, timeout=2)
+    except:
+        return result
+
     if images_response.status_code != 200:
         return result
 
@@ -41,25 +45,39 @@ def extract_image_build_sources(cluster, licencePlate):
     if not keys_exist(images_data, "images"):
         return result
 
+    url_pattern = re.compile(r'(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)$', re.IGNORECASE)
+
     for image in images_data["images"]:
         image_url = f"{api_url}/images/{image['id']}"
-        print(f"Querying image_url...")
-        image_response = requests.get(image_url, headers=headers, timeout=2)
+        print(f"Querying image_url... {image_url}")
+
+        try:
+            image_response = requests.get(image_url, headers=headers, timeout=2)
+        except:
+            continue
+
         if image_response.status_code != 200:
             continue
 
         image_data = image_response.json()
+        if keys_exist(image_data, "metadata", "v1", "labels"):
+            # Iterate through labels to find URL string values
+            # Reference URLs for label values:
+            # - https://docs.okd.io/latest/cicd/builds/managing-build-output.html#builds-output-image-labels_managing-build-output
+            # - https://learn.microsoft.com/en-us/javascript/api/%40azure/container-registry/ociannotations?view=azure-node-latest#@azure-container-registry-ociannotations-org-opencontainers-image-source
+            # - https://learn.microsoft.com/en-us/javascript/api/%40azure/container-registry/ociannotations?view=azure-node-latest#@azure-container-registry-ociannotations-org-opencontainers-image-url
+            labels = image_data["metadata"]["v1"]["labels"]
+            for key, value in labels.items():
+                if re.match(url_pattern, value):
+                    result.append(value.lower())
 
-        if keys_exist(image_data, "metadata", "v1", "labels", "io.openshift.build.source-location"):
-            result.append(image_data["metadata"]["v1"]["labels"]["io.openshift.build.source-location"])
-
-    return result
+    return list(set(result))
 
 
 def extract_github_bcgov_urls(cluster, licencePlate):
     print(f"Extracting {cluster}/{licencePlate}...")
 
-    all_urls = extract_image_build_sources(cluster, licencePlate)
+    all_urls = extract_image_label_urls(cluster, licencePlate)
 
     github_https_pattern = r'^https:\/\/github\.com\/bcgov\/[a-zA-Z0-9_-]+$'
     github_ssh_pattern = r'^git@github\.com:bcgov\/([a-zA-Z0-9_-]+)\.git$'
