@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
@@ -35,3 +36,35 @@
 //     }
 //   }
 // }
+
+declare global {
+  module Cypress {
+    interface Chainable<Subject = any> {
+      loginToRegistry(username: string, password: string): void;
+    }
+  }
+}
+
+export function loginToRegistry(username: string, password: string): void {
+  cy.visit('/login', { failOnStatusCode: false });
+  cy.contains('button', 'LOGIN').click();
+  cy.contains('span', 'Sign in with Keycloak').click();
+  cy.get('input[id="username"]').type(username);
+  cy.get('input[id="password"]').type(password);
+  cy.get('input[type="submit"]').click();
+  cy.contains('a', 'REQUEST A NEW PRODUCT');
+}
+
+Cypress.Commands.add('loginToRegistry' as any, (username: any, password: any) => {
+  const log = Cypress.log({
+    displayName: 'Login to Registry',
+    message: [`🔐 Authenticating | ${username}`],
+    autoEnd: false,
+  });
+  log.snapshot('before');
+
+  loginToRegistry(username, password);
+
+  log.snapshot('after');
+  log.end();
+});
