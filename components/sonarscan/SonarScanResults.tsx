@@ -1,6 +1,7 @@
 'use client';
 
 import { Prisma } from '@prisma/client';
+import _isNumber from 'lodash-es/isNumber';
 import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import formatDate from '@/components/utils/formatdates';
@@ -28,7 +29,10 @@ const processCell = (value: any, field: string, headerName: string, row: SonarSc
   }
 
   if (['bugs', 'codeSmells', 'vulnerabilities', 'securityRating', 'coverage', 'duplications'].includes(field)) {
-    return value === 'null' ? '' : value;
+    if (value === 'null') return '';
+
+    const tryNum = Number(value);
+    return <div className="">{_isNumber(tryNum) ? tryNum.toLocaleString() : value}</div>;
   }
 
   if (field === 'url') {
