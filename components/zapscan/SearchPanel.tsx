@@ -31,7 +31,8 @@ export default function SearchPanel({ clusters }: { clusters: string[] }) {
   useEffect(() => {
     const currParamObj = parseQueryString(searchParams?.toString());
     const hasFilterChanged =
-      !_isEqual(currParamObj.search, searchTerm) || !_isEqual(_castArray(currParamObj.cluster || []), selectedClusters);
+      !_isEqual(currParamObj.search || '', searchTerm || '') ||
+      !_isEqual(_castArray(currParamObj.cluster || []), selectedClusters || []);
 
     const newParamObj = {
       ...currParamObj,

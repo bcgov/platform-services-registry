@@ -29,3 +29,9 @@ export const defaultStorageOptionsLookup: { [key: string]: string } = {
   STORAGE_256: '256 GB',
   STORAGE_512: '512 GB',
 };
+
+export const defaultProvisionedResourceValues = {
+  cpu: 'CPU: 0.5 CPU Request, 1.5 CPU Limit',
+  memory: 'Memory: 2 GB Request, 4 GB Limit',
+  storage: 'Storage: 1 GB',
+};
