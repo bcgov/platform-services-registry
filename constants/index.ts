@@ -142,4 +142,9 @@ export const ministriesNames = [
     name: 'TRAN',
     humanFriendlyName: 'Transportation and Infrastructure',
   },
+  {
+    id: 28,
+    name: 'HOUS',
+    humanFriendlyName: 'Ministry of Housing',
+  },
 ];
