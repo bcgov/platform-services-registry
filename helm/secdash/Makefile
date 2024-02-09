@@ -33,9 +33,9 @@ define arguments
 	--set airflow.gid="${UID}" \
 	--set sonarqube.securityContext.fsGroup="${UID}" \
 	--set sonarqube.containerSecurityContext.runAsUser="${UID}" \
-	--set sonarqube.containerSecurityContext.runAsGroup="${UID}" \
+	--set sonarqube.containerSecurityContext.runAsGroup="0" \
 	--set sonarqube.initContainers.securityContext.runAsUser="${UID}" \
-	--set sonarqube.initContainers.securityContext.runAsGroup="${UID}" \
+	--set sonarqube.initContainers.securityContext.runAsGroup="0" \
 	--set dags.sha="${SHA}" \
 	$(foreach filename,$(FILENAMES),\
 		--set "dags.volumeMounts[$(INDEX)].name=secdash-airflow-dags-copy" \

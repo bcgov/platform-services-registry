@@ -28,10 +28,7 @@ const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
                   rejected due to the following reason(s):
                 </Text>
                 <Comment adminComment={humanComment} />
-                <Text>
-                  Log in to your registry account and raise a new request if the above rejection reason no longer
-                  applies
-                </Text>
+                <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
                 <Button
                   href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
