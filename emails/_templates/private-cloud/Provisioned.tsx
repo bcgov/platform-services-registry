@@ -31,7 +31,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   Log in to the cluster console
                 </Link>{' '}
                 using the button below and you&apos;ll see all four namespaces included in a project set. If you have
-                any more questions reach out to the Platform Services team in the RocketChat channel{' '}
+                any more questions reach out to the Platform Services team in the Rocket.Chat channel{' '}
                 <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                   #devops&#8209;operations
                 </Link>.
@@ -41,8 +41,8 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 below, and can add other users as necessary. 
                 </Text>
                 <Text className="">
-                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in Openshift. 
-                The newly added Product Owner or Technical Lead(s) on the product details page will then gain administrative access to these namespaces
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in OpenShift. 
+                The newly added Product Owner or Technical Lead(s) on the product details page will then gain administrative access to these namespaces.
               </Text>
               <Button
                 href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}
@@ -73,7 +73,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <Heading className="text-lg">Security Tools</Heading>
                 <Text className="">
                   Your new OpenShift project set includes access to free security tools available to product teams on
-                  the Private Cloud Openshift, including: 
+                  the Private Cloud OpenShift, including: 
                   </Text>
                   <ul>
                     <li> 

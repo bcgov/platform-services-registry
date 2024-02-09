@@ -25,7 +25,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
-                  Your request for your product on the Private Cloud Openshift platform is complete. If you have any
+                  Your requested change for the project set for your product on the Private Cloud Openshift platform is now complete. If you have any
                   more questions, reach out to the Platform Services team in the RocketChat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops&#8209;operations

@@ -37,9 +37,9 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <Text>Hi {product.name} Team, </Text>
                 <Text className="">
                   Your request for your product on the Public Cloud platform is complete. If you have any more questions
-                  reach out to the Platform Services team in the RocketChat channel{' '}
-                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
-                    #devops&#8209;operations
+                  reach out to the Public Cloud team in the RocketChat channel{' '}
+                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/group/aws-tenant-requests`}>
+                    #aws-tenant-requests
                   </Link>
                   .
                   </Text>
@@ -48,8 +48,8 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 below, and can add other users as necessary. 
                 </Text>
                 <Text className="">
-                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in Openshift. 
-                The newly added Product Owner Technical Lead(s) on the product details page will then gain administrative access to these namespaces
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in AWS. 
+                The newly added Product Owner Technical Lead(s) on the product details page will then gain administrative access to these namespaces.
               </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
