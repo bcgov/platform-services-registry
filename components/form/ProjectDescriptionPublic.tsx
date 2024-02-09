@@ -2,7 +2,7 @@
 
 import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
-import { providers, ministries } from '@/constants';
+import { providers, ministriesNames } from '@/constants';
 export default function ProjectDescriptionPublic({
   disabled,
   providerDisabled,
@@ -103,9 +103,9 @@ export default function ProjectDescriptionPublic({
               )}
             >
               <option value="">Select Ministry</option>
-              {ministries.map((ministry) => (
-                <option key={ministry} value={ministry}>
-                  {ministry}
+              {ministriesNames.map((ministry) => (
+                <option key={ministry.id} value={ministry.name}>
+                  {ministry.humanFriendlyName}
                 </option>
               ))}
             </select>

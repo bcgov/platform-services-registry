@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
-import { providers, ministries } from '@/constants';
+import { providers, ministriesNames } from '@/constants';
 
 export default function AdminComment() {
   const {
@@ -18,7 +18,7 @@ export default function AdminComment() {
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
         If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
-        Platform Services team. Reach out to{' '}
+        Platform Services team. Reach out to
         {
           <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:platformservicesteam@gov.bc.ca">
             PlatformServicesTeam@gov.bc.ca
@@ -74,9 +74,9 @@ export default function AdminComment() {
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Select Ministry</option>
-              {ministries.map((ministry) => (
-                <option key={ministry} value={ministry}>
-                  {ministry}
+              {ministriesNames.map((ministry) => (
+                <option key={ministry.id} value={ministry.name}>
+                  {ministry.humanFriendlyName}
                 </option>
               ))}
             </select>
