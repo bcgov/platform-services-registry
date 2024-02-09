@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
-import { clusters, ministries } from '@/constants';
+import { clusters, ministriesNames } from '@/constants';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
@@ -119,9 +119,9 @@ export default function ProjectDescription({
               )}
             >
               <option value="">Select Ministry</option>
-              {ministries.map((ministry) => (
-                <option key={ministry} value={ministry}>
-                  {ministry}
+              {ministriesNames.map((ministry) => (
+                <option key={ministry.id} value={ministry.name}>
+                  {ministry.humanFriendlyName}
                 </option>
               ))}
             </select>
