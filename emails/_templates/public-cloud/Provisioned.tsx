@@ -33,7 +33,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Hurray! Your request was approved and completed!</Heading>
+                <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
                 <Text>Hi {product.name} Team, </Text>
                 <Text className="">
                   Your request for your product on the Public Cloud platform is complete. If you have any more questions
@@ -41,13 +41,16 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops&#8209;operations
                   </Link>
+                  .
+                  </Text>
+              <Text className="">
+                The Product Owner and the Technical Lead(s) have been provisioned with admin access to the namespaces
+                below, and can add other users as necessary. 
                 </Text>
                 <Text className="">
-                  The Product Owner and the Technical Lead have been provisioned with access, and can add other users as
-                  necessary. Please note that if a Product Owner or a Technical Lead is removed as a project contact in
-                  the Platform Registry, they will lose their access to the project set namespaces. The new Product or
-                  Technical Lead provided on the product details page will gain the access to the namespaces.
-                </Text>
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in Openshift. 
+                The newly added Product Owner Technical Lead(s) on the product details page will then gain administrative access to these namespaces
+              </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails

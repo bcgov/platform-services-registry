@@ -22,9 +22,9 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
           <div className="m-12">
             <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
               <Heading className="text-lg text-black">
-                Hurray! Your provisioning request was approved and completed!
+                Success! Your provisioning request was approved and completed!
               </Heading>
-              <Text>Hi {product.name} Team, </Text>
+              <Text>Hi {product.name} team, </Text>
               <Text className="">
                 Your request for your product on the Private Cloud Openshift platform is complete.{' '}
                 <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
@@ -34,20 +34,21 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 any more questions reach out to the Platform Services team in the RocketChat channel{' '}
                 <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                   #devops&#8209;operations
-                </Link>
+                </Link>.
               </Text>
               <Text className="">
-                The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
-                below, and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is
-                removed as a project contact in the Platform Registry, they will lose their access to the project set
-                namespaces in Openshift. The new Product or Technical Lead provided on the product details page will
-                gain the administrative access to the namespaces.
+                The Product Owner and the Technical Lead(s) have been provisioned with admin access to the namespaces
+                below, and can add other users as necessary. 
+                </Text>
+                <Text className="">
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in Openshift. 
+                The newly added Product Owner or Technical Lead(s) on the product details page will then gain administrative access to these namespaces
               </Text>
               <Button
                 href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}
                 className="bg-bcorange rounded-md px-4 py-2 text-white"
               >
-                Log in to console
+                Log in to Console
               </Button>
             </div>
             <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
@@ -72,10 +73,33 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <Heading className="text-lg">Security Tools</Heading>
                 <Text className="">
                   Your new OpenShift project set includes access to free security tools available to product teams on
-                  the Private Cloud Openshift, including: the Artifactory Trusted Artifact Repository repository, the
-                  Vault Secrets Management Service, Sysdig Monitoring Service and the Advanced Cluster Security (ACS)
-                  Vulnerability Scanning Service. You can read more about these tools
-                  <Link href="https://docs.developer.gov.bc.ca/"> here</Link>.
+                  the Private Cloud Openshift, including: 
+                  </Text>
+                  <ul>
+                    <li> 
+                    <Text className="">
+                      Artifactory -  trusted artifact repository
+                    </Text> 
+                    </li>
+                    <li>
+                    <Text className="">
+                    Vault secrets management service
+                    </Text>
+                    </li>
+                    <li>
+                    <Text className="">
+                     Sysdig Monitoring Service
+                     </Text>
+                     </li>
+                    <li> 
+                    <Text className="">
+                      Advanced Cluster Security (ACS) - vulnerability scanning service 
+                      </Text>
+                      </li> 
+                  </ul>
+                  <Text className="">
+                  You can read more about these tools in the 
+                  <Link href="https://docs.developer.gov.bc.ca/"> Private cloud technical documentation</Link>.
                 </Text>
               </div>
             </div>
@@ -86,24 +110,24 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <ul>
                   <li>
                     <Text className="">
-                      A service account has been created for you with read access to Artifactory. This includes locally
-                      cached container images for faster builds and pod startup, as well as access to useful pre-built
-                      images maintained by the Platform Services Team
+                      We've set up a service account for you with read access to Artifactory. This account allows you to access locally cached container images, 
+                      speeding up builds and pod startup. It also grants you access to helpful pre-built images maintained by the Platform Services team
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      It is also possible to create your own project in Artifactory for storing builds and other
-                      artifacts
+                      You can create your own project in Artifactory to store builds and other artifacts
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      Find out
+                      Find out 
                       <Link href="https://docs.developer.gov.bc.ca/image-artifact-management-with-artifactory/">
                         {' '}
-                        how to manage images and artifacts with Artifactory
+                        how to manage images and artifacts 
                       </Link>
+                        {' '}
+                        with Artifactory
                     </Text>
                   </li>
                   <li>
@@ -111,22 +135,29 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                       Learn more about
                       <Link href="https://docs.developer.gov.bc.ca/prebuilt-images/">
                         {' '}
-                        the pre-built images maintained by the Platform Services Team
+                        the pre-built images 
                       </Link>
+                        {' '}
+                        maintained by the Platform Services Team
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      Get more<Link href="https://jfrog.com/artifactory/"> general information about Artifactory</Link>
-                    </Text>
-                  </li>
-                  <li>
-                    <Text className="">
-                      Read more about how to
+                    
+                      Find out 
                       <Link href="https://docs.developer.gov.bc.ca/setup-artifactory-project-repository/">
                         {' '}
-                        set up your own Artifactory project
+                        how to set up 
                       </Link>
+                      {' '}
+                      your own Artifactory project
+                    </Text>
+                  </li>
+                  <li>
+                    <Text className="">
+                      Get more
+                      <Link href="https://jfrog.com/artifactory/"> general information </Link>
+                      {'about Artifactory'}
                     </Text>
                   </li>
                 </ul>
@@ -141,11 +172,11 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 </Text>
                 <ul>
                   <li>
-                    <Text className="">Access is automatically granted to Product Owners and Technical Leads</Text>
+                    <Text className="">Product Owners and Technical Leads are automatically granted access </Text>
                   </li>
                   <li>
                     <Text className="">
-                      A service account is created automatically for Vault access in your deployment manifests
+                    We automatically create a service account for Vault access in your deployment manifests
                     </Text>
                   </li>
                   <li>
@@ -159,16 +190,18 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   </li>
                   <li>
                     <Text className="">
-                      Find out
+                      Discover how to begin using
                       <Link href="https://docs.developer.gov.bc.ca/vault-getting-started-guide/">
                         {' '}
-                        how to start using Vault
+                        Vault
                       </Link>
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      Get more<Link href="https://www.vaultproject.io/"> general information about Vault</Link>
+                      Get more<Link href="https://www.vaultproject.io/"> general information </Link>
+                      {' '}
+                      about Vault
                     </Text>
                   </li>
                 </ul>
@@ -183,26 +216,30 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 </Text>
                 <ul>
                   <li>
-                    <Text className="">An access role and scope are created for your project set automatically</Text>
+                    <Text className="">We automatically create an access role and scope for your project set</Text>
                   </li>
                   <li>
                     <Text className="">
-                      A service account is created automatically for ACS access from your deployment manifests.
+                      We automatically create a service account for ACS access in your deployment manifests
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      Read more about ACS the
-                      <Link href="https://digital.gov.bc.ca/cloud/services/"> benefits of using ACS</Link>
+                      Read more about the 
+                      <Link href="https://digital.gov.bc.ca/cloud/services/"> benefits </Link>
+                      {' '}
+                      of using ACS
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      Get
+                      Get more
                       <Link href="https://www.redhat.com/en/technologies/cloud-computing/openshift/advanced-cluster-security-kubernetes">
                         {' '}
-                        general information about ACS
+                        general information 
                       </Link>
+                      {' '}
+                      about ACS
                     </Text>
                   </li>
                 </ul>
@@ -227,11 +264,13 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   </li>
                   <li>
                     <Text className="">
-                      Start
+                      Start the
                       <Link href="https://docs.developer.gov.bc.ca/sysdig-monitor-onboarding/">
                         {' '}
-                        the onboarding process for Sysdig
+                        onboarding process 
                       </Link>
+                      {' '}
+                      for Sysdig
                     </Text>
                   </li>
                 </ul>

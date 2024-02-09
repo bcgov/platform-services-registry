@@ -35,7 +35,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Hurray! Your request was approved and completed!</Heading>
+                <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
                 <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
                 <Text className="">
                   Your request for your product on the Public Cloud Landing Zone is complete. If you have any more
