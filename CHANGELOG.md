@@ -1,3 +1,15 @@
+## [0.15.0](https://github.com/bcgov/platform-services-registry/compare/v0.13.0...v0.15.0) (2024-02-09)
+
+
+### Features
+
+* display URL sources in sonar scan results ([19dbe22](https://github.com/bcgov/platform-services-registry/commit/19dbe2218775fcb1c3cd830bce6a16a55b597dfa))
+
+
+### Bug Fixes
+
+* wording, and admin delete email ([4e89814](https://github.com/bcgov/platform-services-registry/commit/4e89814dc1c37f6f654b06cdf851f0b5caf28585))
+
 ## [0.13.0](https://github.com/bcgov/platform-services-registry/compare/v0.12.0...v0.13.0) (2024-02-07)
 
 

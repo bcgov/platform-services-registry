@@ -47,6 +47,12 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
     try:
         db = get_mongo_db(mongo_conn_id)
+
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.PrivateCloudProjectZapResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+        shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
+
         projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
                                                "_id": False, "licencePlate": True, "cluster": True})
         result = []
@@ -70,7 +76,12 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
             headers = {"Authorization": f"Bearer {token}"}
             apiUrl = f"https://api.{cluster}.devops.gov.bc.ca:6443/apis/route.openshift.io/v1"
             url = f"{apiUrl}/namespaces/{project['licencePlate']}-prod/routes"
-            response = requests.get(url, headers=headers, timeout=2)
+
+            try:
+                response = requests.get(url, headers=headers, timeout=2)
+            except:
+                continue
+
             if response.status_code == 200:
                 data = response.json()
                 for item in data['items']:
@@ -119,11 +130,6 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
         task_instance = context['task_instance']
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
-
-        # Delete documents older than two_days_ago
-        two_days_ago = datetime.now() - timedelta(days=2)
-        db.PrivateCloudProjectZapResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
-        shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
     except Exception as e:
         print(f"[fetch_zap_projects] Error: {e}")
@@ -250,7 +256,7 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
                 if not found_dict:
                     candidates.append({
                         'context': config['context'],
-                        'clusterOrProvider': config['clusterOrProvider'],
+                        'clusterOrProvider': config.get('clusterOrProvider', ''),
                         'licencePlate': config['licencePlate'],
                         'url': repository['url'],
                         'source': "USER",
@@ -283,7 +289,7 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
                 )
 
                 # If the previous SHA matches the current one, skip the update
-                if prev_result["sha"] == commit_sha:
+                if prev_result is not None and prev_result["sha"] == commit_sha:
                     print(f"{candy['url']}: No changes detected. Skipping the update..")
                     continue
 
@@ -334,17 +340,32 @@ def load_sonarscan_results(mongo_conn_id):
 
         for subdirectory in subdirectories:
             print(f"Processing files in subdirectory: {subdirectory}")
-            file_path = os.path.join(subdirectory, 'detail.json')
-            with open(file_path, 'r') as file:
+
+            # Read scan result first
+            detail_file_path = os.path.join(subdirectory, 'detail.json')
+            with open(detail_file_path, 'r') as file:
                 content = file.read().replace('\n', '').replace('\t', '')
                 doc = json.loads(content)
                 doc['scannedAt'] = datetime.now()
 
+            # Read targets line by line
+            targets_file_path = os.path.join(subdirectory, 'targets.json')
+            with open(targets_file_path, 'r') as file:
+                for line in file:
+                    context, clusterOrProvider, licencePlate, source = line.strip().split(",")
+
+                target = {
+                    'context': context,
+                    'clusterOrProvider': clusterOrProvider,
+                    'licencePlate': licencePlate,
+                    'source': source,
+                }
+
                 db.SonarScanResult.replace_one({
-                    'licencePlate': doc['licencePlate'],
-                    'context': doc['context'],
+                    'licencePlate': licencePlate,
+                    'context': context,
                     'url': doc['url']},
-                    doc,
+                    {**doc, **target},
                     True  # Create one if it does not exist
                 )
 
@@ -373,27 +394,34 @@ def fetch_load_acs_projects(mongo_conn_id):
 
             # Collect alerts data
             alerts_url = f"{api_url}/alerts?{api_search_param}"
-            alerts_response = requests.get(alerts_url, headers=headers, timeout=2)
-            if alerts_response.status_code == 200:
-                data = alerts_response.json()
-                if data["alerts"] is None:
-                    continue
-                result["alerts"] = data["alerts"]
-            else:
+            try:
+                alerts_response = requests.get(alerts_url, headers=headers, timeout=2)
+            except:
                 continue
+
+            if alerts_response.status_code != 200:
+                continue
+
+            data = alerts_response.json()
+            if data["alerts"] is None:
+                continue
+            result["alerts"] = data["alerts"]
 
             # Collect images data
             images_url = f"{api_url}/images?{api_search_param}"
-            images_response = requests.get(images_url, headers=headers, timeout=2)
-
-            if images_response.status_code == 200:
-                data = images_response.json()
-                if data["images"] is None:
-                    continue
-                result["images"] = data["images"]
-            else:
+            try:
+                images_response = requests.get(images_url, headers=headers, timeout=2)
+            except:
                 continue
 
+            if images_response.status_code != 200:
+                continue
+
+            data = images_response.json()
+            if data["images"] is None:
+                continue
+
+            result["images"] = data["images"]
             result['scannedAt'] = datetime.now()
 
             db.AcsResult.replace_one({
