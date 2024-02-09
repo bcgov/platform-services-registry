@@ -177,7 +177,7 @@ export default function TableBody({ rows }: TableProps) {
                     </h2>
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
-                    <p className="truncate">Ministry {deployment.ministry}</p>
+                    <div className="whitespace-nowrap">Ministry {deployment.ministry}</div>
                     <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
                       <circle cx={1} cy={1} r={1} />
                     </svg>
@@ -236,13 +236,13 @@ export default function TableBody({ rows }: TableProps) {
                     </div>
                     {/* </div> */}
                   </div>
-                  <div className="md:hidden flex">
+                  {/* <div className="md:hidden flex">
                     <Avatars
                       productOwnerEmail={deployment.projectOwner.email}
                       primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
                       secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
