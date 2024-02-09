@@ -12,12 +12,10 @@ echo "$PROJECTS"
 #         "repositories": [
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7b", # pragma: allowlist secret
 #                 "source": "USER"
 #             },
 #             {
 #                 "url": "https://github.com/bcgov/platform-developer-docs",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7c", # pragma: allowlist secret
 #                 "source": "USER"
 #             }
 #         ]
@@ -29,12 +27,10 @@ echo "$PROJECTS"
 #         "repositories": [
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry-web",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7d", # pragma: allowlist secret
 #                 "source": "ACS"
 #             },
 #             {
 #                 "url": "https://github.com/bcgov/platform-services-registry-api",
-#                 "sha": "404f7c47a4819adebc3c86520e41d6b1489e6f7e", # pragma: allowlist secret
 #                 "source": "ACS"
 #             }
 #         ]
@@ -169,7 +165,6 @@ while read -r proj; do
     # Loop through each repository in the project
     while read -r repo; do
         url=$(echo "$repo" | jq -r '.url')
-        sha=$(echo "$repo" | jq -r '.sha')
         source=$(echo "$repo" | jq -r '.source')
 
         # Extract owner and repo from the repository URL
@@ -177,12 +172,21 @@ while read -r proj; do
 
         # Get the default branch of the GitHub repository
         ref=$(get_default_branch $owner $repo)
+        curr_sha=$(get_sha $owner $repo $ref)
 
         # Generate unique identifiers for the repository and folder
         repoid="$owner--$repo"
-        folder="$context-$licencePlate-$repoid"
+        folder="github-$repoid"
         repo_path="$full_path/$folder"
         mkdir -p "$repo_path"
+
+        if [[ -f "$repo_path/detail.json" ]]; then
+            prev_sha=$(cat "$repo_path/detail.json" | jq -r '.sha // ""')
+            if [ "$prev_sha" == "$curr_sha" ]; then
+                echo "${context},${clusterOrProvider},${licencePlate},${source}" >> "$repo_path/targets.json"
+                continue
+            fi
+        fi
 
         # Download the repository ZIP file
         cd "$repo_path"
@@ -216,12 +220,8 @@ while read -r proj; do
 
         # Store the project metadata along with the SonarQube scan results into the JSON file
         echo '{
-            "context": "'"$context"'",
-            "clusterOrProvider": "'"$clusterOrProvider"'",
-            "licencePlate": "'"$licencePlate"'",
             "url": "'"$url"'",
-            "sha": "'"$sha"'",
-            "source": "'"$source"'",
+            "sha": "'"$curr_sha"'",
             "result": {
                 "repoid": "'"$repoid"'",
                 "last_date": "'"$last_date"'",
@@ -237,6 +237,8 @@ while read -r proj; do
                 "sqale_rating": "'"$sqale_rating"'"
             }
         }' >"$repo_path/detail.json"
+
+        echo "${context},${clusterOrProvider},${licencePlate},${source}" >> "$repo_path/targets.json"
 
         rm -rf "$repo_path/$directory"
         rm -rf "$repo_path/$filename"

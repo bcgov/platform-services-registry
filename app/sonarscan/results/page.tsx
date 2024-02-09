@@ -39,6 +39,12 @@ export default async function Page({
   if (search.length > 0) {
     where.OR = [
       {
+        licencePlate: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      },
+      {
         url: {
           contains: search,
           mode: 'insensitive',
