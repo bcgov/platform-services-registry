@@ -35,7 +35,7 @@ export const ministriesNames = [
   {
     id: 6,
     name: 'CITZ',
-    humanFriendlyName: "Citizens' Services",
+    humanFriendlyName: 'Citizens Services',
   },
   {
     id: 7,
