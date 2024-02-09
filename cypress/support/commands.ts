@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
@@ -35,6 +36,7 @@
 //     }
 //   }
 // }
+
 declare global {
   module Cypress {
     interface Chainable<Subject = any> {
