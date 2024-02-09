@@ -21,7 +21,7 @@
     },
     "ecmaVersion": 12,
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": ["./tsconfig.json", "./cypress/tsconfig.json"]
   },
   "plugins": ["react", "react-hooks", "jsx-a11y", "import", "@typescript-eslint", "prettier"],
   "rules": {

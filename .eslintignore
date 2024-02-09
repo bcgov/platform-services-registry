@@ -3,3 +3,4 @@
 **/*.mjs
 localdev/mnt
 .react-email
+cypress/support/commands.ts
