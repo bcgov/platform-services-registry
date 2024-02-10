@@ -46,7 +46,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   href="https://registry.developer.gov.bc.ca/public-cloud/products/active-requests"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
-                  Review Request
+                  Review request
                 </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
@@ -64,6 +64,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" />
+                <Text className="">The Cloud Pathfinder team </Text>
               </div>
             </div>
           </Body>

@@ -37,7 +37,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <Text>Hi {product.name} Team, </Text>
                 <Text className="">
                   Your request for your product on the Public Cloud platform is complete. If you have any more questions
-                  reach out to the Public Cloud team in the RocketChat channel{' '}
+                  reach out to the Public Cloud team in the Rocket.Chat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/group/aws-tenant-requests`}>
                     #aws-tenant-requests
                   </Link>
