@@ -265,9 +265,9 @@ type AcsResultAlert {
   state             String
   enforcementCount  Int
   enforcementAction String
-  policy            AcsResultAlertPolicy
-  commonEntityInfo  AcsResultAlertCommonEntityInfo
-  deployment        AcsResultAlertDeployment
+  policy            AcsResultAlertPolicy?
+  commonEntityInfo  AcsResultAlertCommonEntityInfo?
+  deployment        AcsResultAlertDeployment?
 }
 
 type AcsResultAlertPolicy {
@@ -299,10 +299,10 @@ type AcsResultAlertDeployment {
 type AcsResultImage {
   id          String
   name        String
-  components  Int
-  cves        Int
-  fixableCves Int
-  created     String
+  components  Int?
+  cves        Int?
+  fixableCves Int?
+  created     String?
   lastUpdated String
   priority    String
 }
