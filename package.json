@@ -82,7 +82,7 @@
     "@types/jest": "^29.5.8",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/lodash-es": "^4.17.12",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
     "conventional-changelog-cli": "^4.1.0",
     "cypress": "^13.4.0",
     "dotenv-cli": "^7.3.0",
