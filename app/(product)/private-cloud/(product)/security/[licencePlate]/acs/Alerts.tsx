@@ -43,5 +43,13 @@ const headers: Header<Alert>[] = [
 ];
 
 export default async function Alerts({ data, url }: { data: Alert[]; url?: string }) {
-  return <Table<Alert> title="Alerts" data={data} linkHref={url} linkTitle="Violations Details" headers={headers} />;
+  return (
+    <Table<Alert>
+      title={`Alerts (${data.length})`}
+      data={data}
+      linkHref={url}
+      linkTitle="Violations Details"
+      headers={headers}
+    />
+  );
 }
