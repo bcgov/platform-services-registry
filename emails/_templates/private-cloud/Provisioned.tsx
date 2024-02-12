@@ -24,24 +24,24 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
               <Heading className="text-lg text-black">
                 Success! Your provisioning request was approved and completed!
               </Heading>
-              <Text>Hi {product.name} team, </Text>
+              <Text>Hi Product Team, </Text>
               <Text className="">
                 Your request for your product on the Private Cloud Openshift platform is complete.{' '}
                 <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
                   Log in to the cluster console
                 </Link>{' '}
-                using the button below and you&apos;ll see all four namespaces included in a project set. If you have
+                or use the button below and you&apos;ll see all four namespaces included in a project set. If you have
                 any more questions reach out to the Platform Services team in the Rocket.Chat channel{' '}
                 <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
-                  #devops&#8209;operations
+                  #devops-operations
                 </Link>.
               </Text>
               <Text className="">
                 The Product Owner and the Technical Lead(s) have been provisioned with admin access to the namespaces
-                below, and can add other users as necessary. 
+                below and can add other users as needed.
                 </Text>
                 <Text className="">
-                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in OpenShift. 
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Product Registry will revoke their access to project set namespaces in OpenShift. 
                 The newly added Product Owner or Technical Lead(s) on the product details page will then gain administrative access to these namespaces.
               </Text>
               <Button

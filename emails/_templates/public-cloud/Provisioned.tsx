@@ -34,22 +34,22 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
-                <Text>Hi {product.name} Team, </Text>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
                   Your request for your product on the Public Cloud platform is complete. If you have any more questions
                   reach out to the Public Cloud team in the Rocket.Chat channel{' '}
-                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/group/aws-tenant-requests`}>
-                    #aws-tenant-requests
+                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
+                    #devops-operations
                   </Link>
                   .
                   </Text>
               <Text className="">
-                The Product Owner and the Technical Lead(s) have been provisioned with admin access to the namespaces
-                below, and can add other users as necessary. 
+                The Product Owner and the Technical Lead(s) have been provisioned with admin access to the accounts
+                below and can add other users as needed.
                 </Text>
                 <Text className="">
-                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Registry will revoke their access to project set namespaces in AWS. 
-                The newly added Product Owner Technical Lead(s) on the product details page will then gain administrative access to these namespaces.
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Product Registry will revoke their access to project set accounts  in AWS. 
+                The newly added Product Owner Technical Lead(s) on the product details page will then gain administrative access to these accounts.
               </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

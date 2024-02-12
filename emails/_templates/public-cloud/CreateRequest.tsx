@@ -36,8 +36,8 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">Provisioning request received for {name} in AWS</Heading>
-                <Text>Hi {request.requestedProject.name} Team, </Text>
+                <Heading className="text-lg">Provisioning request received for {name} on AWS</Heading>
+                <Text>Hi Product Team,</Text>
                 <Text className="">
                   You have requested a new project set for {name} on the Public Cloud Landing Zone - AWS. Our
                   administrators have been notified and will review your request.
@@ -46,7 +46,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   href="https://registry.developer.gov.bc.ca/public-cloud/products/active-requests"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
-                  Review request
+                  View request
                 </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

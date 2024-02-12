@@ -36,12 +36,12 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
-                <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
                   Your requested change for the project set for {name} on the Public Cloud Landing Zone AWS is now complete. If you have any more
                   questions, reach out to the Public cloud team in the Rocket.Chat channel{' '}
-                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/group/aws-tenant-requests`}>
-                    #aws-tenant-requests
+                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
+                    #devops-operations
                   </Link>
                   .
                 </Text>
