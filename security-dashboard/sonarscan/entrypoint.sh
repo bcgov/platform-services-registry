@@ -48,7 +48,7 @@ curl_http_code() {
     status_code=${response: -3}
     data=${response:0:-3}
 
-    echo "$status_code" $data
+    echo "$status_code" "$data"
 }
 
 # Retrieves the default branch of a GitHub repository using the GitHub API.
@@ -69,7 +69,7 @@ get_default_branch() {
     fi
 
     default_branch=$(echo "$data" | jq -r .default_branch)
-    echo $default_branch
+    echo "$default_branch"
 }
 
 # Retrieves the last commit SHA of a GitHub repository using the GitHub API.
@@ -91,7 +91,7 @@ get_sha() {
     fi
 
     sha=$(echo "$data" | jq -r .sha)
-    echo $sha
+    echo "$sha"
 }
 
 # Downloads a ZIP archive of a specific reference from a GitHub repository using the GitHub API.
@@ -106,7 +106,7 @@ download_repo() {
     wget --header="Accept: application/vnd.github+json" \
         --header="Authorization: Bearer $GH_TOKEN" \
         --header="X-GitHub-Api-Version: 2022-11-28" \
-        https://api.github.com/repos/$owner/$repo/zipball/$ref \
+        "https://api.github.com/repos/$owner/$repo/zipball/$ref" \
         -O "$filename"
 
     echo "$filename"
@@ -132,7 +132,7 @@ get_scan_result() {
     seven_days_ago=$(date -u -d "@$(($(date -u +%s) - 7 * 24 * 60 * 60))" "+%Y-%m-%d")
 
     read -r status_code data < <(curl_http_code -X GET \
-        -u $SONARQUBE_USER:$SONARQUBE_PASS \
+        -u "$SONARQUBE_USER:$SONARQUBE_PASS" \
         "$SONARQUBE_URL/api/measures/search_history?component=$project_key&metrics=bugs,vulnerabilities,sqale_index,duplicated_lines_density,ncloc,coverage,code_smells,reliability_rating,security_rating,sqale_rating&ps=100&from=$seven_days_ago")
 
     if [ "$status_code" -ne "200" ]; then
@@ -142,6 +142,8 @@ get_scan_result() {
 
     echo "$data"
 }
+
+CONTEXT=${CONTEXT:-local}
 
 base_path="sonarscan/$CONTEXT"
 full_path="/mnt/$base_path"
@@ -168,11 +170,11 @@ while read -r proj; do
         source=$(echo "$repo" | jq -r '.source')
 
         # Extract owner and repo from the repository URL
-        read -r owner repo < <(extract_owner_repo $url)
+        read -r owner repo < <(extract_owner_repo "$url")
 
         # Get the default branch of the GitHub repository
-        ref=$(get_default_branch $owner $repo)
-        curr_sha=$(get_sha $owner $repo $ref)
+        ref=$(get_default_branch "$owner" "$repo")
+        curr_sha=$(get_sha "$owner" "$repo" "$ref")
 
         # Generate unique identifiers for the repository and folder
         repoid="$owner--$repo"
@@ -181,24 +183,26 @@ while read -r proj; do
         mkdir -p "$repo_path"
 
         if [[ -f "$repo_path/detail.json" ]]; then
-            prev_sha=$(cat "$repo_path/detail.json" | jq -r '.sha // ""')
+            prev_sha=$(<"$repo_path/detail.json" jq -r '.sha // ""')
             if [ "$prev_sha" == "$curr_sha" ]; then
-                echo "${context},${clusterOrProvider},${licencePlate},${source}" >> "$repo_path/targets.json"
+                echo "${context},${clusterOrProvider},${licencePlate},${source}" >>"$repo_path/targets.json"
                 continue
             fi
         fi
 
         # Download the repository ZIP file
-        cd "$repo_path"
-        filename=$(download_repo $owner $repo $ref)
+        cd "$repo_path" || exit
+        filename=$(download_repo "$owner" "$repo" "$ref")
         directory="${filename%.zip}"
 
         # Unzip the downloaded repository ZIP file
         unzip -q "$filename" -d "$directory"
+
+        # shellcheck disable=SC2010
         first_directory=$(ls -l "$directory" | grep '^d' | awk '{print $NF}' | head -n 1)
 
         # Run SonarQube scan on the downloaded directory
-        cd "$directory/$first_directory"
+        cd "$directory/$first_directory" || exit
         sonar-scanner -Dsonar.host.url="$SONARQUBE_URL" -Dsonar.login="$SONARQUBE_TOKEN" -Dsonar.projectKey="$repoid"
 
         # Fetch SonarQube scan results from the SonarQube server
@@ -238,10 +242,10 @@ while read -r proj; do
             }
         }' >"$repo_path/detail.json"
 
-        echo "${context},${clusterOrProvider},${licencePlate},${source}" >> "$repo_path/targets.json"
+        echo "${context},${clusterOrProvider},${licencePlate},${source}" >>"$repo_path/targets.json"
 
-        rm -rf "$repo_path/$directory"
-        rm -rf "$repo_path/$filename"
+        rm -rf "${repo_path:?}/${directory:?}"
+        rm -rf "${repo_path:?}/${filename:?}"
     done < <(echo "$repositories" | jq -c '.[]')
 done < <(echo "$PROJECTS" | jq -c '.[]')
 

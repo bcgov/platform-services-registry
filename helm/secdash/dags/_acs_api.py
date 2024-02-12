@@ -21,7 +21,7 @@ def get_acs_context(cluster):
 
 def get_search_params(cluster, licencePlate):
     ui_search_param = f"s[Cluster][0]={cluster}&s[Namespace][0]={licencePlate}-prod"
-    api_search_param = urllib.parse.quote(f'query=cluster:"{cluster}"+namespace:"{licencePlate}-prod"')
+    api_search_param = "query=" + urllib.parse.quote(f'Cluster:"{cluster}"+Namespace:"{licencePlate}-prod"')
 
     return ui_search_param, api_search_param
 
