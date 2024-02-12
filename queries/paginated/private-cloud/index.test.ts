@@ -341,7 +341,7 @@ describe('Query projects with filter and search and pagination', () => {
 
   test('Should return only projects that fits the SearchTerm', async () => {
     const projects = await privateCloudProjectsPaginated(10, 0, 'sample');
-    //projects searches for description, unlike requests
+    // projects searches for description, unlike requests
     expect(projects.total).toBe(8);
   });
 
