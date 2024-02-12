@@ -5,3 +5,4 @@ kubectl 1.29.1
 terraform 1.5.7
 helm 3.14.0
 sonarscanner 5.0.1.3006
+shfmt 3.8.0
