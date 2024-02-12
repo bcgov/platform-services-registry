@@ -33,13 +33,11 @@ export default function ProductAWSRoles() {
   const [userEmail, setUserEmail] = useState('');
   const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
   const [userId, setUserId] = useState('');
-  const [deletePerson, setDeletePerson] = useState<Record<string, any>>({
-    '': {
-      id: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-    },
+  const [deletePerson, setDeletePerson] = useState<User>({
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
   });
 
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -150,7 +148,13 @@ export default function ProductAWSRoles() {
         pageSize={+pageSize}
         total={users ? users?.total : 0}
       />
-      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} setUserId={setUserId} person={deletePerson} />
+      <DeleteUserModal
+        open={openDeleteUser}
+        setOpen={setOpenDeleteUser}
+        setUserId={setUserId}
+        person={deletePerson}
+        userRole={userRole}
+      />
       <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
       <ErrorModal
         open={showErrorModal}
