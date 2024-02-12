@@ -2,17 +2,19 @@
 
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import { User } from '@/app/api/public-cloud/aws-roles/helpers';
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setUserId: React.Dispatch<React.SetStateAction<string>>;
-  person: Record<string, any>;
+  person: User;
+  userRole: string;
 }
 
-export default function DeleteUserModal({ open, setOpen, setUserId, person }: Props) {
+export default function DeleteUserModal({ open, setOpen, setUserId, person, userRole }: Props) {
   const handleDeleteUserBtn = () => {
-    setUserId(person[Object.keys(person)[0]].id);
+    setUserId(person.id);
     setOpen(false);
   };
 
@@ -56,9 +58,7 @@ export default function DeleteUserModal({ open, setOpen, setUserId, person }: Pr
                     ></Dialog.Title>
                     <div className="mt-2">
                       <p className="font-bcsans text-sm text-gray-900">
-                        {`Are you sure you want to remove ${person[Object.keys(person)[0]].firstName} ${
-                          person[Object.keys(person)[0]].lastName
-                        } from ${Object.keys(person)[0]}s list.`}
+                        {`Are you sure you want to remove ${person.firstName} ${person.lastName} from ${userRole}s list.`}
                       </p>
                     </div>
                   </div>
