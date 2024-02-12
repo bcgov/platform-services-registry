@@ -134,7 +134,7 @@ export default function SearchFilterSort({
                     onChange={(e) => setSearchTerm(e.target.value)}
                     spellCheck={false}
                     onKeyDown={(e) => {
-                      //prevent page reboot on "Enter" key press
+                      // Prevent page reboot on "Enter" key press
                       if (e.key === 'Enter') e.preventDefault();
                     }}
                   />
