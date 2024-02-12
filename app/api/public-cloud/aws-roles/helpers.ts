@@ -185,7 +185,7 @@ export const getGroups = async (): Promise<Group[]> => {
   return groups as Group[];
 };
 
-//search by substring, returns all of groups, which names includes searchParam
+// search by substring, returns all of groups, which names includes searchParam
 export const getGroupByName = (groupName: string = 'Project Team Groups'): Promise<Group[] | undefined> =>
   awsRolesApiInstance
     .get('/groups', {
