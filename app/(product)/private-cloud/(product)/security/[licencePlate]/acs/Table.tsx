@@ -71,8 +71,8 @@ export default async function Table<T extends { id: string }>({
         )}
       </h4>
       <div className="flow-root overflow-y-auto">
-        <div className="w-full overflow-auto">
-          <div className="inline-block min-w-full align-middle">
+        <div className="w-full overflow-auto border-y-1">
+          <div className="inline-block min-w-full align-middle max-h-[600px]">
             <table className="w-full text-left">
               <thead className="bg-tableheadergrey border-1">
                 <tr>

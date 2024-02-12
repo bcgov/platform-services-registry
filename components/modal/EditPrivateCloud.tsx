@@ -15,7 +15,6 @@ export default function Modal({
   isLoading: boolean;
   type: string;
 }) {
-  //const [confirm, setConfirm] = useState(false);
   const [comment, setComment] = useState('');
 
   const cancelButtonRef = useRef(null);

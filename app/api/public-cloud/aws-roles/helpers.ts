@@ -1,5 +1,4 @@
 import axios from 'axios';
-import prisma from '@/lib/prisma';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 import _startCase from 'lodash-es/startCase';
 import _kebabCase from 'lodash-es/kebabCase';
@@ -24,7 +23,7 @@ export type paramsURL = {
 };
 
 interface UsersTotal {
-  users: Record<string, User>[];
+  users: User[];
   groupId: string;
   total: number;
 }
@@ -58,17 +57,15 @@ const parseGroupNameToTab = (name: string): tabName => {
   };
 };
 
-const searchSubstringInArray = (searchTerm: string, users: Record<string, User>[]): Record<string, User>[] => {
-  const results = new Set<Record<string, User>>();
+const searchSubstringInArray = (searchTerm: string, users: User[]): User[] => {
+  const results = new Set<User>();
 
-  users.forEach((userObj) =>
-    Object.values(userObj).forEach((user) => {
-      Object.values(user).forEach((value) => {
-        if (typeof value === 'string' && value.toLowerCase().includes(searchTerm?.toLowerCase())) {
-          results.add(userObj);
-          return;
-        }
-      });
+  users.forEach((user) =>
+    Object.values(user).forEach((value) => {
+      if (typeof value === 'string' && value.toLowerCase().includes(searchTerm?.toLowerCase())) {
+        results.add(user);
+        return;
+      }
     }),
   );
 
@@ -91,44 +88,14 @@ const createUser = <V extends User>(data: Partial<V>): V => {
   return newUser;
 };
 
-const createUserRole = <K extends string, V extends User>(role: K, user: V): Record<string, V> => {
-  const roleUser = { [role]: createUser({ ...user }) } as Record<string, V>;
+const createUserRole = (user: User): User => {
+  const roleUser = createUser({ ...user });
   return roleUser;
 };
 
 const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
-
-async function getPublicCloudProjectUsers(searchLicencePlate: string): Promise<Record<string, User>[] | undefined> {
-  const result: Record<string, User>[] = [];
-  const project = await prisma.publicCloudProject.findFirst({
-    where: {
-      licencePlate: {
-        contains: searchLicencePlate,
-      },
-    },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  });
-
-  if (project?.projectOwner) {
-    result.push(createUserRole('Product Owner', project?.projectOwner as unknown as User));
-  }
-
-  if (project?.primaryTechnicalLead) {
-    result.push(createUserRole('Primary Technical Lead', project?.primaryTechnicalLead as unknown as User));
-  }
-
-  if (project?.secondaryTechnicalLead) {
-    result.push(createUserRole('Secondary Technical Lead', project?.secondaryTechnicalLead as unknown as User));
-  }
-
-  return result;
-}
 
 const parseError = (error: unknown) => {
   if (error instanceof Error) {
@@ -185,7 +152,7 @@ export const getGroups = async (): Promise<Group[]> => {
   return groups as Group[];
 };
 
-//search by substring, returns all of groups, which names includes searchParam
+// search by substring, returns all of groups, which names includes searchParam
 export const getGroupByName = (groupName: string = 'Project Team Groups'): Promise<Group[] | undefined> =>
   awsRolesApiInstance
     .get('/groups', {
@@ -282,7 +249,7 @@ export async function getSubGroupMembersByLicencePlateAndName(
   searchTerm: string,
 ): Promise<UsersTotal> {
   const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
-  let result: Record<string, User>[] = [];
+  let result: User[] = [];
   let groupId: string = '';
   if (productRolesGroups.length > 0) {
     productRolesGroups[0].subGroups.forEach((group) => {
@@ -293,23 +260,16 @@ export async function getSubGroupMembersByLicencePlateAndName(
     if (groupId) {
       const groupsUsers = await getMembersByGroupId(groupId);
       if (groupsUsers) {
-        result = [...groupsUsers.map((user) => createUserRole(role, user))];
+        result = [...groupsUsers.map((user) => createUserRole(user))];
       }
     }
   }
-  // if (role === 'Admin') {
-  //   const registryUsers = await getPublicCloudProjectUsers(licencePlate);
-  //   if (registryUsers) {
-  //     result = [...registryUsers, ...result];
-  //   }
-  // }
-
   if (searchTerm) {
     result = searchSubstringInArray(searchTerm, result);
   }
 
   const total = result.length;
-  return { users: paginate(result, { page, pageSize }) as Record<string, User>[], groupId, total };
+  return { users: paginate(result, { page, pageSize }) as User[], groupId, total };
 }
 
 export async function addUserToGroupByEmail(userEmail: string, groupId: string) {

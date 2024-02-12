@@ -3,6 +3,7 @@
 import Delete from '@/components/assets/delete.svg';
 import Image from 'next/image';
 import React from 'react';
+import { User } from '@/app/api/public-cloud/aws-roles/helpers';
 
 const rowValue = (value: string, header: string, index: number): React.ReactNode => {
   return (
@@ -35,7 +36,7 @@ interface TableProps {
   rows: Record<string, any>[];
   userRole: string;
   setOpenDeleteUser: React.Dispatch<React.SetStateAction<boolean>>;
-  setDeletePerson: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  setDeletePerson: React.Dispatch<React.SetStateAction<User>>;
 }
 
 export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, setDeletePerson }: TableProps) {
@@ -77,27 +78,25 @@ export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, s
                     key={row.id + i}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
-                    {Object.keys(row)[0]}
+                    {userRole}
                   </td>
-                  {subHeader.map((value, index) => rowValue(row[Object.keys(row)[0]][value.field], value.field, index))}
+                  {subHeader.map((value, index) => rowValue(row[value.field], value.field, index))}
                   <td
                     key={row.id}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
-                    {Object.keys(row)[0] === userRole && (
-                      <Image
-                        alt="Delete"
-                        src={Delete}
-                        width={20}
-                        height={20}
-                        style={{
-                          maxWidth: '100%',
-                          height: 'auto',
-                        }}
-                        className="hover:cursor-pointer"
-                        onClick={() => onDeleteClickHandler(row)}
-                      />
-                    )}
+                    <Image
+                      alt="Delete"
+                      src={Delete}
+                      width={20}
+                      height={20}
+                      style={{
+                        maxWidth: '100%',
+                        height: 'auto',
+                      }}
+                      className="hover:cursor-pointer"
+                      onClick={() => onDeleteClickHandler(row)}
+                    />
                   </td>
                 </tr>
               ))}

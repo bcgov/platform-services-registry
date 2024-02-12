@@ -28,5 +28,13 @@ const headers: Header<Image>[] = [
 ];
 
 export default async function Images({ data, url }: { data: Image[]; url?: string }) {
-  return <Table<Image> title="Images" data={data} linkHref={url} linkTitle="Images Details" headers={headers} />;
+  return (
+    <Table<Image>
+      title={`Images (${data.length})`}
+      data={data}
+      linkHref={url}
+      linkTitle="Images Details"
+      headers={headers}
+    />
+  );
 }
