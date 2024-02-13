@@ -69,7 +69,9 @@ def extract_image_label_urls(cluster, licencePlate):
             labels = image_data["metadata"]["v1"]["labels"]
             for key, value in labels.items():
                 if re.match(url_pattern, value):
-                    result.append(value.lower())
+                    lower_url = value.lower()
+                    print(f"Found URL... {lower_url}")
+                    result.append(lower_url)
 
     return list(set(result))
 
