@@ -21,5 +21,3 @@ with DAG(
         provide_context=True,
         dag=dag
     )
-
-    t1
