@@ -25,12 +25,18 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
                 <Text>Hi Product Team, </Text>
                 <Text className="">
-                  Your request for a resource quota has been completed for {request.requestedProject.name} on the Private Cloud OpenShift platform. 
-                  You can now login to{' '}  <Link className="mt-0 h-4" href={`https://console.apps.${request.requestedProject.cluster}.devops.gov.bc.ca/`}>OpenShift cluster console </Link> and you will see your new resource quota values. 
-                  </Text>
-                  <Text className="">
-                   If you have any
-                  more questions, reach out to the Platform Services team in the Rocket.Chat channel{' '}
+                  Your request for a resource quota has been completed for {request.requestedProject.name} on the
+                  Private Cloud OpenShift platform. You can now login to{' '}
+                  <Link
+                    className="mt-0 h-4"
+                    href={`https://console.apps.${request.requestedProject.cluster}.devops.gov.bc.ca/`}
+                  >
+                    OpenShift cluster console{' '}
+                  </Link>{' '}
+                  and you will see your new resource quota values.
+                </Text>
+                <Text className="">
+                  If you have any more questions, reach out to the Platform Services team in the Rocket.Chat channel{' '}
                   <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                     #devops-operations
                   </Link>

@@ -34,15 +34,17 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 any more questions reach out to the Platform Services team in the Rocket.Chat channel{' '}
                 <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
                   #devops-operations
-                </Link>.
+                </Link>
+                .
               </Text>
               <Text className="">
                 The Product Owner and the Technical Lead(s) have been provisioned with admin access to the namespaces
                 below and can add other users as needed.
-                </Text>
-                <Text className="">
-                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Product Registry will revoke their access to project set namespaces in OpenShift. 
-                The newly added Product Owner or Technical Lead(s) on the product details page will then gain administrative access to these namespaces.
+              </Text>
+              <Text className="">
+                Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Product Registry will
+                revoke their access to project set namespaces in OpenShift. The newly added Product Owner or Technical
+                Lead(s) on the product details page will then gain administrative access to these namespaces.
               </Text>
               <Button
                 href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}
@@ -73,32 +75,24 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <Heading className="text-lg">Security Tools</Heading>
                 <Text className="">
                   Your new OpenShift project set includes access to free security tools available to product teams on
-                  the Private Cloud OpenShift, including: 
-                  </Text>
-                  <ul>
-                    <li> 
-                    <Text className="">
-                      Artifactory -  trusted artifact repository
-                    </Text> 
-                    </li>
-                    <li>
-                    <Text className="">
-                    Vault secrets management service
-                    </Text>
-                    </li>
-                    <li>
-                    <Text className="">
-                     Sysdig Monitoring Service
-                     </Text>
-                     </li>
-                    <li> 
-                    <Text className="">
-                      Advanced Cluster Security (ACS) - vulnerability scanning service 
-                      </Text>
-                      </li> 
-                  </ul>
-                  <Text className="">
-                  You can read more about these tools in the 
+                  the Private Cloud OpenShift, including:
+                </Text>
+                <ul>
+                  <li>
+                    <Text className="">Artifactory - trusted artifact repository</Text>
+                  </li>
+                  <li>
+                    <Text className="">Vault secrets management service</Text>
+                  </li>
+                  <li>
+                    <Text className="">Sysdig Monitoring Service</Text>
+                  </li>
+                  <li>
+                    <Text className="">Advanced Cluster Security (ACS) - vulnerability scanning service</Text>
+                  </li>
+                </ul>
+                <Text className="">
+                  You can read more about these tools in the
                   <Link href="https://docs.developer.gov.bc.ca/"> Private cloud technical documentation</Link>.
                 </Text>
               </div>
@@ -110,8 +104,9 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <ul>
                   <li>
                     <Text className="">
-                      We've set up a service account for you with read access to Artifactory. This account allows you to access locally cached container images, 
-                      speeding up builds and pod startup. It also grants you access to helpful pre-built images maintained by the Platform Services team
+                      We&apos;ve set up a service account for you with read access to Artifactory. This account allows
+                      you to access locally cached container images, speeding up builds and pod startup. It also grants
+                      you access to helpful pre-built images maintained by the Platform Services team
                     </Text>
                   </li>
                   <li>
@@ -121,35 +116,28 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   </li>
                   <li>
                     <Text className="">
-                      Find out 
+                      Find out
                       <Link href="https://docs.developer.gov.bc.ca/image-artifact-management-with-artifactory/">
                         {' '}
-                        how to manage images and artifacts 
-                      </Link>
-                        {' '}
-                        with Artifactory
+                        how to manage images and artifacts
+                      </Link>{' '}
+                      with Artifactory
                     </Text>
                   </li>
                   <li>
                     <Text className="">
                       Learn more about
-                      <Link href="https://docs.developer.gov.bc.ca/prebuilt-images/">
-                        {' '}
-                        the pre-built images 
-                      </Link>
-                        {' '}
-                        maintained by the Platform Services Team
+                      <Link href="https://docs.developer.gov.bc.ca/prebuilt-images/"> the pre-built images</Link>{' '}
+                      maintained by the Platform Services Team
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                    
-                      Find out 
+                      Find out
                       <Link href="https://docs.developer.gov.bc.ca/setup-artifactory-project-repository/">
                         {' '}
-                        how to set up 
-                      </Link>
-                      {' '}
+                        how to set up
+                      </Link>{' '}
                       your own Artifactory project
                     </Text>
                   </li>
@@ -176,7 +164,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   </li>
                   <li>
                     <Text className="">
-                    We automatically create a service account for Vault access in your deployment manifests
+                      We automatically create a service account for Vault access in your deployment manifests
                     </Text>
                   </li>
                   <li>
@@ -191,17 +179,12 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   <li>
                     <Text className="">
                       Discover how to begin using
-                      <Link href="https://docs.developer.gov.bc.ca/vault-getting-started-guide/">
-                        {' '}
-                        Vault
-                      </Link>
+                      <Link href="https://docs.developer.gov.bc.ca/vault-getting-started-guide/"> Vault</Link>
                     </Text>
                   </li>
                   <li>
                     <Text className="">
-                      Get more<Link href="https://www.vaultproject.io/"> general information </Link>
-                      {' '}
-                      about Vault
+                      Get more<Link href="https://www.vaultproject.io/"> general information </Link> about Vault
                     </Text>
                   </li>
                 </ul>
@@ -225,10 +208,8 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   </li>
                   <li>
                     <Text className="">
-                      Read more about the 
-                      <Link href="https://digital.gov.bc.ca/cloud/services/"> benefits </Link>
-                      {' '}
-                      of using ACS
+                      Read more about the
+                      <Link href="https://digital.gov.bc.ca/cloud/services/"> benefits </Link> of using ACS
                     </Text>
                   </li>
                   <li>
@@ -236,9 +217,8 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                       Get more
                       <Link href="https://www.redhat.com/en/technologies/cloud-computing/openshift/advanced-cluster-security-kubernetes">
                         {' '}
-                        general information 
-                      </Link>
-                      {' '}
+                        general information
+                      </Link>{' '}
                       about ACS
                     </Text>
                   </li>
@@ -267,9 +247,8 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                       Start the
                       <Link href="https://docs.developer.gov.bc.ca/sysdig-monitor-onboarding/">
                         {' '}
-                        onboarding process 
-                      </Link>
-                      {' '}
+                        onboarding process
+                      </Link>{' '}
                       for Sysdig
                     </Text>
                   </li>
