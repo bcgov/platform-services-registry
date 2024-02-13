@@ -376,6 +376,11 @@ def load_sonarscan_results(mongo_conn_id):
 def fetch_load_acs_projects(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
+
+        # Delete documents older than two_days_ago
+        two_days_ago = datetime.now() - timedelta(days=2)
+        db.AcsResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+
         projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
                                                "_id": False, "licencePlate": True, "cluster": True})
 
@@ -430,10 +435,6 @@ def fetch_load_acs_projects(mongo_conn_id):
                 result,
                 True  # Create one if it does not exist
             )
-
-        # Delete documents older than two_days_ago
-        two_days_ago = datetime.now() - timedelta(days=2)
-        db.AcsResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
 
     except Exception as e:
         print(f"[fetch_load_acs_projects] Error: {e}")
