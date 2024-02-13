@@ -34,8 +34,6 @@ export type DataPoint = {
 export type CombinedDataPoint = {
   date: string;
   'All quota requests': number;
-  'Approved quota requests': number;
-  'Rejected quota requests': number;
 };
 
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
