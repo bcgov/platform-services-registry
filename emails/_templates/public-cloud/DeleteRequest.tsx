@@ -55,7 +55,7 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
                 <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
               <div>
-                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
               </div>
             </div>
           </Body>

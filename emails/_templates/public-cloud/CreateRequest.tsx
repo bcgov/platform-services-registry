@@ -63,7 +63,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                 <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
               </div>
               <div>
-                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
                 <Text className="">The Cloud Pathfinder team </Text>
               </div>
             </div>
