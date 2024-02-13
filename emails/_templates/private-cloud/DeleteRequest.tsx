@@ -23,12 +23,10 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">
-                  Your deletion request for Private Cloud Openshift Platform has been received!
-                </Heading>
-                <Text>Hi {product.name} Team,</Text>
+                <Heading className="text-lg text-black">Your deletion request has been received!</Heading>
+                <Text>Hi Product Team,</Text>
                 <Text className="">
-                  {`We have received your deletion request for ${product.name}. You will receive an email once your request has been processed.`}
+                  {`We have received your deletion request for ${product.name}. You will receive an email once your request has been processed and completed.`}
                 </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

@@ -21,8 +21,8 @@ const RequestRejectionTemplate = ({ productName, adminComment }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Sorry, your request was Rejected</Heading>
-                <Text>Hi {productName} team, </Text>
+                <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
                   Your request for the product on the Public Cloud Landing Zone has been rejected due to the following
                   reason(s):

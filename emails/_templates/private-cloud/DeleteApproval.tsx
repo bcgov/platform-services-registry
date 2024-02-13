@@ -24,8 +24,8 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Your deletion request has been completed!</Heading>
-                <Text>Hi {product.name} Team,</Text>
-                <Text className="">{`Your request for a project set deletion for ${product.name} is complete.`}</Text>
+                <Text>Hi Product Team,</Text>
+                <Text className="">{`The project set deletion for ${product.name} has been successfully completed.`}</Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
