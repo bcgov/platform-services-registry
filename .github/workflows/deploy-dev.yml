@@ -16,6 +16,10 @@ on:
 env:
   GITHUB_REGISTRY: ghcr.io
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-push-app:
     runs-on: ubuntu-22.04
