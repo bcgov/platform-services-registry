@@ -9,12 +9,22 @@ const defaultQuota = {
   storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
 };
 
+interface QuotaChanges {
+  [key: string]: number;
+}
+
 const defaultQuotaProject = {
   productionQuota: defaultQuota,
   testQuota: defaultQuota,
   toolsQuota: defaultQuota,
   developmentQuota: defaultQuota,
 };
+
+interface Quota {
+  cpu: string;
+  memory: string;
+  storage: string;
+}
 
 export type DataPoint = {
   date: string;
@@ -30,100 +40,76 @@ export type CombinedDataPoint = {
 
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
-function createMonthKey(date: Date) {
+function parseDate(date: Date) {
   return formatter.format(date);
 }
 
-export function isQuotaChanged(
-  projectOne: PrivateCloudRequestedProject,
-  projectTwo: PrivateCloudRequestedProject,
-): boolean {
-  // Assuming productionQuota, testQuota, developmentQuota, and toolsQuota are defined and comparable
-  return !(
-    _isEqual(projectOne.productionQuota, projectTwo.productionQuota) &&
-    _isEqual(projectOne.testQuota, projectTwo.testQuota) &&
-    _isEqual(projectOne.developmentQuota, projectTwo.developmentQuota) &&
-    _isEqual(projectOne.toolsQuota, projectTwo.toolsQuota)
-  );
-}
-
 export async function quotaEditRequests(decisionStatus?: DecisionStatus) {
-  const requests = await prisma.privateCloudRequest.findMany({
-    where: {
-      type: RequestType.EDIT,
-      decisionStatus,
-    },
-    include: {
-      requestedProject: true,
-    },
+  const projects = await prisma.privateCloudRequestedProject.findMany({
     orderBy: {
       created: 'desc',
     },
   });
 
-  const result: { [key: string]: number } = {};
-  const nonQuotaChangeResult: { [key: string]: number } = {};
+  const projectsByLicencePlate: { [licencePlate: string]: PrivateCloudRequestedProject[] } = {};
 
-  // Iterate through requests and compare the current edit requested with the previous edit request in time for the same licence plate.
-  // If the quota has changed, add it to the result object. If there is no previous request, compare it to the default quota.
-  for (let i = 0; i < requests.length; i++) {
-    const request = requests[i];
-
-    const nextEditRequest = requests.slice(i + 1).find((r) => r.licencePlate === request.licencePlate);
-
-    const nextRequest = !nextEditRequest
-      ? { requestedProject: defaultQuotaProject as PrivateCloudRequestedProject }
-      : nextEditRequest;
-
-    const quotaChanged: boolean = isQuotaChanged(request.requestedProject, nextRequest.requestedProject);
-    const date = createMonthKey(request.created);
-
-    if (quotaChanged) {
-      result[date] = (result[date] || 0) + 1;
+  // Organize projects by licence plate
+  projects.forEach((project) => {
+    const licencePlate = project.licencePlate;
+    if (!projectsByLicencePlate[licencePlate]) {
+      projectsByLicencePlate[licencePlate] = [];
     }
+    projectsByLicencePlate[licencePlate].push(project);
+  });
+
+  const quotaChangesPerMonth: { [month: string]: number } = {};
+
+  // Compare quotas and count changes per month
+  for (const [licencePlate, requestedProjects] of Object.entries(projectsByLicencePlate)) {
+    requestedProjects.forEach((project, index) => {
+      if (index > 0) {
+        // Ensure there's a previous project to compare
+        const previousProject = projects[index - 1];
+        const projectMonth = parseDate(project.created);
+        const quotas = ['productionQuota', 'testQuota', 'developmentQuota', 'toolsQuota'];
+
+        const quotaChanged = quotas.some(
+          (quotaType) =>
+            JSON.stringify(project[quotaType as keyof PrivateCloudRequestedProject]) !==
+            JSON.stringify(previousProject[quotaType as keyof PrivateCloudRequestedProject]),
+        );
+
+        if (quotaChanged) {
+          if (!quotaChangesPerMonth[projectMonth]) {
+            quotaChangesPerMonth[projectMonth] = 0;
+          }
+          quotaChangesPerMonth[projectMonth] += 1;
+        }
+      }
+    });
   }
+  const sortedEntries = Object.entries(quotaChangesPerMonth).sort((a, b) => {
+    const dA = new Date(a[0] + ' 1');
+    const dB = new Date(b[0] + ' 1');
+    return dA.getTime() - dB.getTime();
+  });
 
-  const data = Object.entries(result).map(([date, count]) => ({
-    date,
-    'Quota requests': count,
-  }));
+  // Convert back to an object
+  const sortedQuotaChangesPerMonth: QuotaChanges = sortedEntries.reduce((acc: QuotaChanges, [key, value]) => {
+    acc[key] = value;
+    return acc;
+  }, {});
 
-  return data;
+  return sortedQuotaChangesPerMonth;
 }
 
 export async function combinedQuotaEditRequests() {
-  const getAllQuotaEditRequests = quotaEditRequests();
-  const getApprovedQuotaEditRequests = quotaEditRequests(DecisionStatus.PROVISIONED);
-  const getRejectedQuotaEditRequests = quotaEditRequests(DecisionStatus.REJECTED);
+  const result = await quotaEditRequests();
 
-  const [allData, approvedData, rejectedData] = await Promise.all([
-    getAllQuotaEditRequests,
-    getApprovedQuotaEditRequests,
-    getRejectedQuotaEditRequests,
-  ]);
-
-  const allDates = Array.from(
-    new Set([
-      ...allData.map((item) => item.date),
-      ...approvedData.map((item) => item.date),
-      ...rejectedData.map((item) => item.date),
-    ]),
-  );
-
-  const data: CombinedDataPoint[] = allDates
-    .map((date) => {
-      const [all] = allData.filter((d) => d.date === date);
-      const [approved] = approvedData.filter((d) => d.date === date);
-      const [rejected] = rejectedData.filter((d) => d.date === date);
-
-      return {
-        date,
-        'All quota requests': all?.['Quota requests'] || 0,
-        'Approved quota requests': approved?.['Quota requests'] || 0,
-        'Rejected quota requests': rejected?.['Quota requests'] || 0,
-      };
-    })
-    .reverse();
+  const data = Object.entries(result).map(([date, count]) => ({
+    date,
+    'All quota requests': count,
+  }));
 
   return data;
 }
