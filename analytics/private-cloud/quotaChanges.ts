@@ -1,13 +1,6 @@
-import { PrivateCloudRequestedProject, PrivateCloudRequest, DecisionStatus, RequestType } from '@prisma/client';
+import { PrivateCloudRequest } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import _isEqual from 'lodash-es/isEqual';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
-
-const defaultQuota = {
-  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
-};
 
 interface QuotaChanges {
   [key: string]: number;

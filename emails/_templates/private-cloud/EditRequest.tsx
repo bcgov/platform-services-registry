@@ -31,14 +31,14 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">New Edit Product Request!</Heading>
-                <Text>Hi {current.name} Team, </Text>
+                <Heading className="text-lg text-black">New edit product request!</Heading>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
                   administrators have been notified and will review your request.
                 </Text>
                 <Button href={BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
-                  Review Request
+                  View request
                 </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

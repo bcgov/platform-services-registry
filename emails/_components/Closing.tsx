@@ -2,9 +2,13 @@ import { Link, Text } from '@react-email/components';
 
 interface HeaderProps {
   email?: string;
+  team?: string;
 }
 
-export default function Header({ email = 'PlatformServicesTeam@gov.bc.ca' }: HeaderProps) {
+export default function Footer({
+  email = 'PlatformServicesTeam@gov.bc.ca',
+  team = 'Platform Services Team',
+}: HeaderProps) {
   return (
     <div>
       <Text>
@@ -14,7 +18,7 @@ export default function Header({ email = 'PlatformServicesTeam@gov.bc.ca' }: Hea
         </Link>
         . We&apos;d love to hear from you.
       </Text>
-      <Text>-- The Registry Team</Text>
+      <Text>{team}</Text>
     </div>
   );
 }
