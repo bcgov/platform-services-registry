@@ -30,16 +30,18 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Your Edit Summary!</Heading>
-                <Text>Hi {current.name} Team, </Text>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
                   You have edited your product in the Public Cloud Landing Zone with the license plate{' '}
-                  {request.licencePlate}. Here is a summary of your changes.
+                  {request.licencePlate}. <br />
+                  <br /> You can see a summary of the changes below in this email, or click the button to view them in
+                  the Product Registry.
                 </Text>
                 <Button
                   href={'https://registry.developer.gov.bc.ca/public-cloud/products/active-requests'}
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
-                  View Changes
+                  View changes
                 </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
@@ -83,7 +85,7 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
                 </div>
               )}
               <div>
-                <Closing email="Cloud.Pathfinder@gov.bc.ca" />
+                <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
               </div>
             </div>
           </Body>
