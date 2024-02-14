@@ -57,7 +57,7 @@ export default async function ProductsTable({
   return (
     <Table
       title="Products in Public Cloud Landing Zones"
-      description="These are your products using the Public Cloud Landing Zones"
+      description="Products with pending requests currently under admin review."
       tableBody={<TableBody rows={activeRequests} />}
       total={requestsTotal}
       currentPage={currentPage}

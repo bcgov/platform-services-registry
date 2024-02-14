@@ -33,7 +33,7 @@ export default function ProjectDescription({
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
-        Private Cloud OpenShift Platform - Project Set Provisioning Request
+        Private Cloud OpenShift Platform
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
@@ -50,7 +50,8 @@ export default function ProjectDescription({
               PlatformServicesTeam@gov.bc.ca
             </a>
           }{' '}
-          to get started.
+          to get started. Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not
+          be approved.
         </p>
       )}
 
@@ -134,7 +135,7 @@ export default function ProjectDescription({
 
         <div className="sm:col-span-3 sm:ml-10">
           <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-            Cluster
+            Hosting Tier
           </label>
           <div className="mt-2">
             <select
@@ -147,7 +148,7 @@ export default function ProjectDescription({
                   : '',
               )}
             >
-              <option value="">Select Cluster</option>
+              <option value="">Select Hosting Tier</option>
               {clustersList.map((cluster) => (
                 <option key={cluster} value={cluster}>
                   {cluster}
@@ -156,7 +157,14 @@ export default function ProjectDescription({
             </select>
             {session?.isAdmin && (
               <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-                Select your cluster, select CLAB or KLAB for testing purposes
+                Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers{' '}
+                <a
+                  href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  here
+                </a>
+                .
               </p>
             )}
           </div>

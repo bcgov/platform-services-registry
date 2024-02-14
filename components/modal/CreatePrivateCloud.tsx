@@ -61,7 +61,7 @@ export default function Modal({
                       to reach out and have an on-boarding conversation with you.
                     </p>
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      Also, look out for our Notification emails that will provide you with valuable information
+                      Also, look out for our notification emails that will provide you with valuable information
                       regarding your product status and details.
                     </p>
                   </div>

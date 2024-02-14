@@ -33,16 +33,12 @@ function EmptyBody() {
           height: 'auto',
         }}
       />
-      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no requests to be displayed</span>
-      <span className="font-bcsans text-lg font-extralight text-mediumgrey mt-2">
-        You currently have no provisioning requests for the
-      </span>
-      <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
+      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no products to be displayed</span>
       <Link
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/create`}
       >
-        REQUEST A NEW PROJECT SET
+        REQUEST A NEW PRODUCT SET
       </Link>
     </div>
   );
@@ -94,7 +90,7 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
     return 'Delete requested';
   }
 
-  return 'Deployed on';
+  return 'Created on';
 }
 
 function truncateText(str: string, n: number) {

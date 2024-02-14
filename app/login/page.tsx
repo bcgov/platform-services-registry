@@ -33,8 +33,7 @@ export default function SignInPage() {
       </p>
 
       <p className="mb-4 max-w-7xl">
-        You can update/change all product details and request product resource quota increases and downgrades (including
-        CPU/RAM/Storage.)
+        You can update/change all product details and request product resource changes (including CPU/RAM/Storage.)
       </p>
 
       <LoginButton />
@@ -192,7 +191,7 @@ export default function SignInPage() {
             (MoU) with the Public Cloud Team. If you do not have a MoU in place, please email us at
             <span> </span>
             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-              cloud.pathfinder@gov.bc.ca
+              Cloud.Pathfinder@gov.bc.ca
             </a>
             .
           </p>
