@@ -20,7 +20,7 @@ export default function ProjectDescriptionPublic({
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
-        BC Gov’s Landing Zone in AWS - Project Set Provisioning Request
+        BC Gov’s Landing Zone in AWS
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
         1. Product Description
@@ -139,7 +139,14 @@ export default function ProjectDescriptionPublic({
               ))}
             </select>
             <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the Cloud Service Provider
+              Select the Cloud Service Provider. Read more about Public Cloud Service Providers{' '}
+              <a
+                href="https://digital.gov.bc.ca/cloud/services/public/providers/"
+                className="text-blue-500 hover:text-blue-700"
+              >
+                here
+              </a>
+              .
             </p>
           </div>
         </div>
