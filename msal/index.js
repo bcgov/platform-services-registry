@@ -11,6 +11,8 @@ export async function getAccessToken() {
     scopes: ['https://graph.microsoft.com/.default'],
   };
 
+  console.log('msalConfig', msalConfig);
+
   try {
     if (!msalInstance) {
       msalInstance = new ConfidentialClientApplication(msalConfig);
