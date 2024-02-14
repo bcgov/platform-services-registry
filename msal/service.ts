@@ -21,5 +21,6 @@ export async function getUser(idOruserPrincipalName: string) {
   }
 
   const data = res.json();
+  console.log(data);
   return data;
 }

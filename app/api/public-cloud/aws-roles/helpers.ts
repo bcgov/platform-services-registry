@@ -2,6 +2,8 @@ import axios from 'axios';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 import _startCase from 'lodash-es/startCase';
 import _kebabCase from 'lodash-es/kebabCase';
+import msalConfig from '@/msal//config';
+import { ConfidentialClientApplication } from '@azure/msal-node';
 
 export interface Group {
   id: string;
@@ -127,6 +129,67 @@ export const getToken = async (): Promise<string | undefined> => {
   }
 };
 
+const getUserGuid = async (userEmail: string) => {
+  const cca = new ConfidentialClientApplication(
+    msalConfig as {
+      auth: {
+        authority: string;
+        clientId: string;
+        clientSecret: string;
+      };
+    },
+  );
+
+  try {
+    const authResult = await cca.acquireTokenByClientCredential({
+      scopes: ['https://graph.microsoft.com/.default'],
+    });
+
+    if (!authResult) {
+      console.error('Auth error');
+      return { error: 'Auth error' };
+    }
+
+    const accessToken = authResult.accessToken;
+    if (!accessToken) {
+      console.error('Error fetching token');
+      return { error: 'Error fetching token' };
+    }
+
+    const url = `https://graph.microsoft.com/beta/users/${userEmail}`;
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      ConsistencyLevel: 'eventual',
+    };
+
+    const response = await axios.get(url, { headers });
+
+    if (response.status === 200) {
+      const json_data = response.data;
+      console.log('json_data', json_data);
+      const user: {
+        username: string;
+        firstName: string;
+        lastName: string;
+      } = {
+        username: '',
+        firstName: json_data.givenName,
+        lastName: json_data.surname,
+      };
+      for (const key in json_data) {
+        if (key.endsWith('_bcgovGUID')) {
+          user.username = json_data[key];
+        }
+      }
+      return user;
+    }
+    console.error('Error fetching users');
+    return { error: 'Error fetching user guid' };
+  } catch (error) {
+    parseError(error);
+  }
+};
+
 awsRolesApiInstance.interceptors.request.use(
   async (config) => {
     const token = await getToken();
@@ -212,6 +275,37 @@ export const addUserToGroup = (userId: string, groupId: string) =>
       parseError(error);
     });
 
+export const createKeyCloakUser = async (userEmail: string) => {
+  const user:
+    | {
+        username: string;
+        firstName: string;
+        lastName: string;
+      }
+    | { error: string }
+    | undefined = await getUserGuid(userEmail);
+  if (user && !('error' in user)) {
+    awsRolesApiInstance
+      .post(`/users`, {
+        email: userEmail,
+        username: user.username,
+        enabled: true,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error: unknown) => {
+        parseError(error);
+      });
+  } else if (user && 'error' in user) {
+    console.error(user.error);
+  } else {
+    console.error('User data is undefined');
+  }
+};
+
 export const removeUserFromGroup = (userId: string, groupId: string) =>
   awsRolesApiInstance
     .delete(`/users/${userId}/groups/${groupId}`)
@@ -275,7 +369,13 @@ export async function getSubGroupMembersByLicencePlateAndName(
 export async function addUserToGroupByEmail(userEmail: string, groupId: string) {
   const userId = await getUserByEmail(userEmail);
   if (userId) {
-    await addUserToGroup(userId[0].id, groupId);
+    if (userId?.length === 0) {
+      await createKeyCloakUser(userEmail);
+      console.log('createKeyCloakUser');
+    }
+    if (userId[0].id) {
+      await addUserToGroup(userId[0].id, groupId);
+    }
   }
 }
 
