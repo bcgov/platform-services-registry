@@ -166,7 +166,6 @@ const getUserGuid = async (userEmail: string) => {
 
     if (response.status === 200) {
       const json_data = response.data;
-      console.log('json_data', json_data);
       const user: {
         username: string;
         firstName: string;
@@ -372,7 +371,7 @@ export async function addUserToGroupByEmail(userEmail: string, groupId: string) 
     if (userId?.length === 0) {
       await createKeyCloakUser(userEmail);
     }
-    if (userId[0].id) {
+    if (userId?.length > 0) {
       await addUserToGroup(userId[0].id, groupId);
     }
   }
