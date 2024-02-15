@@ -72,7 +72,7 @@ export default function Modal({
                       <p className="font-bcsans text-sm text-gray-900">
                         We have received your
                         {isEditRequest ? ' edit request. ' : ' request for a new product set. '}
-                        The Product Owner and Technical Lead will receive the approval/denial decision via email.
+                        The Product Owner and Technical Lead(s) will receive the approval/denial decision via email.
                       </p>
                       <p className="font-bcsans text-sm text-gray-900 mt-4">
                         Alternatively, you can also track the status of your requests from the Registry App Dashboard
@@ -86,8 +86,8 @@ export default function Modal({
                         <div>
                           <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
                           <p className="font-bcsans text-sm text-blue-700 mt-1">
-                            The approval of a new product set creation request is subject to having a signed Memorandum
-                            of Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
+                            The approval of a new product creation request is subject to having a signed Memorandum of
+                            Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
                             email us at
                             <span> </span>
                             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">

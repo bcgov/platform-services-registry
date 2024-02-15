@@ -6,6 +6,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 import createPrivateCloudNatsMessage from '@/nats/privateCloud';
+import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -14,18 +15,8 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
   description: 'This is a sample project description.',
   cluster: 'SILVER',
   ministry: 'AGRI',
-  projectOwner: {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'oamar.kanji@gov.bc.ca',
-    ministry: 'AGRI',
-  },
-  primaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: 'AGRI',
-  },
+  projectOwner: findMockUserByIDIR('JOHNDOE'),
+  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
@@ -87,7 +78,7 @@ jest.mock('../../app/api/auth/[...nextauth]/route', () => ({
 beforeAll(async () => {
   mockedGetServerSession.mockResolvedValue({
     user: {
-      email: 'oamar.kanji@gov.bc.ca',
+      email: createRequestBody.projectOwner.email,
     },
     roles: ['user'],
     isAdmin: false,

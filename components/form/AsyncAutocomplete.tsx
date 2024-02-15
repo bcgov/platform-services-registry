@@ -6,6 +6,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
 import { UserInputSchema } from '@/schema';
 import classNames from '@/components/utils/classnames';
+import { listUsersByEmail } from '@/services/msal';
 
 export type Person = {
   id: number;
@@ -13,15 +14,9 @@ export type Person = {
   givenName: string;
   mail: string;
   displayName: string;
+  onPremisesSamAccountName: string;
+  userPrincipalName: string;
 };
-
-export async function fetchPeople(email: string): Promise<Person[]> {
-  const res = await fetch(`/api/msal/userAutocomplete?email=${email}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return res.json();
-}
 
 export default function AsyncAutocomplete({
   name,
@@ -56,16 +51,22 @@ export default function AsyncAutocomplete({
     error,
   } = useQuery<Person[], Error>({
     queryKey: ['people', query],
-    queryFn: () => fetchPeople(query || ''),
+    queryFn: () => listUsersByEmail(query || ''),
     enabled: !!query,
   });
 
   const autocompleteOnChangeHandler = (value: Person) => {
-    console.log('ON CHANGE HANDLER');
     setSelected(value);
     setQuery(value.mail);
 
-    const { givenName: firstName, surname: lastName, mail, displayName } = value;
+    const {
+      givenName: firstName,
+      surname: lastName,
+      mail,
+      displayName,
+      onPremisesSamAccountName: idir,
+      userPrincipalName: upn,
+    } = value;
 
     const ministry = parseMinistryFromDisplayName(displayName);
 
@@ -74,21 +75,36 @@ export default function AsyncAutocomplete({
       lastName,
       email: mail,
       ministry,
+      idir,
+      upn,
     });
 
     if (!parsedParams.success) {
-      // Corner case where the user does not have a properly formatted IDIR account
-      // do something with the error
-
-      console.log('ERROR WITH ' + name);
-
-      setError(name, {
+      setError('root', {
         type: 'manual',
         message:
           'The IDIR account associated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry',
       });
     } else {
-      clearErrors(name);
+      clearErrors('root');
+    }
+
+    if (!idir) {
+      setError('idir', {
+        type: 'manual',
+        message: 'Please populate your IDIR account with your IDIR',
+      });
+    } else {
+      clearErrors('idir');
+    }
+
+    if (!upn) {
+      setError('upn', {
+        type: 'manual',
+        message: 'Please populate your IDIR account with your User Principal Name',
+      });
+    } else {
+      clearErrors('upn');
     }
 
     setValue(
@@ -98,6 +114,8 @@ export default function AsyncAutocomplete({
         lastName,
         email: mail,
         ministry,
+        idir,
+        upn,
       },
       { shouldDirty: true },
     );
@@ -183,15 +201,10 @@ export default function AsyncAutocomplete({
           </Transition>
         </div>
       </Combobox>
-      {errors[name] ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors[name]?.message)}</p> : null}
-      {/* {errors?.[name]?.["email"] ? (
-        <p className={"text-red-400 mt-3 text-sm leading-6"}>
-          {errors?.[name]?.["email"].message}
-        </p>
-      ) : null} */}
+      {errors.root ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.root?.message)}</p> : null}
 
       <div className="mt-8 col-span-full">
-        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+        <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
           First Name
         </label>
         <div className="mt-2">
@@ -208,7 +221,7 @@ export default function AsyncAutocomplete({
         </div>
       </div>
       <div className="mt-8 col-span-full">
-        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+        <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
           Last Name
         </label>
         <div className="mt-2">
@@ -225,7 +238,7 @@ export default function AsyncAutocomplete({
         </div>
       </div>
       <div className="mt-8 col-span-full">
-        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+        <label htmlFor="ministry" className="block text-sm font-medium leading-6 text-gray-900">
           Ministry
         </label>
         <div className="mt-2">
@@ -241,6 +254,41 @@ export default function AsyncAutocomplete({
           />
         </div>
       </div>
+      <div className="mt-8 col-span-full">
+        <label htmlFor="idir" className="block text-sm font-medium leading-6 text-gray-900">
+          IDIR
+        </label>
+        <div className="mt-2">
+          <input
+            disabled
+            placeholder="Autofilled from IDIR"
+            type="text"
+            id="idir"
+            autoComplete="off"
+            {...register(name + '.idir')}
+            className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      {errors.idir ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.idir?.message)}</p> : null}
+
+      <div className="mt-8 col-span-full">
+        <label htmlFor="upn" className="block text-sm font-medium leading-6 text-gray-900">
+          UPN
+        </label>
+        <div className="mt-2">
+          <input
+            disabled
+            placeholder="Autofilled from IDIR"
+            type="text"
+            id="upn"
+            autoComplete="off"
+            {...register(name + '.upn')}
+            className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      {errors.upn ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.upn?.message)}</p> : null}
     </div>
   );
 }
