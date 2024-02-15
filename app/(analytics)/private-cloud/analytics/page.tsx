@@ -5,7 +5,6 @@ import { quotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
-import ExportCard from '@/components/analytics/ExportCard';
 
 export default async function AnalyticsDashboard() {
   const quotaChangedChartData = await quotaEditRequests();
@@ -51,10 +50,6 @@ export default async function AnalyticsDashboard() {
           categories={['Percentage']}
           colors={['indigo']}
           exportApiEndpoint="/api/private-cloud/analytics/csv/decision-time"
-        />
-        <ExportCard
-          title="Users with quota edit requests"
-          apiEnpoint="/api/private-cloud/analytics/csv/quota-request-users"
         />
       </div>
     </div>
