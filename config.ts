@@ -34,5 +34,5 @@ export const MAUTIC_TOKEN_URL = process.env.MAUTIC_TOKEN_URL || '';
 export const MAUTIC_CLIENT_ID = process.env.MAUTIC_CLIENT_ID || '';
 export const MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET = process.env.MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET || '';
 export const MAUTIC_SUBSSCRIPTION_API_URL = process.env.MAUTIC_SUBSSCRIPTION_API_URL || '';
-export const NATS_HOST = process.env.NATS_HOST || '';
-export const NATS_PORT = process.env.NATS_PORT || '';
+export const NATS_HOST = process.env.NATS_HOST || 'localhost';
+export const NATS_PORT = process.env.NATS_PORT || '4222';

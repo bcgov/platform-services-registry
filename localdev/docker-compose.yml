@@ -90,3 +90,21 @@ services:
     stdin_open: true
     ports:
     - 8000:8000
+
+  nats:
+    container_name: nats
+    image: nats:2.10.10
+    ports:
+    - 4222:4222
+
+  nats-provision:
+    container_name: nats-provision
+    build:
+      context: ./nats-provision
+      dockerfile: Dockerfile
+    environment:
+      NATS_HOST: nats
+      NATS_PORT: 4222
+      APP_URL: http://${MACHINE_HOST_IP}:3000
+    depends_on:
+    - nats
