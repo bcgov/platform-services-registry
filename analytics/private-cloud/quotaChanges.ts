@@ -1,6 +1,7 @@
 import { PrivateCloudRequest, Prisma, User } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import _isEqual from 'lodash-es/isEqual';
+import _uniqWith from 'lodash-es/uniqWith';
 
 interface QuotaChanges {
   [key: string]: number;
@@ -53,16 +54,15 @@ export async function usersWithQuotaEditRequests(): Promise<User[]> {
     },
   });
 
-  const users = quotaChangedRequests
+  let users = quotaChangedRequests
     .map((request) => {
-      const { primaryTechnicalLead, secondaryTechnicalLead, projectOwner } =
-        request.requestedProject as PrivateCloudRequestedProjectWithContacts;
-
+      const { primaryTechnicalLead, secondaryTechnicalLead, projectOwner } = request.requestedProject;
       return [primaryTechnicalLead, secondaryTechnicalLead, projectOwner];
     })
     .flat()
-    .filter((user, index, self) => self.findIndex((u) => _isEqual(u, user)) === index)
     .filter(Boolean);
+
+  users = _uniqWith(users, (user1, user2) => user1?.id === user2?.id);
 
   return users as User[];
 }
