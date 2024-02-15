@@ -2,9 +2,10 @@ import { Fragment, useState } from 'react';
 import { Dialog, Combobox, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { CheckIcon } from '@heroicons/react/20/solid';
-import { fetchPeople, Person } from '@/components/form/AsyncAutocomplete';
+import { Person } from '@/components/form/AsyncAutocomplete';
 import UserInfoField from '@/components/modal/AddUserFields';
 import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
+import { listUsersByEmail } from '@/services/msal';
 
 interface Props {
   open: boolean;
@@ -20,6 +21,8 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
     givenName: '',
     mail: '',
     displayName: '',
+    onPremisesSamAccountName: '',
+    userPrincipalName: '',
   });
 
   const [confirm, setConfirm] = useState(false);
@@ -30,7 +33,7 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
     error,
   } = useQuery<Person[], Error>({
     queryKey: ['people', query],
-    queryFn: () => fetchPeople(query || ''),
+    queryFn: () => listUsersByEmail(query || ''),
     enabled: !!query,
   });
 

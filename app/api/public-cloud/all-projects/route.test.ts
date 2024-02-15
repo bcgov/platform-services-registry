@@ -5,7 +5,6 @@ import { MockedFunction } from 'jest-mock';
 import { expect } from '@jest/globals';
 import prisma from '@/lib/prisma';
 import { parse } from 'csv-parse/sync';
-
 import {
   Provider,
   DecisionStatus,
@@ -17,6 +16,7 @@ import {
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/public-cloud/all-projects`;
@@ -47,24 +47,9 @@ const projectData = [
       prod: 3000,
       tools: 4000,
     },
-    projectOwner: {
-      firstName: 'Oamar',
-      lastName: 'Kanji',
-      email: 'oamar.kanji@gov.bc.ca',
-      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    },
-    primaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    },
-    secondaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    },
+    projectOwner: findMockUserByIDIR('JOHNDOE'),
+    primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
+    secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
     productionQuota: quota,
     testQuota: quota,
     toolsQuota: quota,
@@ -75,24 +60,9 @@ const projectData = [
     description: 'This is a sample project description.',
     provider: Provider.AWS, // Assuming CLUSTER_A is a valid enum value for Cluster
     ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    projectOwner: {
-      firstName: 'Christopher',
-      lastName: 'Tan',
-      email: 'christopher.tan@gov.bc.ca',
-      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    },
-    primaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    },
-    secondaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    },
+    projectOwner: findMockUserByIDIR('SARAHWILLIAMS'),
+    primaryTechnicalLead: findMockUserByIDIR('MICHAELBROWN'),
+    secondaryTechnicalLead: findMockUserByIDIR('JESSICADAVIS'),
     accountCoding: '123456789000000000000000',
     budget: {
       dev: 1000,
@@ -169,9 +139,10 @@ describe('CSV Download Route', () => {
     console.log('Seeding database with projects');
     for (let i = 0; i < projectData.length; i++) {
       const project = createProjectObject(projectData[i], i);
-      const createdProject = await prisma.publicCloudProject.create({ data: project });
+      await prisma.publicCloudProject.create({ data: project });
     }
-    const allProjects = await prisma.publicCloudProject.findMany({});
+
+    await prisma.publicCloudProject.findMany({});
   });
 
   // Clean up database after tests are done
