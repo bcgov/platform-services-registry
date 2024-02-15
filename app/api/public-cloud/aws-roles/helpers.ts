@@ -2,8 +2,12 @@ import axios from 'axios';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 import _startCase from 'lodash-es/startCase';
 import _kebabCase from 'lodash-es/kebabCase';
+import _find from 'lodash-es/find';
+import _toLowerCase from 'lodash-es/lowerCase';
 import msalConfig from '@/msal//config';
 import { ConfidentialClientApplication } from '@azure/msal-node';
+import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
+import KcAdminClient from '@keycloak/keycloak-admin-client';
 
 export interface Group {
   id: string;
@@ -18,11 +22,6 @@ export interface User {
   lastName: string;
   email: string;
 }
-
-export type paramsURL = {
-  params: { licencePlate: string; role: string };
-  searchParams: { page: string; pageSize: string };
-};
 
 interface UsersTotal {
   users: User[];
@@ -39,6 +38,17 @@ interface PaginationOptions {
   page: number;
   pageSize: number;
 }
+
+const kcAdminClient = new KcAdminClient({
+  baseUrl: AWS_ROLES_BASE_URL,
+  realmName: AWS_ROLES_REALM_NAME,
+});
+
+const credentials: Credentials = {
+  grantType: 'client_credentials',
+  clientId: AWS_ROLES_CLIENT_ID,
+  clientSecret: AWS_ROLES_CLIENT_SECRET,
+};
 
 const paginate = <T>(users: T[], options: PaginationOptions): T[] => {
   const { page, pageSize } = options;
@@ -99,36 +109,6 @@ const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
 
-const parseError = (error: unknown) => {
-  if (error instanceof Error) {
-    console.log(error.message);
-  } else console.log(String(error));
-  return Promise.reject(error);
-};
-
-const awsRolesApiInstance = axios.create({
-  baseURL: `${AWS_ROLES_BASE_URL}/admin/realms/${AWS_ROLES_REALM_NAME}`,
-});
-
-export const getToken = async (): Promise<string | undefined> => {
-  try {
-    const apiUrl = `${AWS_ROLES_BASE_URL}/realms/${AWS_ROLES_REALM_NAME}/protocol/openid-connect/token`;
-    const requestBody = {
-      client_id: AWS_ROLES_CLIENT_ID,
-      client_secret: AWS_ROLES_CLIENT_SECRET,
-      grant_type: 'client_credentials',
-    };
-    const response = await axios.post(apiUrl, requestBody, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    return response.data.access_token;
-  } catch (error: unknown) {
-    parseError(error);
-  }
-};
-
 const getUserGuid = async (userEmail: string) => {
   const cca = new ConfidentialClientApplication(
     msalConfig as {
@@ -185,94 +165,41 @@ const getUserGuid = async (userEmail: string) => {
     console.error('Error fetching users');
     return { error: 'Error fetching user guid' };
   } catch (error) {
-    parseError(error);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else console.log(String(error));
+    return Promise.reject(error);
   }
 };
 
-awsRolesApiInstance.interceptors.request.use(
-  async (config) => {
-    const token = await getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
 export const getGroups = async (): Promise<Group[]> => {
-  const groups = await awsRolesApiInstance
-    .get('/groups')
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: unknown) => {
-      parseError(error);
-    });
+  await kcAdminClient.auth(credentials);
+  const groups = await kcAdminClient.groups.find();
   return groups as Group[];
 };
 
-// search by substring, returns all of groups, which names includes searchParam
-export const getGroupByName = (groupName: string = 'Project Team Groups'): Promise<Group[] | undefined> =>
-  awsRolesApiInstance
-    .get('/groups', {
-      params: {
-        search: groupName,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: unknown) => {
-      parseError(error);
-    });
-
-export const getUsers: Promise<Group[] | undefined> = awsRolesApiInstance
-  .get('/users')
-  .then((response) => {
-    return response.data;
-  })
-  .catch((error: unknown) => {
-    parseError(error);
-  });
-
 export const getMembersByGroupId = async (groupId: string): Promise<User[]> => {
-  const members = await awsRolesApiInstance
-    .get(`/groups/${groupId}/members`)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: unknown) => {
-      parseError(error);
-    });
+  await kcAdminClient.auth(credentials);
+  const members = await kcAdminClient.groups.listMembers({ id: groupId });
   return members as User[];
 };
 
-export const getUserByEmail = (email: string): Promise<User[] | undefined> =>
-  awsRolesApiInstance
-    .get('/users', {
-      params: {
-        search: email,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: unknown) => {
-      parseError(error);
-    });
+export const getUserIdByEmail = async (email: string): Promise<string | undefined> => {
+  await kcAdminClient.auth(credentials);
+  const users: any[] = await kcAdminClient.users.find();
+  if (!users) return;
+  const user: any = _find(users, (userItem) => {
+    if (_toLowerCase(userItem.email) === _toLowerCase(email)) {
+      return true;
+    }
+  });
+  return user ? user.id : undefined;
+};
 
-export const addUserToGroup = (userId: string, groupId: string) =>
-  awsRolesApiInstance
-    .put(`/users/${userId}/groups/${groupId}`)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: unknown) => {
-      parseError(error);
-    });
+export const addUserToGroup = async (userId: string, groupId: string) => {
+  await kcAdminClient.auth(credentials);
+  await kcAdminClient.users.addToGroup({ id: userId, groupId: groupId });
+};
 
 export const createKeyCloakUser = async (userEmail: string) => {
   const user:
@@ -284,36 +211,25 @@ export const createKeyCloakUser = async (userEmail: string) => {
     | { error: string }
     | undefined = await getUserGuid(userEmail);
   if (user && !('error' in user)) {
-    awsRolesApiInstance
-      .post(`/users`, {
-        email: userEmail,
-        username: user.username,
-        enabled: true,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      })
-      .then((response) => {
-        return response.data;
-      })
-      .catch((error: unknown) => {
-        parseError(error);
-      });
+    await kcAdminClient.auth(credentials);
+    await kcAdminClient.users.create({
+      email: userEmail,
+      username: user.username,
+      enabled: true,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    });
   } else if (user && 'error' in user) {
-    console.error(user.error);
+    console.error('user.error', user.error);
   } else {
     console.error('User data is undefined');
   }
 };
 
-export const removeUserFromGroup = (userId: string, groupId: string) =>
-  awsRolesApiInstance
-    .delete(`/users/${userId}/groups/${groupId}`)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: unknown) => {
-      parseError(error);
-    });
+export const removeUserFromGroup = async (userId: string, groupId: string) => {
+  await kcAdminClient.auth(credentials);
+  await kcAdminClient.users.delFromGroup({ id: userId, groupId: groupId });
+};
 
 const findObjectByValue = (array: Group[], key: keyof Group, value: any): Group[] => {
   return array.filter((obj) => obj[key] === value);
@@ -360,20 +276,20 @@ export async function getSubGroupMembersByLicencePlateAndName(
   if (searchTerm) {
     result = searchSubstringInArray(searchTerm, result);
   }
-
   const total = result.length;
   return { users: paginate(result, { page, pageSize }) as User[], groupId, total };
 }
 
 export async function addUserToGroupByEmail(userEmail: string, groupId: string) {
-  const userId = await getUserByEmail(userEmail);
+  let userId = await getUserIdByEmail(userEmail);
+  if (!userId) {
+    await createKeyCloakUser(userEmail);
+    await getUserIdByEmail(userEmail);
+    userId = await getUserIdByEmail(userEmail);
+    if (userId) await addUserToGroup(userId, groupId);
+  }
   if (userId) {
-    if (userId?.length === 0) {
-      await createKeyCloakUser(userEmail);
-    }
-    if (userId?.length > 0) {
-      await addUserToGroup(userId[0].id, groupId);
-    }
+    await addUserToGroup(userId, groupId);
   }
 }
 
@@ -384,6 +300,5 @@ export async function getGroupsNamesByLicencePlate(licencePlate: string): Promis
       return parseGroupNameToTab(subGroup.name);
     });
   }
-
   return [];
 }
