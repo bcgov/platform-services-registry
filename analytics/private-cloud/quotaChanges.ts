@@ -67,7 +67,7 @@ export async function usersWithQuotaEditRequests(): Promise<User[]> {
   return users as User[];
 }
 
-export async function quotaEditRequests(): Promise<DataPoint[]> {
+export async function quotaEditRequests() {
   const quotaChangedRequests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany({
     where: {
       isQuotaChanged: true,
