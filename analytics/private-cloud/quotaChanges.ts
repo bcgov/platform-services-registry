@@ -8,11 +8,6 @@ interface QuotaChanges {
 
 export type DataPoint = {
   date: string;
-  'Quota requests': number;
-};
-
-export type CombinedDataPoint = {
-  date: string;
   'All quota requests': number;
 };
 
@@ -22,7 +17,7 @@ function parseDate(date: Date) {
   return formatter.format(date);
 }
 
-export async function combinedQuotaEditRequests() {
+export async function quotaEditRequests() {
   const quotaChangedRequests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany({
     where: {
       isQuotaChanged: true,
