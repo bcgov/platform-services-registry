@@ -1,3 +1,5 @@
+'use client';
+
 import ExportButton from '@/components/buttons/ExportButton';
 import { Title } from '@tremor/react';
 
@@ -11,6 +13,3 @@ export default function ExportCard({ title, apiEnpoint }: { title: string; apiEn
     </div>
   );
 }
-
-// Users with quota edit requests
-// '/api/private-cloud/analytics/csv/quota-request-users'
