@@ -1,20 +1,19 @@
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
-import { quotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
+import { quotaEditRequests, usersWithQuotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import ExportButton from '@/components/buttons/ExportButton';
+import { Title } from '@tremor/react';
 
 export default async function AnalyticsDashboard() {
-  const session = await getServerSession(authOptions);
-
   const quotaChangedChartData = await quotaEditRequests();
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
   const requestDecisionTimeChartData = await requestDecisionTime();
+  const usersWithQuotaEditRequestsData = await usersWithQuotaEditRequests();
 
   return (
     <div className="m-12">
@@ -55,6 +54,14 @@ export default async function AnalyticsDashboard() {
           colors={['indigo']}
           exportApiEndpoint="/api/private-cloud/analytics/csv/decision-time"
         />
+        <div>
+          <div className="flex flex-col items-end border rounded-lg w-fit p-4">
+            <div>
+              <Title>Users with quota edit requests</Title>
+              <ExportButton className="mt-3 " apiEnpoint={'/api/private-cloud/analytics/csv/quota-request-users'} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
