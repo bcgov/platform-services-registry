@@ -12,7 +12,7 @@ interface MsUser {
   jobTitle: string;
 }
 
-export async function processMsUser(user: MsUser) {
+export function processMsUser(user: MsUser) {
   return {
     id: user.id,
     onPremisesSamAccountName: user.onPremisesSamAccountName,
