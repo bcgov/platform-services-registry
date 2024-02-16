@@ -1,27 +1,18 @@
 import { callMsGraph, getAccessToken } from '@/msal';
+import { MsUser, AppUser } from '@/types/user';
+import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 
-interface MsUser {
-  id: string;
-  onPremisesSamAccountName: string;
-  userPrincipalName: string;
-  extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID: string; // pragma: allowlist secret
-  mail: string;
-  displayName: string;
-  givenName: string;
-  surname: string;
-  jobTitle: string;
-}
-
-export function processMsUser(user: MsUser) {
+export function processMsUser(user: MsUser): AppUser {
   return {
     id: user.id,
-    onPremisesSamAccountName: user.onPremisesSamAccountName,
-    userPrincipalName: user.userPrincipalName,
+    upn: user.userPrincipalName,
+    email: user.mail,
+    idir: user.onPremisesSamAccountName,
     idirGuid: user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,
-    mail: user.mail,
     displayName: user.displayName,
-    givenName: user.givenName,
-    surname: user.surname,
+    firstName: user.givenName,
+    lastName: user.surname,
+    ministry: parseMinistryFromDisplayName(user.displayName),
   };
 }
 
@@ -80,4 +71,16 @@ export async function listUsersByEmail(email: string) {
 
   const data = await res.json();
   return (data as { value: MsUser[] }).value.map(processMsUser);
+}
+
+export async function getUserPhoto(email: string) {
+  const url = `https://graph.microsoft.com/v1.0/users/${email}/photo/$value`;
+  const res = await sendRequest(url);
+
+  if (res.status !== 200) {
+    return null;
+  }
+
+  const data = await res.arrayBuffer();
+  return data;
 }

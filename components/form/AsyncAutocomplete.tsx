@@ -1,22 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
 import { UserInputSchema } from '@/schema';
 import classNames from '@/components/utils/classnames';
 import { listUsersByEmail } from '@/services/msal';
-
-export type Person = {
-  id: number;
-  surname: string;
-  givenName: string;
-  mail: string;
-  displayName: string;
-  onPremisesSamAccountName: string;
-  userPrincipalName: string;
-};
+import { AppUser } from '@/types/user';
 
 export default function AsyncAutocomplete({
   name,
@@ -31,7 +21,7 @@ export default function AsyncAutocomplete({
   className?: string;
   disabled?: boolean;
 }) {
-  const [selected, setSelected] = useState<Person | ''>('');
+  const [selected, setSelected] = useState<AppUser | ''>('');
   const [query, setQuery] = useState<string>('');
 
   const {
@@ -43,37 +33,28 @@ export default function AsyncAutocomplete({
     watch,
   } = useFormContext();
 
-  const email = watch(name + '.email');
+  const emailwat = watch(name + '.email');
 
   const {
     data: people,
     isLoading,
     error,
-  } = useQuery<Person[], Error>({
+  } = useQuery<AppUser[], Error>({
     queryKey: ['people', query],
     queryFn: () => listUsersByEmail(query || ''),
     enabled: !!query,
   });
 
-  const autocompleteOnChangeHandler = (value: Person) => {
-    setSelected(value);
-    setQuery(value.mail);
+  const autocompleteOnChangeHandler = (user: AppUser) => {
+    setSelected(user);
+    setQuery(user.email);
 
-    const {
-      givenName: firstName,
-      surname: lastName,
-      mail,
-      displayName,
-      onPremisesSamAccountName: idir,
-      userPrincipalName: upn,
-    } = value;
-
-    const ministry = parseMinistryFromDisplayName(displayName);
+    const { firstName, lastName, email, ministry, idir, upn } = user;
 
     const parsedParams = UserInputSchema.safeParse({
       firstName,
       lastName,
-      email: mail,
+      email,
       ministry,
       idir,
       upn,
@@ -112,7 +93,7 @@ export default function AsyncAutocomplete({
       {
         firstName,
         lastName,
-        email: mail,
+        email,
         ministry,
         idir,
         upn,
@@ -122,10 +103,10 @@ export default function AsyncAutocomplete({
   };
 
   useEffect(() => {
-    if (email) {
-      setQuery(email);
+    if (emailwat) {
+      setQuery(emailwat);
     }
-  }, [email]);
+  }, [emailwat]);
 
   return (
     <div className={className}>
@@ -140,7 +121,7 @@ export default function AsyncAutocomplete({
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
               autoComplete="xyz"
-              displayValue={(person: Person) => person?.mail}
+              displayValue={(user: AppUser) => user?.email}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}
               value={query}
@@ -170,19 +151,19 @@ export default function AsyncAutocomplete({
                 </div>
               ) : (
                 people &&
-                people.map((person) => (
+                people.map((user) => (
                   <Combobox.Option
-                    key={person?.mail}
+                    key={user?.email}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
                         active ? 'bg-teal-600 text-white' : 'text-gray-900'
                       }`
                     }
-                    value={person}
+                    value={user}
                   >
                     {({ selected: sel, active }) => (
                       <>
-                        <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{person?.mail}</span>
+                        <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{user?.email}</span>
                         {sel ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
@@ -244,7 +225,6 @@ export default function AsyncAutocomplete({
         <div className="mt-2">
           <input
             disabled
-            // value={parseMinistryFromDisplayName(isString(selected) ? selected : selected.displayName)}
             placeholder="Autofilled from IDIR"
             type="text"
             id="ministry"
