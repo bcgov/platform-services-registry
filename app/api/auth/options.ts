@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
 import { getUser } from '@/msal/service';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
-import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 
 interface KeycloakToken {
   exp: number;
@@ -87,21 +86,21 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakToken;
-
-      const adUser: any = await getUser(email);
-      let ministry = '';
-      if (adUser) {
-        ministry = parseMinistryFromDisplayName(adUser.displayName);
-      }
-
       const data = {
         firstName: given_name,
         lastName: family_name,
         email,
-        ministry,
-        idir: adUser.onPremisesSamAccountName,
-        upn: adUser.userPrincipalName,
+        ministry: '',
+        idir: '',
+        upn: '',
       };
+
+      const adUser = await getUser(email);
+      if (adUser) {
+        data.ministry = adUser.ministry;
+        data.idir = adUser.idir;
+        data.upn = adUser.upn;
+      }
 
       await prisma.user.upsert({
         where: {

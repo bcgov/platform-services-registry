@@ -1,14 +1,11 @@
-import axios from 'axios';
-import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 import _startCase from 'lodash-es/startCase';
 import _kebabCase from 'lodash-es/kebabCase';
 import _find from 'lodash-es/find';
 import _toLowerCase from 'lodash-es/lowerCase';
-import msalConfig from '@/msal//config';
-import { ConfidentialClientApplication } from '@azure/msal-node';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { getUser } from '@/msal/service';
+import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 export interface Group {
   id: string;
   name: string;
@@ -139,26 +136,23 @@ export const addUserToGroup = async (userId: string, groupId: string) => {
 };
 
 export const createKeyCloakUser = async (userPrincipalName: string) => {
-  const user: {
-    id: string;
-    idirGuid: string;
-    mail: string;
-    givenName: string;
-    surname: string;
-  } | null = await getUser(userPrincipalName);
-  if (user && !('error' in user)) {
+  try {
+    const appUser = await getUser(userPrincipalName);
+    if (!appUser) {
+      console.error('createKeyCloakUser: user not found');
+      return;
+    }
+
     await kcAdminClient.auth(credentials);
     await kcAdminClient.users.create({
-      email: user.mail,
-      username: user.idirGuid,
+      email: appUser.email,
+      username: appUser.idirGuid,
       enabled: true,
-      firstName: user.givenName,
-      lastName: user.surname,
+      firstName: appUser.firstName,
+      lastName: appUser.lastName,
     });
-  } else if (user && 'error' in user) {
-    console.error('user.error', user.error);
-  } else {
-    console.error('User data is undefined');
+  } catch (err) {
+    console.error('createKeyCloakUser:', err);
   }
 };
 
