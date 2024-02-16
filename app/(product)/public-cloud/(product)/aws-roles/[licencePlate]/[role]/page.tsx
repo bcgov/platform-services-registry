@@ -30,6 +30,7 @@ export default function ProductAWSRoles() {
   const pageSize = searchParams.get('pageSize') || '5';
   const searchTerm = searchParams.get('search') || '';
   const [openAddUser, setOpenAddUser] = useState<boolean>(false);
+  const [userPrincipalName, setUserPrincipalName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
   const [userId, setUserId] = useState('');
@@ -59,9 +60,9 @@ export default function ProductAWSRoles() {
   }
 
   const { data: userAdd, error: fetchingUserAddError } = useQuery<string, Error>({
-    queryKey: ['userEmail', userEmail],
-    queryFn: () => addUser(userEmail, users?.groupId),
-    enabled: !!userEmail,
+    queryKey: ['userPrincipalName', userPrincipalName],
+    queryFn: () => addUser(userPrincipalName, userEmail, users?.groupId),
+    enabled: !!userPrincipalName,
   });
 
   if (fetchingUserAddError) {
@@ -155,7 +156,12 @@ export default function ProductAWSRoles() {
         person={deletePerson}
         userRole={userRole}
       />
-      <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
+      <AddUserModal
+        open={openAddUser}
+        setOpen={setOpenAddUser}
+        setUserPrincipalName={setUserPrincipalName}
+        setUserEmail={setUserEmail}
+      />
       <ErrorModal
         open={showErrorModal}
         setOpen={setShowErrorModal}

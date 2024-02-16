@@ -10,10 +10,11 @@ import { listUsersByEmail } from '@/services/msal';
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserPrincipalName: React.Dispatch<React.SetStateAction<string>>;
   setUserEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
+export default function AddUserModal({ open, setOpen, setUserPrincipalName, setUserEmail }: Props) {
   const [query, setQuery] = useState<string>('');
   const [selected, setSelected] = useState<Person | undefined>({
     id: 0,
@@ -49,7 +50,10 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
   };
 
   const handleAddUserBtn = () => {
-    if (selected) setUserEmail(selected.mail);
+    if (selected) {
+      setUserPrincipalName(selected.userPrincipalName);
+      setUserEmail(selected.mail);
+    }
     setSelected(undefined);
     setOpen(false);
   };

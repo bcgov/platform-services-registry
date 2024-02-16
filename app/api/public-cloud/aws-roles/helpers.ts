@@ -8,7 +8,7 @@ import msalConfig from '@/msal//config';
 import { ConfidentialClientApplication } from '@azure/msal-node';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
-
+import { getUser } from '@/msal/service';
 export interface Group {
   id: string;
   name: string;
@@ -109,68 +109,68 @@ const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
 
-const getUserGuid = async (userEmail: string) => {
-  const cca = new ConfidentialClientApplication(
-    msalConfig as {
-      auth: {
-        authority: string;
-        clientId: string;
-        clientSecret: string;
-      };
-    },
-  );
+// const getUserGuid = async (userEmail: string) => {
+//   const cca = new ConfidentialClientApplication(
+//     msalConfig as {
+//       auth: {
+//         authority: string;
+//         clientId: string;
+//         clientSecret: string;
+//       };
+//     },
+//   );
 
-  try {
-    const authResult = await cca.acquireTokenByClientCredential({
-      scopes: ['https://graph.microsoft.com/.default'],
-    });
+//   try {
+//     const authResult = await cca.acquireTokenByClientCredential({
+//       scopes: ['https://graph.microsoft.com/.default'],
+//     });
 
-    if (!authResult) {
-      console.error('Auth error');
-      return { error: 'Auth error' };
-    }
+//     if (!authResult) {
+//       console.error('Auth error');
+//       return { error: 'Auth error' };
+//     }
 
-    const accessToken = authResult.accessToken;
-    if (!accessToken) {
-      console.error('Error fetching token');
-      return { error: 'Error fetching token' };
-    }
+//     const accessToken = authResult.accessToken;
+//     if (!accessToken) {
+//       console.error('Error fetching token');
+//       return { error: 'Error fetching token' };
+//     }
 
-    const url = `https://graph.microsoft.com/beta/users/${userEmail}`;
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      ConsistencyLevel: 'eventual',
-    };
+//     const url = `https://graph.microsoft.com/beta/users/${userEmail}`;
+//     const headers = {
+//       Authorization: `Bearer ${accessToken}`,
+//       ConsistencyLevel: 'eventual',
+//     };
 
-    const response = await axios.get(url, { headers });
+//     const response = await axios.get(url, { headers });
 
-    if (response.status === 200) {
-      const json_data = response.data;
-      const user: {
-        username: string;
-        firstName: string;
-        lastName: string;
-      } = {
-        username: '',
-        firstName: json_data.givenName,
-        lastName: json_data.surname,
-      };
-      for (const key in json_data) {
-        if (key.endsWith('_bcgovGUID')) {
-          user.username = json_data[key];
-        }
-      }
-      return user;
-    }
-    console.error('Error fetching users');
-    return { error: 'Error fetching user guid' };
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-    } else console.log(String(error));
-    return Promise.reject(error);
-  }
-};
+//     if (response.status === 200) {
+//       const json_data = response.data;
+//       const user: {
+//         username: string;
+//         firstName: string;
+//         lastName: string;
+//       } = {
+//         username: '',
+//         firstName: json_data.givenName,
+//         lastName: json_data.surname,
+//       };
+//       for (const key in json_data) {
+//         if (key.endsWith('_bcgovGUID')) {
+//           user.username = json_data[key];
+//         }
+//       }
+//       return user;
+//     }
+//     console.error('Error fetching users');
+//     return { error: 'Error fetching user guid' };
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       console.log(error.message);
+//     } else console.log(String(error));
+//     return Promise.reject(error);
+//   }
+// };
 
 export const getGroups = async (): Promise<Group[]> => {
   await kcAdminClient.auth(credentials);
@@ -201,23 +201,22 @@ export const addUserToGroup = async (userId: string, groupId: string) => {
   await kcAdminClient.users.addToGroup({ id: userId, groupId: groupId });
 };
 
-export const createKeyCloakUser = async (userEmail: string) => {
-  const user:
-    | {
-        username: string;
-        firstName: string;
-        lastName: string;
-      }
-    | { error: string }
-    | undefined = await getUserGuid(userEmail);
+export const createKeyCloakUser = async (userPrincipalName: string) => {
+  const user: {
+    id: string;
+    idirGuid: string;
+    mail: string;
+    givenName: string;
+    surname: string;
+  } | null = await getUser(userPrincipalName);
   if (user && !('error' in user)) {
     await kcAdminClient.auth(credentials);
     await kcAdminClient.users.create({
-      email: userEmail,
-      username: user.username,
+      email: user.mail,
+      username: user.idirGuid,
       enabled: true,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstName: user.givenName,
+      lastName: user.surname,
     });
   } else if (user && 'error' in user) {
     console.error('user.error', user.error);
@@ -280,11 +279,11 @@ export async function getSubGroupMembersByLicencePlateAndName(
   return { users: paginate(result, { page, pageSize }) as User[], groupId, total };
 }
 
-export async function addUserToGroupByEmail(userEmail: string, groupId: string) {
+export async function addUserToGroupByEmail(userPrincipalName: string, userEmail: string, groupId: string) {
   let userId = await getUserIdByEmail(userEmail);
   if (!userId) {
-    await createKeyCloakUser(userEmail);
-    await getUserIdByEmail(userEmail);
+    console.log('getUser', await getUser(userPrincipalName));
+    await createKeyCloakUser(userPrincipalName);
     userId = await getUserIdByEmail(userEmail);
     if (userId) await addUserToGroup(userId, groupId);
   } else if (userId) {
