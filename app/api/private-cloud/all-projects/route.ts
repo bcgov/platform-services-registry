@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
         'description',
         'ministry',
         'cluster',
-        'productOwnerEmail',
+        'projectOwnerEmail',
         'projectOwnerName',
         'primaryTechnicalLeadEmail',
         'primaryTechnicalLeadName',
