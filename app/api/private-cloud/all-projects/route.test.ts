@@ -5,7 +5,6 @@ import { MockedFunction } from 'jest-mock';
 import { expect } from '@jest/globals';
 import prisma from '@/lib/prisma';
 import { parse } from 'csv-parse/sync';
-
 import {
   Cluster,
   DecisionStatus,
@@ -17,6 +16,7 @@ import {
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
@@ -40,24 +40,9 @@ const projectData = [
     description: 'This is a sample project description.',
     cluster: Cluster.CLAB,
     ministry: Ministry.AG,
-    projectOwner: {
-      firstName: 'Oamar',
-      lastName: 'Kanji',
-      email: 'oamar.kanji@gov.bc.ca',
-      ministry: Ministry.AG,
-    },
-    primaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
-    },
-    secondaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
-    },
+    projectOwner: findMockUserByIDIR('JOHNDOE'),
+    primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
+    secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
     productionQuota: quota,
     testQuota: quota,
     toolsQuota: quota,
@@ -108,24 +93,9 @@ const projectData = [
     description: 'This is a test project description.',
     cluster: Cluster.SILVER,
     ministry: Ministry.AG,
-    projectOwner: {
-      firstName: 'Christopher',
-      lastName: 'Tan',
-      email: 'christopher.tan@gov.bc.ca',
-      ministry: Ministry.AG,
-    },
-    primaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
-    },
-    secondaryTechnicalLead: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      ministry: Ministry.AG,
-    },
+    projectOwner: findMockUserByIDIR('JOHNDOE'),
+    primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
+    secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
     productionQuota: quota,
     testQuota: quota,
     toolsQuota: quota,
@@ -244,7 +214,8 @@ describe('CSV Download Route', () => {
       const project = createProjectObject(projectData[i], i);
       await prisma.privateCloudProject.create({ data: project });
     }
-    const allProjects = await prisma.privateCloudProject.findMany({});
+
+    await prisma.privateCloudProject.findMany({});
   });
 
   // Clean up database after tests are done

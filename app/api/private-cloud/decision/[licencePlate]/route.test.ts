@@ -7,6 +7,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 // import { cleanUp } from "@/jest.setup";
 import { expect } from '@jest/globals';
+import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -15,18 +16,8 @@ const createRequestBody = {
   description: 'This is a sample project description.',
   cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
   ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'oamar.kanji@gov.bc.ca',
-    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  },
-  primaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  },
+  projectOwner: findMockUserByIDIR('JOHNDOE'),
+  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
@@ -78,12 +69,7 @@ const quota = {
 const adminChanges = {
   name: 'New name from admin',
   description: 'New description from admin',
-  projectOwner: {
-    firstName: 'James',
-    lastName: 'Tim',
-    email: 'jamestim@gov.bc.ca',
-    ministry: 'AGRI',
-  },
+  projectOwner: findMockUserByIDIR('JOHNDOE'),
   testQuota: {
     cpu: 'CPU_REQUEST_8_LIMIT_16',
     memory: 'MEMORY_REQUEST_4_LIMIT_8',
@@ -128,7 +114,7 @@ describe('Create Private Cloud Request Route', () => {
 
     mockedGetServerSession.mockResolvedValue({
       user: {
-        email: 'oamar.kanji@gov.bc.ca',
+        email: createRequestBody.projectOwner.email,
       },
       roles: ['user'],
       isAdmin: false,
@@ -175,7 +161,7 @@ describe('Create Private Cloud Request Route', () => {
   test('should return 403 if not an admin', async () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
-        email: 'oamar.kanji@gov.bc.ca',
+        email: createRequestBody.projectOwner.email,
       },
       roles: ['user'],
       isAdmin: false,
@@ -196,7 +182,7 @@ describe('Create Private Cloud Request Route', () => {
   test('should return 200 if decision request is successful', async () => {
     mockedGetServerSession.mockResolvedValue({
       user: {
-        email: 'oamar.kanji@gov.bc.ca',
+        email: createRequestBody.projectOwner.email,
       },
       roles: ['user', 'admin'],
       isAdmin: true,

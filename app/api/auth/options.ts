@@ -94,7 +94,15 @@ export const authOptions: AuthOptions = {
         ministry = parseMinistryFromDisplayName(adUser.displayName);
       }
 
-      const data = { firstName: given_name, lastName: family_name, email, ministry };
+      const data = {
+        firstName: given_name,
+        lastName: family_name,
+        email,
+        ministry,
+        idir: adUser.onPremisesSamAccountName,
+        upn: adUser.userPrincipalName,
+      };
+
       await prisma.user.upsert({
         where: {
           email,

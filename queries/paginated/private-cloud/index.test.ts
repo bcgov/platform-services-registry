@@ -13,6 +13,7 @@ import {
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 // import { cleanUp } from "@/jest.setup";
 import { expect } from '@jest/globals';
+import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const quota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
@@ -25,24 +26,9 @@ const projectData = {
   description: 'This is a sample project description.',
   cluster: Cluster.CLAB, // Assuming CLUSTER_A is a valid enum value for Cluster
   ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: {
-    firstName: 'Oamar',
-    lastName: 'Kanji',
-    email: 'oamar.kanji@gov.bc.ca',
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  },
-  primaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  },
-  secondaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  },
+  projectOwner: findMockUserByIDIR('JOHNDOE'),
+  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
+  secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
   productionQuota: quota,
   testQuota: quota,
   toolsQuota: quota,
@@ -94,24 +80,9 @@ const projectData2 = {
   description: 'This is a sample project description.',
   cluster: Cluster.SILVER, // Assuming CLUSTER_A is a valid enum value for Cluster
   ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: {
-    firstName: 'Christopher',
-    lastName: 'Tan',
-    email: 'christopher.tan@gov.bc.ca',
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  },
-  primaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  },
-  secondaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-  },
+  projectOwner: findMockUserByIDIR('SARAHWILLIAMS'),
+  primaryTechnicalLead: findMockUserByIDIR('MICHAELBROWN'),
+  secondaryTechnicalLead: findMockUserByIDIR('JESSICADAVIS'),
   productionQuota: quota,
   testQuota: quota,
   toolsQuota: quota,
@@ -302,9 +273,10 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       undefined,
-      'christopher.tan@gov.bc.ca',
+      projectData2.projectOwner.email,
       ['ministry-citz-admin'],
     );
+
     expect(projects.total).toBe(3);
   });
 
@@ -326,7 +298,7 @@ describe('Query projects with filter and search and pagination', () => {
       undefined,
       undefined,
       undefined,
-      'christopher.tan@gov.bc.ca',
+      projectData2.projectOwner.email,
       ['ministry-citz-admin'],
     );
 
