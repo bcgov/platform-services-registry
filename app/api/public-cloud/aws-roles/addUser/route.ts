@@ -4,11 +4,13 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 
 interface QueryParam {
+  userPrincipalName: string;
   userEmail: string;
   groupId: string;
 }
 
 const queryParamSchema = z.object({
+  userPrincipalName: z.string(),
   userEmail: z.string(),
   groupId: z.string(),
 });
@@ -19,11 +21,11 @@ const apiHandler = createApiHandler<unknown, QueryParam>({
 });
 
 export const PUT = apiHandler(async ({ queryParams, session }) => {
-  const { userEmail, groupId } = queryParams;
+  const { userPrincipalName, userEmail, groupId } = queryParams;
 
   let result;
-  if (userEmail && groupId) {
-    result = await addUserToGroupByEmail(userEmail, groupId);
+  if (userPrincipalName && userEmail && groupId) {
+    result = await addUserToGroupByEmail(userPrincipalName, userEmail, groupId);
   }
 
   return NextResponse.json({
