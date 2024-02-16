@@ -84,7 +84,7 @@ const searchSubstringInArray = (searchTerm: string, users: User[]): User[] => {
   return Array.from(results);
 };
 
-const createUser = <V extends User>(data: Partial<V>): V => {
+const generateUser = <V extends User>(data: Partial<V>): V => {
   const newUser = {
     id: '',
     firstName: '',
@@ -101,7 +101,7 @@ const createUser = <V extends User>(data: Partial<V>): V => {
 };
 
 const createUserRole = (user: User): User => {
-  const roleUser = createUser({ ...user });
+  const roleUser = generateUser({ ...user });
   return roleUser;
 };
 
@@ -287,8 +287,7 @@ export async function addUserToGroupByEmail(userEmail: string, groupId: string) 
     await getUserIdByEmail(userEmail);
     userId = await getUserIdByEmail(userEmail);
     if (userId) await addUserToGroup(userId, groupId);
-  }
-  if (userId) {
+  } else if (userId) {
     await addUserToGroup(userId, groupId);
   }
 }
