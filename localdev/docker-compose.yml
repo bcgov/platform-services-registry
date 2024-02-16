@@ -68,7 +68,8 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: bitnami/mongodb:7.0.5
+    # See https://hub.docker.com/r/bitnami/mongodb/tags
+    image: bitnami/mongodb:7.0.5-debian-11-r21
     environment:
     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
     - MONGODB_REPLICA_SET_MODE=primary
