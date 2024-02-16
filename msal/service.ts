@@ -4,11 +4,25 @@ interface MsUser {
   id: string;
   onPremisesSamAccountName: string;
   userPrincipalName: string;
+  extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID: string; // pragma: allowlist secret
   mail: string;
   displayName: string;
   givenName: string;
   surname: string;
   jobTitle: string;
+}
+
+export async function processMsUser(user: MsUser) {
+  return {
+    id: user.id,
+    onPremisesSamAccountName: user.onPremisesSamAccountName,
+    userPrincipalName: user.userPrincipalName,
+    idirGuid: user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,
+    mail: user.mail,
+    displayName: user.displayName,
+    givenName: user.givenName,
+    surname: user.surname,
+  };
 }
 
 export async function sendRequest(url: string) {
@@ -26,6 +40,7 @@ const userAttributes = [
   'id',
   'onPremisesSamAccountName',
   'userPrincipalName',
+  'extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID', // pragma: allowlist secret
   'mail',
   'displayName',
   'givenName',
@@ -45,7 +60,7 @@ export async function getUser(idOruserPrincipalName: string) {
   }
 
   const data = await res.json();
-  return data as MsUser;
+  return processMsUser(data as MsUser);
 }
 
 // See https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http
@@ -64,5 +79,5 @@ export async function listUsersByEmail(email: string) {
   }
 
   const data = await res.json();
-  return (data as { value: MsUser[] }).value;
+  return (data as { value: MsUser[] }).value.map(processMsUser);
 }
