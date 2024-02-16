@@ -29,28 +29,28 @@ jobs:
     - name: Run Email build
       run: npm run email-build
 
-    # - name: Install Docker Compose v2
-    #   # See https://docs.docker.com/compose/install/linux/
-    #   run: |
-    #     DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-    #     mkdir -p $DOCKER_CONFIG/cli-plugins
-    #     curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-    #     chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
-    #     docker compose version
+    - name: Install Docker Compose v2
+      # See https://docs.docker.com/compose/install/linux/
+      run: |
+        DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+        mkdir -p $DOCKER_CONFIG/cli-plugins
+        curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+        chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+        docker compose version
 
-    # - name: Run test
-    #   run: |
-    #     mkdir -p ./localdev/mnt/mongodb
-    #     mkdir -p ./localdev/mnt/postgres
+    - name: Run test
+      run: |
+        mkdir -p ./localdev/mnt/mongodb
+        mkdir -p ./localdev/mnt/postgres
 
-    #     export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
-    #     ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
-    #     node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
-    #     cp .env.example .env.test
-    #     npm run test
+        export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
+        ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
+        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
+        cp .env.example .env.test
+        npm run test
 
-    #     ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
-    #     sudo rm -rf ./localdev/mnt
+        ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
+        sudo rm -rf ./localdev/mnt
 
   pre-commit:
     runs-on: ubuntu-22.04
