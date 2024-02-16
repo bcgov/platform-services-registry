@@ -18,7 +18,9 @@ export async function getUsersPaginatedList(
 
 export async function addUser(userPrincipalName: string, userEmail: string, groupId: string) {
   const result = await instance
-    .put(`public-cloud/aws-roles/addUser?userEmail=${userEmail}&groupId=${groupId}`)
+    .put(
+      `public-cloud/aws-roles/addUser?userPrincipalName=${userPrincipalName}&userEmail=${userEmail}&groupId=${groupId}`,
+    )
     .then((res) => res.data);
   return result;
 }

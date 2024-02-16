@@ -60,7 +60,7 @@ export default function ProductAWSRoles() {
   }
 
   const { data: userAdd, error: fetchingUserAddError } = useQuery<string, Error>({
-    queryKey: ['userPrincipalName', userPrincipalName],
+    queryKey: ['userEmail', userEmail],
     queryFn: () => addUser(userPrincipalName, userEmail, users?.groupId),
     enabled: !!userPrincipalName,
   });

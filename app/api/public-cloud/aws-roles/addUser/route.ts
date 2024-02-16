@@ -10,6 +10,7 @@ interface QueryParam {
 }
 
 const queryParamSchema = z.object({
+  userPrincipalName: z.string(),
   userEmail: z.string(),
   groupId: z.string(),
 });
