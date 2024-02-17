@@ -10,6 +10,7 @@ interface ModalProps {
   isPublicCloud?: boolean;
   isPublicCreate?: boolean;
   isPublicEdit?: boolean;
+  isDeleteRequest?: boolean;
 }
 
 export default function Modal({
@@ -20,6 +21,7 @@ export default function Modal({
   isPublicCloud,
   isPublicCreate,
   isPublicEdit,
+  isDeleteRequest,
 }: ModalProps) {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
@@ -30,6 +32,27 @@ export default function Modal({
     router.push(redirectUrl);
     router.refresh();
   };
+
+  // Dynamically setting the modal title
+  let modalTitle = 'Thank you! We have received your ';
+  if (isDeleteRequest) {
+    modalTitle += 'delete request.';
+  } else if (isEditRequest) {
+    modalTitle += 'edit request.';
+  } else {
+    modalTitle += 'product request.';
+  }
+
+  // Dynamically setting the modal message
+  let modalMessage = 'We have received your ';
+  if (isDeleteRequest) {
+    modalMessage += 'delete request. ';
+  } else if (isEditRequest) {
+    modalMessage += 'edit request. ';
+  } else {
+    modalMessage += 'request for a new product. ';
+  }
+  modalMessage += 'The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email.';
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -64,16 +87,10 @@ export default function Modal({
                       as="h3"
                       className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
-                      Thank you! We have received your
-                      {isEditRequest ? ' edit ' : ' product set '}
-                      request
+                      {modalTitle}
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="font-bcsans text-sm text-gray-900">
-                        We have received your
-                        {isEditRequest ? ' edit request. ' : ' request for a new product set. '}
-                        The Product Owner and Technical Lead(s) will receive the approval/denial decision via email.
-                      </p>
+                      <p className="font-bcsans text-sm text-gray-900">{modalMessage}</p>
                       <p className="font-bcsans text-sm text-gray-900 mt-4">
                         Alternatively, you can also track the status of your requests from the Registry App Dashboard
                       </p>

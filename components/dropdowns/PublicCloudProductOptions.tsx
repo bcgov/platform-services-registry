@@ -48,7 +48,12 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
   return (
     <>
       <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
-      <ReturnModal open={showReturnModal} setOpen={setShowReturnModal} redirectUrl="/public-cloud/products/all" />
+      <ReturnModal
+        isDeleteRequest
+        open={showReturnModal}
+        setOpen={setShowReturnModal}
+        redirectUrl="/public-cloud/products/all"
+      />
       <ErrorModal
         open={showErrorModal}
         setOpen={setShowErrorModal}

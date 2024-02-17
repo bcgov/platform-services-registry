@@ -38,7 +38,7 @@ function EmptyBody() {
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/create`}
       >
-        REQUEST A NEW PRODUCT SET
+        REQUEST A NEW PRODUCT
       </Link>
     </div>
   );
