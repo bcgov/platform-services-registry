@@ -107,3 +107,4 @@ jobs:
         docker-file: localdev/nats-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest
+          type=sha,format=long,prefix=,suffix=
