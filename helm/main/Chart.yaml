@@ -17,3 +17,11 @@ dependencies:
     version: '14.10.1'
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
+  - name: nats
+    version: '0.1.0'
+    repository: 'file://../_nats'
+    condition: nats.enabled
+  - name: nats-provision
+    version: '0.1.0'
+    repository: 'file://../_nats_provision'
+    condition: natsProvision.enabled

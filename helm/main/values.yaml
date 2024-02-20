@@ -122,3 +122,43 @@ backup:
   cronExpression: 0 1 * * *
   storageSize: 10Gi
   rocketchatPrefix:
+
+nats:
+  enabled: false
+  image:
+    repository: nats
+    tag: 2.10.10
+    pullPolicy: IfNotPresent
+
+  nameOverride: pltsvc-mock-nats
+  fullnameOverride: pltsvc-mock-nats
+
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 128Mi
+
+nats-provision:
+  enabled: false
+  image:
+    tag: 593eac339be9ba45de4250baa20d960243a51cbe # pragma: allowlist secret
+    pullPolicy: IfNotPresent
+
+  nameOverride: pltsvc-mock-nats-provision
+  fullnameOverride: pltsvc-mock-nats-provision
+
+  env:
+    "NATS_HOST": "pltsvc-mock-nats-client"
+    "NATS_PORT": "4222"
+    "APP_URL": "http://pltsvc-app:3000"
+
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 128Mi

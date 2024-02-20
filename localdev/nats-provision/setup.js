@@ -2,8 +2,6 @@ import waitOn from 'wait-on';
 import { connect, JSONCodec } from 'nats';
 
 const natsServer = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
-const nc = await connect({ servers: natsServer });
-const jc = JSONCodec();
 
 async function main() {
   console.log('Starting NATS Provision...');
@@ -23,6 +21,9 @@ async function main() {
     delay: 1000,
     window: 5000,
   });
+
+  const nc = await connect({ servers: natsServer });
+  const jc = JSONCodec();
 
   // Subscribe to NATS topics for private cloud provisioning
   const proms = ['clab', 'klab', 'silver', 'gold', 'klab2', 'emerald'].map((cluster) => {
