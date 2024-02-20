@@ -6,23 +6,12 @@ interface ModalProps {
   open: boolean;
   setOpen: any;
   redirectUrl: string;
-  isEditRequest?: boolean;
-  isPublicCloud?: boolean;
+  modalTitle: string;
+  modalMessage: string;
   isPublicCreate?: boolean;
-  isPublicEdit?: boolean;
-  isDeleteRequest?: boolean;
 }
 
-export default function Modal({
-  open,
-  setOpen,
-  redirectUrl,
-  isEditRequest,
-  isPublicCloud,
-  isPublicCreate,
-  isPublicEdit,
-  isDeleteRequest,
-}: ModalProps) {
+export default function Modal({ open, setOpen, redirectUrl, modalTitle, modalMessage, isPublicCreate }: ModalProps) {
   const cancelButtonRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -32,27 +21,6 @@ export default function Modal({
     router.push(redirectUrl);
     router.refresh();
   };
-
-  // Dynamically setting the modal title
-  let modalTitle = 'Thank you! We have received your ';
-  if (isDeleteRequest) {
-    modalTitle += 'delete request.';
-  } else if (isEditRequest) {
-    modalTitle += 'edit request.';
-  } else {
-    modalTitle += 'product request.';
-  }
-
-  // Dynamically setting the modal message
-  let modalMessage = 'We have received your ';
-  if (isDeleteRequest) {
-    modalMessage += 'delete request. ';
-  } else if (isEditRequest) {
-    modalMessage += 'edit request. ';
-  } else {
-    modalMessage += 'request for a new product. ';
-  }
-  modalMessage += 'The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email.';
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -95,7 +63,7 @@ export default function Modal({
                         Alternatively, you can also track the status of your requests from the Registry App Dashboard
                       </p>
                     </div>
-                    {isPublicCloud && isPublicCreate && (
+                    {isPublicCreate && (
                       <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
                         <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
                           <span className="font-bold text-blue-700 font-sans text-xs">i</span>
@@ -106,24 +74,6 @@ export default function Modal({
                             The approval of a new product creation request is subject to having a signed Memorandum of
                             Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
                             email us at
-                            <span> </span>
-                            <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                              Cloud.Pathfinder@gov.bc.ca
-                            </a>
-                            .
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {isPublicCloud && isPublicEdit && (
-                      <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
-                        <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
-                          <span className="font-bold text-blue-700 font-sans text-xs">i</span>
-                        </div>
-                        <div className="flex flex-row items-center">
-                          <p className="font-bcsans text-sm text-blue-700 font-semibold mr-2">Note:</p>
-                          <p className="font-bcsans text-sm text-blue-700">
-                            In order to request a product deletion, please email us at
                             <span> </span>
                             <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
                               Cloud.Pathfinder@gov.bc.ca

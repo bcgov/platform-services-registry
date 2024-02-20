@@ -185,10 +185,11 @@ export default function EditProject({ params }: { params: { licencePlate: string
         type="create"
       />
       <ReturnModal
-        isEditRequest
         open={openReturn}
         setOpen={setOpenReturn}
         redirectUrl="/private-cloud/products/active-requests"
+        modalTitle="Thank you! We have received your edit request."
+        modalMessage="We have received your edit request for your product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />
     </div>
   );
