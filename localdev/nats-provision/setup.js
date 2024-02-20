@@ -76,6 +76,9 @@ async function main() {
     })(),
   );
 
+  // Monitor all subscriptions
+  console.log('Monitoring all subscriptions');
+
   await Promise.all(proms);
 }
 
