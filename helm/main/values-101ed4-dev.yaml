@@ -37,3 +37,9 @@ backup:
   cronExpression: 0 1 * * *
   storageSize: 10Gi
   rocketchatPrefix: "[Registry DEV]"
+
+nats:
+  enabled: true
+
+nats-provision:
+  enabled: true
