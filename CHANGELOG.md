@@ -1,3 +1,23 @@
+## [0.16.1](https://github.com/bcgov/platform-services-registry/compare/v0.16.0...v0.16.1) (2024-02-20)
+
+
+### Features
+
+* add mock-up provisioner in local env ([176887c](https://github.com/bcgov/platform-services-registry/commit/176887cd8f0ea1e4ed696bf98ad9ff1f3efe1740))
+* clean up ms query data ([384dcd3](https://github.com/bcgov/platform-services-registry/commit/384dcd394c41551c8cac39add6c205a915f599fb))
+* display IDIR, UPN in user search ([640af7a](https://github.com/bcgov/platform-services-registry/commit/640af7a88c300a2437b0d8740627f002814a460b))
+
+
+### Bug Fixes
+
+* **2003:** various small visual bugs ([84013fb](https://github.com/bcgov/platform-services-registry/commit/84013fb7c8863bad2742388d83c407ba0e5b4d13))
+
+
+### Docs
+
+* add tab in the first paragraphs ([52c9656](https://github.com/bcgov/platform-services-registry/commit/52c9656f666013a3e878512744a00ac2f7e2e006))
+* update README.md ([8a5b0f6](https://github.com/bcgov/platform-services-registry/commit/8a5b0f6849b1939fd3bbaf8e56373733f421fa85))
+
 ## [0.16.0](https://github.com/bcgov/platform-services-registry/compare/v0.15.0...v0.16.0) (2024-02-13)
 
 
