@@ -144,7 +144,7 @@ nats:
 nats-provision:
   enabled: false
   image:
-    tag: 6e51dc642588fbf876ebc8f4f762caf6887936a0 # pragma: allowlist secret
+    tag: a911daefeb491bdd3e61823793cf10ce491b3d4d # pragma: allowlist secret
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-mock-nats-provision
