@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  ENABLE_DELETION_CHECK,
   CLAB_SERVICE_ACCOUNT_TOKEN,
   KLAB_SERVICE_ACCOUNT_TOKEN,
   KLAB2_SERVICE_ACCOUNT_TOKEN,
@@ -50,6 +51,15 @@ export default async function openshiftDeletionCheck(
   namespacePrefix: string,
   clusterNameParam: string,
 ): Promise<DeletableField> {
+  if (!ENABLE_DELETION_CHECK) {
+    return {
+      namespaceDeletability: true,
+      podsDeletability: true,
+      pvcDeletability: true,
+      provisionerDeletionChecked: true,
+    };
+  }
+
   const CLUSTER_SERVICE_ACCOUNT_TOKEN = {
     clab: CLAB_SERVICE_ACCOUNT_TOKEN || '',
     klab: KLAB_SERVICE_ACCOUNT_TOKEN || '',
