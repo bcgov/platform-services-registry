@@ -155,6 +155,18 @@ export default function ProjectDescription({
                 </option>
               ))}
             </select>
+            {!session?.isAdmin && (
+              <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+                Select your hosting tier. Read more about hosting tiers{' '}
+                <a
+                  href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  here
+                </a>
+                .
+              </p>
+            )}
             {session?.isAdmin && (
               <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
                 Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers{' '}
