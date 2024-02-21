@@ -27,8 +27,8 @@
 
 ```mermaid
 flowchart LR
-    A[Create request] --> B(Emails:
-    Create Request Received sent to Admins
+    A[Create request] --> B(Emails:<br>
+    Create Request Received sent to Admins<br>
     Create Request Received sent to PO/TLs
     )
     B --> C{Admin decides on the request}
@@ -62,8 +62,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[Edit quota request] --> B(Emails:
-    Edit Quota Request Received sent to Admins
+    A[Edit quota request] --> B(Emails:<br>
+    Edit Quota Request Received sent to Admins<br>
     Edit Quota Request Received sent to PO/TLs
     )
     B --> C{Admin decides on the request}
@@ -94,8 +94,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[Delete project set request] --> B(Emails:
-    Delete project set Request Received sent to Admins
+    A[Delete project set request] --> B(Emails:<br>
+    Delete project set Request Received sent to Admins<br>
     Delete project set Request Received sent to PO/TLs
     )
     B --> C{Admin decides on the request}
