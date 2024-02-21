@@ -5,6 +5,7 @@ export const IS_LOCAL = APP_ENV === 'localdev';
 export const IS_DEV = APP_ENV === 'dev';
 export const IS_TEST = APP_ENV === 'test';
 export const IS_PROD = APP_ENV === 'prod';
+export const ENABLE_DELETION_CHECK = !['localdev', 'dev'].includes(APP_ENV);
 export const BASE_URL = process.env.BASE_URL || '';
 export const AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
 export const EMAIL_PREFIX = IS_PROD ? '' : `[${process.env.APP_ENV}] `;
