@@ -2,26 +2,26 @@
 
 ### Private Cloud
 
-#### New project set request emails Scenarios
+#### New Project Set Request Email Scenarios
 
-1. New Project set request is submitted by user
-2. Email notification to Admins is sent, it contains:
+1. New Project Set Request Submitted by User:
+2. Email notification sent to Admins containing:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
-3. Email notification request received to Product PO/TLs is sent, it contains:
+3. Email Notification sent to Product PO/TLs containing:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
    4. Default quota
-4. Request is approved/rejected by Admin
-   1. in case request approved Email notification request approved to Product PO/TLs is sent, it contains:
+4. Request Approval/Rejection by Admin
+   1. in case request is approved, an email notification sent to Product PO/TLs containing:
       1. Product name/description/ministry/cluster
       2. Product contacts list
       3. Product namespace details
       4. Default quota
       5. Admin review comments4.
-   2. in case request rejected Email notification request rejected to Product PO/TLs is sent, it contains:
+   2. in case request is rejected, an email notification sent to Product PO/TLs containing:
       1. Product name
       2. Admin review comments
 
@@ -35,25 +35,25 @@ flowchart LR
 
 #### Edit quota request emails Scenarios
 
-1. New Edit quota request is submitted by user
-2. Email notification to Admins is sent, it contains:
+1. A new Edit quota request is submitted by the user.
+2. An email notification is sent to Admins, which includes:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
-3. Email notification request received to Product PO/TLs is sent, it contains:
+3. An email notification of the request received is sent to Product PO/TLs, which includes:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
    4. Requested quota
    5. Current quota
-4. Request is approved/rejected by Admin
-   1. in case request approved Email notification request approved to Product PO/TLs is sent, it contains:
+4. The request is approved/rejected by the Admin.
+   1. In case request is approved, an Email notification of the approved request is sent to Product PO/TLs, containing:
       1. Product name/description/ministry/cluster
       2. Product contacts list
       3. Product namespace details
       4. Updated quota
       5. Admin review comments.
-   2. in case request rejected Email notification request rejected to Product PO/TLs is sent, it contains:
+   2. In case request is rejected, an Email notification of the rejected request is sent to Product PO/TLs, containing:
       1. Product name
       2. Admin review comments
 
@@ -67,22 +67,22 @@ flowchart LR
 
 #### Delete request emails Scenarios
 
-1. New Delete quota request is submitted by user
-2. Email notification to Admins is sent, it contains:
+1. A new delete quota request is submitted by the user.
+2. An email notification is sent to admins, containing:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
-3. Email notification request received to Product PO/TLs is sent, it contains:
+3. An email notification of the request received is sent to Product PO/TLs, which includes:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
-4. Request is approved/rejected by Admin
-   1. in case request approved Email notification request approved to Product PO/TLs is sent, it contains:
+4. The request is approved/rejected by the Admin.
+   1. In case request is approved, an Email notification of the approved request is sent to Product PO/TLs, containing:
       1. Product name/description/ministry/cluster
       2. Product contacts list
       3. Product namespace details
       4. Admin review comments.
-   2. in case request rejected Email notification request rejected to Product PO/TLs is sent, it contains:
+   2. In case request is rejected, an Email notification of the rejected request is sent to Product PO/TLs, containing:
       1. Product name
       2. Admin review comments
 
@@ -94,20 +94,20 @@ flowchart LR
     C -->|Request rejected| E(Delete project set Request Rejected email sent to PO/TLs)
 ```
 
-#### Edit List of Contacts or/and Name or/and Description or/and Ministry or/and Common Components request emails Scenarios
+#### Edit List of Contacts or/and Names or/and Descriptions or/and Ministries or/and Common Components Request Emails Scenarios
 
-1. New Edit request is submitted by user
-2. Email notification request received is sent to Product PO/TLs, it contains:
+1. A new edit request is submitted by a user.
+2. An email notification request received is sent to Product PO/TLs, containing:
    1. Product name/description/ministry/cluster
    2. Product contacts list
    3. Product namespace details
    4. Requested changes
    5. Current values for requested changes
-3. Email notification request provisioned is sent to Product PO/TLs, it contains:
-4. Product name/description/ministry/cluster
-5. Product contacts list
-6. Product namespace details
-7. Updated values
+3. An email notification request provisioned is sent to Product PO/TLs, containing:
+   1. Product name/description/ministry/cluster
+   2. Product contacts list
+   3. Product namespace details
+   4. Updated values
 
 ```mermaid
 flowchart LR
