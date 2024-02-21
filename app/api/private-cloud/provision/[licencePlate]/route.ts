@@ -39,8 +39,6 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     });
   }
 
-  console.log('requestrequest', request.type);
-
   const updateRequest = prisma.privateCloudRequest.update({
     where: {
       id: request.id,
