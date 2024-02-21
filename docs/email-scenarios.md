@@ -27,8 +27,7 @@
 
 ```mermaid
 flowchart LR
-    A[Create request] --> B(Emails:<br>Create Request Received sent to Admins<br>Create Request Received sent to PO/TLs
-    )
+    A[Create request] --> B(Emails:<br>Create Request Received sent to Admins<br>Create Request Received sent to PO/TLs)
     B --> C{Admin decides on the request}
     C -->|Request approved| D(Create Request Approved email sent to PO/TLs)
     C -->|Request rejected| E(Create Request Rejected email sent to PO/TLs)
@@ -60,8 +59,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[Edit quota request] --> B(Emails:<br>Edit Quota Request Received sent to Admins<br>Edit Quota Request Received sent to PO/TLs
-    )
+    A[Edit quota request] --> B(Emails:<br>Edit Quota Request Received sent to Admins<br>Edit Quota Request Received sent to PO/TLs)
     B --> C{Admin decides on the request}
     C -->|Request approved| D(Edit Quota Request Approved email sent to PO/TLs)
     C -->|Request rejected| E(Edit Quota Request Rejected email sent to PO/TLs)
@@ -90,8 +88,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[Delete project set request] --> B(Emails:<br>Delete project set Request Received sent to Admins<br>Delete project set Request Received sent to PO/TLs
-    )
+    A[Delete project set request] --> B(Emails:<br>Delete project set Request Received sent to Admins<br>Delete project set Request Received sent to PO/TLs)
     B --> C{Admin decides on the request}
     C -->|Request approved| D(Delete project set Request Approved email sent to PO/TLs)
     C -->|Request rejected| E(Delete project set Request Rejected email sent to PO/TLs)
