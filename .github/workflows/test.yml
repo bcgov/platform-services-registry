@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@473055ba18d6d2da209cd46110aadb9275e3194e
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -43,6 +43,7 @@ jobs:
         mkdir -p ./localdev/mnt/mongodb
         mkdir -p ./localdev/mnt/postgres
 
+        export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
         cp .env.example .env.test
@@ -56,7 +57,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@473055ba18d6d2da209cd46110aadb9275e3194e
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools

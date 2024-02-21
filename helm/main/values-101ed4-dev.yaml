@@ -15,7 +15,7 @@ app:
     "AUTH_RELM": "platform-services"
     "CHES_TOKEN_URL": "https://dev.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token"
     "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
-    "NATS_HOST": "nats://nats.eb6118-dev.svc"
+    "NATS_HOST": "pltsvc-mock-nats-client"
     "NATS_PORT": "4222"
 
   route:
@@ -37,3 +37,9 @@ backup:
   cronExpression: 0 1 * * *
   storageSize: 10Gi
   rocketchatPrefix: "[Registry DEV]"
+
+nats:
+  enabled: true
+
+nats-provision:
+  enabled: true
