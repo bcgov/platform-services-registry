@@ -6,8 +6,17 @@ import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
 import ExportCard from '@/components/analytics/ExportCard';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/options';
+import { redirect } from 'next/navigation';
 
 export default async function AnalyticsDashboard() {
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.isAdmin) {
+    redirect('/login?callbackUrl=/private-cloud/products/all');
+  }
+
   const quotaChangedChartData = await quotaEditRequests();
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
