@@ -1,17 +1,23 @@
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
-import { combinedQuotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
+import { quotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
+import ExportCard from '@/components/analytics/ExportCard';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
+import { redirect } from 'next/navigation';
 
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
 
-  const quotaChangedChartData = await combinedQuotaEditRequests();
+  if (!session || !session.isAdmin) {
+    redirect('/login?callbackUrl=/private-cloud/products/all');
+  }
+
+  const quotaChangedChartData = await quotaEditRequests();
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
   const requestDecisionTimeChartData = await requestDecisionTime();
@@ -54,6 +60,10 @@ export default async function AnalyticsDashboard() {
           categories={['Percentage']}
           colors={['indigo']}
           exportApiEndpoint="/api/private-cloud/analytics/csv/decision-time"
+        />
+        <ExportCard
+          title="Users with quota edit requests"
+          apiEnpoint="/api/private-cloud/analytics/csv/quota-request-users"
         />
       </div>
     </div>
