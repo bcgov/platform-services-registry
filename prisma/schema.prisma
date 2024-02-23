@@ -113,6 +113,7 @@ model PublicCloudRequest {
   decisionMakerEmail     String?
   type                   PublicCloudRequestType
   decisionStatus         DecisionStatus
+  requestComment         String?
   adminComment           String?
   active                 Boolean                      @default(true)
   created                DateTime                     @default(now())
