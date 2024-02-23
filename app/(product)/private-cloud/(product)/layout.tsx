@@ -2,8 +2,12 @@
 
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { $Enums } from '@prisma/client';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/Tabs';
+import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
+import { getPriviateCloudRequestedProject } from '@/services/private-cloud';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession({
@@ -12,6 +16,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const params = useParams<{ licencePlate: string }>();
   const { licencePlate } = params;
+
+  // TODO: Fetching the requested project multiple times in both the layout and page levels may not be efficient.
+  // Let's explore integrating a state management system for optimization as we proceed.
+  const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['requestedProject', licencePlate],
+    queryFn: () => getPriviateCloudRequestedProject(licencePlate),
+    enabled: !!params.licencePlate,
+  });
 
   const tabs: ITab[] = [
     {
@@ -38,9 +50,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Tabs tabs={tabs}>
-        <PrivateCloudProductOptions disabled={false} />
+        <PrivateCloudProductOptions disabled={data?.type === $Enums.RequestType.DELETE || !!data} />
       </Tabs>
-      <div className="mt-14"> {children}</div>
+      <div className="mt-14">{children}</div>
     </div>
   );
 }

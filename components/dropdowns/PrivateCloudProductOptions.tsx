@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid';
-import classNames from '@/components/utils/classnames';
+import classNames from 'classnames';
 import DeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
 import { useParams, useRouter } from 'next/navigation';
@@ -46,6 +46,8 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
     }
   };
 
+  if (disabled) return null;
+
   return (
     <>
       <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
@@ -88,8 +90,8 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
                     type="button"
                     onClick={() => setShowModal(true)}
                     className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'group flex items-center px-4 py-2 text-sm w-full',
+                      active && !disabled ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                     )}
                   >
                     <TrashIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />

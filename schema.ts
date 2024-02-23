@@ -105,7 +105,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   ministry: z.nativeEnum(Ministry),
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional(),
+  secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   commonComponents: CommonComponentsInputSchema,
 });
 
@@ -128,8 +128,8 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   ministry: z.nativeEnum(Ministry),
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional(),
-  adminComment: string().optional(),
+  secondaryTechnicalLead: UserInputSchema.optional().nullable(),
+  requestComment: string().optional(),
 });
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(
