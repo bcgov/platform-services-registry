@@ -157,6 +157,6 @@ export const sendProvisionedEmails = async (product: PublicCloudRequestedProject
       subject: `Product has been provisioned`,
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW PROVISIONED EMAIL');
+    console.error('ERROR SENDING NEW PROVISIONED EMAIL', error);
   }
 };
