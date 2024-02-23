@@ -7,31 +7,6 @@ interface QuotaChanges {
   [key: string]: number;
 }
 
-export type DataPoint = {
-  date: string;
-  'All quota requests': number;
-};
-
-export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}>;
-
-export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-  };
-}>;
-
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
 function parseDate(date: Date) {
@@ -39,7 +14,7 @@ function parseDate(date: Date) {
 }
 
 export async function usersWithQuotaEditRequests(): Promise<User[]> {
-  const quotaChangedRequests: PrivateCloudRequestWithRequestedProject[] = await prisma.privateCloudRequest.findMany({
+  const quotaChangedRequests = await prisma.privateCloudRequest.findMany({
     where: {
       isQuotaChanged: true,
     },
