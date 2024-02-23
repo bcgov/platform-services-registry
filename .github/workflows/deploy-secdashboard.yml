@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@473055ba18d6d2da209cd46110aadb9275e3194e
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@9b79eb6d8ec51bce42cb4e77f0a174fc80cf3cb9
