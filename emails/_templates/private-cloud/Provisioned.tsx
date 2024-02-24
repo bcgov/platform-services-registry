@@ -105,7 +105,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   <li>
                     <Text className="">
                       We&apos;ve set up a service account for you with read access to Artifactory. This account allows
-                      you to access locally cached container images, speeding up builds and pod startup. It also grants
+                      you to access locally cached c​ontainer images, speeding up builds and pod startup. It also grants
                       you access to helpful pre-built images maintained by the Platform Services team
                     </Text>
                   </li>
@@ -195,7 +195,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                 <Heading className="text-lg">Advanced cluster security (ACS)</Heading>
                 <Text className="">
                   Red Hat Advanced Cluster Security (ACS) helps you enforce DevOps and security best practices in your
-                  application by finding vulnerabilities in your running containers:
+                  application by finding vulnerabilities in your running c​ontainers:
                 </Text>
                 <ul>
                   <li>
