@@ -89,7 +89,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
 
-  sendRequestApprovalEmails(request);
+  // TODO: revisit to delete for good
+  // sendRequestApprovalEmails(request);
 
   return new NextResponse(`Decision request for ${request.licencePlate} successfully created and provisioned.`, {
     status: 200,
