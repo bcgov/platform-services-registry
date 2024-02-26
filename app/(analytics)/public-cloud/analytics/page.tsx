@@ -1,3 +1,4 @@
+import _toUpper from 'lodash-es/toUpper';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
@@ -6,6 +7,17 @@ import { numberOfProductsOverTime } from '@/analytics/public-cloud/products';
 import { requestDecisionTime } from '@/analytics/public-cloud/requestDecisionTime';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
+import { ministryDistributions } from '@/analytics/public-cloud/ministryDistributions';
+import PieGraph from '@/components/analytics/PieGraph';
+import { ministriesNames } from '@/constants';
+
+function ministryNameToDisplayName(name: string) {
+  return ministriesNames.find((item) => item.name === name)?.humanFriendlyName ?? '';
+}
+
+function mapProviderDistributions(items: { _id: string; value: number }[]) {
+  return items.map(({ _id, value }) => ({ label: ministryNameToDisplayName(_id), value }));
+}
 
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
@@ -13,6 +25,9 @@ export default async function AnalyticsDashboard() {
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
   const requestDecisionTimeChartData = await requestDecisionTime();
+  const ministryDistributionData = await ministryDistributions();
+
+  const awsData = mapProviderDistributions(ministryDistributionData[0]);
 
   return (
     <div className="m-12">
@@ -44,6 +59,13 @@ export default async function AnalyticsDashboard() {
           categories={['Percentage']}
           colors={['indigo']}
           exportApiEndpoint="/api/public-cloud/analytics/csv/decision-time"
+        />
+        <PieGraph
+          title="Ministry per Provider"
+          subtitle="This graph shows the cluster distributions by providers"
+          data={{
+            AWS: awsData,
+          }}
         />
       </div>
     </div>

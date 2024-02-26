@@ -9,6 +9,17 @@ import ExportCard from '@/components/analytics/ExportCard';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
+import { ministryDistributions } from '@/analytics/private-cloud/ministryDistributions';
+import PieGraph from '@/components/analytics/PieGraph';
+import { ministriesNames } from '@/constants';
+
+function ministryNameToDisplayName(name: string) {
+  return ministriesNames.find((item) => item.name === name)?.humanFriendlyName ?? '';
+}
+
+function mapMinistryDistributions(items: { _id: string; value: number }[]) {
+  return items.map(({ _id, value }) => ({ label: ministryNameToDisplayName(_id), value }));
+}
 
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
@@ -21,6 +32,12 @@ export default async function AnalyticsDashboard() {
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();
   const requestDecisionTimeChartData = await requestDecisionTime();
+  const ministryDistributionData = await ministryDistributions();
+
+  const allClusterData = mapMinistryDistributions(ministryDistributionData[0]);
+  const silverData = mapMinistryDistributions(ministryDistributionData[1]);
+  const goldData = mapMinistryDistributions(ministryDistributionData[2]);
+  const emeraldData = mapMinistryDistributions(ministryDistributionData[3]);
 
   return (
     <div className="m-12">
@@ -60,6 +77,16 @@ export default async function AnalyticsDashboard() {
           categories={['Percentage']}
           colors={['indigo']}
           exportApiEndpoint="/api/private-cloud/analytics/csv/decision-time"
+        />
+        <PieGraph
+          title="Ministry per Cluster"
+          subtitle="This graph shows the cluster distributions by ministries"
+          data={{
+            All: allClusterData,
+            Silver: silverData,
+            Gold: goldData,
+            Emerald: emeraldData,
+          }}
         />
         <ExportCard
           title="Users with quota edit requests"
