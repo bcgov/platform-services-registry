@@ -12,6 +12,7 @@ const config = {
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
   setupFilesAfterEnv: ['./jest.setup.js'],
+  modulePathIgnorePatterns: ['<rootDir>/.react-email'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     'lodash-es': 'lodash',
