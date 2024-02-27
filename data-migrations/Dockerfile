@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY ["package.json", "package-lock.json", "migrate-mongo-config.js", "migrations", "./"]
 
-RUN npm install
+RUN npm install --ignore-scripts
 
 USER node
 
