@@ -21,6 +21,7 @@ export default function Page() {
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAGMinistry, setIsAGMinistry] = useState<boolean>(true);
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudCreateRequestBodySchema),
@@ -59,9 +60,9 @@ export default function Page() {
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
+        <form onSubmit={methods.handleSubmit(() => setOpenCreate(isAGMinistry && true))} autoComplete="off">
           <div className="space-y-12">
-            <ProjectDescription isCreatePage />
+            <ProjectDescription isCreatePage isAGMinistry={isAGMinistry} setIsAGMinistry={setIsAGMinistry} />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <CommonComponents />
           </div>

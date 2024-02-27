@@ -148,3 +148,5 @@ export const ministriesNames = [
     humanFriendlyName: 'Ministry of Housing',
   },
 ];
+
+export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];

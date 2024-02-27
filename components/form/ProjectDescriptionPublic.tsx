@@ -2,20 +2,35 @@
 
 import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
-import { providers, ministriesNames } from '@/constants';
+import { providers, ministriesNames, AGMinistries } from '@/constants';
+import { useState } from 'react';
+import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+
 export default function ProjectDescriptionPublic({
   disabled,
   providerDisabled,
   isCreatePage,
+  isAGMinistry,
+  setIsAGMinistry,
 }: {
   disabled?: boolean;
   providerDisabled?: boolean;
   isCreatePage?: boolean;
+  isAGMinistry?: boolean;
+  setIsAGMinistry?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const {
     register,
     formState: { errors },
   } = useFormContext();
+  const [isCheckBoxShown, setIsCheckBoxShown] = useState<boolean>(false);
+
+  const handleSelectMinistryChange = (event: { target: { value: string } }) => {
+    if (AGMinistries.indexOf(event.target.value) !== -1) {
+      setIsCheckBoxShown(true);
+      if (setIsAGMinistry) setIsAGMinistry(false);
+    }
+  };
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -95,6 +110,7 @@ export default function ProjectDescriptionPublic({
               disabled={disabled}
               id="ministry"
               {...register('ministry')}
+              onChange={handleSelectMinistryChange}
               className={classNames(
                 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                 disabled
@@ -113,6 +129,14 @@ export default function ProjectDescriptionPublic({
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the government ministry that this product belongs to
             </p>
+            {isCheckBoxShown && (
+              <AGMinistryCheckBox
+                disabled={disabled}
+                isCheckBoxShown={isCheckBoxShown}
+                isAGMinistry={isAGMinistry}
+                setIsAGMinistry={setIsAGMinistry}
+              />
+            )}
           </div>
         </div>
 

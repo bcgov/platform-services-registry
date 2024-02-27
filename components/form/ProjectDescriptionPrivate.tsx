@@ -1,17 +1,22 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
-import { clusters, ministriesNames } from '@/constants';
+import { clusters, ministriesNames, AGMinistries } from '@/constants';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 
 export default function ProjectDescription({
   disabled,
   clusterDisabled,
   isCreatePage,
+  isAGMinistry,
+  setIsAGMinistry,
 }: {
   disabled?: boolean;
   clusterDisabled?: boolean;
   isCreatePage?: boolean;
+  isAGMinistry?: boolean;
+  setIsAGMinistry?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const {
     register,
@@ -19,6 +24,7 @@ export default function ProjectDescription({
   } = useFormContext();
 
   const [clustersList, setClustersList] = useState(clusters);
+  const [isCheckBoxShown, setIsCheckBoxShown] = useState<boolean>(false);
 
   const { data: session } = useSession({
     required: true,
@@ -29,6 +35,13 @@ export default function ProjectDescription({
       setClustersList(clusters.filter((cluster) => cluster.indexOf('LAB') === -1));
     }
   }, [session]);
+
+  const handleSelectMinistryChange = (event: { target: { value: string } }) => {
+    if (AGMinistries.indexOf(event.target.value) !== -1) {
+      setIsCheckBoxShown(true);
+      if (setIsAGMinistry) setIsAGMinistry(false);
+    }
+  };
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -79,7 +92,6 @@ export default function ProjectDescription({
             Please provide a descriptive product name with no acronyms
           </p>
         </div>
-
         <div className="col-span-full">
           <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
             Description
@@ -96,7 +108,7 @@ export default function ProjectDescription({
                 disabled
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
-              )} // defaultValue={""}
+              )}
             />
           </div>
           <p className={classNames(errors.description ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -112,6 +124,7 @@ export default function ProjectDescription({
               disabled={disabled}
               id="ministry"
               {...register('ministry')}
+              onChange={handleSelectMinistryChange}
               className={classNames(
                 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                 disabled
@@ -126,13 +139,19 @@ export default function ProjectDescription({
                 </option>
               ))}
             </select>
-
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the government ministry that this product belongs to
             </p>
+            {isCheckBoxShown && (
+              <AGMinistryCheckBox
+                disabled={disabled}
+                isCheckBoxShown={isCheckBoxShown}
+                isAGMinistry={isAGMinistry}
+                setIsAGMinistry={setIsAGMinistry}
+              />
+            )}
           </div>
         </div>
-
         <div className="sm:col-span-3 sm:ml-10">
           <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
             Hosting Tier

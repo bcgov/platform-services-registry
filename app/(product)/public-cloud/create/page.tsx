@@ -6,7 +6,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
-import { useRouter } from 'next/navigation';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -22,6 +21,7 @@ export default function Page() {
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAGMinistry, setIsAGMinistry] = useState<boolean>(true);
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudCreateRequestBodySchema),
@@ -62,9 +62,9 @@ export default function Page() {
   return (
     <div>
       <FormProvider {...methods}>
-        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(isAGMinistry && true))}>
           <div className="space-y-12">
-            <ProjectDescription isCreatePage />
+            <ProjectDescription isCreatePage isAGMinistry={isAGMinistry} setIsAGMinistry={setIsAGMinistry} />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <Budget />
             <AccountCoding />
