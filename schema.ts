@@ -107,6 +107,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   commonComponents: CommonComponentsInputSchema,
+  isAgMinistryChecked: z.boolean().optional(),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({
@@ -139,6 +140,7 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
     toolsQuota: QuotaInputSchema,
     developmentQuota: QuotaInputSchema,
     userComment: string().optional(),
+    isAgMinistryChecked: z.boolean().optional(),
   }),
 );
 

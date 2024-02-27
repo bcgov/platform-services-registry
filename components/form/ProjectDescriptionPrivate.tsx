@@ -6,17 +6,13 @@ import { useState, useEffect } from 'react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 
 export default function ProjectDescription({
+  mode,
   disabled,
   clusterDisabled,
-  isCreatePage,
-  isAGMinistry,
-  setIsAGMinistry,
 }: {
+  mode: string;
   disabled?: boolean;
   clusterDisabled?: boolean;
-  isCreatePage?: boolean;
-  isAGMinistry?: boolean;
-  setIsAGMinistry?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const {
     register,
@@ -24,7 +20,6 @@ export default function ProjectDescription({
   } = useFormContext();
 
   const [clustersList, setClustersList] = useState(clusters);
-  const [isCheckBoxShown, setIsCheckBoxShown] = useState<boolean>(false);
 
   const { data: session } = useSession({
     required: true,
@@ -36,13 +31,6 @@ export default function ProjectDescription({
     }
   }, [session]);
 
-  const handleSelectMinistryChange = (event: { target: { value: string } }) => {
-    if (AGMinistries.indexOf(event.target.value) !== -1) {
-      setIsCheckBoxShown(true);
-      if (setIsAGMinistry) setIsAGMinistry(false);
-    }
-  };
-
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
@@ -51,7 +39,7 @@ export default function ProjectDescription({
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
-      {isCreatePage && (
+      {mode === 'create' && (
         <p className="font-bcsans text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
@@ -85,7 +73,15 @@ export default function ProjectDescription({
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
               )}
-              {...register('name')}
+              {...register('name', {
+                validate: {
+                  minLength: (v) => {
+                    console.log('sss', v);
+                    return v.length >= 5;
+                  },
+                  matchPattern: (v) => /^[a-zA-Z0-9_]+$/.test(v),
+                },
+              })}
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -124,7 +120,6 @@ export default function ProjectDescription({
               disabled={disabled}
               id="ministry"
               {...register('ministry')}
-              onChange={handleSelectMinistryChange}
               className={classNames(
                 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                 disabled
@@ -142,14 +137,7 @@ export default function ProjectDescription({
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the government ministry that this product belongs to
             </p>
-            {isCheckBoxShown && (
-              <AGMinistryCheckBox
-                disabled={disabled}
-                isCheckBoxShown={isCheckBoxShown}
-                isAGMinistry={isAGMinistry}
-                setIsAGMinistry={setIsAGMinistry}
-              />
-            )}
+            {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
           </div>
         </div>
         <div className="sm:col-span-3 sm:ml-10">

@@ -17,6 +17,7 @@ import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[l
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
 import CommonComponents from '@/components/form/CommonComponents';
 import { PrivateCloudProject } from '@prisma/client';
+import { AGMinistries } from '@/constants';
 
 async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
   const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
@@ -80,10 +81,20 @@ export default function EditProject({ params }: { params: { licencePlate: string
   // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
   // in an error.
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudEditRequestBodySchema),
+    resolver: zodResolver(
+      PrivateCloudEditRequestBodySchema.refine(
+        (formData) => {
+          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+        },
+        {
+          message: 'AG Ministry Checkbox should be checked.',
+          path: ['isAgMinistryChecked'],
+        },
+      ),
+    ),
     defaultValues: async () => {
       const response = await fetchProject(params.licencePlate);
-      return response;
+      return { ...response, isAgMinistryChecked: true };
     },
   });
 
@@ -154,7 +165,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
                 There is already an active request for this project. You can not edit this project at this time.
               </h3>
             )}
-            <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
+            <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
