@@ -1,0 +1,47 @@
+{{- if and .Values.migration.enabled (gt .Release.Revision 1)}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "app.fullname" . }}-pre-data-migrations
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade,pre-rollback"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-weight": "-4"
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      name: {{ include "app.fullname" . }}-pre-data-migrations
+      annotations:
+      {{- $podAnnotations := merge (.Values.podAnnotations | default dict) (.Values.global.vault.podAnnotations | default dict) -}}
+      {{- with $podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        vault.hashicorp.com/role: {{ .Values.global.vault.role }}
+        vault.hashicorp.com/agent-inject-secret-secrets.env: {{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}
+        vault.hashicorp.com/agent-inject-template-secrets.env: |
+          {{`{{ with secret "`}}{{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}{{`" -}}
+            export DATABASE_URL="{{ .Data.data.DATABASE_URL }}"
+          {{- end }}`}}
+    spec:
+      activeDeadlineSeconds: 1800
+      restartPolicy: Never
+      serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
+      containers:
+        - name: {{ include "app.fullname" . }}-pre-data-migrations
+          image: "{{ .Values.preImage.repository }}:{{ .Values.preImage.tag }}"
+          imagePullPolicy: {{ .Values.preImage.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            ['node_modules/.bin/migrate-mongo up']
+          resources:
+            limits:
+              cpu: 0.5
+              memory: 500M
+            requests:
+              cpu: 0.2
+              memory: 200M
+{{- end }}

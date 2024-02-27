@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "app.fullname" . }}-pre
+  name: {{ include "app.fullname" . }}-pre-prisma
   labels:
     {{- include "app.labels" . | nindent 4 }}
   annotations:
@@ -14,7 +14,7 @@ spec:
   activeDeadlineSeconds: 1800
   template:
     metadata:
-      name: {{ include "app.fullname" . }}-pre
+      name: {{ include "app.fullname" . }}-pre-prisma
       annotations:
       {{- $podAnnotations := merge (.Values.podAnnotations | default dict) (.Values.global.vault.podAnnotations | default dict) -}}
       {{- with $podAnnotations }}
@@ -31,7 +31,7 @@ spec:
       restartPolicy: Never
       serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       containers:
-        - name: {{ include "app.fullname" . }}-pre
+        - name: {{ include "app.fullname" . }}-pre-prisma
           image: "{{ .Values.preImage.repository }}:{{ .Values.preImage.tag }}"
           imagePullPolicy: {{ .Values.preImage.pullPolicy }}
           command: ["/bin/sh", "-c"]
