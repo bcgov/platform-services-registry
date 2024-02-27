@@ -11,6 +11,7 @@ import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
+import { AGMinistries } from '@/constants';
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -21,10 +22,19 @@ export default function Page() {
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAGMinistry, setIsAGMinistry] = useState<boolean>(true);
 
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudCreateRequestBodySchema),
+    resolver: zodResolver(
+      PrivateCloudCreateRequestBodySchema.refine(
+        (data) => {
+          return AGMinistries.includes(data.ministry) ? data.isAgMinistryChecked : true;
+        },
+        {
+          message: 'AG Ministry Checkbox should be checked.',
+          path: ['isAgMinistryChecked'],
+        },
+      ),
+    ),
   });
 
   const onSubmit = async (data: any) => {
@@ -60,9 +70,9 @@ export default function Page() {
   return (
     <div>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(isAGMinistry && true))} autoComplete="off">
+        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
           <div className="space-y-12">
-            <ProjectDescription isCreatePage isAGMinistry={isAGMinistry} setIsAGMinistry={setIsAGMinistry} />
+            <ProjectDescription mode="create" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <CommonComponents />
           </div>

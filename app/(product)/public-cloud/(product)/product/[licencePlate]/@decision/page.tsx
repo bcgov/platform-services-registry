@@ -95,7 +95,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [data]);
 
-  console.log('asdf', methods.formState.errors);
+  console.log('asdf', methods.formState);
 
   return (
     <div>
