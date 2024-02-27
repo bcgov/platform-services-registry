@@ -33,7 +33,10 @@ app:
   image:
     pullPolicy: IfNotPresent
 
-  preImage:
+  prePrismaImage:
+    pullPolicy: IfNotPresent
+
+  preDataMigrationsImage:
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-app
@@ -61,9 +64,6 @@ app:
 email:
   enabled: true
   image:
-    pullPolicy: IfNotPresent
-
-  preImage:
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-email
