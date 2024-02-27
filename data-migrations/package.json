@@ -1,0 +1,13 @@
+{
+  "name": "data-migrations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "author": "Platform Services App Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "migrate-mongo": "^11.0.0"
+  }
+}
