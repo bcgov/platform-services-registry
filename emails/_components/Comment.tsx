@@ -1,22 +1,22 @@
 import { Text } from '@react-email/components';
 
 interface CommentProps {
-  userComment?: string | null;
-  adminComment?: string | null;
+  requestComment?: string | null;
+  decisionComment?: string | null;
 }
 
-export default function Comment({ userComment, adminComment }: CommentProps) {
+export default function Comment({ requestComment, decisionComment }: CommentProps) {
   return (
     <div>
-      {userComment && (
+      {requestComment && (
         <div>
-          <Text>{userComment}</Text>
+          <Text>{requestComment}</Text>
         </div>
       )}
-      {adminComment && (
+      {decisionComment && (
         <div>
           <Text className="font-semibold">Admin Comment:</Text>
-          <Text>{adminComment}</Text>
+          <Text>{decisionComment}</Text>
         </div>
       )}
     </div>

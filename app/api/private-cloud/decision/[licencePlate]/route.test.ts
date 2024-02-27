@@ -79,7 +79,7 @@ const adminChanges = {
 
 const decisionBody = {
   decision: 'APPROVED',
-  humanComment: 'Approved by admin',
+  decisionComment: 'Approved by admin',
   ...createRequestBody,
   productionQuota: quota,
   toolsQuota: quota,
@@ -147,7 +147,7 @@ describe('Create Private Cloud Request Route', () => {
       method: 'POST',
       body: JSON.stringify({
         decision: 'APPROVED',
-        humanComment: 'Approved by admin',
+        decisionComment: 'Approved by admin',
         ...adminRequestedProjectBody,
       }),
     });

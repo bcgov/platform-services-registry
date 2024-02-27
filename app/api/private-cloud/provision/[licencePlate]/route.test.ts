@@ -78,7 +78,7 @@ const adminChanges = {
 
 const decisionBody = {
   decision: 'APPROVED',
-  humanComment: 'Approved by admin',
+  decisionComment: 'Approved by admin',
   ...createRequestBody,
   productionQuota: quota,
   toolsQuota: quota,

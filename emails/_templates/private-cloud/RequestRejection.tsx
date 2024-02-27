@@ -8,10 +8,10 @@ import Comment from '@/emails/_components/Comment';
 
 interface EmailProp {
   productName: string;
-  humanComment?: string;
+  decisionComment?: string;
 }
 
-const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
+const RequestRejectionTemplate = ({ productName, decisionComment }: EmailProp) => {
   if (!productName) return <></>;
   return (
     <Html>
@@ -27,7 +27,7 @@ const RequestRejectionTemplate = ({ productName, humanComment }: EmailProp) => {
                   Your request regarding the product {productName} on the Private Cloud Openshift platform has been
                   rejected due to the following reason(s):
                 </Text>
-                <Comment adminComment={humanComment} />
+                <Comment decisionComment={decisionComment} />
                 <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
                 <Button
                   href="https://registry.developer.gov.bc.ca/"

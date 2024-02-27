@@ -138,7 +138,7 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
     testQuota: QuotaInputSchema,
     toolsQuota: QuotaInputSchema,
     developmentQuota: QuotaInputSchema,
-    userComment: string().optional(),
+    requestComment: string().optional(),
   }),
 );
 
@@ -147,14 +147,14 @@ export const PublicCloudEditRequestBodySchema = PublicCloudCreateRequestBodySche
 export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
-    humanComment: string().optional(),
+    decisionComment: string().optional(),
   }),
 );
 
 export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
-    adminComment: string().optional(),
+    decisionComment: string().optional(),
   }),
 );
 

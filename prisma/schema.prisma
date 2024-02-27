@@ -46,8 +46,8 @@ model PrivateCloudRequest {
   type                   RequestType
   decisionStatus         DecisionStatus
   isQuotaChanged         Boolean?                      @default(false)
-  humanComment           String?
-  userComment            String?
+  requestComment         String?
+  decisionComment        String?
   active                 Boolean                       @default(true)
   created                DateTime                      @default(now())
   decisionDate           DateTime?
@@ -114,7 +114,7 @@ model PublicCloudRequest {
   type                   PublicCloudRequestType
   decisionStatus         DecisionStatus
   requestComment         String?
-  adminComment           String?
+  decisionComment        String?
   active                 Boolean                      @default(true)
   created                DateTime                     @default(now())
   decisionDate           DateTime?

@@ -21,7 +21,7 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
   type: 'CREATE', // or EDIT
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
   requestComment: 'This is a sample request',
-  adminComment: 'This is a sample request',
+  decisionComment: 'This is a sample request',
   active: true,
   created: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
@@ -85,7 +85,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
   type: 'CREATE', // or EDIT
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
   requestComment: 'This is a sample request',
-  adminComment: 'This is a sample request',
+  decisionComment: 'This is a sample request',
   active: true,
   created: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
@@ -255,13 +255,13 @@ export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
   decisionMakerEmail: 'junmin.ahn@gov.bc.ca',
   type: 'CREATE',
   decisionStatus: 'APPROVED',
-  humanComment: 'This is a comment',
+  decisionComment: 'This is a comment',
   active: true,
   created: sampleDate,
   decisionDate: sampleDate,
   isQuotaChanged: false,
   projectId: null,
-  userComment: 'Some comment regarding a request by the user',
+  requestComment: 'Some comment regarding a request by the user',
   requestedProjectId: 'f',
   userRequestedProjectId: 'e',
   requestedProject: {
@@ -346,12 +346,12 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
   decisionMakerEmail: 'junmin.ahn@gov.bc.ca',
   type: 'CREATE',
   decisionStatus: 'APPROVED',
-  humanComment: 'This is a comment',
+  decisionComment: 'This is a comment',
   active: true,
   created: sampleDate,
   isQuotaChanged: false,
   decisionDate: sampleDate,
-  userComment: 'Some comment made by the user',
+  requestComment: 'Some comment made by the user',
   projectId: null,
   requestedProjectId: 'f',
   userRequestedProjectId: 'e',
