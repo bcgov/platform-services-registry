@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
+import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { string, z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
@@ -58,13 +58,18 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     const { id, ...requestedProject } = request.requestedProject;
 
     // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
-    const upsertProject = prisma.publicCloudProject.upsert({
-      where: {
-        licencePlate: licencePlate,
-      },
-      update: requestedProject as PublicCloudRequestedProject,
-      create: requestedProject as PublicCloudRequestedProject,
-    });
+    const filter = { licencePlate };
+    const upsertProject =
+      request.type === $Enums.RequestType.DELETE
+        ? prisma.publicCloudProject.update({
+            where: filter,
+            data: { status: $Enums.ProjectStatus.INACTIVE },
+          })
+        : prisma.publicCloudProject.upsert({
+            where: filter,
+            update: requestedProject,
+            create: requestedProject,
+          });
 
     await prisma.$transaction([updateRequest, upsertProject]);
 

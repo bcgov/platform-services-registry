@@ -139,7 +139,7 @@ export default function TableBody({ rows }: TableProps) {
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(path.join(`/${cloud}/product/${row.licencePlateValue}`));
+    router.push(path.join(`/${cloud}/product/${row.licencePlate}`));
   };
 
   return (
@@ -166,6 +166,11 @@ export default function TableBody({ rows }: TableProps) {
                           <span className="font-semibold leading-6"> {deployment.cluster}</span>{' '}
                           <span className="text-gray-400">/</span>{' '}
                           <span className="">{truncateText(deployment.name, 100)}</span>
+                          {deployment.status !== 'ACTIVE' && (
+                            <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
+                              Inactive
+                            </span>
+                          )}
                         </span>
 
                         <span className="absolute inset-0" />
