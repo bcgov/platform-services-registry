@@ -32,11 +32,11 @@ spec:
       serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       containers:
         - name: {{ include "app.fullname" . }}-pre-data-migrations
-          image: "{{ .Values.preImage.repository }}:{{ .Values.preImage.tag }}"
-          imagePullPolicy: {{ .Values.preImage.pullPolicy }}
+          image: "{{ .Values.preDataMigrationsImage.repository }}:{{ .Values.preDataMigrationsImage.tag }}"
+          imagePullPolicy: {{ .Values.preDataMigrationsImage.pullPolicy }}
           command: ["/bin/sh", "-c"]
           args:
-            ['node_modules/.bin/migrate-mongo up']
+            ['. /vault/secrets/secrets.env && node_modules/.bin/migrate-mongo up']
           resources:
             limits:
               cpu: 0.5

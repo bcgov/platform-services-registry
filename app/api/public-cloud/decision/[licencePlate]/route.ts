@@ -27,9 +27,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     });
   }
 
-  const { email: authEmail, roles: authRoles } = session.user;
+  const { isAdmin, roles, user } = session;
+  const { email: authEmail } = user;
 
-  if (!authRoles.includes('admin')) {
+  if (!isAdmin) {
     return new NextResponse('You must be an admin to make a request decision.', {
       status: 403,
     });
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     request.requestedProject.projectOwner,
     request.requestedProject.primaryTechnicalLead,
     request.requestedProject?.secondaryTechnicalLead,
-  ].filter((user): user is User => Boolean(user));
+  ].filter((usr): usr is User => Boolean(user));
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
 
