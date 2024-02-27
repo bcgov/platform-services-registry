@@ -43,7 +43,7 @@ export default async function ProductsTable({
     cluster,
     userEmail,
     ministryRoles,
-    active === 'true',
+    active !== 'false',
   );
 
   const projects = data.map(privateCloudProjectDataToRow);
