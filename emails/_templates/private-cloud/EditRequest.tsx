@@ -21,7 +21,7 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
   const current = request.project;
   const requested = request.requestedProject;
   const changed = comparePrivateCloudProjects(current, requested);
-  const userComment = request.userComment ?? undefined;
+  const requestComment = request.requestComment ?? undefined;
 
   return (
     <Html>
@@ -43,7 +43,7 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Comments</Heading>
-                <Comment userComment={userComment} />
+                <Comment requestComment={requestComment} />
               </div>
               {(changed.name || changed.description || changed.ministry || changed.cluster) && (
                 <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

@@ -4,9 +4,9 @@ import RequestRejectionTemplate from './_templates/private-cloud/RequestRejectio
 
 export const RequestRejection = () => {
   const productName = samplePrivateRequest.requestedProject.name;
-  const humanComment = samplePrivateRequest.humanComment || undefined;
+  const decisionComment = samplePrivateRequest.decisionComment || undefined;
 
-  return <RequestRejectionTemplate productName={productName} humanComment={humanComment} />;
+  return <RequestRejectionTemplate productName={productName} decisionComment={decisionComment} />;
 };
 
 export default RequestRejection;

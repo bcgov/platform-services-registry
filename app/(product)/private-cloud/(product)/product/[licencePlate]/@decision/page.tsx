@@ -39,7 +39,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { humanComment: '', decision: '', ...data?.requestedProject },
+    values: { decisionComment: '', decision: '', ...data?.requestedProject },
   });
 
   useEffect(() => {
@@ -83,8 +83,8 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
-  const setComment = (humanComment: string) => {
-    onSubmit({ ...methods.getValues(), humanComment });
+  const setComment = (decisionComment: string) => {
+    onSubmit({ ...methods.getValues(), decisionComment });
   };
 
   useEffect(() => {
@@ -122,12 +122,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             />
           </div>
 
-          {data?.userComment && (
+          {data?.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
               <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
-              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.userComment}</p>
+              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.requestComment}</p>
             </div>
           )}
 

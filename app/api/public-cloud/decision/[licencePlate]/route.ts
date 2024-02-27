@@ -53,12 +53,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const { licencePlate } = parsedParams.data;
-  const { decision, adminComment, ...requestedProjectFormData } = parsedBody.data;
+  const { decision, decisionComment, ...requestedProjectFormData } = parsedBody.data;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
     licencePlate,
     decision,
-    adminComment,
+    decisionComment,
     requestedProjectFormData,
     authEmail,
   );
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendRequestRejectionEmails(request.requestedProject, adminComment);
+    sendRequestRejectionEmails(request.requestedProject, decisionComment);
     return new Response(
       `Decision request for ${request.licencePlate} successfully created. Admin approval is required`,
       {

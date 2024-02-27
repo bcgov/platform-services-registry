@@ -99,10 +99,10 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 
 export const sendRequestRejectionEmails = async (
   request: PrivateCloudRequestedProjectWithContacts,
-  humanComment?: string,
+  decisionComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name, humanComment }), {
+    const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment }), {
       pretty: true,
     });
     await sendEmail({

@@ -5,9 +5,9 @@ import RequestRejectionTemplate from './_templates/public-cloud/RequestRejection
 export const RequestRejection = () => {
   // Extract the product name and human comment from the samplePublicRequest
   const productName = samplePublicRequest.requestedProject.name;
-  const adminComment = samplePublicRequest.adminComment || undefined;
+  const decisionComment = samplePublicRequest.decisionComment || undefined;
 
-  return <RequestRejectionTemplate productName={productName} adminComment={adminComment} />;
+  return <RequestRejectionTemplate productName={productName} decisionComment={decisionComment} />;
 };
 
 export default RequestRejection;

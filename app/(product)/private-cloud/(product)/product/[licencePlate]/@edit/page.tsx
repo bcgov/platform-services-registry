@@ -138,8 +138,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
-  const setComment = (userComment: string) => {
-    onSubmit({ ...methods.getValues(), userComment });
+  const setComment = (requestComment: string) => {
+    onSubmit({ ...methods.getValues(), requestComment });
   };
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;

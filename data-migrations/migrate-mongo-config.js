@@ -3,7 +3,7 @@ import 'dotenv/config';
 const config = {
   mongodb: {
     url: process.env.DATABASE_URL,
-    databaseName: 'plt-svc',
+    databaseName: 'pltsvc',
     options: {
       useNewUrlParser: true, // removes a deprecation warning when connecting
       useUnifiedTopology: true, // removes a deprecating warning when connecting
