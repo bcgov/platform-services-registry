@@ -27,6 +27,7 @@ export default async function editRequest(
   authEmail: string,
 ): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
   // Get the current project that we are creating an edit request for
+
   const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
     where: {
       licencePlate: licencePlate,
@@ -41,6 +42,7 @@ export default async function editRequest(
   if (!project) {
     throw new Error('Project does not exist.');
   }
+  delete formData.isAgMinistryChecked;
 
   const { userComment, ...rest } = formData;
 

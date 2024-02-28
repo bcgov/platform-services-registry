@@ -131,6 +131,7 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   requestComment: string().optional(),
+  isAgMinistryChecked: z.boolean().optional(),
 });
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(

@@ -2,35 +2,22 @@
 
 import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
-import { providers, ministriesNames, AGMinistries } from '@/constants';
-import { useState } from 'react';
+import { providers, ministriesNames } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 
 export default function ProjectDescriptionPublic({
+  mode,
   disabled,
   providerDisabled,
-  isCreatePage,
-  isAGMinistry,
-  setIsAGMinistry,
 }: {
+  mode: string;
   disabled?: boolean;
   providerDisabled?: boolean;
-  isCreatePage?: boolean;
-  isAGMinistry?: boolean;
-  setIsAGMinistry?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const {
     register,
     formState: { errors },
   } = useFormContext();
-  const [isCheckBoxShown, setIsCheckBoxShown] = useState<boolean>(false);
-
-  const handleSelectMinistryChange = (event: { target: { value: string } }) => {
-    if (AGMinistries.indexOf(event.target.value) !== -1) {
-      setIsCheckBoxShown(true);
-      if (setIsAGMinistry) setIsAGMinistry(false);
-    }
-  };
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
@@ -40,7 +27,7 @@ export default function ProjectDescriptionPublic({
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
-      {isCreatePage && (
+      {mode === 'create' && (
         <p className="font-bcsans text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
           Cloud Accelerator Service team. Reach out to
@@ -70,12 +57,7 @@ export default function ProjectDescriptionPublic({
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
               )}
-              {...register('name', {
-                validate: (value, formValues) => {
-                  console.log(value, formValues);
-                  return true;
-                },
-              })}
+              {...register('name')}
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -115,7 +97,6 @@ export default function ProjectDescriptionPublic({
               disabled={disabled}
               id="ministry"
               {...register('ministry')}
-              onChange={handleSelectMinistryChange}
               className={classNames(
                 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                 disabled
@@ -134,14 +115,7 @@ export default function ProjectDescriptionPublic({
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the government ministry that this product belongs to
             </p>
-            {isCheckBoxShown && (
-              <AGMinistryCheckBox
-                disabled={disabled}
-                isCheckBoxShown={isCheckBoxShown}
-                isAGMinistry={isAGMinistry}
-                setIsAGMinistry={setIsAGMinistry}
-              />
-            )}
+            {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
           </div>
         </div>
 

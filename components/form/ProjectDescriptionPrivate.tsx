@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/components/utils/classnames';
-import { clusters, ministriesNames, AGMinistries } from '@/constants';
+import { clusters, ministriesNames } from '@/constants';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
@@ -73,15 +73,7 @@ export default function ProjectDescription({
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
               )}
-              {...register('name', {
-                validate: {
-                  minLength: (v) => {
-                    console.log('sss', v);
-                    return v.length >= 5;
-                  },
-                  matchPattern: (v) => /^[a-zA-Z0-9_]+$/.test(v),
-                },
-              })}
+              {...register('name')}
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>

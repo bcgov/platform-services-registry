@@ -1,9 +1,8 @@
-import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
 import { AGMinistries } from '@/constants';
 
 export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean }) {
-  const { watch, register, formState, getValues, setError } = useFormContext();
+  const { watch, register, formState } = useFormContext();
   const watchMinistry = watch('ministry');
 
   if (!AGMinistries.includes(watchMinistry)) {
@@ -12,7 +11,10 @@ export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean })
 
   return (
     <div className="flex items-center">
-      <label htmlFor="none" className="text-red-400 mt-3 text-sm leading-6 flex select-none">
+      <label
+        htmlFor="none"
+        className={`${formState.errors.isAgMinistryChecked && 'text-red-400'} mt-3 text-sm leading-6 flex select-none`}
+      >
         <input
           disabled={disabled}
           id="none"
@@ -27,7 +29,7 @@ export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean })
             {' '}
             AG Security{' '}
           </a>
-          to prior to submitting a request for a new product.
+          to prior to submitting a request for a product.
         </span>
       </label>
     </div>
