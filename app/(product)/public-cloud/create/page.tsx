@@ -12,6 +12,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import { AGMinistries } from '@/constants';
+import { z } from 'zod';
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -25,9 +26,13 @@ export default function Page() {
 
   const methods = useForm({
     resolver: zodResolver(
-      PublicCloudCreateRequestBodySchema.refine(
-        (data) => {
-          return AGMinistries.includes(data.ministry) ? data.isAgMinistryChecked : true;
+      PublicCloudCreateRequestBodySchema.merge(
+        z.object({
+          isAgMinistryChecked: z.boolean().optional(),
+        }),
+      ).refine(
+        (formData) => {
+          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
         },
         {
           message: 'AG Ministry Checkbox should be checked.',

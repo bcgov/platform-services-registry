@@ -18,6 +18,7 @@ import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/pri
 import CommonComponents from '@/components/form/CommonComponents';
 import { PrivateCloudProject } from '@prisma/client';
 import { AGMinistries } from '@/constants';
+import { z } from 'zod';
 
 async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
   const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
@@ -82,7 +83,11 @@ export default function EditProject({ params }: { params: { licencePlate: string
   // in an error.
   const methods = useForm({
     resolver: zodResolver(
-      PrivateCloudEditRequestBodySchema.refine(
+      PrivateCloudEditRequestBodySchema.merge(
+        z.object({
+          isAgMinistryChecked: z.boolean().optional(),
+        }),
+      ).refine(
         (formData) => {
           return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
         },

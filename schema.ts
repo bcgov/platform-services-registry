@@ -107,7 +107,6 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   commonComponents: CommonComponentsInputSchema,
-  isAgMinistryChecked: z.boolean().optional(),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({
@@ -131,7 +130,6 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   requestComment: string().optional(),
-  isAgMinistryChecked: z.boolean().optional(),
 });
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(
@@ -141,7 +139,6 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
     toolsQuota: QuotaInputSchema,
     developmentQuota: QuotaInputSchema,
     userComment: string().optional(),
-    isAgMinistryChecked: z.boolean().optional(),
   }),
 );
 

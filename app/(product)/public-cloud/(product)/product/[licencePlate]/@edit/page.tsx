@@ -16,6 +16,7 @@ import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import { AGMinistries } from '@/constants';
+import { z } from 'zod';
 
 async function fetchProject(licencePlate: string): Promise<PublicCloudProjectWithUsers> {
   const res = await fetch(`/api/public-cloud/project/${licencePlate}`);
@@ -74,7 +75,11 @@ export default function EditProject({ params }: { params: { licencePlate: string
 
   const methods = useForm({
     resolver: zodResolver(
-      PublicCloudEditRequestBodySchema.refine(
+      PublicCloudEditRequestBodySchema.merge(
+        z.object({
+          isAgMinistryChecked: z.boolean().optional(),
+        }),
+      ).refine(
         (formData) => {
           return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
         },

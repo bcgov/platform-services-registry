@@ -42,7 +42,6 @@ export default async function editRequest(
   if (!project) {
     throw new Error('Project does not exist.');
   }
-  delete formData.isAgMinistryChecked;
 
   const { userComment, ...rest } = formData;
 
