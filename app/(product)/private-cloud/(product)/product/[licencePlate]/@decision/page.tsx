@@ -109,7 +109,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
                 A decision has already been made for this product
               </h3>
             )}
-            <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
+            <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} mode="decision" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}

@@ -95,8 +95,6 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   }, [data]);
 
-  console.log('asdf', methods.formState.errors);
-
   return (
     <div>
       <FormProvider {...methods}>
@@ -113,7 +111,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             </h3>
           )}
           <div className="mb-12">
-            <ProjectDescription disabled={isDisabled} />
+            <ProjectDescription disabled={isDisabled} mode="decision" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}

@@ -27,6 +27,7 @@ export default async function editRequest(
   authEmail: string,
 ): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
   // Get the current project that we are creating an edit request for
+
   const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
     where: {
       licencePlate: licencePlate,

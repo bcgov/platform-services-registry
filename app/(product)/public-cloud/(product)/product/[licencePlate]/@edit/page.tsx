@@ -5,10 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { PublicCloudEditRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
-import { useSession } from 'next-auth/react';
-import CreateModal from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
-import { useRouter } from 'next/navigation';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import { useQuery } from '@tanstack/react-query';
@@ -18,6 +15,8 @@ import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/publ
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
+import { AGMinistries } from '@/constants';
+import { z } from 'zod';
 
 async function fetchProject(licencePlate: string): Promise<PublicCloudProjectWithUsers> {
   const res = await fetch(`/api/public-cloud/project/${licencePlate}`);
@@ -50,7 +49,6 @@ async function fetchActiveRequest(licencePlate: string): Promise<PublicCloudRequ
 }
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
-  const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -76,10 +74,24 @@ export default function EditProject({ params }: { params: { licencePlate: string
   });
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudEditRequestBodySchema),
+    resolver: zodResolver(
+      PublicCloudEditRequestBodySchema.merge(
+        z.object({
+          isAgMinistryChecked: z.boolean().optional(),
+        }),
+      ).refine(
+        (formData) => {
+          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+        },
+        {
+          message: 'AG Ministry Checkbox should be checked.',
+          path: ['isAgMinistryChecked'],
+        },
+      ),
+    ),
     defaultValues: async () => {
       const response = await fetchProject(params.licencePlate);
-      return response;
+      return { ...response, isAgMinistryChecked: true };
     },
   });
 
@@ -144,7 +156,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(handleOpenModal)}>
           <div className="space-y-12">
-            <ProjectDescription disabled={isDisabled} />
+            <ProjectDescription disabled={isDisabled} mode="edit" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}

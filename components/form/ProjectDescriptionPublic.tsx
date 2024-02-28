@@ -3,14 +3,16 @@
 import classNames from '@/components/utils/classnames';
 import { useFormContext } from 'react-hook-form';
 import { providers, ministriesNames } from '@/constants';
+import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+
 export default function ProjectDescriptionPublic({
+  mode,
   disabled,
   providerDisabled,
-  isCreatePage,
 }: {
+  mode: string;
   disabled?: boolean;
   providerDisabled?: boolean;
-  isCreatePage?: boolean;
 }) {
   const {
     register,
@@ -25,7 +27,7 @@ export default function ProjectDescriptionPublic({
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
-      {isCreatePage && (
+      {mode === 'create' && (
         <p className="font-bcsans text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
           Cloud Accelerator Service team. Reach out to
@@ -113,6 +115,7 @@ export default function ProjectDescriptionPublic({
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the government ministry that this product belongs to
             </p>
+            {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
           </div>
         </div>
 

@@ -3,15 +3,16 @@ import classNames from '@/components/utils/classnames';
 import { clusters, ministriesNames } from '@/constants';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 
 export default function ProjectDescription({
+  mode,
   disabled,
   clusterDisabled,
-  isCreatePage,
 }: {
+  mode: string;
   disabled?: boolean;
   clusterDisabled?: boolean;
-  isCreatePage?: boolean;
 }) {
   const {
     register,
@@ -38,7 +39,7 @@ export default function ProjectDescription({
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
-      {isCreatePage && (
+      {mode === 'create' && (
         <p className="font-bcsans text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
@@ -79,7 +80,6 @@ export default function ProjectDescription({
             Please provide a descriptive product name with no acronyms
           </p>
         </div>
-
         <div className="col-span-full">
           <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
             Description
@@ -96,7 +96,7 @@ export default function ProjectDescription({
                 disabled
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
-              )} // defaultValue={""}
+              )}
             />
           </div>
           <p className={classNames(errors.description ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
@@ -126,13 +126,12 @@ export default function ProjectDescription({
                 </option>
               ))}
             </select>
-
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
               Select the government ministry that this product belongs to
             </p>
+            {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
           </div>
         </div>
-
         <div className="sm:col-span-3 sm:ml-10">
           <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
             Hosting Tier
