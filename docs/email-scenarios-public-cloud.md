@@ -1,80 +1,93 @@
 ## Email Scenarios
 
-### Private Cloud
+### Public Cloud
 
-#### New Project Set Request Email Scenarios
+#### Scenario 1. Product Create Request
 
-1. New Project Set Request Submitted by User:
-2. Email notification sent to Admins containing:
-   1. Product name/description/ministry/provider
-   2. Product contacts list
-   3. Product budget/billing
-3. Email Notification sent to Product PO/TLs containing:
-   1. Product name/description/ministry/provider
-   2. Product contacts list
-   3. Product budget/billing
-4. Request Approval/Rejection by Admin
-   1. in case request is approved, an email notification sent to Product PO/TLs containing:
-      1. Product name/description/ministry/provider
-      2. Product contacts list
-      3. Product budget/billing
-      4. Admin review comments.
-   2. in case request is rejected, an email notification sent to Product PO/TLs containing:
-      1. Product name
-      2. Admin review comments
+**Description**: A new or existing user submits a request via the registry to have a product on the Public Cloud Landing Zone. This is assuming the user has already had an onboarding meeting, and meets the requirements for submitting a create request. Upon submitting the create request, the following emails may trigger.
+
+1. **Notification sent to admins** containing:
+   <ol type="a">
+     <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+     <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+   </ol>
+2. **Notification sent to Product PO/TL(s)** containing:
+    <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+   </ol>
+3. **Decision: Create request Approval/Rejection by Admin**
+
+- **3a. Approval sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+   </ol>
+
+- **3b. Rejection sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Admin review comments</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Create request] --> B(Emails:<br>Create Request Received sent to Admins<br>Create Request Received sent to PO/TLs)
-    B --> C{Admin decides on the request}
-    C -->|Request approved| D(Create Request Approved email sent to PO/TLs)
-    C -->|Request rejected| E(Create Request Rejected email sent to PO/TLs)
+    A((User Submits a <br> Create Request)) --> B(PublicCloudAdminCreateRequest<br>PublicCloudCreateRequest)
+    B --> C{Admin decides on the create request}
+    C -->|Create Request Approved and Provisioned| D(PublicCloudRequestProvisioned)
+    C -->|Create Request Rejected| E(PublicCloudCreateRejected)
 ```
 
-#### Delete request emails Scenarios
+#### Scenario 2. Edit Request
 
-1. A new delete request is submitted by the user.
-2. An email notification is sent to admins, containing:
-   1. Product name/description/ministry/provider
-   2. Product contacts list
-   3. Product budget/billing
-3. An email notification of the request received is sent to Product PO/TLs, which includes:
-   1. Product name/description/ministry/provider
-   2. Product contacts list
-   3. Product budget/billing
-4. The request is approved/rejected by the Admin.
-   1. In case request is approved, an Email notification of the approved request is sent to Product PO/TLs, containing:
-      1. Product name/description/ministry/provider
-      2. Product contacts list
-      3. Product budget/billing
-      4. Admin review comments.
-   2. In case request is rejected, an Email notification of the rejected request is sent to Product PO/TLs, containing:
-      1. Product name
-      2. Admin review comments
+**Description**: A PO/TLs of a product submits a request changing some details of the existing product. Since there is no decision process for editing a product, a summary of the previous and updated changes are triggered.
+
+1. **Summary sent to PO/TLs** containing:
+   <ol type="a">
+     <li>User Comments</li>
+     <li>Description Changes (Name, Description, Ministry)</li>
+     <li>Contact Changes</li>
+     <li>Budget Changes</li>
+     <li>Account Coding Changes</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Delete project set request] --> B(Emails:<br>Delete project set Request Received sent to Admins<br>Delete project set Request Received sent to PO/TLs)
-    B --> C{Admin decides on the request}
-    C -->|Request approved| D(Delete project set Request Approved email sent to PO/TLs)
-    C -->|Request rejected| E(Delete project set Request Rejected email sent to PO/TLs)
+    A((User Submits an <br> Edit Request)) --> |Request Provisioned|B(Edit Request Received sent to PO/TLs)
+   B(PublicCloudEditSummary)
 ```
 
-#### Edit List of Contacts or/and Names or/and Descriptions or/and Ministries or/and Budget or/and Billing
+#### Scenario 3. Delete request is submitted
 
-1. A new edit request is submitted by a user.
-2. An email notification request received is sent to Product PO/TLs, containing:
-   1. Product name/description/ministry/provider
-   2. Product contacts list
-   3. Requested changes
-   4. Current values for requested changes
-3. An email notification request provisioned is sent to Product PO/TLs, containing:
-   1. Product name/description/ministry/provider
-   2. Product contacts list
-   3. Updated values
+**Description**: When a PO/TLs of a product are ready to decomission their product off the Public Cloud Landing Zone the user can submit a delete request and thus the following emails may trigger.
+
+1. **A notification sent to admins** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+   </ol>
+2. **A summary sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+   </ol>
+3. **Decision: Product Deletion Approval/Rejecton by admins**
+
+- **3a. Approval confirmation sent to PO/TLs** containing:
+    <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+   </ol>
+- **3a. Rejection sent to PO/TLs** containing:
+    <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Review comments</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Edit request] --> B(Edit Request Received sent to PO/TLs)
-    B -->|Request Provisioned| C(Edit Request Provisioned email sent to PO/TLs)
+    A((User submits a <br> delete request)) --> B(PublicCloudAdminDeleteRequest<br>PublicCloudDeleteRequest)
+    B --> C{Admin decides on the request}
+    C -->|Request approved| D(PublicCloudDeleteApproved)
+    C -->|Request rejected| E(PublicCloudDeleteRejected)
 ```

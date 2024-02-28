@@ -2,115 +2,144 @@
 
 ### Private Cloud
 
-#### New Project Set Request Email Scenarios
+#### Scenario 1. Product Create Request
 
-1. New Project Set Request Submitted by User:
-2. Email notification sent to Admins containing:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-3. Email Notification sent to Product PO/TLs containing:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-   4. Default quota
-4. Request Approval/Rejection by Admin
-   1. in case request is approved, an email notification sent to Product PO/TLs containing:
-      1. Product name/description/ministry/cluster
-      2. Product contacts list
-      3. Product namespace details
-      4. Default quota
-      5. Admin review comments4.
-   2. in case request is rejected, an email notification sent to Product PO/TLs containing:
-      1. Product name
-      2. Admin review comments
+**Description**: A new or existing user submits a request via the registry to have a namespace for their product.
+This is assuming the user has already had an onboarding meeting, and meets the requirements for submitting a create request. Upon submitting the create request, the following emails may trigger.
+
+1. **Notification sent to admins** containing:
+   <ol type="a">
+     <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s), Cluster)</li>
+   </ol>
+2. **Notification sent to Product PO/TL(s)** containing:
+    <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s), Cluster)</li>
+   </ol>
+3. **Decision: Create request Approval/Rejection by Admin**
+
+- **3a. Approval sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Namespace Details (Cluster, Link to all four namespaces, Default values of namespaces)</li>
+      <li>Security Tools Info</li>
+      <li>Artifactory Info</li>
+      <li>Vault Info</li>
+      <li>ACS Info</li>
+      <li>Sysdig Info</li>
+   </ol>
+
+- **3b. Rejection sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Admin review comments</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Create request] --> B(Emails:<br>Create Request Received sent to Admins<br>Create Request Received sent to PO/TLs)
-    B --> C{Admin decides on the request}
-    C -->|Request approved| D(Create Request Approved email sent to PO/TLs)
-    C -->|Request rejected| E(Create Request Rejected email sent to PO/TLs)
+    A((User Submits <br> Create Request)) --> B(PrivateCloudAdminCreateRequest<br>PrivateCloudCreateRequest)
+    B --> C{Admin decides on the create request}
+    C -->|Create Request Approved and Provisioned| D(PrivateCloudRequestProvisioned)
+    C -->|Create Request Rejected| E(PrivateCloudCreateRejected)
 ```
 
-#### Edit quota request emails Scenarios
+#### Scenario 2. Edit Request: Resource Quota Increase
 
-1. A new Edit quota request is submitted by the user.
-2. An email notification is sent to Admins, which includes:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-3. An email notification of the request received is sent to Product PO/TLs, which includes:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-   4. Requested quota
-   5. Current quota
-4. The request is approved/rejected by the Admin.
-   1. In case request is approved, an Email notification of the approved request is sent to Product PO/TLs, containing:
-      1. Product name/description/ministry/cluster
-      2. Product contacts list
-      3. Product namespace details
-      4. Updated quota
-      5. Admin review comments.
-   2. In case request is rejected, an Email notification of the rejected request is sent to Product PO/TLs, containing:
-      1. Product name
-      2. Admin review comments
+**Description**: A PO/TLs of a product submits a request for more CPU, memory, and/or storage of 1 or more namepspaces. Upon submitting the edit resource request, the following emails will trigger.
+
+1. **Notification sent to admins** containing:
+   <ol type="a">
+     <li>Description Changes (Product Name, Description, Ministry)</li>
+     <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
+     <li>Comments by user</li>
+     <li>Resource Quotas with Current and Requested</li>
+   </ol>
+2. **Notification sent to PO/TL(s)** containing:
+   <ol type="a">
+     <li>Description Changes (Product Name, Description, Ministry)</li>
+     <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
+     <li>Comments by user</li>
+     <li>Resource Quotas with Current and Requested</li>
+   </ol>
+3. **Decision: Resource Quota Edit Request Approval/Rejection by admins**
+
+- **3a. Approval sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Namespace Details (Cluster, Link to all four namespaces, Default values of namespaces)</li>
+      <li>Security Tools Info</li>
+      <li>Artifactory Info</li>
+      <li>Vault Info</li>
+      <li>ACS Info</li>
+      <li>Sysdig Info</li>
+      </ol>
+
+- **3b. Rejection Sub-Scenario** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Admin review comments</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Edit quota request] --> B(Emails:<br>Edit Quota Request Received sent to Admins<br>Edit Quota Request Received sent to PO/TLs)
-    B --> C{Admin decides on the request}
-    C -->|Request approved| D(Edit Quota Request Approved email sent to PO/TLs)
-    C -->|Request rejected| E(Edit Quota Request Rejected email sent to PO/TLs)
+    A((User submits a <br>Edit Resource <br> Quota Request)) --> B(PrivateCloudResourceRequestAdmin<br>PrivateCloudResourceRequest)
+    B --> C{Admin decision on create request}
+    C -->|Request approved| D(PrivateCloudResourceRequestApproval)
+    C -->|Request rejected| E(PrivateCloudResourceRequestRejection)
 ```
 
-#### Delete request emails Scenarios
+#### Scenario 3. Edit Request: No Resource Quota Increase
 
-1. A new delete project set request is submitted by the user.
-2. An email notification is sent to admins, containing:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-3. An email notification of the request received is sent to Product PO/TLs, which includes:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-4. The request is approved/rejected by the Admin.
-   1. In case request is approved, an Email notification of the approved request is sent to Product PO/TLs, containing:
-      1. Product name/description/ministry/cluster
-      2. Product contacts list
-      3. Product namespace details
-      4. Admin review comments.
-   2. In case request is rejected, an Email notification of the rejected request is sent to Product PO/TLs, containing:
-      1. Product name
-      2. Admin review comments
+**Description**: When a PO/TLs of a product edit their product where there is no increase in resources requested, the following emails will trigger.
+
+1. **Summary of changes submitted sent to PO/TLs** containing:
+   <ol type="a">
+     <li>Comments by user</li>
+     <li>Description Changes (Product Name, Description, Ministry)</li>
+     <li>Contact Changes</li>
+     <li>Resource Quota Downgrades with Before and Submitted</li>
+   </ol>
+2. **Summary of the changes provisioned sent to PO/TLs** containing:
+   <ol type="a">
+     <li>Comments by user</li>
+     <li>Updated Description Changes (Product Name, Description, Ministry)</li>
+     <li>Updated Contact Changes</li>
+     <li>Updated Resource Quota Downgrades</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Delete project set request] --> B(Emails:<br>Delete project set Request Received sent to Admins<br>Delete project set Request Received sent to PO/TLs)
-    B --> C{Admin decides on the request}
-    C -->|Request approved| D(Delete project set Request Approved email sent to PO/TLs)
-    C -->|Request rejected| E(Delete project set Request Rejected email sent to PO/TLs)
+    A((User Submits Edit w/ <br> No Resource Increase)) --> B(PrivateCloudEditSummary)
+    B -->|Request Provisioned| C(PrivateCloudEditProvisioned)
 ```
 
-#### Edit List of Contacts or/and Names or/and Descriptions or/and Ministries or/and Common Components Request Emails Scenarios
+#### Scenario 4. Delete request is submitted
 
-1. A new edit request is submitted by a user.
-2. An email notification request received is sent to Product PO/TLs, containing:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-   4. Requested changes
-   5. Current values for requested changes
-3. An email notification request provisioned is sent to Product PO/TLs, containing:
-   1. Product name/description/ministry/cluster
-   2. Product contacts list
-   3. Product namespace details
-   4. Updated values
+**Description**: When a PO/TLs of a product have removed all PVC's and resources deployed on their namespaces of a given product, then a user is eligible to submit a delete request. Upon a successful deletion check the user can submit the delete request and thus the following emails may trigger.
+
+1. **A notification sent to admins** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+   </ol>
+2. **A summary sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+   </ol>
+3. **Decision: Product Deletion Approval/Rejecton by admins**
+
+- **3a. Approval confirmation sent to PO/TLs** containing:
+    <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+   </ol>
+- **3a. Rejection sent to PO/TLs** containing:
+    <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Review comments</li>
+   </ol>
 
 ```mermaid
 flowchart LR
-    A[Edit request] --> B(Edit Request Received sent to PO/TLs)
-    B -->|Request Provisioned| C(Edit Request Provisioned email sent to PO/TLs)
+    A((User submits a <br> delete request)) --> B(PrivateCloudAdminDeleteRequest<br>PrivateCloudDeleteRequest)
+    B --> C{Admin decides on the request}
+    C -->|Request approved| D(PrivateCloudDeleteApproved)
+    C -->|Request rejected| E(PrivateCloudDeleteRejected)
 ```
