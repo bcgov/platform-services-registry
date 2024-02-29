@@ -46,7 +46,7 @@
     "@tanstack/react-query": "^5.4.3",
     "@tremor/react": "^3.13.1",
     "@types/node": "20.11.24",
-    "@types/react": "18.2.60",
+    "@types/react": "18.2.61",
     "@types/react-dom": "18.2.19",
     "autoprefixer": "10.4.17",
     "axios": "^1.5.1",
