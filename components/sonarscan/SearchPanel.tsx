@@ -10,7 +10,7 @@ import _castArray from 'lodash-es/castArray';
 import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/lib/query-string';
 import Search from '@/components/assets/search.svg';
 
-export default function SearchPanel({ contexts }: { contexts: string[] }) {
+export default function SearchPanel({ contexts, endPaths }: { contexts: string[]; endPaths: string }) {
   const { replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
@@ -41,12 +41,12 @@ export default function SearchPanel({ contexts }: { contexts: string[] }) {
       context: selectedContexts,
     };
 
-    if (pathname.endsWith('/sonarscan')) return;
+    if (!pathname.endsWith(endPaths)) return;
     if (isSearchQueryEqual(currParamObj, newParamObj)) return;
 
     const newParams = stringifyQuery(newParamObj);
     throttled.current(replace, `${pathname}?${newParams}`);
-  }, [replace, pathname, searchParams, searchTerm, selectedContexts]);
+  }, [replace, pathname, searchParams, searchTerm, selectedContexts, endPaths]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-6 gap-3 p-2">

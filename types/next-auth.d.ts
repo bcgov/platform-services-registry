@@ -18,6 +18,11 @@ declare module 'next-auth' {
       readonly: string[];
       [key: string]: string[];
     };
+    permissions: {
+      viewZapscanResults: boolean;
+      viewSonarscanReulsts: boolean;
+      viewAnalytics: boolean;
+    };
     previews: {
       awsRoles: boolean;
       security: boolean;
