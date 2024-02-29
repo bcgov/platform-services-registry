@@ -125,6 +125,8 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       session.isAdmin = false;
+      session.isReader = false;
+      session.isApprover = false;
       session.roles = [];
       session.ministries = {
         admin: [],
@@ -144,6 +146,16 @@ export const authOptions: AuthOptions = {
         session.roles.forEach((role) => {
           if (role === 'admin') {
             session.isAdmin = true;
+            return;
+          }
+
+          if (role === 'reader') {
+            session.isReader = true;
+            return;
+          }
+
+          if (role === 'approver') {
+            session.isApprover = true;
             return;
           }
 

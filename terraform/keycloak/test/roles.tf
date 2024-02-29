@@ -13,3 +13,11 @@ resource "keycloak_role" "pltsvc_reader" {
   name        = "reader"
   description = "Registry Read-Only"
 }
+
+resource "keycloak_role" "pltsvc_approver" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "approver"
+  description = "Registry Approver"
+}
