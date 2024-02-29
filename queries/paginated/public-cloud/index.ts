@@ -279,7 +279,7 @@ export async function publicCloudRequestsPaginated(
         },
       },
       { $match: searchQuery },
-      { $sort: { created: -1 } },
+      { $sort: { updatedAt: -1 } },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {

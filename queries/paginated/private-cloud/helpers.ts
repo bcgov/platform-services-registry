@@ -240,6 +240,7 @@ export async function getPrivateCloudProjectsResult({
         },
       },
       { $match: searchQuery },
+      { $sort: { updatedAt: -1 } },
 
       ...paginationPipelines,
       {

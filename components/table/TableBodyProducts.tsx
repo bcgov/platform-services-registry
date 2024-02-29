@@ -90,7 +90,7 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
     return 'Delete requested';
   }
 
-  return 'Created on';
+  return 'Updated at';
 }
 
 function truncateText(str: string, n: number) {
@@ -183,7 +183,7 @@ export default function TableBody({ rows }: TableProps) {
                       <circle cx={1} cy={1} r={1} />
                     </svg>
                     <p className="whitespace-nowrap">
-                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}
+                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.updatedAt}
                     </p>
                   </div>
                 </div>

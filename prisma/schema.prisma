@@ -50,6 +50,7 @@ model PrivateCloudRequest {
   decisionComment        String?
   active                 Boolean                       @default(true)
   created                DateTime                      @default(now())
+  updatedAt              DateTime                      @updatedAt
   decisionDate           DateTime?
   projectId              String?                       @db.ObjectId
   project                PrivateCloudProject?          @relation("privateCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
@@ -66,6 +67,7 @@ model PrivateCloudProject {
   description              String
   status                   ProjectStatus
   created                  DateTime              @default(now())
+  updatedAt                DateTime              @updatedAt
   projectOwnerId           String                @db.ObjectId
   projectOwner             User                  @relation("privateCloudProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String                @db.ObjectId
@@ -117,6 +119,7 @@ model PublicCloudRequest {
   decisionComment        String?
   active                 Boolean                      @default(true)
   created                DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
   decisionDate           DateTime?
   projectId              String?                      @db.ObjectId
   project                PublicCloudProject?          @relation("publicCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
@@ -133,6 +136,7 @@ model PublicCloudProject {
   description              String
   status                   ProjectStatus
   created                  DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
   accountCoding            String
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
