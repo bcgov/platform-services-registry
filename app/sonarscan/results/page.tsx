@@ -89,5 +89,5 @@ export default async function Page({
   ]);
 
   const contexts = distinct.map((row) => row.context);
-  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} />;
+  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} listAll />;
 }
