@@ -48,6 +48,7 @@ export default async function ProductsTable({
   const transformActiveRequests = requestsData.map((request) => ({
     ...request.userRequestedProject,
     created: request.created,
+    updatedAt: request.updatedAt,
     activeRequest: [request],
     id: request.id,
   }));

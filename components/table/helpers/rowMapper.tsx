@@ -95,6 +95,7 @@ export const privateCloudProjectDataToRow = (project: any) => {
         }
       : null,
     created: formatDate(project.created.$date),
+    updatedAt: formatDate(project.updatedAt.$date),
     requestCreated: formatDate(project?.activeRequest ? project?.activeRequest[0]?.created.$date : null),
     // requestDecisionDate: formatDate(project?.activeRequest ? project?.activeRequest[0]?.decisionDate.$date : null),
     licencePlate: project.licencePlate,
@@ -125,6 +126,7 @@ export const publicCloudProjectDataToRow = (project: any) => {
         }
       : null,
     created: formatDate(project.created.$date),
+    updatedAt: formatDate(project.updatedAt.$date),
     licencePlate: project.licencePlate,
     status: project.status,
   };
