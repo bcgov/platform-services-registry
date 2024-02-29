@@ -13,11 +13,11 @@ export default async function ProductsTable({
 }: {
   searchParams: {
     search: string;
-    page: number;
-    pageSize: number;
+    page: string;
+    pageSize: string;
     ministry: string;
     provider: string;
-    active: boolean;
+    active: string;
   };
 }) {
   // Authenticate the user
@@ -38,13 +38,13 @@ export default async function ProductsTable({
 
   const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
     effectivePageSize,
-    currentPage,
+    (currentPage - 1) * effectivePageSize,
     search,
     ministry,
     provider,
     userEmail,
     ministryRoles,
-    !active,
+    active !== 'false',
   );
 
   const rows = data.map(publicCloudProjectDataToRow);
@@ -56,7 +56,7 @@ export default async function ProductsTable({
       tableBody={<TableBody rows={rows} />}
       total={total}
       currentPage={currentPage}
-      pageSize={pageSize || defaultPageSize}
+      pageSize={effectivePageSize}
       showDownloadButton
       apiContext="public-cloud"
     />

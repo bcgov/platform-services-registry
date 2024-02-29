@@ -48,7 +48,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:16.1
+    image: postgres:16.2
     healthcheck:
       test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
       timeout: 45s
@@ -68,7 +68,8 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: bitnami/mongodb:7.0.5
+    # See https://hub.docker.com/r/bitnami/mongodb/tags
+    image: bitnami/mongodb:7.0.5-debian-11-r21
     environment:
     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
     - MONGODB_REPLICA_SET_MODE=primary
@@ -90,3 +91,21 @@ services:
     stdin_open: true
     ports:
     - 8000:8000
+
+  nats:
+    container_name: nats
+    image: nats:2.10.11
+    ports:
+    - 4222:4222
+
+  nats-provision:
+    container_name: nats-provision
+    build:
+      context: ./nats-provision
+      dockerfile: Dockerfile
+    environment:
+      NATS_HOST: nats
+      NATS_PORT: 4222
+      APP_URL: http://${MACHINE_HOST_IP}:3000
+    depends_on:
+    - nats

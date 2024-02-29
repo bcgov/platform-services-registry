@@ -5,8 +5,13 @@ image:
   tag: main
   pullPolicy: Always
 
-preImage:
-  repository: ghcr.io/bcgov/pltsvc-pre
+prePrismaImage:
+  repository: ghcr.io/bcgov/pltsvc-pre-prisma
+  tag: main
+  pullPolicy: Always
+
+preDataMigrationsImage:
+  repository: ghcr.io/bcgov/pltsvc-pre-data-migrations
   tag: main
   pullPolicy: Always
 

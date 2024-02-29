@@ -24,6 +24,7 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 4. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
 
 ```bash
+export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
 docker-compose up --build [-d]
 ```
 

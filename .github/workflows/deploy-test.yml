@@ -8,6 +8,10 @@ on:
 env:
   GITHUB_REGISTRY: ghcr.io
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-push-app:
     runs-on: ubuntu-22.04
@@ -17,8 +21,8 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -39,7 +43,7 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
-  build-push-pre:
+  build-push-pre-prisma:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -47,8 +51,8 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -59,9 +63,37 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-pre
+        image-name: bcgov/pltsvc-pre-prisma
         docker-context: .
         docker-file: Dockerfile.db
+        metadata-tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+
+  build-push-pre-data-migrations:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-pre-data-migrations
+        docker-context: data-migrations
+        docker-file: data-migrations/Dockerfile
         metadata-tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
@@ -75,8 +107,8 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -96,7 +128,7 @@ jobs:
           type=semver,pattern={{major}}
 
   deploy:
-    needs: [build-push-app, build-push-pre, build-push-email]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email]
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
@@ -106,8 +138,8 @@ jobs:
       url: https://test-pltsvc.apps.silver.devops.gov.bc.ca
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@9b79eb6d8ec51bce42cb4e77f0a174fc80cf3cb9

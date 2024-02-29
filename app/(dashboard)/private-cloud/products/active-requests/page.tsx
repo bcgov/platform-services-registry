@@ -48,6 +48,7 @@ export default async function ProductsTable({
   const transformActiveRequests = requestsData.map((request) => ({
     ...request.userRequestedProject,
     created: request.created,
+    updatedAt: request.updatedAt,
     activeRequest: [request],
     id: request.id,
   }));
@@ -57,7 +58,7 @@ export default async function ProductsTable({
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
-      description="These products have an active request. An admin is currently reviewing them"
+      description="Products with pending requests currently under admin review."
       tableBody={<NewTableBody rows={activeRequests} />}
       total={requestsTotal}
       currentPage={currentPage}

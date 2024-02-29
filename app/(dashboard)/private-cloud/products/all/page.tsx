@@ -12,11 +12,11 @@ export default async function ProductsTable({
 }: {
   searchParams: {
     search: string;
-    page: number;
-    pageSize: number;
+    page: string;
+    pageSize: string;
     ministry: string;
     cluster: string;
-    active: boolean;
+    active: string;
   };
 }) {
   // Authenticate the user
@@ -43,7 +43,7 @@ export default async function ProductsTable({
     cluster,
     userEmail,
     ministryRoles,
-    !active,
+    active !== 'false',
   );
 
   const projects = data.map(privateCloudProjectDataToRow);

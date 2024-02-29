@@ -106,7 +106,6 @@ export default function SearchFilterSort({
         <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
           <div className="flex w-full justify-between items-center">
             <div className="flex-grow h-12"></div>
-
             {!removeSearch && (
               <form className="flex-grow flex-shrink max-w-sm">
                 <label htmlFor="simple-search" className="sr-only">
@@ -134,6 +133,10 @@ export default function SearchFilterSort({
                     onBlur={() => setFocused(false)}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     spellCheck={false}
+                    onKeyDown={(e) => {
+                      // Prevent page reboot on "Enter" key press
+                      if (e.key === 'Enter') e.preventDefault();
+                    }}
                   />
                   {isPending && (
                     <div className="absolute inset-y-0 right-0 mr-4 flex items-center pl-3 pointer-events-none">
@@ -149,10 +152,8 @@ export default function SearchFilterSort({
             className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
             <Image alt="Filter" src={Filter} width={16} height={10} />
-
             <span className="md:inline hidden">Filters</span>
           </Disclosure.Button>
-
           {showDownloadButton && (
             <button
               onClick={handleDownload}

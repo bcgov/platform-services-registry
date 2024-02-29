@@ -154,7 +154,8 @@ export default function Modal({
                       <span className="flex items-center text-sm text-red-600">
                         <div className="flex">
                           <ExclamationCircleIcon className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
-                          Not Ready to Delete
+                          Please remember to remove all pods and PVCs from all four namespaces before trying to delete
+                          again.
                         </div>
                       </span>
                       <p className="text-sm text-gray-500">Deletion check has failed.</p>
@@ -174,7 +175,7 @@ export default function Modal({
                   <div className="border-t border-gray-300 pt-4">
                     <div className="space-y-1">
                       <span className="flex">
-                        <p className="text-sm font-medium text-gray-900">Project Name: </p>
+                        <p className="text-sm font-medium text-gray-900">Product Name: </p>
                         <p className="text-sm text-gray-900 ml-2">{projectData?.name}</p>
                       </span>
                       <span className="flex">
@@ -182,7 +183,7 @@ export default function Modal({
                         <p className="text-sm text-gray-900 ml-2">{projectData?.licencePlate}</p>
                       </span>
                       <span className="flex">
-                        <p className="text-sm font-medium text-gray-900">Project Owner: </p>
+                        <p className="text-sm font-medium text-gray-900">Product Owner: </p>
                         <p className="text-sm text-gray-900 ml-2">
                           {projectData?.projectOwner?.email.toLocaleLowerCase()}
                         </p>
@@ -220,7 +221,7 @@ export default function Modal({
 
                         <div className="mt-4">
                           <label htmlFor="owner-email" className="sr-only">
-                            Project Owner Email
+                            Product Owner Email
                           </label>
                           <input
                             onChange={(e) => setEmail(e.target.value)}
@@ -229,7 +230,7 @@ export default function Modal({
                             name="owner-email"
                             id="owner-email"
                             className="block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            placeholder="Project Owner Email"
+                            placeholder="Product Owner Email"
                           />
                         </div>
                       </div>

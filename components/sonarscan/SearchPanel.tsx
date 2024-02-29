@@ -31,7 +31,8 @@ export default function SearchPanel({ contexts }: { contexts: string[] }) {
   useEffect(() => {
     const currParamObj = parseQueryString(searchParams?.toString());
     const hasFilterChanged =
-      !_isEqual(currParamObj.search, searchTerm) || !_isEqual(_castArray(currParamObj.context || []), selectedContexts);
+      !_isEqual(currParamObj.search || '', searchTerm || '') ||
+      !_isEqual(_castArray(currParamObj.context || []), selectedContexts || []);
 
     const newParamObj = {
       ...currParamObj,

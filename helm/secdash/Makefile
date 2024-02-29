@@ -33,9 +33,9 @@ define arguments
 	--set airflow.gid="${UID}" \
 	--set sonarqube.securityContext.fsGroup="${UID}" \
 	--set sonarqube.containerSecurityContext.runAsUser="${UID}" \
-	--set sonarqube.containerSecurityContext.runAsGroup="${UID}" \
+	--set sonarqube.containerSecurityContext.runAsGroup="0" \
 	--set sonarqube.initContainers.securityContext.runAsUser="${UID}" \
-	--set sonarqube.initContainers.securityContext.runAsGroup="${UID}" \
+	--set sonarqube.initContainers.securityContext.runAsGroup="0" \
 	--set dags.sha="${SHA}" \
 	$(foreach filename,$(FILENAMES),\
 		--set "dags.volumeMounts[$(INDEX)].name=secdash-airflow-dags-copy" \
@@ -78,6 +78,12 @@ uninstall:
 template: helm-dep
 template:
 	@helm template $(call arguments) --debug > template.yaml
+
+# Use when syncing only DAG files
+.PHONY: dags
+dags: helm-dep
+dags:
+	@helm upgrade $(call arguments) --set airflow.migrateDatabaseJob.enabled="false" --set airflow.webserver.defaultUser.enabled="false"
 
 .PHONY: force-install
 force-install: uninstall

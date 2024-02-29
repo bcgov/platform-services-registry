@@ -6,7 +6,7 @@ version: 0.1.0
 appVersion: "0.1.0"
 dependencies:
   - name: airflow
-    version: "1.11.0"
+    version: "1.12.0"
     repository: "https://airflow.apache.org/"
     condition: airflow.enabled
   - name: postgresql
@@ -14,6 +14,6 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: sonarqube
-    version: "10.3.0"
+    version: "10.4.0+2288"
     repository: https://SonarSource.github.io/helm-chart-sonarqube
     condition: sonarqube.enabled

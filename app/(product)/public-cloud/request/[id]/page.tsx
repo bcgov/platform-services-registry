@@ -84,7 +84,7 @@ export default function Request({ params }: { params: { id: string } }) {
             <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
               A decision has already been made for this product
             </h3>
-            <ProjectDescription disabled={isDisabled} />
+            <ProjectDescription mode="view" disabled={isDisabled} />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}

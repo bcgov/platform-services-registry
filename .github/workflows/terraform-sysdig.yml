@@ -22,11 +22,11 @@ jobs:
     environment:
       name: tf-sysdig
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@521e78597400d2bff4171059223311208257c0d5
+      uses: hashicorp/setup-terraform@b033326c2c3fb4bfd7e831ad17ba17756aece0f3
       with:
         terraform_version: ${{ env.TF_VERSION }}
 

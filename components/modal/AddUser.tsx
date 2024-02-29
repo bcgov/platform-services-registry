@@ -2,24 +2,30 @@ import { Fragment, useState } from 'react';
 import { Dialog, Combobox, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { CheckIcon } from '@heroicons/react/20/solid';
-import { fetchPeople, Person } from '@/components/form/AsyncAutocomplete';
 import UserInfoField from '@/components/modal/AddUserFields';
 import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
+import { listUsersByEmail } from '@/services/msal';
+import { AppUser } from '@/types/user';
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserPrincipalName: React.Dispatch<React.SetStateAction<string>>;
   setUserEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
+export default function AddUserModal({ open, setOpen, setUserPrincipalName, setUserEmail }: Props) {
   const [query, setQuery] = useState<string>('');
-  const [selected, setSelected] = useState<Person | undefined>({
-    id: 0,
-    surname: '',
-    givenName: '',
-    mail: '',
+  const [selected, setSelected] = useState<AppUser | undefined>({
+    id: '0',
+    upn: '',
+    email: '',
+    idir: '',
+    idirGuid: '',
     displayName: '',
+    firstName: '',
+    lastName: '',
+    ministry: '',
   });
 
   const [confirm, setConfirm] = useState(false);
@@ -28,15 +34,15 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
     data: people,
     isLoading,
     error,
-  } = useQuery<Person[], Error>({
+  } = useQuery<AppUser[], Error>({
     queryKey: ['people', query],
-    queryFn: () => fetchPeople(query || ''),
+    queryFn: () => listUsersByEmail(query || ''),
     enabled: !!query,
   });
 
-  const autocompleteOnChangeHandler = (value: Person) => {
+  const autocompleteOnChangeHandler = (value: AppUser) => {
     setSelected(value);
-    setQuery(value.mail);
+    setQuery(value.email);
     setConfirm(true);
   };
 
@@ -46,7 +52,10 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
   };
 
   const handleAddUserBtn = () => {
-    if (selected) setUserEmail(selected.mail);
+    if (selected) {
+      setUserPrincipalName(selected.upn);
+      setUserEmail(selected.email);
+    }
     setSelected(undefined);
     setOpen(false);
   };
@@ -102,7 +111,7 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
                     <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                       <Combobox.Input
                         autoComplete="xyz"
-                        displayValue={(person: Person) => person?.mail}
+                        displayValue={(user: AppUser) => user?.email}
                         onChange={(event) => setQuery(event.target.value)}
                         placeholder={'Enter email'}
                         value={query}
@@ -128,20 +137,20 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
                           </div>
                         ) : (
                           people &&
-                          people.map((person) => (
+                          people.map((user) => (
                             <Combobox.Option
-                              key={person?.mail}
+                              key={user?.email}
                               className={({ active }) =>
                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                   active ? 'bg-teal-600 text-white' : 'text-gray-900'
                                 }`
                               }
-                              value={person}
+                              value={user}
                             >
                               {({ selected: sel, active }) => (
                                 <>
                                   <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>
-                                    {person?.mail}
+                                    {user?.email}
                                   </span>
                                   {sel ? (
                                     <span
@@ -163,11 +172,11 @@ export default function AddUserModal({ open, setOpen, setUserEmail }: Props) {
                 </Combobox>
                 <UserInfoField
                   name={'First Name'}
-                  value={selected?.givenName ? selected.givenName : confirm ? 'Not Found' : ''}
+                  value={selected?.firstName ? selected.firstName : confirm ? 'Not Found' : ''}
                 />
                 <UserInfoField
                   name={'Last Name'}
-                  value={selected?.surname ? selected.surname : confirm ? 'Not Found' : ''}
+                  value={selected?.lastName ? selected.lastName : confirm ? 'Not Found' : ''}
                 />
                 <UserInfoField name={'Ministry'} value={selected ? parseMinistry(selected.displayName) : 'Not Found'} />
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">

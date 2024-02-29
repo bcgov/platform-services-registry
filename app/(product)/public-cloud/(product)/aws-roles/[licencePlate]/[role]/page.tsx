@@ -11,7 +11,7 @@ import AddUserModal from '@/components/modal/AddUser';
 import { useEffect, useState } from 'react';
 import DeleteUserModal from '@/components/modal/DeleteUser';
 import EmptyBody from '@/components/EmptyUsersList';
-import { getUsersPaginatedList, addUser, deleteUser } from '@/services/aws-roles';
+import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/aws-roles';
 import ErrorModal from '@/components/modal/Error';
 
 const pathParamRoleToRole = (pathRole: string): string => {
@@ -30,16 +30,15 @@ export default function ProductAWSRoles() {
   const pageSize = searchParams.get('pageSize') || '5';
   const searchTerm = searchParams.get('search') || '';
   const [openAddUser, setOpenAddUser] = useState<boolean>(false);
+  const [userPrincipalName, setUserPrincipalName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
   const [userId, setUserId] = useState('');
-  const [deletePerson, setDeletePerson] = useState<Record<string, any>>({
-    '': {
-      id: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-    },
+  const [deletePerson, setDeletePerson] = useState<User>({
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
   });
 
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -62,8 +61,8 @@ export default function ProductAWSRoles() {
 
   const { data: userAdd, error: fetchingUserAddError } = useQuery<string, Error>({
     queryKey: ['userEmail', userEmail],
-    queryFn: () => addUser(userEmail, users?.groupId),
-    enabled: !!userEmail,
+    queryFn: () => addUser(userPrincipalName, userEmail, users?.groupId),
+    enabled: !!userPrincipalName,
   });
 
   if (fetchingUserAddError) {
@@ -96,6 +95,32 @@ export default function ProductAWSRoles() {
     refetch();
   }, [searchTerm, refetch]);
 
+  const {
+    data: roles,
+    isLoading: isRolesFetching,
+    error: fetchingRolesError,
+  } = useQuery<any, Error>({
+    queryKey: ['licencePlate', licencePlate],
+    queryFn: () => getRolesNames(licencePlate),
+    enabled: !!licencePlate,
+  });
+
+  if (roles && roles.length === 0) {
+    return (
+      <div className="w-full">
+        Looks like role groups haven&apos;t been created for this product, please, reach out Public Cloud Platform
+        Administrators{' '}
+        <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
+          Cloud.Pathfinder@gov.bc.ca
+        </a>
+      </div>
+    );
+  }
+
+  if (isRolesFetching || isUsersFetching) {
+    return null;
+  }
+
   return (
     <div className="w-full">
       <TableAWSRoles
@@ -105,10 +130,11 @@ export default function ProductAWSRoles() {
             subtitle="User Access"
             description="Assign roles to grant users access below"
             setOpenAddUser={setOpenAddUser}
+            roles={roles}
           />
         }
         tableBody={
-          rows.length === 0 && !isUsersFetching ? (
+          rows.length === 0 ? (
             <EmptyBody userRole={userRole} setOpenAddUser={setOpenAddUser} />
           ) : (
             <TableBodyAWSRoles
@@ -123,8 +149,19 @@ export default function ProductAWSRoles() {
         pageSize={+pageSize}
         total={users ? users?.total : 0}
       />
-      <DeleteUserModal open={openDeleteUser} setOpen={setOpenDeleteUser} setUserId={setUserId} person={deletePerson} />
-      <AddUserModal open={openAddUser} setOpen={setOpenAddUser} setUserEmail={setUserEmail} />
+      <DeleteUserModal
+        open={openDeleteUser}
+        setOpen={setOpenDeleteUser}
+        setUserId={setUserId}
+        person={deletePerson}
+        userRole={userRole}
+      />
+      <AddUserModal
+        open={openAddUser}
+        setOpen={setOpenAddUser}
+        setUserPrincipalName={setUserPrincipalName}
+        setUserEmail={setUserEmail}
+      />
       <ErrorModal
         open={showErrorModal}
         setOpen={setShowErrorModal}

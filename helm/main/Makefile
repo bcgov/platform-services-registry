@@ -16,7 +16,8 @@ endif
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set app.image.tag="${IMAGE_TAG}" \
-	--set app.preImage.tag="${IMAGE_TAG}" \
+	--set app.prePrismaImage.tag="${IMAGE_TAG}" \
+	--set app.preDataMigrationsImage.tag="${IMAGE_TAG}" \
 	--set email.image.tag="${IMAGE_TAG}"
 endef
 

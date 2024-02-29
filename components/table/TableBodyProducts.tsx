@@ -33,16 +33,12 @@ function EmptyBody() {
           height: 'auto',
         }}
       />
-      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no requests to be displayed</span>
-      <span className="font-bcsans text-lg font-extralight text-mediumgrey mt-2">
-        You currently have no provisioning requests for the
-      </span>
-      <span className="font-bcsans text-lg font-extralight text-mediumgrey">Private Cloud Openshift Platform</span>
+      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no products to be displayed</span>
       <Link
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/create`}
       >
-        REQUEST A NEW PROJECT SET
+        REQUEST A NEW PRODUCT
       </Link>
     </div>
   );
@@ -94,7 +90,7 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
     return 'Delete requested';
   }
 
-  return 'Deployed on';
+  return 'Updated at';
 }
 
 function truncateText(str: string, n: number) {
@@ -116,7 +112,14 @@ function getStatus(requestDecisionStatus: string) {
   }
 
   if (requestDecisionStatus === 'PENDING') {
-    return 'Reviewing';
+    return (
+      <div className="flex items-center">
+        <svg fill="#003366" className="h-3.5 w-3.5 mr-1" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M16 22c1.1 0 2-.9 2-2l-.01-3.18c0-.53-.21-1.03-.58-1.41L14 12l3.41-3.43c.37-.37.58-.88.58-1.41L18 4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v3.16c0 .53.21 1.04.58 1.42L10 12l-3.41 3.4c-.38.38-.59.89-.59 1.42V20c0 1.1.9 2 2 2h8zM8 7.09V5c0-.55.45-1 1-1h6c.55 0 1 .45 1 1v2.09c0 .27-.11.52-.29.71L12 11.5 8.29 7.79c-.18-.18-.29-.44-.29-.7z"></path>
+        </svg>
+        Reviewing
+      </div>
+    );
   }
 
   if (requestDecisionStatus === 'REJECTED') {
@@ -136,7 +139,7 @@ export default function TableBody({ rows }: TableProps) {
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(path.join(`/${cloud}/product/${row.licencePlateValue}`));
+    router.push(path.join(`/${cloud}/product/${row.licencePlate}`));
   };
 
   return (
@@ -152,7 +155,7 @@ export default function TableBody({ rows }: TableProps) {
               className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
             >
               <div className="flex justify-between w-full">
-                <div className="w-[300px] lg:w-[550px]">
+                <div className="min-w-[300px] lg:w-[365px]">
                   <div className="flex items-center gap-x-3">
                     {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
                       <div className="h-2 w-2 rounded-full bg-current" />
@@ -162,7 +165,12 @@ export default function TableBody({ rows }: TableProps) {
                         <span className="">
                           <span className="font-semibold leading-6"> {deployment.cluster}</span>{' '}
                           <span className="text-gray-400">/</span>{' '}
-                          <span className="">{truncateText(deployment.name, 130)}</span>
+                          <span className="">{truncateText(deployment.name, 100)}</span>
+                          {deployment.status !== 'ACTIVE' && (
+                            <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
+                              Inactive
+                            </span>
+                          )}
                         </span>
 
                         <span className="absolute inset-0" />
@@ -170,16 +178,16 @@ export default function TableBody({ rows }: TableProps) {
                     </h2>
                   </div>
                   <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
-                    <p className="truncate">Ministry {deployment.ministry}</p>
+                    <div className="whitespace-nowrap">Ministry {deployment.ministry}</div>
                     <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
                       <circle cx={1} cy={1} r={1} />
                     </svg>
                     <p className="whitespace-nowrap">
-                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}
+                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.updatedAt}
                     </p>
                   </div>
                 </div>
-                <div className="mt-1 w-32 ml-3">
+                <div className="mt-1 w-full min-w-20 ml-10 mr-3">
                   <div>
                     <span
                       className={classNames(
@@ -204,33 +212,38 @@ export default function TableBody({ rows }: TableProps) {
                     </div>
                   </div>
                 </div>
-                <div className="flex mt-1.5 space-x-2 w-2/5">
-                  <div className="hidden  gap-x-2 2xl:flex">
+                <div className="flex mt-1.5 space-x-2 w-3/5 justify-start min-w-0 xl:min-w-[450px] mr-10">
+                  {/* <div className="flex w-fit justify-start border"> */}
+                  <div className="hidden md:flex flex-col gap-2 xl:flex-row">
                     <Avatar
+                      className="min-w-52"
                       name={deployment.projectOwner.name}
                       email={deployment.projectOwner.email}
                       userRole={'Product Owner'}
                     />
-                    <Avatar
-                      name={deployment.primaryTechnicalLead.name}
-                      email={deployment.primaryTechnicalLead.email}
-                      userRole="Technical Lead"
-                    />
-                    {deployment?.secondaryTechnicalLead ? (
+                    <div className="flex flex-col space-y-4">
                       <Avatar
-                        name={deployment.secondaryTechnicalLead?.name}
-                        email={deployment.primaryTechnicalLead?.email}
+                        name={deployment.primaryTechnicalLead.name}
+                        email={deployment.primaryTechnicalLead.email}
                         userRole="Technical Lead"
                       />
-                    ) : null}
+                      {deployment?.secondaryTechnicalLead ? (
+                        <Avatar
+                          name={deployment.secondaryTechnicalLead?.name}
+                          email={deployment.primaryTechnicalLead?.email}
+                          userRole="Technical Lead"
+                        />
+                      ) : null}
+                    </div>
+                    {/* </div> */}
                   </div>
-                  <div className="2xl:hidden flex">
+                  {/* <div className="md:hidden flex">
                     <Avatars
                       productOwnerEmail={deployment.projectOwner.email}
                       primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
                       secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

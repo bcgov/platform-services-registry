@@ -1,27 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
 import { UserInputSchema } from '@/schema';
 import classNames from '@/components/utils/classnames';
-
-export type Person = {
-  id: number;
-  surname: string;
-  givenName: string;
-  mail: string;
-  displayName: string;
-};
-
-export async function fetchPeople(email: string): Promise<Person[]> {
-  const res = await fetch(`/api/msal/userAutocomplete?email=${email}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return res.json();
-}
+import { listUsersByEmail } from '@/services/msal';
+import { AppUser } from '@/types/user';
 
 export default function AsyncAutocomplete({
   name,
@@ -36,7 +21,7 @@ export default function AsyncAutocomplete({
   className?: string;
   disabled?: boolean;
 }) {
-  const [selected, setSelected] = useState<Person | ''>('');
+  const [selected, setSelected] = useState<AppUser | ''>('');
   const [query, setQuery] = useState<string>('');
 
   const {
@@ -48,47 +33,59 @@ export default function AsyncAutocomplete({
     watch,
   } = useFormContext();
 
-  const email = watch(name + '.email');
+  const emailwat = watch(name + '.email');
 
   const {
     data: people,
     isLoading,
     error,
-  } = useQuery<Person[], Error>({
+  } = useQuery<AppUser[], Error>({
     queryKey: ['people', query],
-    queryFn: () => fetchPeople(query || ''),
+    queryFn: () => listUsersByEmail(query || ''),
     enabled: !!query,
   });
 
-  const autocompleteOnChangeHandler = (value: Person) => {
-    console.log('ON CHANGE HANDLER');
-    setSelected(value);
-    setQuery(value.mail);
+  const autocompleteOnChangeHandler = (user: AppUser) => {
+    setSelected(user);
+    setQuery(user.email);
 
-    const { givenName: firstName, surname: lastName, mail, displayName } = value;
-
-    const ministry = parseMinistryFromDisplayName(displayName);
+    const { firstName, lastName, email, ministry, idir, upn } = user;
 
     const parsedParams = UserInputSchema.safeParse({
       firstName,
       lastName,
-      email: mail,
+      email,
       ministry,
+      idir,
+      upn,
     });
 
     if (!parsedParams.success) {
-      // Corner case where the user does not have a properly formatted IDIR account
-      // do something with the error
-
-      console.log('ERROR WITH ' + name);
-
-      setError(name, {
+      setError('root', {
         type: 'manual',
         message:
           'The IDIR account associated with this email address is badly formatted and cannot be added as it does not contain the users name or ministry',
       });
     } else {
-      clearErrors(name);
+      clearErrors('root');
+    }
+
+    if (!idir) {
+      setError('idir', {
+        type: 'manual',
+        message: 'Please populate your IDIR account with your IDIR',
+      });
+    } else {
+      clearErrors('idir');
+    }
+
+    if (!upn) {
+      setError('upn', {
+        type: 'manual',
+        message: 'Please populate your IDIR account with your User Principal Name',
+      });
+    } else {
+      clearErrors('upn');
     }
 
     setValue(
@@ -96,18 +93,20 @@ export default function AsyncAutocomplete({
       {
         firstName,
         lastName,
-        email: mail,
+        email,
         ministry,
+        idir,
+        upn,
       },
       { shouldDirty: true },
     );
   };
 
   useEffect(() => {
-    if (email) {
-      setQuery(email);
+    if (emailwat) {
+      setQuery(emailwat);
     }
-  }, [email]);
+  }, [emailwat]);
 
   return (
     <div className={className}>
@@ -122,7 +121,7 @@ export default function AsyncAutocomplete({
           <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
             <Combobox.Input
               autoComplete="xyz"
-              displayValue={(person: Person) => person?.mail}
+              displayValue={(user: AppUser) => user?.email}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={placeHolder}
               value={query}
@@ -152,19 +151,19 @@ export default function AsyncAutocomplete({
                 </div>
               ) : (
                 people &&
-                people.map((person) => (
+                people.map((user) => (
                   <Combobox.Option
-                    key={person?.mail}
+                    key={user?.email}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
                         active ? 'bg-teal-600 text-white' : 'text-gray-900'
                       }`
                     }
-                    value={person}
+                    value={user}
                   >
                     {({ selected: sel, active }) => (
                       <>
-                        <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{person?.mail}</span>
+                        <span className={`block truncate ${sel ? 'font-medium' : 'font-normal'}`}>{user?.email}</span>
                         {sel ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
@@ -183,15 +182,10 @@ export default function AsyncAutocomplete({
           </Transition>
         </div>
       </Combobox>
-      {errors[name] ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors[name]?.message)}</p> : null}
-      {/* {errors?.[name]?.["email"] ? (
-        <p className={"text-red-400 mt-3 text-sm leading-6"}>
-          {errors?.[name]?.["email"].message}
-        </p>
-      ) : null} */}
+      {errors.root ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.root?.message)}</p> : null}
 
       <div className="mt-8 col-span-full">
-        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+        <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
           First Name
         </label>
         <div className="mt-2">
@@ -208,7 +202,7 @@ export default function AsyncAutocomplete({
         </div>
       </div>
       <div className="mt-8 col-span-full">
-        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+        <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
           Last Name
         </label>
         <div className="mt-2">
@@ -225,13 +219,12 @@ export default function AsyncAutocomplete({
         </div>
       </div>
       <div className="mt-8 col-span-full">
-        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+        <label htmlFor="ministry" className="block text-sm font-medium leading-6 text-gray-900">
           Ministry
         </label>
         <div className="mt-2">
           <input
             disabled
-            // value={parseMinistryFromDisplayName(isString(selected) ? selected : selected.displayName)}
             placeholder="Autofilled from IDIR"
             type="text"
             id="ministry"
@@ -241,6 +234,41 @@ export default function AsyncAutocomplete({
           />
         </div>
       </div>
+      <div className="mt-8 col-span-full">
+        <label htmlFor="idir" className="block text-sm font-medium leading-6 text-gray-900">
+          IDIR
+        </label>
+        <div className="mt-2">
+          <input
+            disabled
+            placeholder="Autofilled from IDIR"
+            type="text"
+            id="idir"
+            autoComplete="off"
+            {...register(name + '.idir')}
+            className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      {errors.idir ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.idir?.message)}</p> : null}
+
+      <div className="mt-8 col-span-full">
+        <label htmlFor="upn" className="block text-sm font-medium leading-6 text-gray-900">
+          UPN
+        </label>
+        <div className="mt-2">
+          <input
+            disabled
+            placeholder="Autofilled from IDIR"
+            type="text"
+            id="upn"
+            autoComplete="off"
+            {...register(name + '.upn')}
+            className="block w-full rounded-md border-0 py-1.5 text-slate-400 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      {errors.upn ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.upn?.message)}</p> : null}
     </div>
   );
 }

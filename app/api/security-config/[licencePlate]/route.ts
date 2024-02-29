@@ -25,7 +25,7 @@ const apiHandler = createApiHandler<PathParam, QueryParam>({
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
-  const result = await prisma.securityConfig.findUnique({
+  const configProm = prisma.securityConfig.findUnique({
     where: {
       licencePlate: pathParams.licencePlate,
       context: queryParams.context,
@@ -33,5 +33,21 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
     session: session as never,
   });
 
-  return NextResponse.json(result);
+  const query = { where: { licencePlate: pathParams.licencePlate }, session: session as never };
+  const privateQuery = { ...query, select: { cluster: true } };
+  const publicQuery = { ...query, select: { provider: true } };
+
+  const projectProm =
+    queryParams.context === $Enums.ProjectContext.PRIVATE
+      ? prisma.privateCloudProject.findFirst(privateQuery)
+      : prisma.publicCloudProject.findFirst(publicQuery);
+
+  const requestedProjectProm =
+    queryParams.context === $Enums.ProjectContext.PRIVATE
+      ? prisma.privateCloudProject.findFirst(privateQuery)
+      : prisma.publicCloudProject.findFirst(publicQuery);
+
+  const [config, project, requestedProject] = await Promise.all([configProm, projectProm, requestedProjectProm]);
+
+  return NextResponse.json({ config, project: project || requestedProject });
 });

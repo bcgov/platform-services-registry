@@ -2,19 +2,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "app.fullname" . }}-pre
+  name: {{ include "app.fullname" . }}-pre-data-migrations
   labels:
     {{- include "app.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": "pre-install,pre-upgrade,pre-rollback"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-weight": "-4"
 spec:
   backoffLimit: 0
   activeDeadlineSeconds: 1800
   template:
     metadata:
-      name: {{ include "app.fullname" . }}-pre
+      name: {{ include "app.fullname" . }}-pre-data-migrations
       annotations:
       {{- $podAnnotations := merge (.Values.podAnnotations | default dict) (.Values.global.vault.podAnnotations | default dict) -}}
       {{- with $podAnnotations }}
@@ -31,12 +31,12 @@ spec:
       restartPolicy: Never
       serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       containers:
-        - name: {{ include "app.fullname" . }}-pre
-          image: "{{ .Values.preImage.repository }}:{{ .Values.preImage.tag }}"
-          imagePullPolicy: {{ .Values.preImage.pullPolicy }}
+        - name: {{ include "app.fullname" . }}-pre-data-migrations
+          image: "{{ .Values.preDataMigrationsImage.repository }}:{{ .Values.preDataMigrationsImage.tag }}"
+          imagePullPolicy: {{ .Values.preDataMigrationsImage.pullPolicy }}
           command: ["/bin/sh", "-c"]
           args:
-            ['. /vault/secrets/secrets.env && node_modules/.bin/prisma db push --schema schema.prisma --skip-generate']
+            ['. /vault/secrets/secrets.env && node_modules/.bin/migrate-mongo up']
           resources:
             limits:
               cpu: 0.5

@@ -20,23 +20,25 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">New Request!</Heading>
-                <Text>Hi {request.requestedProject.name} Team, </Text>
+                <Heading className="text-lg">
+                  Provisioning request received for {request.requestedProject.name} on OpenShift
+                </Heading>
+                <Text>Hi Product Team,</Text>
                 <Text className="">
-                  You have requested a new project set for your product on the Private Cloud Openshift platform. Our
-                  administrators have been notified and will review your request.
+                  You have requested a new project set for {request.requestedProject.name} on the Private Cloud
+                  OpenShift platform. Our administrators have been notified and will review your request.
                 </Text>
                 <Button
                   href="https://registry.developer.gov.bc.ca/"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
-                  Review Request
+                  View request
                 </Button>
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+              <div>
                 <ProductDetails
                   name={request.requestedProject.name}
                   description={request.requestedProject.description}
@@ -47,7 +49,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={request.requestedProject.cluster} />
+                <NamespaceDetails cluster={request.requestedProject.cluster} showNamespaceDetailsTitle={false} />
               </div>
               <div>
                 <Closing />

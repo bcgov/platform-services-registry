@@ -39,6 +39,12 @@ export default async function Page({
   if (search.length > 0) {
     where.OR = [
       {
+        licencePlate: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      },
+      {
         url: {
           contains: search,
           mode: 'insensitive',
@@ -50,7 +56,17 @@ export default async function Page({
   const [rows, distinct, total] = await Promise.all([
     prisma.sonarScanResult.findMany({
       where,
-      select: { id: true, licencePlate: true, context: true, url: true, result: true, scannedAt: true },
+      select: {
+        id: true,
+        licencePlate: true,
+        context: true,
+        clusterOrProvider: true,
+        url: true,
+        sha: true,
+        source: true,
+        result: true,
+        scannedAt: true,
+      },
       skip,
       take,
       orderBy: [

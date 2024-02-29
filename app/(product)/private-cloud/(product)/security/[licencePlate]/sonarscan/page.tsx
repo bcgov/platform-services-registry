@@ -31,7 +31,7 @@ export default async function Page({
 
   search = search.trim();
 
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 5);
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
   const where: Prisma.SonarScanResultWhereInput = { licencePlate: params.licencePlate };
   if (context.length > 0) {
@@ -40,12 +40,6 @@ export default async function Page({
 
   if (search.length > 0) {
     where.OR = [
-      {
-        licencePlate: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
       {
         url: {
           contains: search,
@@ -58,7 +52,17 @@ export default async function Page({
   const [rows, distinct, total] = await Promise.all([
     prisma.sonarScanResult.findMany({
       where,
-      select: { id: true, licencePlate: true, context: true, url: true, result: true, scannedAt: true },
+      select: {
+        id: true,
+        licencePlate: true,
+        context: true,
+        clusterOrProvider: true,
+        url: true,
+        sha: true,
+        source: true,
+        result: true,
+        scannedAt: true,
+      },
       skip,
       take,
       orderBy: [
@@ -69,7 +73,7 @@ export default async function Page({
       session: session as never,
     }),
     prisma.sonarScanResult.findMany({
-      where: {},
+      where: { licencePlate: params.licencePlate },
       select: { context: true },
       distinct: ['context'],
       session: session as never,
@@ -81,5 +85,7 @@ export default async function Page({
   ]);
 
   const contexts = distinct.map((row) => row.context);
-  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} />;
+  return (
+    <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} hideContext />
+  );
 }

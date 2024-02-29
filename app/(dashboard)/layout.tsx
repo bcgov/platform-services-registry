@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <CloudTabs tabs={tabsData} urlFn={urlFn} navItem={<CreateButton />} />
-      <div className="mt-8 mb-20 h-full mx-4 lg:mx-20">
+      <div className="mt-8 mb-20 h-full mx-4 2xl:mx-20">
         <ProductsRequestsTabs />
         {children}
       </div>

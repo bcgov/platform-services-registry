@@ -10,39 +10,40 @@ import ContactChanges from '../../_components/Edit/ContactChanges';
 import QuotaChanges from '../../_components/Edit/QuotaChanges';
 import DescriptionChanges from '../../_components/Edit/DescriptionChanges';
 import { BASE_URL } from '@/config';
+import Comment from '@/emails/_components/Comment';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
-  comment?: string;
 }
 
-const EditRequestTemplate = ({ request, comment }: EmailProp) => {
+const EditRequestTemplate = ({ request }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
   const changed = comparePrivateCloudProjects(current, requested);
+  const requestComment = request.requestComment ?? undefined;
 
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
-          <Body className="bg-white my-auto mx-auto font-sans text-xs lassName='text-darkergrey'">
+          <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">New Edit Product Request!</Heading>
-                <Text>Hi {current.name} Team, </Text>
+                <Heading className="text-lg text-black">New edit product request!</Heading>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
                   You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
                   administrators have been notified and will review your request.
                 </Text>
                 <Button href={BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
-                  Review Request
+                  View request
                 </Button>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg text-black">Comments</Heading>
-                <Text className="mb-0">{comment}</Text>
+                <Comment requestComment={requestComment} />
               </div>
               {(changed.name || changed.description || changed.ministry || changed.cluster) && (
                 <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

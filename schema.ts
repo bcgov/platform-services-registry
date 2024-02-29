@@ -93,6 +93,8 @@ export const UserInputSchema = z.object({
   lastName: z.string(),
   email: z.string().email().toLowerCase(),
   ministry: z.string(),
+  idir: z.string(),
+  upn: z.string(),
   // ministry: z.nativeEnum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
 });
 
@@ -103,7 +105,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   ministry: z.nativeEnum(Ministry),
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional(),
+  secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   commonComponents: CommonComponentsInputSchema,
 });
 
@@ -126,7 +128,8 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   ministry: z.nativeEnum(Ministry),
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
-  secondaryTechnicalLead: UserInputSchema.optional(),
+  secondaryTechnicalLead: UserInputSchema.optional().nullable(),
+  requestComment: string().optional(),
 });
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(
@@ -135,7 +138,7 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
     testQuota: QuotaInputSchema,
     toolsQuota: QuotaInputSchema,
     developmentQuota: QuotaInputSchema,
-    userComment: string().optional(),
+    requestComment: string().optional(),
   }),
 );
 
@@ -144,14 +147,14 @@ export const PublicCloudEditRequestBodySchema = PublicCloudCreateRequestBodySche
 export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
-    humanComment: string().optional(),
+    decisionComment: string().optional(),
   }),
 );
 
 export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
-    humanComment: string().optional(),
+    decisionComment: string().optional(),
   }),
 );
 
@@ -171,6 +174,7 @@ export const SecurityConfigRequestBodySchema = z.object({
     )
     .max(10),
   context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
+  clusterOrProvider: z.string().optional(),
 });
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof PrivateCloudCreateRequestBodySchema>;

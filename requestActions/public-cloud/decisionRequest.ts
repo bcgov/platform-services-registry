@@ -36,7 +36,7 @@ export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGe
 export default async function makeDecisionRequest(
   licencePlate: string,
   decision: DecisionStatus,
-  comment: string | undefined,
+  decisionComment: string | undefined,
   formData: PublicCloudEditRequestBody,
   authEmail: string,
 ): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
@@ -101,7 +101,7 @@ export default async function makeDecisionRequest(
     },
     data: {
       decisionStatus: decision,
-      humanComment: comment,
+      decisionComment: decisionComment,
       active: decision === DecisionStatus.APPROVED,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,

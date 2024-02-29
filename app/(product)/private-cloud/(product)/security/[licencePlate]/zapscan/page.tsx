@@ -31,7 +31,7 @@ export default async function Page({
 
   search = search.trim();
 
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 5);
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
   const where: Prisma.PrivateCloudProjectZapResultWhereInput = {
     html: { not: null },
@@ -70,7 +70,7 @@ export default async function Page({
       session: session as never,
     }),
     prisma.privateCloudProjectZapResult.findMany({
-      where: {},
+      where: { html: { not: null }, licencePlate: params.licencePlate },
       select: { cluster: true },
       distinct: ['cluster'],
       session: session as never,
@@ -82,5 +82,7 @@ export default async function Page({
   ]);
 
   const clusters = distinct.map((row) => row.cluster);
-  return <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} />;
+  return (
+    <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} hideContext />
+  );
 }

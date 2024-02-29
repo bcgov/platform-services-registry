@@ -1,5 +1,5 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { clusters, ministries, providers } from '@/constants';
+import { clusters, ministriesNames, providers } from '@/constants';
 import { useRef, useState } from 'react';
 import { capitalizeFirstLetter } from '@/components/utils/capitalizeFirstLetter';
 
@@ -92,9 +92,9 @@ export default function FilterPanel() {
               <option selected={true} disabled value="">
                 Select Ministry
               </option>
-              {ministries.map((ministry) => (
-                <option key={ministry} value={ministry}>
-                  {ministry}
+              {ministriesNames.map((ministry) => (
+                <option key={ministry.id} value={ministry.name}>
+                  {ministry.humanFriendlyName}
                 </option>
               ))}
             </select>

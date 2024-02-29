@@ -17,6 +17,8 @@ import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[l
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
 import CommonComponents from '@/components/form/CommonComponents';
 import { PrivateCloudProject } from '@prisma/client';
+import { AGMinistries } from '@/constants';
+import { z } from 'zod';
 
 async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
   const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
@@ -80,10 +82,24 @@ export default function EditProject({ params }: { params: { licencePlate: string
   // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
   // in an error.
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudEditRequestBodySchema),
+    resolver: zodResolver(
+      PrivateCloudEditRequestBodySchema.merge(
+        z.object({
+          isAgMinistryChecked: z.boolean().optional(),
+        }),
+      ).refine(
+        (formData) => {
+          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+        },
+        {
+          message: 'AG Ministry Checkbox should be checked.',
+          path: ['isAgMinistryChecked'],
+        },
+      ),
+    ),
     defaultValues: async () => {
       const response = await fetchProject(params.licencePlate);
-      return response;
+      return { ...response, isAgMinistryChecked: true };
     },
   });
 
@@ -138,8 +154,8 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
-  const setComment = (userComment: string) => {
-    onSubmit({ ...methods.getValues(), userComment });
+  const setComment = (requestComment: string) => {
+    onSubmit({ ...methods.getValues(), requestComment });
   };
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
@@ -154,7 +170,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
                 There is already an active request for this project. You can not edit this project at this time.
               </h3>
             )}
-            <ProjectDescription disabled={isDisabled} clusterDisabled={true} />
+            <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
@@ -185,10 +201,11 @@ export default function EditProject({ params }: { params: { licencePlate: string
         type="create"
       />
       <ReturnModal
-        isEditRequest
         open={openReturn}
         setOpen={setOpenReturn}
         redirectUrl="/private-cloud/products/active-requests"
+        modalTitle="Thank you! We have received your edit request."
+        modalMessage="We have received your edit request for your product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />
     </div>
   );

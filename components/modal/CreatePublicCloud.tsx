@@ -59,7 +59,7 @@ export default function Modal({
                       needed, to reach out and have an on-boarding conversation with you.
                     </p>
                     <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      Also, look out for our Notification emails that will provide you with valuable information
+                      Also, look out for our notification emails that will provide you with valuable information
                       regarding your product status and details.
                     </p>
                   </div>
@@ -78,7 +78,7 @@ export default function Modal({
                           Sign a Memorandum of Understanding (MoU) with the Public Cloud Accelerator Service Team. If
                           you do not have a MoU in place, please email us at{' '}
                           <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                            cloud.pathfinder@gov.bc.ca
+                            Cloud.Pathfinder@gov.bc.ca
                           </a>
                           .
                         </li>
@@ -86,7 +86,7 @@ export default function Modal({
                           Attend an onboarding session with the Public Cloud Accelerator Service Team. To book an
                           onboarding session, please email us at{' '}
                           <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                            cloud.pathfinder@gov.bc.ca
+                            Cloud.Pathfinder@gov.bc.ca
                           </a>
                           .
                         </li>

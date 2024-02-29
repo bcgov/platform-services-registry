@@ -75,7 +75,6 @@ function TypeBadge({ status }: { status: string }) {
 export const privateCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
-    licencePlateValue: project.licencePlate,
     name: project.name,
     ministry: project.ministry,
     cluster: project.cluster,
@@ -96,16 +95,17 @@ export const privateCloudProjectDataToRow = (project: any) => {
         }
       : null,
     created: formatDate(project.created.$date),
+    updatedAt: formatDate(project.updatedAt.$date),
     requestCreated: formatDate(project?.activeRequest ? project?.activeRequest[0]?.created.$date : null),
     // requestDecisionDate: formatDate(project?.activeRequest ? project?.activeRequest[0]?.decisionDate.$date : null),
     licencePlate: project.licencePlate,
+    status: project.status,
   };
 };
 
 export const publicCloudProjectDataToRow = (project: any) => {
   return {
     id: project.id,
-    licencePlateValue: project.licencePlate,
     name: project.name,
     ministry: project.ministry,
     cluster: project.provider,
@@ -126,14 +126,15 @@ export const publicCloudProjectDataToRow = (project: any) => {
         }
       : null,
     created: formatDate(project.created.$date),
+    updatedAt: formatDate(project.updatedAt.$date),
     licencePlate: project.licencePlate,
+    status: project.status,
   };
 };
 
 export const privateCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
-    licencePlateValue: request.licencePlate,
     type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,
@@ -153,7 +154,6 @@ export const privateCloudRequestDataToRow = (request: any) => {
 export const publicCloudRequestDataToRow = (request: any) => {
   return {
     id: request.id,
-    licencePlateValue: request.licencePlate,
     type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
     name: request.requestedProject.name,

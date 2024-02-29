@@ -18,6 +18,11 @@ export default function Layout({ params, children }: { params: { licencePlate: s
               label: 'Sonar Scan Results',
               href: `/private-cloud/security/${licencePlate}/sonarscan`,
             },
+            {
+              value: 'acs',
+              label: 'ACS Results',
+              href: `/private-cloud/security/${licencePlate}/acs`,
+            },
           ]}
         />
       </div>

@@ -6,12 +6,13 @@ import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
-import { useRouter } from 'next/navigation';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
+import { AGMinistries } from '@/constants';
+import { z } from 'zod';
 
 export default function Page() {
   const { data: session, status } = useSession({
@@ -24,7 +25,21 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudCreateRequestBodySchema),
+    resolver: zodResolver(
+      PublicCloudCreateRequestBodySchema.merge(
+        z.object({
+          isAgMinistryChecked: z.boolean().optional(),
+        }),
+      ).refine(
+        (formData) => {
+          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+        },
+        {
+          message: 'AG Ministry Checkbox should be checked.',
+          path: ['isAgMinistryChecked'],
+        },
+      ),
+    ),
   });
 
   const onSubmit = async (data: any) => {
@@ -64,7 +79,7 @@ export default function Page() {
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescription isCreatePage />
+            <ProjectDescription mode="create" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <Budget />
             <AccountCoding />
@@ -87,11 +102,12 @@ export default function Page() {
         isLoading={isLoading}
       />
       <ReturnModal
-        isPublicCloud
         isPublicCreate
         open={openReturn}
         setOpen={setOpenReturn}
         redirectUrl="/public-cloud/products/active-requests"
+        modalTitle="Thank you! We have received your create request."
+        modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />
     </div>
   );

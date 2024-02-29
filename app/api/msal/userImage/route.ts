@@ -1,32 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { callMsGraph, getAccessToken } from '@/msal';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import createApiHandler from '@/core/api-handler';
+import { getUserPhoto } from '@/msal/service';
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get('email');
+interface QueryParam {
+  email: string;
+}
 
-  const url = `https://graph.microsoft.com/v1.0/users/${email}/photo/$value`;
+const queryParamSchema = z.object({
+  email: z.string(),
+});
 
-  try {
-    const accessToken = await getAccessToken();
+const apiHandler = createApiHandler<undefined, QueryParam>({
+  roles: ['user'],
+  validations: { queryParams: queryParamSchema },
+});
+export const GET = apiHandler(async ({ queryParams }) => {
+  const { email } = queryParams;
 
-    if (!accessToken) {
-      return new NextResponse('No access token', { status: 400 });
-    }
-
-    const response = await callMsGraph(url, accessToken);
-    const data = await response.arrayBuffer();
-
-    if (response.status == 404) {
-      return new NextResponse(data);
-    }
-
+  const data = await getUserPhoto(email);
+  if (data) {
     return new NextResponse(data, {
       headers: { 'Content-Type': 'image/jpeg' },
     });
-  } catch (error) {
-    console.error('ERROR');
-    console.error(error);
-    return NextResponse.error();
   }
-}
+
+  return new NextResponse(data);
+});

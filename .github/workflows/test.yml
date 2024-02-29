@@ -2,13 +2,17 @@ name: 31.Test codebase
 
 on: push
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -39,6 +43,7 @@ jobs:
         mkdir -p ./localdev/mnt/mongodb
         mkdir -p ./localdev/mnt/postgres
 
+        export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
         cp .env.example .env.test
@@ -51,8 +56,8 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools

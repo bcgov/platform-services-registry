@@ -48,7 +48,13 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
   return (
     <>
       <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
-      <ReturnModal open={showReturnModal} setOpen={setShowReturnModal} redirectUrl="/public-cloud/products/all" />
+      <ReturnModal
+        open={showReturnModal}
+        setOpen={setShowReturnModal}
+        redirectUrl="/public-cloud/products/all"
+        modalTitle="Thank you! We have received your delete request."
+        modalMessage="We have received your delete request for this product. The Product Owner and Technical Lead(s) will receive an update via email."
+      />
       <ErrorModal
         open={showErrorModal}
         setOpen={setShowErrorModal}

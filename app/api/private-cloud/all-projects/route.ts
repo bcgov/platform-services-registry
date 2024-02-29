@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       parsedSearchParams.cluster,
       userEmail,
       ministryRoles,
-      parsedSearchParams.active,
+      parsedSearchParams.active ?? true,
     );
 
     if (data.length === 0) {
@@ -63,7 +63,9 @@ export async function GET(req: NextRequest) {
       secondaryTechnicalLeadEmail: project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
       secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
       created: formatDate(project.created.$date),
+      updatedAt: formatDate(project.updatedAt.$date),
       licencePlate: project.licencePlate,
+      status: project.status,
     }));
 
     // Convert the data to CSV

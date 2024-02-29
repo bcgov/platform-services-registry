@@ -48,10 +48,11 @@ model PrivateCloudRequest {
   type                   RequestType
   decisionStatus         DecisionStatus
   isQuotaChanged         Boolean?                      @default(false)
-  humanComment           String?
-  userComment            String?
+  requestComment         String?
+  decisionComment        String?
   active                 Boolean                       @default(true)
   created                DateTime                      @default(now())
+  updatedAt              DateTime                      @updatedAt
   decisionDate           DateTime?
   projectId              String?                       @db.ObjectId
   project                PrivateCloudProject?          @relation("privateCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
@@ -68,6 +69,7 @@ model PrivateCloudProject {
   description              String
   status                   ProjectStatus
   created                  DateTime              @default(now())
+  updatedAt                DateTime              @updatedAt
   projectOwnerId           String                @db.ObjectId
   projectOwner             User                  @relation("privateCloudProjectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
   primaryTechnicalLeadId   String                @db.ObjectId
@@ -140,9 +142,11 @@ model PublicCloudRequest {
   decisionMakerEmail     String?
   type                   PublicCloudRequestType
   decisionStatus         DecisionStatus
-  humanComment           String?
+  requestComment         String?
+  decisionComment        String?
   active                 Boolean                      @default(true)
   created                DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
   decisionDate           DateTime?
   projectId              String?                      @db.ObjectId
   project                PublicCloudProject?          @relation("publicCloudProject", fields: [projectId], references: [id], onDelete: Cascade)
@@ -159,6 +163,7 @@ model PublicCloudProject {
   description              String
   status                   ProjectStatus
   created                  DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
   accountCoding            String
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
@@ -231,10 +236,11 @@ type ZapJsonSiteAlert {
 }
 
 model SecurityConfig {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate String         @unique
-  context      ProjectContext
-  repositories Repository[]
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  context           ProjectContext
+  clusterOrProvider String?
+  licencePlate      String         @unique
+  repositories      Repository[]
 }
 
 enum ProjectContext {
@@ -247,12 +253,15 @@ type Repository {
 }
 
 model SonarScanResult {
-  id           String                @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate String
-  context      ProjectContext
-  url          String
-  result       SonarScanResultDetail
-  scannedAt    DateTime              @default(now())
+  id                String                @id @default(auto()) @map("_id") @db.ObjectId
+  context           ProjectContext
+  clusterOrProvider String?
+  licencePlate      String
+  url               String
+  sha               String
+  source            String
+  result            SonarScanResultDetail
+  scannedAt         DateTime              @default(now())
 }
 
 type SonarScanResultDetail {
@@ -268,6 +277,66 @@ type SonarScanResultDetail {
   reliability_rating       String
   security_rating          String
   sqale_rating             String
+}
+
+model AcsResult {
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String           @unique
+  cluster      String
+  alerts       AcsResultAlert[]
+  images       AcsResultImage[]
+  violationUrl String
+  imageUrl     String
+  scannedAt    DateTime         @default(now())
+}
+
+type AcsResultAlert {
+  id                String
+  lifecycleStage    String
+  time              String
+  state             String
+  enforcementCount  Int
+  enforcementAction String
+  policy            AcsResultAlertPolicy?
+  commonEntityInfo  AcsResultAlertCommonEntityInfo?
+  deployment        AcsResultAlertDeployment?
+}
+
+type AcsResultAlertPolicy {
+  id          String
+  name        String
+  severity    String
+  description String
+  categories  String[]
+}
+
+type AcsResultAlertCommonEntityInfo {
+  clusterId    String
+  clusterName  String
+  namespaceId  String
+  namespace    String
+  resourceType String
+}
+
+type AcsResultAlertDeployment {
+  id          String
+  name        String
+  clusterId   String
+  clusterName String
+  namespaceId String
+  namespace   String
+  inactive    Boolean
+}
+
+type AcsResultImage {
+  id          String
+  name        String
+  components  Int?
+  cves        Int?
+  fixableCves Int?
+  created     String?
+  lastUpdated String
+  priority    String
 }
 
 type Quota {

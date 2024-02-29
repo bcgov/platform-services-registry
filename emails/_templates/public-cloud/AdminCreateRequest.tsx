@@ -24,7 +24,7 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <Heading className="text-lg">New Request!</Heading>
-                <Text>Hi Registry Team, </Text>
+                <Text>Hi Public Cloud Team, </Text>
                 <Text className="">
                   There is a new request that requires your review. Log in to the Registry to review the details. If you
                   have any questions about the request, the PO and TL contact details are included below and in the

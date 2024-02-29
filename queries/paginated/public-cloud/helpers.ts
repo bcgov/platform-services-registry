@@ -244,6 +244,7 @@ export async function getPublicCloudProjectsResult({
         },
       },
       { $match: searchQuery },
+      { $sort: { updatedAt: -1 } },
 
       ...paginationPipelines,
       {

@@ -1,3 +1,91 @@
+## [0.16.1](https://github.com/bcgov/platform-services-registry/compare/v0.16.0...v0.16.1) (2024-02-20)
+
+
+### Features
+
+* add mock-up provisioner in local env ([176887c](https://github.com/bcgov/platform-services-registry/commit/176887cd8f0ea1e4ed696bf98ad9ff1f3efe1740))
+* clean up ms query data ([384dcd3](https://github.com/bcgov/platform-services-registry/commit/384dcd394c41551c8cac39add6c205a915f599fb))
+* display IDIR, UPN in user search ([640af7a](https://github.com/bcgov/platform-services-registry/commit/640af7a88c300a2437b0d8740627f002814a460b))
+
+
+### Bug Fixes
+
+* **2003:** various small visual bugs ([84013fb](https://github.com/bcgov/platform-services-registry/commit/84013fb7c8863bad2742388d83c407ba0e5b4d13))
+
+
+### Docs
+
+* add tab in the first paragraphs ([52c9656](https://github.com/bcgov/platform-services-registry/commit/52c9656f666013a3e878512744a00ac2f7e2e006))
+* update README.md ([8a5b0f6](https://github.com/bcgov/platform-services-registry/commit/8a5b0f6849b1939fd3bbaf8e56373733f421fa85))
+
+## [0.16.0](https://github.com/bcgov/platform-services-registry/compare/v0.15.0...v0.16.0) (2024-02-13)
+
+
+### Features
+
+* add ACS tasks in upper environments ([5ad6063](https://github.com/bcgov/platform-services-registry/commit/5ad606375fce5151a00c08b47c1acbf95637e99a))
+* add bash linter & formatter ([1d31993](https://github.com/bcgov/platform-services-registry/commit/1d319930e40f4ab79ab1fe3bee09b68f6ffeef15))
+
+## [0.15.0](https://github.com/bcgov/platform-services-registry/compare/v0.13.0...v0.15.0) (2024-02-09)
+
+
+### Features
+
+* display URL sources in sonar scan results ([19dbe22](https://github.com/bcgov/platform-services-registry/commit/19dbe2218775fcb1c3cd830bce6a16a55b597dfa))
+
+
+### Bug Fixes
+
+* wording, and admin delete email ([4e89814](https://github.com/bcgov/platform-services-registry/commit/4e89814dc1c37f6f654b06cdf851f0b5caf28585))
+
+## [0.13.0](https://github.com/bcgov/platform-services-registry/compare/v0.12.0...v0.13.0) (2024-02-07)
+
+
+### Features
+
+* search github urls from acs image build metadata ([07edb45](https://github.com/bcgov/platform-services-registry/commit/07edb4525be95de01dcfb82220c7f03b28a88646))
+
+
+### Bug Fixes
+
+* **1680:** fix comments in emails ([99c0eb7](https://github.com/bcgov/platform-services-registry/commit/99c0eb7a72c3078a62727b139eddd474fb0cced1))
+
+## [0.12.0](https://github.com/bcgov/platform-services-registry/compare/v0.9.1...v0.12.0) (2024-02-06)
+
+
+### Features
+
+* **1915:** add acs airflow dag ([e4f9053](https://github.com/bcgov/platform-services-registry/commit/e4f9053be25c42954c4f357b041c38f7bce9f50e))
+* **1916:** add security dashboard acs views ([97a6c90](https://github.com/bcgov/platform-services-registry/commit/97a6c90e7ea40e03aaa977401d30a6c5b48752bd))
+
+## [0.9.1](https://github.com/bcgov/platform-services-registry/compare/v0.9.0...v0.9.1) (2024-01-30)
+
+
+### Features
+
+* **1865:** apply KC resources changes on pipeline ([28f18f5](https://github.com/bcgov/platform-services-registry/commit/28f18f5564d1c27d11f1a10d4191e028e8d327d5))
+* add sysdig alerts with terraform ([effd21b](https://github.com/bcgov/platform-services-registry/commit/effd21b1d6ec9a09faa14ed9dc4c1a64283a484a))
+* delete request email for admins for public cloud ([76e30bc](https://github.com/bcgov/platform-services-registry/commit/76e30bc7c9605719f6dd1005547bc62b8c8db5c3))
+* edit request now edit summary for public cloud ([053d991](https://github.com/bcgov/platform-services-registry/commit/053d991c7c98f92a6fca1871d54a0e15b8d1401b))
+* move env variables into config file ([8fd7681](https://github.com/bcgov/platform-services-registry/commit/8fd7681543b766edefedfa6bc4a3081e0e8b0a28))
+* only allow github bcgov organization repos ([4641551](https://github.com/bcgov/platform-services-registry/commit/4641551cae514d636836513cf90ec29c845f168b))
+* **secdash:** order list by scanned date ([465b262](https://github.com/bcgov/platform-services-registry/commit/465b262803ee50d1fb1b996b2b0c32a94c627cd1))
+* skip sonarscans if repo has no changes ([65220db](https://github.com/bcgov/platform-services-registry/commit/65220db73d72701074a931762770dbe1eb348ee6))
+* **sysdig:** add sysdig alerts for upper environments ([7cb61cb](https://github.com/bcgov/platform-services-registry/commit/7cb61cb89a7c1273f2e0aa01feaaeba3b97f2222))
+* updated wording of edit summary ([0d24dc7](https://github.com/bcgov/platform-services-registry/commit/0d24dc719e7c8924cb316cf891916d2ef59ebf99))
+
+
+### Bug Fixes
+
+* resolve version upgrade issue ([15da9ac](https://github.com/bcgov/platform-services-registry/commit/15da9ac73d554eb8cb785402b7596a56fbde844b))
+* use session.roles instead of session.user.roles ([9a79b0a](https://github.com/bcgov/platform-services-registry/commit/9a79b0a0f2f8ab314bd8628fca3ffc8e9af53e60))
+
+
+### Docs
+
+* update sysdig terraform docs ([f597ae6](https://github.com/bcgov/platform-services-registry/commit/f597ae6f316f5d3c847916b49321e0e64bfe843e))
+* update team conventions ([d629672](https://github.com/bcgov/platform-services-registry/commit/d6296723bd7917f197ec8cb291d0a8bb6c9b1dcd))
+
 ## [0.9.0](https://github.com/bcgov/platform-services-registry/compare/v0.7.0...v0.9.0) (2024-01-17)
 
 

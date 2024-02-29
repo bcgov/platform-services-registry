@@ -2,11 +2,10 @@ import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/privat
 import * as React from 'react';
 import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';
-import { Body, Button, Heading, Html, Text } from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+import { Body, Button, Heading, Html, Text, Link } from '@react-email/components';
 import NamespaceDetails from '../../_components/NamespaceDetails';
 import Closing from '../../_components/Closing';
-import { TailwindConfig } from '../../_components/TailwindConfig';
+import TailwindWrapper from '../../_components/TailwindWrapper';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
@@ -17,28 +16,31 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
 
   return (
     <Html>
-      <Tailwind config={TailwindConfig}>
+      <TailwindWrapper>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">
-                  Hurray! Your provisioning request was approved and completed!
-                </Heading>
-                <Text>Hi {request.requestedProject.projectOwner.firstName}, </Text>
+                <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
+                <Text>Hi Product Team, </Text>
                 <Text className="">
-                  Your request for a new project set for your product on the Private Cloud Openshift platform is
-                  complete. Log in to the cluster console using the button below and you&apos;ll see all four namespaces
-                  included in a project set. If you have any more questions, reach out to the Platform Services team in
-                  the RocketChat channel #devops-operations.
+                  Your request for a resource quota has been completed for {request.requestedProject.name} on the
+                  Private Cloud OpenShift platform. You can now login to{' '}
+                  <Link
+                    className="mt-0 h-4"
+                    href={`https://console.apps.${request.requestedProject.cluster}.devops.gov.bc.ca/`}
+                  >
+                    OpenShift cluster console{' '}
+                  </Link>{' '}
+                  and you will see your new resource quota values.
                 </Text>
                 <Text className="">
-                  The Product Owner and the Technical Lead have been provisioned with admin access to the namespaces
-                  below and can add other users as necessary. Please note that if a Product Owner or a Technical Lead is
-                  removed as a project contact in the Platform Registry, they will lose their access to the project set
-                  namespaces in Openshift. The new Product or Technical Lead provided on the product details page will
-                  gain the administrative access to the namespaces.
+                  If you have any more questions, reach out to the Platform Services team in the Rocket.Chat channel{' '}
+                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
+                    #devops-operations
+                  </Link>
+                  .
                 </Text>
                 <Button
                   href="https://registry.developer.gov.bc.ca/"
@@ -63,7 +65,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <div>
                   <Heading className="text-lg">Comment</Heading>
-                  <div> {request.humanComment}</div>
+                  <div> {request.decisionComment}</div>
                 </div>
               </div>
               <div>
@@ -72,7 +74,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
             </div>
           </Body>
         </div>
-      </Tailwind>
+      </TailwindWrapper>
     </Html>
   );
 };

@@ -14,24 +14,8 @@ import Quotas from '@/components/form/Quotas';
 import { useQuery } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
-import { PrivateCloudProject } from '@prisma/client';
-
-async function fetchRequestedProject(licencePlate: string): Promise<PrivateCloudRequestWithCurrentAndRequestedProject> {
-  const res = await fetch(`/api/private-cloud/active-request/${licencePlate}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch user image');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  // Secondaty technical lead should only be included if it exists
-  if (data.requestedProject.secondaryTechnicalLead === null) {
-    delete data.requestedProject.secondaryTechnicalLead;
-  }
-
-  return data;
-}
+import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { getPriviateCloudRequestedProject } from '@/services/private-cloud';
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
   const { data: session, status } = useSession({
@@ -42,32 +26,31 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
+  const [canDecide, setCanDecide] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
   const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
     queryKey: ['requestedProject', params.licencePlate],
-    queryFn: () => fetchRequestedProject(params.licencePlate),
+    queryFn: () => getPriviateCloudRequestedProject(params.licencePlate),
     enabled: !!params.licencePlate,
   });
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { humanCommnet: '', decision: '', ...data?.requestedProject },
+    values: { decisionComment: '', decision: '', ...data?.requestedProject },
   });
 
   useEffect(() => {
-    if (session && !session?.isAdmin) {
+    const _canDecide = !!(session?.isAdmin && data?.decisionStatus === 'PENDING');
+    setCanDecide(_canDecide);
+    if (_canDecide && data.type !== $Enums.RequestType.DELETE) {
+      setDisabled(false);
+    } else {
       setDisabled(true);
     }
-  }, [session]);
-
-  useEffect(() => {
-    if (data && data.decisionStatus !== 'PENDING') {
-      setDisabled(true);
-    }
-  }, [data, data?.decisionStatus]);
+  }, [session, data, data?.decisionStatus]);
 
   const onSubmit = async (val: any) => {
     setIsLoading(true);
@@ -100,8 +83,8 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     }
   };
 
-  const setComment = (comment: string) => {
-    onSubmit({ ...methods.getValues(), comment });
+  const setComment = (decisionComment: string) => {
+    onSubmit({ ...methods.getValues(), decisionComment });
   };
 
   useEffect(() => {
@@ -126,7 +109,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
                 A decision has already been made for this product
               </h3>
             )}
-            <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} />
+            <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} mode="decision" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
@@ -138,16 +121,19 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
               currentProject={data?.project as PrivateCloudProject}
             />
           </div>
-          <div className="border-b border-gray-900/10 pb-14">
-            <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
-              4. User Comments
-            </h2>
-            <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.userComment}</p>
-          </div>
+
+          {data?.requestComment && (
+            <div className="border-b border-gray-900/10 pb-14">
+              <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+                4. User Comments
+              </h2>
+              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.requestComment}</p>
+            </div>
+          )}
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {!isDisabled && session?.isAdmin ? (
+            {canDecide && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -164,7 +150,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
                   }}
                 />
               </div>
-            ) : null}
+            )}
           </div>
         </form>
       </FormProvider>

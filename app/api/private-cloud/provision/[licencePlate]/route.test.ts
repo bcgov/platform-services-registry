@@ -6,6 +6,7 @@ import { POST as decisionRequest } from '@/app/api/private-cloud/decision/[licen
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
+import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -14,18 +15,8 @@ const createRequestBody = {
   description: 'This is a sample project description.',
   cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
   ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'oamar.kanji@gov.bc.ca',
-    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  },
-  primaryTechnicalLead: {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  },
+  projectOwner: findMockUserByIDIR('JOHNDOE'),
+  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
   commonComponents: {
     addressAndGeolocation: {
       planningToUse: true,
@@ -77,12 +68,7 @@ const quota = {
 const adminChanges = {
   name: 'New name from admin',
   description: 'New description from admin',
-  projectOwner: {
-    firstName: 'James',
-    lastName: 'Tim',
-    email: 'jamestim@gov.bc.ca',
-    ministry: 'AGRI',
-  },
+  projectOwner: findMockUserByIDIR('JOHNDOE'),
   testQuota: {
     cpu: 'CPU_REQUEST_8_LIMIT_16',
     memory: 'MEMORY_REQUEST_4_LIMIT_8',
@@ -92,7 +78,7 @@ const adminChanges = {
 
 const decisionBody = {
   decision: 'APPROVED',
-  humanComment: 'Approved by admin',
+  decisionComment: 'Approved by admin',
   ...createRequestBody,
   productionQuota: quota,
   toolsQuota: quota,

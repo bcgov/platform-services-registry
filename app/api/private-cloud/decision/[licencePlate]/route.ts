@@ -18,7 +18,7 @@ const ParamsSchema = z.object({
 type Params = z.infer<typeof ParamsSchema>;
 
 export async function POST(req: NextRequest, { params }: { params: Params }) {
-  // Athentication
+  // Authentication
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -53,12 +53,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const { licencePlate } = parsedParams.data;
-  const { decision, humanComment, ...requestedProjectFormData } = parsedBody.data;
+  const { decision, decisionComment, ...requestedProjectFormData } = parsedBody.data;
 
   const request: PrivateCloudRequestWithRequestedProject = await makeDecisionRequest(
     licencePlate,
     decision,
-    humanComment,
+    decisionComment,
     requestedProjectFormData,
     authEmail,
   );
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    sendRequestRejectionEmails(request.requestedProject, humanComment);
+    sendRequestRejectionEmails(request.requestedProject, decisionComment);
     return new NextResponse(`Request for ${request.licencePlate} successfully created as rejected.`, {
       status: 200,
     });
@@ -102,8 +102,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   // Subscribe users to Mautic
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  // Send emails
-  sendRequestApprovalEmails(request);
+  // TODO: revisit to delete for good
+  // sendRequestApprovalEmails(request);
 
   return new NextResponse(`Decision request for ${request.licencePlate} successfully created.`, {
     status: 200,

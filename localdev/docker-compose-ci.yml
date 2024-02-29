@@ -10,3 +10,7 @@ services:
   m365proxy:
     image: ghcr.io/bcgov/pltsvc-localdev-m365proxy:latest
     build: {}
+
+  nats-provision:
+    image: ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest
+    build: {}

@@ -18,7 +18,7 @@ const ParamsSchema = z.object({
 type Params = z.infer<typeof ParamsSchema>;
 
 export async function POST(req: NextRequest, { params }: { params: Params }) {
-  // Athentication
+  // Authentication
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -27,9 +27,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     });
   }
 
-  const { email: authEmail, roles: authRoles } = session.user;
+  const { isAdmin, roles, user } = session;
+  const { email: authEmail } = user;
 
-  if (!authRoles.includes('admin')) {
+  if (!isAdmin) {
     return new NextResponse('You must be an admin to make a request decision.', {
       status: 403,
     });
@@ -52,12 +53,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   const { licencePlate } = parsedParams.data;
-  const { decision, humanComment, ...requestedProjectFormData } = parsedBody.data;
+  const { decision, decisionComment, ...requestedProjectFormData } = parsedBody.data;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
     licencePlate,
     decision,
-    humanComment,
+    decisionComment,
     requestedProjectFormData,
     authEmail,
   );
@@ -69,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendRequestRejectionEmails(request.requestedProject, humanComment);
+    sendRequestRejectionEmails(request.requestedProject, decisionComment);
     return new Response(
       `Decision request for ${request.licencePlate} successfully created. Admin approval is required`,
       {
@@ -85,11 +86,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     request.requestedProject.projectOwner,
     request.requestedProject.primaryTechnicalLead,
     request.requestedProject?.secondaryTechnicalLead,
-  ].filter((user): user is User => Boolean(user));
+  ].filter((usr): usr is User => Boolean(user));
 
   await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
 
-  sendRequestApprovalEmails(request);
+  // TODO: revisit to delete for good
+  // sendRequestApprovalEmails(request);
 
   return new NextResponse(`Decision request for ${request.licencePlate} successfully created and provisioned.`, {
     status: 200,

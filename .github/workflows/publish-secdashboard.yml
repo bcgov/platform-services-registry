@@ -12,6 +12,10 @@ on:
 env:
   GITHUB_REGISTRY: ghcr.io
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-push-airflow:
     runs-on: ubuntu-22.04
@@ -21,8 +25,8 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
@@ -44,8 +48,8 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
@@ -67,8 +71,8 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@a701ed95a46e6f2fb0df25e1a558c16356fae35a
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
