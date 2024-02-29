@@ -116,7 +116,7 @@ export default async function ZapScanResults({
   page,
   skip,
   take,
-  hideContext = false,
+  listAll = false,
 }: {
   rows: ZapResultRows[];
   clusters: string[];
@@ -124,7 +124,7 @@ export default async function ZapScanResults({
   page: number;
   skip: number;
   take: number;
-  hideContext?: boolean;
+  listAll?: boolean;
 }) {
   const headers = [
     { field: 'host', headerName: 'Host' },
@@ -134,7 +134,7 @@ export default async function ZapScanResults({
     { field: 'id', headerName: '' },
   ];
 
-  if (!hideContext) {
+  if (listAll) {
     headers.unshift(
       { field: 'cluster', headerName: 'Cluster' },
       { field: 'licencePlate', headerName: 'Licence Plate' },
@@ -145,7 +145,7 @@ export default async function ZapScanResults({
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
         <TableTop title="Zap Scan Results" description="" />
-        <SearchPanel clusters={clusters} />
+        <SearchPanel clusters={clusters} endPaths={listAll ? '/zapscan/results' : '/zapscan'} />
         <div className="flow-root overflow-y-auto h-[55vh]">
           <div className="w-full overflow-auto">
             <div className="inline-block min-w-full align-middle">

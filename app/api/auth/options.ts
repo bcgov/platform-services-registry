@@ -131,11 +131,6 @@ export const authOptions: AuthOptions = {
         readonly: [],
       };
 
-      session.previews = {
-        awsRoles: !IS_PROD,
-        security: !IS_PROD,
-      };
-
       // Send properties to the client, like an access_token from a provider.
       if (token) {
         const user = await prisma.user.findFirst({ where: { email: session.user.email } });
@@ -164,6 +159,18 @@ export const authOptions: AuthOptions = {
 
         session.user.roles = session.roles;
       }
+
+      session.previews = {
+        awsRoles: !IS_PROD,
+        security: !IS_PROD,
+      };
+
+      session.permissions = {
+        viewZapscanResults: session.isAdmin,
+        viewSonarscanReulsts: session.isAdmin,
+        viewAnalytics: session.isAdmin,
+      };
+
       // {
       //   ...
       //   roles: ['admin', 'ministry-citz-admin'],

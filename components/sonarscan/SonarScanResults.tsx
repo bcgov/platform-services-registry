@@ -60,7 +60,7 @@ export default function SonarScanResults({
   page,
   skip,
   take,
-  hideContext = false,
+  listAll = false,
 }: {
   rows: SonarScanResultRows[];
   contexts: string[];
@@ -68,7 +68,7 @@ export default function SonarScanResults({
   page: number;
   skip: number;
   take: number;
-  hideContext?: boolean;
+  listAll?: boolean;
 }) {
   const data = rows.map((row) => {
     return {
@@ -93,7 +93,7 @@ export default function SonarScanResults({
     { field: 'scannedAt', headerName: 'Scanned At' },
   ];
 
-  if (!hideContext) {
+  if (listAll) {
     headers.unshift(
       { field: 'context', headerName: 'Context' },
       { field: 'licencePlate', headerName: 'Licence Plate' },
@@ -104,7 +104,7 @@ export default function SonarScanResults({
     <div className="border-2 rounded-xl overflow-hidden">
       <div>
         <TableTop title="SonarScan Results" description="" />
-        <SearchPanel contexts={contexts} />
+        <SearchPanel contexts={contexts} endPaths={listAll ? '/sonarscan/results' : '/sonarscan'} />
         <div className="flow-root overflow-y-auto h-[55vh]">
           <div className="w-full overflow-auto">
             <div className="inline-block min-w-full align-middle">

@@ -82,5 +82,5 @@ export default async function Page({
   ]);
 
   const clusters = distinct.map((row) => row.cluster);
-  return <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} />;
+  return <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} listAll />;
 }
