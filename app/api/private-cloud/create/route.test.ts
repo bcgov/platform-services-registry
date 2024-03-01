@@ -115,9 +115,8 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should create a request with the correct data', async () => {
-    const requests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
-
-    const request: PrivateCloudRequest = requests[0];
+    const requests = await prisma.privateCloudRequest.findMany();
+    const request = requests[0];
 
     const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
       where: {

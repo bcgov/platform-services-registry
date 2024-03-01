@@ -11,7 +11,7 @@ export async function upsertUser(email: string) {
   const data = {
     email: adUser.email,
     firstName: adUser.firstName,
-    lastName: adUser.firstName,
+    lastName: adUser.lastName,
     ministry: adUser.ministry,
     idir: adUser.idir,
     upn: adUser.upn,
