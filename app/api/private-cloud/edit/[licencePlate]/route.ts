@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import { Cluster, DecisionStatus, PrivateCloudRequest, User } from '@prisma/client';
+import { Cluster, DecisionStatus, User } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { PrivateCloudEditRequestBody, PrivateCloudEditRequestBodySchema } from '@/schema';
+import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { string, z } from 'zod';
-import editRequest, {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-} from '@/requestActions/private-cloud/editRequest';
+import editRequest from '@/requestActions/private-cloud/editRequest';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { sendEditRequestEmails } from '@/services/ches/private-cloud/emailHandler';
@@ -43,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const formData: PrivateCloudEditRequestBody = parsedBody.data;
+  const formData = parsedBody.data;
   const { licencePlate } = parsedParams.data;
 
   if (
@@ -57,7 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw new Error('You need to assign yourself to this project in order to edit it.');
   }
 
-  const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({
+  const existingRequest = await prisma.privateCloudRequest.findFirst({
     where: {
       AND: [{ licencePlate }, { active: true }],
     },
@@ -67,11 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw new Error('This project already has an active request or it does not exist.');
   }
 
-  const request: PrivateCloudRequestWithProjectAndRequestedProject = await editRequest(
-    licencePlate,
-    formData,
-    authEmail,
-  );
+  const request = await editRequest(licencePlate, formData, authEmail);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     sendEditRequestEmails(request);

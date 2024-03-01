@@ -91,3 +91,18 @@ These technologies foster rapid iterative development, polished user interfaces,
 - Helm Charts: https://github.com/bcgov/platform-services-registry/tree/main/helm
 - Terraform Scripts: https://github.com/bcgov/platform-services-registry/tree/main/terraform
 - Documentations: https://github.com/bcgov/platform-services-registry/tree/main/docs
+
+## Service Diagrams
+
+```mermaid
+graph TD;
+    frontendApp-->|HTTP requests| backendAPI;
+    backendAPI-->|Queries| database;
+    backendAPI-->|Sends emails| emailService(CHES);
+    backendAPI-->|Sends marketing data| marketingService(Mautic);
+    backendAPI-->|Provisions namespaces| namespaceProvisioner(NATS);
+    backendAPI-->|Queries| MSGraphAPI(MS graph API);
+    backendAPI-->|Handles authentication & authorization| authAuthorization(Keycloak);
+    backendAPI-->|Manages publice cloud users| publicCloudUserManagement(Keycloak);
+    backendAPI-->|Interacts with| openshiftAPI(Openshift API);
+```
