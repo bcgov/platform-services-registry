@@ -1,34 +1,15 @@
-import { DecisionStatus, Prisma, PrivateCloudProject, PrivateCloudRequest, RequestType } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
-
-export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}>;
+import { upsertUsers } from '@/services/db/user';
 
 export default async function editRequest(
   licencePlate: string,
   formData: PrivateCloudEditRequestBody,
   authEmail: string,
-): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
+) {
   // Get the current project that we are creating an edit request for
-
-  const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
+  const project = await prisma.privateCloudProject.findUnique({
     where: {
       licencePlate: licencePlate,
     },
@@ -44,6 +25,12 @@ export default async function editRequest(
   }
 
   const { requestComment, ...rest } = formData;
+
+  await upsertUsers([
+    formData.projectOwner.email,
+    formData.primaryTechnicalLead.email,
+    formData.secondaryTechnicalLead?.email,
+  ]);
 
   // merge the form data with the existing project data
   const requestedProject = {
