@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { $Enums, DecisionStatus } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
 import { sendProvisionedEmails } from '@/ches/private-cloud/emailHandler';
 
 interface PathParam {

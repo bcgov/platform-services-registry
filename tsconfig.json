@@ -39,7 +39,7 @@
     "ches/index.js",
     "ches/chesService.ts",
     "ches/clientConnection.ts",
-    "mautic/index.ts",
+    "services/mautic/index.ts",
     "cypress/tsconfig.json"
   ],
   "exclude": ["node_modules"]

@@ -1,5 +1,5 @@
 import { DecisionStatus, Prisma, PublicCloudProject, RequestType } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBody } from '@/schema';
 
 export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{

@@ -6,7 +6,7 @@ import _startCase from 'lodash-es/startCase';
 import _lowerCase from 'lodash-es/lowerCase';
 import _isArray from 'lodash-es/isArray';
 import TableTop from '@/components/table/TableTop';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import Alerts from './Alerts';
 import Images from './Images';
 

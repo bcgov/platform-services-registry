@@ -7,8 +7,8 @@ import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PublicCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/public-cloud/decisionRequest';
-import { sendPublicCloudNatsMessage } from '@/nats';
-import { subscribeUsersToMautic } from '@/mautic';
+import { sendPublicCloudNatsMessage } from '@/services/nats';
+import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/ches/public-cloud/emailHandler';
 
 const ParamsSchema = z.object({

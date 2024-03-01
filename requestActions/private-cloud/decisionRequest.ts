@@ -1,5 +1,5 @@
 import { Cluster, DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
 
 export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{

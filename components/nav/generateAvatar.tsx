@@ -58,7 +58,7 @@ export async function generateAvatar(email: string): Promise<string> {
 }
 
 export default async function fetchUserImage(email: string): Promise<string> {
-  const res = await fetch(`/api/msal/userImage?email=${email}`);
+  const res = await fetch(`/api/msal/user-image?email=${email}`);
   if (!res.ok) {
     throw new Error('Network response was not ok for fetch user image');
   }

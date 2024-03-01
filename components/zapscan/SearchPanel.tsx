@@ -7,7 +7,7 @@ import Select, { MultiValue } from 'react-select';
 import _throttle from 'lodash-es/throttle';
 import _isEqual from 'lodash-es/isEqual';
 import _castArray from 'lodash-es/castArray';
-import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/lib/query-string';
+import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/query-string';
 import Search from '@/components/assets/search.svg';
 
 export default function SearchPanel({ clusters, endPaths }: { clusters: string[]; endPaths: string }) {

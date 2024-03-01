@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { Cluster, DecisionStatus, PrivateCloudRequest, User } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody, PrivateCloudEditRequestBodySchema } from '@/schema';
 import { string, z } from 'zod';
 import editRequest, {
   PrivateCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/private-cloud/editRequest';
-import { subscribeUsersToMautic } from '@/mautic';
-import { sendPrivateCloudNatsMessage } from '@/nats';
+import { subscribeUsersToMautic } from '@/services/mautic';
+import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { sendEditRequestEmails } from '@/ches/private-cloud/emailHandler';
 
 const ParamsSchema = z.object({

@@ -4,7 +4,7 @@ import _find from 'lodash-es/find';
 import _toLowerCase from 'lodash-es/lowerCase';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
-import { getUser } from '@/msal/service';
+import { getUser } from '@/services/msgraph';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
 export interface Group {
   id: string;

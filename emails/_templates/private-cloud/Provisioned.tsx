@@ -4,7 +4,7 @@ import { Link, Body, Button, Heading, Html, Text } from '@react-email/components
 import Closing from '../../_components/Closing';
 import ProductDetails from '../../_components/ProductDetails';
 import NamespaceDetails from '../../_components/NamespaceDetails';
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
 import TailwindWrapper from '../../_components/TailwindWrapper';
 
 interface EmailProp {

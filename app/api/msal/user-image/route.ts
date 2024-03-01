@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { getUserPhoto } from '@/msal/service';
+import { getUserPhoto } from '@/services/msgraph';
 
 interface QueryParam {
   email: string;

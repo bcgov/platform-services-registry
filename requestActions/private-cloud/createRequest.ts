@@ -5,8 +5,8 @@ import {
   DefaultStorageOptionsSchema,
   PrivateCloudCreateRequestBody,
 } from '@/schema';
-import prisma from '@/lib/prisma';
-import generateLicensePlate from '@/lib/generateLicencePlate';
+import prisma from '@/core/prisma';
+import generateLicensePlate from '@/helpers/license-plate';
 
 export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {

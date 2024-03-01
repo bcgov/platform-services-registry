@@ -1,6 +1,6 @@
 'use client';
 
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 
 interface Tab {

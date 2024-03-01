@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { z } from 'zod';
-import { parseQueryString } from '@/lib/query-string';
+import { parseQueryString } from '@/utils/query-string';
 
 interface HandlerProps {
   roles?: string[];

@@ -5,7 +5,7 @@ import {
 } from '@/requestActions/private-cloud/decisionRequest';
 import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches/helpers';
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
 
 import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { string, z } from 'zod';
-import openshiftDeletionCheck from '@/scripts/deletioncheck';
+import openshiftDeletionCheck from '@/helpers/openshift';
 import { PrivateCloudProject } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 
 import createApiHandler from '@/core/api-handler';
 

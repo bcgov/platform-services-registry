@@ -6,7 +6,7 @@ import {
 
 import { adminEmails } from '@/ches/emailConstant';
 import { sendEmail } from '@/ches/helpers';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
 
 import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';

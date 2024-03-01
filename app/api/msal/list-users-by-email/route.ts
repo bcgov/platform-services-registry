@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { listUsersByEmail } from '@/msal/service';
+import { listUsersByEmail } from '@/services/msgraph';
 
 interface QueryParam {
   email: string;

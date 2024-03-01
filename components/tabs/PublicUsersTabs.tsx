@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { usePathname } from 'next/navigation';
-import { extractPathSegments } from '@/helpers/pathSegments';
+import { extractPathSegments } from '@/helpers/path-segments';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 
 export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {

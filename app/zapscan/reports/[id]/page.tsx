@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import './styles.css';
 
 export default async function Page({ params }: { params: { id: string } }) {

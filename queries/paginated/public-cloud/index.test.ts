@@ -1,5 +1,5 @@
 import { publicCloudProjectsPaginated, publicCloudRequestsPaginated } from '@/queries/paginated/public-cloud';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import {
   Provider,
   DecisionStatus,

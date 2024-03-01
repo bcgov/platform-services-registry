@@ -1,6 +1,6 @@
 import { DecisionStatus, Prisma, ProjectStatus, PublicCloudRequest, RequestType } from '@prisma/client';
-import prisma from '@/lib/prisma';
-import generateLicensePlate from '@/lib/generateLicencePlate';
+import prisma from '@/core/prisma';
+import generateLicensePlate from '@/helpers/license-plate';
 import { PublicCloudCreateRequestBody } from '@/schema';
 
 export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{

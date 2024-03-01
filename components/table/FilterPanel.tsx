@@ -1,7 +1,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { clusters, ministriesNames, providers } from '@/constants';
 import { useRef, useState } from 'react';
-import { capitalizeFirstLetter } from '@/components/utils/capitalizeFirstLetter';
+import { capitalizeFirstLetter } from '@/utils/string';
 
 export default function FilterPanel() {
   const [showInactive, setShowInactive] = useState(false);

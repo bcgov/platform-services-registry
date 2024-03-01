@@ -1,6 +1,6 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import classNames from '../utils/classnames';
+import classNames from '@/utils/classnames';
 
 export default function Modal({
   open,

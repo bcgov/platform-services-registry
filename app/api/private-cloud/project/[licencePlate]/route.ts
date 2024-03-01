@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma, PrivateCloudProject } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 // import { sendProvisionedEmails } from "../ches/emailHandlers.js";
 
