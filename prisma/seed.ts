@@ -91,12 +91,13 @@ async function main() {
         },
       });
     }
-    const comments = [];
-    for (let x = 0; x < 10; x++) {
-      comments.push({ text: 'abcd', userId: user.id });
-    }
+
     // Create fake projects for the user
     for (let j = 0; j < numOfProjectsPerUser; j++) {
+      const comments = [];
+      for (let x = 0; x < 2; x++) {
+        comments.push({ text: faker.lorem.sentence(), userId: user.id });
+      }
       await prisma.privateCloudProject.create({
         data: {
           licencePlate: faker.string.alphanumeric(7),
