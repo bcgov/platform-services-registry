@@ -5,7 +5,7 @@ import { PublicCloudCreateRequestBody, PublicCloudCreateRequestBodySchema } from
 import createRequest, {
   PublicCloudRequestWithProjectAndRequestedProject,
 } from '@/requestActions/public-cloud/createRequest';
-import { sendCreateRequestEmails } from '@/ches/public-cloud/emailHandler';
+import { sendCreateRequestEmails } from '@/services/ches/public-cloud/emailHandler';
 
 export async function POST(req: NextRequest) {
   // Authentication

@@ -6,7 +6,7 @@ import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
 import ProductDetails from '../../_components/ProductDetails';
 import NamespaceDetails from '../../_components/NamespaceDetails';
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
 
 interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;

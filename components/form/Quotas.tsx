@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { PrivateCloudProject, Quota } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 

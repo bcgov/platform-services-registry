@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PublicProject } from '@/queries/types';
 
 export async function getPublicCloudProjectsQuery({

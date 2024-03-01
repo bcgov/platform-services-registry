@@ -1,8 +1,8 @@
-import formatDate from '@/components/utils/formatdates';
+import formatDate from '@/utils/date';
 import Image from 'next/image';
 import Edit from '@/components/assets/edit.svg';
 import { PrivateProject } from '@/queries/types';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import Avtar from '@/components/table/Avatar';
 
 const tailwindColors = {

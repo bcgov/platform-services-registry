@@ -1,10 +1,10 @@
 import { JSONCodec, StringCodec, connect } from 'nats';
-import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
+import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
 import createPublicCloudNatsMessage, {
   PublicCloudProjectWithContacts,
   PublicCloudRequestedProjectWithContacts,
-} from '@/nats/publicCloud';
-import openshiftDeletionCheck, { DeletableField } from '@/scripts/deletioncheck';
+} from '@/services/nats/publicCloud';
+import openshiftDeletionCheck, { DeletableField } from '@/helpers/openshift';
 import { PrivateCloudRequest, RequestType } from '@prisma/client';
 import { NATS_HOST, NATS_PORT } from '@/config';
 

@@ -2,7 +2,7 @@
 
 import { DetailedHTMLProps, HTMLAttributes, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import createQueryString from '@/components/utils/createQueryString';
+import createQueryString from '@/utils/search-params';
 
 interface PaginationButtonProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   pageCount: number;

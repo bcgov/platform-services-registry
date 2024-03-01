@@ -4,9 +4,9 @@ import {
   PublicCloudRequestWithRequestedProject,
 } from '@/requestActions/public-cloud/decisionRequest';
 
-import { adminEmails } from '@/ches/emailConstant';
-import { sendEmail } from '@/ches/helpers';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import { adminEmails } from '@/services/ches/emailConstant';
+import { sendEmail } from '@/services/ches/helpers';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
 
 import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';

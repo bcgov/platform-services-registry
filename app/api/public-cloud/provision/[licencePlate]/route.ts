@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
-import { sendProvisionedEmails } from '@/ches/public-cloud/emailHandler';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
+import { sendProvisionedEmails } from '@/services/ches/public-cloud/emailHandler';
 
 export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {

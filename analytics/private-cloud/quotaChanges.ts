@@ -1,5 +1,5 @@
 import { PrivateCloudRequest, Prisma, User } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import _isEqual from 'lodash-es/isEqual';
 import _uniqWith from 'lodash-es/uniqWith';
 

@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { providers, ministriesNames } from '@/constants';
 
 export default function AdminComment() {

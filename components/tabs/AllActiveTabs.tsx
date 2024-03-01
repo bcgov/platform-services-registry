@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import classNames from '../utils/classnames';
+import classNames from '@/utils/classnames';
 
 export default function Tabs() {
   const pathname = usePathname();

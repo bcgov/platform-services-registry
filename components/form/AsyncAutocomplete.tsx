@@ -4,7 +4,7 @@ import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
 import { UserInputSchema } from '@/schema';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { listUsersByEmail } from '@/services/msal';
 import { AppUser } from '@/types/user';
 

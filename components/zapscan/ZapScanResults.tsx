@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
-import formatDate from '@/components/utils/formatdates';
+import formatDate from '@/utils/date';
 import SearchPanel from './SearchPanel';
 
 type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{

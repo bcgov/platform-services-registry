@@ -1,7 +1,7 @@
 import AddUserButton from '@/components/buttons/AddUserButton';
 import PublicUsersTabs from '@/components/tabs/PublicUsersTabs';
 import { useCallback, useEffect, useState, useTransition } from 'react';
-import { useDebounce } from '@/components/utils/useDebounce';
+import { useDebounce } from '@/utils/hooks';
 import Image from 'next/image';
 import Search from '@/components/assets/search.svg';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';

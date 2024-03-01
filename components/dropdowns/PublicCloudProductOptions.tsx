@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import DeleteModal from '@/components/modal/PublicCloudDelete';
 import ReturnModal from '@/components/modal/Return';
 import { useParams, useRouter } from 'next/navigation';

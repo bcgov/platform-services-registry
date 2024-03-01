@@ -5,7 +5,7 @@ import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../_components/ProviderDetails';
 import { TailwindConfig } from '../../_components/TailwindConfig';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
 
 interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;

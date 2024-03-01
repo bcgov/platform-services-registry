@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { PublicCloudRequest, User } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBody, PublicCloudEditRequestBodySchema, UserInput } from '@/schema';
 import { string, z } from 'zod';
 import editRequest from '@/requestActions/public-cloud/editRequest';
 import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/createRequest';
-import { subscribeUsersToMautic } from '@/mautic';
-import { sendPublicCloudNatsMessage } from '@/nats';
-import { sendEditRequestEmails } from '@/ches/public-cloud/emailHandler';
+import { subscribeUsersToMautic } from '@/services/mautic';
+import { sendPublicCloudNatsMessage } from '@/services/nats';
+import { sendEditRequestEmails } from '@/services/ches/public-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

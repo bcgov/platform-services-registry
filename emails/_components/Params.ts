@@ -8,8 +8,8 @@ import {
   PublicCloudRequestWithRequestedProject,
 } from '@/requestActions/public-cloud/decisionRequest';
 
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
 
 const sampleDate = new Date();
 

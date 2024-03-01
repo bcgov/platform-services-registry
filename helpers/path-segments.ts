@@ -10,10 +10,18 @@ export const hasSegmentAtPosition = (pathname: string, targetSegment: string, po
   return false;
 };
 
+function removeTrailingSlash(url: string) {
+  if (url.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
+
+  return url;
+}
+
 export const compareUrlsIgnoreLastSegments = (url1: string, url2: string, numSegmentsToIgnore: number = 0) => {
   // Remove trailing slashes from the URLs
-  url1 = url1.replace(/\/+$/, '');
-  url2 = url2.replace(/\/+$/, '');
+  url1 = removeTrailingSlash(url1);
+  url2 = removeTrailingSlash(url2);
 
   if (numSegmentsToIgnore === 0) return url1 === url2;
 
