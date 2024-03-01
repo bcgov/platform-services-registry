@@ -147,7 +147,7 @@ detect-secrets scan > .secrets.baseline
 Within Next.js applications, adhering to proper file naming conventions is essential. Here are three widely adopted practices:
 
 1. Camel Case for File Names and Pascal Case for Component Names
-2. Kebab Case for File Names and Pascal Case for Component Names
+2. `Kebab Case for File Names and Pascal Case for Component Names`
 3. Pascal Case for Both File Names and Component Names
 
 Outside the Next.js application folder, `kebab case` is commonly utilized for naming `folders and files`, especially in URLs. This preference is driven by several reasons:
@@ -158,7 +158,7 @@ Outside the Next.js application folder, `kebab case` is commonly utilized for na
 
 - `SEO Considerations`: Search engines often interpret hyphens in URLs as space, potentially improving search result readability. This can positively impact your website's search engine optimization (SEO).
 
-Choosing the first option, which involves `Camel Case for file names and Pascal Case for component names`, is beneficial in scenarios where a more standardized and conventional naming approach is preferred within the Next.js application itself. This can promote code consistency and make it easier for developers to collaborate and understand the codebase. Additionally, adhering to a specific convention within the application can simplify naming-related decisions during development.
+Choosing the second option, which involves `Kebab Case for file names and Pascal Case for component names`, is beneficial in scenarios where a more standardized and conventional naming approach is preferred within the Next.js application itself. This can promote code consistency and make it easier for developers to collaborate and understand the codebase. Additionally, adhering to a specific convention within the application can simplify naming-related decisions during development.
 
 ## Utilizing Sharable Functions
 

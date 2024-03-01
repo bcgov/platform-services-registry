@@ -1,23 +1,24 @@
 import { render } from '@react-email/render';
 import {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-  PrivateCloudRequestWithRequestedProject,
-} from '@/requestActions/private-cloud/decisionRequest';
-import { adminEmails } from '@/ches/emailConstant';
-import { sendEmail } from '@/ches/helpers';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
+  PublicCloudRequestWithProjectAndRequestedProject,
+  PublicCloudRequestWithRequestedProject,
+} from '@/requestActions/public-cloud/decisionRequest';
 
-import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
-import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
-import CreateRequestTemplate from '@/emails/_templates/private-cloud/CreateRequest';
-import DeleteApprovalTemplate from '@/emails/_templates/private-cloud/DeleteApproval';
-import DeleteRequestTemplate from '@/emails/_templates/private-cloud/DeleteRequest';
-import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
-import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
-import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
-import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
+import { adminEmails } from '@/services/ches/emailConstant';
+import { sendEmail } from '@/services/ches/helpers';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
 
-export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
+import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
+import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
+import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
+import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
+import EditSummaryTemplate from '@/emails/_templates/public-cloud/EditSummary';
+import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
+import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
+import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
+
+export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject) => {
   try {
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: true });
     const userEmail = render(CreateRequestTemplate({ request }), { pretty: true });
@@ -26,7 +27,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
       bodyType: 'html',
       body: adminEmail,
       to: adminEmails,
-      subject: 'New provisioning request in registry waiting for your approval',
+      subject: `New Provisioning request in Registry waiting for your approval`,
     });
 
     const contacts = sendEmail({
@@ -46,19 +47,25 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
   }
 };
 
-export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
   try {
-    const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
-    const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
+    const adminEmail = render(AdminDeleteRequestTemplate({ product }), { pretty: true });
 
-    const admins = sendEmail({
-      bodyType: 'html',
+    await sendEmail({
       body: adminEmail,
       to: adminEmails,
-      subject: 'Edit request submitted',
+      subject: `${product.name} is marked for deletion`,
     });
+  } catch (error) {
+    console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
+  }
+};
 
-    const contacts = sendEmail({
+export const sendEditRequestEmails = async (request: PublicCloudRequestWithProjectAndRequestedProject) => {
+  try {
+    const userEmail = render(EditSummaryTemplate({ request }), { pretty: true });
+
+    await sendEmail({
       body: userEmail,
       to: [
         request.requestedProject.projectOwner.email,
@@ -68,18 +75,14 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
       ].filter(Boolean),
-      subject: 'Edit request submitted',
+      subject: 'Edit summary',
     });
-
-    await Promise.all([contacts, admins]);
   } catch (error) {
     console.error('ERROR SENDING EDIT REQUEST EMAIL');
-    console.log(error);
   }
 };
 
-export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
-  console.log(request);
+export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithRequestedProject) => {
   try {
     const email = render(RequestApprovalTemplate({ request }), { pretty: true });
 
@@ -98,9 +101,10 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 };
 
 export const sendRequestRejectionEmails = async (
-  request: PrivateCloudRequestedProjectWithContacts,
+  request: PublicCloudRequestedProjectWithContacts,
   decisionComment?: string,
 ) => {
+  console.log(request);
   try {
     const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment }), {
       pretty: true,
@@ -115,7 +119,7 @@ export const sendRequestRejectionEmails = async (
   }
 };
 
-export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
   try {
     const email = render(DeleteRequestTemplate({ product }), { pretty: true });
 
@@ -129,7 +133,7 @@ export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProj
   }
 };
 
-export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestApprovalEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
   try {
     const email = render(DeleteApprovalTemplate({ product }), { pretty: true });
 
@@ -143,14 +147,14 @@ export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudReque
   }
 };
 
-export const sendProvisionedEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendProvisionedEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
   try {
     const email = render(ProvisionedTemplate({ product }), { pretty: true });
 
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: 'Product has been provisioned',
+      subject: `Product has been provisioned`,
     });
   } catch (error) {
     console.error('ERROR SENDING NEW PROVISIONED EMAIL', error);

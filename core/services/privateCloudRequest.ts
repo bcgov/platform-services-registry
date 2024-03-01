@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { ModelService } from '../model-service';
+import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 
 export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloudRequestWhereInput> {

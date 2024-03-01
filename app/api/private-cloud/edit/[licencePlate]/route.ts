@@ -10,7 +10,7 @@ import editRequest, {
 } from '@/requestActions/private-cloud/editRequest';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { sendEditRequestEmails } from '@/ches/private-cloud/emailHandler';
+import { sendEditRequestEmails } from '@/services/ches/private-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

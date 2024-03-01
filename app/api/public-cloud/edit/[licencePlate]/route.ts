@@ -9,7 +9,7 @@ import editRequest from '@/requestActions/public-cloud/editRequest';
 import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/createRequest';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
-import { sendEditRequestEmails } from '@/ches/public-cloud/emailHandler';
+import { sendEditRequestEmails } from '@/services/ches/public-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

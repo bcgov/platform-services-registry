@@ -99,7 +99,7 @@ jest.mock('next-auth', () => ({
   NextAuth: jest.fn(), // for named export
 }));
 
-jest.mock('../../../auth/[...nextauth]/route', () => ({
+jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
   GET: jest.fn(),
   POST: jest.fn(),
 }));

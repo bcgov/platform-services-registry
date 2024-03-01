@@ -3,7 +3,7 @@ import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@pr
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
-import { sendProvisionedEmails } from '@/ches/public-cloud/emailHandler';
+import { sendProvisionedEmails } from '@/services/ches/public-cloud/emailHandler';
 
 export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {

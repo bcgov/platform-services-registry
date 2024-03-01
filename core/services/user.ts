@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import { Session } from 'next-auth';
-import { ModelService } from '../model-service';
+import { ModelService } from '@/core/model-service';
 
 export class UserService extends ModelService<Prisma.UserWhereInput> {
   async readFilter() {

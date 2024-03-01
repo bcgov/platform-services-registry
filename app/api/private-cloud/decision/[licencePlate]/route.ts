@@ -9,7 +9,7 @@ import makeDecisionRequest, {
 } from '@/requestActions/private-cloud/decisionRequest';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
-import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/ches/private-cloud/emailHandler';
+import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/private-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

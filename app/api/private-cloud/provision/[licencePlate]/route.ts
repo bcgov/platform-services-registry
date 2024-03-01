@@ -4,7 +4,7 @@ import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
-import { sendProvisionedEmails } from '@/ches/private-cloud/emailHandler';
+import { sendProvisionedEmails } from '@/services/ches/private-cloud/emailHandler';
 
 interface PathParam {
   licencePlate: string;
