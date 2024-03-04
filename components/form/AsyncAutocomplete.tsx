@@ -5,7 +5,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
 import { UserInputSchema } from '@/schema';
 import classNames from '@/utils/classnames';
-import { listUsersByEmail } from '@/services/msal';
+import { listUsersByEmail } from '@/services/backend/msal';
 import { AppUser } from '@/types/user';
 
 export default function AsyncAutocomplete({

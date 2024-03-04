@@ -8,7 +8,7 @@ import _get from 'lodash-es/get';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { SecurityConfig, $Enums } from '@prisma/client';
-import { getSecurityConfig, upsertSecurityConfig } from '@/services/security-config';
+import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 import { SecurityConfigRequestBodySchema } from '@/schema';
 
 export default function Repository({ params }: { params: { licencePlate: string } }) {
