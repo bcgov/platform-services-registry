@@ -45,6 +45,7 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
     projectOwnerId: 'project-owner-id',
     primaryTechnicalLeadId: 'primary-lead-id',
     secondaryTechnicalLeadId: 'secondary-lead-id',
+    expenseAuthorityId: 'expense-authority-id',
     ministry: 'EDUC', // or any other enum value from Ministry
     provider: 'AWS',
     projectOwner: {
@@ -61,6 +62,19 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
       idir: 'JDOE',
     },
     primaryTechnicalLead: {
+      id: 'c',
+      firstName: 'Sarah',
+      lastName: 'Williams',
+      email: 'sarah.williams@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
+    },
+    expenseAuthority: {
       id: 'c',
       firstName: 'Sarah',
       lastName: 'Williams',
@@ -109,6 +123,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
     projectOwnerId: 'owner-id',
     primaryTechnicalLeadId: 'primary-lead-id',
     secondaryTechnicalLeadId: 'secondary-lead-id',
+    expenseAuthorityId: 'expense-authority-id',
     ministry: 'FIN', // or other Ministry enum value
     provider: 'AWS', // or GOOGLE
     projectOwner: {
@@ -125,6 +140,19 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
       idir: 'JDOE',
     },
     primaryTechnicalLead: {
+      id: 'c',
+      firstName: 'Sarah',
+      lastName: 'Williams',
+      email: 'sarah.williams@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
+    },
+    expenseAuthority: {
       id: 'c',
       firstName: 'Sarah',
       lastName: 'Williams',
@@ -156,6 +184,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
     projectOwnerId: 'new-owner-id',
     primaryTechnicalLeadId: 'new-primary-lead-id',
     secondaryTechnicalLeadId: 'new-secondary-lead-id',
+    expenseAuthorityId: 'new-expense-authority-id',
     ministry: 'EDUC', // or other Ministry enum value
     provider: 'AWS', // or AWS
     projectOwner: {
@@ -197,6 +226,19 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
       upn: 'Jack.Black@gov.bc.ca',
       idir: 'JBLACK',
     },
+    expenseAuthority: {
+      id: 'c',
+      firstName: 'Sarah',
+      lastName: 'Williams',
+      email: 'sarah.williams@gov.bc.ca',
+      image: null,
+      ministry: 'CITZ',
+      archived: false,
+      created: sampleDate,
+      lastSeen: sampleDate,
+      upn: 'Sarah.Williams@gov.bc.ca',
+      idir: 'SWILLIAMS',
+    },
   },
 };
 
@@ -217,6 +259,7 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
   projectOwnerId: 'project-owner-id',
   primaryTechnicalLeadId: 'primary-lead-id',
   secondaryTechnicalLeadId: 'secondary-lead-id',
+  expenseAuthorityId: 'expense-authority-id',
   ministry: 'EDUC', // or any other enum value from Ministry
   provider: 'AWS',
   projectOwner: {
@@ -233,6 +276,19 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
     idir: 'JDOE',
   },
   primaryTechnicalLead: {
+    id: 'c',
+    firstName: 'Sarah',
+    lastName: 'Williams',
+    email: 'sarah.williams@gov.bc.ca',
+    image: null,
+    ministry: 'CITZ',
+    archived: false,
+    created: sampleDate,
+    lastSeen: sampleDate,
+    upn: 'Sarah.Williams@gov.bc.ca',
+    idir: 'SWILLIAMS',
+  },
+  expenseAuthority: {
     id: 'c',
     firstName: 'Sarah',
     lastName: 'Williams',

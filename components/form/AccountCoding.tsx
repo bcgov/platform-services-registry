@@ -39,7 +39,7 @@ export default function AccountCoding({
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
-        4. Billing (Account Coding)
+        5. Billing (Account Coding)
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
         Please refer to the Memorandum of Understanding (MoU) signed for this project to enter the information required

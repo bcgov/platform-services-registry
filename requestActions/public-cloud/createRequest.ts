@@ -10,6 +10,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        expenseAuthority: true;
       };
     };
     requestedProject: {
@@ -17,6 +18,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        expenseAuthority: true;
       };
     };
   };
@@ -53,6 +55,14 @@ export default async function createRequest(
         create: formData.primaryTechnicalLead,
       },
     },
+    expenseAuthority: {
+      connectOrCreate: {
+        where: {
+          email: formData.expenseAuthority.email,
+        },
+        create: formData.expenseAuthority,
+      },
+    },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
       ? {
           connectOrCreate: {
@@ -85,6 +95,7 @@ export default async function createRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       requestedProject: {
@@ -92,6 +103,7 @@ export default async function createRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
     },

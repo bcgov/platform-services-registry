@@ -16,8 +16,9 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
-import { $Enums, PublicCloudProject } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import { getPublicCloudRequestedProject } from '@/services/public-cloud';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
   const { data: session, status } = useSession({
@@ -117,6 +118,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={isDisabled} />
             <AccountCoding accountCodingInitial={data?.requestedProject?.accountCoding} disabled={false} />
           </div>

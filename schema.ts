@@ -129,6 +129,7 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
+  expenseAuthority: UserInputSchema,
   requestComment: string().optional(),
 });
 

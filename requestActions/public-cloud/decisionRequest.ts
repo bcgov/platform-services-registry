@@ -9,6 +9,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        expenseAuthority: true;
       };
     };
     requestedProject: {
@@ -16,6 +17,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        expenseAuthority: true;
       };
     };
   };
@@ -28,6 +30,7 @@ export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGe
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        expenseAuthority: true;
       };
     };
   };
@@ -52,6 +55,7 @@ export default async function makeDecisionRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       requestedProject: {
@@ -59,6 +63,7 @@ export default async function makeDecisionRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
     },
@@ -73,6 +78,7 @@ export default async function makeDecisionRequest(
     projectOwnerId,
     primaryTechnicalLeadId,
     secondaryTechnicalLeadId,
+    expenseAuthorityId,
     ...userRequestedProject
   } = request.requestedProject;
   // Update the request with the data passed in from the form.
@@ -89,6 +95,7 @@ export default async function makeDecisionRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       requestedProject: {
@@ -96,6 +103,7 @@ export default async function makeDecisionRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
     },
@@ -136,6 +144,14 @@ export default async function makeDecisionRequest(
                 },
               }
             : undefined,
+          expenseAuthority: {
+            connectOrCreate: {
+              where: {
+                email: formData.expenseAuthority.email,
+              },
+              create: formData.expenseAuthority,
+            },
+          },
         },
       },
     },

@@ -9,6 +9,7 @@ import ReturnModal from '@/components/modal/Return';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import { AGMinistries } from '@/constants';
@@ -44,7 +45,6 @@ export default function Page() {
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
     try {
       const response = await fetch('/api/public-cloud/create', {
         method: 'POST',
@@ -81,6 +81,7 @@ export default function Page() {
           <div className="space-y-12">
             <ProjectDescription mode="create" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <ExpenseAuthority />
             <Budget />
             <AccountCoding />
           </div>

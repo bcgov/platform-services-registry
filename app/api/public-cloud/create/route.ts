@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
 
   // Validation
   const body = await req.json();
+
   const parsedBody = PublicCloudCreateRequestBodySchema.safeParse(body);
 
   if (!parsedBody.success) {

@@ -12,6 +12,7 @@ import AccountCoding from '@/components/form/AccountCoding';
 import TeamContacts from '@/components/form/TeamContacts';
 import { useQuery } from '@tanstack/react-query';
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 
 async function fetchRequestedProject(id: string): Promise<PublicCloudRequestWithCurrentAndRequestedProject> {
   const res = await fetch(`/api/public-cloud/request/${id}`);
@@ -90,6 +91,7 @@ export default function Request({ params }: { params: { id: string } }) {
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
             <AccountCoding accountCodingInitial={data?.requestedProject?.accountCoding} disabled={false} />
           </div>

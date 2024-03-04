@@ -16,6 +16,7 @@ import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import { AGMinistries } from '@/constants';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
 
 async function fetchProject(licencePlate: string): Promise<PublicCloudProjectWithUsers> {
@@ -32,6 +33,10 @@ async function fetchProject(licencePlate: string): Promise<PublicCloudProjectWit
     delete data.secondaryTechnicalLead;
   }
 
+  // Expense Authority Role temporary in case it wasn't added before this roles was implemented
+  if (data.expenseAuthority === null) {
+    delete data.expenseAuthority;
+  }
   return data;
 }
 
@@ -66,7 +71,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
     queryKey: ['request', params.licencePlate],
     queryFn: () =>
       fetchActiveRequest(params.licencePlate).catch((error) => {
-        console.log('error', error);
+        console.error('error', error);
         setDisabled(true);
         return Promise.reject(error);
       }),
@@ -162,6 +167,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
             <AccountCoding accountCodingInitial={data?.accountCoding} disabled={false} />
           </div>

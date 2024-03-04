@@ -33,9 +33,11 @@ model User {
   publicCloudProjectOwner                           PublicCloudProject[]          @relation("publicCloudProjectOwner")
   publicCloudProjectPrimaryTechnicalLead            PublicCloudProject[]          @relation("publicCloudPrimaryTechnicalLead")
   publicCloudProjectSecondaryTechnicalLead          PublicCloudProject[]          @relation("publicCloudSecondaryTechnicalLead")
+  publicCloudExpenseAuthority                       PublicCloudProject[]          @relation("publicCloudExpenseAuthority")
   publicCloudRequestedProjectOwner                  PublicCloudRequestedProject[] @relation("publicCloudRequestedProjectOwner")
   publicCloudRequestedProjectPrimaryTechnicalLead   PublicCloudRequestedProject[] @relation("publicCloudRequestedPrimaryTechnicalLead")
   publicCloudRequestedProjectSecondaryTechnicalLead PublicCloudRequestedProject[] @relation("publicCloudRequestedSecondaryTechnicalLead")
+  publicCloudRequestedExpenseAuthority              PublicCloudRequestedProject[] @relation("publicCloudRequestedExpenseAuthority")
 }
 
 model PrivateCloudRequest {
@@ -141,6 +143,8 @@ model PublicCloudProject {
   primaryTechnicalLead     User                 @relation("publicCloudPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
   secondaryTechnicalLeadId String?              @db.ObjectId
   secondaryTechnicalLead   User?                @relation("publicCloudSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  expenseAuthorityId       String?              @db.ObjectId
+  expenseAuthority         User?                @relation("publicCloudExpenseAuthority", fields: [expenseAuthorityId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
   requests                 PublicCloudRequest[] @relation("publicCloudProject")
@@ -161,6 +165,8 @@ model PublicCloudRequestedProject {
   primaryTechnicalLead     User                @relation("publicCloudRequestedPrimaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
   secondaryTechnicalLeadId String?             @db.ObjectId
   secondaryTechnicalLead   User?               @relation("publicCloudRequestedSecondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  expenseAuthorityId       String?             @db.ObjectId
+  expenseAuthority         User?               @relation("publicCloudRequestedExpenseAuthority", fields: [expenseAuthorityId], references: [id], onDelete: Cascade)
   ministry                 Ministry
   provider                 Provider
   requestedProject         PublicCloudRequest? @relation("publicCloudRequestedProject")
