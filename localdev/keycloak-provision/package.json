@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@keycloak/keycloak-admin-client": "^23.0.0",
+    "@keycloak/keycloak-admin-client": "^24.0.0",
     "wait-on": "^7.0.1"
   }
 }

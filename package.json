@@ -33,7 +33,7 @@
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.1.1",
-    "@keycloak/keycloak-admin-client": "^23.0.6",
+    "@keycloak/keycloak-admin-client": "^24.0.0",
     "@prisma/client": "^5.0.0",
     "@react-email/components": "^0.0.15",
     "@react-email/render": "0.0.12",
