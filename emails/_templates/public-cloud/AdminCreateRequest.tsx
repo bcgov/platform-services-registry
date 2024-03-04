@@ -12,7 +12,7 @@ interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
 }
 
-export const NewRequestTemplate = ({ request }: EmailProp) => {
+export default function NewRequestTemplate({ request }: EmailProp) {
   if (!request) return <></>;
 
   return (
@@ -59,6 +59,4 @@ export const NewRequestTemplate = ({ request }: EmailProp) => {
       </Tailwind>
     </Html>
   );
-};
-
-export default NewRequestTemplate;
+}

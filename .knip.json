@@ -1,0 +1,28 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["**/*.js", "**/*.ts", "**/*.tsx"],
+  "ignore": ["types/**/*.d.ts", ".conventional-changelog.mjs"],
+  "ignoreDependencies": [
+    "sharp",
+    "@testing-library/react",
+    "@testing-library/user-event",
+    "eslint-config-airbnb",
+    "ts-jest",
+    "ts-node"
+  ],
+  "rules": {
+    "binaries": "off",
+    "classMembers": "error",
+    "dependencies": "error",
+    "devDependencies": "error",
+    "duplicates": "error",
+    "enumMembers": "error",
+    "exports": "error",
+    "files": "error",
+    "nsExports": "error",
+    "nsTypes": "error",
+    "types": "error",
+    "unlisted": "off",
+    "unresolved": "error"
+  }
+}
