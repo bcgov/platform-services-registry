@@ -7,13 +7,11 @@ export default function Modal({
   setOpen,
   handleSubmit,
   isLoading,
-  type,
 }: {
   open: boolean;
   setOpen: any;
   handleSubmit: any;
   isLoading: boolean;
-  type: string;
 }) {
   const [comment, setComment] = useState('');
 

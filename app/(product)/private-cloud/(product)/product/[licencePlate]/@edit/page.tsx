@@ -11,7 +11,7 @@ import ReturnModal from '@/components/modal/Return';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
@@ -19,36 +19,11 @@ import CommonComponents from '@/components/form/CommonComponents';
 import { PrivateCloudProject } from '@prisma/client';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
-
-async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
-  const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch project');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  // Secondaty technical lead should only be included if it exists
-  if (data.secondaryTechnicalLead === null) {
-    delete data.secondaryTechnicalLead;
-  }
-
-  return data;
-}
-
-async function fetchActiveRequest(licencePlate: string): Promise<PrivateCloudRequestWithCurrentAndRequestedProject> {
-  const res = await fetch(`/api/private-cloud/active-request/${licencePlate}`);
-
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch active request');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  return data;
-}
+import {
+  getPriviateCloudProject,
+  getPriviateCloudActiveRequest,
+  editPriviateCloudProject,
+} from '@/services/backend/private-cloud';
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
   const { data: session, status } = useSession({
@@ -59,25 +34,39 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
-  const { data, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
+  const { data: project, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
-    queryFn: () => fetchProject(params.licencePlate),
+    queryFn: () => getPriviateCloudProject(params.licencePlate),
     enabled: !!params.licencePlate,
   });
 
-  const { data: requestData } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
+  const { data: activeRequest, isError: isActiveRequestError } = useQuery<
+    PrivateCloudRequestWithCurrentAndRequestedProject,
+    Error
+  >({
     queryKey: ['request', params.licencePlate],
-    queryFn: () =>
-      fetchActiveRequest(params.licencePlate).catch((error) => {
-        console.log('error', error);
-        setDisabled(true);
-        return Promise.reject(error);
-      }),
+    queryFn: () => getPriviateCloudActiveRequest(params.licencePlate),
     enabled: !!params.licencePlate,
   });
+
+  const {
+    mutateAsync: editProject,
+    isPending: isEditingProject,
+    isError: isEditError,
+    error: editError,
+  } = useMutation({
+    mutationFn: (data: any) => editPriviateCloudProject(params.licencePlate, data),
+    onSuccess: () => {
+      setOpenComment(false);
+      setOpenReturn(true);
+    },
+  });
+
+  useEffect(() => {
+    setDisabled(isActiveRequestError);
+  }, [isActiveRequestError]);
 
   // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
   // in an error.
@@ -98,7 +87,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
       ),
     ),
     defaultValues: async () => {
-      const response = await fetchProject(params.licencePlate);
+      const response = await getPriviateCloudProject(params.licencePlate);
       return { ...response, isAgMinistryChecked: true };
     },
   });
@@ -106,45 +95,22 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { formState } = methods;
 
   useEffect(() => {
-    if (requestData) {
+    if (activeRequest) {
       setDisabled(true);
     }
-  }, [requestData]);
+  }, [activeRequest]);
 
   useEffect(() => {
-    if (data?.secondaryTechnicalLead) {
+    if (project?.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [data]);
+  }, [project]);
 
   useEffect(() => {
-    if (data?.secondaryTechnicalLead) {
+    if (project?.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [data]);
-
-  const onSubmit = async (val: any) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/private-cloud/edit/${params.licencePlate}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(val),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok for create request');
-      }
-
-      setOpenComment(false);
-      setOpenReturn(true);
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error:', error);
-    }
-  };
+  }, [project]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -155,7 +121,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
   };
 
   const setComment = (requestComment: string) => {
-    onSubmit({ ...methods.getValues(), requestComment });
+    editProject({ ...methods.getValues(), requestComment });
   };
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
@@ -177,9 +143,9 @@ export default function EditProject({ params }: { params: { licencePlate: string
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Quotas
-              licensePlate={data?.licencePlate as string}
+              licensePlate={project?.licencePlate as string}
               disabled={isDisabled}
-              currentProject={data as PrivateCloudProject}
+              currentProject={project as PrivateCloudProject}
             />
             <CommonComponents disabled={isDisabled} />
           </div>
@@ -197,8 +163,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         open={openComment}
         setOpen={setOpenComment}
         handleSubmit={setComment}
-        isLoading={isLoading}
-        type="create"
+        isLoading={isEditingProject}
       />
       <ReturnModal
         open={openReturn}

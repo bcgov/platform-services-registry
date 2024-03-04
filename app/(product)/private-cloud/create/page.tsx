@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudCreateRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import CommonComponents from '@/components/form/CommonComponents';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
@@ -11,6 +12,7 @@ import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
+import { createPriviateCloudProject } from '@/services/backend/private-cloud';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
 
@@ -23,6 +25,19 @@ export default function Page() {
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    mutateAsync: createProject,
+    isPending: isCreatingProject,
+    isError: isCreateError,
+    error: createError,
+  } = useMutation({
+    mutationFn: (data: any) => createPriviateCloudProject(data),
+    onSuccess: () => {
+      setOpenCreate(false);
+      setOpenReturn(true);
+    },
+  });
 
   const methods = useForm({
     resolver: zodResolver(
@@ -42,27 +57,8 @@ export default function Page() {
     ),
   });
 
-  const onSubmit = async (data: any) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/private-cloud/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok for create request');
-      }
-
-      setOpenCreate(false);
-      setOpenReturn(true);
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error:', error);
-    }
+  const handleSubmit = async (data: any) => {
+    createProject(data);
   };
 
   const secondTechLeadOnClick = () => {
@@ -95,7 +91,7 @@ export default function Page() {
       <CreateModal
         open={openCreate}
         setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(onSubmit)}
+        handleSubmit={methods.handleSubmit(handleSubmit)}
         isLoading={isLoading}
       />
       <ReturnModal

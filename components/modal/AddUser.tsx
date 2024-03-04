@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import UserInfoField from '@/components/modal/AddUserFields';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
-import { listUsersByEmail } from '@/services/msal';
+import { listUsersByEmail } from '@/services/backend/msal';
 import { AppUser } from '@/types/user';
 
 interface Props {
