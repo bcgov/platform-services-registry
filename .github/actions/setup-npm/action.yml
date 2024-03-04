@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
   # See https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
-  - uses: actions/cache@37e7d4eb166540050942d75a6e40742cbfc92f65
+  - uses: actions/cache@ab5e6d0c87105b4c9c2047343972218f562e4319
     with:
       path: |
         ~/.npm
