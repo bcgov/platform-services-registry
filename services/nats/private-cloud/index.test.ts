@@ -5,7 +5,7 @@ import { POST } from '@/app/api/private-cloud/create/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';
-import createPrivateCloudNatsMessage from '@/services/nats/privateCloud';
+import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 import { findMockUserByIDIR } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';

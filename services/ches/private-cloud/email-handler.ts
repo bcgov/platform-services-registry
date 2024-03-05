@@ -2,11 +2,10 @@ import { render } from '@react-email/render';
 import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
-} from '@/requestActions/private-cloud/decisionRequest';
-import { adminEmails } from '@/services/ches/emailConstant';
+} from '@/request-actions/private-cloud/decision-request';
+import { adminEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
-
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
 import CreateRequestTemplate from '@/emails/_templates/private-cloud/CreateRequest';

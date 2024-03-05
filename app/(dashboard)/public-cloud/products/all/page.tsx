@@ -2,7 +2,7 @@ import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
 import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
 import { PublicProject } from '@/queries/types';
-import { publicCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
+import { publicCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';

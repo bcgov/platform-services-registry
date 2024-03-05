@@ -5,10 +5,10 @@ import { PublicCloudRequest, User } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBody, PublicCloudEditRequestBodySchema, UserInput } from '@/schema';
 import { string, z } from 'zod';
-import editRequest from '@/requestActions/public-cloud/editRequest';
+import editRequest from '@/request-actions/public-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
-import { sendEditRequestEmails } from '@/services/ches/public-cloud/emailHandler';
+import { sendEditRequestEmails } from '@/services/ches/public-cloud/email-handler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

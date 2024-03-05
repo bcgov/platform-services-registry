@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
-import createRequest from '@/requestActions/private-cloud/createRequest';
-import { sendCreateRequestEmails } from '@/services/ches/private-cloud/emailHandler';
+import createRequest from '@/request-actions/private-cloud/create-request';
+import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import createApiHandler from '@/core/api-handler';
 
 const apiHandler = createApiHandler<any, any, PrivateCloudCreateRequestBody>({

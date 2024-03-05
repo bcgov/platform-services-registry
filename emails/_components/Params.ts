@@ -1,15 +1,15 @@
 import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
-} from '@/requestActions/private-cloud/decisionRequest';
+} from '@/request-actions/private-cloud/decision-request';
 
 import {
   PublicCloudRequestWithProjectAndRequestedProject,
   PublicCloudRequestWithRequestedProject,
-} from '@/requestActions/public-cloud/decisionRequest';
+} from '@/request-actions/public-cloud/decision-request';
 
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 
 const sampleDate = new Date();
 

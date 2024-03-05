@@ -1,4 +1,4 @@
-import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
+import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';

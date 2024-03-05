@@ -1,7 +1,7 @@
 import Table from '@/components/table/Table';
 import NewTableBody from '@/components/table/TableBodyProducts';
 import { privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
-import { privateCloudProjectDataToRow } from '@/components/table/helpers/rowMapper';
+import { privateCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';

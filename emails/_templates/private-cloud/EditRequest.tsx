@@ -1,11 +1,11 @@
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
-import { comparePrivateCloudProjects } from '../../_components/Edit/utils/compareProjects';
+import { comparePrivateCloudProjects } from '../../_components/Edit/utils/compare-projects';
 import ContactChanges from '../../_components/Edit/ContactChanges';
 import QuotaChanges from '../../_components/Edit/QuotaChanges';
 import DescriptionChanges from '../../_components/Edit/DescriptionChanges';

@@ -18,7 +18,7 @@ jest.mock('@/services/nats', () => ({
 }));
 
 // Mock CHES
-jest.mock('@/services/ches/private-cloud/emailHandler', () => ({
+jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   ...jest.requireActual('@/services/ches/helpers'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
   sendEditRequestEmails: jest.fn(async () => [200]),
@@ -29,7 +29,7 @@ jest.mock('@/services/ches/private-cloud/emailHandler', () => ({
   sendProvisionedEmails: jest.fn(async () => [200]),
 }));
 
-jest.mock('@/services/ches/private-cloud/emailHandler', () => ({
+jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   ...jest.requireActual('@/services/ches/helpers'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
   sendEditRequestEmails: jest.fn(async () => [200]),

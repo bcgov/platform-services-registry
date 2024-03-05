@@ -4,10 +4,10 @@ import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
 import { combinedRequests } from '@/analytics/public-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/public-cloud/products';
-import { requestDecisionTime } from '@/analytics/public-cloud/requestDecisionTime';
+import { requestDecisionTime } from '@/analytics/public-cloud/request-decision-time';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import { ministryDistributions } from '@/analytics/public-cloud/ministryDistributions';
+import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';
 import PieGraph from '@/components/analytics/PieGraph';
 import { ministriesNames } from '@/constants';
 

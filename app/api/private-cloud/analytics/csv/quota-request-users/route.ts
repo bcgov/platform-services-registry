@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 import createApiHandler from '@/core/api-handler';
-import { usersWithQuotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
+import { usersWithQuotaEditRequests } from '@/analytics/private-cloud/quota-changes';
 import { User } from '@prisma/client';
 
 const apiHandler = createApiHandler({

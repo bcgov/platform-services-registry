@@ -1,15 +1,15 @@
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
-import { quotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
+import { quotaEditRequests } from '@/analytics/private-cloud/quota-changes';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
-import { requestDecisionTime } from '@/analytics/private-cloud/requestDecisionTime';
+import { requestDecisionTime } from '@/analytics/private-cloud/request-decision-time';
 import ExportCard from '@/components/analytics/ExportCard';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
-import { ministryDistributions } from '@/analytics/private-cloud/ministryDistributions';
+import { ministryDistributions } from '@/analytics/private-cloud/ministry-distributions';
 import PieGraph from '@/components/analytics/PieGraph';
 import { ministriesNames } from '@/constants';
 

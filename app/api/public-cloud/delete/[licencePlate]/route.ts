@@ -11,8 +11,8 @@ import {
 } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/emailHandler';
-import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
+import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

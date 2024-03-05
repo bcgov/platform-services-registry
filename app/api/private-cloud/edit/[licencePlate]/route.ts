@@ -5,10 +5,10 @@ import { Cluster, DecisionStatus, User } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { string, z } from 'zod';
-import editRequest from '@/requestActions/private-cloud/editRequest';
+import editRequest from '@/request-actions/private-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { sendEditRequestEmails } from '@/services/ches/private-cloud/emailHandler';
+import { sendEditRequestEmails } from '@/services/ches/private-cloud/email-handler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
