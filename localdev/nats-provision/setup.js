@@ -19,7 +19,7 @@ async function main() {
   await waitOn({
     resources: [process.env.APP_URL],
     delay: 1000,
-    window: 5000,
+    window: 10000,
   });
 
   const nc = await connect({ servers: natsServer });

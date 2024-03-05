@@ -58,6 +58,11 @@ repos:
     files: \.sh$
     verbose: true
     pass_filenames: true
+  - id: knip
+    name: knip
+    entry: node_modules/.bin/knip
+    language: system
+    pass_filenames: false
 - repo: https://github.com/koalaman/shellcheck-precommit
   rev: v0.9.0
   hooks:

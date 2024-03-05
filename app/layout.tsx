@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Inter } from 'next/font/google';
 import Provider from '@/components/Provider';
 import Nav from '@/components/nav/Nav';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import Footer from '@/components/Footer';
 
 const inter = Inter({

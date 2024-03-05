@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PublicProject } from '@/queries/types';
 
 export async function getPublicCloudProjectsQuery({
@@ -244,6 +244,7 @@ export async function getPublicCloudProjectsResult({
         },
       },
       { $match: searchQuery },
+      { $sort: { updatedAt: -1 } },
 
       ...paginationPipelines,
       {

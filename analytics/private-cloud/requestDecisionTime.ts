@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import _isEqual from 'lodash-es/isEqual';
 import { bin, extent } from 'd3-array';
 

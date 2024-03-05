@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
-import { sendProvisionedEmails } from '@/ches/public-cloud/emailHandler';
-
-export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    requestedProject: true;
-  };
-}>;
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
+import { sendProvisionedEmails } from '@/services/ches/public-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -27,7 +21,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
   const { licencePlate } = params;
 
   try {
-    const request: PublicCloudRequestWithRequestedProject | null = await prisma.publicCloudRequest.findFirst({
+    const request = await prisma.publicCloudRequest.findFirst({
       where: {
         decisionStatus: DecisionStatus.APPROVED,
         licencePlate,
@@ -82,6 +76,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
         projectOwner: true,
         primaryTechnicalLead: true,
         secondaryTechnicalLead: true,
+        expenseAuthority: true,
       },
     });
 

@@ -7,9 +7,9 @@ import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PrivateCloudRequestWithRequestedProject,
 } from '@/requestActions/private-cloud/decisionRequest';
-import { sendPrivateCloudNatsMessage } from '@/nats';
-import { subscribeUsersToMautic } from '@/mautic';
-import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/ches/private-cloud/emailHandler';
+import { sendPrivateCloudNatsMessage } from '@/services/nats';
+import { subscribeUsersToMautic } from '@/services/mautic';
+import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/private-cloud/emailHandler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

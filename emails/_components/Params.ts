@@ -8,8 +8,8 @@ import {
   PublicCloudRequestWithRequestedProject,
 } from '@/requestActions/public-cloud/decisionRequest';
 
-import { PrivateCloudRequestedProjectWithContacts } from '@/nats/privateCloud';
-import { PublicCloudRequestedProjectWithContacts } from '@/nats/publicCloud';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privateCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
 
 const sampleDate = new Date();
 
@@ -24,6 +24,7 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
   decisionComment: 'This is a sample request',
   active: true,
   created: new Date('2023-11-30T00:00:00Z'),
+  updatedAt: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
   projectId: 'project-id',
   requestedProjectId: 'requested-project-id',
@@ -102,6 +103,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
   decisionComment: 'This is a sample request',
   active: true,
   created: new Date('2023-11-30T00:00:00Z'),
+  updatedAt: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
   projectId: 'existing-project-id',
   requestedProjectId: 'new-project-id',
@@ -113,6 +115,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
     description: 'Description of the existing project',
     status: 'ACTIVE', // or INACTIVE
     created: new Date('2023-11-30T00:00:00Z'),
+    updatedAt: new Date('2023-11-30T00:00:00Z'),
     accountCoding: 'AC12345',
     budget: {
       dev: 1500.0,
@@ -314,6 +317,7 @@ export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
   decisionComment: 'This is a comment',
   active: true,
   created: sampleDate,
+  updatedAt: sampleDate,
   decisionDate: sampleDate,
   isQuotaChanged: false,
   projectId: null,
@@ -405,6 +409,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
   decisionComment: 'This is a comment',
   active: true,
   created: sampleDate,
+  updatedAt: sampleDate,
   isQuotaChanged: false,
   decisionDate: sampleDate,
   requestComment: 'Some comment made by the user',
@@ -451,6 +456,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
     status: 'ACTIVE',
     licencePlate: 'be74f8',
     created: sampleDate,
+    updatedAt: sampleDate,
     projectOwnerId: 'd',
     primaryTechnicalLeadId: 'c',
     secondaryTechnicalLeadId: null,

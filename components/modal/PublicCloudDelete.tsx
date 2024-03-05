@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 
 async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
   const res = await fetch(`/api/public-cloud/project/${licencePlate}`);

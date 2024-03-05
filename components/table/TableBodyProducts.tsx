@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import Avatar from '@/components/table/Avatar';
 import Avatars from '@/components/table/Avatars';
@@ -90,7 +90,7 @@ function createdText(requestType: string, requestDecisionStatus?: string) {
     return 'Delete requested';
   }
 
-  return 'Created on';
+  return 'Updated at';
 }
 
 function truncateText(str: string, n: number) {
@@ -183,7 +183,7 @@ export default function TableBody({ rows }: TableProps) {
                       <circle cx={1} cy={1} r={1} />
                     </svg>
                     <p className="whitespace-nowrap">
-                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.created}
+                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.updatedAt}
                     </p>
                   </div>
                 </div>

@@ -10,11 +10,11 @@ import {
   RequestType,
   User,
 } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { sendDeleteRequestEmails } from '@/ches/private-cloud/emailHandler';
+import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/emailHandler';
 import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
-import openshiftDeletionCheck from '@/scripts/deletioncheck';
+import openshiftDeletionCheck from '@/helpers/openshift';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

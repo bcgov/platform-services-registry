@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { usePathname } from 'next/navigation';
 import path from 'path';
 

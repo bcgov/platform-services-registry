@@ -3,8 +3,8 @@ import { Dialog, Combobox, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import UserInfoField from '@/components/modal/AddUserFields';
-import { parseMinistryFromDisplayName } from '@/components/utils/parseMinistryFromDisplayName';
-import { listUsersByEmail } from '@/services/msal';
+import { parseMinistryFromDisplayName } from '@/helpers/user';
+import { listUsersByEmail } from '@/services/backend/msal';
 import { AppUser } from '@/types/user';
 
 interface Props {

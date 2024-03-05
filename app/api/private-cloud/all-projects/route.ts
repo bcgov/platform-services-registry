@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 import { PrivateProject } from '@/queries/types';
 import { privateCloudProjectsPaginated } from '@/queries/paginated/private-cloud';
-import formatDate from '@/components/utils/formatdates';
-import { formatFullName } from '@/components/utils/formatFullName';
+import formatDate from '@/utils/date';
+import { formatFullName } from '@/helpers/user';
 import { z } from 'zod';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
@@ -63,6 +63,7 @@ export async function GET(req: NextRequest) {
       secondaryTechnicalLeadEmail: project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
       secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
       created: formatDate(project.created.$date),
+      updatedAt: formatDate(project.updatedAt.$date),
       licencePlate: project.licencePlate,
       status: project.status,
     }));

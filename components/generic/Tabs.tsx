@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import classNames from 'classnames';
-import { compareUrlsIgnoreLastSegments } from '@/helpers/pathSegments';
+import { compareUrlsIgnoreLastSegments } from '@/helpers/path-segments';
 
 export interface ITab {
   name: string;

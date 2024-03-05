@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma, PublicCloudProject } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 
 export type PublicCloudProjectWithUsers = Prisma.PublicCloudProjectGetPayload<{

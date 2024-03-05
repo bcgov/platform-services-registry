@@ -143,7 +143,7 @@ export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySc
   }),
 );
 
-export const PublicCloudEditRequestBodySchema = PublicCloudCreateRequestBodySchema;
+export const PublicCloudEditRequestBodySchema = PublicCloudCreateRequestBodySchema.omit({});
 
 export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBodySchema.merge(
   z.object({

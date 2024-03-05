@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 
 function getAggByCluster(cluster?: string) {
   const pipeline: Prisma.InputJsonValue[] = cluster

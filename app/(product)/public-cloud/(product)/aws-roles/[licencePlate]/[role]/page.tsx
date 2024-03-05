@@ -3,7 +3,7 @@
 import TableAWSRoles from '@/components/table/TableAWSRoles';
 import { User } from '@/app/api/public-cloud/aws-roles/helpers';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
-import { capitalizeFirstLetter } from '@/components/utils/capitalizeFirstLetter';
+import { capitalizeFirstLetter } from '@/utils/string';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams, useParams, usePathname } from 'next/navigation';
 import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
@@ -11,7 +11,7 @@ import AddUserModal from '@/components/modal/AddUser';
 import { useEffect, useState } from 'react';
 import DeleteUserModal from '@/components/modal/DeleteUser';
 import EmptyBody from '@/components/EmptyUsersList';
-import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/aws-roles';
+import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/backend/aws-roles';
 import ErrorModal from '@/components/modal/Error';
 
 const pathParamRoleToRole = (pathRole: string): string => {

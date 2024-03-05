@@ -9,9 +9,9 @@ import {
   PublicCloudRequestType,
   User,
 } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/ches/public-cloud/emailHandler';
+import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/emailHandler';
 import { PublicCloudRequestWithRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
 
 const ParamsSchema = z.object({

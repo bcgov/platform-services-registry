@@ -1,6 +1,6 @@
 'use client';
 
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { useFormContext } from 'react-hook-form';
 import { providers, ministriesNames } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';

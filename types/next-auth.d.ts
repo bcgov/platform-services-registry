@@ -12,11 +12,18 @@ declare module 'next-auth' {
     } & DefaultSession['user'];
     userId: string | null;
     isAdmin: boolean;
+    isReader: boolean;
+    isApprover: boolean;
     roles: string[];
     ministries: {
       admin: string[];
       readonly: string[];
       [key: string]: string[];
+    };
+    permissions: {
+      viewZapscanResults: boolean;
+      viewSonarscanReulsts: boolean;
+      viewAnalytics: boolean;
     };
     previews: {
       awsRoles: boolean;

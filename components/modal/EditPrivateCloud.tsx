@@ -1,19 +1,17 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import classNames from '../utils/classnames';
+import classNames from '@/utils/classnames';
 
 export default function Modal({
   open,
   setOpen,
   handleSubmit,
   isLoading,
-  type,
 }: {
   open: boolean;
   setOpen: any;
   handleSubmit: any;
   isLoading: boolean;
-  type: string;
 }) {
   const [comment, setComment] = useState('');
 

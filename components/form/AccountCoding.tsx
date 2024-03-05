@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 
 export default function AccountCoding({
   disabled,

@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import ZapScanResults from '@/components/zapscan/ZapScanResults';
 
@@ -82,7 +82,5 @@ export default async function Page({
   ]);
 
   const clusters = distinct.map((row) => row.cluster);
-  return (
-    <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} hideContext />
-  );
+  return <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} />;
 }

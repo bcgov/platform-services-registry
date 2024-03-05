@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { clusters, ministriesNames } from '@/constants';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';

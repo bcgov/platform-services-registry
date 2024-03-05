@@ -1,5 +1,5 @@
 import { privateCloudProjectsPaginated, privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import {
   Cluster,
   DecisionStatus,

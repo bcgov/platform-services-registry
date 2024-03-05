@@ -1,5 +1,5 @@
 import { Cluster, Ministry, PrismaClient, Provider } from '@prisma/client';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '../schema';
+import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 const prisma = new PrismaClient();
 import { faker } from '@faker-js/faker';
 
@@ -95,6 +95,10 @@ async function main() {
 
     // Create fake projects for the user
     for (let j = 0; j < numOfProjectsPerUser; j++) {
+      const comments = [];
+      for (let x = 0; x < 2; x++) {
+        comments.push({ text: faker.lorem.sentence(), userId: user.id });
+      }
       await prisma.privateCloudProject.create({
         data: {
           licencePlate: faker.string.alphanumeric(7),
@@ -107,6 +111,7 @@ async function main() {
           secondaryTechnicalLeadId: user.id,
           ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
+          comments: { create: comments },
           productionQuota: {
             cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
             memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),

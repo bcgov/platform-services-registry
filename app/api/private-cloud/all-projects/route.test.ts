@@ -3,7 +3,7 @@ import { GET as downloadCsv } from '@/app/api/private-cloud/all-projects/route';
 import { getServerSession } from 'next-auth/next';
 import { MockedFunction } from 'jest-mock';
 import { expect } from '@jest/globals';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { parse } from 'csv-parse/sync';
 import {
   Cluster,

@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import {
   getPublicCloudProjectsQuery,
   getPublicCloudProjectsResult,
@@ -279,7 +279,7 @@ export async function publicCloudRequestsPaginated(
         },
       },
       { $match: searchQuery },
-      { $sort: { created: -1 } },
+      { $sort: { updatedAt: -1 } },
       { $skip: (pageNumber - 1) * pageSize },
       { $limit: pageSize },
       {

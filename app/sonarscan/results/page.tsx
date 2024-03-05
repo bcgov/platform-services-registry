@@ -2,7 +2,7 @@ import { Prisma, $Enums } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { redirect } from 'next/navigation';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import SonarScanResults from '@/components/sonarscan/SonarScanResults';
 
@@ -89,5 +89,5 @@ export default async function Page({
   ]);
 
   const contexts = distinct.map((row) => row.context);
-  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} />;
+  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} listAll />;
 }

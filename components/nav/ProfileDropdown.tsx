@@ -2,7 +2,7 @@
 
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import classNames from '@/components/utils/classnames';
+import classNames from '@/utils/classnames';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,7 +11,7 @@ import fetchUserImage from '@/components/nav/generateAvatar';
 
 export default function ProfileDropdown() {
   const { data: session, status } = useSession();
-  const { user, isAdmin, roles } = session ?? {};
+  const { user, isAdmin, roles, permissions } = session ?? {};
   const { email } = user ?? {};
 
   const { data, isLoading, error } = useQuery<string, Error>({
@@ -70,7 +70,7 @@ export default function ProfileDropdown() {
               </Link>
             )}
           </Menu.Item> */}
-          {isAdmin && (
+          {permissions?.viewZapscanResults && (
             <Menu.Item>
               {({ active, close }) => (
                 <div>
@@ -85,7 +85,7 @@ export default function ProfileDropdown() {
               )}
             </Menu.Item>
           )}
-          {isAdmin && (
+          {permissions?.viewSonarscanReulsts && (
             <Menu.Item>
               {({ active, close }) => (
                 <div>
@@ -95,6 +95,36 @@ export default function ProfileDropdown() {
                     className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                   >
                     Sonar Scan Results
+                  </Link>
+                </div>
+              )}
+            </Menu.Item>
+          )}
+          {permissions?.viewAnalytics && (
+            <Menu.Item>
+              {({ active, close }) => (
+                <div>
+                  <Link
+                    href="/private-cloud/analytics"
+                    onClick={close}
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                  >
+                    Private Cloud Analytics
+                  </Link>
+                </div>
+              )}
+            </Menu.Item>
+          )}
+          {permissions?.viewAnalytics && (
+            <Menu.Item>
+              {({ active, close }) => (
+                <div>
+                  <Link
+                    href="/public-cloud/analytics"
+                    onClick={close}
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                  >
+                    Public Cloud Analytics
                   </Link>
                 </div>
               )}

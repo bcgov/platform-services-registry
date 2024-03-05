@@ -11,70 +11,57 @@ import Comment from '@/components/modal/Comment';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
 import { $Enums, PrivateCloudProject } from '@prisma/client';
-import { getPriviateCloudRequestedProject } from '@/services/private-cloud';
+import { makePriviateCloudRequestedDecision, getPriviateCloudActiveRequest } from '@/services/backend/private-cloud';
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
   const { data: session, status } = useSession({
     required: true,
   });
 
-  const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [canDecide, setCanDecide] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
-  const { data } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
-    queryKey: ['requestedProject', params.licencePlate],
-    queryFn: () => getPriviateCloudRequestedProject(params.licencePlate),
+  const { data: activeRequest } = useQuery<PrivateCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['activeRequest', params.licencePlate],
+    queryFn: () => getPriviateCloudActiveRequest(params.licencePlate),
     enabled: !!params.licencePlate,
+  });
+
+  const {
+    mutateAsync: makeDecision,
+    isPending: isMakingDecision,
+    isError: isDecisionError,
+    error: decisionError,
+  } = useMutation({
+    mutationFn: (data: any) => makePriviateCloudRequestedDecision(params.licencePlate, data),
+    onSuccess: () => {
+      setOpenComment(false);
+      setOpenReturn(true);
+    },
   });
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { decisionComment: '', decision: '', ...data?.requestedProject },
+    values: { decisionComment: '', decision: '', ...activeRequest?.requestedProject },
   });
 
   useEffect(() => {
-    const _canDecide = !!(session?.isAdmin && data?.decisionStatus === 'PENDING');
+    const _canDecide = !!(session?.isAdmin && activeRequest?.decisionStatus === 'PENDING');
     setCanDecide(_canDecide);
-    if (_canDecide && data.type !== $Enums.RequestType.DELETE) {
+    if (_canDecide && activeRequest.type !== $Enums.RequestType.DELETE) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [session, data, data?.decisionStatus]);
-
-  const onSubmit = async (val: any) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/private-cloud/decision/${params.licencePlate}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(val),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok for create request');
-      }
-
-      setOpenCreate(false);
-      setOpenComment(false);
-      setOpenReturn(true);
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error:', error);
-    }
-  };
+  }, [session, activeRequest?.type, activeRequest?.decisionStatus]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -84,14 +71,14 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   };
 
   const setComment = (decisionComment: string) => {
-    onSubmit({ ...methods.getValues(), decisionComment });
+    makeDecision({ ...methods.getValues(), decisionComment });
   };
 
   useEffect(() => {
-    if (data?.requestedProject.secondaryTechnicalLead) {
+    if (activeRequest?.requestedProject.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [data]);
+  }, [activeRequest]);
 
   return (
     <div>
@@ -104,30 +91,34 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
           })}
         >
           <div className="mb-12 mt-8">
-            {data && data.decisionStatus !== 'PENDING' && (
+            {activeRequest && activeRequest.decisionStatus !== 'PENDING' && (
               <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
                 A decision has already been made for this product
               </h3>
             )}
-            <ProjectDescription disabled={isDisabled} clusterDisabled={data?.type !== 'CREATE'} mode="decision" />
+            <ProjectDescription
+              disabled={isDisabled}
+              clusterDisabled={activeRequest?.type !== 'CREATE'}
+              mode="decision"
+            />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Quotas
-              licensePlate={data?.licencePlate as string}
+              licensePlate={activeRequest?.licencePlate as string}
               disabled={isDisabled}
-              currentProject={data?.project as PrivateCloudProject}
+              currentProject={activeRequest?.project as PrivateCloudProject}
             />
           </div>
 
-          {data?.requestComment && (
+          {activeRequest?.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
               <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
-              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.requestComment}</p>
+              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{activeRequest?.requestComment}</p>
             </div>
           )}
 
@@ -158,8 +149,8 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
         open={openComment}
         setOpen={setOpenComment}
         onSubmit={setComment}
-        isLoading={isLoading}
-        type={data?.type}
+        isLoading={isMakingDecision}
+        type={activeRequest?.type}
         action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />

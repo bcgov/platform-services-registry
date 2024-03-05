@@ -7,10 +7,10 @@ import Select, { MultiValue } from 'react-select';
 import _throttle from 'lodash-es/throttle';
 import _isEqual from 'lodash-es/isEqual';
 import _castArray from 'lodash-es/castArray';
-import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/lib/query-string';
+import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/query-string';
 import Search from '@/components/assets/search.svg';
 
-export default function SearchPanel({ clusters }: { clusters: string[] }) {
+export default function SearchPanel({ clusters, endPaths }: { clusters: string[]; endPaths: string }) {
   const { replace } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
@@ -41,12 +41,12 @@ export default function SearchPanel({ clusters }: { clusters: string[] }) {
       cluster: selectedClusters,
     };
 
-    if (pathname.endsWith('/zapscan')) return;
+    if (!pathname.endsWith(endPaths)) return;
     if (isSearchQueryEqual(currParamObj, newParamObj)) return;
 
     const newParams = stringifyQuery(newParamObj);
     throttled.current(replace, `${pathname}?${newParams}`);
-  }, [replace, pathname, searchParams, searchTerm, selectedClusters]);
+  }, [replace, pathname, searchParams, searchTerm, selectedClusters, endPaths]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-6 gap-3 p-2">

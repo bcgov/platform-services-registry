@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
-import { PublicCloudCreateRequestBody, PublicCloudCreateRequestBodySchema } from '@/schema';
-import createRequest, {
-  PublicCloudRequestWithProjectAndRequestedProject,
-} from '@/requestActions/public-cloud/createRequest';
-import { sendCreateRequestEmails } from '@/ches/public-cloud/emailHandler';
+import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import createRequest from '@/requestActions/public-cloud/createRequest';
+import { sendCreateRequestEmails } from '@/services/ches/public-cloud/emailHandler';
 
 export async function POST(req: NextRequest) {
   // Authentication
@@ -29,7 +27,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse(parsedBody.error.message, { status: 400 });
   }
 
-  const formData: PublicCloudCreateRequestBody = parsedBody.data;
+  const formData = parsedBody.data;
 
   // Authorization
   if (
@@ -44,7 +42,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Action
-  const request: PublicCloudRequestWithProjectAndRequestedProject = await createRequest(formData, authEmail);
+  const request = await createRequest(formData, authEmail);
 
   sendCreateRequestEmails(request);
 

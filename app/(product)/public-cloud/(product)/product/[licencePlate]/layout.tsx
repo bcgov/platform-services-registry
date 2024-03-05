@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 
 export default async function Layout({
   params,

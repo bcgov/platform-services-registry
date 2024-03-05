@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { PrivateCloudRequest } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
 import { POST } from '@/app/api/private-cloud/create/route';
@@ -72,7 +72,7 @@ jest.mock('next-auth', () => ({
   NextAuth: jest.fn(), // for named export
 }));
 
-jest.mock('../../auth/[...nextauth]/route', () => ({
+jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
   GET: jest.fn(),
   POST: jest.fn(),
 }));
@@ -115,9 +115,8 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should create a request with the correct data', async () => {
-    const requests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
-
-    const request: PrivateCloudRequest = requests[0];
+    const requests = await prisma.privateCloudRequest.findMany();
+    const request = requests[0];
 
     const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
       where: {

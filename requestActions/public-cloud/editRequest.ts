@@ -1,35 +1,15 @@
-import { DecisionStatus, Prisma, PublicCloudProject, RequestType } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import { DecisionStatus, RequestType } from '@prisma/client';
+import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBody } from '@/schema';
-
-export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-  };
-}>;
+import { upsertUsers } from '@/services/db/user';
 
 export default async function editRequest(
   licencePlate: string,
   formData: PublicCloudEditRequestBody,
   authEmail: string,
-): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
+) {
   // Get the current project that we are creating an edit request for
-  const project: PublicCloudProject | null = await prisma.publicCloudProject.findUnique({
+  const project = await prisma.publicCloudProject.findUnique({
     where: {
       licencePlate: licencePlate,
     },
@@ -47,8 +27,14 @@ export default async function editRequest(
 
   const { requestComment, ...rest } = formData;
 
+  await upsertUsers([
+    formData.projectOwner.email,
+    formData.primaryTechnicalLead.email,
+    formData.secondaryTechnicalLead?.email,
+  ]);
+
   // Merge the form data with the existing project data
-  const requestedProject: Prisma.PublicCloudRequestedProjectCreateInput = {
+  const requestedProject = {
     ...rest,
     licencePlate: project.licencePlate,
     status: project.status,

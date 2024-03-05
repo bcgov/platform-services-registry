@@ -2,8 +2,8 @@ import NextAuth, { Account, AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
-import prisma from '@/lib/prisma';
-import { getUser } from '@/msal/service';
+import prisma from '@/core/prisma';
+import { getUser } from '@/services/msgraph';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
 
 interface KeycloakToken {
@@ -125,15 +125,12 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       session.isAdmin = false;
+      session.isReader = false;
+      session.isApprover = false;
       session.roles = [];
       session.ministries = {
         admin: [],
         readonly: [],
-      };
-
-      session.previews = {
-        awsRoles: !IS_PROD,
-        security: !IS_PROD,
       };
 
       // Send properties to the client, like an access_token from a provider.
@@ -152,6 +149,16 @@ export const authOptions: AuthOptions = {
             return;
           }
 
+          if (role === 'reader') {
+            session.isReader = true;
+            return;
+          }
+
+          if (role === 'approver') {
+            session.isApprover = true;
+            return;
+          }
+
           const regexPattern = /^ministry-(\w+)-(.+)$/;
           const match = regexPattern.exec(role);
           if (match) {
@@ -164,6 +171,18 @@ export const authOptions: AuthOptions = {
 
         session.user.roles = session.roles;
       }
+
+      session.previews = {
+        awsRoles: !IS_PROD,
+        security: !IS_PROD,
+      };
+
+      session.permissions = {
+        viewZapscanResults: session.isAdmin,
+        viewSonarscanReulsts: session.isAdmin,
+        viewAnalytics: session.isAdmin,
+      };
+
       // {
       //   ...
       //   roles: ['admin', 'ministry-citz-admin'],

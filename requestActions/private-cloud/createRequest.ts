@@ -1,31 +1,13 @@
-import { DecisionStatus, Prisma, PrivateCloudRequest, ProjectStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
 import {
   DefaultCpuOptionsSchema,
   DefaultMemoryOptionsSchema,
   DefaultStorageOptionsSchema,
   PrivateCloudCreateRequestBody,
 } from '@/schema';
-import prisma from '@/lib/prisma';
-import generateLicensePlate from '@/lib/generateLicencePlate';
-
-export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}>;
+import prisma from '@/core/prisma';
+import generateLicensePlate from '@/helpers/license-plate';
+import { upsertUsers } from '@/services/db/user';
 
 const defaultQuota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
@@ -33,13 +15,16 @@ const defaultQuota = {
   storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
 };
 
-export default async function createRequest(
-  formData: PrivateCloudCreateRequestBody,
-  authEmail: string,
-): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
+export default async function createRequest(formData: PrivateCloudCreateRequestBody, authEmail: string) {
   const licencePlate = generateLicensePlate();
 
-  const createRequestedProject: Prisma.PrivateCloudRequestedProjectCreateInput = {
+  await upsertUsers([
+    formData.projectOwner.email,
+    formData.primaryTechnicalLead.email,
+    formData.secondaryTechnicalLead?.email,
+  ]);
+
+  const createRequestedProject = {
     name: formData.name,
     description: formData.description,
     cluster: formData.cluster,

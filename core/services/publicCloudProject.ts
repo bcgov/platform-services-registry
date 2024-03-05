@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { ModelService } from '../modelService';
+import { ModelService } from '@/core/model-service';
 
 export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudProjectWhereInput> {
   async readFilter() {

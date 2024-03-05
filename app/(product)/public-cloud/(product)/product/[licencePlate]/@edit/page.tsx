@@ -8,7 +8,7 @@ import PreviousButton from '@/components/buttons/Previous';
 import ReturnModal from '@/components/modal/Return';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { PublicCloudProjectWithUsers } from '@/app/api/public-cloud/project/[licencePlate]/route';
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
@@ -19,64 +19,50 @@ import { AGMinistries } from '@/constants';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
 
-async function fetchProject(licencePlate: string): Promise<PublicCloudProjectWithUsers> {
-  const res = await fetch(`/api/public-cloud/project/${licencePlate}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch project');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  // Secondaty technical lead should only be included if it exists
-  if (data.secondaryTechnicalLead === null) {
-    delete data.secondaryTechnicalLead;
-  }
-
-  // Expense Authority Role temporary in case it wasn't added before this roles was implemented
-  if (data.expenseAuthority === null) {
-    delete data.expenseAuthority;
-  }
-  return data;
-}
-
-async function fetchActiveRequest(licencePlate: string): Promise<PublicCloudRequestWithCurrentAndRequestedProject> {
-  const res = await fetch(`/api/public-cloud/active-request/${licencePlate}`);
-
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch active request');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  return data;
-}
+import {
+  getPublicCloudProject,
+  getPublicCloudActiveRequest,
+  editPublicCloudProject,
+} from '@/services/backend/public-cloud';
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
   const [openComment, setOpenComment] = useState(false);
 
-  const { data } = useQuery<PublicCloudProjectWithUsers, Error>({
+  const { data: project } = useQuery<PublicCloudProjectWithUsers, Error>({
     queryKey: ['project', params.licencePlate],
-    queryFn: () => fetchProject(params.licencePlate),
+    queryFn: () => getPublicCloudProject(params.licencePlate),
     enabled: !!params.licencePlate,
   });
 
-  const { data: requestData } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
+  const { data: activeRequest, isError: isActiveRequestError } = useQuery<
+    PublicCloudRequestWithCurrentAndRequestedProject,
+    Error
+  >({
     queryKey: ['request', params.licencePlate],
-    queryFn: () =>
-      fetchActiveRequest(params.licencePlate).catch((error) => {
-        console.error('error', error);
-        setDisabled(true);
-        return Promise.reject(error);
-      }),
+    queryFn: () => getPublicCloudActiveRequest(params.licencePlate),
     enabled: !!params.licencePlate,
   });
+
+  const {
+    mutateAsync: editProject,
+    isPending: isEditingProject,
+    isError: isEditError,
+    error: editError,
+  } = useMutation({
+    mutationFn: (data: any) => editPublicCloudProject(params.licencePlate, data),
+    onSuccess: () => {
+      setOpenComment(false);
+      setOpenReturn(true);
+    },
+  });
+
+  useEffect(() => {
+    setDisabled(isActiveRequestError);
+  }, [isActiveRequestError]);
 
   const methods = useForm({
     resolver: zodResolver(
@@ -95,7 +81,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
       ),
     ),
     defaultValues: async () => {
-      const response = await fetchProject(params.licencePlate);
+      const response = await getPublicCloudProject(params.licencePlate);
       return { ...response, isAgMinistryChecked: true };
     },
   });
@@ -103,37 +89,13 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { formState } = methods;
 
   useEffect(() => {
-    if (requestData) {
+    if (activeRequest) {
       setDisabled(true);
     }
-  }, [requestData]);
+  }, [activeRequest]);
 
   const handleOpenModal = () => {
     setOpenComment(true);
-  };
-
-  const onSubmit = async (val: any) => {
-    console.log('SUBMIT', val);
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/public-cloud/edit/${params.licencePlate}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(val),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok for edit request');
-      }
-
-      setOpenComment(false);
-      setOpenReturn(true);
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error:', error);
-    }
   };
 
   const secondTechLeadOnClick = () => {
@@ -147,13 +109,13 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
   useEffect(() => {
-    if (data?.secondaryTechnicalLead) {
+    if (project?.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [data]);
+  }, [project]);
 
   const setComment = (requestComment: string) => {
-    onSubmit({ ...methods.getValues(), requestComment });
+    editProject({ ...methods.getValues(), requestComment });
   };
 
   return (
@@ -169,7 +131,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             />
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
-            <AccountCoding accountCodingInitial={data?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={project?.accountCoding} disabled={false} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
@@ -185,8 +147,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
         open={openComment}
         setOpen={setOpenComment}
         handleSubmit={setComment}
-        isLoading={isLoading}
-        type="create"
+        isLoading={isEditingProject}
       />
       <ReturnModal
         open={openReturn}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import prisma from '@/lib/prisma';
+import prisma from '@/core/prisma';
 import { SecurityConfig, $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 

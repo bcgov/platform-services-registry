@@ -6,26 +6,24 @@ import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import Comment from '@/components/modal/Comment';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
-import { $Enums } from '@prisma/client';
-import { getPublicCloudRequestedProject } from '@/services/public-cloud';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
+import { $Enums, PublicCloudProject } from '@prisma/client';
+import { makePublicCloudRequestedDecision, getPublicCloudActiveRequest } from '@/services/backend/public-cloud';
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
   const { data: session, status } = useSession({
     required: true,
   });
 
-  const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
@@ -34,50 +32,39 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   const [isLoading, setIsLoading] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
-  const { data } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
-    queryKey: ['requestedProject', params.licencePlate],
-    queryFn: () => getPublicCloudRequestedProject(params.licencePlate),
+  const { data: activeRequest } = useQuery<PublicCloudRequestWithCurrentAndRequestedProject, Error>({
+    queryKey: ['activeRequest', params.licencePlate],
+    queryFn: () => getPublicCloudActiveRequest(params.licencePlate),
     enabled: !!params.licencePlate,
+  });
+
+  const {
+    mutateAsync: makeDecision,
+    isPending: isMakingDecision,
+    isError: isDecisionError,
+    error: decisionError,
+  } = useMutation({
+    mutationFn: (data: any) => makePublicCloudRequestedDecision(params.licencePlate, data),
+    onSuccess: () => {
+      setOpenReturn(true);
+      setOpenComment(false);
+    },
   });
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudDecisionRequestBodySchema),
-    values: { comment: '', decision: '', ...data?.requestedProject },
+    values: { comment: '', decision: '', ...activeRequest?.requestedProject },
   });
 
   useEffect(() => {
-    const _canDecide = !!(session?.isAdmin && data?.decisionStatus === 'PENDING');
+    const _canDecide = !!(session?.isAdmin && activeRequest?.decisionStatus === 'PENDING');
     setCanDecide(_canDecide);
-    if (_canDecide && data.type !== $Enums.RequestType.DELETE) {
+    if (_canDecide && activeRequest.type !== $Enums.RequestType.DELETE) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [session, data, data?.decisionStatus]);
-
-  const onSubmit = async (val: any) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/public-cloud/decision/${params.licencePlate}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(val),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok for create request');
-      }
-
-      setOpenCreate(false);
-      setOpenReturn(true);
-      setOpenComment(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error:', error);
-    }
-  };
+  }, [session, activeRequest?.type, activeRequest?.decisionStatus]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -87,14 +74,14 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
   };
 
   const setComment = (decisionComment: string) => {
-    onSubmit({ ...methods.getValues(), decisionComment });
+    makeDecision({ ...methods.getValues(), decisionComment });
   };
 
   useEffect(() => {
-    if (data?.requestedProject.secondaryTechnicalLead) {
+    if (activeRequest?.requestedProject.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [data]);
+  }, [activeRequest]);
 
   return (
     <div>
@@ -106,7 +93,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
-          {data && data.decisionStatus !== 'PENDING' && (
+          {activeRequest && activeRequest.decisionStatus !== 'PENDING' && (
             <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
               A decision has already been made for this product
             </h3>
@@ -120,15 +107,15 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
             />
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={isDisabled} />
-            <AccountCoding accountCodingInitial={data?.requestedProject?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={activeRequest?.requestedProject?.accountCoding} disabled={false} />
           </div>
 
-          {data?.requestComment && (
+          {activeRequest?.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
               <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
-              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{data?.requestComment}</p>
+              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{activeRequest?.requestComment}</p>
             </div>
           )}
 
@@ -155,18 +142,12 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
           </div>
         </form>
       </FormProvider>
-      <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(onSubmit)}
-        isLoading={isLoading}
-      />
       <Comment
         open={openComment}
         setOpen={setOpenComment}
         onSubmit={setComment}
         isLoading={isLoading}
-        type={data?.type}
+        type={activeRequest?.type}
         action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />

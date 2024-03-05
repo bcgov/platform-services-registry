@@ -1,36 +1,19 @@
-import { DecisionStatus, Prisma, ProjectStatus, PublicCloudRequest, RequestType } from '@prisma/client';
-import prisma from '@/lib/prisma';
-import generateLicensePlate from '@/lib/generateLicencePlate';
+import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import prisma from '@/core/prisma';
+import generateLicensePlate from '@/helpers/license-plate';
 import { PublicCloudCreateRequestBody } from '@/schema';
+import { upsertUsers } from '@/services/db/user';
 
-export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-  };
-}>;
-
-export default async function createRequest(
-  formData: PublicCloudCreateRequestBody,
-  authEmail: string,
-): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
+export default async function createRequest(formData: PublicCloudCreateRequestBody, authEmail: string) {
   const licencePlate = generateLicensePlate();
 
-  const createRequestedProject: Prisma.PublicCloudRequestedProjectCreateInput = {
+  await upsertUsers([
+    formData.projectOwner.email,
+    formData.primaryTechnicalLead.email,
+    formData.secondaryTechnicalLead?.email,
+  ]);
+
+  const createRequestedProject = {
     name: formData.name,
     accountCoding: formData.accountCoding,
     budget: formData.budget,

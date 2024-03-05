@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import prisma from '@/lib/prisma';
-import { ModelService } from '../modelService';
+import prisma from '@/core/prisma';
+import { ModelService } from '@/core/model-service';
 
 export class PrivateCloudProjectZapResultService extends ModelService<Prisma.PrivateCloudProjectZapResultWhereInput> {
   async readFilter() {
