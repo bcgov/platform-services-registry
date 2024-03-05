@@ -6,6 +6,7 @@ import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { getUser } from '@/services/msgraph';
 import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
+
 export interface Group {
   id: string;
   name: string;
@@ -142,14 +143,24 @@ export const createKeyCloakUser = async (userPrincipalName: string) => {
       console.error('createKeyCloakUser: user not found');
       return;
     }
-
+    const userIdirGuid = appUser.idirGuid.toLowerCase();
     await kcAdminClient.auth(credentials);
-    await kcAdminClient.users.create({
+    const userRes = await kcAdminClient.users.create({
       email: appUser.email,
-      username: appUser.idirGuid,
+      username: `${userIdirGuid}@azureidir`,
       enabled: true,
       firstName: appUser.firstName,
       lastName: appUser.lastName,
+    });
+
+    await kcAdminClient.users.addToFederatedIdentity({
+      id: userRes.id!,
+      federatedIdentityId: 'azureidir',
+      federatedIdentity: {
+        identityProvider: 'azureidir',
+        userId: `${userIdirGuid}@azureidir`,
+        userName: `${userIdirGuid}@azureidir`,
+      },
     });
   } catch (err) {
     console.error('createKeyCloakUser:', err);
