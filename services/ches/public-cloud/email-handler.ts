@@ -2,10 +2,10 @@ import { render } from '@react-email/render';
 import {
   PublicCloudRequestWithProjectAndRequestedProject,
   PublicCloudRequestWithRequestedProject,
-} from '@/requestActions/public-cloud/decisionRequest';
-import { adminEmails } from '@/services/ches/emailConstant';
+} from '@/request-actions/public-cloud/decision-request';
+import { adminEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';

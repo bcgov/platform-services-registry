@@ -1,11 +1,11 @@
-import { PublicCloudRequestWithProjectAndRequestedProject } from '@/requestActions/public-cloud/decisionRequest';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/request-actions/public-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
-import { comparePublicCloudProjects } from '../../_components/Edit/utils/compareProjects';
+import { comparePublicCloudProjects } from '../../_components/Edit/utils/compare-projects';
 import ContactChanges from '../../_components/Edit/ContactChanges';
 import DescriptionChanges from '../../_components/Edit/DescriptionChanges';
 import BudgetChanges from '../../_components/Edit/BudgetChanges';

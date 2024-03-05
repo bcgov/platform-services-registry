@@ -6,10 +6,10 @@ import { string, z } from 'zod';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PrivateCloudRequestWithRequestedProject,
-} from '@/requestActions/private-cloud/decisionRequest';
+} from '@/request-actions/private-cloud/decision-request';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
-import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/private-cloud/emailHandler';
+import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/private-cloud/email-handler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

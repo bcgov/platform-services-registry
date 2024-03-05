@@ -6,10 +6,10 @@ import { string, z } from 'zod';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PublicCloudRequestWithProjectAndRequestedProject,
-} from '@/requestActions/public-cloud/decisionRequest';
+} from '@/request-actions/public-cloud/decision-request';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
-import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/public-cloud/emailHandler';
+import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

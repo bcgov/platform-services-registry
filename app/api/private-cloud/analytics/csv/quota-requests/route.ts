@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 import createApiHandler from '@/core/api-handler';
-import { quotaEditRequests } from '@/analytics/private-cloud/quotaChanges';
+import { quotaEditRequests } from '@/analytics/private-cloud/quota-changes';
 
 const apiHandler = createApiHandler({
   roles: ['user'],

@@ -1,4 +1,4 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';

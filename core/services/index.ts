@@ -1,14 +1,14 @@
 import { Session } from 'next-auth';
 
-import { PrivateCloudProjectService } from './privateCloudProject';
-import { PrivateCloudRequestService } from './privateCloudRequest';
-import { PrivateCloudRequestedProjectService } from './privateCloudRequestedProject';
-import { PublicCloudProjectService } from './publicCloudProject';
-import { PublicCloudRequestService } from './publicCloudRequest';
-import { PublicCloudRequestedProjectService } from './publicCloudRequestedProject';
-import { PrivateCloudProjectZapResultService } from './privateCloudProjectZapResult';
-import { SecurityConfigService } from './securityConfig';
-import { SonarScanResultService } from './sonarScanResult';
+import { PrivateCloudProjectService } from './private-cloud-project';
+import { PrivateCloudRequestService } from './private-cloud-request';
+import { PrivateCloudRequestedProjectService } from './private-cloud-requested-project';
+import { PublicCloudProjectService } from './public-cloud-project';
+import { PublicCloudRequestService } from './public-cloud-request';
+import { PublicCloudRequestedProjectService } from './public-cloud-requested-project';
+import { PrivateCloudProjectZapResultService } from './private-cloud-project-zap-result';
+import { SecurityConfigService } from './security-config';
+import { SonarScanResultService } from './sonar-scan-result';
 
 export function getService(model: string, session: Session) {
   switch (model) {

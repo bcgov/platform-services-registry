@@ -6,7 +6,7 @@ import {
   DefaultCpuOptionsKey,
   DefaultMemoryOptionsKey,
   DefaultStorageOptionsKey,
-} from '@/services/nats/privateCloud/constants';
+} from '@/services/nats/private-cloud/constants';
 import { Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 
 export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{

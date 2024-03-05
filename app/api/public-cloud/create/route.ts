@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
-import createRequest from '@/requestActions/public-cloud/createRequest';
-import { sendCreateRequestEmails } from '@/services/ches/public-cloud/emailHandler';
+import createRequest from '@/request-actions/public-cloud/create-request';
+import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
 
 export async function POST(req: NextRequest) {
   // Authentication

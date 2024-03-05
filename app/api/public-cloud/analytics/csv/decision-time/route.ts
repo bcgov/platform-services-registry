@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 import createApiHandler from '@/core/api-handler';
-import { requestDecisionTime, DataPoint } from '@/analytics/private-cloud/requestDecisionTime';
+import { requestDecisionTime, DataPoint } from '@/analytics/private-cloud/request-decision-time';
 
 const apiHandler = createApiHandler({
   roles: ['user'],

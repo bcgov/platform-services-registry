@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/publicCloud';
-import { sendProvisionedEmails } from '@/services/ches/public-cloud/emailHandler';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { sendProvisionedEmails } from '@/services/ches/public-cloud/email-handler';
 
 const ParamsSchema = z.object({
   licencePlate: string(),

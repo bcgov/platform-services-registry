@@ -12,8 +12,8 @@ import {
 } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
-import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/emailHandler';
-import { PrivateCloudRequestWithRequestedProject } from '@/requestActions/private-cloud/decisionRequest';
+import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
+import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import openshiftDeletionCheck from '@/helpers/openshift';
 
 const ParamsSchema = z.object({
