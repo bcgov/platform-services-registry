@@ -106,6 +106,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       project: {
@@ -113,6 +114,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
     },

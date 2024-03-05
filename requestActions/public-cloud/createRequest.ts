@@ -38,6 +38,14 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
         create: formData.primaryTechnicalLead,
       },
     },
+    expenseAuthority: {
+      connectOrCreate: {
+        where: {
+          email: formData.expenseAuthority.email,
+        },
+        create: formData.expenseAuthority,
+      },
+    },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
       ? {
           connectOrCreate: {
@@ -70,6 +78,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       requestedProject: {
@@ -77,6 +86,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
     },

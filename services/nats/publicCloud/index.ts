@@ -5,6 +5,7 @@ export type PublicCloudRequestedProjectWithContacts = Prisma.PublicCloudRequeste
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
+    expenseAuthority: true;
   };
 }>;
 
@@ -13,6 +14,7 @@ export type PublicCloudProjectWithContacts = Prisma.PublicCloudRequestedProjectG
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
+    expenseAuthority: true;
   };
 }>;
 
@@ -46,7 +48,16 @@ export default function createPublicCloudNatsMessage(
             name: `${currentProject.projectOwner.firstName} ${currentProject.projectOwner.lastName}`,
             email: currentProject.projectOwner.email,
           },
-
+      requested_expense_authority: {
+        name: `${requestedProject.expenseAuthority?.firstName} ${requestedProject.expenseAuthority?.lastName}`,
+        email: requestedProject.expenseAuthority?.email,
+      },
+      current_expense_authority: !currentProject
+        ? null
+        : {
+            name: `${currentProject.expenseAuthority?.firstName} ${currentProject.expenseAuthority?.lastName}`,
+            email: currentProject.expenseAuthority?.email,
+          },
       requested_tech_leads: [
         {
           name: `${requestedProject.primaryTechnicalLead.firstName} ${requestedProject.primaryTechnicalLead.lastName}`,

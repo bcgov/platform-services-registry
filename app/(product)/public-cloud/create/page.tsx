@@ -10,6 +10,7 @@ import ReturnModal from '@/components/modal/Return';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import { createPublicCloudProject } from '@/services/backend/public-cloud';
@@ -75,6 +76,7 @@ export default function Page() {
           <div className="space-y-12">
             <ProjectDescription mode="create" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <ExpenseAuthority />
             <Budget />
             <AccountCoding />
           </div>

@@ -80,6 +80,7 @@ async function main() {
           projectOwnerId: user.id,
           primaryTechnicalLeadId: user.id,
           secondaryTechnicalLeadId: user.id,
+          expenseAuthorityId: user.id,
           ministry: faker.helpers.arrayElement(Object.values(Ministry)),
           provider: faker.helpers.arrayElement(Object.values(Provider)),
           budget: {

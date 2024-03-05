@@ -16,7 +16,9 @@ import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import { AGMinistries } from '@/constants';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
+
 import {
   getPublicCloudProject,
   getPublicCloudActiveRequest,
@@ -127,6 +129,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
             <AccountCoding accountCodingInitial={project?.accountCoding} disabled={false} />
           </div>

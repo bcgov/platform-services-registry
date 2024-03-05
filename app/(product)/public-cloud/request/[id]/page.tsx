@@ -12,6 +12,7 @@ import AccountCoding from '@/components/form/AccountCoding';
 import TeamContacts from '@/components/form/TeamContacts';
 import { useQuery } from '@tanstack/react-query';
 import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud';
 
 export default function Request({ params }: { params: { id: string } }) {
@@ -73,6 +74,7 @@ export default function Request({ params }: { params: { id: string } }) {
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
             <AccountCoding accountCodingInitial={projectRequest?.requestedProject?.accountCoding} disabled={false} />
           </div>
