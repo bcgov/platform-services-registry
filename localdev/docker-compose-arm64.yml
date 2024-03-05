@@ -1,0 +1,112 @@
+version: '3.9'
+
+services:
+  keycloak:
+    container_name: keycloak
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
+    command:
+    - start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_PORT: 5432
+      KC_DB_PASSWORD: postgres # pragma: allowlist secret
+      KC_DB_USERNAME: postgres
+      KC_HEALTH_ENABLED: 'true'
+      KC_HTTP_ENABLED: 'true'
+      KC_HTTP_PORT: 8080
+      KC_METRICS_ENABLED: 'true'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/server.crt.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/server.key.pem
+      JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled
+    ports:
+    - 8080:8080
+    - 8443:8443
+    depends_on:
+    - postgres
+
+  keycloak-provision:
+    container_name: keycloak-provision
+    build:
+      context: ./
+      dockerfile: ./keycloak-provision/Dockerfile
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
+      REALM_NAME: platform-services
+      CLIENT_ID: pltsvc
+      CLIENT_SECRET: testsecret # pragma: allowlist secret
+    depends_on:
+    - keycloak
+
+  postgres:
+    container_name: postgres
+    image: postgres:16.2
+    healthcheck:
+      test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres # pragma: allowlist secret
+      POSTGRES_DB: keycloak
+    ports:
+    - 5432:5432
+    volumes:
+    - type: bind
+      source: ./mnt/postgres
+      target: /var/lib/postgresql/data
+
+  mongodb:
+    platform: linux/arm64
+    container_name: mongodb
+    # See https://hub.docker.com/r/bitnami/mongodb/tags
+    image: ghcr.io/zcube/bitnami-compat/mongodb:6.0-debian-11-r64@sha256:2733db3d24c98ee9319f467174aad6e43950a49fd506be272af8671dd2a03e5b
+    environment:
+    - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
+    - MONGODB_REPLICA_SET_MODE=primary
+    - MONGODB_ROOT_USER=mongodb
+    - MONGODB_ROOT_PASSWORD=mongodb
+    - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    ports:
+    - 27017:27017
+    volumes:
+    - type: bind
+      source: ./mnt/mongodb
+      target: /data/db
+
+  m365proxy:
+    container_name: m365proxy
+    build:
+      context: ./m365proxy
+      dockerfile: Dockerfile
+    stdin_open: true
+    ports:
+    - 8000:8000
+
+  nats:
+    container_name: nats
+    image: nats:2.10.11
+    ports:
+    - 4222:4222
+
+  nats-provision:
+    container_name: nats-provision
+    build:
+      context: ./nats-provision
+      dockerfile: Dockerfile
+    environment:
+      NATS_HOST: nats
+      NATS_PORT: 4222
+      APP_URL: http://${MACHINE_HOST_IP}:3000
+    depends_on:
+    - nats
