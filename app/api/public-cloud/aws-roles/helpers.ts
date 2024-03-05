@@ -5,7 +5,13 @@ import _toLowerCase from 'lodash-es/lowerCase';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { getUser } from '@/services/msgraph';
-import { AWS_ROLES_BASE_URL, AWS_ROLES_REALM_NAME, AWS_ROLES_CLIENT_ID, AWS_ROLES_CLIENT_SECRET } from '@/config';
+import {
+  AWS_ROLES_BASE_URL,
+  AWS_ROLES_REALM_NAME,
+  AWS_ROLES_CLIENT_ID,
+  AWS_ROLES_CLIENT_SECRET,
+  AWS_ROLES_IDENTITY_PROVIDER,
+} from '@/config';
 
 export interface Group {
   id: string;
@@ -147,7 +153,7 @@ export const createKeyCloakUser = async (userPrincipalName: string) => {
     await kcAdminClient.auth(credentials);
     const userRes = await kcAdminClient.users.create({
       email: appUser.email,
-      username: `${userIdirGuid}@azureidir`,
+      username: `${userIdirGuid}@${AWS_ROLES_IDENTITY_PROVIDER}`,
       enabled: true,
       firstName: appUser.firstName,
       lastName: appUser.lastName,
@@ -155,11 +161,11 @@ export const createKeyCloakUser = async (userPrincipalName: string) => {
 
     await kcAdminClient.users.addToFederatedIdentity({
       id: userRes.id!,
-      federatedIdentityId: 'azureidir',
+      federatedIdentityId: AWS_ROLES_IDENTITY_PROVIDER,
       federatedIdentity: {
-        identityProvider: 'azureidir',
-        userId: `${userIdirGuid}@azureidir`,
-        userName: `${userIdirGuid}@azureidir`,
+        identityProvider: AWS_ROLES_IDENTITY_PROVIDER,
+        userId: `${userIdirGuid}@${AWS_ROLES_IDENTITY_PROVIDER}`,
+        userName: `${userIdirGuid}@${AWS_ROLES_IDENTITY_PROVIDER}`,
       },
     });
   } catch (err) {
