@@ -18,6 +18,7 @@ export const AWS_ROLES_BASE_URL = process.env.AWS_ROLES_BASE_URL || '';
 export const AWS_ROLES_REALM_NAME = process.env.AWS_ROLES_REALM_NAME || '';
 export const AWS_ROLES_CLIENT_ID = process.env.AWS_ROLES_CLIENT_ID || '';
 export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || '';
+export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || '';
 export const PRIVATE_ADMIN_EMAILS = process.env.PRIVATE_ADMIN_EMAILS || '';
 export const PUBLIC_ADMIN_EMAILS = process.env.PUBLIC_ADMIN_EMAILS || '';
 export const CHES_TOKEN_URL = process.env.CHES_TOKEN_URL || '';
