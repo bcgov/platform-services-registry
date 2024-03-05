@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+    - uses: actions/checkout@8eb1f6a495037164bea451156472f35fdd6bafc0
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+    - uses: actions/checkout@8eb1f6a495037164bea451156472f35fdd6bafc0
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -80,7 +80,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+    - uses: actions/checkout@8eb1f6a495037164bea451156472f35fdd6bafc0
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -108,7 +108,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+    - uses: actions/checkout@8eb1f6a495037164bea451156472f35fdd6bafc0
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -139,7 +139,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+    - uses: actions/checkout@8eb1f6a495037164bea451156472f35fdd6bafc0
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@9b79eb6d8ec51bce42cb4e77f0a174fc80cf3cb9
