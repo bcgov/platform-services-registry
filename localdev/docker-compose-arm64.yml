@@ -88,7 +88,7 @@ services:
     container_name: m365proxy
     build:
       context: ./m365proxy
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-arm64
     stdin_open: true
     ports:
     - 8000:8000
