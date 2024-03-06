@@ -5,7 +5,7 @@ The development sandbox serves as an isolated environment for local development 
 ## Getting Started
 
 1. To begin with, duplicate the `.env.example` file and name it either `.env` or `.env.local` to set the default local environment variable in your local environment.
-   
+
 2. Switch to localdev folder
 
 ```bash
@@ -30,11 +30,14 @@ export DOCKER_DEFAULT_PLATFORM=linux/arm64
 5. Set environment variable MACHINE_HOST_IP to your ip address using the command
 
 For WSL/Linux:
+
 ```bash
 export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
 ```
-or 
+
+or
 For Mac M1/M2:
+
 ```bash
 export MACHINE_HOST_IP=$(ipconfig getifaddr en0)
 ```
@@ -42,11 +45,14 @@ export MACHINE_HOST_IP=$(ipconfig getifaddr en0)
 6. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
 
 For WSL/Linux:
+
 ```bash
 docker-compose up --build [-d]
 ```
-or 
+
+or
 For Mac M1/M2:
+
 ```bash
 docker-compose -f docker-compose-arm64 up --build [-d]
 ```
