@@ -21,13 +21,7 @@ mkdir -p ./mnt/postgres
 
 If you have data version conflict errors due to existing mount volumes, please delete the directories and recreate them.
 
-4. (For Mac M1 only) Set default platform of the docker commands:
-
-```bash
-export DOCKER_DEFAULT_PLATFORM=linux/arm64
-```
-
-5. Set environment variable MACHINE_HOST_IP to your ip address using the command
+4. Set environment variable MACHINE_HOST_IP to your ip address using the command
 
 For WSL/Linux:
 
@@ -42,7 +36,7 @@ For Mac M1/M2:
 export MACHINE_HOST_IP=$(ipconfig getifaddr en0)
 ```
 
-6. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
+5. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
 
 For WSL/Linux:
 
@@ -54,7 +48,7 @@ or
 For Mac M1/M2:
 
 ```bash
-docker-compose -f docker-compose-arm64 up --build [-d]
+docker-compose -f docker-compose.yml -f docker-compose-arm64 up --build [-d]
 ```
 
 You can add the `-d` flag to run the containers in daemon mode.

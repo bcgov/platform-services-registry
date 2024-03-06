@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   keycloak:
+    platform: linux/amd64
     container_name: keycloak
     build:
       context: ./keycloak
@@ -32,6 +33,7 @@ services:
     - postgres
 
   keycloak-provision:
+    platform: linux/amd64
     container_name: keycloak-provision
     build:
       context: ./
@@ -47,6 +49,7 @@ services:
     - keycloak
 
   postgres:
+    platform: linux/amd64
     container_name: postgres
     image: postgres:16.2
     healthcheck:
@@ -67,6 +70,7 @@ services:
       target: /var/lib/postgresql/data
 
   mongodb:
+    platform: linux/amd64
     container_name: mongodb
     # See https://hub.docker.com/r/bitnami/mongodb/tags
     image: bitnami/mongodb:7.0.5-debian-11-r21
@@ -84,6 +88,7 @@ services:
       target: /data/db
 
   m365proxy:
+    platform: linux/amd64
     container_name: m365proxy
     build:
       context: ./m365proxy
@@ -93,12 +98,14 @@ services:
     - 8000:8000
 
   nats:
+    platform: linux/amd64
     container_name: nats
     image: nats:2.10.11
     ports:
     - 4222:4222
 
   nats-provision:
+    platform: linux/amd64
     container_name: nats-provision
     build:
       context: ./nats-provision
