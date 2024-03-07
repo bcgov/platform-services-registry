@@ -58,8 +58,10 @@ app:
     "AUTH_RELM": ""
     "CHES_TOKEN_URL": ""
     "CHES_API_URL": ""
-    "NATS_HOST": ""
-    "NATS_PORT": ""
+    "PRIVATE_NATS_HOST": ""
+    "PRIVATE_NATS_PORT": ""
+    "PUBLIC_NATS_HOST": ""
+    "PUBLIC_NATS_PORT": ""
 
 email:
   enabled: true
