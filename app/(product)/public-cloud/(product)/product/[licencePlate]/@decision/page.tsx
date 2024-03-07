@@ -16,7 +16,7 @@ import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/publ
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import { $Enums, PublicCloudProject } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import { makePublicCloudRequestedDecision, getPublicCloudActiveRequest } from '@/services/backend/public-cloud';
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
