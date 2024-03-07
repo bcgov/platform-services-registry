@@ -1,3 +1,4 @@
+import { $Enums } from '@prisma/client';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
@@ -63,11 +64,10 @@ export default async function AnalyticsDashboard() {
         />
         <LineGraph
           index="date"
-          title={'Products provisioned over time'}
+          title={'Active Products'}
           subtitle={'This graph shows the cumulitive total of products provisioned through the registry'}
           chartData={projectsChartData}
-          categories={['Products']}
-          colors={['indigo']}
+          categories={['All Clusters', 'Silver', 'Gold', 'Emerald']}
           exportApiEndpoint="/api/private-cloud/analytics/csv/products"
         />
         <Histogram

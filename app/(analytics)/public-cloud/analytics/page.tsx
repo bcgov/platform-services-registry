@@ -45,11 +45,10 @@ export default async function AnalyticsDashboard() {
         />
         <LineGraph
           index="date"
-          title={'Products provisioned over time'}
+          title={'Active Products'}
           subtitle={'This graph shows the cumulitive total of products provisioned through the registry'}
           chartData={projectsChartData}
-          categories={['Products']}
-          colors={['indigo']}
+          categories={['AWS']}
           exportApiEndpoint="/api/public-cloud/analytics/csv/products"
         />
         <Histogram

@@ -1,60 +1,85 @@
 import prisma from '@/core/prisma';
-import _isEqual from 'lodash-es/isEqual';
+import { $Enums } from '@prisma/client';
+import _forEach from 'lodash-es/forEach';
+import _uniq from 'lodash-es/uniq';
+import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/date';
 
-export type DataPoint = {
-  date: string;
-  Products: number;
-};
-
-const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
-
-function createMonthKey(date: Date) {
-  return formatter.format(date);
-}
+type ValidCluster = typeof $Enums.Cluster.SILVER | typeof $Enums.Cluster.GOLD | typeof $Enums.Cluster.EMERALD;
 
 export async function productsCreatedPerMonth() {
-  const projects = await prisma.privateCloudProject.findMany({
-    select: {
-      created: true,
-    },
-  });
+  const [projects, deleteRequests] = await Promise.all([
+    prisma.privateCloudProject.findMany({
+      where: {
+        cluster: { in: [$Enums.Cluster.SILVER, $Enums.Cluster.GOLD, $Enums.Cluster.EMERALD] },
+      },
+      select: {
+        licencePlate: true,
+        cluster: true,
+        created: true,
+        status: true,
+      },
+      orderBy: {
+        created: 'asc',
+      },
+    }),
+    prisma.privateCloudRequest.findMany({
+      where: {
+        type: $Enums.RequestType.DELETE,
+        decisionStatus: $Enums.DecisionStatus.PROVISIONED,
+      },
+      select: {
+        licencePlate: true,
+        created: true,
+      },
+    }),
+  ]);
 
-  const projectsOverTime = projects.reduce(
-    (acc, project) => {
-      const key = createMonthKey(project.created);
+  const result: {
+    [key: string]: {
+      all: number;
+      [$Enums.Cluster.SILVER]: number;
+      [$Enums.Cluster.GOLD]: number;
+      [$Enums.Cluster.EMERALD]: number;
+    };
+  } = {};
 
-      if (acc[key]) {
-        acc[key] += 1;
-      } else {
-        acc[key] = 1;
+  const allShortDateStrs = _uniq(projects.map((proj) => dateToShortDateString(proj.created)));
+  const allDates = allShortDateStrs.map(shortDateStringToDate);
+
+  _forEach(allDates, (dt, i) => {
+    _forEach(projects, (proj) => {
+      if (compareYearMonth(dt, proj.created) < 0) return;
+      const deleteRequest = deleteRequests.find((req) => req.licencePlate === proj.licencePlate);
+
+      if (deleteRequest) {
+        if (compareYearMonth(dt, deleteRequest.created) === 1) {
+          return;
+        }
       }
 
-      return acc;
-    },
-    {} as { [key: string]: number },
-  );
+      const key = allShortDateStrs[i];
+      if (!result[key]) {
+        result[key] = { all: 0, [$Enums.Cluster.SILVER]: 0, [$Enums.Cluster.GOLD]: 0, [$Enums.Cluster.EMERALD]: 0 };
+      }
 
-  return projectsOverTime;
+      result[key].all++;
+      result[key][proj.cluster as ValidCluster]++;
+    });
+  });
+
+  return result;
 }
 
 export async function numberOfProductsOverTime() {
-  const projectsOverTime = await productsCreatedPerMonth();
+  const result = await productsCreatedPerMonth();
 
-  // Calculate cumulative products over time
-  let cumulativeProducts = 0;
-  const cumulativeProductsOverTime = Object.entries(projectsOverTime).reduce(
-    (acc, [key, value]) => {
-      cumulativeProducts += value;
-      acc[key] = cumulativeProducts;
-      return acc;
-    },
-    {} as { [key: string]: number },
-  );
-
-  const result: DataPoint[] = Object.entries(cumulativeProductsOverTime).map((item) => ({
-    date: item[0],
-    Products: item[1],
+  const data = Object.entries(result).map(([date, counts]) => ({
+    date,
+    'All Clusters': counts.all,
+    Silver: counts[$Enums.Cluster.SILVER],
+    Gold: counts[$Enums.Cluster.GOLD],
+    Emerald: counts[$Enums.Cluster.EMERALD],
   }));
 
-  return result;
+  return data;
 }

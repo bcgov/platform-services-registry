@@ -2,11 +2,6 @@ import prisma from '@/core/prisma';
 import _isEqual from 'lodash-es/isEqual';
 import { bin, extent } from 'd3-array';
 
-export type DataPoint = {
-  time: string;
-  Percentage: number;
-};
-
 function convertMillisecondsToHours(milliseconds: number): number {
   return milliseconds / 3600000; // 1000 milliseconds in a second and 3600 seconds in an hour
 }
@@ -36,7 +31,7 @@ export async function requestDecisionTime() {
 
   const bins = bin().domain([0, 200]).thresholds(50)(durations);
 
-  const data: DataPoint[] = bins.map((b) => {
+  const data = bins.map((b) => {
     return {
       time: `${b.x0} hours - ${b.x1} hours`,
       Percentage: (b.length / durations.length) * 100,
