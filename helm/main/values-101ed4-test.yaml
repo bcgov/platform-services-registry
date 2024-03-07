@@ -18,6 +18,9 @@ app:
     "PRIVATE_NATS_PORT": "4222"
     "PUBLIC_NATS_HOST": "nats://nats.eb6118-dev.svc"
     "PUBLIC_NATS_PORT": "4222"
+    "AWS_ROLES_BASE_URL": "https://dev.loginproxy.gov.bc.ca/auth"
+    "AWS_ROLES_IDENTITY_PROVIDER": "azureidir"
+    "AWS_ROLES_REALM_NAME": "public-cloud"
 
   route:
     enabled: true
