@@ -15,8 +15,10 @@ app:
     "AUTH_RELM": "platform-services"
     "CHES_TOKEN_URL": "https://dev.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token"
     "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
-    "NATS_HOST": "pltsvc-mock-nats-client"
-    "NATS_PORT": "4222"
+    "PRIVATE_NATS_HOST": "pltsvc-mock-nats-client"
+    "PRIVATE_NATS_PORT": "4222"
+    "PUBLIC_NATS_HOST": "pltsvc-mock-nats-clien"
+    "PUBLIC_NATS_PORT": "4222"
 
   route:
     enabled: true
