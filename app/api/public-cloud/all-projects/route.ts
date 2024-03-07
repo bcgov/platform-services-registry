@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stringify } from 'csv-stringify/sync';
 import { PublicProject } from '@/queries/types';
 import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
 import formatDate from '@/utils/date';
@@ -8,6 +7,7 @@ import { z } from 'zod';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/options';
 import { userInfo } from '@/queries/user';
+import { CsvResponse } from '@/core/responses';
 
 const searchParamsSchema = z.object({
   search: z.string().nullable(),
@@ -69,35 +69,7 @@ export async function GET(req: NextRequest) {
       status: project.status,
     }));
 
-    // Convert the data to CSV
-    const csv = stringify(formattedData, {
-      header: true,
-      columns: [
-        'name',
-        'description',
-        'ministry',
-        'provider',
-        'projectOwnerEmail',
-        'projectOwnerName',
-        'primaryTechnicalLeadEmail',
-        'primaryTechnicalLeadName',
-        'secondaryTechnicalLeadEmail',
-        'secondaryTechnicalLeadName',
-        'created',
-        'licencePlate',
-      ],
-    });
-
-    // Response for csv
-    const response = new NextResponse(csv, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename=public-cloud-products.csv',
-      },
-    });
-
-    return response;
+    return CsvResponse(formattedData, 'public-cloud-products.csv');
   } catch (error: any) {
     console.error('Error in handler:', error);
     return new NextResponse(error.message, { status: 500 });

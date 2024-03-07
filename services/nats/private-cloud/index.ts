@@ -7,7 +7,7 @@ import {
   DefaultMemoryOptionsKey,
   DefaultStorageOptionsKey,
 } from '@/services/nats/private-cloud/constants';
-import { Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
+import { $Enums, Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 
 export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
   include: {
@@ -40,11 +40,12 @@ export default function createPrivateCloudNatsMessage(
   } = requestedProject;
 
   let allianceLabel = '';
-  switch (ministry.toLocaleLowerCase()) {
-    case 'ag':
-    case 'pssg':
-    case 'embc':
-    case 'mah':
+  switch (ministry) {
+    case $Enums.Ministry.AG:
+    case $Enums.Ministry.EMBC:
+    case $Enums.Ministry.HOUS:
+    case $Enums.Ministry.MAH:
+    case $Enums.Ministry.PSSG:
       allianceLabel = 'JAG';
       break;
     default:
