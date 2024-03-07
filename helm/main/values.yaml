@@ -62,6 +62,9 @@ app:
     "PRIVATE_NATS_PORT": ""
     "PUBLIC_NATS_HOST": ""
     "PUBLIC_NATS_PORT": ""
+    "AWS_ROLES_BASE_URL": ""
+    "AWS_ROLES_IDENTITY_PROVIDER": ""
+    "AWS_ROLES_REALM_NAME": ""
 
 email:
   enabled: true
