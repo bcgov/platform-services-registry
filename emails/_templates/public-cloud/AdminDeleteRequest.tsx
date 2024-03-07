@@ -24,6 +24,7 @@ const AdminDeleteRequestTemplate = ({ product }: EmailProp) => {
     provider,
     accountCoding,
     budget,
+    licencePlate,
   } = product;
 
   return (
@@ -56,6 +57,7 @@ const AdminDeleteRequestTemplate = ({ product }: EmailProp) => {
                   po={projectOwner}
                   tl1={primaryTechnicalLead}
                   tl2={secondaryTechnicalLead}
+                  licencePlate={licencePlate}
                 />
               </div>
               <div>
