@@ -6,7 +6,13 @@ The development sandbox serves as an isolated environment for local development 
 
 1. To begin with, duplicate the `.env.example` file and name it either `.env` or `.env.local` to set the default local environment variable in your local environment.
 
-2. Create two directories to mount volumns for `mongodb` and `postgres`.
+2. Switch to localdev folder
+
+```bash
+cd localdev
+```
+
+3. Create two directories to mount volumns for `mongodb` and `postgres`.
 
 ```bash
 mkdir -p ./mnt/mongodb
@@ -15,17 +21,34 @@ mkdir -p ./mnt/postgres
 
 If you have data version conflict errors due to existing mount volumes, please delete the directories and recreate them.
 
-3. (For Mac M1 only) Set default platform of the docker commands:
+4. Set environment variable MACHINE_HOST_IP to your ip address using the command
 
-```bash
-export DOCKER_DEFAULT_PLATFORM=linux/amd64
-```
-
-4. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
+For WSL/Linux:
 
 ```bash
 export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
+```
+
+or
+For Mac M1/M2:
+
+```bash
+export MACHINE_HOST_IP=$(ipconfig getifaddr en0)
+```
+
+5. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
+
+For WSL/Linux:
+
+```bash
 docker-compose up --build [-d]
+```
+
+or
+For Mac M1/M2:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose-arm64 up --build [-d]
 ```
 
 You can add the `-d` flag to run the containers in daemon mode.

@@ -1,0 +1,22 @@
+FROM --platform=linux/arm64 ubuntu:22.04
+
+WORKDIR /opt/m365
+
+RUN apt-get update -q && \
+    apt-get install -y --no-install-recommends apt-utils && \
+    apt-get install -yqq \
+    wget \
+    unzip \
+    libicu-dev \
+    build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN wget --max-redirect=1 https://github.com/microsoft/dev-proxy/releases/download/v0.15.0/dev-proxy-osx-arm64-v0.15.0.zip && \
+    unzip dev-proxy-osx-arm64-v0.15.0.zip && \
+    chmod +x ./devproxy
+
+COPY responses.json .
+EXPOSE 8000
+
+CMD ["./devproxy"]
