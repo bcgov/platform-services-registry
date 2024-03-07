@@ -17,7 +17,7 @@ app:
     "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
     "PRIVATE_NATS_HOST": "pltsvc-mock-nats-client"
     "PRIVATE_NATS_PORT": "4222"
-    "PUBLIC_NATS_HOST": "pltsvc-mock-nats-clien"
+    "PUBLIC_NATS_HOST": "pltsvc-mock-nats-client"
     "PUBLIC_NATS_PORT": "4222"
 
   route:
