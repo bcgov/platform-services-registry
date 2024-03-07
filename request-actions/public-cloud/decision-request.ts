@@ -144,14 +144,16 @@ export default async function makeDecisionRequest(
                 },
               }
             : undefined,
-          expenseAuthority: {
-            connectOrCreate: {
-              where: {
-                email: formData.expenseAuthority.email,
-              },
-              create: formData.expenseAuthority,
-            },
-          },
+          expenseAuthority: formData.expenseAuthority // this check until expenseAuthority go live
+            ? {
+                connectOrCreate: {
+                  where: {
+                    email: formData.expenseAuthority.email,
+                  },
+                  create: formData.expenseAuthority,
+                },
+              }
+            : undefined,
         },
       },
     },
