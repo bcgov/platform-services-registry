@@ -12,7 +12,6 @@ export default function Chart({
   chartData,
   title,
   categories,
-  colors,
 }: {
   index: string;
   subtitle: string;
@@ -20,7 +19,6 @@ export default function Chart({
   chartData: any;
   title: string;
   categories: string[];
-  colors: string[];
 }) {
   return (
     <div className="flex flex-col items-end">
@@ -34,9 +32,28 @@ export default function Chart({
           data={chartData}
           index={index}
           categories={categories}
-          colors={colors}
+          colors={[
+            'cyan',
+            'blue',
+            'indigo',
+            'violet',
+            'fuchsia',
+            'rose',
+            'teal',
+            'lime',
+            'amber',
+            'zinc',
+            'yellow',
+            'sky',
+            'stone',
+            'orange',
+            'pink',
+          ]}
           valueFormatter={valueFormatter}
           yAxisWidth={40}
+          showXAxis
+          showGridLines
+          enableLegendSlider
         />
       </Card>
     </div>

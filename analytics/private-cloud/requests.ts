@@ -2,13 +2,13 @@ import { RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import _isEqual from 'lodash-es/isEqual';
 
-export type CombinedDataPoint = {
+interface CombinedDataPoint {
   date: string;
   'All requests': number;
   'Edit requests': number;
   'Create requests': number;
   'Delete requests': number;
-};
+}
 
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
