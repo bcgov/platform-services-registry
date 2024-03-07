@@ -14,6 +14,7 @@ export default function ProductDetails({
   po,
   tl1,
   tl2,
+  licencePlate,
 }: {
   name: string;
   description: string;
@@ -21,6 +22,7 @@ export default function ProductDetails({
   po: User;
   tl1: User;
   tl2?: User | null;
+  licencePlate?: string;
 }) {
   return (
     <div>
@@ -30,6 +32,12 @@ export default function ProductDetails({
         <Text className="mt-1 h-4">{name}</Text>
         <Text className="mb-2 font-semibold h-4">Product Description: </Text>
         <Text className="mt-1 h-4">{description}</Text>
+        {licencePlate && (
+          <div>
+            <Text className="mb-2 font-semibold h-4">License Plate: </Text>
+            <Text className="mt-0 mb-2 h-4">{licencePlate}</Text>
+          </div>
+        )}
         <Text className="mb-2 font-semibold h-4">Ministry: </Text>
         <Text className="mt-1 h-4">{ministry}</Text>
         <Text className="mb-2 font-semibold h-4">Product Owner: </Text>

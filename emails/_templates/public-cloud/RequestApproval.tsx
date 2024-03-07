@@ -25,6 +25,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
     provider,
     accountCoding,
     budget,
+    licencePlate,
   } = request.requestedProject;
 
   return (
@@ -41,8 +42,8 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                   Your requested change for the project set for {name} on the Public Cloud Landing Zone AWS is now
                   complete. If you have any more questions, reach out to the Public cloud team in the Rocket.Chat
                   channel{' '}
-                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
-                    #devops-operations
+                  <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/aws-tenant-requests`}>
+                    #aws-tenant-requests
                   </Link>
                   .
                 </Text>
@@ -61,6 +62,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                   po={projectOwner}
                   tl1={primaryTechnicalLead}
                   tl2={secondaryTechnicalLead}
+                  licencePlate={licencePlate}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

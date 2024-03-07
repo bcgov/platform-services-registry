@@ -23,6 +23,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
     provider,
     accountCoding,
     budget,
+    licencePlate,
   } = product;
 
   return (
@@ -61,6 +62,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   po={projectOwner}
                   tl1={primaryTechnicalLead}
                   tl2={secondaryTechnicalLead}
+                  licencePlate={licencePlate}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
