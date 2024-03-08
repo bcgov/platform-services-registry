@@ -1,20 +1,46 @@
-## [0.16.1](https://github.com/bcgov/platform-services-registry/compare/v0.16.0...v0.16.1) (2024-02-20)
+## [0.17.0](https://github.com/bcgov/platform-services-registry/compare/v0.16.0...v0.17.0) (2024-03-07)
 
 
 ### Features
 
+* **1733:** Comment model is now PrivateCloudComment ([eae6428](https://github.com/bcgov/platform-services-registry/commit/eae64281df2dfd2826277d41484cc5455712cc24))
+* **1733:** more meaningful name + formatting ([9b37f88](https://github.com/bcgov/platform-services-registry/commit/9b37f881b7809d7eda8435961a9992f952e8c177))
+* **2110:** add portfolio per ministry pie charts in public cloud ([2008ba7](https://github.com/bcgov/platform-services-registry/commit/2008ba7e8998748b42dc4c1d300e3df7d766b93b))
+* add approver in keycloak terraform ([3d67e59](https://github.com/bcgov/platform-services-registry/commit/3d67e5919ef2ccc66d4bc474288a5fe25adff427))
+* add check for ag ministries ([#2148](https://github.com/bcgov/platform-services-registry/issues/2148)) ([7ac3873](https://github.com/bcgov/platform-services-registry/commit/7ac3873a416123aa45eb7a6faa30d36c6ceb3610)), closes [#2154](https://github.com/bcgov/platform-services-registry/issues/2154)
+* add data migrations workflow ([9d77841](https://github.com/bcgov/platform-services-registry/commit/9d7784184fdcb0d643e47de687e184efc4bef9e4))
+* add expense authority for public cloud product ([#2192](https://github.com/bcgov/platform-services-registry/issues/2192)) ([fdb2a6c](https://github.com/bcgov/platform-services-registry/commit/fdb2a6cff92a3f51344b2238301adf75d9935758))
+* add housing ministry into AG alliance list ([896f552](https://github.com/bcgov/platform-services-registry/commit/896f55239cf33f2200831c42191f3f78c7e0f6db))
+* add knip and removed unused ([bbcd3f5](https://github.com/bcgov/platform-services-registry/commit/bbcd3f5aebf579f1587696c5c666d2fa76db9d50))
 * add mock-up provisioner in local env ([176887c](https://github.com/bcgov/platform-services-registry/commit/176887cd8f0ea1e4ed696bf98ad9ff1f3efe1740))
+* add request comment in public cloud ([a1a92b8](https://github.com/bcgov/platform-services-registry/commit/a1a92b8ff3db85ea15c5609d89710144e3e4feb7))
+* add top level roles in session ([efffb4b](https://github.com/bcgov/platform-services-registry/commit/efffb4ba4e93e6533fdd871ae00ff61a6884f22d))
 * clean up ms query data ([384dcd3](https://github.com/bcgov/platform-services-registry/commit/384dcd394c41551c8cac39add6c205a915f599fb))
+* comment model schema w/ reactions ([cadfcb9](https://github.com/bcgov/platform-services-registry/commit/cadfcb9b9e951632cec1c2c3ebd6028993731df0))
+* deploy mock nats server in dev environment ([33dcb28](https://github.com/bcgov/platform-services-registry/commit/33dcb2866ebf282aad8b86bd3e58dee357eee062))
 * display IDIR, UPN in user search ([640af7a](https://github.com/bcgov/platform-services-registry/commit/640af7a88c300a2437b0d8740627f002814a460b))
+* enhance analytics pages ([351284f](https://github.com/bcgov/platform-services-registry/commit/351284fe7ee140cf4365d62decdad4a6599239b2))
+* rename comment fields ([f262d56](https://github.com/bcgov/platform-services-registry/commit/f262d56675eb250144448334c30c4637776890aa))
+* rename public comment fields ([f39acc6](https://github.com/bcgov/platform-services-registry/commit/f39acc6aed869bcbd693e2d184abe3a74b81abb9))
+* separate private & public nats endpoints ([22b9ffb](https://github.com/bcgov/platform-services-registry/commit/22b9ffbc300e953b415fd98fe6535653dfc31fde))
+* sort products by updated dates ([1d0ef14](https://github.com/bcgov/platform-services-registry/commit/1d0ef1444357bfd8f30dc4d8f99cebaf54d0f212))
+* upsert users when users assinged for products ([873d05f](https://github.com/bcgov/platform-services-registry/commit/873d05fb3814d9475995a9199d528585aff5fb38))
 
 
 ### Bug Fixes
 
+* **1733:** fixed build error in seed ([14f9f0c](https://github.com/bcgov/platform-services-registry/commit/14f9f0c5bfc157165028a17678aa82fd2d38f5c6))
+* 2 comments are created per project ([fec97d8](https://github.com/bcgov/platform-services-registry/commit/fec97d84717f10edf7f2078d5bd1ed98729110a7))
 * **2003:** various small visual bugs ([84013fb](https://github.com/bcgov/platform-services-registry/commit/84013fb7c8863bad2742388d83c407ba0e5b4d13))
+* ensure delete provision falg the product as inactive ([e42b9a1](https://github.com/bcgov/platform-services-registry/commit/e42b9a1f47b2e0272edc068bb3ff793296320051))
+* resolve issue on showing deleted products ([9da0da7](https://github.com/bcgov/platform-services-registry/commit/9da0da77bb2574651f45ad1da828558a8acc0d24))
+* return modal + hosting tier info for users ([f552a8d](https://github.com/bcgov/platform-services-registry/commit/f552a8d36493dbbac0dced1fcf367b7037faa405))
 
 
 ### Docs
 
+* add email scenarios for private cloud ([2d78021](https://github.com/bcgov/platform-services-registry/commit/2d78021c4d39e70d6d9087f278064eabcc23ceba))
+* add email scenarios for public and private cloud ([15908ee](https://github.com/bcgov/platform-services-registry/commit/15908ee393d744a5dd5f657d783a1110b4eb7e1f))
 * add tab in the first paragraphs ([52c9656](https://github.com/bcgov/platform-services-registry/commit/52c9656f666013a3e878512744a00ac2f7e2e006))
 * update README.md ([8a5b0f6](https://github.com/bcgov/platform-services-registry/commit/8a5b0f6849b1939fd3bbaf8e56373733f421fa85))
 
