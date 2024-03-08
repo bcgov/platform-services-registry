@@ -9,10 +9,6 @@ ifndef NAMESPACE
 $(error NAMESPACE is not set)
 endif
 
-ifndef IMAGE_TAG
-$(error IMAGE_TAG is not set)
-endif
-
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set app.image.tag="${IMAGE_TAG}" \
@@ -21,19 +17,36 @@ define arguments
 	--set email.image.tag="${IMAGE_TAG}"
 endef
 
+define curr-image-tag
+	helm get values "${NAME}" | yq e '.app.image.tag'"
+endef
+
+.PHONY: check-image-tag
+check-image-tag:
+ifndef IMAGE_TAG
+	$(error IMAGE_TAG is not set)
+endif
+
 .PHONY: helm-dep
 helm-dep:
 	helm dependency update
 
 .PHONY: install
 install: helm-dep
+install: check-image-tag
 install:
 	@helm install $(call arguments)
 
 .PHONY: upgrade
 upgrade: helm-dep
+upgrade: check-image-tag
 upgrade:
 	@helm upgrade --install $(call arguments)
+
+.PHONY: upgrade-db
+upgrade-db: helm-dep
+upgrade-db:
+	@helm upgrade --reuse-values "${NAME}" . -n "${NAMESPACE}" --set app.migration.enabled=false
 
 .PHONY: lint
 lint: helm-dep
@@ -47,6 +60,7 @@ uninstall:
 
 .PHONY: template
 template: helm-dep
+template: check-image-tag
 template:
 	@helm template $(call arguments) > template.yaml
 
