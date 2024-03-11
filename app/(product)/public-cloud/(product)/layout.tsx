@@ -1,6 +1,5 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
 import { $Enums } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
@@ -10,10 +9,6 @@ import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/publ
 import { getPublicCloudActiveRequest } from '@/services/backend/public-cloud';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
   const params = useParams<{ licencePlate: string }>();
   const { licencePlate } = params;
 
@@ -34,16 +29,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       name: 'history',
       href: `/public-cloud/history/${licencePlate}`,
     },
-  ];
-
-  if (session?.previews.awsRoles) {
-    tabs.push({
+    {
       label: 'ROLES',
       name: 'aws-roles',
       href: `/public-cloud/aws-roles/${licencePlate}/admins`,
       ignoreSegments: 1,
-    });
-  }
+    },
+  ];
 
   return (
     <div>
