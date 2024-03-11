@@ -24,7 +24,6 @@ export default function Page() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     mutateAsync: createProject,
@@ -92,7 +91,7 @@ export default function Page() {
         open={openCreate}
         setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(handleSubmit)}
-        isLoading={isLoading}
+        isLoading={isCreatingProject}
       />
       <ReturnModal
         open={openReturn}

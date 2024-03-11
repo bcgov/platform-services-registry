@@ -89,7 +89,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   project.status = ProjectStatus.INACTIVE;
 
-  const { id, ...rest } = project;
+  const { id, updatedAt, ...rest } = project;
 
   const createRequest: PrivateCloudRequestWithRequestedProject = await prisma.privateCloudRequest.create({
     data: {
