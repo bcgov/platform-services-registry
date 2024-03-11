@@ -15,6 +15,7 @@ import { string, z } from 'zod';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import openshiftDeletionCheck from '@/helpers/openshift';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -128,7 +129,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     },
   });
 
-  sendDeleteRequestEmails(createRequest.requestedProject);
+  wrapAsync(() => sendDeleteRequestEmails(createRequest.requestedProject));
 
   return new Response('Success', { status: 200 });
 }

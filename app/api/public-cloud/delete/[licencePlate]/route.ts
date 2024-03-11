@@ -13,6 +13,7 @@ import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -120,8 +121,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     },
   });
 
-  sendDeleteRequestEmails(createRequest.requestedProject);
-  sendAdminDeleteRequestEmails(createRequest.requestedProject);
+  wrapAsync(() => {
+    sendDeleteRequestEmails(createRequest.requestedProject);
+    sendAdminDeleteRequestEmails(createRequest.requestedProject);
+  });
 
   return new Response('Success', { status: 200 });
 }

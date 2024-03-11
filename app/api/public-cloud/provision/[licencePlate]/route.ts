@@ -4,6 +4,7 @@ import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 import { sendProvisionedEmails } from '@/services/ches/public-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -80,7 +81,8 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
       },
     });
 
-    sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
+    wrapAsync(() => sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts));
+
     return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);

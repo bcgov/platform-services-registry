@@ -10,6 +10,7 @@ import makeDecisionRequest, {
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/private-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    sendRequestRejectionEmails(request.requestedProject, decisionComment);
+    wrapAsync(() => sendRequestRejectionEmails(request.requestedProject, decisionComment));
     return new NextResponse(`Request for ${request.licencePlate} successfully created as rejected.`, {
       status: 200,
     });
