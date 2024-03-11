@@ -3,6 +3,7 @@ import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } fr
 import createRequest from '@/request-actions/private-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import createApiHandler from '@/core/api-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const apiHandler = createApiHandler<any, any, PrivateCloudCreateRequestBody>({
   roles: ['user'],
@@ -23,7 +24,7 @@ export const POST = apiHandler(async ({ body, session }) => {
 
   const request = await createRequest(body, authEmail);
 
-  sendCreateRequestEmails(request);
+  wrapAsync(() => sendCreateRequestEmails(request));
 
   return new NextResponse('Success creating request', {
     status: 200,

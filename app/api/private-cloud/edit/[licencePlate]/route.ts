@@ -9,6 +9,7 @@ import editRequest from '@/request-actions/private-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { sendEditRequestEmails } from '@/services/ches/private-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const request = await editRequest(licencePlate, formData, authEmail);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendEditRequestEmails(request);
+    wrapAsync(() => sendEditRequestEmails(request));
     return new NextResponse(
       'Successfully edited project, admin approval will be required for this request to be provisioned ',
       { status: 200 },
@@ -102,7 +103,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  sendEditRequestEmails(request);
+  wrapAsync(() => sendEditRequestEmails(request));
 
   return new NextResponse('success', { status: 200 });
 }

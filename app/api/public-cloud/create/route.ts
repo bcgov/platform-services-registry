@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/options';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import createRequest from '@/request-actions/public-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 export async function POST(req: NextRequest) {
   // Authentication
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
   // Action
   const request = await createRequest(formData, authEmail);
 
-  sendCreateRequestEmails(request);
+  wrapAsync(() => sendCreateRequestEmails(request));
 
   return new NextResponse('Created successfuly', {
     status: 200,

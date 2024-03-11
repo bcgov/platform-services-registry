@@ -10,6 +10,7 @@ import makeDecisionRequest, {
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    sendRequestRejectionEmails(request.requestedProject, decisionComment);
+    wrapAsync(() => sendRequestRejectionEmails(request.requestedProject, decisionComment));
     return new Response(
       `Decision request for ${request.licencePlate} successfully created. Admin approval is required`,
       {
