@@ -23,6 +23,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
+    expenseAuthority,
     provider,
     accountCoding,
     budget,
@@ -58,6 +59,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   po={projectOwner}
                   tl1={primaryTechnicalLead}
                   tl2={secondaryTechnicalLead}
+                  expenseAuthority={expenseAuthority}
                   licencePlate={licencePlate}
                 />
               </div>

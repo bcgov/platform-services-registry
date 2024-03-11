@@ -20,6 +20,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
+    expenseAuthority,
     provider,
     accountCoding,
     budget,
@@ -62,6 +63,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   po={projectOwner}
                   tl1={primaryTechnicalLead}
                   tl2={secondaryTechnicalLead}
+                  expenseAuthority={expenseAuthority}
                   licencePlate={licencePlate}
                 />
               </div>

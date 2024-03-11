@@ -67,9 +67,11 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
                     poCurrent={current.projectOwner}
                     tl1Current={current.primaryTechnicalLead}
                     tl2Current={current?.secondaryTechnicalLead}
+                    expenseAuthorityCurrent={current?.expenseAuthority}
                     poRequested={requested.projectOwner}
                     tl1Requested={requested.primaryTechnicalLead}
                     tl2Requested={requested?.secondaryTechnicalLead}
+                    expenseAuthorityRequested={requested?.expenseAuthority}
                     requestedLabel="Updated"
                   />
                 </div>
