@@ -38,8 +38,9 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
         create: formData.primaryTechnicalLead,
       },
     },
-    expenseAuthority: formData.expenseAuthority // this check until expenseAuthority go live
-      ? {
+    expenseAuthority: formData.expenseAuthority
+      ? // this check until expenseAuthority field will be populated for every public cloud product
+        {
           connectOrCreate: {
             where: {
               email: formData.expenseAuthority.email,

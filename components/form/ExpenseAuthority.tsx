@@ -5,14 +5,6 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 
 export default function ExpenseAuthority({ disabled }: { disabled?: boolean }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
-  if (!session?.previews.expenseAuthority) {
-    return null;
-  }
-
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
