@@ -15,11 +15,11 @@ export default function ContactChanges({
   poCurrent: User;
   tl1Current: User;
   tl2Current: User | null;
-  expenseAuthorityCurrent: User | null;
+  expenseAuthorityCurrent?: User | null;
   poRequested: User;
   tl1Requested: User;
   tl2Requested: User | null;
-  expenseAuthorityRequested: User;
+  expenseAuthorityRequested?: User;
   requestedLabel?: string;
 }) {
   return (
