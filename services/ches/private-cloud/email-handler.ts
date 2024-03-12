@@ -3,7 +3,7 @@ import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
 } from '@/request-actions/private-cloud/decision-request';
-import { adminEmails } from '@/services/ches/email-constant';
+import { adminPrivateEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
@@ -24,7 +24,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
-      to: adminEmails,
+      to: adminPrivateEmails,
       subject: 'New provisioning request in registry waiting for your approval',
     });
 
@@ -53,7 +53,7 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
-      to: adminEmails,
+      to: adminPrivateEmails,
       subject: 'Edit request submitted',
     });
 

@@ -3,7 +3,7 @@ import {
   PublicCloudRequestWithProjectAndRequestedProject,
   PublicCloudRequestWithRequestedProject,
 } from '@/request-actions/public-cloud/decision-request';
-import { adminEmails } from '@/services/ches/email-constant';
+import { adminPublicEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
@@ -24,7 +24,7 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
-      to: adminEmails,
+      to: adminPublicEmails,
       subject: `New Provisioning request in Registry waiting for your approval`,
     });
 
@@ -51,7 +51,7 @@ export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequested
 
     await sendEmail({
       body: adminEmail,
-      to: adminEmails,
+      to: adminPublicEmails,
       subject: `${product.name} is marked for deletion`,
     });
   } catch (error) {
