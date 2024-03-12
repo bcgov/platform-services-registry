@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import deleteOp from './_operations/delete';
-import readOp from './_operations/read';
-import updateOp from './_operations/update';
+import deleteOp from '../_operations/delete';
+import readOp from '../_operations/read';
+import updateOp from '../_operations/update';
 
 export async function GET() {
   const data = await readOp();
