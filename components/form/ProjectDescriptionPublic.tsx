@@ -5,6 +5,11 @@ import { useFormContext } from 'react-hook-form';
 import { providers, ministriesNames } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 
+function stripSpecialCharacters(text: string) {
+  const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
+  return text.replace(pattern, '');
+}
+
 export default function ProjectDescriptionPublic({
   mode,
   disabled,
@@ -17,6 +22,8 @@ export default function ProjectDescriptionPublic({
   const {
     register,
     formState: { errors },
+    getValues,
+    setValue,
   } = useFormContext();
 
   return (
@@ -33,7 +40,6 @@ export default function ProjectDescriptionPublic({
           Cloud Accelerator Service team. Reach out to
           {
             <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:cloud.pathfinder@gov.bc.ca">
-              {' '}
               Cloud.Pathfinder@gov.bc.ca{' '}
             </a>
           }
@@ -57,11 +63,15 @@ export default function ProjectDescriptionPublic({
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
                   : '',
               )}
-              {...register('name')}
+              {...register('name', {
+                onChange: (e) => {
+                  setValue('name', stripSpecialCharacters(e.target.value));
+                },
+              })}
             />
           </div>
           <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-            Please provide a descriptive product name with no acronyms {errors.name?.message?.toString()}
+            Please provide a descriptive product name with no acronyms. (Only /. : + = @ _ special symbols are allowed)
           </p>
         </div>
 
@@ -113,7 +123,7 @@ export default function ProjectDescriptionPublic({
             </select>
 
             <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the government ministry that this product belongs to
+              Select the government ministry that this product belongs to.
             </p>
             {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
           </div>

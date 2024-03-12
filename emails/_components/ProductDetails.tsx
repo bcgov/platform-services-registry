@@ -26,7 +26,6 @@ export default function ProductDetails({
   expenseAuthority?: User | null;
   licencePlate?: string;
 }) {
-  console.log('expenseAuthority', expenseAuthority);
   return (
     <div>
       <Heading className="text-lg">Product Details</Heading>
