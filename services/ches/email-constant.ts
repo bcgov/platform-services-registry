@@ -1,7 +1,7 @@
 import { PRIVATE_ADMIN_EMAILS, PUBLIC_ADMIN_EMAILS } from '@/config';
 export { ministriesNames } from '@/constants';
 
-export const adminEmails = `${PRIVATE_ADMIN_EMAILS}`.split(',');
+export const adminPrivateEmails = `${PRIVATE_ADMIN_EMAILS}`.split(',');
 export const adminPublicEmails = `${PUBLIC_ADMIN_EMAILS}`.split(',');
 
 // const ministriesNamesUpdated = [
