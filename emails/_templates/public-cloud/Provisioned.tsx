@@ -46,13 +46,14 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   .
                 </Text>
                 <Text className="">
-                  The Product Owner and the Technical Lead(s) have been provisioned with admin access to the accounts
-                  below and can add other users as needed.
+                  The Product Owner and the Technical Lead(s) are granted access to the registry and can login to the
+                  registry now and manage users with product set roles.{' '}
                 </Text>
                 <Text className="">
                   Removing a Product Owner or Technical Lead(s) as project contacts in the Platform Product Registry
-                  will revoke their access to project set accounts in AWS. The newly added Product Owner Technical
-                  Lead(s) on the product details page will then gain administrative access to these accounts.
+                  will revoke their access to the Registry. The newly added Product Owner Technical Lead(s) on the
+                  product details page will then gain access to the registry and can manage access to the project set
+                  accounts in AWS.
                 </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
