@@ -102,7 +102,7 @@ export default function ContactChanges({
           ) : (
             <Text className="mb-1">No Current Expense Authority</Text>
           )}
-          <Text className="font-semibold mb-0">{requestedLabel}Expense Authority</Text>
+          <Text className="font-semibold mb-0">{requestedLabel} Expense Authority</Text>
           <Text className="mb-1 mt-2">
             {expenseAuthorityRequested?.firstName} {expenseAuthorityRequested?.lastName}
           </Text>
