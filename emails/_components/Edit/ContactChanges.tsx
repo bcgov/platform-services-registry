@@ -19,7 +19,7 @@ export default function ContactChanges({
   poRequested: User;
   tl1Requested: User;
   tl2Requested: User | null;
-  expenseAuthorityRequested: User | null;
+  expenseAuthorityRequested: User;
   requestedLabel?: string;
 }) {
   return (
