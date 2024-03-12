@@ -45,6 +45,7 @@ export default function NewRequestTemplate({ request }: EmailProp) {
                   po={request.requestedProject.projectOwner}
                   tl1={request.requestedProject.primaryTechnicalLead}
                   tl2={request.requestedProject.secondaryTechnicalLead}
+                  expenseAuthority={request.requestedProject.expenseAuthority}
                   licencePlate={request.requestedProject.licencePlate}
                 />
               </div>

@@ -230,7 +230,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
       idir: 'JBLACK',
     },
     expenseAuthority: {
-      id: 'c',
+      id: 'v',
       firstName: 'Sarah',
       lastName: 'Williams',
       email: 'sarah.williams@gov.bc.ca',

@@ -22,6 +22,7 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
+    expenseAuthority,
     provider,
     accountCoding,
     budget,
@@ -59,6 +60,7 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
                   po={projectOwner}
                   tl1={primaryTechnicalLead}
                   tl2={secondaryTechnicalLead}
+                  expenseAuthority={expenseAuthority}
                   licencePlate={licencePlate}
                 />
               </div>
