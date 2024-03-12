@@ -61,7 +61,10 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
                   />
                 </div>
               )}
-              {(changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
+              {(changed.projectOwnerId ||
+                changed.primaryTechnicalLeadId ||
+                changed.secondaryTechnicalLeadId ||
+                changed.expenseAuthorityId) && (
                 <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                   <ContactChanges
                     poCurrent={current.projectOwner}
