@@ -44,12 +44,10 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   const parsedBody = PrivateCloudDecisionRequestBodySchema.safeParse(body);
 
   if (!parsedParams.success) {
-    console.log(parsedParams.error.message);
     return new Response(parsedParams.error.message, { status: 400 });
   }
 
   if (!parsedBody.success) {
-    console.log(parsedBody.error.message);
     return new Response(parsedBody.error.message, { status: 400 });
   }
 
