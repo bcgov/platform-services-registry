@@ -31,11 +31,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       name: 'product',
       href: `/private-cloud/product/${licencePlate}`,
     },
-    {
-      label: 'HISTORY',
-      name: 'history',
-      href: `/private-cloud/history/${licencePlate}`,
-    },
   ];
 
   if (session?.previews.security) {
@@ -44,6 +39,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       name: 'security',
       href: `/private-cloud/security/${licencePlate}/repository`,
       ignoreSegments: 1,
+    });
+  }
+
+  if (session?.previews.history) {
+    tabs.push({
+      label: 'HISTORY',
+      name: 'history',
+      href: `/private-cloud/history/${licencePlate}`,
     });
   }
 

@@ -176,6 +176,7 @@ export const authOptions: AuthOptions = {
         awsRoles: !IS_PROD,
         security: !IS_PROD,
         expenseAuthority: !IS_PROD,
+        history: !IS_PROD,
       };
 
       session.permissions = {
