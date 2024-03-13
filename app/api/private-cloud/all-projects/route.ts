@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
       secondaryTechnicalLeadEmail: project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
       secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
       created: formatDate(project.created.$date),
-      updatedAt: formatDate(project.updatedAt.$date),
+      updatedAt: formatDate(project.updatedAt?.$date),
       licencePlate: project.licencePlate,
       status: project.status,
     }));
