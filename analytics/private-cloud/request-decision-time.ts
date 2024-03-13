@@ -1,18 +1,22 @@
 import prisma from '@/core/prisma';
 import _isEqual from 'lodash-es/isEqual';
 import { bin, extent } from 'd3-array';
+import { getProdClusterLicensePlates } from './common';
 
 function convertMillisecondsToHours(milliseconds: number): number {
   return milliseconds / 3600000; // 1000 milliseconds in a second and 3600 seconds in an hour
 }
 
 export async function requestDecisionTime() {
+  const prodClusterLicensePlates = await getProdClusterLicensePlates();
   const requests = await prisma.privateCloudRequest.findMany({
+    where: {
+      licencePlate: { in: prodClusterLicensePlates },
+    },
     select: {
       created: true,
       decisionDate: true,
     },
-
     orderBy: {
       created: 'asc',
     },

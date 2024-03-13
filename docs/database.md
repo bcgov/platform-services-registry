@@ -9,6 +9,17 @@ To facilitate the backup and restore processes, we utilize a container running M
 - The Kubernetes deployment template for the backup process can be found at [mongodb-backup.yaml](../helm/main/templates/mongodb-backup.yaml). This template orchestrates the deployment of the MongoDB tools container.
 - A notification mechanism has been set up to inform the designated RocketChat channel about the status of the backup operation.
 
+### Backup Steps
+
+The backup procedure is initiated at regular intervals according to the cron schedule set by the backup container. However, there are occasions when manual backup is required, such as before deploying to the production environment. To back up the database, follow these steps:
+
+```sh
+oc rsh <backup-pod-name>
+mongo-archive --db=pltsvc --read-preference=secondaryPreferred --force-table-scan --cron=false
+```
+
+Ensure that the new backup file is generated in the designated backup directory `/home/nonroot/backup`.
+
 ### Restore Steps
 
 To restore the database, follow these steps:
