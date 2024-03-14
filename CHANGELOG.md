@@ -1,3 +1,20 @@
+## [0.18.1](https://github.com/bcgov/platform-services-registry/compare/v0.18.0...v0.18.1) (2024-03-14)
+
+
+### Features
+
+* **analytics:** filter private cloud requests by prod productions ([1158948](https://github.com/bcgov/platform-services-registry/commit/11589481f1293b9c225bbc1d39e671380835be99))
+
+
+### Bug Fixes
+
+* add user aws roles issue, hide histroy tab from prod ([#2279](https://github.com/bcgov/platform-services-registry/issues/2279)) ([35c1caf](https://github.com/bcgov/platform-services-registry/commit/35c1cafa54752623b42baf9600697a1b4875c415))
+
+
+### Docs
+
+* update db backup steps ([c2ffe13](https://github.com/bcgov/platform-services-registry/commit/c2ffe1333cc203975e8cec90b30b9428c50ee784))
+
 ## [0.18.0](https://github.com/bcgov/platform-services-registry/compare/v0.17.0...v0.18.0) (2024-03-13)
 
 
