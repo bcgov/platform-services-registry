@@ -74,12 +74,9 @@ function TypeBadge({ status }: { status: string }) {
 
 export const privateCloudProjectDataToRow = (project: any) => {
   return {
-    id: project.id,
-    name: project.name,
-    ministry: project.ministry,
-    cluster: project.cluster,
-    requestDecisionStatus: project?.activeRequest ? project?.activeRequest[0]?.decisionStatus : null,
-    requestType: project?.activeRequest ? project?.activeRequest[0]?.type : null,
+    ...project,
+    requestDecisionStatus: project?.requests ? project?.requests[0]?.decisionStatus : null,
+    requestType: project?.requests ? project?.requests[0]?.type : null,
     projectOwner: {
       name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
       email: project.projectOwner.email,
@@ -94,12 +91,9 @@ export const privateCloudProjectDataToRow = (project: any) => {
           email: project.secondaryTechnicalLead.email,
         }
       : null,
-    created: formatDate(project.created.$date),
-    updatedAt: formatDate(project.updatedAt.$date),
-    requestCreated: formatDate(project?.activeRequest ? project?.activeRequest[0]?.created.$date : null),
-    // requestDecisionDate: formatDate(project?.activeRequest ? project?.activeRequest[0]?.decisionDate.$date : null),
-    licencePlate: project.licencePlate,
-    status: project.status,
+    created: formatDate(project.created),
+    updatedAt: formatDate(project.updatedAt),
+    requestCreated: formatDate(project?.requests ? project?.requests[0]?.created : null),
   };
 };
 

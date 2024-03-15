@@ -124,8 +124,13 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
+      session.isUser = false;
       session.isAdmin = false;
       session.isReader = false;
+      session.isPrivateAdmin = false;
+      session.isPrivateReader = false;
+      session.isPublicAdmin = false;
+      session.isPublicReader = false;
       session.isApprover = false;
       session.roles = [];
       session.ministries = {
@@ -144,6 +149,11 @@ export const authOptions: AuthOptions = {
         session.roles.push('user');
 
         session.roles.forEach((role) => {
+          if (role === 'user') {
+            session.isUser = true;
+            return;
+          }
+
           if (role === 'admin') {
             session.isAdmin = true;
             return;
@@ -151,6 +161,26 @@ export const authOptions: AuthOptions = {
 
           if (role === 'reader') {
             session.isReader = true;
+            return;
+          }
+
+          if (role === 'private-admin') {
+            session.isPrivateAdmin = true;
+            return;
+          }
+
+          if (role === 'private-reader') {
+            session.isPrivateReader = true;
+            return;
+          }
+
+          if (role === 'public-admin') {
+            session.isPublicAdmin = true;
+            return;
+          }
+
+          if (role === 'public-reader') {
+            session.isPublicReader = true;
             return;
           }
 
@@ -180,6 +210,20 @@ export const authOptions: AuthOptions = {
       };
 
       session.permissions = {
+        createPrivateCloudProducts: session.isUser,
+        viewAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin || session.isPrivateReader,
+        editAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
+        deleteAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
+        reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
+        createPublicCloudProducts: session.isUser,
+        viewAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin || session.isPublicReader,
+        editAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
+        deleteAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
+        reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
+        createProductComments: session.isAdmin,
+        viewAllProductComments: session.isAdmin,
+        editAllProductComments: session.isAdmin,
+        deleteAllProductComments: session.isAdmin,
         viewZapscanResults: session.isAdmin,
         viewSonarscanReulsts: session.isAdmin,
         viewAnalytics: session.isAdmin,

@@ -8,7 +8,7 @@ import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { requestDecisionTime } from '@/analytics/private-cloud/request-decision-time';
 import ExportCard from '@/components/analytics/ExportCard';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
 import { ministryDistributions } from '@/analytics/private-cloud/ministry-distributions';
 import PieGraph from '@/components/analytics/PieGraph';

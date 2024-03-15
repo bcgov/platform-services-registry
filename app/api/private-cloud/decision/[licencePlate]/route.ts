@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { Cluster, DecisionStatus, User } from '@prisma/client';
 import { string, z } from 'zod';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';

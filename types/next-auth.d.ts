@@ -11,8 +11,13 @@ declare module 'next-auth' {
       roles: string[];
     } & DefaultSession['user'];
     userId: string | null;
+    isUser: boolean;
     isAdmin: boolean;
     isReader: boolean;
+    isPrivateAdmin: boolean;
+    isPrivateReader: boolean;
+    isPublicAdmin: boolean;
+    isPublicReader: boolean;
     isApprover: boolean;
     roles: string[];
     ministries: {
@@ -21,6 +26,23 @@ declare module 'next-auth' {
       [key: string]: string[];
     };
     permissions: {
+      createPrivateCloudProducts: boolean;
+      viewAllPrivateCloudProducts: boolean;
+      editAllPrivateCloudProducts: boolean;
+      deleteAllPrivateCloudProducts: boolean;
+      reviewAllPrivateCloudRequests: boolean;
+
+      createPublicCloudProducts: boolean;
+      viewAllPublicCloudProducts: boolean;
+      editAllPublicCloudProducts: boolean;
+      deleteAllPublicCloudProducts: boolean;
+      reviewAllPublicCloudRequests: boolean;
+
+      createProductComments: boolean;
+      viewAllProductComments: boolean;
+      editAllProductComments: boolean;
+      deleteAllProductComments: boolean;
+
       viewZapscanResults: boolean;
       viewSonarscanReulsts: boolean;
       viewAnalytics: boolean;

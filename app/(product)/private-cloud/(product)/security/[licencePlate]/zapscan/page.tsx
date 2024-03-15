@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';

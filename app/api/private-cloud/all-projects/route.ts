@@ -5,7 +5,7 @@ import formatDate from '@/utils/date';
 import { formatFullName } from '@/helpers/user';
 import { z } from 'zod';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { userInfo } from '@/queries/user';
 import { CsvResponse } from '@/core/responses';
 

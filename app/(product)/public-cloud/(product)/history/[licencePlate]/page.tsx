@@ -3,7 +3,7 @@ import TableBody from '@/components/table/TableBodyRequests';
 import { publicCloudRequestsPaginated } from '@/queries/paginated/public-cloud';
 import { publicCloudRequestDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
 import { PublicCloudRequest } from '@prisma/client';
 import { userInfo } from '@/queries/user';

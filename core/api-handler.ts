@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { z } from 'zod';
 import { parseQueryString } from '@/utils/query-string';
 
