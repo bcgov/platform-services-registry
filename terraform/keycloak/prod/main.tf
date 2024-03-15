@@ -21,7 +21,8 @@ resource "keycloak_openid_client" "pltsvc" {
 
   access_type = "CONFIDENTIAL"
   valid_redirect_uris = [
-    "https://pltsvc.apps.silver.devops.gov.bc.ca/*"
+    "https://pltsvc.apps.silver.devops.gov.bc.ca/*",
+    "https://registry.developer.gov.bc.ca/*"
   ]
 
   authentication_flow_binding_overrides {
