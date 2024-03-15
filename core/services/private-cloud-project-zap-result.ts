@@ -5,7 +5,7 @@ import { ModelService } from '@/core/model-service';
 export class PrivateCloudProjectZapResultService extends ModelService<Prisma.PrivateCloudProjectZapResultWhereInput> {
   async readFilter() {
     if (!this.session) return false;
-    if (this.session.isAdmin) return true;
+    if (this.session.permissions.viewZapscanResults) return true;
 
     const res = await prisma.privateCloudProject.findMany({
       select: { cluster: true, licencePlate: true },
@@ -25,9 +25,11 @@ export class PrivateCloudProjectZapResultService extends ModelService<Prisma.Pri
     return false;
   }
 
-  async decorate(doc: any) {
+  async decorate<T>(doc: { _permissions: { view: boolean; edit: boolean; delete: boolean } } & T) {
     doc._permissions = {
       view: true,
+      edit: false,
+      delete: false,
     };
 
     return doc;

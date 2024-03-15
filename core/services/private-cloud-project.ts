@@ -1,10 +1,10 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma, $Enums } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 
 export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloudProjectWhereInput> {
   async readFilter() {
     if (!this.session) return false;
-    if (this.session.isAdmin) return true;
+    if (this.session.permissions.viewAllPrivateCloudProducts) return true;
 
     const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
       OR: [
@@ -20,17 +20,36 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
   }
 
   async writeFilter() {
-    let baseFilter!: Prisma.PrivateCloudProjectWhereInput;
-    if (!this.session?.isAdmin) {
-      return false;
-    }
+    if (!this.session) return false;
+    if (this.session.permissions.editAllPrivateCloudProducts) return true;
+
+    const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
+      OR: [
+        { projectOwnerId: this.session.userId as string },
+        { primaryTechnicalLeadId: this.session.userId as string },
+        { secondaryTechnicalLeadId: this.session.userId },
+        { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
+      ],
+    };
 
     return baseFilter;
   }
 
-  async decorate(doc: any) {
+  async decorate<T>(
+    doc: { _permissions: { view: boolean; edit: boolean; delete: boolean; review: boolean } } & T & Record<string, any>,
+  ) {
+    const canEdit =
+      this.session.permissions.editAllPrivateCloudProducts ||
+      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
+      this.session.ministries.admin.includes(doc.ministry);
+
+    const canView = canEdit || this.session.ministries.readonly.includes(doc.ministry);
+
     doc._permissions = {
-      view: true,
+      view: canView,
+      edit: canEdit,
+      delete: canEdit,
+      review: this.session.permissions.reviewAllPrivateCloudRequests,
     };
 
     return doc;

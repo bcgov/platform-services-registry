@@ -1,19 +1,20 @@
 import Table from '@/components/table/Table';
 import NewTableBody from '@/components/table/TableBodyProducts';
-import { privateCloudRequestsPaginated } from '@/queries/paginated/private-cloud';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
-import { userInfo } from '@/queries/user';
+import { parsePaginationParams } from '@/helpers/pagination';
+import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
+import prisma from '@/core/prisma';
 
 export default async function ProductsTable({
   searchParams,
 }: {
   searchParams: {
     search: string;
-    page: number;
-    pageSize: number;
+    page: string;
+    pageSize: string;
     ministry: string;
     cluster: string;
   };
@@ -25,44 +26,37 @@ export default async function ProductsTable({
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
-  const { search, page, pageSize, ministry, cluster } = searchParams;
-  const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
+  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster } = searchParams;
 
-  // If a page is not provided, default to 1
-  const currentPage = typeof searchParams.page === 'string' ? +page : 1;
-  const defaultPageSize = 10;
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
-  const effectivePageSize = +pageSize || defaultPageSize;
+  const activeRequests = await prisma.privateCloudRequest.findMany({
+    where: { active: true },
+    select: { licencePlate: true },
+    session: session as never,
+  });
 
-  const { data: requestsData, total: requestsTotal } = await privateCloudRequestsPaginated(
-    effectivePageSize,
-    currentPage,
-    search,
+  const { docs, totalCount } = await searchPrivateCloudProducts({
+    session,
+    skip,
+    take,
     ministry,
     cluster,
-    userEmail,
-    ministryRoles,
-    true,
-  );
+    active: true,
+    search,
+    extraFilter: { licencePlate: { in: activeRequests.map((req) => req.licencePlate) } },
+  });
 
-  const transformActiveRequests = requestsData.map((request) => ({
-    ...request.userRequestedProject,
-    created: request.created,
-    updatedAt: request.updatedAt,
-    activeRequest: [request],
-    id: request.id,
-  }));
-
-  const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
+  const projects = docs.map(privateCloudProjectDataToRow);
 
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="Products with pending requests currently under admin review."
-      tableBody={<NewTableBody rows={activeRequests} />}
-      total={requestsTotal}
-      currentPage={currentPage}
-      pageSize={effectivePageSize}
+      tableBody={<NewTableBody rows={projects} />}
+      total={totalCount}
+      currentPage={page}
+      pageSize={take}
       apiContext="private-cloud"
     />
   );

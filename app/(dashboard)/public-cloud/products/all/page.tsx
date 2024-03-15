@@ -4,7 +4,7 @@ import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
 import { PublicProject } from '@/queries/types';
 import { publicCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
 import { userInfo } from '@/queries/user';
 

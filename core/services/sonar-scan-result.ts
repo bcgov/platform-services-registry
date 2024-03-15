@@ -5,7 +5,7 @@ import { ModelService } from '@/core/model-service';
 export class SonarScanResultService extends ModelService<Prisma.SonarScanResultWhereInput> {
   async readFilter() {
     if (!this.session) return false;
-    if (this.session.isAdmin) return true;
+    if (this.session.permissions.viewSonarscanReulsts) return true;
 
     const [privateRes, publicRes] = await Promise.all([
       prisma.privateCloudProject.findMany({
@@ -36,9 +36,13 @@ export class SonarScanResultService extends ModelService<Prisma.SonarScanResultW
     return false;
   }
 
-  async decorate(doc: any) {
+  async decorate<T>(
+    doc: { _permissions: { view: boolean; edit: boolean; delete: boolean } } & T & Record<string, any>,
+  ) {
     doc._permissions = {
       view: true,
+      edit: false,
+      delete: false,
     };
 
     return doc;
