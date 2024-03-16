@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
+import { $Enums, DecisionStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';

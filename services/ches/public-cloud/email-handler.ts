@@ -15,6 +15,7 @@ import EditSummaryTemplate from '@/emails/_templates/public-cloud/EditSummary';
 import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
+import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
 
 export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject) => {
   try {
@@ -148,7 +149,6 @@ export const sendDeleteRequestApprovalEmails = async (product: PublicCloudReques
 export const sendProvisionedEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
   try {
     const email = render(ProvisionedTemplate({ product }), { pretty: false });
-
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
@@ -156,5 +156,18 @@ export const sendProvisionedEmails = async (product: PublicCloudRequestedProject
     });
   } catch (error) {
     console.error('ERROR SENDING NEW PROVISIONED EMAIL', error);
+  }
+};
+
+export const sendExpenseAuthorityEmail = async (product: PublicCloudRequestedProjectWithContacts) => {
+  try {
+    const expenseAuthorityEmail = render(ExpenseAuthorityTemplate({ product }), { pretty: false });
+    await sendEmail({
+      body: expenseAuthorityEmail,
+      to: [product.expenseAuthority?.email].filter(Boolean),
+      subject: 'Expense Authority',
+    });
+  } catch (error) {
+    console.error('ERROR SENDING EXPENSE AUTHORITY EMAIL', error);
   }
 };

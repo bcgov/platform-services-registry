@@ -8,7 +8,7 @@ import { string, z } from 'zod';
 import editRequest from '@/request-actions/public-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
-import { sendEditRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendEditRequestEmails, sendExpenseAuthorityEmail } from '@/services/ches/public-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
@@ -78,6 +78,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
     subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
     sendEditRequestEmails(request);
+    if (request.requestedProject.expenseAuthorityId !== request.project?.expenseAuthorityId) {
+      sendExpenseAuthorityEmail(request.requestedProject);
+    }
   });
 
   return new NextResponse('Successfully created and provisioned edit request ', { status: 200 });
