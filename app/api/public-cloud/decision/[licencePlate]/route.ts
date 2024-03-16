@@ -9,7 +9,7 @@ import makeDecisionRequest, {
 } from '@/request-actions/public-cloud/decision-request';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
-import { sendRequestApprovalEmails, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
@@ -78,6 +78,12 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
         status: 200,
       },
     );
+  }
+  if (
+    request.decisionStatus === DecisionStatus.APPROVED &&
+    request.project?.expenseAuthorityId !== request.requestedProject.expenseAuthorityId
+  ) {
+    wrapAsync(() => sendExpenseAuthorityEmail(request.requestedProject));
   }
 
   await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
