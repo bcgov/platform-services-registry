@@ -3,15 +3,11 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { listUsersByEmail } from '@/services/msgraph';
 
-interface QueryParam {
-  email: string;
-}
-
 const queryParamSchema = z.object({
   email: z.string(),
 });
 
-const apiHandler = createApiHandler<undefined, QueryParam>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { queryParams: queryParamSchema },
 });

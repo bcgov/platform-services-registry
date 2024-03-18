@@ -2,20 +2,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 
-interface PathParam {
-  color: string;
-}
-
-interface QueryParam {
-  city: string;
-  animals: string[];
-}
-
-interface Body {
-  name: string;
-  age: number;
-}
-
 const pathParamSchema = z.object({
   color: z.string(),
 });
@@ -30,7 +16,7 @@ const bodySchema = z.object({
   age: z.number(),
 });
 
-const apiHandler = createApiHandler<PathParam, QueryParam, Body>({
+const apiHandler = createApiHandler({
   roles: ['admin'],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema, body: bodySchema },
 });

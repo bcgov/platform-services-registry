@@ -116,6 +116,9 @@ describe('Create Private Cloud Request Route', () => {
         email: 'oamar.kanji@gov.bc.ca',
       },
       roles: ['user', 'admin'],
+      permissions: {
+        reviewAllPrivateCloudRequests: true,
+      },
       isAdmin: true,
     });
 
@@ -192,12 +195,6 @@ describe('Create Private Cloud Request Route', () => {
   // });
 
   test('should return 200 if provision is successful', async () => {
-    // mockedGetServerSession.mockResolvedValue({
-    //   user: {
-    //     email: "oamar.kanji@gov.bc.ca",
-    //     roles: ["admin"],
-    //   },
-    // });
     const req = new NextRequest(API_URL, {
       method: 'PUT',
     });

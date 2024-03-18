@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Tabs tabs={tabs}>
-        <PublicCloudProductOptions disabled={!currentProject?._permissions.delete} />
+        <PublicCloudProductOptions disabled={!currentProject?._permissions?.delete} />
       </Tabs>
       <div className="mt-14"> {children}</div>
     </div>

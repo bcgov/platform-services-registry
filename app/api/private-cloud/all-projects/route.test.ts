@@ -17,6 +17,7 @@ import {
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import { findMockUserByIDIR } from '@/helpers/mock-users';
+import { PermissionsEnum } from '@/types/permissions';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
@@ -239,6 +240,9 @@ describe('CSV Download Route', () => {
     mockedGetServerSession.mockResolvedValue({
       user: { email: 'user@example.com' },
       roles: ['user', 'admin'],
+      permissions: {
+        [PermissionsEnum.ViewAllPrivateCloudProducts]: true,
+      },
       isAdmin: true,
     });
 
