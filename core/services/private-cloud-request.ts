@@ -1,12 +1,21 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
-import { PrivateCloudProjectService } from './private-cloud-project';
+import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+
+type PrivateCloudRequest = Prisma.PrivateCloudRequestGetPayload<{
+  select: {
+    type: true;
+    decisionStatus: true;
+    createdByEmail: true;
+    licencePlate: true;
+  };
+}>;
 
 export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloudRequestWhereInput> {
   async readFilter() {
-    if (!this.session) return false;
-    if (this.session.permissions.viewAllPrivateCloudProducts) return true;
+    if (!this.session?.userId) return false;
+    if (this.session.permissions.reviewAllPrivateCloudRequests) return true;
 
     const res = await prisma.privateCloudProject.findMany({
       select: { licencePlate: true },
@@ -16,49 +25,47 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
     const licencePlates = res.map(({ licencePlate }) => licencePlate);
 
     const baseFilter: Prisma.PrivateCloudRequestWhereInput = {
-      licencePlate: { in: licencePlates },
+      OR: [
+        { licencePlate: { in: licencePlates } },
+        { type: $Enums.RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
+      ],
     };
 
     return baseFilter;
   }
 
   async writeFilter() {
-    if (!this.session) return false;
-    if (this.session.permissions.editAllPrivateCloudProducts) return true;
-
-    const privateCloudProjectService = new PrivateCloudProjectService(this.session);
-    const writeFilter = await privateCloudProjectService.writeFilter();
-    if (writeFilter) return true;
-    if (!writeFilter) return false;
-
-    const res = await prisma.privateCloudProject.findMany({
-      where: writeFilter,
-      select: { licencePlate: true },
-    });
-
-    const licencePlates = res.map(({ licencePlate }) => licencePlate);
-
-    const baseFilter: Prisma.PrivateCloudRequestWhereInput = {
-      licencePlate: { in: licencePlates },
-    };
-
-    return baseFilter;
+    if (this.session.permissions.reviewAllPrivateCloudRequests) return true;
+    return false;
   }
 
-  async decorate<T>(
-    doc: { _permissions: { view: boolean; edit: boolean; delete: boolean } } & T & Record<string, any>,
-  ) {
+  async decorate<T>(doc: T & PrivateCloudRequest & PrivateCloudRequestDecorate) {
+    const canReview =
+      doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPrivateCloudRequests;
+
+    if (doc.type === $Enums.RequestType.CREATE) {
+      doc._permissions = {
+        view: this.session.permissions.viewAllPrivateCloudProducts || doc.createdByEmail === this.session.user.email,
+        edit: canReview,
+        review: canReview,
+        delete: false,
+      };
+
+      return doc;
+    }
+
     const res = await prisma.privateCloudProject.findFirst({
-      where: { licencePlate: doc.license },
+      where: { licencePlate: doc.licencePlate },
       select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, ministry: true },
       session: this.session as never,
     });
 
-    const docWithPermissions = res as typeof res & { _permissions: { view: boolean; edit: boolean; delete: boolean } };
+    const docWithPermissions = res as typeof res & PrivateCloudProjectDecorate;
 
     doc._permissions = {
       view: docWithPermissions._permissions.view,
-      edit: docWithPermissions._permissions.edit,
+      edit: canReview,
+      review: canReview,
       delete: false,
     };
 

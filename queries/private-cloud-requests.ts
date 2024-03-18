@@ -3,32 +3,31 @@ import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
 import { getMatchingUserIds } from './users';
 
-export async function searchPrivateCloudProducts({
+export async function searchActivePrivateCloudRequests({
   session,
   skip,
   take,
   ministry,
   cluster,
-  active,
   search,
-  extraFilter,
 }: {
   session: Session;
   skip: number;
   take: number;
-  active: boolean;
   ministry?: string;
   cluster?: string;
   search?: string;
-  extraFilter?: Prisma.PrivateCloudProjectWhereInput;
 }) {
-  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+  const requestedProjectwhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudProject'> = { contains: search, mode: 'insensitive' };
+    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudRequestedProject'> = {
+      contains: search,
+      mode: 'insensitive',
+    };
 
-    where.OR = [
+    requestedProjectwhere.OR = [
       { projectOwnerId: { in: matchingUserIds } },
       { primaryTechnicalLeadId: { in: matchingUserIds } },
       { secondaryTechnicalLeadId: { in: matchingUserIds } },
@@ -39,29 +38,37 @@ export async function searchPrivateCloudProducts({
   }
 
   if (ministry) {
-    where.ministry = ministry as $Enums.Ministry;
+    requestedProjectwhere.ministry = ministry as $Enums.Ministry;
   }
 
   if (cluster) {
-    where.cluster = cluster as $Enums.Cluster;
+    requestedProjectwhere.cluster = cluster as $Enums.Cluster;
   }
 
-  if (active) {
-    where.status = $Enums.ProjectStatus.ACTIVE;
+  const matchingRequestedPrivateProjects = await prisma.privateCloudRequestedProject.findMany({
+    where: requestedProjectwhere,
+    select: { id: true },
+  });
+
+  const where: Prisma.PrivateCloudRequestWhereInput = {
+    active: true,
+  };
+
+  if (matchingRequestedPrivateProjects.length > 0) {
+    where.userRequestedProjectId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
   }
 
   const [docs, totalCount] = await Promise.all([
-    prisma.privateCloudProject.findMany({
+    prisma.privateCloudRequest.findMany({
       where,
       skip,
       take,
       include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-        requests: {
-          where: {
-            active: true,
+        userRequestedProject: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
           },
         },
       },
@@ -72,7 +79,7 @@ export async function searchPrivateCloudProducts({
       ],
       session: session as never,
     }),
-    prisma.privateCloudProject.count({
+    prisma.privateCloudRequest.count({
       where,
       session: session as never,
     }),

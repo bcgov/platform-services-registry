@@ -11,6 +11,7 @@ declare module 'next-auth' {
       roles: string[];
     } & DefaultSession['user'];
     userId: string | null;
+    userEmail: string | null;
     isUser: boolean;
     isAdmin: boolean;
     isReader: boolean;

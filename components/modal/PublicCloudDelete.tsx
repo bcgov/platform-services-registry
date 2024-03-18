@@ -5,25 +5,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import classNames from '@/utils/classnames';
-
-async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
-  const res = await fetch(`/api/public-cloud/project/${licencePlate}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch project');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  // Secondaty technical lead should only be included if it exists
-  if (data.secondaryTechnicalLead === null) {
-    delete data.secondaryTechnicalLead;
-  }
-
-  return data;
-}
+import { getPublicCloudProject } from '@/services/backend/public-cloud';
 
 export default function Modal({
   open,
@@ -44,7 +27,7 @@ export default function Modal({
 
   const { data: projectData } = useQuery({
     queryKey: ['project', params.licencePlate],
-    queryFn: () => fetchProject(params.licencePlate as string),
+    queryFn: () => getPublicCloudProject(params.licencePlate as string),
     enabled: !!params.licencePlate && open,
   });
 

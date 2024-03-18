@@ -5,8 +5,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
-import prisma from '@/core/prisma';
+import { searchActivePrivateCloudRequests } from '@/queries/private-cloud-requests';
 
 export default async function ProductsTable({
   searchParams,
@@ -19,7 +18,6 @@ export default async function ProductsTable({
     cluster: string;
   };
 }) {
-  // Authenticate the user
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -30,30 +28,30 @@ export default async function ProductsTable({
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
-  const activeRequests = await prisma.privateCloudRequest.findMany({
-    where: { active: true },
-    select: { licencePlate: true },
-    session: session as never,
-  });
-
-  const { docs, totalCount } = await searchPrivateCloudProducts({
+  const { docs, totalCount } = await searchActivePrivateCloudRequests({
     session,
     skip,
     take,
     ministry,
     cluster,
-    active: true,
     search,
-    extraFilter: { licencePlate: { in: activeRequests.map((req) => req.licencePlate) } },
   });
 
-  const projects = docs.map(privateCloudProjectDataToRow);
+  const transformActiveRequests = docs.map((request) => ({
+    ...request.userRequestedProject,
+    created: request.created,
+    updatedAt: request.updatedAt,
+    requests: [request],
+    id: request.id,
+  }));
+
+  const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
 
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="Products with pending requests currently under admin review."
-      tableBody={<NewTableBody rows={projects} />}
+      tableBody={<NewTableBody rows={activeRequests} />}
       total={totalCount}
       currentPage={page}
       pageSize={take}

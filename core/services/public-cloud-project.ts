@@ -1,5 +1,18 @@
 import { Prisma, $Enums } from '@prisma/client';
+import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
+
+type PublicCloudProject = Prisma.PublicCloudProjectGetPayload<{
+  select: {
+    id: true;
+    projectOwnerId: true;
+    primaryTechnicalLeadId: true;
+    secondaryTechnicalLeadId: true;
+    ministry: true;
+    requests: true;
+  };
+}>;
 
 export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudProjectWhereInput> {
   async readFilter() {
@@ -35,21 +48,29 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     return baseFilter;
   }
 
-  async decorate<T>(
-    doc: { _permissions: { view: boolean; edit: boolean; delete: boolean; review: boolean } } & T & Record<string, any>,
-  ) {
+  async decorate<T>(doc: T & PublicCloudProject & PublicCloudProjectDecorate) {
+    let hasActiveRequest = false;
+    if (doc.requests) {
+      hasActiveRequest = doc.requests.some((req) => req.active);
+    } else {
+      const requestCount = await prisma.privateCloudRequest.count({ where: { projectId: doc.id } });
+      hasActiveRequest = requestCount > 0;
+    }
+
     const canEdit =
       this.session.permissions.editAllPublicCloudProducts ||
       [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
       this.session.ministries.admin.includes(doc.ministry);
 
-    const canView = canEdit || this.session.ministries.readonly.includes(doc.ministry);
+    const canView =
+      this.session.permissions.viewAllPublicCloudProducts ||
+      canEdit ||
+      this.session.ministries.readonly.includes(doc.ministry);
 
     doc._permissions = {
       view: canView,
-      edit: canEdit,
-      delete: canEdit,
-      review: this.session.permissions.reviewAllPublicCloudRequests,
+      edit: canEdit && !hasActiveRequest,
+      delete: canEdit && !hasActiveRequest,
     };
 
     return doc;
