@@ -1,12 +1,11 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
-import { publicCloudProjectsPaginated } from '@/queries/paginated/public-cloud';
-import { PublicProject } from '@/queries/types';
 import { publicCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
-import { userInfo } from '@/queries/user';
+import { parsePaginationParams } from '@/helpers/pagination';
+import { searchPublicCloudProducts } from '@/queries/public-cloud-products';
 
 export default async function ProductsTable({
   searchParams,
@@ -20,43 +19,36 @@ export default async function ProductsTable({
     active: string;
   };
 }) {
-  // Authenticate the user
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products');
+    redirect('/login?callbackUrl=/public-cloud/products');
   }
 
-  const { search, page, pageSize, ministry, provider, active } = searchParams;
-  const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
+  const { search, page: pageStr, pageSize: pageSizeStr, ministry, provider, active } = searchParams;
 
-  // If a page is not provided, default to 1
-  const currentPage = typeof searchParams.page === 'string' ? +page : 1;
-  const defaultPageSize = 10;
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
-  const effectivePageSize = +pageSize || defaultPageSize;
-
-  const { data, total }: { data: PublicProject[]; total: number } = await publicCloudProjectsPaginated(
-    effectivePageSize,
-    (currentPage - 1) * effectivePageSize,
-    search,
+  const { docs, totalCount } = await searchPublicCloudProducts({
+    session,
+    skip,
+    take,
     ministry,
     provider,
-    userEmail,
-    ministryRoles,
-    active !== 'false',
-  );
+    active: active !== 'false',
+    search,
+  });
 
-  const rows = data.map(publicCloudProjectDataToRow);
+  const projects = docs.map(publicCloudProjectDataToRow);
 
   return (
     <Table
       title="Products in Public Cloud Landing Zones"
       description="These are your products using the Public Cloud Landing Zones"
-      tableBody={<TableBody rows={rows} />}
-      total={total}
-      currentPage={currentPage}
-      pageSize={effectivePageSize}
+      tableBody={<TableBody rows={projects} />}
+      total={totalCount}
+      currentPage={page}
+      pageSize={take}
       showDownloadButton
       apiContext="public-cloud"
     />

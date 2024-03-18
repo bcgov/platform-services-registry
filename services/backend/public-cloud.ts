@@ -1,4 +1,7 @@
 import { instance } from './axios';
+import { PublicCloudActiveRequestGetPayload } from '@/app/api/public-cloud/active-request/[licencePlate]/route';
+import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/project/[licencePlate]/route';
+import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
 
 export async function getPublicCloudProject(licencePlate: string) {
   const result = await instance.get(`public-cloud/project/${licencePlate}`).then((res) => {
@@ -10,7 +13,7 @@ export async function getPublicCloudProject(licencePlate: string) {
     return res.data;
   });
 
-  return result;
+  return result as PublicCloudProjectGetPayload & PublicCloudProjectDecorate;
 }
 export async function editPublicCloudProject(licencePlate: string, data: any) {
   const result = await instance.post(`public-cloud/edit/${licencePlate}`, data).then((res) => res.data);
@@ -24,7 +27,7 @@ export async function createPublicCloudProject(data: any) {
 
 export async function getPublicCloudActiveRequest(licencePlate: string) {
   const result = await instance.get(`public-cloud/active-request/${licencePlate}`).then((res) => res.data);
-  return result;
+  return result as PublicCloudActiveRequestGetPayload & PublicCloudRequestDecorate;
 }
 
 export async function getPublicCloudRequest(licencePlate: string) {

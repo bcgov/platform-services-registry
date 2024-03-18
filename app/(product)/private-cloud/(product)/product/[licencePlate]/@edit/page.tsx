@@ -13,7 +13,6 @@ import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import { PrivateCloudRequestWithCurrentAndRequestedProject } from '@/app/api/private-cloud/request/[id]/route';
 import CommonComponents from '@/components/form/CommonComponents';
 import { PrivateCloudProject } from '@prisma/client';
@@ -36,18 +35,9 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
-  const { data: project, isSuccess } = useQuery<PrivateCloudProjectWithUsers, Error>({
-    queryKey: ['project', params.licencePlate],
+  const { data: currentProject, isSuccess } = useQuery({
+    queryKey: ['currentProject', params.licencePlate],
     queryFn: () => getPriviateCloudProject(params.licencePlate),
-    enabled: !!params.licencePlate,
-  });
-
-  const { data: activeRequest, isError: isActiveRequestError } = useQuery<
-    PrivateCloudRequestWithCurrentAndRequestedProject,
-    Error
-  >({
-    queryKey: ['request', params.licencePlate],
-    queryFn: () => getPriviateCloudActiveRequest(params.licencePlate),
     enabled: !!params.licencePlate,
   });
 
@@ -63,10 +53,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
       setOpenReturn(true);
     },
   });
-
-  useEffect(() => {
-    setDisabled(isActiveRequestError);
-  }, [isActiveRequestError]);
 
   // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
   // in an error.
@@ -95,22 +81,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { formState } = methods;
 
   useEffect(() => {
-    if (activeRequest) {
-      setDisabled(true);
-    }
-  }, [activeRequest]);
+    if (!currentProject) return;
 
-  useEffect(() => {
-    if (project?.secondaryTechnicalLead) {
+    if (currentProject.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [project]);
 
-  useEffect(() => {
-    if (project?.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
-  }, [project]);
+    setDisabled(!currentProject?._permissions.edit);
+  }, [currentProject]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -143,9 +121,9 @@ export default function EditProject({ params }: { params: { licencePlate: string
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Quotas
-              licensePlate={project?.licencePlate as string}
+              licensePlate={currentProject?.licencePlate as string}
               disabled={isDisabled}
-              currentProject={project as PrivateCloudProject}
+              currentProject={currentProject as PrivateCloudProject}
             />
             <CommonComponents disabled={isDisabled} />
           </div>

@@ -45,6 +45,8 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
     }
   };
 
+  if (disabled) return null;
+
   return (
     <>
       <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />

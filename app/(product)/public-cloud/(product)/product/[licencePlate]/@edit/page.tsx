@@ -10,15 +10,12 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import { PublicCloudProjectWithUsers } from '@/app/api/public-cloud/project/[licencePlate]/route';
-import { PublicCloudRequestWithCurrentAndRequestedProject } from '@/app/api/public-cloud/request/[id]/route';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import { AGMinistries } from '@/constants';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
-
 import {
   getPublicCloudProject,
   getPublicCloudActiveRequest,
@@ -32,18 +29,9 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
   const [openComment, setOpenComment] = useState(false);
 
-  const { data: project } = useQuery<PublicCloudProjectWithUsers, Error>({
-    queryKey: ['project', params.licencePlate],
+  const { data: currentProject } = useQuery({
+    queryKey: ['currentProject', params.licencePlate],
     queryFn: () => getPublicCloudProject(params.licencePlate),
-    enabled: !!params.licencePlate,
-  });
-
-  const { data: activeRequest, isError: isActiveRequestError } = useQuery<
-    PublicCloudRequestWithCurrentAndRequestedProject,
-    Error
-  >({
-    queryKey: ['request', params.licencePlate],
-    queryFn: () => getPublicCloudActiveRequest(params.licencePlate),
     enabled: !!params.licencePlate,
   });
 
@@ -59,10 +47,6 @@ export default function EditProject({ params }: { params: { licencePlate: string
       setOpenReturn(true);
     },
   });
-
-  useEffect(() => {
-    setDisabled(isActiveRequestError);
-  }, [isActiveRequestError]);
 
   const methods = useForm({
     resolver: zodResolver(
@@ -89,14 +73,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { formState } = methods;
 
   useEffect(() => {
-    if (activeRequest) {
-      setDisabled(true);
-    }
-  }, [activeRequest]);
+    if (!currentProject) return;
 
-  const handleOpenModal = () => {
-    setOpenComment(true);
-  };
+    if (currentProject.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+
+    setDisabled(!currentProject?._permissions.edit);
+  }, [currentProject]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -106,22 +90,16 @@ export default function EditProject({ params }: { params: { licencePlate: string
     }
   };
 
-  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
-
-  useEffect(() => {
-    if (project?.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
-  }, [project]);
-
   const setComment = (requestComment: string) => {
     editProject({ ...methods.getValues(), requestComment });
   };
 
+  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
+
   return (
     <div>
       <FormProvider {...methods}>
-        <form autoComplete="off" onSubmit={methods.handleSubmit(handleOpenModal)}>
+        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} mode="edit" />
             <TeamContacts
@@ -131,7 +109,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             />
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
-            <AccountCoding accountCodingInitial={project?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={currentProject?.accountCoding} disabled={false} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />

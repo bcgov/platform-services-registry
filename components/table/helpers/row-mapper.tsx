@@ -99,12 +99,10 @@ export const privateCloudProjectDataToRow = (project: any) => {
 
 export const publicCloudProjectDataToRow = (project: any) => {
   return {
-    id: project.id,
-    name: project.name,
-    ministry: project.ministry,
+    ...project,
     cluster: project.provider,
-    requestDecisionStatus: project?.activeRequest ? project?.activeRequest[0]?.decisionStatus : null,
-    requestType: project?.activeRequest ? project?.activeRequest[0]?.type : null,
+    requestDecisionStatus: project?.requests ? project?.requests[0]?.decisionStatus : null,
+    requestType: project?.requests ? project?.requests[0]?.type : null,
     projectOwner: {
       name: `${project.projectOwner.firstName} ${project.projectOwner.lastName}`,
       email: project.projectOwner.email,
@@ -119,10 +117,9 @@ export const publicCloudProjectDataToRow = (project: any) => {
           email: project.secondaryTechnicalLead.email,
         }
       : null,
-    created: formatDate(project.created.$date),
-    updatedAt: formatDate(project.updatedAt.$date),
-    licencePlate: project.licencePlate,
-    status: project.status,
+    created: formatDate(project.created),
+    updatedAt: formatDate(project.updatedAt),
+    requestCreated: formatDate(project?.requests ? project?.requests[0]?.created : null),
   };
 };
 
