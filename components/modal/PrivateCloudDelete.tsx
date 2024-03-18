@@ -5,8 +5,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-import { PrivateCloudProjectWithUsers } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import classNames from '@/utils/classnames';
+import { getPriviateCloudProject } from '@/services/backend/private-cloud';
 
 async function fetchDeleteCheckResult(licencePlate: string) {
   const res = await fetch(`/api/private-cloud/deletion-check/${licencePlate}`, {
@@ -18,23 +18,6 @@ async function fetchDeleteCheckResult(licencePlate: string) {
   }
 
   const data = await res.json();
-
-  return data;
-}
-
-async function fetchProject(licencePlate: string): Promise<PrivateCloudProjectWithUsers> {
-  const res = await fetch(`/api/private-cloud/project/${licencePlate}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch project');
-  }
-
-  // Re format data to work with form
-  const data = await res.json();
-
-  // Secondaty technical lead should only be included if it exists
-  if (data.secondaryTechnicalLead === null) {
-    delete data.secondaryTechnicalLead;
-  }
 
   return data;
 }
@@ -79,7 +62,7 @@ export default function Modal({
 
   const { data: projectData } = useQuery({
     queryKey: ['project', params.licencePlate],
-    queryFn: () => fetchProject(params.licencePlate as string),
+    queryFn: () => getPriviateCloudProject(params.licencePlate as string),
     enabled: !!params.licencePlate && open,
     refetchOnMount: true,
   });
