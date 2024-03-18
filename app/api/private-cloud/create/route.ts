@@ -5,7 +5,7 @@ import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-han
 import createApiHandler from '@/core/api-handler';
 import { wrapAsync } from '@/helpers/runtime';
 
-const apiHandler = createApiHandler<any, any, PrivateCloudCreateRequestBody>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { body: PrivateCloudCreateRequestBodySchema },
 });

@@ -3,16 +3,13 @@ import { Prisma, PublicCloudProject } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-
-interface PathParam {
-  licencePlate: string;
-}
+import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const apiHandler = createApiHandler<PathParam>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
 });
@@ -34,6 +31,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
         },
       },
     },
+    session: session as never,
   });
 
   if (!project) {
@@ -56,4 +54,5 @@ export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
       };
     };
   };
-}>;
+}> &
+  PublicCloudProjectDecorate;

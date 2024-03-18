@@ -5,15 +5,11 @@ import { string, z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
 
-interface PathParam {
-  licencePlate: string;
-}
-
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const apiHandler = createApiHandler<PathParam>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
 });

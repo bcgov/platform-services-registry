@@ -1,9 +1,7 @@
 import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
+import { Permissions, PermissionKey } from './permissions';
 
 declare module 'next-auth' {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Session {
     accessToken?: string;
     user: {
@@ -55,6 +53,8 @@ declare module 'next-auth' {
       history: boolean;
     };
   }
+
+  type PermissionsKey = keyof Session['permissions'];
 }
 
 declare module 'next-auth/jwt' {

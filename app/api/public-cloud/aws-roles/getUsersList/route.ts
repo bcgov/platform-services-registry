@@ -3,23 +3,15 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 
-interface QueryParam {
-  licencePlate: string;
-  role: string;
-  page: number;
-  pageSize: number;
-  searchTerm: string;
-}
-
 const queryParamSchema = z.object({
   licencePlate: z.string(),
   role: z.string(),
-  page: z.string(),
-  pageSize: z.string(),
+  page: z.string().transform(Number),
+  pageSize: z.string().transform(Number),
   searchTerm: z.string(),
 });
 
-const apiHandler = createApiHandler<unknown, QueryParam>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { queryParams: queryParamSchema },
 });

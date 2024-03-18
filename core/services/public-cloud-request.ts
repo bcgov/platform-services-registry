@@ -15,6 +15,7 @@ type PublicCloudRequest = Prisma.PublicCloudRequestGetPayload<{
 export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRequestWhereInput> {
   async readFilter() {
     if (!this.session?.userId) return false;
+
     if (this.session.permissions.viewAllPublicCloudProducts) return true;
 
     const res = await prisma.publicCloudProject.findMany({

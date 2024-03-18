@@ -7,15 +7,11 @@ import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privat
 import { sendProvisionedEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 
-interface PathParam {
-  licencePlate: string;
-}
-
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const apiHandler = createApiHandler<PathParam>({
+const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
