@@ -51,7 +51,9 @@ function createApiHandler<
   let body: TypeOf<typeof bodyVal> | null = null;
 
   return function apiHandler(
-    fn: (props: RouteProps<TypeOf<TPathParams>, TypeOf<TQueryParams>, TypeOf<TBody>>) => Promise<NextResponse<unknown>>,
+    fn: (
+      props: RouteProps<TypeOf<TPathParams>, TypeOf<TQueryParams>, TypeOf<TBody>>,
+    ) => Promise<NextResponse<unknown> | Response>,
   ) {
     return async function (
       req: NextRequest,

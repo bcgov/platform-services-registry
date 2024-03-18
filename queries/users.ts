@@ -2,6 +2,8 @@ import { $Enums, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 
 export async function getMatchingUserIds(search: string) {
+  if (search === '*') return [];
+
   const userSearchcreteria: Prisma.StringFilter<'User'> = { contains: search, mode: 'insensitive' };
   const matchingUsers = await prisma.user.findMany({
     where: {

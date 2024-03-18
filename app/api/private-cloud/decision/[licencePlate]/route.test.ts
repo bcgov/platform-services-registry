@@ -117,6 +117,9 @@ describe('Create Private Cloud Request Route', () => {
         email: createRequestBody.projectOwner.email,
       },
       roles: ['user'],
+      permissions: {
+        reviewAllPrivateCloudRequests: true,
+      },
       isAdmin: false,
     });
 
@@ -164,6 +167,9 @@ describe('Create Private Cloud Request Route', () => {
         email: createRequestBody.projectOwner.email,
       },
       roles: ['user'],
+      permissions: {
+        reviewAllPrivateCloudRequests: false,
+      },
       isAdmin: false,
     });
 
@@ -176,7 +182,7 @@ describe('Create Private Cloud Request Route', () => {
       params: { licencePlate: createRequestLicencePlate },
     });
 
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(401);
   });
 
   test('should return 200 if decision request is successful', async () => {
@@ -185,6 +191,9 @@ describe('Create Private Cloud Request Route', () => {
         email: createRequestBody.projectOwner.email,
       },
       roles: ['user', 'admin'],
+      permissions: {
+        reviewAllPrivateCloudRequests: true,
+      },
       isAdmin: true,
     });
 
