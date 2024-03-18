@@ -16,7 +16,7 @@ type PublicCloudProject = Prisma.PublicCloudProjectGetPayload<{
 
 export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudProjectWhereInput> {
   async readFilter() {
-    if (!this.session) return false;
+    if (!this.session?.userId) return false;
     if (this.session.permissions.viewAllPublicCloudProducts) return true;
 
     const baseFilter: Prisma.PublicCloudProjectWhereInput = {
