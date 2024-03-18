@@ -211,22 +211,24 @@ export const authOptions: AuthOptions = {
 
       session.permissions = {
         createPrivateCloudProducts: session.isUser,
-        viewAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin || session.isPrivateReader,
+        viewAllPrivateCloudProducts:
+          session.isAdmin || session.isReader || session.isPrivateAdmin || session.isPrivateReader,
         editAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
         deleteAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
         reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
         createPublicCloudProducts: session.isUser,
-        viewAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin || session.isPublicReader,
+        viewAllPublicCloudProducts:
+          session.isAdmin || session.isReader || session.isPublicAdmin || session.isPublicReader,
         editAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
         deleteAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
         reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
         createProductComments: session.isAdmin,
-        viewAllProductComments: session.isAdmin,
+        viewAllProductComments: session.isAdmin || session.isReader,
         editAllProductComments: session.isAdmin,
         deleteAllProductComments: session.isAdmin,
-        viewZapscanResults: session.isAdmin,
-        viewSonarscanReulsts: session.isAdmin,
-        viewAnalytics: session.isAdmin,
+        viewZapscanResults: session.isAdmin || session.isReader,
+        viewSonarscanReulsts: session.isAdmin || session.isReader,
+        viewAnalytics: session.isAdmin || session.isReader,
       };
 
       // {
