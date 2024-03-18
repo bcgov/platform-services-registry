@@ -7,7 +7,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 // import { cleanUp } from "@/jest.setup";
 import { expect } from '@jest/globals';
-import { findMockUserByIDIR } from '@/helpers/mock-users';
+import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -111,17 +111,8 @@ describe('Create Private Cloud Request Route', () => {
 
   beforeAll(async () => {
     // await cleanUp();
-
-    mockedGetServerSession.mockResolvedValue({
-      user: {
-        email: createRequestBody.projectOwner.email,
-      },
-      roles: ['user'],
-      permissions: {
-        reviewAllPrivateCloudRequests: true,
-      },
-      isAdmin: false,
-    });
+    const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
+    mockedGetServerSession.mockResolvedValue(mockSession);
 
     const req = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
       method: 'POST',
@@ -162,16 +153,8 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should return 403 if not an admin', async () => {
-    mockedGetServerSession.mockResolvedValue({
-      user: {
-        email: createRequestBody.projectOwner.email,
-      },
-      roles: ['user'],
-      permissions: {
-        reviewAllPrivateCloudRequests: false,
-      },
-      isAdmin: false,
-    });
+    const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
+    mockedGetServerSession.mockResolvedValue(mockSession);
 
     const req = new NextRequest(API_URL, {
       method: 'POST',
@@ -186,16 +169,8 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should return 200 if decision request is successful', async () => {
-    mockedGetServerSession.mockResolvedValue({
-      user: {
-        email: createRequestBody.projectOwner.email,
-      },
-      roles: ['user', 'admin'],
-      permissions: {
-        reviewAllPrivateCloudRequests: true,
-      },
-      isAdmin: true,
-    });
+    const mockSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockSession);
 
     const req = new NextRequest(API_URL, {
       method: 'POST',

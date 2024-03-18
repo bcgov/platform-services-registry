@@ -16,14 +16,12 @@ import {
   User,
 } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
-import { findMockUserByIDIR } from '@/helpers/mock-users';
+import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
+import { createProxyUsers } from '@/queries/users';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/public-cloud/all-projects`;
 
-const testUserId = '60ae7a3064d85e001f15d5a9'; // pragma: allowlist secret
-
-// Mocking getServerSession
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 jest.mock('next-auth/next', () => ({
@@ -128,25 +126,12 @@ interface CsvRecord {
   licencePlate: string;
 }
 
-const mockSession = {
-  userId: testUserId,
-  user: {
-    email: 'admin@example.com',
-  },
-  roles: ['user', 'admin'],
-  permissions: {
-    viewAllPublicCloudProducts: true,
-  },
-  ministries: {
-    admin: [],
-    reader: [],
-  },
-  isAdmin: true,
-};
-
 describe('CSV Download Route', () => {
   beforeAll(async () => {
     console.log('Seeding database with projects');
+
+    await createProxyUsers();
+
     for (let i = 0; i < projectData.length; i++) {
       const project = createProjectObject(projectData[i], i);
       await prisma.publicCloudProject.create({ data: project });
@@ -172,20 +157,8 @@ describe('CSV Download Route', () => {
   });
 
   test('should return CSV data for all projects', async () => {
-    // Mock a valid session
-    mockedGetServerSession.mockResolvedValue({
-      userId: testUserId,
-      user: { email: 'user@example.com' },
-      roles: ['user', 'admin'],
-      permissions: {
-        viewAllPublicCloudProducts: true,
-      },
-      ministries: {
-        admin: [],
-        reader: [],
-      },
-      isAdmin: true,
-    });
+    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockedSession);
 
     const req = new NextRequest(API_URL, { method: 'GET' });
 
@@ -196,21 +169,8 @@ describe('CSV Download Route', () => {
 
   test('should handle invalid query params properly', async () => {
     // Mock a valid session and an empty dataset scenario
-    mockedGetServerSession.mockResolvedValue({
-      userId: testUserId,
-      user: {
-        email: 'user@example.com',
-      },
-      roles: ['user', 'admin'],
-      permissions: {
-        viewAllPublicCloudProducts: true,
-      },
-      ministries: {
-        admin: [],
-        reader: [],
-      },
-      isAdmin: true,
-    });
+    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockedSession);
 
     // Simulate a request that would result in an empty dataset
     const req = new NextRequest(
@@ -225,19 +185,8 @@ describe('CSV Download Route', () => {
   });
 
   test('should return correct CSV data with all query parameters', async () => {
-    mockedGetServerSession.mockResolvedValue({
-      userId: testUserId,
-      user: { email: 'admin@example.com' },
-      roles: ['user', 'admin'],
-      permissions: {
-        viewAllPublicCloudProducts: true,
-      },
-      ministries: {
-        admin: [],
-        reader: [],
-      },
-      isAdmin: true,
-    });
+    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockedSession);
 
     const req = new NextRequest(`${API_URL}?search=TestProject&ministry=AG&provider=AWS&active=true`, {
       method: 'GET',
@@ -266,20 +215,8 @@ describe('CSV Download Route', () => {
   });
 
   test('should handle invalid query parameters correctly', async () => {
-    // Mock a valid session
-    mockedGetServerSession.mockResolvedValue({
-      userId: testUserId,
-      user: { email: 'admin@example.com' },
-      roles: ['user', 'admin'],
-      permissions: {
-        viewAllPublicCloudProducts: true,
-      },
-      ministries: {
-        admin: [],
-        reader: [],
-      },
-      isAdmin: true,
-    });
+    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockedSession);
 
     // Create a request with invalid query parameters
     const req = new NextRequest(`${API_URL}?search=&ministry=InvalidMinistry&provider=InvalidProvider&active=maybe`, {
@@ -292,8 +229,8 @@ describe('CSV Download Route', () => {
   });
 
   test('should return correct data for combined search and filter parameters', async () => {
-    // Mock user session
-    mockedGetServerSession.mockResolvedValue(mockSession);
+    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockedSession);
 
     // Define different combinations of search and filter parameters
     const testCombinations = [
