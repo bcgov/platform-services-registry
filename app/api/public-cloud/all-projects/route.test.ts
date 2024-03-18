@@ -21,6 +21,8 @@ import { findMockUserByIDIR } from '@/helpers/mock-users';
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/public-cloud/all-projects`;
 
+const testUserId = '60ae7a3064d85e001f15d5a9'; // pragma: allowlist secret
+
 // Mocking getServerSession
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
@@ -127,10 +129,18 @@ interface CsvRecord {
 }
 
 const mockSession = {
+  userId: testUserId,
   user: {
     email: 'admin@example.com',
   },
   roles: ['user', 'admin'],
+  permissions: {
+    viewAllPublicCloudProducts: true,
+  },
+  ministries: {
+    admin: [],
+    reader: [],
+  },
   isAdmin: true,
 };
 
@@ -164,8 +174,16 @@ describe('CSV Download Route', () => {
   test('should return CSV data for all projects', async () => {
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
+      userId: testUserId,
       user: { email: 'user@example.com' },
       roles: ['user', 'admin'],
+      permissions: {
+        viewAllPublicCloudProducts: true,
+      },
+      ministries: {
+        admin: [],
+        reader: [],
+      },
       isAdmin: true,
     });
 
@@ -176,13 +194,21 @@ describe('CSV Download Route', () => {
     expect(response.headers.get('Content-Type')).toBe('text/csv');
   });
 
-  test('should handle empty data sets correctly', async () => {
+  test('should handle invalid query params properly', async () => {
     // Mock a valid session and an empty dataset scenario
     mockedGetServerSession.mockResolvedValue({
+      userId: testUserId,
       user: {
         email: 'user@example.com',
       },
       roles: ['user', 'admin'],
+      permissions: {
+        viewAllPublicCloudProducts: true,
+      },
+      ministries: {
+        admin: [],
+        reader: [],
+      },
       isAdmin: true,
     });
 
@@ -195,13 +221,21 @@ describe('CSV Download Route', () => {
     );
 
     const response = await downloadCsv(req);
-    expect(response.status).toBe(204);
+    expect(response.status).toBe(400);
   });
 
   test('should return correct CSV data with all query parameters', async () => {
     mockedGetServerSession.mockResolvedValue({
+      userId: testUserId,
       user: { email: 'admin@example.com' },
       roles: ['user', 'admin'],
+      permissions: {
+        viewAllPublicCloudProducts: true,
+      },
+      ministries: {
+        admin: [],
+        reader: [],
+      },
       isAdmin: true,
     });
 
@@ -234,8 +268,16 @@ describe('CSV Download Route', () => {
   test('should handle invalid query parameters correctly', async () => {
     // Mock a valid session
     mockedGetServerSession.mockResolvedValue({
+      userId: testUserId,
       user: { email: 'admin@example.com' },
       roles: ['user', 'admin'],
+      permissions: {
+        viewAllPublicCloudProducts: true,
+      },
+      ministries: {
+        admin: [],
+        reader: [],
+      },
       isAdmin: true,
     });
 
@@ -246,11 +288,7 @@ describe('CSV Download Route', () => {
 
     // Call the downloadCsv function with the request
     const response = await downloadCsv(req);
-    expect(response.status).toBe(204);
-    const csvContent = await response.text();
-    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
-
-    expect(records.length).toBe(0);
+    expect(response.status).toBe(400);
   });
 
   test('should return correct data for combined search and filter parameters', async () => {
