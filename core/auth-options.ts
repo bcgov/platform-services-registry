@@ -39,8 +39,8 @@ export async function generateSession({ session, token }: { session: Session; to
   session.isApprover = false;
   session.roles = [];
   session.ministries = {
-    admin: [],
-    readonly: [],
+    editor: [],
+    reader: [],
   };
 
   // Send properties to the client, like an access_token from a provider.
@@ -144,7 +144,7 @@ export async function generateSession({ session, token }: { session: Session; to
   //   ...
   //   roles: ['admin', 'ministry-citz-admin'],
   //   isAdmin: true,
-  //   ministries: { admin: ['citz'], readonly: [] },
+  //   ministries: { editor: ['citz'], reader: [] },
   // }
   return session;
 }

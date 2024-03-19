@@ -9,8 +9,8 @@ export class UserService extends ModelService<Prisma.UserWhereInput> {
       baseFilter = {
         OR: [
           { email: this.session.userId as string },
-          { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
-          { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
+          { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+          { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
         ],
       };
     }
