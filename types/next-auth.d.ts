@@ -20,8 +20,8 @@ declare module 'next-auth' {
     isApprover: boolean;
     roles: string[];
     ministries: {
-      admin: string[];
-      readonly: string[];
+      editor: string[];
+      reader: string[];
       [key: string]: string[];
     };
     permissions: {
