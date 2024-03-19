@@ -43,6 +43,11 @@ export async function getPublicCloudRequest(licencePlate: string) {
   return result;
 }
 
+export async function deletePublicCloudProject(licencePlate: string) {
+  const result = await instance.post(`public-cloud/delete/${licencePlate}`).then((res) => res.data);
+  return result;
+}
+
 export async function makePublicCloudRequestedDecision(licencePlate: string, data: any) {
   const result = await instance.post(`public-cloud/decision/${licencePlate}`, data).then((res) => res.data);
   return result;

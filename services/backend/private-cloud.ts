@@ -43,6 +43,11 @@ export async function getPriviateCloudRequest(licencePlate: string) {
   return result;
 }
 
+export async function deletePrivateCloudProject(licencePlate: string) {
+  const result = await instance.post(`private-cloud/delete/${licencePlate}`).then((res) => res.data);
+  return result;
+}
+
 export async function makePriviateCloudRequestedDecision(licencePlate: string, data: any) {
   const result = await instance.post(`private-cloud/decision/${licencePlate}`, data).then((res) => res.data);
   return result;

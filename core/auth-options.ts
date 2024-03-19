@@ -28,7 +28,7 @@ interface KeycloakToken {
   email: string;
 }
 
-export async function generateSession({ session, token }: { session: Session; token: JWT }) {
+export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
   session.isUser = false;
   session.isAdmin = false;
   session.isReader = false;
@@ -45,8 +45,13 @@ export async function generateSession({ session, token }: { session: Session; to
 
   // Send properties to the client, like an access_token from a provider.
   if (token) {
-    const user = await prisma.user.findFirst({ where: { email: session.user.email } });
+    const user = await prisma.user.findFirst({
+      where: { email: session.user.email },
+      select: { id: true, email: true },
+    });
+
     session.userId = user?.id ?? null;
+    session.userEmail = user?.email ?? null;
     session.accessToken = token.accessToken;
     session.roles = token.roles || [];
 
