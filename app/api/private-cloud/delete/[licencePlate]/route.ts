@@ -53,7 +53,8 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
     return NextResponse.json({ message: 'Unauthorized', error: 'not allowed to perform the task' }, { status: 401 });
   }
 
-  if (!isEligibleForDeletion(projectWithPermissions.licencePlate, projectWithPermissions.cluster)) {
+  const canDelete = await isEligibleForDeletion(projectWithPermissions.licencePlate, projectWithPermissions.cluster);
+  if (!canDelete) {
     return NextResponse.json(
       {
         message: 'Bad Request',
