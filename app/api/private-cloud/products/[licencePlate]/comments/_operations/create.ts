@@ -9,7 +9,6 @@ interface CreateCommentParams {
 }
 
 export async function createOp({ text, projectId, userId }: CreateCommentParams) {
-  // Create the comment with a link to the user
   const comment = await prisma.privateCloudComment.create({
     data: {
       text,
