@@ -58,9 +58,9 @@ model PrivateCloudRequest {
   projectId              String?                       @db.ObjectId
   project                PrivateCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
   requestedProjectId     String                        @unique @db.ObjectId
-  requestedProject       PrivateCloudRequestedProject  @relation("requestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  requestedProject       PrivateCloudRequestedProject  @relation("requestedProject", fields: [requestedProjectId], references: [id])
   userRequestedProjectId String                        @unique @db.ObjectId
-  userRequestedProject   PrivateCloudRequestedProject? @relation("userRequestedProject", fields: [userRequestedProjectId], references: [id], onDelete: Cascade)
+  userRequestedProject   PrivateCloudRequestedProject? @relation("userRequestedProject", fields: [userRequestedProjectId], references: [id])
 }
 
 model PrivateCloudProject {
@@ -72,11 +72,11 @@ model PrivateCloudProject {
   created                  DateTime              @default(now())
   updatedAt                DateTime              @updatedAt
   projectOwnerId           String                @db.ObjectId
-  projectOwner             User                  @relation("projectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
+  projectOwner             User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
   primaryTechnicalLeadId   String                @db.ObjectId
-  primaryTechnicalLead     User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  primaryTechnicalLead     User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId String?               @db.ObjectId
-  secondaryTechnicalLead   User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  secondaryTechnicalLead   User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                 Ministry
   cluster                  Cluster
   productionQuota          Quota
@@ -96,11 +96,11 @@ model PrivateCloudRequestedProject {
   licencePlate             String
   created                  DateTime             @default(now())
   projectOwnerId           String               @db.ObjectId
-  projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
+  projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
   primaryTechnicalLeadId   String               @db.ObjectId
-  primaryTechnicalLead     User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  primaryTechnicalLead     User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId String?              @db.ObjectId
-  secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                 Ministry
   cluster                  Cluster
   productionQuota          Quota
@@ -152,9 +152,9 @@ model PublicCloudRequest {
   projectId              String?                      @db.ObjectId
   project                PublicCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
   requestedProjectId     String                       @unique @db.ObjectId
-  requestedProject       PublicCloudRequestedProject  @relation("requestedProject", fields: [requestedProjectId], references: [id], onDelete: Cascade)
+  requestedProject       PublicCloudRequestedProject  @relation("requestedProject", fields: [requestedProjectId], references: [id])
   userRequestedProjectId String                       @unique @db.ObjectId
-  userRequestedProject   PublicCloudRequestedProject? @relation("userRequestedProject", fields: [userRequestedProjectId], references: [id], onDelete: Cascade)
+  userRequestedProject   PublicCloudRequestedProject? @relation("userRequestedProject", fields: [userRequestedProjectId], references: [id])
 }
 
 model PublicCloudProject {
@@ -168,13 +168,13 @@ model PublicCloudProject {
   accountCoding            String
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
-  projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
+  projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
   primaryTechnicalLeadId   String               @db.ObjectId
-  primaryTechnicalLead     User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  primaryTechnicalLead     User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId String?              @db.ObjectId
-  secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   expenseAuthorityId       String?              @db.ObjectId
-  expenseAuthority         User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id], onDelete: Cascade)
+  expenseAuthority         User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                 Ministry
   provider                 Provider
   requests                 PublicCloudRequest[] @relation("project")
@@ -190,13 +190,13 @@ model PublicCloudRequestedProject {
   accountCoding            String
   budget                   Budget
   projectOwnerId           String              @db.ObjectId
-  projectOwner             User                @relation("projectOwner", fields: [projectOwnerId], references: [id], onDelete: Cascade)
+  projectOwner             User                @relation("projectOwner", fields: [projectOwnerId], references: [id])
   primaryTechnicalLeadId   String              @db.ObjectId
-  primaryTechnicalLead     User                @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  primaryTechnicalLead     User                @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId String?             @db.ObjectId
-  secondaryTechnicalLead   User?               @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id], onDelete: Cascade)
+  secondaryTechnicalLead   User?               @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   expenseAuthorityId       String?             @db.ObjectId
-  expenseAuthority         User?               @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id], onDelete: Cascade)
+  expenseAuthority         User?               @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                 Ministry
   provider                 Provider
   requestedProject         PublicCloudRequest? @relation("requestedProject")
