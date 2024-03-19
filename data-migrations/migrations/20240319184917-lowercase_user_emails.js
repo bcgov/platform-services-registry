@@ -12,7 +12,6 @@ export const up = async (db, client) => {
     if (duplicates.length > 1) {
       const ids = duplicates.map((v) => v._id);
       const otherIds = ids.filter((v) => String(v) !== String(user._id));
-      console.log('ids', ids, otherIds);
 
       async function update(collectionName) {
         await db
