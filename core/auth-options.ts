@@ -105,7 +105,7 @@ export async function generateSession({ session, token }: { session: Session; to
         const ministryCode = match[1];
         const ministryRole = match[2];
         if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
-        session.ministries[ministryRole].push(ministryCode);
+        session.ministries[ministryRole].push(ministryCode.toUpperCase());
       }
     });
 
