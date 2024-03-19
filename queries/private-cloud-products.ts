@@ -57,8 +57,6 @@ export async function searchPrivateCloudProducts({
     where.status = $Enums.ProjectStatus.ACTIVE;
   }
 
-  console.log('wherewhere', search, JSON.stringify(where));
-
   const [docs, totalCount] = await Promise.all([
     prisma.privateCloudProject.findMany({
       where,

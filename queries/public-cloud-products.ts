@@ -85,7 +85,5 @@ export async function searchPublicCloudProducts({
     }),
   ]);
 
-  console.log('wherewhetotalCounttotalCounttotalCountre', JSON.stringify(where), totalCount);
-
   return { docs, totalCount };
 }
