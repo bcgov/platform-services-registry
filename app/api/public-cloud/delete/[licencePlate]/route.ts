@@ -17,7 +17,6 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 export const POST = apiHandler(async ({ pathParams, session }) => {
-  console.log('sessionsession', session);
   const { userEmail } = session;
   const { licencePlate } = pathParams;
 
