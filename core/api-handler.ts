@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
+import { authOptions, generateSession } from '@/core/auth-options';
 import { z, TypeOf, ZodType } from 'zod';
 import { parseQueryString } from '@/utils/query-string';
 
@@ -16,7 +16,7 @@ interface HandlerProps<TPathParams, TQueryParams, TBody> {
 }
 
 interface RouteProps<TPathParams, TQueryParams, TBody> {
-  session: Session | null;
+  session: Session;
   pathParams: TPathParams;
   queryParams: TQueryParams;
   body: TBody;
@@ -60,11 +60,11 @@ function createApiHandler<
       { params }: { params: TypeOf<TPathParams> } = { params: {} as TypeOf<TPathParams> },
     ) {
       try {
-        const session = await getServerSession(authOptions);
+        const session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
 
         // Validate user roles
         if (roles && roles.length > 0) {
-          const allowed = session && arrayIntersection(roles, session.roles).length > 0;
+          const allowed = arrayIntersection(roles, session.roles).length > 0;
           if (!allowed) {
             return NextResponse.json(
               { message: 'Unauthorized', error: 'not allowed to perform the task' },
@@ -75,8 +75,9 @@ function createApiHandler<
 
         // Validate user permissions
         if (permissions && permissions.length > 0) {
-          const allowed =
-            session && permissions.some((permKey) => session.permissions[permKey as keyof typeof session.permissions]);
+          const allowed = permissions.some(
+            (permKey) => session.permissions[permKey as keyof typeof session.permissions],
+          );
           if (!allowed) {
             return NextResponse.json(
               { message: 'Unauthorized', error: 'not allowed to perform the task' },
@@ -128,7 +129,7 @@ function createApiHandler<
           body = parsed.data;
         }
 
-        return await fn({ session: session, pathParams, queryParams, body });
+        return await fn({ session, pathParams, queryParams, body });
       } catch (error) {
         console.error(error);
         return NextResponse.json({ message: 'Internal Server Error', error: String(error) }, { status: 500 });
