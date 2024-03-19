@@ -6,11 +6,12 @@ import { getUser } from '@/services/msgraph';
 
 export async function upsertUser(email: string) {
   try {
+    email = email.toLowerCase();
     const adUser = await getUser(email);
     if (!adUser) return null;
 
     const data = {
-      email: adUser.email,
+      email,
       firstName: adUser.firstName,
       lastName: adUser.lastName,
       ministry: adUser.ministry,

@@ -26,6 +26,8 @@ export async function createProxyUsers() {
   const dbUsers = await Promise.all(
     proxyUsers.map((puser: MsUser) => {
       const { id, displayName, ...clearnUserData } = processMsUser(puser);
+
+      clearnUserData.email = clearnUserData.email.toLowerCase();
       return prisma.user.upsert({
         where: { email: clearnUserData.email },
         update: clearnUserData,
