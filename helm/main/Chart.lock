@@ -7,12 +7,12 @@ dependencies:
   version: 0.1.0
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
-  version: 14.11.1
+  version: 15.0.2
 - name: nats
   repository: file://../_nats
   version: 0.1.0
 - name: nats-provision
   repository: file://../_nats_provision
   version: 0.1.0
-digest: sha256:62e68b55a132d9a85df45d2656e0e206864f9ae62c307954e73b815f276c8408
-generated: "2024-03-07T16:44:03.841438456-08:00"
+digest: sha256:f4f6da5ecd095a573de1c4d3c0681a59b124ca6ae5c9f29510410affc8f6dc7f
+generated: "2024-03-20T00:13:45.24036015Z"
