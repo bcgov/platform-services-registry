@@ -27,6 +27,7 @@ export async function searchPrivateCloudProducts({
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
 }) {
   const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+
   const orderBy =
     sort && order
       ? {
@@ -36,25 +37,18 @@ export async function searchPrivateCloudProducts({
           updatedAt: Prisma.SortOrder.desc,
         };
 
-  if (search === '*') search = '';
-
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
     const productSearchcreteria: Prisma.StringFilter<'PrivateCloudProject'> = { contains: search, mode: 'insensitive' };
 
     where.OR = [
+      { projectOwnerId: { in: matchingUserIds } },
+      { primaryTechnicalLeadId: { in: matchingUserIds } },
+      { secondaryTechnicalLeadId: { in: matchingUserIds } },
       { name: productSearchcreteria },
       { description: productSearchcreteria },
       { licencePlate: productSearchcreteria },
     ];
-
-    if (matchingUserIds.length > 0) {
-      where.OR.push(
-        { projectOwnerId: { in: matchingUserIds } },
-        { primaryTechnicalLeadId: { in: matchingUserIds } },
-        { secondaryTechnicalLeadId: { in: matchingUserIds } },
-      );
-    }
   }
 
   if (ministry) {
