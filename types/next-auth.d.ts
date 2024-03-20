@@ -12,10 +12,13 @@ declare module 'next-auth' {
     userEmail: string | null;
     isUser: boolean;
     isAdmin: boolean;
+    isEditor: boolean;
     isReader: boolean;
     isPrivateAdmin: boolean;
+    isPrivateEditor: boolean;
     isPrivateReader: boolean;
     isPublicAdmin: boolean;
+    isPublicEditor: boolean;
     isPublicReader: boolean;
     isApprover: boolean;
     roles: string[];

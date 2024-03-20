@@ -31,10 +31,13 @@ interface KeycloakToken {
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
   session.isUser = false;
   session.isAdmin = false;
+  session.isEditor = false;
   session.isReader = false;
   session.isPrivateAdmin = false;
+  session.isPrivateEditor = false;
   session.isPrivateReader = false;
   session.isPublicAdmin = false;
+  session.isPublicEditor = false;
   session.isPublicReader = false;
   session.isApprover = false;
   session.roles = [];
@@ -69,6 +72,11 @@ export async function generateSession({ session, token }: { session: Session; to
         return;
       }
 
+      if (role === 'editor') {
+        session.isEditor = true;
+        return;
+      }
+
       if (role === 'reader') {
         session.isReader = true;
         return;
@@ -79,6 +87,11 @@ export async function generateSession({ session, token }: { session: Session; to
         return;
       }
 
+      if (role === 'private-editor') {
+        session.isPrivateEditor = true;
+        return;
+      }
+
       if (role === 'private-reader') {
         session.isPrivateReader = true;
         return;
@@ -86,6 +99,11 @@ export async function generateSession({ session, token }: { session: Session; to
 
       if (role === 'public-admin') {
         session.isPublicAdmin = true;
+        return;
+      }
+
+      if (role === 'public-editor') {
+        session.isPublicEditor = true;
         return;
       }
 
@@ -120,16 +138,35 @@ export async function generateSession({ session, token }: { session: Session; to
   };
 
   session.permissions = {
+    // Private Products
     createPrivateCloudProducts: session.isUser,
     viewAllPrivateCloudProducts:
-      session.isAdmin || session.isReader || session.isPrivateAdmin || session.isPrivateReader,
-    editAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
-    deleteAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
+      session.isAdmin ||
+      session.isEditor ||
+      session.isReader ||
+      session.isPrivateAdmin ||
+      session.isPrivateEditor ||
+      session.isPrivateReader,
+
+    editAllPrivateCloudProducts:
+      session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
+    deleteAllPrivateCloudProducts:
+      session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
+
+    // Public Products
     createPublicCloudProducts: session.isUser,
-    viewAllPublicCloudProducts: session.isAdmin || session.isReader || session.isPublicAdmin || session.isPublicReader,
-    editAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
-    deleteAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
+    viewAllPublicCloudProducts:
+      session.isAdmin ||
+      session.isEditor ||
+      session.isReader ||
+      session.isPublicAdmin ||
+      session.isPublicEditor ||
+      session.isPublicReader,
+
+    editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
+    deleteAllPublicCloudProducts:
+      session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
     createPrivateProductComments: session.isAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isReader,
