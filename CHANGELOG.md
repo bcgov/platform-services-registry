@@ -1,3 +1,10 @@
+## [0.19.1](https://github.com/bcgov/platform-services-registry/compare/v0.19.0...v0.19.1) (2024-03-20)
+
+
+### Bug Fixes
+
+* fix data migration scripts ([6142afa](https://github.com/bcgov/platform-services-registry/commit/6142afa8b25beb1a1f96cecdc0f8ebac45824f45))
+
 ## [0.19.0](https://github.com/bcgov/platform-services-registry/compare/v0.18.1...v0.19.0) (2024-03-19)
 
 
