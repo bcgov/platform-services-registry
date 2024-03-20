@@ -5,9 +5,8 @@ import { POST } from '@/app/api/private-cloud/create/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';
-// import { cleanUp } from "@/jest.setup";
 import { expect } from '@jest/globals';
-import { findMockUserByIDIR } from '@/helpers/mock-users';
+import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/create`;
@@ -91,13 +90,8 @@ describe('Create Private Cloud Request Route', () => {
   });
 
   test('should return 200 if request is created', async () => {
-    mockedGetServerSession.mockResolvedValue({
-      user: {
-        email: createRequestBody.projectOwner.email,
-      },
-      roles: ['user'],
-      isAdmin: false,
-    });
+    const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
+    mockedGetServerSession.mockResolvedValue(mockSession);
 
     const requestsBefore: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
 

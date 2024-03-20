@@ -1,9 +1,10 @@
+import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import classNames from '@/utils/classnames';
 import { clusters, ministriesNames } from '@/constants';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+import { $Enums } from '@prisma/client';
 
 export default function ProjectDescription({
   mode,
@@ -17,6 +18,7 @@ export default function ProjectDescription({
   const {
     register,
     formState: { errors },
+    getValues,
   } = useFormContext();
 
   const [clustersList, setClustersList] = useState(clusters);
@@ -31,10 +33,20 @@ export default function ProjectDescription({
     }
   }, [session]);
 
+  const values = getValues();
+
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
         Private Cloud OpenShift Platform
+        <span
+          className={classNames(
+            'text-sm font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1 float-right',
+            values.status === $Enums.ProjectStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
+          )}
+        >
+          {values.status}
+        </span>
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description

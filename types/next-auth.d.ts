@@ -12,16 +12,19 @@ declare module 'next-auth' {
     userEmail: string | null;
     isUser: boolean;
     isAdmin: boolean;
+    isEditor: boolean;
     isReader: boolean;
     isPrivateAdmin: boolean;
+    isPrivateEditor: boolean;
     isPrivateReader: boolean;
     isPublicAdmin: boolean;
+    isPublicEditor: boolean;
     isPublicReader: boolean;
     isApprover: boolean;
     roles: string[];
     ministries: {
-      admin: string[];
-      readonly: string[];
+      editor: string[];
+      reader: string[];
       [key: string]: string[];
     };
     permissions: {
@@ -37,10 +40,15 @@ declare module 'next-auth' {
       deleteAllPublicCloudProducts: boolean;
       reviewAllPublicCloudRequests: boolean;
 
-      createProductComments: boolean;
-      viewAllProductComments: boolean;
-      editAllProductComments: boolean;
-      deleteAllProductComments: boolean;
+      createPrivateProductComments: boolean;
+      viewAllPrivateProductComments: boolean;
+      editAllPrivateProductComments: boolean;
+      deleteAllPrivateProductComments: boolean;
+
+      createPublicProductComments: boolean;
+      viewAllPublicProductComments: boolean;
+      editAllPublicProductComments: boolean;
+      deleteAllPublicProductComments: boolean;
 
       viewZapscanResults: boolean;
       viewSonarscanReulsts: boolean;

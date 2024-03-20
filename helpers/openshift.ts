@@ -166,3 +166,8 @@ export default async function openshiftDeletionCheck(
   }
   return checkResult;
 }
+
+export async function isEligibleForDeletion(licencePlate: string, cluster: string) {
+  const deleteCheckList = await openshiftDeletionCheck(licencePlate, cluster);
+  return Object.values(deleteCheckList).every((field) => field);
+}

@@ -28,6 +28,168 @@ interface KeycloakToken {
   email: string;
 }
 
+export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
+  session.isUser = false;
+  session.isAdmin = false;
+  session.isEditor = false;
+  session.isReader = false;
+  session.isPrivateAdmin = false;
+  session.isPrivateEditor = false;
+  session.isPrivateReader = false;
+  session.isPublicAdmin = false;
+  session.isPublicEditor = false;
+  session.isPublicReader = false;
+  session.isApprover = false;
+  session.roles = [];
+  session.ministries = {
+    editor: [],
+    reader: [],
+  };
+
+  // Send properties to the client, like an access_token from a provider.
+  if (token) {
+    const user = await prisma.user.findFirst({
+      where: { email: session.user.email },
+      select: { id: true, email: true },
+    });
+
+    session.userId = user?.id ?? null;
+    session.userEmail = user?.email ?? null;
+    session.accessToken = token.accessToken;
+    session.roles = token.roles || [];
+
+    // Assign the 'user' role to users who log in to the system.
+    session.roles.push('user');
+
+    session.roles.forEach((role) => {
+      if (role === 'user') {
+        session.isUser = true;
+        return;
+      }
+
+      if (role === 'admin') {
+        session.isAdmin = true;
+        return;
+      }
+
+      if (role === 'editor') {
+        session.isEditor = true;
+        return;
+      }
+
+      if (role === 'reader') {
+        session.isReader = true;
+        return;
+      }
+
+      if (role === 'private-admin') {
+        session.isPrivateAdmin = true;
+        return;
+      }
+
+      if (role === 'private-editor') {
+        session.isPrivateEditor = true;
+        return;
+      }
+
+      if (role === 'private-reader') {
+        session.isPrivateReader = true;
+        return;
+      }
+
+      if (role === 'public-admin') {
+        session.isPublicAdmin = true;
+        return;
+      }
+
+      if (role === 'public-editor') {
+        session.isPublicEditor = true;
+        return;
+      }
+
+      if (role === 'public-reader') {
+        session.isPublicReader = true;
+        return;
+      }
+
+      if (role === 'approver') {
+        session.isApprover = true;
+        return;
+      }
+
+      const regexPattern = /^ministry-(\w+)-(.+)$/;
+      const match = regexPattern.exec(role);
+      if (match) {
+        const ministryCode = match[1];
+        const ministryRole = match[2];
+        if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
+        session.ministries[ministryRole].push(ministryCode.toUpperCase());
+      }
+    });
+
+    session.user.roles = session.roles;
+  }
+
+  session.previews = {
+    awsRoles: !IS_PROD,
+    security: !IS_PROD,
+    expenseAuthority: !IS_PROD,
+    history: !IS_PROD,
+  };
+
+  session.permissions = {
+    // Private Products
+    createPrivateCloudProducts: session.isUser,
+    viewAllPrivateCloudProducts:
+      session.isAdmin ||
+      session.isEditor ||
+      session.isReader ||
+      session.isPrivateAdmin ||
+      session.isPrivateEditor ||
+      session.isPrivateReader,
+
+    editAllPrivateCloudProducts:
+      session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
+    deleteAllPrivateCloudProducts:
+      session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
+    reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
+
+    // Public Products
+    createPublicCloudProducts: session.isUser,
+    viewAllPublicCloudProducts:
+      session.isAdmin ||
+      session.isEditor ||
+      session.isReader ||
+      session.isPublicAdmin ||
+      session.isPublicEditor ||
+      session.isPublicReader,
+
+    editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
+    deleteAllPublicCloudProducts:
+      session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
+    reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
+    createPrivateProductComments: session.isAdmin,
+    viewAllPrivateProductComments: session.isAdmin || session.isReader,
+    editAllPrivateProductComments: session.isAdmin,
+    deleteAllPrivateProductComments: session.isAdmin,
+    createPublicProductComments: session.isAdmin,
+    viewAllPublicProductComments: session.isAdmin || session.isReader,
+    editAllPublicProductComments: session.isAdmin,
+    deleteAllPublicProductComments: session.isAdmin,
+    viewZapscanResults: session.isAdmin || session.isReader,
+    viewSonarscanReulsts: session.isAdmin || session.isReader,
+    viewAnalytics: session.isAdmin || session.isReader,
+  };
+
+  // {
+  //   ...
+  //   roles: ['admin', 'ministry-citz-admin'],
+  //   isAdmin: true,
+  //   ministries: { editor: ['citz'], reader: [] },
+  // }
+  return session;
+}
+
 export const authOptions: AuthOptions = {
   providers: [
     // AzureADProvider({
@@ -86,16 +248,18 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakToken;
+      const loweremail = email.toLowerCase();
+
       const data = {
         firstName: given_name,
         lastName: family_name,
-        email,
+        email: loweremail,
         ministry: '',
         idir: '',
         upn: '',
       };
 
-      const adUser = await getUser(email);
+      const adUser = await getUser(loweremail);
       if (adUser) {
         data.ministry = adUser.ministry;
         data.idir = adUser.idir;
@@ -104,7 +268,7 @@ export const authOptions: AuthOptions = {
 
       await prisma.user.upsert({
         where: {
-          email,
+          email: loweremail,
         },
         update: data,
         create: data,
@@ -123,119 +287,6 @@ export const authOptions: AuthOptions = {
 
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
-      session.isUser = false;
-      session.isAdmin = false;
-      session.isReader = false;
-      session.isPrivateAdmin = false;
-      session.isPrivateReader = false;
-      session.isPublicAdmin = false;
-      session.isPublicReader = false;
-      session.isApprover = false;
-      session.roles = [];
-      session.ministries = {
-        admin: [],
-        readonly: [],
-      };
-
-      // Send properties to the client, like an access_token from a provider.
-      if (token) {
-        const user = await prisma.user.findFirst({ where: { email: session.user.email } });
-        session.userId = user?.id ?? null;
-        session.accessToken = token.accessToken;
-        session.roles = token.roles || [];
-
-        // Assign the 'user' role to users who log in to the system.
-        session.roles.push('user');
-
-        session.roles.forEach((role) => {
-          if (role === 'user') {
-            session.isUser = true;
-            return;
-          }
-
-          if (role === 'admin') {
-            session.isAdmin = true;
-            return;
-          }
-
-          if (role === 'reader') {
-            session.isReader = true;
-            return;
-          }
-
-          if (role === 'private-admin') {
-            session.isPrivateAdmin = true;
-            return;
-          }
-
-          if (role === 'private-reader') {
-            session.isPrivateReader = true;
-            return;
-          }
-
-          if (role === 'public-admin') {
-            session.isPublicAdmin = true;
-            return;
-          }
-
-          if (role === 'public-reader') {
-            session.isPublicReader = true;
-            return;
-          }
-
-          if (role === 'approver') {
-            session.isApprover = true;
-            return;
-          }
-
-          const regexPattern = /^ministry-(\w+)-(.+)$/;
-          const match = regexPattern.exec(role);
-          if (match) {
-            const ministryCode = match[1];
-            const ministryRole = match[2];
-            if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
-            session.ministries[ministryRole].push(ministryCode);
-          }
-        });
-
-        session.user.roles = session.roles;
-      }
-
-      session.previews = {
-        awsRoles: !IS_PROD,
-        security: !IS_PROD,
-        expenseAuthority: !IS_PROD,
-        history: !IS_PROD,
-      };
-
-      session.permissions = {
-        createPrivateCloudProducts: session.isUser,
-        viewAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin || session.isPrivateReader,
-        editAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
-        deleteAllPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
-        reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
-        createPublicCloudProducts: session.isUser,
-        viewAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin || session.isPublicReader,
-        editAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
-        deleteAllPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
-        reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
-        createProductComments: session.isAdmin,
-        viewAllProductComments: session.isAdmin,
-        editAllProductComments: session.isAdmin,
-        deleteAllProductComments: session.isAdmin,
-        viewZapscanResults: session.isAdmin,
-        viewSonarscanReulsts: session.isAdmin,
-        viewAnalytics: session.isAdmin,
-      };
-
-      // {
-      //   ...
-      //   roles: ['admin', 'ministry-citz-admin'],
-      //   isAdmin: true,
-      //   ministries: { admin: ['citz'], readonly: [] },
-      // }
-      return session;
-    },
+    session: generateSession.bind(this),
   },
 };

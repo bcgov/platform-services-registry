@@ -24,8 +24,8 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
         { projectOwnerId: this.session.userId as string },
         { primaryTechnicalLeadId: this.session.userId as string },
         { secondaryTechnicalLeadId: this.session.userId },
-        { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
-        { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
+        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+        { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
       ],
     };
 
@@ -41,7 +41,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
         { projectOwnerId: this.session.userId as string },
         { primaryTechnicalLeadId: this.session.userId as string },
         { secondaryTechnicalLeadId: this.session.userId },
-        { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
+        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
       ],
     };
 
@@ -60,12 +60,12 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     const canEdit =
       this.session.permissions.editAllPrivateCloudProducts ||
       [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
-      this.session.ministries.admin.includes(doc.ministry);
+      this.session.ministries.editor.includes(doc.ministry);
 
     const canView =
       this.session.permissions.viewAllPrivateCloudProducts ||
       canEdit ||
-      this.session.ministries.readonly.includes(doc.ministry);
+      this.session.ministries.reader.includes(doc.ministry);
 
     doc._permissions = {
       view: canView,

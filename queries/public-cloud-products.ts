@@ -36,18 +36,25 @@ export async function searchPublicCloudProducts({
           updatedAt: Prisma.SortOrder.desc,
         };
 
+  if (search === '*') search = '';
+
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
     const productSearchcreteria: Prisma.StringFilter<'PublicCloudProject'> = { contains: search, mode: 'insensitive' };
 
     where.OR = [
-      { projectOwnerId: { in: matchingUserIds } },
-      { primaryTechnicalLeadId: { in: matchingUserIds } },
-      { secondaryTechnicalLeadId: { in: matchingUserIds } },
       { name: productSearchcreteria },
       { description: productSearchcreteria },
       { licencePlate: productSearchcreteria },
     ];
+
+    if (matchingUserIds.length > 0) {
+      where.OR.push(
+        { projectOwnerId: { in: matchingUserIds } },
+        { primaryTechnicalLeadId: { in: matchingUserIds } },
+        { secondaryTechnicalLeadId: { in: matchingUserIds } },
+      );
+    }
   }
 
   if (ministry) {

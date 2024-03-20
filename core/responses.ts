@@ -17,3 +17,31 @@ export function CsvResponse<T extends Record<string, any>>(data: T[], filename: 
 
   return response;
 }
+
+export function BadRequestResponse(error: string) {
+  return NextResponse.json({ success: false, message: 'Bad Request', error }, { status: 400 });
+}
+
+export function UnauthorizedResponse(error: string) {
+  return NextResponse.json({ success: false, message: 'Unauthorized', error }, { status: 401 });
+}
+
+export function ForbiddenResponse(error: string) {
+  return NextResponse.json({ success: false, message: 'Forbidden', error }, { status: 403 });
+}
+
+export function NotFoundResponse(error: string) {
+  return NextResponse.json({ success: false, message: 'Not Found', error }, { status: 404 });
+}
+
+export function InternalServerErrorResponse(error: string) {
+  return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status: 500 });
+}
+
+export function OkResponse<T>(data: T) {
+  return NextResponse.json(data, { status: 200 });
+}
+
+export function CreatedResponse<T>(data: T) {
+  return NextResponse.json(data, { status: 201 });
+}

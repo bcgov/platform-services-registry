@@ -1,3 +1,38 @@
+## [0.19.1](https://github.com/bcgov/platform-services-registry/compare/v0.19.0...v0.19.1) (2024-03-20)
+
+
+### Bug Fixes
+
+* fix data migration scripts ([6142afa](https://github.com/bcgov/platform-services-registry/commit/6142afa8b25beb1a1f96cecdc0f8ebac45824f45))
+
+## [0.19.0](https://github.com/bcgov/platform-services-registry/compare/v0.18.1...v0.19.0) (2024-03-19)
+
+
+### Features
+
+* add data migration to populate missing fields ([ae02860](https://github.com/bcgov/platform-services-registry/commit/ae02860b47b9ef2cb1fead759945c1fdd55497fa))
+* add ministry editor roles ([f450e58](https://github.com/bcgov/platform-services-registry/commit/f450e58691e142e085b4984aa248e382369eb015))
+* add private & public roles in keycloak ([7e595b7](https://github.com/bcgov/platform-services-registry/commit/7e595b7bc011b63cfce114f5c3ccac347f9c563e))
+* add vanity url into terraform production client ([#2293](https://github.com/bcgov/platform-services-registry/issues/2293)) ([5f57ea5](https://github.com/bcgov/platform-services-registry/commit/5f57ea54abe69781c4f4bfc5e714230092c92371))
+* apply security layers on product list page ([cc46be9](https://github.com/bcgov/platform-services-registry/commit/cc46be9d6f980b5aabbbffc595ab77d777642620))
+* lowercase user emails ([babd957](https://github.com/bcgov/platform-services-registry/commit/babd9573459d2fe57e1eedd3617c122f8087cfb6))
+
+
+### Bug Fixes
+
+* update missing updated_at ([f07f32d](https://github.com/bcgov/platform-services-registry/commit/f07f32dea3b88630e7cfa40a43cbc5287243c3bf))
+
+
+### Refactors
+
+* deprecate aggregate db query ([0a629e6](https://github.com/bcgov/platform-services-registry/commit/0a629e648a0007442904ae7e7c160f209b2c579f))
+* enhance api handler types ([df9696a](https://github.com/bcgov/platform-services-registry/commit/df9696ae2cce185c359848ca043b37a6ab620a4c))
+* enhance mock session generation ([0af738a](https://github.com/bcgov/platform-services-registry/commit/0af738a811b05cfb8a4f619c60a8b848590f5ff4))
+* merge duplicate email users ([c984867](https://github.com/bcgov/platform-services-registry/commit/c984867448fc21f1a452e179214b6a17ca36071f))
+* migrate data to update old data ([05c2932](https://github.com/bcgov/platform-services-registry/commit/05c29327d81007bcec2dab061f33328a0d053f95))
+* optimize codebase according to roles & permissions ([4feacbd](https://github.com/bcgov/platform-services-registry/commit/4feacbd867fce3cfc03055275af8daf11ff88109))
+* optimize delete api endpoints ([970ac90](https://github.com/bcgov/platform-services-registry/commit/970ac9015db6189cfb7dbd60dbb60b374b2f708e))
+
 ## [0.18.1](https://github.com/bcgov/platform-services-registry/compare/v0.18.0...v0.18.1) (2024-03-14)
 
 

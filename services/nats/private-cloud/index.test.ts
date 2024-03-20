@@ -6,7 +6,8 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
-import { findMockUserByIDIR } from '@/helpers/mock-users';
+import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
+import { createProxyUsers } from '@/queries/users';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -76,13 +77,10 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
 }));
 
 beforeAll(async () => {
-  mockedGetServerSession.mockResolvedValue({
-    user: {
-      email: createRequestBody.projectOwner.email,
-    },
-    roles: ['user'],
-    isAdmin: false,
-  });
+  await createProxyUsers();
+
+  const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
+  mockedGetServerSession.mockResolvedValue(mockSession);
 
   const req = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
     method: 'POST',

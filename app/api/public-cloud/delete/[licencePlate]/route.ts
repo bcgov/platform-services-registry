@@ -1,93 +1,67 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
-import {
-  DecisionStatus,
-  PublicCloudProject,
-  PublicCloudRequest,
-  ProjectStatus,
-  PublicCloudRequestType,
-  User,
-} from '@prisma/client';
+import { NextResponse } from 'next/server';
+import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import createApiHandler from '@/core/api-handler';
+import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 import { wrapAsync } from '@/helpers/runtime';
 
-const ParamsSchema = z.object({
-  licencePlate: string(),
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
 });
 
-type Params = z.infer<typeof ParamsSchema>;
+const apiHandler = createApiHandler({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export const POST = apiHandler(async ({ pathParams, session }) => {
+  const { userEmail } = session;
+  const { licencePlate } = pathParams;
 
-export async function POST(req: NextRequest, { params }: { params: Params }) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return new Response('You do not have the required credentials.', {
-      status: 401,
-    });
-  }
-
-  const { isAdmin, user, roles: authRoles } = session ?? {};
-  const { email: authEmail } = user ?? {};
-
-  const parsedParams = ParamsSchema.safeParse(params);
-
-  if (!parsedParams.success) {
-    return new Response(parsedParams.error.message, { status: 400 });
-  }
-
-  const { licencePlate } = parsedParams.data;
-
-  const existingRequest: PublicCloudRequest | null = await prisma.publicCloudRequest.findFirst({
-    where: {
-      AND: [{ licencePlate }, { active: true }],
+  const project = await prisma.publicCloudProject.findFirst({
+    where: { licencePlate, status: $Enums.ProjectStatus.ACTIVE },
+    include: {
+      requests: {
+        where: {
+          active: true,
+        },
+      },
     },
-  });
-
-  if (existingRequest !== null) {
-    return new Response('There is already an active request for this project.', { status: 500 });
-  }
-
-  const project: PublicCloudProject | null = await prisma.publicCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
+    session: session as never,
   });
 
   if (!project) {
-    throw new Error('Product does not exist.');
+    return NextResponse.json(
+      { message: 'Bad Request', error: 'there is no matching project not found' },
+      { status: 400 },
+    );
   }
 
-  const users: User[] = await prisma.user.findMany({
-    where: {
-      id: {
-        in: [project.projectOwnerId, project.primaryTechnicalLeadId, project.secondaryTechnicalLeadId].filter(
-          Boolean,
-        ) as string[],
-      },
-    },
-  });
-
-  if (
-    !users.map((usr) => usr.email).includes(authEmail) &&
-    !(authRoles.includes('admin') || authRoles.includes(`ministry-${project.ministry.toLocaleLowerCase()}-admin`))
-  ) {
-    throw new Error('You need to be a contact on this project in order to delete it.');
+  if (project.requests.length > 0) {
+    return NextResponse.json(
+      { message: 'Bad Request', error: 'there is an active request for this project' },
+      { status: 400 },
+    );
   }
 
-  project.status = ProjectStatus.INACTIVE;
+  const projectWithPermissions = project as typeof project & PublicCloudProjectDecorate;
 
-  const { id, updatedAt, ...rest } = project;
+  if (!projectWithPermissions._permissions.delete) {
+    return NextResponse.json({ message: 'Unauthorized', error: 'not allowed to perform the task' }, { status: 401 });
+  }
+
+  projectWithPermissions.status = $Enums.ProjectStatus.INACTIVE;
+
+  const { id, requests, updatedAt, _permissions, ...rest } = projectWithPermissions;
 
   const createRequest: PublicCloudRequestWithRequestedProject = await prisma.publicCloudRequest.create({
     data: {
-      type: PublicCloudRequestType.DELETE,
-      decisionStatus: DecisionStatus.PENDING,
+      type: $Enums.PublicCloudRequestType.DELETE,
+      decisionStatus: $Enums.DecisionStatus.PENDING,
       active: true,
-      createdByEmail: authEmail,
+      createdByEmail: userEmail as string,
       licencePlate: project.licencePlate,
       requestedProject: {
         create: rest,
@@ -126,5 +100,5 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     sendAdminDeleteRequestEmails(createRequest.requestedProject);
   });
 
-  return new Response('Success', { status: 200 });
-}
+  return NextResponse.json({ success: true });
+});
