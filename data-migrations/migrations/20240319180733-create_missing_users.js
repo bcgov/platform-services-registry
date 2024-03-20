@@ -12,17 +12,20 @@ export const up = async (db, client) => {
   });
 
   const placeholderUserId = placeholderUser.insertedId;
+  let count = 0;
 
   async function check(collectionName) {
-    const privateProjects = await db.collection(collectionName).find({}).toArray();
-    for (let x = 0; x < privateProjects.length; x++) {
-      const item = privateProjects[x];
+    const items = await db.collection(collectionName).find({}).toArray();
+    for (let x = 0; x < items.length; x++) {
+      const item = items[x];
       if (item.projectOwnerId) {
-        const user = await db.collection('User').findOne({ _id: { $eq: item.userId } });
+        const user = await db.collection('User').findOne({ _id: { $eq: item.projectOwnerId } });
         if (!user) {
           await db
             .collection(collectionName)
             .updateOne({ _id: { $eq: item._id } }, { $set: { projectOwnerId: placeholderUserId } });
+
+          count += 1;
         }
       }
 
@@ -32,15 +35,19 @@ export const up = async (db, client) => {
           await db
             .collection(collectionName)
             .updateOne({ _id: { $eq: item._id } }, { $set: { primaryTechnicalLeadId: placeholderUserId } });
+
+          count += 1;
         }
       }
 
       if (item.secondaryTechnicalLeadId) {
-        const user = await db.collection('User').findOne({ _id: { $eq: item.userId } });
+        const user = await db.collection('User').findOne({ _id: { $eq: item.secondaryTechnicalLeadId } });
         if (!user) {
           await db
             .collection(collectionName)
             .updateOne({ _id: { $eq: item._id } }, { $set: { secondaryTechnicalLeadId: placeholderUserId } });
+
+          count += 1;
         }
       }
     }
@@ -51,7 +58,7 @@ export const up = async (db, client) => {
   await check('PublicCloudProject');
   await check('PublicCloudRequestedProject');
 
-  console.log('create_missing_users:');
+  console.log('create_missing_users:', count);
 };
 
 export const down = async (db, client) => {
