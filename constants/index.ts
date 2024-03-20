@@ -150,3 +150,46 @@ export const ministriesNames = [
 ];
 
 export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
+
+export const privateSortNames = [
+  {
+    sortKey: 'updatedAt',
+    humanFriendlyName: 'Product last update (A-Z)',
+    sortOrder: 'asc',
+  },
+  {
+    sortKey: 'updatedAt',
+    humanFriendlyName: 'Product last update (Z-A)',
+    sortOrder: 'desc',
+  },
+  {
+    sortKey: 'name',
+    humanFriendlyName: 'Product name (A-Z)',
+    sortOrder: 'asc',
+  },
+  {
+    sortKey: 'name',
+    humanFriendlyName: 'Product name (Z-A)',
+    sortOrder: 'desc',
+  },
+  {
+    sortKey: 'description',
+    humanFriendlyName: 'Product description (A-Z)',
+    sortOrder: 'asc',
+  },
+  {
+    sortKey: 'description',
+    humanFriendlyName: 'Product description (Z-A)',
+    sortOrder: 'desc',
+  },
+  {
+    sortKey: 'licencePlate',
+    humanFriendlyName: 'Product Licence Plate (A-Z)',
+    sortOrder: 'asc',
+  },
+  {
+    sortKey: 'licencePlate',
+    humanFriendlyName: 'Product Licence Plate (Z-A)',
+    sortOrder: 'desc',
+  },
+];

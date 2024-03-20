@@ -16,6 +16,8 @@ export default async function ProductsTable({
     pageSize: string;
     ministry: string;
     cluster: string;
+    sortKey: string;
+    sortOrder: 'asc' | 'desc';
   };
 }) {
   const session = await getServerSession(authOptions);
@@ -24,7 +26,7 @@ export default async function ProductsTable({
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
-  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster } = searchParams;
+  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster, sortKey, sortOrder } = searchParams;
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
@@ -35,6 +37,8 @@ export default async function ProductsTable({
     ministry,
     cluster,
     search,
+    sortKey,
+    sortOrder,
   });
 
   const transformActiveRequests = docs.map((request) => ({

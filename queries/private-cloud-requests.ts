@@ -10,6 +10,8 @@ export async function searchActivePrivateCloudRequests({
   ministry,
   cluster,
   search,
+  sortKey = 'updatedAt',
+  sortOrder = 'desc',
 }: {
   session: Session;
   skip: number;
@@ -17,8 +19,15 @@ export async function searchActivePrivateCloudRequests({
   ministry?: string;
   cluster?: string;
   search?: string;
+  sortKey?: string;
+  sortOrder?: Prisma.SortOrder;
 }) {
   const requestedProjectwhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
+
+  const orderBy =
+    sortKey === 'updatedAt'
+      ? { updatedAt: Prisma.SortOrder[sortOrder] }
+      : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
@@ -72,11 +81,7 @@ export async function searchActivePrivateCloudRequests({
           },
         },
       },
-      orderBy: [
-        {
-          updatedAt: Prisma.SortOrder.desc,
-        },
-      ],
+      orderBy,
       session: session as never,
     }),
     prisma.privateCloudRequest.count({

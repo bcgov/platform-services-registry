@@ -11,6 +11,8 @@ export async function searchPublicCloudProducts({
   provider,
   active,
   search,
+  sortKey = 'updatedAt',
+  sortOrder = 'desc',
   extraFilter,
 }: {
   session: Session;
@@ -20,9 +22,12 @@ export async function searchPublicCloudProducts({
   ministry?: string;
   provider?: string;
   search?: string;
+  sortKey?: string;
+  sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PublicCloudProjectWhereInput;
 }) {
   const where: Prisma.PublicCloudProjectWhereInput = extraFilter ?? {};
+  const orderBy = { [sortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
 
@@ -72,11 +77,7 @@ export async function searchPublicCloudProducts({
           },
         },
       },
-      orderBy: [
-        {
-          updatedAt: Prisma.SortOrder.desc,
-        },
-      ],
+      orderBy,
       session: session as never,
     }),
     prisma.publicCloudProject.count({
