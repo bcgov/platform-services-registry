@@ -33,11 +33,11 @@ export default function FilterPanel() {
       (privateSortName) => privateSortName.humanFriendlyName === event.target.value,
     );
     if (selectedOption) {
-      urlSearchParams.set('sort', selectedOption.name);
-      urlSearchParams.set('order', selectedOption.order);
+      urlSearchParams.set('sortKey', selectedOption.sortKey);
+      urlSearchParams.set('sortOrder', selectedOption.sortOrder);
     } else {
-      urlSearchParams.delete('sort');
-      urlSearchParams.delete('order');
+      urlSearchParams.delete('sortKey');
+      urlSearchParams.delete('sortOrder');
     }
     replace(`${pathname}?${urlSearchParams.toString()}`);
   };
@@ -50,7 +50,7 @@ export default function FilterPanel() {
   const clearFilters = () => {
     urlSearchParams.delete(currentClusterProvider);
     urlSearchParams.delete('ministry');
-    urlSearchParams.delete('sort');
+    urlSearchParams.delete('sortKey');
     if (clusterProviderRef.current) {
       clusterProviderRef.current.value = '';
     }
@@ -71,7 +71,7 @@ export default function FilterPanel() {
         <fieldset className="w-full md:w-48 2xl:w-96">
           <div className="">
             <label htmlFor="sort" className="block text-sm font-medium leading-6 text-gray-900">
-              Sort
+              Sort By
             </label>
             <select
               ref={sortRef}
@@ -83,10 +83,10 @@ export default function FilterPanel() {
               onChange={handleSortChange}
             >
               <option selected={true} disabled value="">
-                Sort
+                Sort By
               </option>
               {privateSortNames.map((privateSortName) => (
-                <option key={privateSortName.name} value={privateSortName.humanFriendlyName}>
+                <option key={privateSortName.sortKey} value={privateSortName.humanFriendlyName}>
                   {privateSortName.humanFriendlyName}
                 </option>
               ))}

@@ -153,43 +153,43 @@ export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
 
 export const privateSortNames = [
   {
-    name: 'updatedAt',
+    sortKey: 'updatedAt',
     humanFriendlyName: 'Product last update (A-Z)',
-    order: 'asc',
+    sortOrder: 'asc',
   },
   {
-    name: 'updatedAt',
+    sortKey: 'updatedAt',
     humanFriendlyName: 'Product last update (Z-A)',
-    order: 'desc',
+    sortOrder: 'desc',
   },
   {
-    name: 'name',
+    sortKey: 'name',
     humanFriendlyName: 'Product name (A-Z)',
-    order: 'asc',
+    sortOrder: 'asc',
   },
   {
-    name: 'name',
+    sortKey: 'name',
     humanFriendlyName: 'Product name (Z-A)',
-    order: 'desc',
+    sortOrder: 'desc',
   },
   {
-    name: 'description',
+    sortKey: 'description',
     humanFriendlyName: 'Product description (A-Z)',
-    order: 'asc',
+    sortOrder: 'asc',
   },
   {
-    name: 'description',
+    sortKey: 'description',
     humanFriendlyName: 'Product description (Z-A)',
-    order: 'desc',
+    sortOrder: 'desc',
   },
   {
-    name: 'licencePlate',
+    sortKey: 'licencePlate',
     humanFriendlyName: 'Product Licence Plate (A-Z)',
-    order: 'asc',
+    sortOrder: 'asc',
   },
   {
-    name: 'licencePlate',
+    sortKey: 'licencePlate',
     humanFriendlyName: 'Product Licence Plate (Z-A)',
-    order: 'desc',
+    sortOrder: 'desc',
   },
 ];

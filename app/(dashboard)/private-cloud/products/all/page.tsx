@@ -17,8 +17,8 @@ export default async function ProductsTable({
     ministry: string;
     cluster: string;
     active: string;
-    sort: string;
-    order: 'asc' | 'desc';
+    sortKey: string;
+    sortOrder: 'asc' | 'desc';
   };
 }) {
   const session = await getServerSession(authOptions);
@@ -27,7 +27,7 @@ export default async function ProductsTable({
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
-  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster, active, sort, order } = searchParams;
+  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster, active, sortKey, sortOrder } = searchParams;
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
@@ -39,8 +39,8 @@ export default async function ProductsTable({
     cluster,
     active: active !== 'false',
     search,
-    sort,
-    order,
+    sortKey,
+    sortOrder,
   });
 
   const projects = docs.map(privateCloudProjectDataToRow);

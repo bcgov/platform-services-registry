@@ -10,8 +10,8 @@ export async function searchActivePublicCloudRequests({
   ministry,
   provider,
   search,
-  sort,
-  order,
+  sortKey = 'updatedAt',
+  sortOrder = 'desc',
 }: {
   session: Session;
   skip: number;
@@ -19,24 +19,15 @@ export async function searchActivePublicCloudRequests({
   ministry?: string;
   provider?: string;
   search?: string;
-  sort?: string;
-  order?: Prisma.SortOrder;
+  sortKey?: string;
+  sortOrder?: Prisma.SortOrder;
 }) {
   const requestedProjectwhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
 
-  let orderBy: { [key: string]: string } | { [key: string]: { [key: string]: string } } = {
-    updatedAt: Prisma.SortOrder.desc,
-  };
-
-  if (sort && order) {
-    if (sort === 'updatedAt') {
-      orderBy = {
-        updatedAt: Prisma.SortOrder[order],
-      };
-    } else {
-      orderBy = { userRequestedProject: { [sort]: Prisma.SortOrder[order] } };
-    }
-  }
+  const orderBy =
+    sortKey === 'updatedAt'
+      ? { updatedAt: Prisma.SortOrder[sortOrder] }
+      : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);

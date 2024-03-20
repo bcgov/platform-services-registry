@@ -11,8 +11,8 @@ export async function searchPrivateCloudProducts({
   cluster,
   active,
   search,
-  sort,
-  order,
+  sortKey = 'updatedAt',
+  sortOrder = 'desc',
   extraFilter,
 }: {
   session: Session;
@@ -22,22 +22,15 @@ export async function searchPrivateCloudProducts({
   ministry?: string;
   cluster?: string;
   search?: string;
-  sort?: string;
-  order?: Prisma.SortOrder;
+  sortKey?: string;
+  sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
 }) {
   const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
 
   if (search === '*') search = '';
 
-  const orderBy =
-    sort && order
-      ? {
-          [sort]: Prisma.SortOrder[order],
-        }
-      : {
-          updatedAt: Prisma.SortOrder.desc,
-        };
+  const orderBy = { [sortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
