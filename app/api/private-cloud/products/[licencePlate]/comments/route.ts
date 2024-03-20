@@ -3,6 +3,8 @@ import createApiHandler from '@/core/api-handler';
 import { createOp } from './_operations/create';
 import listOp from './_operations/list';
 import { z } from 'zod';
+import { PermissionsEnum } from '@/types/permissions';
+import { UnauthorizedResponse, CreatedResponse } from '@/core/responses';
 
 const CreateCommentBodySchema = z.object({
   text: z.string().min(1, 'The comment text must not be empty'),
@@ -10,20 +12,20 @@ const CreateCommentBodySchema = z.object({
 });
 
 export const POST = createApiHandler({
-  roles: ['admin'],
+  roles: ['user'],
+  permissions: [PermissionsEnum.CreatePrivateProductComments],
   validations: {
     body: CreateCommentBodySchema,
   },
 })(async ({ session, body }) => {
-  console.log(session);
   if (!session) {
-    return new NextResponse(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
+    return UnauthorizedResponse('Session not found');
   }
 
   const userId = session!.userId!;
 
   const comment = await createOp({ text: body.text, projectId: body.projectId, userId });
-  return new NextResponse(JSON.stringify(comment), { status: 201 });
+  return CreatedResponse(comment);
 });
 
 export async function GET() {

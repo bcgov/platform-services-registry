@@ -11,10 +11,15 @@ export enum PermissionsEnum {
   DeleteAllPublicCloudProducts = 'deleteAllPublicCloudProducts',
   ReviewAllPublicCloudRequests = 'reviewAllPublicCloudRequests',
 
-  CreateProductComments = 'createProductComments',
-  ViewAllProductComments = 'viewAllProductComments',
-  EditAllProductComments = 'editAllProductComments',
-  DeleteAllProductComments = 'deleteAllProductComments',
+  CreatePrivateProductComments = 'createPrivateProductComments',
+  ViewAllPrivateProductComments = 'viewAllPrivateProductComments',
+  EditAllPrivateProductComments = 'editAllPrivateProductComments',
+  DeleteAllPrivateProductComments = 'deleteAllPrivateProductComments',
+
+  CreatePublicProductComments = 'createPublicProductComments',
+  ViewAllPublicProductComments = 'viewAllPublicProductComments',
+  EditAllPublicProductComments = 'editAllPublicProductComments',
+  DeleteAllPublicProductComments = 'deleteAllPublicProductComments',
 
   ViewZapscanResults = 'viewZapscanResults',
   ViewSonarscanReulsts = 'viewSonarscanReulsts',
