@@ -24,4 +24,4 @@ dependencies:
   - name: nats-provision
     version: '0.1.0'
     repository: 'file://../_nats_provision'
-    condition: natsProvision.enabled
+    condition: nats-provision.enabled

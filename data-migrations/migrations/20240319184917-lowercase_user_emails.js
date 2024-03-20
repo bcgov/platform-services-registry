@@ -1,5 +1,11 @@
+function removeDuplicates(arr) {
+  return arr.filter((value, index, self) => self.indexOf(value) === index);
+}
+
 export const up = async (db, client) => {
   const users = await db.collection('User').find({}).toArray();
+
+  const results = [];
   for (let x = 0; x < users.length; x++) {
     const user = users[x];
 
@@ -17,14 +23,18 @@ export const up = async (db, client) => {
         await db
           .collection(collectionName)
           .updateMany({ projectOwnerId: { $in: otherIds } }, [{ $set: { projectOwnerId: user._id } }]);
+
         await db
           .collection(collectionName)
           .updateMany({ primaryTechnicalLeadId: { $in: otherIds } }, [{ $set: { primaryTechnicalLeadId: user._id } }]);
+
         await db
           .collection(collectionName)
           .updateMany({ secondaryTechnicalLeadId: { $in: otherIds } }, [
             { $set: { secondaryTechnicalLeadId: user._id } },
           ]);
+
+        results.push(user.email);
       }
 
       await update('PrivateCloudProject');
@@ -37,7 +47,7 @@ export const up = async (db, client) => {
   }
 
   const result = await db.collection('User').updateMany({}, [{ $set: { email: { $toLower: '$email' } } }]);
-  console.log('lowercase_user_emails:', result);
+  console.log('lowercase_user_emails:', JSON.stringify(removeDuplicates(results)), result);
 };
 
 export const down = async (db, client) => {};
