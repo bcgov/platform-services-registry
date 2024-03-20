@@ -40,10 +40,15 @@ declare module 'next-auth' {
       deleteAllPublicCloudProducts: boolean;
       reviewAllPublicCloudRequests: boolean;
 
-      createProductComments: boolean;
-      viewAllProductComments: boolean;
-      editAllProductComments: boolean;
-      deleteAllProductComments: boolean;
+      createPrivateProductComments: boolean;
+      viewAllPrivateProductComments: boolean;
+      editAllPrivateProductComments: boolean;
+      deleteAllPrivateProductComments: boolean;
+
+      createPublicProductComments: boolean;
+      viewAllPublicProductComments: boolean;
+      editAllPublicProductComments: boolean;
+      deleteAllPublicProductComments: boolean;
 
       viewZapscanResults: boolean;
       viewSonarscanReulsts: boolean;

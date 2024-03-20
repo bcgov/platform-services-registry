@@ -168,14 +168,14 @@ export async function generateSession({ session, token }: { session: Session; to
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
-
-    // Comments
-    createProductComments: session.isAdmin,
-    viewAllProductComments: session.isAdmin || session.isReader,
-    editAllProductComments: session.isAdmin,
-    deleteAllProductComments: session.isAdmin,
-
-    // Others
+    createPrivateProductComments: session.isAdmin,
+    viewAllPrivateProductComments: session.isAdmin || session.isReader,
+    editAllPrivateProductComments: session.isAdmin,
+    deleteAllPrivateProductComments: session.isAdmin,
+    createPublicProductComments: session.isAdmin,
+    viewAllPublicProductComments: session.isAdmin || session.isReader,
+    editAllPublicProductComments: session.isAdmin,
+    deleteAllPublicProductComments: session.isAdmin,
     viewZapscanResults: session.isAdmin || session.isReader,
     viewSonarscanReulsts: session.isAdmin || session.isReader,
     viewAnalytics: session.isAdmin || session.isReader,
