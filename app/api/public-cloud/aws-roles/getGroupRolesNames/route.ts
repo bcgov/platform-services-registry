@@ -3,15 +3,11 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 
-interface QueryParam {
-  licencePlate: string;
-}
-
 const queryParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const apiHandler = createApiHandler<unknown, QueryParam>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { queryParams: queryParamSchema },
 });

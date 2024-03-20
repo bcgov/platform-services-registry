@@ -5,17 +5,21 @@ export default function ContactChanges({
   poCurrent,
   tl1Current,
   tl2Current,
+  expenseAuthorityCurrent,
   poRequested,
   tl1Requested,
   tl2Requested,
+  expenseAuthorityRequested,
   requestedLabel = 'Requested',
 }: {
   poCurrent: User;
   tl1Current: User;
   tl2Current: User | null;
+  expenseAuthorityCurrent?: User | null;
   poRequested: User;
   tl1Requested: User;
   tl2Requested: User | null;
+  expenseAuthorityRequested?: User | null;
   requestedLabel?: string;
 }) {
   return (
@@ -81,6 +85,28 @@ export default function ContactChanges({
           ) : (
             <Text>No Requested Lead</Text>
           )}
+        </div>
+      )}
+      {expenseAuthorityCurrent?.id !== expenseAuthorityRequested?.id && (
+        <div className="mb-4 mt-10">
+          <Text className="font-semibold mb-0">Current Expense Authority</Text>
+          {expenseAuthorityCurrent ? (
+            <>
+              <Text className="mb-1 mt-2">
+                {expenseAuthorityCurrent.firstName} {expenseAuthorityCurrent.lastName}
+              </Text>
+              <Link className="mb-2" href={`mailto:${expenseAuthorityCurrent.email}`}>
+                {expenseAuthorityCurrent.email}
+              </Link>
+            </>
+          ) : (
+            <Text className="mb-1">No Current Expense Authority</Text>
+          )}
+          <Text className="font-semibold mb-0">{requestedLabel} Expense Authority</Text>
+          <Text className="mb-1 mt-2">
+            {expenseAuthorityRequested?.firstName} {expenseAuthorityRequested?.lastName}
+          </Text>
+          <Link href={`mailto:${expenseAuthorityRequested?.email}`}>{expenseAuthorityRequested?.email}</Link>
         </div>
       )}
     </div>

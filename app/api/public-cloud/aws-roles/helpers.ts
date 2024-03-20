@@ -1,7 +1,5 @@
 import _startCase from 'lodash-es/startCase';
 import _kebabCase from 'lodash-es/kebabCase';
-import _find from 'lodash-es/find';
-import _toLowerCase from 'lodash-es/lowerCase';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { getUser } from '@/services/msgraph';
@@ -125,16 +123,11 @@ export const getMembersByGroupId = async (groupId: string): Promise<User[]> => {
   return members as User[];
 };
 
+// See https://www.keycloak.org/docs-api/21.1.0/rest-api/index.html#_getusers
 export const getUserIdByEmail = async (email: string): Promise<string | undefined> => {
   await kcAdminClient.auth(credentials);
-  const users: any[] = await kcAdminClient.users.find();
-  if (!users) return;
-  const user: any = _find(users, (userItem) => {
-    if (_toLowerCase(userItem.email) === _toLowerCase(email)) {
-      return true;
-    }
-  });
-  return user ? user.id : undefined;
+  const users: any[] = await kcAdminClient.users.find({ exact: true, email });
+  return users.length > 0 ? users[0].id : undefined;
 };
 
 export const addUserToGroup = async (userId: string, groupId: string) => {

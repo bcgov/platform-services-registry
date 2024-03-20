@@ -5,16 +5,13 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 import { sendProvisionedEmails } from '@/services/ches/private-cloud/email-handler';
-
-interface PathParam {
-  licencePlate: string;
-}
+import { wrapAsync } from '@/helpers/runtime';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const apiHandler = createApiHandler<PathParam>({
+const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
@@ -81,6 +78,6 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     },
   });
 
-  sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts);
+  wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
   return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
 });

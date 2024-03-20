@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { PublicCloudRequest, User } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBody, PublicCloudEditRequestBodySchema, UserInput } from '@/schema';
@@ -8,7 +8,8 @@ import { string, z } from 'zod';
 import editRequest from '@/request-actions/public-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
-import { sendEditRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendEditRequestEmails, sendExpenseAuthorityEmail } from '@/services/ches/public-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -68,15 +69,19 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 
   await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
 
-  const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
-  ].filter((usr): usr is User => Boolean(user));
+  wrapAsync(() => {
+    const users: User[] = [
+      request.requestedProject.projectOwner,
+      request.requestedProject.primaryTechnicalLead,
+      request.requestedProject?.secondaryTechnicalLead,
+    ].filter((usr): usr is User => Boolean(user));
 
-  await subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
-
-  await sendEditRequestEmails(request);
+    subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
+    sendEditRequestEmails(request);
+    if (request.requestedProject.expenseAuthorityId !== request.project?.expenseAuthorityId) {
+      sendExpenseAuthorityEmail(request.requestedProject);
+    }
+  });
 
   return new NextResponse('Successfully created and provisioned edit request ', { status: 200 });
 }

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { $Enums, DecisionStatus, Prisma, PublicCloudRequestedProject } from '@prisma/client';
+import { $Enums, DecisionStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { string, z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
-import { sendProvisionedEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
+import { wrapAsync } from '@/helpers/runtime';
 
 const ParamsSchema = z.object({
   licencePlate: string(),
@@ -80,7 +81,12 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
       },
     });
 
-    sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
+    wrapAsync(() => {
+      if (request.type === $Enums.RequestType.DELETE) {
+        sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
+      } else sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
+    });
+
     return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
   } catch (error: any) {
     console.log(error.message);

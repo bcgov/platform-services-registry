@@ -1,4 +1,6 @@
 import { instance } from './axios';
+import { PrivateCloudActiveRequestGetPayload } from '@/app/api/private-cloud/active-request/[licencePlate]/route';
+import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
 
 export async function getPriviateCloudProject(licencePlate: string) {
   const result = await instance.get(`private-cloud/project/${licencePlate}`).then((res) => {
@@ -10,7 +12,7 @@ export async function getPriviateCloudProject(licencePlate: string) {
     return res.data;
   });
 
-  return result;
+  return result as PrivateCloudProjectGetPayload;
 }
 
 export async function editPriviateCloudProject(licencePlate: string, data: any) {
@@ -25,7 +27,7 @@ export async function createPriviateCloudProject(data: any) {
 
 export async function getPriviateCloudActiveRequest(licencePlate: string) {
   const result = await instance.get(`private-cloud/active-request/${licencePlate}`).then((res) => res.data);
-  return result;
+  return result as PrivateCloudActiveRequestGetPayload;
 }
 
 export async function getPriviateCloudRequest(licencePlate: string) {
@@ -38,6 +40,11 @@ export async function getPriviateCloudRequest(licencePlate: string) {
     return res.data;
   });
 
+  return result;
+}
+
+export async function deletePrivateCloudProject(licencePlate: string) {
+  const result = await instance.post(`private-cloud/delete/${licencePlate}`).then((res) => res.data);
   return result;
 }
 

@@ -113,10 +113,7 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   name: z
     .string()
     .min(1, { message: 'Name is required.' })
-    .refine(
-      (value) => !/[!#$%^&*()_\-\[\]{};'"\\|,<>\?]/g.test(value),
-      'Only /. : + = @ _ special symbols are allowed',
-    ),
+    .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
   accountCoding: z
     .string()
     .refine((value) => /^[0-9A-Z\s]+$/.test(value), 'Account Coding should contain only uppercase characters, digits')
@@ -129,7 +126,7 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   projectOwner: UserInputSchema,
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
-  expenseAuthority: UserInputSchema.optional().nullable(), // optional until go to prod
+  expenseAuthority: UserInputSchema,
   requestComment: string().optional(),
 });
 

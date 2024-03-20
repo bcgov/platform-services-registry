@@ -1,39 +1,75 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import prisma from '@/core/prisma';
+import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
+
+type PublicCloudRequest = Prisma.PublicCloudRequestGetPayload<{
+  select: {
+    type: true;
+    decisionStatus: true;
+    createdByEmail: true;
+    licencePlate: true;
+  };
+}>;
 
 export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRequestWhereInput> {
   async readFilter() {
-    if (!this.session) return false;
-    if (this.session.isAdmin) return true;
+    if (!this.session?.userId) return false;
 
-    const res = await prisma.publicCloudRequestedProject.findMany({
-      select: { id: true },
+    if (this.session.permissions.viewAllPublicCloudProducts) return true;
+
+    const res = await prisma.publicCloudProject.findMany({
+      select: { licencePlate: true },
       session: this.session as never,
     });
 
-    const ids = res.map(({ id }) => id);
+    const licencePlates = res.map(({ licencePlate }) => licencePlate);
 
     const baseFilter: Prisma.PublicCloudRequestWhereInput = {
-      requestedProjectId: { in: ids },
+      OR: [
+        { licencePlate: { in: licencePlates } },
+        { type: $Enums.RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
+      ],
     };
 
     return baseFilter;
   }
 
   async writeFilter() {
-    let baseFilter!: Prisma.PublicCloudRequestWhereInput;
-
-    if (!this.session?.isAdmin) {
-      return false;
-    }
-
-    return baseFilter;
+    if (this.session.permissions.reviewAllPublicCloudRequests) return true;
+    return false;
   }
 
-  async decorate(doc: any) {
+  async decorate<T>(doc: T & PublicCloudRequest & PublicCloudRequestDecorate) {
+    const canReview =
+      doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPublicCloudRequests;
+
+    const canEdit = canReview && doc.type !== $Enums.RequestType.DELETE;
+
+    if (doc.type === $Enums.RequestType.CREATE) {
+      doc._permissions = {
+        view: this.session.permissions.viewAllPublicCloudProducts || doc.createdByEmail === this.session.user.email,
+        edit: canEdit,
+        review: canReview,
+        delete: false,
+      };
+
+      return doc;
+    }
+
+    const res = await prisma.publicCloudProject.findFirst({
+      where: { licencePlate: doc.licencePlate },
+      select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, ministry: true },
+      session: this.session as never,
+    });
+
+    const docWithPermissions = res as typeof res & PublicCloudProjectDecorate;
+
     doc._permissions = {
-      view: true,
+      view: docWithPermissions._permissions.view,
+      edit: canEdit,
+      review: canReview,
+      delete: false,
     };
 
     return doc;

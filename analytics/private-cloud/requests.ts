@@ -1,14 +1,9 @@
-import { RequestType } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
-import _isEqual from 'lodash-es/isEqual';
-
-interface CombinedDataPoint {
-  date: string;
-  'All requests': number;
-  'Edit requests': number;
-  'Create requests': number;
-  'Delete requests': number;
-}
+import _forEach from 'lodash-es/forEach';
+import _groupBy from 'lodash-es/groupBy';
+import _map from 'lodash-es/map';
+import { getProdClusterLicensePlates } from './common';
 
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
@@ -17,80 +12,44 @@ function createMonthKey(date: Date) {
 }
 
 export async function combinedRequests() {
+  const prodClusterLicensePlates = await getProdClusterLicensePlates();
+
   const requests = await prisma.privateCloudRequest.findMany({
+    where: { licencePlate: { in: prodClusterLicensePlates } },
     select: {
       created: true,
-    },
-
-    orderBy: {
-      created: 'asc',
-    },
-  });
-
-  const editRequests = await prisma.privateCloudRequest.findMany({
-    where: {
-      type: RequestType.EDIT,
-    },
-    select: {
-      created: true,
+      type: true,
     },
     orderBy: {
       created: 'asc',
     },
   });
 
-  const createRequests = await prisma.privateCloudRequest.findMany({
-    where: {
-      type: RequestType.CREATE,
-    },
-    select: {
-      created: true,
-    },
-    orderBy: {
-      created: 'asc',
-    },
-  });
+  const groupByDateKey = _groupBy(requests, (req) => createMonthKey(req.created));
 
-  const deleteRequests = await prisma.privateCloudRequest.findMany({
-    where: {
-      type: RequestType.DELETE,
-    },
-    select: {
-      created: true,
-    },
-    orderBy: {
-      created: 'asc',
-    },
-  });
-
-  const combinedRequestsData: CombinedDataPoint[] = [];
-
-  const dateMap = new Map<string, number>();
-
-  const combinedDates = [...requests, ...editRequests, ...createRequests, ...deleteRequests]
-    .map((request) => request.created)
-    .sort((a, b) => (a > b ? 1 : -1));
-
-  combinedDates.forEach((d) => {
-    const date = createMonthKey(d);
-    const count = dateMap.get(date) || 0;
-    dateMap.set(date, count + 1);
-  });
-
-  dateMap.forEach((count, date) => {
-    const allCount = requests.filter((request) => createMonthKey(request.created) === date).length;
-    const editCount = editRequests.filter((request) => createMonthKey(request.created) === date).length;
-    const createCount = createRequests.filter((request) => createMonthKey(request.created) === date).length;
-    const deleteCount = deleteRequests.filter((request) => createMonthKey(request.created) === date).length;
-
-    combinedRequestsData.push({
+  return _map(groupByDateKey, (dateRequests, date) => {
+    const result = {
       date,
-      'All requests': allCount,
-      'Edit requests': editCount,
-      'Create requests': createCount,
-      'Delete requests': deleteCount,
-    });
-  });
+      'All requests': dateRequests.length,
+      'Edit requests': 0,
+      'Create requests': 0,
+      'Delete requests': 0,
+    };
 
-  return combinedRequestsData;
+    _forEach(dateRequests, (req) => {
+      switch (req.type) {
+        case $Enums.RequestType.CREATE:
+          result['Create requests']++;
+          break;
+        case $Enums.RequestType.EDIT:
+          result['Edit requests']++;
+          break;
+        case $Enums.RequestType.DELETE:
+          result['Delete requests']++;
+          break;
+      }
+    });
+
+    return result;
+  });
 }

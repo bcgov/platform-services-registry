@@ -23,12 +23,12 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8eb1f6a495037164bea451156472f35fdd6bafc0
+    - uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017
       with:
         ref: main
 
     - name: Authenticate and set context
-      uses: redhat-actions/oc-login@e76d34725a820db6e69b42a8b08457dfe1c5f3f9
+      uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}

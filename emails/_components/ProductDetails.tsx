@@ -14,6 +14,7 @@ export default function ProductDetails({
   po,
   tl1,
   tl2,
+  expenseAuthority,
   licencePlate,
 }: {
   name: string;
@@ -22,6 +23,7 @@ export default function ProductDetails({
   po: User;
   tl1: User;
   tl2?: User | null;
+  expenseAuthority?: User | null;
   licencePlate?: string;
 }) {
   return (
@@ -62,6 +64,17 @@ export default function ProductDetails({
             </Text>
             <Link className="mt-0 h-4" href={`mailto:${tl2.email}`}>
               {tl2.email}
+            </Link>
+          </div>
+        )}
+        {expenseAuthority && (
+          <div>
+            <Text className="mb-2 font-semibold h-4">Expense Authority: </Text>
+            <Text className="mt-0 mb-2 h-4">
+              {expenseAuthority.firstName} {expenseAuthority.lastName}
+            </Text>
+            <Link className="mt-0 h-4" href={`mailto:${expenseAuthority.email}`}>
+              {expenseAuthority.email}
             </Link>
           </div>
         )}

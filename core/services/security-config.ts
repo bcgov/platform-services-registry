@@ -36,9 +36,33 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
     return this.readFilter();
   }
 
-  async decorate(doc: any) {
+  async decorate<T>(
+    doc: { _permissions: { view: boolean; edit: boolean; delete: boolean } } & T & Record<string, any>,
+  ) {
+    const query = { where: { licencePlate: doc.license }, session: this.session as never };
+
+    const privateQuery = {
+      ...query,
+      select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, cluster: true },
+    };
+
+    const publicQuery = {
+      ...query,
+      select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, provider: true },
+    };
+
+    const project = await (doc.context === $Enums.ProjectContext.PRIVATE
+      ? prisma.privateCloudProject.findFirst(privateQuery)
+      : prisma.publicCloudProject.findFirst(publicQuery));
+
+    const projectWithPermissions = project as typeof project & {
+      _permissions: { view: boolean; edit: boolean; delete: boolean };
+    };
+
     doc._permissions = {
-      view: true,
+      view: projectWithPermissions._permissions.view,
+      edit: projectWithPermissions._permissions.edit,
+      delete: false,
     };
 
     return doc;

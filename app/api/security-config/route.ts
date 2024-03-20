@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/core/prisma';
-import { SecurityConfig, $Enums } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { SecurityConfigRequestBodySchema } from '@/schema';
-import { ProjectSetNamespace } from '@/helpers/openshift';
 
-const apiHandler = createApiHandler<null, null, SecurityConfig>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { body: SecurityConfigRequestBodySchema },
 });

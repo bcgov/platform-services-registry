@@ -6,6 +6,7 @@ import DeleteModal from '@/components/modal/PublicCloudDelete';
 import ReturnModal from '@/components/modal/Return';
 import { useParams, useRouter } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
+import { deletePublicCloudProject } from '@/services/backend/public-cloud';
 
 export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
   const [showModal, setShowModal] = useState(false);
@@ -19,31 +20,18 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
   const onSubmit = async () => {
     setIsSubmitLoading(true);
     try {
-      const response = await fetch(`/api/public-cloud/delete/${params.licencePlate}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        const requestErrorMessage = await response.text();
-        setErrorMessage(requestErrorMessage);
-
-        setIsSubmitLoading(false);
-        setShowModal(false);
-        setShowErrorModal(true);
-      } else {
-        setShowModal(false);
-        setShowReturnModal(true);
-      }
+      await deletePublicCloudProject(params.licencePlate as string);
+      setShowModal(false);
+      setShowReturnModal(true);
     } catch (error) {
+      setErrorMessage(String(error));
       setIsSubmitLoading(false);
       setShowModal(false);
       setShowErrorModal(true);
     }
   };
+
+  if (disabled) return null;
 
   return (
     <>

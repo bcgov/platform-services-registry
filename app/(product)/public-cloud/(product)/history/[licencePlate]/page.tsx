@@ -1,12 +1,11 @@
 import Table from '@/components/table/Table';
 import TableBody from '@/components/table/TableBodyRequests';
-import { publicCloudRequestsPaginated } from '@/queries/paginated/public-cloud';
 import { publicCloudRequestDataToRow } from '@/components/table/helpers/row-mapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/options';
+import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
-import { PublicCloudRequest } from '@prisma/client';
-import { userInfo } from '@/queries/user';
+import { parsePaginationParams } from '@/helpers/pagination';
+import { searchActivePublicCloudRequests } from '@/queries/public-cloud-requests';
 
 export const revalidate = 0;
 
@@ -29,8 +28,8 @@ export default async function RequestsTable({
   params: { licencePlate: string };
   searchParams: {
     search: string;
-    page: number;
-    pageSize: number;
+    page: string;
+    pageSize: string;
     ministry: string;
     provider: string;
     active: boolean;
@@ -43,34 +42,29 @@ export default async function RequestsTable({
     redirect('/login?callbackUrl=/public-cloud/products/all');
   }
 
-  const { search, page, pageSize, ministry, provider, active } = searchParams;
-  const { userEmail, ministryRoles } = userInfo(session.user.email, session.roles);
+  const { search, page: pageStr, pageSize: pageSizeStr, ministry, provider } = searchParams;
 
-  // If a page is not provided, default to 1
-  const currentPage = typeof searchParams.page === 'string' ? +page : 1;
-  const defaultPageSize = 10;
+  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
-  const { data, total }: { data: PublicCloudRequest[]; total: number } = await publicCloudRequestsPaginated(
-    +pageSize || defaultPageSize,
-    currentPage,
-    params.licencePlate,
+  const { docs, totalCount } = await searchActivePublicCloudRequests({
+    session,
+    skip,
+    take,
     ministry,
     provider,
-    userEmail,
-    ministryRoles,
-    active,
-  );
+    search,
+  });
 
-  const rows = data.map(publicCloudRequestDataToRow);
+  const rows = docs.map(publicCloudRequestDataToRow);
 
   return (
     <Table
       title={`Request history for ${params.licencePlate}`}
       description="These are the submitted requests for the Public Cloud OpenShift platform"
       tableBody={<TableBody headers={headers} rows={rows} />}
-      total={total}
-      currentPage={currentPage}
-      pageSize={+pageSize || defaultPageSize}
+      total={totalCount}
+      currentPage={page}
+      pageSize={take}
       removeSearch={true}
     />
   );

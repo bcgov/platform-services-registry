@@ -3,35 +3,18 @@ import { ModelService } from '@/core/model-service';
 
 export class PrivateCloudRequestedProjectService extends ModelService<Prisma.PrivateCloudRequestedProjectWhereInput> {
   async readFilter() {
-    if (!this.session) return false;
-    if (this.session?.isAdmin) return true;
-
-    const baseFilter: Prisma.PrivateCloudRequestedProjectWhereInput = {
-      OR: [
-        { projectOwnerId: this.session.userId as string },
-        { primaryTechnicalLeadId: this.session.userId as string },
-        { secondaryTechnicalLeadId: this.session.userId },
-        { ministry: { in: this.session.ministries.admin as $Enums.Ministry[] } },
-        { ministry: { in: this.session.ministries.readonly as $Enums.Ministry[] } },
-      ],
-    };
-
-    return baseFilter;
+    return false;
   }
 
   async writeFilter() {
-    let baseFilter!: Prisma.PrivateCloudRequestedProjectWhereInput;
-
-    if (!this.session?.isAdmin) {
-      return false;
-    }
-
-    return baseFilter;
+    return false;
   }
 
-  async decorate(doc: any) {
+  async decorate<T>(doc: T & { _permissions: { view: boolean; edit: boolean; delete: boolean } }) {
     doc._permissions = {
       view: true,
+      edit: true,
+      delete: false,
     };
 
     return doc;

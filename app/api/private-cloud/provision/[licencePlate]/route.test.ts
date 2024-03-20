@@ -6,7 +6,7 @@ import { POST as decisionRequest } from '@/app/api/private-cloud/decision/[licen
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { findMockUserByIDIR } from '@/helpers/mock-users';
+import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -111,13 +111,8 @@ describe('Create Private Cloud Request Route', () => {
   beforeAll(async () => {
     // await cleanUp();
 
-    mockedGetServerSession.mockResolvedValue({
-      user: {
-        email: 'oamar.kanji@gov.bc.ca',
-      },
-      roles: ['user', 'admin'],
-      isAdmin: true,
-    });
+    const mockSession = await generateTestSession('admin.system@gov.bc.ca');
+    mockedGetServerSession.mockResolvedValue(mockSession);
 
     // Make a create request
     const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
@@ -192,12 +187,6 @@ describe('Create Private Cloud Request Route', () => {
   // });
 
   test('should return 200 if provision is successful', async () => {
-    // mockedGetServerSession.mockResolvedValue({
-    //   user: {
-    //     email: "oamar.kanji@gov.bc.ca",
-    //     roles: ["admin"],
-    //   },
-    // });
     const req = new NextRequest(API_URL, {
       method: 'PUT',
     });

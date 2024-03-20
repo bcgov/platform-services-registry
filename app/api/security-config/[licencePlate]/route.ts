@@ -4,14 +4,6 @@ import prisma from '@/core/prisma';
 import { SecurityConfig, $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 
-interface PathParam {
-  licencePlate: string;
-}
-
-interface QueryParam {
-  context: $Enums.ProjectContext;
-}
-
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
@@ -20,7 +12,7 @@ const queryParamSchema = z.object({
   context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
 });
 
-const apiHandler = createApiHandler<PathParam, QueryParam>({
+const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });

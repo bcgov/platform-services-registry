@@ -1,3 +1,63 @@
+## [0.19.0](https://github.com/bcgov/platform-services-registry/compare/v0.18.1...v0.19.0) (2024-03-19)
+
+
+### Features
+
+* add data migration to populate missing fields ([ae02860](https://github.com/bcgov/platform-services-registry/commit/ae02860b47b9ef2cb1fead759945c1fdd55497fa))
+* add ministry editor roles ([f450e58](https://github.com/bcgov/platform-services-registry/commit/f450e58691e142e085b4984aa248e382369eb015))
+* add private & public roles in keycloak ([7e595b7](https://github.com/bcgov/platform-services-registry/commit/7e595b7bc011b63cfce114f5c3ccac347f9c563e))
+* add vanity url into terraform production client ([#2293](https://github.com/bcgov/platform-services-registry/issues/2293)) ([5f57ea5](https://github.com/bcgov/platform-services-registry/commit/5f57ea54abe69781c4f4bfc5e714230092c92371))
+* apply security layers on product list page ([cc46be9](https://github.com/bcgov/platform-services-registry/commit/cc46be9d6f980b5aabbbffc595ab77d777642620))
+* lowercase user emails ([babd957](https://github.com/bcgov/platform-services-registry/commit/babd9573459d2fe57e1eedd3617c122f8087cfb6))
+
+
+### Bug Fixes
+
+* update missing updated_at ([f07f32d](https://github.com/bcgov/platform-services-registry/commit/f07f32dea3b88630e7cfa40a43cbc5287243c3bf))
+
+
+### Refactors
+
+* deprecate aggregate db query ([0a629e6](https://github.com/bcgov/platform-services-registry/commit/0a629e648a0007442904ae7e7c160f209b2c579f))
+* enhance api handler types ([df9696a](https://github.com/bcgov/platform-services-registry/commit/df9696ae2cce185c359848ca043b37a6ab620a4c))
+* enhance mock session generation ([0af738a](https://github.com/bcgov/platform-services-registry/commit/0af738a811b05cfb8a4f619c60a8b848590f5ff4))
+* merge duplicate email users ([c984867](https://github.com/bcgov/platform-services-registry/commit/c984867448fc21f1a452e179214b6a17ca36071f))
+* migrate data to update old data ([05c2932](https://github.com/bcgov/platform-services-registry/commit/05c29327d81007bcec2dab061f33328a0d053f95))
+* optimize codebase according to roles & permissions ([4feacbd](https://github.com/bcgov/platform-services-registry/commit/4feacbd867fce3cfc03055275af8daf11ff88109))
+* optimize delete api endpoints ([970ac90](https://github.com/bcgov/platform-services-registry/commit/970ac9015db6189cfb7dbd60dbb60b374b2f708e))
+
+## [0.18.1](https://github.com/bcgov/platform-services-registry/compare/v0.18.0...v0.18.1) (2024-03-14)
+
+
+### Features
+
+* **analytics:** filter private cloud requests by prod productions ([1158948](https://github.com/bcgov/platform-services-registry/commit/11589481f1293b9c225bbc1d39e671380835be99))
+
+
+### Bug Fixes
+
+* add user aws roles issue, hide histroy tab from prod ([#2279](https://github.com/bcgov/platform-services-registry/issues/2279)) ([35c1caf](https://github.com/bcgov/platform-services-registry/commit/35c1cafa54752623b42baf9600697a1b4875c415))
+
+
+### Docs
+
+* update db backup steps ([c2ffe13](https://github.com/bcgov/platform-services-registry/commit/c2ffe1333cc203975e8cec90b30b9428c50ee784))
+
+## [0.18.0](https://github.com/bcgov/platform-services-registry/compare/v0.17.0...v0.18.0) (2024-03-13)
+
+
+### Features
+
+* add update-db make script ([b485016](https://github.com/bcgov/platform-services-registry/commit/b4850167272bcd5d7add2d61962629452acaabb1))
+* restrict certain special characters from entering in public project name ([d938ca9](https://github.com/bcgov/platform-services-registry/commit/d938ca976aa8e2754462660af008c0ae5c7b440c))
+* setup restful api for comments ([c373319](https://github.com/bcgov/platform-services-registry/commit/c373319d2465e48ba34fd2b157865f63487c2ea6))
+
+
+### Bug Fixes
+
+* fix issue with deletion provisioned email for public cloud ([#2267](https://github.com/bcgov/platform-services-registry/issues/2267)) ([ae056b1](https://github.com/bcgov/platform-services-registry/commit/ae056b14ed9457d79a146d0145372b2eff2a2eb1))
+* resolve issues when deleting projects ([c57986c](https://github.com/bcgov/platform-services-registry/commit/c57986cf2feced45e02912883380ea45f773bb7e))
+
 ## [0.17.0](https://github.com/bcgov/platform-services-registry/compare/v0.16.0...v0.17.0) (2024-03-07)
 
 

@@ -1,11 +1,13 @@
 import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
+import { getProdClusterLicensePlates } from './common';
 
-function getAggByCluster(cluster?: string) {
+function getAggByCluster(prodClusterLicensePlates: string[], cluster?: string) {
   const pipeline: Prisma.InputJsonValue[] = cluster
     ? [
         {
           $match: {
+            licencePlate: { $in: prodClusterLicensePlates },
             status: { $eq: 'ACTIVE' },
             cluster: { $regex: cluster, $options: 'i' },
           },
@@ -14,6 +16,7 @@ function getAggByCluster(cluster?: string) {
     : [
         {
           $match: {
+            licencePlate: { $in: prodClusterLicensePlates },
             status: { $eq: 'ACTIVE' },
           },
         },
@@ -30,11 +33,12 @@ function getAggByCluster(cluster?: string) {
 }
 
 export async function ministryDistributions() {
+  const prodClusterLicensePlates = await getProdClusterLicensePlates();
   const res = await Promise.all([
-    getAggByCluster(),
-    getAggByCluster('SILVER'),
-    getAggByCluster('GOLD'),
-    getAggByCluster('EMERALD'),
+    getAggByCluster(prodClusterLicensePlates),
+    getAggByCluster(prodClusterLicensePlates, 'SILVER'),
+    getAggByCluster(prodClusterLicensePlates, 'GOLD'),
+    getAggByCluster(prodClusterLicensePlates, 'EMERALD'),
   ]);
 
   return res as unknown as { _id: string; value: number }[][];

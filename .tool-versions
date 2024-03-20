@@ -1,8 +1,8 @@
 nodejs 20.11.1
 python 3.12.1
 oc 4.13.3
-kubectl 1.29.2
+kubectl 1.29.3
 terraform 1.5.7
-helm 3.14.2
+helm 3.14.3
 sonarscanner 5.0.1.3006
 shfmt 3.8.0
