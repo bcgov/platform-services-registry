@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/utils/hooks';
 import FilterPanel from './FilterPanel';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Disclosure } from '@headlessui/react';
 import AlertBox from '@/components/modal/AlertBox';
 
 type SearchFilterSortProps = {

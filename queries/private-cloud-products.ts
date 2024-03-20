@@ -11,6 +11,8 @@ export async function searchPrivateCloudProducts({
   cluster,
   active,
   search,
+  sort,
+  order,
   extraFilter,
 }: {
   session: Session;
@@ -20,9 +22,20 @@ export async function searchPrivateCloudProducts({
   ministry?: string;
   cluster?: string;
   search?: string;
+  sort?: string;
+  order?: Prisma.SortOrder;
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
 }) {
   const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+
+  const orderBy =
+    sort && order
+      ? {
+          [sort]: Prisma.SortOrder[order],
+        }
+      : {
+          updatedAt: Prisma.SortOrder.desc,
+        };
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
@@ -50,8 +63,6 @@ export async function searchPrivateCloudProducts({
     where.status = $Enums.ProjectStatus.ACTIVE;
   }
 
-  console.log('wherewhere', where);
-
   const [docs, totalCount] = await Promise.all([
     prisma.privateCloudProject.findMany({
       where,
@@ -67,11 +78,7 @@ export async function searchPrivateCloudProducts({
           },
         },
       },
-      orderBy: [
-        {
-          updatedAt: Prisma.SortOrder.desc,
-        },
-      ],
+      orderBy,
       session: session as never,
     }),
     prisma.privateCloudProject.count({
