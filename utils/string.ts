@@ -1,4 +1,4 @@
-export const capitalizeFirstLetter = (name: string): string => {
+export function capitalizeFirstLetter(name: string) {
   const words = name.split(' ');
   const capitalizedWords = words.map((word) => {
     if (word.length > 0) {
@@ -9,4 +9,15 @@ export const capitalizeFirstLetter = (name: string): string => {
   const result = capitalizedWords.join(' ');
 
   return result;
-};
+}
+
+export function extractNumbers(inputString: string) {
+  const pattern = /\d+(?:_\d+)?/g;
+  const matches = inputString.match(pattern);
+
+  if (matches) {
+    const numbers = matches.map((match) => parseFloat(match.replace(/_/g, '.')));
+    return numbers;
+  }
+  return [];
+}
