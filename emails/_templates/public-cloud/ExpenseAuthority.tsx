@@ -34,9 +34,11 @@ const ExpenseAuthorityTemplate = ({ product }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg">You requested as the expense authority</Heading>
+                <Heading className="text-lg">You are requested as the Expense Authority</Heading>
                 <Text>Hi, {expenseAuthority?.firstName},</Text>
-                <Text className="">You were are added as the expense authority to the {name} AWS project.</Text>
+                <Text className="">
+                  You are added as an Expense Authority person for the product {name} in Platform Service Registry.
+                </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
