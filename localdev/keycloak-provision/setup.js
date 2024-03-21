@@ -8,6 +8,8 @@ const keycloakUrl = process.env.KEYCLOAK_URL;
 const realmName = process.env.REALM_NAME;
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
+const gitOpsclientId = process.env.GITOPS_CLIENT_ID;
+const gitOpsclientSecret = process.env.GITOPS_CLIENT_SECRET;
 const clientScope = 'https://graph.microsoft.com/.default';
 
 const proxyUsers = m365ProxyResponse.responses.find(
@@ -42,9 +44,9 @@ async function main() {
 
   const findRealm = () => kcAdminClient.realms.findOne({ realm: realmName });
 
-  const findClient = () =>
+  const findClient = (cid = clientId) =>
     kcAdminClient.clients
-      .findOne({ realm: realmName, clientId })
+      .findOne({ realm: realmName, clientId: cid })
       .then((clients) => (clients?.length > 0 ? clients[0] : null));
 
   // Create Realm if not exist
@@ -153,6 +155,30 @@ async function main() {
     realm: realmName,
     id: client.id,
   });
+
+  // Upsert GitOps client
+  (async () => {
+    let gitopsClient = await findClient(gitOpsclientId);
+    if (!gitopsClient) {
+      await kcAdminClient.clients.create({ realm: realmName, clientId: gitOpsclientId });
+    }
+
+    gitopsClient = await findClient(gitOpsclientId);
+    if (gitopsClient) {
+      await kcAdminClient.clients.update(
+        { realm: realmName, id: gitopsClient.id },
+        {
+          enabled: true,
+          publicClient: false,
+          serviceAccountsEnabled: true,
+          standardFlowEnabled: false,
+          implicitFlowEnabled: false,
+          directAccessGrantsEnabled: false,
+          secret: gitOpsclientSecret,
+        },
+      );
+    }
+  })();
 
   // Create Users
   await Promise.all(

@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { z, TypeOf, ZodType } from 'zod';
 import { parseQueryString } from '@/utils/query-string';
+import { verifyKeycloakJwtTokenSafe } from '@/types/jwt';
 import {
   BadRequestResponse,
   UnauthorizedResponse,
@@ -12,6 +13,7 @@ import {
   InternalServerErrorResponse,
   OkResponse,
 } from './responses';
+import { AUTH_BASE_URL, AUTH_RELM } from '@/config';
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];
@@ -21,6 +23,11 @@ interface HandlerProps<TPathParams, TQueryParams, TBody> {
     queryParams?: TQueryParams;
     body?: TBody;
   };
+  keycloakOauth2?: {
+    authUrl?: string;
+    realm?: string;
+    clientId: string;
+  };
 }
 
 interface RouteProps<TPathParams, TQueryParams, TBody> {
@@ -28,6 +35,7 @@ interface RouteProps<TPathParams, TQueryParams, TBody> {
   pathParams: TPathParams;
   queryParams: TQueryParams;
   body: TBody;
+  headers: Headers;
 }
 
 function arrayIntersection(arr1: string[], arr2: string[]) {
@@ -47,7 +55,7 @@ function createApiHandler<
   TPathParams extends ZodType<any, any>,
   TQueryParams extends ZodType<any, any>,
   TBody extends ZodType<any, any>,
->({ roles, permissions, validations }: HandlerProps<TPathParams, TQueryParams, TBody>) {
+>({ roles, permissions, validations, keycloakOauth2 }: HandlerProps<TPathParams, TQueryParams, TBody>) {
   const {
     pathParams: pathParamVal = z.object({}),
     queryParams: queryParamVal = z.object({}),
@@ -68,23 +76,44 @@ function createApiHandler<
       { params }: { params: TypeOf<TPathParams> } = { params: {} as TypeOf<TPathParams> },
     ) {
       try {
-        const session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
-
-        // Validate user roles
-        if (roles && roles.length > 0) {
-          const allowed = arrayIntersection(roles, session.roles).length > 0;
-          if (!allowed) {
+        let session!: Session;
+        if (keycloakOauth2) {
+          const bearerToken = req.headers.get('authorization');
+          if (!bearerToken) {
             return UnauthorizedResponse('not allowed to perform the task');
           }
-        }
 
-        // Validate user permissions
-        if (permissions && permissions.length > 0) {
-          const allowed = permissions.some(
-            (permKey) => session.permissions[permKey as keyof typeof session.permissions],
-          );
-          if (!allowed) {
-            return UnauthorizedResponse('not allowed to perform the task');
+          const { authUrl = AUTH_BASE_URL, realm = AUTH_RELM, clientId } = keycloakOauth2;
+
+          const payload = await verifyKeycloakJwtTokenSafe({
+            jwtToken: bearerToken,
+            authUrl,
+            realm,
+            authorizedPresenter: clientId,
+          });
+
+          if (!payload) {
+            return UnauthorizedResponse('invalid token');
+          }
+        } else {
+          session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
+
+          // Validate user roles
+          if (roles && roles.length > 0) {
+            const allowed = arrayIntersection(roles, session.roles).length > 0;
+            if (!allowed) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
+          }
+
+          // Validate user permissions
+          if (permissions && permissions.length > 0) {
+            const allowed = permissions.some(
+              (permKey) => session.permissions[permKey as keyof typeof session.permissions],
+            );
+            if (!allowed) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
           }
         }
 
@@ -131,7 +160,7 @@ function createApiHandler<
           body = parsed.data;
         }
 
-        return await fn({ session, pathParams, queryParams, body });
+        return await fn({ session, pathParams, queryParams, body, headers: req.headers });
       } catch (error) {
         console.error(error);
         return InternalServerErrorResponse(String(error));
