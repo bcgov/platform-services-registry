@@ -97,23 +97,23 @@ function createApiHandler<
           }
         } else {
           session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
-        }
 
-        // Validate user roles
-        if (roles && roles.length > 0) {
-          const allowed = arrayIntersection(roles, session.roles).length > 0;
-          if (!allowed) {
-            return UnauthorizedResponse('not allowed to perform the task');
+          // Validate user roles
+          if (roles && roles.length > 0) {
+            const allowed = arrayIntersection(roles, session.roles).length > 0;
+            if (!allowed) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
           }
-        }
 
-        // Validate user permissions
-        if (permissions && permissions.length > 0) {
-          const allowed = permissions.some(
-            (permKey) => session.permissions[permKey as keyof typeof session.permissions],
-          );
-          if (!allowed) {
-            return UnauthorizedResponse('not allowed to perform the task');
+          // Validate user permissions
+          if (permissions && permissions.length > 0) {
+            const allowed = permissions.some(
+              (permKey) => session.permissions[permKey as keyof typeof session.permissions],
+            );
+            if (!allowed) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
           }
         }
 
