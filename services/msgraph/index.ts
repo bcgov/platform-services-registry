@@ -42,8 +42,8 @@ const userAttributes = [
 const userSelect = `$select=${userAttributes.join(',')}`;
 
 // See https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http
-export async function getUser(idOruserPrincipalName: string) {
-  const url = `https://graph.microsoft.com/v1.0/users/${idOruserPrincipalName}?${userSelect}`;
+export async function getUser(idOrUserPrincipalName: string) {
+  const url = `https://graph.microsoft.com/v1.0/users/${idOrUserPrincipalName}?${userSelect}`;
   const res = await sendRequest(url);
 
   if (res.status !== 200) {
@@ -71,6 +71,14 @@ export async function listUsersByEmail(email: string) {
 
   const data = await res.json();
   return (data as { value: MsUser[] }).value.map(processMsUser);
+}
+
+export async function getUserByEmail(email: string) {
+  const users = await listUsersByEmail(email);
+  const matchingUsers = users.filter((user) => user.email.toLowerCase() === email.toLowerCase());
+  if (matchingUsers.length === 0) return null;
+
+  return matchingUsers[0];
 }
 
 export async function getUserPhoto(email: string) {
