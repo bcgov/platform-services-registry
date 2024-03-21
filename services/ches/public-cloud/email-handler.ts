@@ -165,7 +165,7 @@ export const sendExpenseAuthorityEmail = async (product: PublicCloudRequestedPro
     await sendEmail({
       body: expenseAuthorityEmail,
       to: [product.expenseAuthority?.email].filter(Boolean),
-      subject: `You are added as an Expense Authority person for the product ${product.name} in Platform Service Registry`,
+      subject: `You have been added as the Expense Authority for ${product.name} in Platform Service Registry`,
     });
   } catch (error) {
     console.error('ERROR SENDING EXPENSE AUTHORITY EMAIL', error);
