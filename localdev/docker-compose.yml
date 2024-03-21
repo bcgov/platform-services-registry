@@ -45,6 +45,8 @@ services:
       REALM_NAME: platform-services
       CLIENT_ID: pltsvc
       CLIENT_SECRET: testsecret # pragma: allowlist secret
+      GITOPS_CLIENT_ID: registry-gitops-ci
+      GITOPS_CLIENT_SECRET: testsecret # pragma: allowlist secret
     depends_on:
     - keycloak
 
