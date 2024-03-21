@@ -1,3 +1,15 @@
+## [0.20.1](https://github.com/bcgov/platform-services-registry/compare/v0.20.0...v0.20.1) (2024-03-21)
+
+
+### Features
+
+* **2320:** migreate gitops apis ([e4f60d1](https://github.com/bcgov/platform-services-registry/commit/e4f60d12b0226a581a89abf46015d5cf0e0563f8))
+
+
+### Bug Fixes
+
+* add get user by email ([#2353](https://github.com/bcgov/platform-services-registry/issues/2353)) ([8f2576c](https://github.com/bcgov/platform-services-registry/commit/8f2576c2aa6d184290db7b631d961659fe52778e))
+
 ## [0.20.0](https://github.com/bcgov/platform-services-registry/compare/v0.19.1...v0.20.0) (2024-03-21)
 
 
