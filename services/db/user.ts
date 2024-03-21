@@ -2,12 +2,12 @@ import prisma from '@/core/prisma';
 import _compact from 'lodash-es/compact';
 import _castArray from 'lodash-es/castArray';
 import _forEach from 'lodash-es/forEach';
-import { getUser } from '@/services/msgraph';
+import { getUserByEmail } from '@/services/msgraph';
 
 export async function upsertUser(email: string) {
   try {
     email = email.toLowerCase();
-    const adUser = await getUser(email);
+    const adUser = await getUserByEmail(email);
     if (!adUser) return null;
 
     const data = {

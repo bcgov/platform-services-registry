@@ -3,7 +3,7 @@ import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/core/prisma';
-import { getUser } from '@/services/msgraph';
+import { getUserByEmail } from '@/services/msgraph';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
 
 interface KeycloakToken {
@@ -259,7 +259,7 @@ export const authOptions: AuthOptions = {
         upn: '',
       };
 
-      const adUser = await getUser(loweremail);
+      const adUser = await getUserByEmail(loweremail);
       if (adUser) {
         data.ministry = adUser.ministry;
         data.idir = adUser.idir;
