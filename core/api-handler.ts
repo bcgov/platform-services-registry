@@ -13,7 +13,7 @@ import {
   InternalServerErrorResponse,
   OkResponse,
 } from './responses';
-import { AUTH_BASE_URL, AUTH_RELM } from '@/config';
+import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];
@@ -83,7 +83,7 @@ function createApiHandler<
             return UnauthorizedResponse('not allowed to perform the task');
           }
 
-          const { authUrl = AUTH_BASE_URL, realm = AUTH_RELM, clientId } = keycloakOauth2;
+          const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId } = keycloakOauth2;
 
           const payload = await verifyKeycloakJwtTokenSafe({
             jwtToken: bearerToken,
