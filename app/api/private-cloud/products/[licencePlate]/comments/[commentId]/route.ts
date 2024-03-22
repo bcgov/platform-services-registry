@@ -1,8 +1,7 @@
-import { NextResponse } from 'next/server';
 import createApiHandler from '@/core/api-handler';
 import { z } from 'zod';
 import { PermissionsEnum } from '@/types/permissions';
-import { UnauthorizedResponse, OkResponse, NotFoundResponse } from '@/core/responses';
+import { OkResponse, NotFoundResponse } from '@/core/responses';
 import { deleteOp } from '../_operations/delete';
 import { readOp } from '../_operations/read';
 import { updateOp } from '../_operations/update';
@@ -18,10 +17,7 @@ export const GET = createApiHandler({
   validations: {
     pathParams: licencePlateSchema,
   },
-})(async ({ session, pathParams }) => {
-  if (!session) {
-    return UnauthorizedResponse('Session not found');
-  }
+})(async ({ pathParams }) => {
   const { licencePlate, commentId } = pathParams;
   const comment = await readOp(licencePlate, commentId);
   if (!comment) {
@@ -41,13 +37,9 @@ export const PUT = createApiHandler({
     pathParams: licencePlateSchema,
     body: updateCommentBodySchema,
   },
-})(async ({ session, pathParams, body }) => {
-  if (!session) {
-    return UnauthorizedResponse('Session not found');
-  }
-
-  const { licencePlate, commentId } = pathParams;
-  const updatedComment = await updateOp({ licencePlate, commentId, ...body });
+})(async ({ pathParams, body }) => {
+  const { commentId } = pathParams;
+  const updatedComment = await updateOp(commentId, body.text);
   if (!updatedComment) {
     return NotFoundResponse('Comment not found or update failed');
   }
@@ -61,11 +53,7 @@ export const DELETE = createApiHandler({
   validations: {
     pathParams: licencePlateSchema,
   },
-})(async ({ session, pathParams }) => {
-  if (!session) {
-    return UnauthorizedResponse('Session not found');
-  }
-
+})(async ({ pathParams }) => {
   const { licencePlate, commentId } = pathParams;
   const result = await deleteOp(licencePlate, commentId);
   if (!result) {
