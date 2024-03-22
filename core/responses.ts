@@ -1,3 +1,4 @@
+import _isString from 'lodash-es/isString';
 import { NextResponse } from 'next/server';
 import { stringify } from 'csv-stringify/sync';
 
@@ -18,23 +19,23 @@ export function CsvResponse<T extends Record<string, any>>(data: T[], filename: 
   return response;
 }
 
-export function BadRequestResponse(error: string) {
+export function BadRequestResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Bad Request', error }, { status: 400 });
 }
 
-export function UnauthorizedResponse(error: string) {
+export function UnauthorizedResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Unauthorized', error }, { status: 401 });
 }
 
-export function ForbiddenResponse(error: string) {
+export function ForbiddenResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Forbidden', error }, { status: 403 });
 }
 
-export function NotFoundResponse(error: string) {
+export function NotFoundResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Not Found', error }, { status: 404 });
 }
 
-export function InternalServerErrorResponse(error: string) {
+export function InternalServerErrorResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status: 500 });
 }
 

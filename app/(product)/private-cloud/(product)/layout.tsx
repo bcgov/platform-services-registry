@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
+import { ToastContainer } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/Tabs';
@@ -51,9 +52,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Tabs tabs={tabs}>
-        <PrivateCloudProductOptions disabled={!currentProject?._permissions?.delete} />
+        <PrivateCloudProductOptions
+          licensePlace={currentProject?.licencePlate}
+          canReProvision={currentProject?._permissions?.reProvision}
+          canDelete={currentProject?._permissions?.delete}
+        />
       </Tabs>
       <div className="mt-14">{children}</div>
+      <ToastContainer />
     </div>
   );
 }
