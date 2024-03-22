@@ -121,7 +121,7 @@ function createApiHandler<
         if (validations?.pathParams) {
           const parsed = validations?.pathParams.safeParse(params);
           if (!parsed.success) {
-            return BadRequestResponse(String(parsed.error));
+            return BadRequestResponse(parsed.error);
           }
 
           pathParams = parsed.data;
@@ -132,7 +132,7 @@ function createApiHandler<
           const query = parseQueryString(req.nextUrl.search);
           const parsed = validations?.queryParams.safeParse(query);
           if (!parsed.success) {
-            return BadRequestResponse(String(parsed.error));
+            return BadRequestResponse(parsed.error);
           }
 
           queryParams = parsed.data;
@@ -154,7 +154,7 @@ function createApiHandler<
 
           const parsed = validations?.body.safeParse(json);
           if (!parsed.success) {
-            return BadRequestResponse(String(parsed.error));
+            return BadRequestResponse(parsed.error);
           }
 
           body = parsed.data;

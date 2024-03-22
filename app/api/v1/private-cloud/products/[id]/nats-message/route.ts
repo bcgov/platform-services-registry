@@ -6,7 +6,7 @@ import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
-  id: z.string(),
+  id: z.string().min(1),
 });
 
 const apiHandler = createApiHandler({
