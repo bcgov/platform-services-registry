@@ -1,5 +1,5 @@
 export interface PrivateCloudProjectDecorate {
-  _permissions: { view: boolean; edit: boolean; delete: boolean };
+  _permissions: { view: boolean; edit: boolean; delete: boolean; reProvision: boolean };
 }
 
 export interface PrivateCloudRequestDecorate {
