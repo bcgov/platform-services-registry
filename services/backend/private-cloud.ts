@@ -52,3 +52,8 @@ export async function makePriviateCloudRequestedDecision(licencePlate: string, d
   const result = await instance.post(`private-cloud/decision/${licencePlate}`, data).then((res) => res.data);
   return result;
 }
+
+export async function reProvisionPriviateCloudRequest(licencePlate: string) {
+  const result = await instance.get(`private-cloud/products/${licencePlate}/reprovision`).then((res) => res.data);
+  return result;
+}
