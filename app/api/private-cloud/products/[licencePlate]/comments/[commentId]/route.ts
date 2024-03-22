@@ -3,7 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import { z } from 'zod';
 import { PermissionsEnum } from '@/types/permissions';
 import { UnauthorizedResponse, OkResponse, NotFoundResponse } from '@/core/responses';
-import deleteOp from '../_operations/delete';
+import { deleteOp } from '../_operations/delete';
 import { readOp } from '../_operations/read';
 import { updateOp } from '../_operations/update';
 
@@ -55,7 +55,22 @@ export const PUT = createApiHandler({
   return OkResponse(updatedComment);
 });
 
-export async function DELETE() {
-  const data = await deleteOp();
-  return NextResponse.json(data);
-}
+export const DELETE = createApiHandler({
+  roles: ['user'],
+  permissions: [PermissionsEnum.DeleteAllPrivateProductComments],
+  validations: {
+    pathParams: licencePlateSchema,
+  },
+})(async ({ session, pathParams }) => {
+  if (!session) {
+    return UnauthorizedResponse('Session not found');
+  }
+
+  const { licencePlate, commentId } = pathParams;
+  const result = await deleteOp(licencePlate, commentId);
+  if (!result) {
+    return NotFoundResponse('Comment not found or deletion failed');
+  }
+
+  return OkResponse({ success: true });
+});
