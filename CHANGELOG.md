@@ -1,3 +1,15 @@
+## [0.21.0](https://github.com/bcgov/platform-services-registry/compare/v0.20.2...v0.21.0) (2024-03-22)
+
+
+### Features
+
+* add re-provisioning function ([fb5b0d1](https://github.com/bcgov/platform-services-registry/commit/fb5b0d13eb78c9c98f4ef59de3d1518f7575eb3d))
+* enhance data validation in v1 api endpoints ([bc7a275](https://github.com/bcgov/platform-services-registry/commit/bc7a2758b5ff1f142d04b25b24cc324e4ff52790))
+* logic for delete comment by id api ([b9c99d0](https://github.com/bcgov/platform-services-registry/commit/b9c99d0e279de9ae5540ed8265ec4294fcd27432))
+* logic for list all comments api ([d3fb8ee](https://github.com/bcgov/platform-services-registry/commit/d3fb8ee7277436c3b55569e4d5411e0af2b01933))
+* logic for read comment by id api logic ([4167255](https://github.com/bcgov/platform-services-registry/commit/4167255c9a11e966085028090ad6c08ca2319090))
+* logic for update comment by id api ([94e939b](https://github.com/bcgov/platform-services-registry/commit/94e939b3083affbdea6fdb4c795fc4c721a6c3ed))
+
 ## [0.20.2](https://github.com/bcgov/platform-services-registry/compare/v0.20.1...v0.20.2) (2024-03-22)
 
 
