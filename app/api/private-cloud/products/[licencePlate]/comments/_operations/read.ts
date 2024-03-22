@@ -1,7 +1,7 @@
 import prisma from '@/core/prisma';
 
 export async function readOp(licencePlate: string, commentId: string) {
-  return prisma.privateCloudComment.findFirst({
+  const comment = prisma.privateCloudComment.findFirst({
     where: {
       id: commentId,
       project: {
@@ -12,4 +12,5 @@ export async function readOp(licencePlate: string, commentId: string) {
       user: true,
     },
   });
+  return comment;
 }
