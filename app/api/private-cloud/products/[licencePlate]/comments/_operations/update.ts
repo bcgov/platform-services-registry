@@ -8,12 +8,6 @@ export async function updateOp(commentId: string, text: string) {
     data: {
       text: text,
     },
-  });
-
-  const comment = await prisma.privateCloudComment.findUnique({
-    where: {
-      id: commentId,
-    },
     include: {
       user: true,
     },

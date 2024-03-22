@@ -19,7 +19,7 @@ export const POST = createApiHandler({
 })(async ({ session, body }) => {
   const userId = session!.userId!;
 
-  const comment = await createOp({ text: body.text, projectId: body.projectId, userId });
+  const comment = await createOp(body.text, body.projectId, userId);
   return CreatedResponse(comment);
 });
 
