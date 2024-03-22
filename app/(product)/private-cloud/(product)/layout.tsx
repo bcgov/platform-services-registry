@@ -54,7 +54,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
           licensePlace={currentProject?.licencePlate}
-          canReProvision={currentProject?._permissions?.reProvision}
+          canReprovision={currentProject?._permissions?.reprovision}
+          canResend={currentProject?._permissions?.resend}
           canDelete={currentProject?._permissions?.delete}
         />
       </Tabs>

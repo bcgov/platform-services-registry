@@ -21,7 +21,7 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
   const products = await prisma.privateCloudProject.findMany({
     where: {
       status: 'ACTIVE',
-      cluster: cluster.toUpperCase() as $Enums.Cluster,
+      cluster,
     },
     select: {
       id: true,
