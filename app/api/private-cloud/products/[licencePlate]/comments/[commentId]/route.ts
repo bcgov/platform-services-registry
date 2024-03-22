@@ -5,7 +5,7 @@ import { PermissionsEnum } from '@/types/permissions';
 import { UnauthorizedResponse, OkResponse, NotFoundResponse } from '@/core/responses';
 import deleteOp from '../_operations/delete';
 import { readOp } from '../_operations/read';
-import updateOp from '../_operations/update';
+import { updateOp } from '../_operations/update';
 
 const licencePlateSchema = z.object({
   licencePlate: z.string(),
@@ -30,10 +30,30 @@ export const GET = createApiHandler({
   return OkResponse(comment);
 });
 
-export async function PUT() {
-  const data = await updateOp();
-  return NextResponse.json(data);
-}
+const updateCommentBodySchema = z.object({
+  text: z.string().min(1, 'The comment text must not be empty'),
+});
+
+export const PUT = createApiHandler({
+  roles: ['user'],
+  permissions: [PermissionsEnum.EditAllPrivateProductComments],
+  validations: {
+    pathParams: licencePlateSchema,
+    body: updateCommentBodySchema,
+  },
+})(async ({ session, pathParams, body }) => {
+  if (!session) {
+    return UnauthorizedResponse('Session not found');
+  }
+
+  const { licencePlate, commentId } = pathParams;
+  const updatedComment = await updateOp({ licencePlate, commentId, ...body });
+  if (!updatedComment) {
+    return NotFoundResponse('Comment not found or update failed');
+  }
+
+  return OkResponse(updatedComment);
+});
 
 export async function DELETE() {
   const data = await deleteOp();
