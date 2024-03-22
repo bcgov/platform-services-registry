@@ -71,7 +71,7 @@ export default function Dropdown({
     }
   };
 
-  if (!canDelete && !canReprovision) return null;
+  if (!canDelete && !canReprovision && !canResend) return null;
 
   return (
     <>
