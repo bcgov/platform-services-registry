@@ -18,7 +18,7 @@ export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudReques
 }>;
 
 export default function createPrivateCloudNatsMessage(
-  requestId: PrivateCloudRequest['id'],
+  requestId: string,
   requestType: RequestType,
   requestedProject: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,

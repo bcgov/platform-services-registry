@@ -75,7 +75,8 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       view: canView,
       edit: canEdit && !hasActiveRequest,
       delete: canEdit && !hasActiveRequest,
-      reProvision: hasProvisioningRequest && this.session.permissions.reviewAllPrivateCloudRequests,
+      resend: hasProvisioningRequest && this.session.isAdmin,
+      reprovision: this.session.isAdmin,
     };
 
     return doc;

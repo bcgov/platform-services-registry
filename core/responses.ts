@@ -23,7 +23,7 @@ export function BadRequestResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Bad Request', error }, { status: 400 });
 }
 
-export function UnauthorizedResponse(error: any) {
+export function UnauthorizedResponse(error: any = 'not allowed to perform the task') {
   return NextResponse.json({ success: false, message: 'Unauthorized', error }, { status: 401 });
 }
 

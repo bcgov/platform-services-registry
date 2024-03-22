@@ -8,15 +8,21 @@ import DeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
 import { useParams, useRouter } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
-import { deletePrivateCloudProject, reProvisionPriviateCloudRequest } from '@/services/backend/private-cloud';
+import {
+  deletePrivateCloudProject,
+  reprovisionPriviateCloudRequest,
+  resendPriviateCloudRequest,
+} from '@/services/backend/private-cloud';
 
 export default function Dropdown({
   licensePlace = '',
-  canReProvision = false,
+  canReprovision = false,
+  canResend = false,
   canDelete = false,
 }: {
   licensePlace?: string;
-  canReProvision?: boolean;
+  canReprovision?: boolean;
+  canResend?: boolean;
   canDelete?: boolean;
 }) {
   const [showModal, setShowModal] = useState(false);
@@ -28,14 +34,26 @@ export default function Dropdown({
   const params = useParams();
 
   const {
-    mutateAsync: reProvision,
-    isPending: isReProvisioning,
-    isError: isReProvisionError,
-    error: reProvisionError,
+    mutateAsync: resend,
+    isPending: isResending,
+    isError: isResendError,
+    error: resendError,
   } = useMutation({
-    mutationFn: () => reProvisionPriviateCloudRequest(licensePlace),
+    mutationFn: () => resendPriviateCloudRequest(licensePlace),
     onSuccess: () => {
-      toast.success('Successfully re-provisioned!');
+      toast.success('Successfully resent!');
+    },
+  });
+
+  const {
+    mutateAsync: reprovision,
+    isPending: isReprovisioning,
+    isError: isReprovisionError,
+    error: reprovisionError,
+  } = useMutation({
+    mutationFn: () => reprovisionPriviateCloudRequest(licensePlace),
+    onSuccess: () => {
+      toast.success('Successfully reprovisioned!');
     },
   });
 
@@ -53,7 +71,7 @@ export default function Dropdown({
     }
   };
 
-  if (!canDelete && !canReProvision) return null;
+  if (!canDelete && !canReprovision) return null;
 
   return (
     <>
@@ -90,25 +108,48 @@ export default function Dropdown({
         >
           <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
-              {canReProvision && (
+              {canResend && (
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      disabled={!canReProvision}
+                      disabled={!canResend}
                       type="button"
                       onClick={async () => {
-                        await reProvision();
+                        await resend();
                       }}
                       className={classNames(
                         'group flex items-center px-4 py-2 text-sm w-full',
-                        active && canReProvision ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                        active && canResend ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       )}
                     >
                       <PlayCircleIcon
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
                         aria-hidden="true"
                       />
-                      Re Provision
+                      Resend
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
+              {canReprovision && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      disabled={!canReprovision}
+                      type="button"
+                      onClick={async () => {
+                        await reprovision();
+                      }}
+                      className={classNames(
+                        'group flex items-center px-4 py-2 text-sm w-full',
+                        active && canReprovision ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      )}
+                    >
+                      <PlayCircleIcon
+                        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                      />
+                      Reprovision
                     </button>
                   )}
                 </Menu.Item>
