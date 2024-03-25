@@ -1,5 +1,5 @@
 locals {
-  ministry_codes = ["citz", "hlth"]
+  ministry_codes = ["ag", "pssg", "embc", "hous"]
 }
 
 resource "keycloak_role" "pltsvc_ministry_editor" {
