@@ -4,6 +4,7 @@ about: This template is for creating an epic for onboarding a new team member.
 title: ''
 labels: ''
 assignees: ''
+
 ---
 
 Please use this epic to create various tickets for onboarding a new team member based on the following categories:
