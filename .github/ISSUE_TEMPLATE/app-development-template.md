@@ -2,7 +2,7 @@
 name: App Development Template
 about: Describe this issue template's purpose here.
 title: ''
-labels: ''
+labels: '*team/ service design*'
 assignees: ''
 ---
 
