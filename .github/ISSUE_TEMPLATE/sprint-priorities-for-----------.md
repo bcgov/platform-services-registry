@@ -4,7 +4,6 @@ about: Describe this issue template's purpose here.
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 **Categories:**
@@ -16,6 +15,7 @@ assignees: ''
 => _Training/team learning sessions_
 
 **Sprint priorities:**
+
 - [ ] 1.
 - [ ] 2.
 - [ ] 3.
@@ -25,5 +25,6 @@ assignees: ''
 
 ==========================================================================
 **Stretch goals:**
+
 - [ ] 7.
 - [ ] 8.
