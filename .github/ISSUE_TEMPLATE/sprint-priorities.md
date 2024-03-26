@@ -1,7 +1,7 @@
 ---
-name: 'Sprint Priorities for ... - ... '
+name: Sprint Priorities
 about: Describe this issue template's purpose here.
-title: ''
+title: Sprint Priorities
 labels: ''
 assignees: ''
 ---
