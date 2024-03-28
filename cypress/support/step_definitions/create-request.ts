@@ -11,7 +11,6 @@ When('I Create a request with random values', () => {
   cy.contains('a', 'REQUEST A NEW PRODUCT').should('be.not.disabled').click({ force: true });
   cy.wait(2000);
   cy.contains('a', 'REQUEST A NEW PRODUCT').should('be.not.disabled').click({ force: true });
-
   cy.get('input[name="name"]').type(productName);
   cy.get('textarea[id="about"]').type('The description of Test Product Cypress');
   cy.get('select[id="ministry"]').select('Citizens Services');
