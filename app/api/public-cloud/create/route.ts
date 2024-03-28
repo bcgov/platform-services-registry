@@ -18,9 +18,8 @@ export const POST = apiHandler(async ({ body, session }) => {
   }
   const { userEmail, permissions } = session;
   if (
-    userEmail !== null &&
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      userEmail,
+      userEmail as string,
     ) &&
     !permissions.editAllPrivateCloudProducts
   ) {

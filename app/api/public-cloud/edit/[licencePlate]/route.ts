@@ -29,9 +29,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
 
   if (
-    userEmail !== null &&
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      userEmail,
+      userEmail as string,
     ) &&
     !session.permissions.editAllPublicCloudProducts
   ) {
