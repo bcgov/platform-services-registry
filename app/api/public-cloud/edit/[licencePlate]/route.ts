@@ -32,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
       userEmail as string,
     ) &&
-    !session.permissions.editAllPublicCloudProducts
+    !(session.permissions.editAllPrivateCloudProducts || session.ministries.editor.includes(`${body.ministry}`))
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }

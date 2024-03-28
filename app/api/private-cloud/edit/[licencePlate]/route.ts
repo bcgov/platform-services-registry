@@ -33,9 +33,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
       userEmail as string,
     ) &&
-    !session.permissions.editAllPrivateCloudProducts
+    !(session.permissions.editAllPrivateCloudProducts || session.ministries.editor.includes(`${body.ministry}`))
   ) {
-    throw new Error('You need to assign yourself to this project in order to create it.');
+    throw new Error('You need to assign yourself to this project in order to edit it.');
   }
 
   const existingRequest: PrivateCloudRequest | null = await prisma.privateCloudRequest.findFirst({
