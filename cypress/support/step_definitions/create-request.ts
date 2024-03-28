@@ -21,7 +21,7 @@ When('I Create a request with random values', () => {
   cy.get('li[role="option"]').click();
   cy.contains('label', 'Technical Lead Email').parent().find('input').first().type(TLEmail.slice(0, 11));
   cy.get('li[role="option"]').click();
-  cy.get('input[name="commonComponents.other"]').type('Other common component');
+  cy.get('input[name="commonComponents.other"]').type('Other common component field');
   cy.get('button[type="submit"]').click();
   cy.contains('p', 'By checking this box, I confirm ').parent().find('input[type="checkbox"]').click();
   cy.contains('h3', 'All Set?').parents().eq(2).find('button').contains('SUBMIT REQUEST').click();
