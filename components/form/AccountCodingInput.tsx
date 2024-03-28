@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 export default function AccountCodingInput({
   title,
   name,
@@ -6,6 +8,8 @@ export default function AccountCodingInput({
   setAccountCoding,
   accountCoding,
   disabled,
+  alphanumericRegex,
+  infoText,
 }: {
   title: string;
   name: string;
@@ -14,11 +18,30 @@ export default function AccountCodingInput({
   setAccountCoding: any;
   accountCoding: any;
   disabled?: boolean;
+  alphanumericRegex: RegExp;
+  infoText: string;
 }) {
+  const [showInfo, setShowInfo] = useState(false);
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
       <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-2">
         {title}
+        <span
+          className="ml-2 relative"
+          onMouseLeave={() => setShowInfo(false)}
+          onMouseOverCapture={() => setShowInfo(true)}
+        >
+          <span className="absolute bottom-0 left-0 bg-neutral-200 text-gray-400 py-0 px-2 border rounded-full border-solid border-gray-400">
+            ℹ️
+          </span>
+          <span
+            className={`absolute min-w-56 bottom-6 left-6 bg-neutral-200 text-gray-400 bottom-100 border rounded-md border-solid border-gray-400 ${
+              showInfo ? 'block' : 'hidden'
+            }`}
+          >
+            {infoText}
+          </span>
+        </span>
       </label>
       <input
         disabled={disabled}
@@ -27,9 +50,6 @@ export default function AccountCodingInput({
         maxLength={length}
         onChange={(e) => {
           const { value } = e.target;
-          // Regular expression to allow only letters and numbers
-          const alphanumericRegex = /^[a-z0-9]+$/i;
-
           // Update only if the input is empty (to clear the field) or if it matches the alphanumeric pattern
           if (value === '' || alphanumericRegex.test(value)) {
             setAccountCoding((prev: any) => ({ ...prev, [name]: value }));
@@ -37,8 +57,6 @@ export default function AccountCodingInput({
         }}
         value={accountCoding[name].toUpperCase()}
       />
-
-      <span className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"></span>
     </div>
   );
 }
