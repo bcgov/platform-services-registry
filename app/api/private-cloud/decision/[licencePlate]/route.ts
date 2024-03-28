@@ -76,7 +76,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
   // TODO: revisit to delete for good
-  sendRequestApprovalEmails(request);
+  // sendRequestApprovalEmails(request);
 
   return NextResponse.json(`Decision request for ${request.licencePlate} successfully created.`);
 });
