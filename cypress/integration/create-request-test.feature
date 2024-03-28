@@ -6,4 +6,4 @@ Feature: Registry App Create Request
     Given I am logged in to the Registry
     When I Create a request with random values
     Then I should be redirected to the In Progress tab
-    # And I should see the corresponding request
+    And I should see the corresponding request

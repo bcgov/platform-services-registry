@@ -2,6 +2,8 @@ import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor';
 import { getISODate } from '../utils/getISODate';
 // prepare data for test
 const productName: string = 'Test Product Cypress ' + getISODate();
+const POEmail: string = Cypress.env('admin_email');
+const TLEmail: string = Cypress.env('user_email');
 
 Given('I am logged in to the Registry', () => {
   cy.loginToRegistry(Cypress.env('username'), Cypress.env('password'));
@@ -15,9 +17,9 @@ When('I Create a request with random values', () => {
   cy.get('textarea[id="about"]').type('The description of Test Product Cypress');
   cy.get('select[id="ministry"]').select('Citizens Services');
   cy.get('select[name="cluster"]').select('SILVER');
-  cy.contains('label', 'Product Owner Email').parent().find('input').first().type('artem.kr');
+  cy.contains('label', 'Product Owner Email').parent().find('input').first().type(POEmail.slice(0, 8));
   cy.get('li[role="option"]').click();
-  cy.contains('label', 'Technical Lead Email').parent().find('input').first().type('platform.se');
+  cy.contains('label', 'Technical Lead Email').parent().find('input').first().type(TLEmail.slice(0, 11));
   cy.get('li[role="option"]').click();
   cy.get('input[name="commonComponents.other"]').type('Other common component');
   cy.get('button[type="submit"]').click();
@@ -28,5 +30,8 @@ When('I Create a request with random values', () => {
 
 Then('I should be redirected to the In Progress tab', () => {
   cy.contains('p', 'Products with pending requests').should('be.visible');
-  cy.contains('span', productName);
+});
+
+Then('I should see the corresponding request', () => {
+  cy.contains('span', productName).should('be.visible');
 });
