@@ -4,29 +4,25 @@ import createRequest from '@/request-actions/public-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 import createApiHandler from '@/core/api-handler';
-import { PermissionsEnum } from '@/types/permissions';
 
 const apiHandler = createApiHandler({
   roles: ['user'],
-  permissions: [PermissionsEnum.EditAllPublicCloudProducts],
   validations: { body: PublicCloudCreateRequestBodySchema },
 });
 
 export const POST = apiHandler(async ({ body, session }) => {
-  if (!session) {
-    return NextResponse.json('Authorization failed', { status: 401 });
-  }
+  const { user, permissions } = session ?? {};
+  const { email: authEmail } = user ?? {};
 
-  const { userEmail, permissions } = session;
   if (
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      userEmail as string,
+      authEmail,
     ) &&
     !permissions.editAllPrivateCloudProducts
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }
-  const request = await createRequest(body, userEmail as string);
+  const request = await createRequest(body, authEmail);
 
   wrapAsync(() => sendCreateRequestEmails(request));
 
