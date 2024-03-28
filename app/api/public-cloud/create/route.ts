@@ -14,8 +14,9 @@ const apiHandler = createApiHandler({
 
 export const POST = apiHandler(async ({ body, session }) => {
   if (!session) {
-    throw new Error('Authorization failed');
+    return NextResponse.json('Authorization failed', { status: 401 });
   }
+
   const { userEmail, permissions } = session;
   if (
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
