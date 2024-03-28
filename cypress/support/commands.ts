@@ -40,7 +40,7 @@
 declare global {
   module Cypress {
     interface Chainable<Subject = any> {
-      loginToRegistry(username: string, password: string): void;
+      loginToRegistry(user: string, pass: string): void;
     }
   }
 }
@@ -49,9 +49,16 @@ export function loginToRegistry(username: string, password: string): void {
   cy.visit('/login', { failOnStatusCode: false });
   cy.contains('button', 'LOGIN').click();
   cy.contains('span', 'Sign in with Keycloak').click();
-  cy.get('input[id="username"]').type(username);
-  cy.get('input[id="password"]').type(password);
-  cy.get('input[type="submit"]').click();
+  cy.origin(
+    'http://localhost:8080',
+    { args: { usernameOrig: username, passwordOrig: password } },
+    ({ usernameOrig, passwordOrig }) => {
+      cy.get('input[id="username"]').type(usernameOrig);
+      cy.get('input[id="password"]').type(passwordOrig);
+      cy.get('input[type="submit"]').click();
+    },
+  );
+
   cy.contains('a', 'REQUEST A NEW PRODUCT');
 }
 
