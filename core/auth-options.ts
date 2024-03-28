@@ -1,4 +1,4 @@
-import NextAuth, { Account, AuthOptions, Session } from 'next-auth';
+import { Account, AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
@@ -131,10 +131,10 @@ export async function generateSession({ session, token }: { session: Session; to
   }
 
   session.previews = {
-    awsRoles: !IS_PROD,
-    security: !IS_PROD,
-    expenseAuthority: !IS_PROD,
     history: !IS_PROD,
+    security: !IS_PROD,
+    // expenseAuthority: !IS_PROD,
+    // awsRoles: !IS_PROD,
   };
 
   session.permissions = {
@@ -168,14 +168,17 @@ export async function generateSession({ session, token }: { session: Session; to
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
+
     createPrivateProductComments: session.isAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isReader,
     editAllPrivateProductComments: session.isAdmin,
     deleteAllPrivateProductComments: session.isAdmin,
+
     createPublicProductComments: session.isAdmin,
     viewAllPublicProductComments: session.isAdmin || session.isReader,
     editAllPublicProductComments: session.isAdmin,
     deleteAllPublicProductComments: session.isAdmin,
+
     viewZapscanResults: session.isAdmin || session.isReader,
     viewSonarscanReulsts: session.isAdmin || session.isReader,
     viewAnalytics: session.isAdmin || session.isReader,

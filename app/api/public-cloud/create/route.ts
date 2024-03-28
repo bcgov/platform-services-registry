@@ -1,54 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
+import { NextResponse } from 'next/server';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import createRequest from '@/request-actions/public-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
+import createApiHandler from '@/core/api-handler';
+import { PermissionsEnum } from '@/types/permissions';
 
-export async function POST(req: NextRequest) {
-  // Authentication
-  const session = await getServerSession(authOptions);
+const apiHandler = createApiHandler({
+  roles: ['user'],
+  permissions: [PermissionsEnum.EditAllPublicCloudProducts],
+  validations: { body: PublicCloudCreateRequestBodySchema },
+});
 
+export const POST = apiHandler(async ({ body, session }) => {
   if (!session) {
-    return new NextResponse('You do not have the required credentials.', {
-      status: 401,
-    });
+    throw new Error('Authorization failed');
   }
-
-  const { isAdmin, user, roles: authRoles } = session ?? {};
-  const { email: authEmail } = user ?? {};
-
-  // Validation
-  const body = await req.json();
-
-  const parsedBody = PublicCloudCreateRequestBodySchema.safeParse(body);
-
-  if (!parsedBody.success) {
-    return new NextResponse(parsedBody.error.message, { status: 400 });
-  }
-
-  const formData = parsedBody.data;
-
-  // Authorization
+  const { userEmail, permissions } = session;
   if (
-    ![
-      formData.projectOwner.email,
-      formData.primaryTechnicalLead.email,
-      formData.secondaryTechnicalLead?.email,
-    ].includes(authEmail) &&
-    !isAdmin
+    userEmail !== null &&
+    ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
+      userEmail,
+    ) &&
+    !permissions.editAllPrivateCloudProducts
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }
-
-  // Action
-  const request = await createRequest(formData, authEmail);
+  const request = await createRequest(body, userEmail as string);
 
   wrapAsync(() => sendCreateRequestEmails(request));
 
-  return new NextResponse('Created successfuly', {
+  return new NextResponse('Success creating request', {
     status: 200,
-    headers: { 'content-type': 'application/json' },
   });
-}
+});

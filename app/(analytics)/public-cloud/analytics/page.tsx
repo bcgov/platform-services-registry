@@ -10,6 +10,7 @@ import { authOptions } from '@/core/auth-options';
 import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';
 import PieGraph from '@/components/analytics/PieGraph';
 import { ministriesNames } from '@/constants';
+import { redirect, RedirectType } from 'next/navigation';
 
 function ministryNameToDisplayName(name: string) {
   return ministriesNames.find((item) => item.name === name)?.humanFriendlyName ?? '';
@@ -21,6 +22,11 @@ function mapProviderDistributions(items: { _id: string; value: number }[]) {
 
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect('/login?callbackUrl=/private-cloud/products/all');
+  } else if (!session.permissions.viewAnalytics) {
+    redirect('/public-cloud/products/all');
+  }
 
   const requestsChartData = await combinedRequests();
   const projectsChartData = await numberOfProductsOverTime();

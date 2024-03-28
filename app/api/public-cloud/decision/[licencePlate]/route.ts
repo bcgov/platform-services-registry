@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PermissionsEnum } from '@/types/permissions';
 import { DecisionStatus, User } from '@prisma/client';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
   PublicCloudRequestWithProjectAndRequestedProject,

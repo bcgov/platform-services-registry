@@ -42,7 +42,7 @@ export default function Request({ params }: { params: { id: string } }) {
 
   // If user is not an admin, set isDisabled to true
   useEffect(() => {
-    if (session && !session.user.isAdmin) {
+    if (session && !session.isAdmin) {
       setDisabled(true);
     }
   }, [session]);

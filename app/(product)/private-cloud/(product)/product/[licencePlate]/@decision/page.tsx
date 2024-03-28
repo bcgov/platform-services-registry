@@ -17,10 +17,6 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import { makePriviateCloudRequestedDecision, getPriviateCloudActiveRequest } from '@/services/backend/private-cloud';
 
 export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
