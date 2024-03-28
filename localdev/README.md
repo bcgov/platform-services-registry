@@ -48,7 +48,7 @@ or
 For Mac M1/M2:
 
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose-arm64 up --build [-d]
+docker-compose -f docker-compose.yml -f docker-compose-arm64.yml up --build [-d]
 ```
 
 You can add the `-d` flag to run the containers in daemon mode.
