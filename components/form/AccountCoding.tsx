@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import classNames from '@/utils/classnames';
 
@@ -60,6 +60,8 @@ export default function AccountCoding({
           setAccountCoding={setAccountCoding}
           length={3}
           placeholder={'Enter the client code here (e.g. 111)'}
+          alphanumericRegex={/^[0-9]+$/i}
+          infoText={'3 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)'}
         />
         <AccountCodingInput
           disabled={disabled}
@@ -69,6 +71,8 @@ export default function AccountCoding({
           setAccountCoding={setAccountCoding}
           length={5}
           placeholder={'Enter the responsibility centre here (e.g. 22222)'}
+          alphanumericRegex={/^[0-9]+$/i}
+          infoText={'5 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)'}
         />
         <AccountCodingInput
           disabled={disabled}
@@ -78,6 +82,8 @@ export default function AccountCoding({
           setAccountCoding={setAccountCoding}
           length={5}
           placeholder={'Enter the service line here (e.g. 33333)'}
+          alphanumericRegex={/^[0-9]+$/i}
+          infoText={'5 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)'}
         />
         <AccountCodingInput
           disabled={disabled}
@@ -87,6 +93,8 @@ export default function AccountCoding({
           setAccountCoding={setAccountCoding}
           length={4}
           placeholder={'Enter the STOB here (e.g. 4444)'}
+          alphanumericRegex={/^[0-9]+$/i}
+          infoText={'4 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)'}
         />
         <AccountCodingInput
           disabled={disabled}
@@ -96,6 +104,8 @@ export default function AccountCoding({
           setAccountCoding={setAccountCoding}
           length={7}
           placeholder={'Enter the project code here (e.g. 7777777)'}
+          alphanumericRegex={/^[a-z0-9]+$/i}
+          infoText={'7 Characters,  Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)'}
         />
       </div>
 
