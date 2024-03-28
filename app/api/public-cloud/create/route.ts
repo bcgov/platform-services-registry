@@ -1,54 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
+import { NextResponse } from 'next/server';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import createRequest from '@/request-actions/public-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
+import createApiHandler from '@/core/api-handler';
 
-export async function POST(req: NextRequest) {
-  // Authentication
-  const session = await getServerSession(authOptions);
+const apiHandler = createApiHandler({
+  roles: ['user'],
+  validations: { body: PublicCloudCreateRequestBodySchema },
+});
 
-  if (!session) {
-    return new NextResponse('You do not have the required credentials.', {
-      status: 401,
-    });
-  }
-
-  const { isAdmin, user, roles: authRoles } = session ?? {};
+export const POST = apiHandler(async ({ body, session }) => {
+  const { user, permissions } = session ?? {};
   const { email: authEmail } = user ?? {};
 
-  // Validation
-  const body = await req.json();
-
-  const parsedBody = PublicCloudCreateRequestBodySchema.safeParse(body);
-
-  if (!parsedBody.success) {
-    return new NextResponse(parsedBody.error.message, { status: 400 });
-  }
-
-  const formData = parsedBody.data;
-
-  // Authorization
   if (
-    ![
-      formData.projectOwner.email,
-      formData.primaryTechnicalLead.email,
-      formData.secondaryTechnicalLead?.email,
-    ].includes(authEmail) &&
-    !isAdmin
+    ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
+      authEmail,
+    ) &&
+    !permissions.editAllPrivateCloudProducts
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }
-
-  // Action
-  const request = await createRequest(formData, authEmail);
+  const request = await createRequest(body, authEmail);
 
   wrapAsync(() => sendCreateRequestEmails(request));
 
-  return new NextResponse('Created successfuly', {
+  return new NextResponse('Success creating request', {
     status: 200,
-    headers: { 'content-type': 'application/json' },
   });
-}
+});

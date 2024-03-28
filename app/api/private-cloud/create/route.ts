@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrivateCloudCreateRequestBodySchema, PrivateCloudCreateRequestBody } from '@/schema';
+import { PrivateCloudCreateRequestBodySchema } from '@/schema';
 import createRequest from '@/request-actions/private-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import createApiHandler from '@/core/api-handler';
@@ -9,15 +9,16 @@ const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { body: PrivateCloudCreateRequestBodySchema },
 });
+
 export const POST = apiHandler(async ({ body, session }) => {
-  const { isAdmin, user } = session ?? {};
+  const { user, permissions } = session ?? {};
   const { email: authEmail } = user ?? {};
 
   if (
     ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
       authEmail,
     ) &&
-    !isAdmin
+    !permissions.editAllPrivateCloudProducts
   ) {
     throw new Error('You need to assign yourself to this project in order to create it.');
   }

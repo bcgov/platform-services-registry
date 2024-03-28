@@ -4,10 +4,9 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { PrivateCloudCreateRequestBodySchema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import CommonComponents from '@/components/form/CommonComponents';
 import PreviousButton from '@/components/buttons/Previous';
-import { useSession } from 'next-auth/react';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -17,10 +16,6 @@ import { AGMinistries } from '@/constants';
 import { z } from 'zod';
 
 export default function Page() {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);

@@ -1,5 +1,4 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import { Session } from 'next-auth';
+import { Prisma, $Enums } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 
 export class UserService extends ModelService<Prisma.UserWhereInput> {

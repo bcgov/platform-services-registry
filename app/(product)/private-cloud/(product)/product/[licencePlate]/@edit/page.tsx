@@ -25,10 +25,6 @@ import {
 } from '@/services/backend/private-cloud';
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
   const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);

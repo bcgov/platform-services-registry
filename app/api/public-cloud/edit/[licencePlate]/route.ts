@@ -1,58 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
+import { NextResponse } from 'next/server';
 import { PublicCloudRequest, User } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { PublicCloudEditRequestBody, PublicCloudEditRequestBodySchema, UserInput } from '@/schema';
-import { string, z } from 'zod';
+import { PublicCloudEditRequestBodySchema } from '@/schema';
+import { z } from 'zod';
 import editRequest from '@/request-actions/public-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { sendEditRequestEmails, sendExpenseAuthorityEmail } from '@/services/ches/public-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
+import createApiHandler from '@/core/api-handler';
 
-const ParamsSchema = z.object({
-  licencePlate: string(),
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
 });
 
-type Params = z.infer<typeof ParamsSchema>;
+const apiHandler = createApiHandler({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema, body: PublicCloudEditRequestBodySchema },
+});
 
-export async function POST(req: NextRequest, { params }: { params: Params }) {
-  const session = await getServerSession(authOptions);
-
+export const POST = apiHandler(async ({ pathParams, body, session }) => {
   if (!session) {
     return NextResponse.json({
       message: 'You do not have the required credentials.',
     });
   }
-
-  const { isAdmin, user, roles: authRoles } = session ?? {};
-  const { email: authEmail } = user ?? {};
-
-  const body = await req.json();
-
-  const parsedParams = ParamsSchema.safeParse(params);
-  const parsedBody = PublicCloudEditRequestBodySchema.safeParse(body);
-
-  if (!parsedParams.success) {
-    return new NextResponse(parsedParams.error.message, { status: 400 });
-  }
-
-  if (!parsedBody.success) {
-    return new NextResponse(parsedBody.error.message, { status: 400 });
-  }
-  const formData: PublicCloudEditRequestBody = parsedBody.data;
-  const { licencePlate } = parsedParams.data;
+  const { userEmail } = session;
+  const { licencePlate } = pathParams;
 
   if (
-    ![
-      formData.projectOwner.email,
-      formData.primaryTechnicalLead.email,
-      formData.secondaryTechnicalLead?.email,
-    ].includes(authEmail) &&
-    !(authRoles.includes('admin') || authRoles.includes(`ministry-${formData.ministry.toLocaleLowerCase()}-admin`))
+    ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
+      userEmail as string,
+    ) &&
+    !(session.permissions.editAllPrivateCloudProducts || session.ministries.editor.includes(`${body.ministry}`))
   ) {
-    throw new Error('You need to assign yourself to this project in order to edit it.');
+    throw new Error('You need to assign yourself to this project in order to create it.');
   }
 
   const existingRequest: PublicCloudRequest | null = await prisma.publicCloudRequest.findFirst({
@@ -65,7 +47,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
     throw new Error('This project already has an active request or it does not exist.');
   }
 
-  const request = await editRequest(licencePlate, formData, authEmail);
+  const request = await editRequest(licencePlate, body, userEmail as string);
 
   await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
 
@@ -74,7 +56,7 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
       request.requestedProject.projectOwner,
       request.requestedProject.primaryTechnicalLead,
       request.requestedProject?.secondaryTechnicalLead,
-    ].filter((usr): usr is User => Boolean(user));
+    ].filter((usr): usr is User => Boolean(usr));
 
     subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
     sendEditRequestEmails(request);
@@ -84,4 +66,4 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   });
 
   return new NextResponse('Successfully created and provisioned edit request ', { status: 200 });
-}
+});

@@ -55,10 +55,10 @@ declare module 'next-auth' {
       viewAnalytics: boolean;
     };
     previews: {
-      awsRoles: boolean;
-      security: boolean;
-      expenseAuthority: boolean;
       history: boolean;
+      security: boolean;
+      // expenseAuthority: boolean;
+      // awsRoles: boolean;
     };
   }
 

@@ -1,4 +1,3 @@
-import { $Enums } from '@prisma/client';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import LineGraph from '@/components/analytics/LineGraph';
 import Histogram from '@/components/analytics/Histogram';
@@ -25,7 +24,7 @@ function mapMinistryDistributions(items: { _id: string; value: number }[]) {
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.isAdmin) {
+  if (!session || !session.permissions.viewAnalytics) {
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 

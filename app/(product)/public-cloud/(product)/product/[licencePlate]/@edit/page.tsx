@@ -16,11 +16,7 @@ import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import { AGMinistries } from '@/constants';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
-import {
-  getPublicCloudProject,
-  getPublicCloudActiveRequest,
-  editPublicCloudProject,
-} from '@/services/backend/public-cloud';
+import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud';
 
 export default function EditProject({ params }: { params: { licencePlate: string } }) {
   const [openReturn, setOpenReturn] = useState(false);
