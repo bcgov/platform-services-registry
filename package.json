@@ -35,7 +35,7 @@
     "@hookform/resolvers": "^3.1.1",
     "@keycloak/keycloak-admin-client": "^24.0.0",
     "@prisma/client": "^5.0.0",
-    "@react-email/components": "^0.0.15",
+    "@react-email/components": "^0.0.16",
     "@react-email/render": "0.0.12",
     "@react-email/tailwind": "^0.0.14",
     "@tailwindcss/forms": "^0.5.3",
