@@ -49,13 +49,17 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
   }
 
   async decorate<T>(doc: T & PrivateCloudProject & PrivateCloudProjectDecorate) {
-    let hasActiveRequest = false;
+    let activeRequests = [];
+
     if (doc.requests) {
-      hasActiveRequest = doc.requests.some((req) => req.active);
+      activeRequests = doc.requests.filter((req) => req.active);
     } else {
-      const requestCount = await prisma.privateCloudRequest.count({ where: { projectId: doc.id } });
-      hasActiveRequest = requestCount > 0;
+      activeRequests = await prisma.privateCloudRequest.findMany({ where: { projectId: doc.id, active: true } });
     }
+
+    const provisioningRequests = activeRequests.filter((req) => req.decisionStatus === $Enums.DecisionStatus.APPROVED);
+    const hasActiveRequest = activeRequests.length > 0;
+    const hasProvisioningRequest = provisioningRequests.length > 0;
 
     const canEdit =
       this.session.permissions.editAllPrivateCloudProducts ||
@@ -71,6 +75,8 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       view: canView,
       edit: canEdit && !hasActiveRequest,
       delete: canEdit && !hasActiveRequest,
+      resend: hasProvisioningRequest && this.session.isAdmin,
+      reprovision: this.session.isAdmin,
     };
 
     return doc;

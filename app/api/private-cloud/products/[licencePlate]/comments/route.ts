@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
 import createApiHandler from '@/core/api-handler';
 import { createOp } from './_operations/create';
-import listOp from './_operations/list';
+import { listOp } from './_operations/list';
 import { z } from 'zod';
 import { PermissionsEnum } from '@/types/permissions';
-import { UnauthorizedResponse, CreatedResponse } from '@/core/responses';
+import { CreatedResponse, OkResponse } from '@/core/responses';
 
 const CreateCommentBodySchema = z.object({
   text: z.string().min(1, 'The comment text must not be empty'),
@@ -18,17 +17,25 @@ export const POST = createApiHandler({
     body: CreateCommentBodySchema,
   },
 })(async ({ session, body }) => {
-  if (!session) {
-    return UnauthorizedResponse('Session not found');
-  }
-
   const userId = session!.userId!;
 
-  const comment = await createOp({ text: body.text, projectId: body.projectId, userId });
+  const comment = await createOp(body.text, body.projectId, userId);
   return CreatedResponse(comment);
 });
 
-export async function GET() {
-  const data = await listOp();
-  return NextResponse.json(data);
-}
+const PathParamsSchema = z.object({
+  licencePlate: z.string(),
+});
+
+export const GET = createApiHandler({
+  roles: ['user'],
+  permissions: [PermissionsEnum.ViewAllPrivateProductComments],
+  validations: {
+    pathParams: PathParamsSchema,
+  },
+})(async ({ pathParams }) => {
+  const { licencePlate } = pathParams;
+
+  const comments = await listOp(licencePlate);
+  return OkResponse(comments);
+});

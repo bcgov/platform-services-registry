@@ -1,25 +1,11 @@
 import prisma from '@/core/prisma';
 
-interface CreateCommentParams {
-  text: string;
-  projectId: string;
-  userId: string;
-}
-
-export async function createOp({ text, projectId, userId }: CreateCommentParams) {
+export async function createOp(text: string, projectId: string, userId: string) {
   const comment = await prisma.privateCloudComment.create({
     data: {
       text,
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
-      project: {
-        connect: {
-          id: projectId,
-        },
-      },
+      userId,
+      projectId,
     },
   });
 

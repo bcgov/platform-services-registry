@@ -56,7 +56,6 @@ export default function Tabs(
                 </button>
               ))}
             </div>
-            <PrivateCloudProductOptions disabled={menuDisabled} />
           </div>
         </div>
       </div>

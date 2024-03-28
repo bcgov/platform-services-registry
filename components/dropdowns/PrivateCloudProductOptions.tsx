@@ -1,14 +1,30 @@
 import { useState, Fragment } from 'react';
+import { toast } from 'react-toastify';
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { ChevronDownIcon, TrashIcon, PlayCircleIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import DeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
 import { useParams, useRouter } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
-import { deletePrivateCloudProject } from '@/services/backend/private-cloud';
+import {
+  deletePrivateCloudProject,
+  reprovisionPriviateCloudRequest,
+  resendPriviateCloudRequest,
+} from '@/services/backend/private-cloud';
 
-export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
+export default function Dropdown({
+  licensePlace = '',
+  canReprovision = false,
+  canResend = false,
+  canDelete = false,
+}: {
+  licensePlace?: string;
+  canReprovision?: boolean;
+  canResend?: boolean;
+  canDelete?: boolean;
+}) {
   const [showModal, setShowModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -16,6 +32,30 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
   const [errorMessage, setErrorMessage] = useState('');
 
   const params = useParams();
+
+  const {
+    mutateAsync: resend,
+    isPending: isResending,
+    isError: isResendError,
+    error: resendError,
+  } = useMutation({
+    mutationFn: () => resendPriviateCloudRequest(licensePlace),
+    onSuccess: () => {
+      toast.success('Successfully resent!');
+    },
+  });
+
+  const {
+    mutateAsync: reprovision,
+    isPending: isReprovisioning,
+    isError: isReprovisionError,
+    error: reprovisionError,
+  } = useMutation({
+    mutationFn: () => reprovisionPriviateCloudRequest(licensePlace),
+    onSuccess: () => {
+      toast.success('Successfully reprovisioned!');
+    },
+  });
 
   const onSubmit = async () => {
     setIsSubmitLoading(true);
@@ -31,7 +71,7 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
     }
   };
 
-  if (disabled) return null;
+  if (!canDelete && !canReprovision && !canResend) return null;
 
   return (
     <>
@@ -68,22 +108,70 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
         >
           <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    disabled={disabled}
-                    type="button"
-                    onClick={() => setShowModal(true)}
-                    className={classNames(
-                      'group flex items-center px-4 py-2 text-sm w-full',
-                      active && !disabled ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    )}
-                  >
-                    <TrashIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-                    Delete
-                  </button>
-                )}
-              </Menu.Item>
+              {canResend && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      disabled={!canResend}
+                      type="button"
+                      onClick={async () => {
+                        await resend();
+                      }}
+                      className={classNames(
+                        'group flex items-center px-4 py-2 text-sm w-full',
+                        active && canResend ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      )}
+                    >
+                      <PlayCircleIcon
+                        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                      />
+                      Resend
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
+              {canReprovision && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      disabled={!canReprovision}
+                      type="button"
+                      onClick={async () => {
+                        await reprovision();
+                      }}
+                      className={classNames(
+                        'group flex items-center px-4 py-2 text-sm w-full',
+                        active && canReprovision ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      )}
+                    >
+                      <PlayCircleIcon
+                        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                      />
+                      Reprovision
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
+              {canDelete && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      disabled={!canDelete}
+                      type="button"
+                      onClick={() => setShowModal(true)}
+                      className={classNames(
+                        'group flex items-center px-4 py-2 text-sm w-full',
+                        active && canDelete ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      )}
+                    >
+                      <TrashIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
+                      Delete
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
             </div>
           </Menu.Items>
         </Transition>
