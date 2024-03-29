@@ -58,7 +58,7 @@ export function loginToRegistry(username: string, password: string): void {
       cy.get('input[type="submit"]').click();
     },
   );
-  
+
   cy.contains('a', 'REQUEST A NEW PRODUCT');
 }
 
