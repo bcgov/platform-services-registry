@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma, PublicCloudProject } from '@prisma/client';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 
@@ -35,12 +35,10 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!project) {
-    return new NextResponse('No project found for this licence plate.', {
-      status: 404,
-    });
+    return NotFoundResponse('No project found for this licence plate.');
   }
 
-  return NextResponse.json(project);
+  return OkResponse(project);
 });
 
 export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
