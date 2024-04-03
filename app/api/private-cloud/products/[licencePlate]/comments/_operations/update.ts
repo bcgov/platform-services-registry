@@ -7,6 +7,7 @@ export async function updateOp(commentId: string, text: string) {
     },
     data: {
       text: text,
+      updatedAt: new Date(),
     },
     include: {
       user: true,
