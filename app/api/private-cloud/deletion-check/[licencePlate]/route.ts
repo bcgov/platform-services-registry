@@ -1,19 +1,19 @@
-import { NextResponse } from 'next/server';
 import { string, z } from 'zod';
 import openshiftDeletionCheck from '@/helpers/openshift';
 import { PrivateCloudProject } from '@prisma/client';
 import prisma from '@/core/prisma';
-
 import createApiHandler from '@/core/api-handler';
+import { BadRequestResponse, OkResponse } from '@/core/responses';
 
 export const fetchCache = 'force-no-store';
 
+const pathParamSchema = z.object({
+  licencePlate: string(),
+});
+
 const apiHandler = createApiHandler({
-  validations: {
-    pathParams: z.object({
-      licencePlate: string(),
-    }),
-  },
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
 });
 
 export const GET = apiHandler(async ({ pathParams }) => {
@@ -26,7 +26,7 @@ export const GET = apiHandler(async ({ pathParams }) => {
   });
 
   if (!project) {
-    throw new Error('Product does not exist.');
+    return BadRequestResponse('Product does not exist.');
   }
 
   const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, project.cluster);
@@ -37,5 +37,5 @@ export const GET = apiHandler(async ({ pathParams }) => {
     result = 'OK_TO_DELETE';
   }
 
-  return NextResponse.json(result);
+  return OkResponse(result);
 });

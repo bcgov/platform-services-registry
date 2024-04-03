@@ -43,7 +43,7 @@ model User {
 
 model PrivateCloudRequest {
   id                     String                        @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate           String
+  licencePlate           String                        @unique
   createdByEmail         String
   decisionMakerEmail     String?
   type                   RequestType

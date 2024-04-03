@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { $Enums, DecisionStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
@@ -6,6 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 import { sendProvisionedEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -30,10 +30,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!request) {
-    console.log('No provision request found for project: ' + licencePlate);
-    return new NextResponse('No requetst found for this licece plate.', {
-      status: 404,
-    });
+    return NotFoundResponse('No requetst found for this licece plate.');
   }
 
   const updateRequest = prisma.privateCloudRequest.update({
@@ -79,5 +76,5 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   });
 
   wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
-  return new NextResponse(`Successfully marked ${licencePlate} as provisioned.`, { status: 200 });
+  return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

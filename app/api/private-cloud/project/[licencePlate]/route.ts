@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -34,12 +34,10 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!project) {
-    return new NextResponse('No project found for this licence plate.', {
-      status: 404,
-    });
+    return NotFoundResponse('No project found for this licence plate.');
   }
 
-  return NextResponse.json(project);
+  return OkResponse(project);
 });
 
 export type PrivateCloudProjectGetPayload = Prisma.PrivateCloudProjectGetPayload<{

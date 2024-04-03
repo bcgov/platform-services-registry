@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import { OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -39,8 +39,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     },
     session: session as never,
   });
-
-  return NextResponse.json(request);
+  return OkResponse(request);
 });
 
 export type PrivateCloudActiveRequestGetPayload = Prisma.PrivateCloudRequestGetPayload<{

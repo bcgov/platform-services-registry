@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { OkResponse } from '@/core/responses';
 import { z } from 'zod';
 import prisma from '@/core/prisma';
-import { SecurityConfig, $Enums } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 
 const pathParamSchema = z.object({
@@ -41,5 +41,5 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
 
   const [config, project, requestedProject] = await Promise.all([configProm, projectProm, requestedProjectProm]);
 
-  return NextResponse.json({ config, project: project || requestedProject });
+  return OkResponse({ config, project: project || requestedProject });
 });

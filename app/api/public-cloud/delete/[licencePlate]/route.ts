@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
@@ -33,23 +33,17 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!project) {
-    return NextResponse.json(
-      { message: 'Bad Request', error: 'there is no matching project not found' },
-      { status: 400 },
-    );
+    return BadRequestResponse('there is no matching project not found');
   }
 
   if (project.requests.length > 0) {
-    return NextResponse.json(
-      { message: 'Bad Request', error: 'there is an active request for this project' },
-      { status: 400 },
-    );
+    return BadRequestResponse('there is an active request for this project');
   }
 
   const projectWithPermissions = project as typeof project & PublicCloudProjectDecorate;
 
   if (!projectWithPermissions._permissions.delete) {
-    return NextResponse.json({ message: 'Unauthorized', error: 'not allowed to perform the task' }, { status: 401 });
+    return UnauthorizedResponse('not allowed to perform the task');
   }
 
   projectWithPermissions.status = $Enums.ProjectStatus.INACTIVE;
@@ -100,5 +94,5 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
     sendAdminDeleteRequestEmails(createRequest.requestedProject);
   });
 
-  return NextResponse.json({ success: true });
+  return OkResponse(true);
 });

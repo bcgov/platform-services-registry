@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import createRequest from '@/request-actions/public-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
@@ -20,13 +20,11 @@ export const POST = apiHandler(async ({ body, session }) => {
     ) &&
     !permissions.editAllPrivateCloudProducts
   ) {
-    throw new Error('You need to assign yourself to this project in order to create it.');
+    return UnauthorizedResponse('not allowed to perform the task');
   }
   const request = await createRequest(body, authEmail);
 
   wrapAsync(() => sendCreateRequestEmails(request));
 
-  return new NextResponse('Success creating request', {
-    status: 200,
-  });
+  return OkResponse('Success creating request');
 });

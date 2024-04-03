@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { PublicCloudRequest, User } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBodySchema } from '@/schema';
@@ -21,9 +21,7 @@ const apiHandler = createApiHandler({
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   if (!session) {
-    return NextResponse.json({
-      message: 'You do not have the required credentials.',
-    });
+    return UnauthorizedResponse('You do not have the required credentials.');
   }
   const { userEmail } = session;
   const { licencePlate } = pathParams;
@@ -34,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     ) &&
     !(session.permissions.editAllPrivateCloudProducts || session.ministries.editor.includes(`${body.ministry}`))
   ) {
-    throw new Error('You need to assign yourself to this project in order to create it.');
+    return UnauthorizedResponse('You need to assign yourself to this project in order to create it.');
   }
 
   const existingRequest: PublicCloudRequest | null = await prisma.publicCloudRequest.findFirst({
@@ -44,7 +42,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   if (existingRequest !== null) {
-    throw new Error('This project already has an active request or it does not exist.');
+    return BadRequestResponse('This project already has an active request or it does not exist.');
   }
 
   const request = await editRequest(licencePlate, body, userEmail as string);
@@ -65,5 +63,5 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     }
   });
 
-  return new NextResponse('Successfully created and provisioned edit request ', { status: 200 });
+  return OkResponse('Successfully created and provisioned edit request ');
 });
