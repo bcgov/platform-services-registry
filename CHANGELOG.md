@@ -1,3 +1,15 @@
+## [0.22.1](https://github.com/bcgov/platform-services-registry/compare/v0.22.0...v0.22.1) (2024-04-04)
+
+
+### Features
+
+* add updatedAt field to comments ([ed971c3](https://github.com/bcgov/platform-services-registry/commit/ed971c30118f052c1ef95cbd490ff284cc40c129))
+
+
+### Refactors
+
+* api handler, next response, param validation ([#2421](https://github.com/bcgov/platform-services-registry/issues/2421)) ([bf02663](https://github.com/bcgov/platform-services-registry/commit/bf026633042e50c2e3eab1bb287be10d7136d6af))
+
 ## [0.22.0](https://github.com/bcgov/platform-services-registry/compare/v0.21.0...v0.22.0) (2024-03-22)
 
 
