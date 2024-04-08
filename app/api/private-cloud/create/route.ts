@@ -13,23 +13,24 @@ const apiHandler = createApiHandler({
 });
 
 export const POST = apiHandler(async ({ body, session }) => {
-  const { userEmail } = session;
+  const { user } = session ?? {};
+  const { email: authEmail } = user ?? {};
 
   if (
     !(
       (
         [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-          userEmail as string,
+          authEmail,
         ) || session.permissions.reviewAllPrivateCloudRequests
       )
-      // if we want to let ministry editor to create home ministry products no being involved in this product as PO/TL
+      // if we want to let minitry editor to create home ministry products no being involved in this product as PO/TL
       // || session.ministries.editor.includes(`${body.ministry}`)
     )
   ) {
     return UnauthorizedResponse('You need to assign yourself to this project in order to create it.');
   }
 
-  const request = await createRequest(body, userEmail as string);
+  const request = await createRequest(body, authEmail);
 
   wrapAsync(() => sendCreateRequestEmails(request));
 
