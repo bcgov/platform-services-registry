@@ -61,7 +61,6 @@ function createApiHandler<
     queryParams: queryParamVal = z.object({}),
     body: bodyVal = z.object({}),
   } = validations ?? {};
-
   let pathParams: TypeOf<typeof pathParamVal> | null = null;
   let queryParams: TypeOf<typeof queryParamVal> | null = null;
   let body: TypeOf<typeof bodyVal> | null = null;
