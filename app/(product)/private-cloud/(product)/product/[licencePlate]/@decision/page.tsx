@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSession } from 'next-auth/react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProject } from '@prisma/client';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import PreviousButton from '@/components/buttons/Previous';
 import ReturnModal from '@/components/modal/ReturnDecision';
