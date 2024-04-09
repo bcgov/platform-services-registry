@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Plus from '@/components/assets/plus.svg';
 

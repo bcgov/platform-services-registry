@@ -1,5 +1,3 @@
-'use client';
-
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import { providers, ministriesNames } from '@/constants';

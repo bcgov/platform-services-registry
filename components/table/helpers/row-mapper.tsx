@@ -1,9 +1,5 @@
 import formatDate from '@/utils/date';
-import Image from 'next/image';
-import Edit from '@/components/assets/edit.svg';
-import { PrivateProject } from '@/queries/types';
 import classNames from '@/utils/classnames';
-import Avtar from '@/components/table/Avatar';
 
 const tailwindColors = {
   red: ['bg-red-100', 'text-red-700', 'fill-red-500'],

@@ -1,5 +1,4 @@
-'use client';
-
+// not used
 import classNames from '@/utils/classnames';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 
@@ -8,7 +7,7 @@ interface Tab {
   label: string;
 }
 
-export default function Tabs(
+export default function PublicCloudProductHistoryTabs(
   {
     tabs,
     selectedTab,

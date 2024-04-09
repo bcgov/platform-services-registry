@@ -10,7 +10,6 @@ import Link from 'next/link';
 import classNames from '@/utils/classnames';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import Avatar from '@/components/table/Avatar';
-
 interface TableProps {
   rows: Record<string, any>[];
 }

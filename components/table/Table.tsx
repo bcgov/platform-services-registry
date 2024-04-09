@@ -1,3 +1,5 @@
+'use client';
+
 import SearchFilterSort from '@/components/table/SearchFilterSort';
 import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';

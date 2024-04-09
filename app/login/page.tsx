@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import LoginButton from '@/components/buttons/LoginButton';
 import RegisterProductButton from '@/components/buttons/RegisterProductButton';
 import { useSession } from 'next-auth/react';

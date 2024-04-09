@@ -1,5 +1,3 @@
-'use client';
-
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import { parsePaginationParams } from '@/helpers/pagination';
 
