@@ -1,16 +1,13 @@
-'use client';
-
 import Link from 'next/link';
 import classNames from '@/utils/classnames';
 import { usePathname } from 'next/navigation';
-import path from 'path';
 
 interface Tab {
   name: string;
   label: string;
 }
 
-export default function Tabs(
+export default function CloudTabs(
   { tabs, navItem, urlFn }: { tabs: Tab[]; navItem?: React.ReactNode; urlFn: (path: string, name: string) => string },
   { className }: { className?: string },
 ) {

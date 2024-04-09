@@ -7,12 +7,9 @@ import path from 'path';
 import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import classNames from '@/utils/classnames';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import Avatar from '@/components/table/Avatar';
-import Avatars from '@/components/table/Avatars';
-
 interface TableProps {
   rows: Record<string, any>[];
 }

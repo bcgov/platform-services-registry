@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Export from '@/components/assets/export.svg';
 import { useState } from 'react';

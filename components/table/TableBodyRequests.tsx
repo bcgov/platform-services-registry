@@ -38,7 +38,7 @@ function EmptyBody() {
   );
 }
 
-export default function TableBody({ headers, rows }: TableProps) {
+export default function TableBodyRequests({ headers, rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
 

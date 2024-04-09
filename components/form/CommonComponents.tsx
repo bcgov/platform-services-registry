@@ -1,5 +1,4 @@
-import { clear } from 'console';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 const commonComponents = [

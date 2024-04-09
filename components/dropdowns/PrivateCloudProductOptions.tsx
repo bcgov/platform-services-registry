@@ -3,10 +3,10 @@ import { toast } from 'react-toastify';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon, PlayCircleIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import DeleteModal from '@/components/modal/PrivateCloudDelete';
+import { useMutation } from '@tanstack/react-query';
+import PrivateCloudDeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
 import {
   deletePrivateCloudProject,
@@ -75,7 +75,12 @@ export default function Dropdown({
 
   return (
     <>
-      <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
+      <PrivateCloudDeleteModal
+        open={showModal}
+        setOpen={setShowModal}
+        isSubmitLoading={isSubmitLoading}
+        onSubmit={onSubmit}
+      />
       <ReturnModal
         open={showReturnModal}
         setOpen={setShowReturnModal}

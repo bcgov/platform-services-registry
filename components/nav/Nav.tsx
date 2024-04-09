@@ -1,4 +1,5 @@
 'use client';
+
 import Image from 'next/image';
 import Logo from '@/components/assets/logo.svg';
 import ProfileDropdown from '@/components/nav/ProfileDropdown';

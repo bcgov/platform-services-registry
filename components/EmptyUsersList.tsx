@@ -1,5 +1,3 @@
-'use client';
-
 import AddUserButton from '@/components/buttons/AddUserButton';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';

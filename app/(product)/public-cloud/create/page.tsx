@@ -1,11 +1,12 @@
 'use client';
+
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import CreateModal from '@/components/modal/CreatePublicCloud';
+import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
@@ -90,7 +91,7 @@ export default function Page() {
           </div>
         </form>
       </FormProvider>
-      <CreateModal
+      <CreatePublicCloud
         open={openCreate}
         setOpen={setOpenCreate}
         handleSubmit={methods.handleSubmit(handleSubmit)}

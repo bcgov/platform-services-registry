@@ -1,5 +1,3 @@
-'use client';
-
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +6,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import classNames from '@/utils/classnames';
 import { getPublicCloudProject } from '@/services/backend/public-cloud';
 
-export default function Modal({
+export default function PublicCloudDeleteModal({
   open,
   setOpen,
   isSubmitLoading,

@@ -1,5 +1,3 @@
-'use client';
-
 import Delete from '@/components/assets/delete.svg';
 import Image from 'next/image';
 import React from 'react';

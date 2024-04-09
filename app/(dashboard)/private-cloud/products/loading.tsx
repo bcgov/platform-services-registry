@@ -1,7 +1,9 @@
+'use client';
+
 import TableRowSkeleton from '@/components/table/TableRowSkeleton';
 import Table from '@/components/table/Table';
 
-export default async function ProductsTableSkeleton() {
+export default function ProductsTableSkeleton() {
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"

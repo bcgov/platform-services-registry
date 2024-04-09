@@ -2,9 +2,9 @@ import { useState, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid';
 import classNames from '@/utils/classnames';
-import DeleteModal from '@/components/modal/PublicCloudDelete';
+import PublicCloudDeleteModal from '@/components/modal/PublicCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
 import { deletePublicCloudProject } from '@/services/backend/public-cloud';
 
@@ -35,7 +35,12 @@ export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
 
   return (
     <>
-      <DeleteModal open={showModal} setOpen={setShowModal} isSubmitLoading={isSubmitLoading} onSubmit={onSubmit} />
+      <PublicCloudDeleteModal
+        open={showModal}
+        setOpen={setShowModal}
+        isSubmitLoading={isSubmitLoading}
+        onSubmit={onSubmit}
+      />
       <ReturnModal
         open={showReturnModal}
         setOpen={setShowReturnModal}

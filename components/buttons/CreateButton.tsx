@@ -1,11 +1,9 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Plus from '@/components/assets/plus.svg';
 
-export default function Tabs() {
+export default function CreateButton() {
   const pathname = usePathname();
 
   if (!pathname) return null;
