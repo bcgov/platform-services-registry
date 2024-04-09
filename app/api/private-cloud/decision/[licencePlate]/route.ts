@@ -10,14 +10,14 @@ import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendRequestRejectionEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
-import { BadRequestResponse, OkResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: ['user'],
   permissions: [PermissionsEnum.ReviewAllPrivateCloudRequests],
   validations: { pathParams: pathParamSchema, body: PrivateCloudDecisionRequestBodySchema },
 });

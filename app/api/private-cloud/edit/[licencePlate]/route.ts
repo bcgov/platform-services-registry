@@ -24,10 +24,13 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
 
   if (
-    ![body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      userEmail as string,
-    ) &&
-    !(session.permissions.editAllPrivateCloudProducts || session.ministries.editor.includes(`${body.ministry}`))
+    !(
+      [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
+        userEmail as string,
+      ) ||
+      session.permissions.editAllPrivateCloudProducts ||
+      session.ministries.editor.includes(`${body.ministry}`)
+    )
   ) {
     return UnauthorizedResponse('You need to assign yourself to this project in order to edit it.');
   }

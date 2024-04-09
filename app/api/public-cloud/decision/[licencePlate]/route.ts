@@ -23,10 +23,6 @@ const apiHandler = createApiHandler({
 });
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  if (!session) {
-    return UnauthorizedResponse('You must be an admin to make a decision.request');
-  }
-
   const { userEmail } = session;
   const { licencePlate } = pathParams;
   const { decision, decisionComment, ...requestedProjectFormData } = body;

@@ -7,6 +7,7 @@ import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public
 import createApiHandler from '@/core/api-handler';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 import { wrapAsync } from '@/helpers/runtime';
+import { PermissionsEnum } from '@/types/permissions';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

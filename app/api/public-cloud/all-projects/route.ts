@@ -18,10 +18,6 @@ const apiHandler = createApiHandler({
   validations: { queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ queryParams, session }) => {
-  if (!session) {
-    return UnauthorizedResponse('Unauthorized');
-  }
-
   const { search, ministry, provider, active } = queryParams;
 
   const { docs, totalCount } = await searchPublicCloudProducts({
