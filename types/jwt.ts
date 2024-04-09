@@ -46,53 +46,58 @@ export async function verifyJwtToken({ jwksUri, jwtToken, issuer, audience, auth
   if (jwtToken.startsWith(authHeaderPrefix)) jwtToken = jwtToken.slice(authHeaderPrefix.length).trim();
 
   // Decode JWT token header
-  const { header } = jws.decode(jwtToken);
+  const decodedToken = jws.decode(jwtToken);
 
-  // Fetch JWKS from cache or URL if not cached
-  if (!jwksCache[jwksUri]) {
-    jwksCache[jwksUri] = await axios.get(jwksUri).then((res) => res.data);
+  if (decodedToken !== null) {
+    const { header } = decodedToken;
+
+    // Fetch JWKS from cache or URL if not cached
+    if (!jwksCache[jwksUri]) {
+      jwksCache[jwksUri] = await axios.get(jwksUri).then((res) => res.data);
+    }
+
+    // Extract keys from JWKS
+    const { keys } = jwksCache[jwksUri];
+
+    // Find key matching the token's key ID
+    const key = keys.find((k) => k.kid === header.kid);
+
+    // Throw error if key is not found
+    if (!key) {
+      throw Error('jwk key does not found.');
+    }
+
+    // Convert JWK to PEM format for verification
+    const pem = jwkToPem(key as JWK);
+
+    // Verification options
+    const verifyOptions: VerifyOptions = {
+      maxAge: '8h',
+      ignoreExpiration: true,
+    };
+
+    // Set issuer if provided
+    if (issuer) {
+      verifyOptions.issuer = issuer;
+    }
+
+    // Set audience if provided
+    if (audience) {
+      verifyOptions.audience = audience;
+    }
+
+    // Verify JWT token
+    const jwtPayload = jwt.verify(jwtToken, pem, verifyOptions);
+
+    // Manual inspection for authorized presenter if specified
+    if (authorizedPresenter && (jwtPayload as { azp: string }).azp !== authorizedPresenter) {
+      throw Error('authorized presenter does not match');
+    }
+
+    // Return decoded JWT payload
+    return jwtPayload;
   }
-
-  // Extract keys from JWKS
-  const { keys } = jwksCache[jwksUri];
-
-  // Find key matching the token's key ID
-  const key = keys.find((k) => k.kid === header.kid);
-
-  // Throw error if key is not found
-  if (!key) {
-    throw Error('jwk key does not found.');
-  }
-
-  // Convert JWK to PEM format for verification
-  const pem = jwkToPem(key as JWK);
-
-  // Verification options
-  const verifyOptions: VerifyOptions = {
-    maxAge: '8h',
-    ignoreExpiration: true,
-  };
-
-  // Set issuer if provided
-  if (issuer) {
-    verifyOptions.issuer = issuer;
-  }
-
-  // Set audience if provided
-  if (audience) {
-    verifyOptions.audience = audience;
-  }
-
-  // Verify JWT token
-  const jwtPayload = jwt.verify(jwtToken, pem, verifyOptions);
-
-  // Manual inspection for authorized presenter if specified
-  if (authorizedPresenter && (jwtPayload as { azp: string }).azp !== authorizedPresenter) {
-    throw Error('authorized presenter does not match');
-  }
-
-  // Return decoded JWT payload
-  return jwtPayload;
+  return null;
 }
 
 export async function verifyKeycloakJwtTokenSafe({
