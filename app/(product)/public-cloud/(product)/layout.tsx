@@ -10,7 +10,7 @@ import { getPublicCloudProject } from '@/services/backend/public-cloud';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const params = useParams<{ licencePlate: string }>();
   const { licencePlate } = params;
-  const { data: session, status } = useSession({
+  const { data: session } = useSession({
     required: true,
   });
 
