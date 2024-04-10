@@ -20,7 +20,7 @@ export const POST = apiHandler(async ({ body, session }) => {
     !(
       [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
         authEmail,
-      ) || session.permissions.reviewAllPrivateCloudRequests
+      ) || session.permissions.reviewAllPublicCloudRequests
     )
     // if we want to let minitry editor to create home ministry products no being involved in this product as PO/TL
     // || session.ministries.editor.includes(`${body.ministry}`)
