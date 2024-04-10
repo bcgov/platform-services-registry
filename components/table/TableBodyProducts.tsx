@@ -7,11 +7,13 @@ import path from 'path';
 import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import classNames from '@/utils/classnames';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import Avatar from '@/components/table/Avatar';
-import Avatars from '@/components/table/Avatars';
+import { copyToClipboard } from '@/utils/copy-to-clipboard';
+import { showTooltip } from '@/utils/show-tooltip';
+import React, { useState } from 'react';
 
 interface TableProps {
   rows: Record<string, any>[];
@@ -133,6 +135,12 @@ export default function TableBody({ rows }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const handleCopyToClipboard = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, licencePlateToCopy: string) => {
+    event.stopPropagation(); // Stop event propagation to prevent onRowClickHandler from firing
+    copyToClipboard(licencePlateToCopy);
+    showTooltip(setTooltipVisible);
+  };
 
   if (rows.length === 0) {
     return <EmptyBody />;
@@ -172,8 +180,6 @@ export default function TableBody({ rows }: TableProps) {
                             </span>
                           )}
                         </span>
-
-                        <span className="absolute inset-0" />
                       </div>
                     </h2>
                   </div>
@@ -248,7 +254,17 @@ export default function TableBody({ rows }: TableProps) {
               </div>
 
               <div className="flex">
-                <div className="text-gray-700 w-20">{deployment.licencePlate}</div>
+                <div className="text-gray-700 w-15">{deployment.licencePlate}</div>
+                <DocumentDuplicateIcon
+                  className="h-5 w-5 flex-none text-gray-400 cursor-pointer"
+                  aria-hidden="true"
+                  onClick={(event) => handleCopyToClipboard(event, deployment.licencePlate)}
+                />
+                {tooltipVisible && (
+                  <div className="absolute opacity-70 top-0 right-0 z-50 bg-white text-gray-600 py-1 px-2 rounded-lg text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none">
+                    Copied
+                  </div>
+                )}
                 <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
               </div>
             </div>
