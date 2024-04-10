@@ -14,6 +14,7 @@ import Avatar from '@/components/table/Avatar';
 import { copyToClipboard } from '@/utils/copy-to-clipboard';
 import { showTooltip } from '@/utils/show-tooltip';
 import React, { useState } from 'react';
+import Avatars from './Avatars';
 
 interface TableProps {
   rows: Record<string, any>[];
