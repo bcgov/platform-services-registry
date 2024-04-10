@@ -1,8 +1,6 @@
-'use client';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
-
-export default function PaginationButton({ page, pageSize, label }: { page: number; pageSize: number; label: string }) {
+export default function NavButton({ page, pageSize, label }: { page: number; pageSize: number; label: string }) {
   const { push } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;

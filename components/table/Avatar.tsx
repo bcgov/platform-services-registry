@@ -1,6 +1,3 @@
-'use client';
-
-import Image from 'next/image';
 import fetchUserImage from '@/components/nav/generateAvatar';
 import { useQuery } from '@tanstack/react-query';
 

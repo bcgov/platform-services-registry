@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Arrow from '@/components/assets/arrow.svg';
 import { useState } from 'react';

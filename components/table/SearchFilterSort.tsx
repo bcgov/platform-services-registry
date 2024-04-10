@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Search from '@/components/assets/search.svg';
 import Filter from '@/components/assets/filter.svg';

@@ -1,13 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
 import prisma from '@/core/prisma';
 import { Prisma } from '@prisma/client';
-import { string, z } from 'zod';
+import { z } from 'zod';
+import createApiHandler from '@/core/api-handler';
 
-const GetParamsSchema = z.object({
-  id: string(),
+const pathParamSchema = z.object({
+  id: z.string(),
 });
 
-type Params = z.infer<typeof GetParamsSchema>;
+const apiHandler = createApiHandler({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+
+export const GET = apiHandler(async ({ pathParams, session }) => {
+  const { id } = pathParams;
+
+  const request = await prisma.publicCloudRequest.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+          expenseAuthority: true,
+        },
+      },
+      requestedProject: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+          expenseAuthority: true,
+        },
+      },
+    },
+  });
+
+  if (!request) {
+    return NotFoundResponse('No project found with this id.');
+  }
+
+  return OkResponse(request);
+});
 
 export type PublicCloudRequestWithCurrentAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {
@@ -29,51 +67,3 @@ export type PublicCloudRequestWithCurrentAndRequestedProject = Prisma.PublicClou
     };
   };
 }>;
-
-export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
-  const parsedParams = GetParamsSchema.safeParse(params);
-
-  if (!parsedParams.success) {
-    return new NextResponse(parsedParams.error.message, { status: 400 });
-  }
-
-  const { id } = params;
-
-  try {
-    const request: PublicCloudRequestWithCurrentAndRequestedProject | null = await prisma.publicCloudRequest.findUnique(
-      {
-        where: {
-          id,
-        },
-        include: {
-          project: {
-            include: {
-              projectOwner: true,
-              primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-              expenseAuthority: true,
-            },
-          },
-          requestedProject: {
-            include: {
-              projectOwner: true,
-              primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-              expenseAuthority: true,
-            },
-          },
-        },
-      },
-    );
-
-    if (!request) {
-      return new NextResponse('No project found with this licece plate.', {
-        status: 404,
-      });
-    }
-
-    return NextResponse.json(request);
-  } catch (error: any) {
-    return new NextResponse(error.message, { status: 500 });
-  }
-}

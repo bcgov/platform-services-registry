@@ -1,5 +1,5 @@
 import { getSubGroupMembersByLicencePlateAndName } from '@/app/api/public-cloud/aws-roles/helpers';
-import { NextResponse } from 'next/server';
+import { OkResponse } from '@/core/responses';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 
@@ -23,5 +23,5 @@ export const GET = apiHandler(async ({ queryParams }) => {
     result = await getSubGroupMembersByLicencePlateAndName(licencePlate, role, page, pageSize, searchTerm);
   }
 
-  return NextResponse.json(result);
+  return OkResponse(result);
 });

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { OkResponse } from '@/core/responses';
 import prisma from '@/core/prisma';
 import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
@@ -37,5 +37,5 @@ export const PUT = apiHandler(async ({ body, session }) => {
     session: session as never,
   });
 
-  return NextResponse.json(result);
+  return OkResponse(result);
 });

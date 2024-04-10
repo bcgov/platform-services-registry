@@ -1,5 +1,4 @@
 import { $Enums, Cluster } from '@prisma/client';
-import { PermissionsEnum } from '@/types/permissions';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';

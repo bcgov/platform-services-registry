@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { $Enums } from '@prisma/client';
 import formatDate from '@/utils/date';
 import { formatFullName } from '@/helpers/user';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { CsvResponse } from '@/core/responses';
+import { CsvResponse, NoContent, UnauthorizedResponse } from '@/core/responses';
 import { searchPublicCloudProducts } from '@/queries/public-cloud-products';
 
 const queryParamSchema = z.object({
@@ -19,10 +18,6 @@ const apiHandler = createApiHandler({
   validations: { queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ queryParams, session }) => {
-  if (!session) {
-    return NextResponse.json('Unauthorized', { status: 401 });
-  }
-
   const { search, ministry, provider, active } = queryParams;
 
   const { docs, totalCount } = await searchPublicCloudProducts({
@@ -36,7 +31,7 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
   });
 
   if (totalCount === 0) {
-    return new Response(null, { status: 204 });
+    return NoContent(true);
   }
 
   // Map the data to the correct format for CSV conversion

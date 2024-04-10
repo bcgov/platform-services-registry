@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { PermissionsEnum } from '@/types/permissions';
 import { DecisionStatus, User } from '@prisma/client';
 import { z } from 'zod';
@@ -23,10 +23,6 @@ const apiHandler = createApiHandler({
 });
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  if (!session) {
-    return NextResponse.json('You must be an admin to make a request decision.', { status: 403 });
-  }
-
   const { userEmail } = session;
   const { licencePlate } = pathParams;
   const { decision, decisionComment, ...requestedProjectFormData } = body;
@@ -40,12 +36,12 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   );
 
   if (!request.requestedProject) {
-    return NextResponse.json(`Error creating decision request for ${request.licencePlate}`, { status: 400 });
+    return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     wrapAsync(() => sendRequestRejectionEmails(request.requestedProject, decisionComment));
-    return NextResponse.json(`Request for ${request.licencePlate} successfully created as rejected.`);
+    return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
   }
   if (
     request.decisionStatus === DecisionStatus.APPROVED &&
@@ -68,5 +64,5 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   // TODO: revisit to delete for good
   // sendRequestApprovalEmails(request);
 
-  return NextResponse.json(`Decision request for ${request.licencePlate} successfully created.`);
+  return OkResponse(`Decision request for ${request.licencePlate} successfully created.`);
 });

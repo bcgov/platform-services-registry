@@ -1,4 +1,4 @@
-'use client';
+// not used
 
 import Image from 'next/image';
 import fetchUserImage from '@/components/nav/generateAvatar';

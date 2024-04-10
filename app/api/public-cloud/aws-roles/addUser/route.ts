@@ -1,7 +1,7 @@
 import { addUserToGroupByEmail } from '@/app/api/public-cloud/aws-roles/helpers';
-import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import { OkResponse } from '@/core/responses';
 
 const queryParamSchema = z.object({
   userPrincipalName: z.string(),
@@ -22,7 +22,7 @@ export const PUT = apiHandler(async ({ queryParams, session }) => {
     result = await addUserToGroupByEmail(userPrincipalName, userEmail, groupId);
   }
 
-  return NextResponse.json({
+  return OkResponse({
     data: result,
   });
 });

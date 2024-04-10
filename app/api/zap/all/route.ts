@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { OkResponse } from '@/core/responses';
 import prisma from '@/core/prisma';
 import createApiHandler from '@/core/api-handler';
 
@@ -11,5 +11,5 @@ export const POST = apiHandler(async ({ pathParams, queryParams, body, session }
     session: session as never,
   });
 
-  return NextResponse.json(results);
+  return OkResponse(results);
 });

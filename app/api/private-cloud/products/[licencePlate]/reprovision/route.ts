@@ -2,7 +2,7 @@ import { $Enums } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse } from '@/core/responses';
 import prisma from '@/core/prisma';
 
 const pathParamSchema = z.object({
@@ -13,7 +13,7 @@ const apiHandler = createApiHandler({
   roles: ['admin'],
   validations: { pathParams: pathParamSchema },
 });
-export const GET = apiHandler(async ({ pathParams, session }) => {
+export const GET = apiHandler(async ({ pathParams }) => {
   const { licencePlate } = pathParams;
 
   const product = await prisma.privateCloudProject.findFirst({

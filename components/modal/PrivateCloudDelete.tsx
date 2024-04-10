@@ -1,5 +1,3 @@
-'use client';
-
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
@@ -22,7 +20,7 @@ async function fetchDeleteCheckResult(licencePlate: string) {
   return data;
 }
 
-export default function Modal({
+export default function PrivateCloudDeleteModal({
   open,
   setOpen,
   isSubmitLoading,

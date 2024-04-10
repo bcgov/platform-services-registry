@@ -46,3 +46,7 @@ export function OkResponse<T>(data: T) {
 export function CreatedResponse<T>(data: T) {
   return NextResponse.json(data, { status: 201 });
 }
+
+export function NoContent<T>(data: T) {
+  return NextResponse.json(data, { status: 204 });
+}

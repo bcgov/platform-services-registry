@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { $Enums } from '@prisma/client';
 import forEach from 'lodash-es/forEach';
 import formatDate from '@/utils/date';
 import { formatFullName } from '@/helpers/user';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { CsvResponse } from '@/core/responses';
+import { CsvResponse, UnauthorizedResponse } from '@/core/responses';
 import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
 import { extractNumbers } from '@/utils/string';
 
@@ -32,7 +31,7 @@ const apiHandler = createApiHandler({
 });
 export const GET = apiHandler(async ({ queryParams, session }) => {
   if (!session) {
-    return NextResponse.json('Unauthorized', { status: 401 });
+    return UnauthorizedResponse('Unauthorized');
   }
 
   const { search, ministry, cluster, active } = queryParams;

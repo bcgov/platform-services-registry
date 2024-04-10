@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/core/prisma';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
+import { OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -47,7 +47,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   //   });
   // }
 
-  return NextResponse.json(request);
+  return OkResponse(request);
 });
 
 export type PublicCloudActiveRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{

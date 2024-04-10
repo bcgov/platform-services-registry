@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
@@ -8,6 +7,7 @@ import createApiHandler from '@/core/api-handler';
 import { isEligibleForDeletion } from '@/helpers/openshift';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
 import { wrapAsync } from '@/helpers/runtime';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -34,34 +34,23 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!project) {
-    return NextResponse.json(
-      { message: 'Bad Request', error: 'there is no matching project not found' },
-      { status: 400 },
-    );
+    return BadRequestResponse('there is no matching project not found');
   }
 
   if (project.requests.length > 0) {
-    return NextResponse.json(
-      { message: 'Bad Request', error: 'there is an active request for this project' },
-      { status: 400 },
-    );
+    return BadRequestResponse('there is an active request for this project');
   }
 
   const projectWithPermissions = project as typeof project & PrivateCloudProjectDecorate;
 
   if (!projectWithPermissions._permissions.delete) {
-    return NextResponse.json({ message: 'Unauthorized', error: 'not allowed to perform the task' }, { status: 401 });
+    return UnauthorizedResponse('not allowed to perform the task');
   }
 
   const canDelete = await isEligibleForDeletion(projectWithPermissions.licencePlate, projectWithPermissions.cluster);
   if (!canDelete) {
-    return NextResponse.json(
-      {
-        message: 'Bad Request',
-        error:
-          'this project is not deletable as it is not empty. Please delete all resources before deleting the project.',
-      },
-      { status: 400 },
+    return BadRequestResponse(
+      'this project is not deletable as it is not empty. Please delete all resources before deleting the project.',
     );
   }
 
@@ -108,5 +97,5 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
 
   wrapAsync(() => sendDeleteRequestEmails(createRequest.requestedProject));
 
-  return NextResponse.json({ success: true });
+  return OkResponse(true);
 });
