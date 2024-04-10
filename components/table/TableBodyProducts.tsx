@@ -137,10 +137,16 @@ export default function TableBody({ rows }: TableProps) {
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const handleCopyToClipboard = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, licencePlateToCopy: string) => {
+  const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
+  const handleCopyToClipboard = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>,
+    licencePlateToCopy: string,
+    index: number,
+  ) => {
     event.stopPropagation(); // Stop event propagation to prevent onRowClickHandler from firing
     copyToClipboard(licencePlateToCopy);
     showTooltip(setTooltipVisible);
+    setTooltipIndex(index);
   };
 
   if (rows.length === 0) {
@@ -154,7 +160,7 @@ export default function TableBody({ rows }: TableProps) {
   return (
     <main className="">
       <ul className="divide-y divide-grey-200/5 ">
-        {rows.map((deployment) => (
+        {rows.map((deployment, index) => (
           <li key={deployment.id}>
             <div
               tabIndex={0} // Make it focusable
@@ -259,9 +265,9 @@ export default function TableBody({ rows }: TableProps) {
                 <DocumentDuplicateIcon
                   className="h-5 w-5 flex-none text-gray-400 cursor-pointer"
                   aria-hidden="true"
-                  onClick={(event) => handleCopyToClipboard(event, deployment.licencePlate)}
+                  onClick={(event) => handleCopyToClipboard(event, deployment.licencePlate, index)}
                 />
-                {tooltipVisible && (
+                {tooltipVisible && tooltipIndex === index && (
                   <div className="absolute opacity-70 top-0 right-0 z-50 bg-white text-gray-600 py-1 px-2 rounded-lg text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none">
                     Copied
                   </div>
