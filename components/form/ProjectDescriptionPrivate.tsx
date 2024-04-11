@@ -28,7 +28,7 @@ export default function ProjectDescription({
   });
 
   useEffect(() => {
-    if (session && !session?.isAdmin) {
+    if (session && !session?.permissions.viewAllPrivateCloudProducts) {
       setClustersList(clusters.filter((cluster) => cluster.indexOf('LAB') === -1));
     }
   }, [session]);
