@@ -32,6 +32,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   ];
 
+  tabs.push({
+    label: 'COMMENTS',
+    name: 'comments',
+    href: `/private-cloud/${licencePlate}/comments`,
+  });
+
   if (session?.previews.security) {
     tabs.push({
       label: 'SECURITY',
