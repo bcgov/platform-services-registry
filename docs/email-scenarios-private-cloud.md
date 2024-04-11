@@ -30,7 +30,7 @@ This is assuming the user has already had an onboarding meeting, and meets the r
 
 - **3b. Rejection sent to PO/TLs** containing:
    <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Product Details (Name)</li>
       <li>Admin review comments</li>
    </ol>
 
