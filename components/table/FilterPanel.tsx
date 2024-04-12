@@ -107,8 +107,8 @@ export default function FilterPanel() {
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               onChange={(e) => handleFilterChange(currentClusterProvider, e.target.value)}
             >
-              <option selected={true} disabled value="">
-                Select {capitalizeFirstLetter(currentClusterProvider)}
+              <option selected={true} value="">
+                All {capitalizeFirstLetter(currentClusterProvider)}s
               </option>
               {currentClusterProviderList.map((item) => (
                 <option key={item} value={item}>
@@ -132,8 +132,8 @@ export default function FilterPanel() {
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               onChange={(e) => handleFilterChange('ministry', e.target.value)}
             >
-              <option selected={true} disabled value="">
-                Select Ministry
+              <option selected={true} value="">
+                All Ministries
               </option>
               {ministriesNames.map((ministry) => (
                 <option key={ministry.id} value={ministry.name}>
@@ -168,7 +168,7 @@ export default function FilterPanel() {
         </label>
         <div className="mt-8 md:mt-7 md:ml-4">
           <button
-            className="min-w-max w-1/2 h-9 inline-flex items-center justify-center gap-x-2 rounded-md bg-white px-3 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            className="min-w-max w-1/2 h-9 inline-flex items-center justify-center gap-x-2 rounded-md bg-bcblue text-white px-3 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset transition-all duration-500 ring-gray-300 hover:bg-[#CCCCCE]"
             onClick={clearFilters}
           >
             Clear Filters
