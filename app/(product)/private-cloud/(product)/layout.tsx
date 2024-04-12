@@ -31,12 +31,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       href: `/private-cloud/product/${licencePlate}`,
     },
   ];
-
-  tabs.push({
-    label: 'COMMENTS',
-    name: 'comments',
-    href: `/private-cloud/${licencePlate}/comments`,
-  });
+  if (session?.previews.comments) {
+    tabs.push({
+      label: 'COMMENTS',
+      name: 'comments',
+      href: `/private-cloud/${licencePlate}/comments`,
+    });
+  }
 
   if (session?.previews.security) {
     tabs.push({

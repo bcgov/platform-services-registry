@@ -133,6 +133,7 @@ export async function generateSession({ session, token }: { session: Session; to
   session.previews = {
     history: !IS_PROD,
     security: !IS_PROD,
+    comments: !IS_PROD,
     // expenseAuthority: !IS_PROD,
     // awsRoles: !IS_PROD,
   };
