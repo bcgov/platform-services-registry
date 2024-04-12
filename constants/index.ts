@@ -154,13 +154,13 @@ export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
 export const privateSortNames = [
   {
     sortKey: 'updatedAt',
-    humanFriendlyName: 'Product last update (A-Z)',
-    sortOrder: 'asc',
+    humanFriendlyName: 'Product last update (new to old)',
+    sortOrder: 'desc',
   },
   {
     sortKey: 'updatedAt',
-    humanFriendlyName: 'Product last update (Z-A)',
-    sortOrder: 'desc',
+    humanFriendlyName: 'Product last update (old to new)',
+    sortOrder: 'asc',
   },
   {
     sortKey: 'name',
