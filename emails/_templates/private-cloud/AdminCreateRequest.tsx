@@ -27,7 +27,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                 <Text className="">
                   There is a new request that requires your review. Log in to the Registry to review the details. If you
                   have any questions about the request, the PO and TL contact details are included below and in the
-                  Registry
+                  Registry.
                 </Text>
                 <Button
                   href="https://registry.developer.gov.bc.ca/"

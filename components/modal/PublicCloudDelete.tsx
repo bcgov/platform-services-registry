@@ -104,7 +104,7 @@ export default function PublicCloudDeleteModal({
                     </p>
                     <p className="text-sm font-medium text-gray-900">
                       Thank you for your cooperation and understanding. If you have any questions or need further
-                      assistance, please don`&apos;`t hesitate to contact our support team{' '}
+                      assistance, please don&apos;t hesitate to contact our support team{' '}
                       <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
                         Cloud.Pathfinder@gov.bc.ca
                       </a>

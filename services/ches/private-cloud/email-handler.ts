@@ -107,7 +107,7 @@ export const sendRequestRejectionEmails = async (
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: 'Request has been rejected',
+      subject: `Request for ${request.name} has been rejected`,
     });
   } catch (error) {
     console.error('ERROR SENDING REQUEST REJECTION EMAIL');
