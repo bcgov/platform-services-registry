@@ -1,3 +1,20 @@
+## [0.22.2](https://github.com/bcgov/platform-services-registry/compare/v0.22.1...v0.22.2) (2024-04-15)
+
+
+### Features
+
+* **frontend:** add buttons to copy licensePlate to clipboard ([6b5720a](https://github.com/bcgov/platform-services-registry/commit/6b5720a80bee5aae771a40f2c73772c06f455453))
+* **frontend:** add buttons to copy licensePlate to clipboard ([d87f6ad](https://github.com/bcgov/platform-services-registry/commit/d87f6ad21431fbfc613bc2f0b88e5b5ede81b9ee))
+
+
+### Bug Fixes
+
+* add check for Decode JWT token header ([c197b8b](https://github.com/bcgov/platform-services-registry/commit/c197b8b3cb796aaa698601453f613d0540bd07c6))
+* change permission for private cloud admin to see LAB clusters in drop down ([#2472](https://github.com/bcgov/platform-services-registry/issues/2472)) ([080a3c5](https://github.com/bcgov/platform-services-registry/commit/080a3c5b232a8f80c1b77425770bfb64ee2556be))
+* check is Expense authority form is filled in for public cloud product before deletion ([#2454](https://github.com/bcgov/platform-services-registry/issues/2454)) ([abfddcc](https://github.com/bcgov/platform-services-registry/commit/abfddcceced0d7185a5b7eea7d5967896cc9be56))
+* **frontend:** fix tooltip shown for multiple rows ([de800c0](https://github.com/bcgov/platform-services-registry/commit/de800c07836d383309a56e40e478ad9be9638162))
+* switch permission from private to public admins ([#2462](https://github.com/bcgov/platform-services-registry/issues/2462)) ([ad57b60](https://github.com/bcgov/platform-services-registry/commit/ad57b6000b3cb6509373503af2c6141d352563a5))
+
 ## [0.22.1](https://github.com/bcgov/platform-services-registry/compare/v0.22.0...v0.22.1) (2024-04-04)
 
 
