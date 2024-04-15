@@ -43,7 +43,13 @@
     "n/no-missing-import": "off",
     "n/no-extraneous-import": "off",
     "n/no-process-exit": "off",
-    "spaced-comment": ["error", "always", { "markers": ["/"] }]
+    "spaced-comment": ["error", "always", { "markers": ["/"] }],
+    "node/no-unsupported-features/node-builtins": [
+      "warn",
+      {
+        "version": ">=16.0.0"
+      }
+    ]
   },
   "overrides": [
     {
