@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllPrivateCloudComments, getPriviateCloudProject } from '@/services/backend/private-cloud';
 import CommentForm from '@/components/comments/CommentForm';
 import { useSession } from 'next-auth/react';
-import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
 
 interface User {
   firstName: string;
