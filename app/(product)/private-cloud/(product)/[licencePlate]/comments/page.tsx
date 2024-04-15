@@ -1,6 +1,7 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { getAllPrivateCloudComments, getPriviateCloudProject } from '@/services/backend/private-cloud';
 import CommentForm from '@/components/comments/CommentForm';
 import { useSession } from 'next-auth/react';
@@ -23,41 +24,40 @@ interface Comment {
 function CommentsPage() {
   const { data: session } = useSession();
   const userId = session?.userId;
-  const [project, setProject] = useState<PrivateCloudProjectGetPayload | null>(null);
   const params = useParams();
   const licencePlate = params.licencePlate as string;
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [error, setError] = useState('');
 
-  const fetchComments = useCallback(async () => {
-    if (licencePlate) {
-      try {
-        const projectData = await getPriviateCloudProject(licencePlate);
-        setProject(projectData);
-        const fetchedComments = await getAllPrivateCloudComments(licencePlate);
-        setComments(fetchedComments);
-      } catch (err) {
-        console.error('Failed to fetch comments:', err);
-        setError('Failed to load comments');
-      }
-    }
-  }, [licencePlate]);
+  // Query for project details
+  const {
+    data: project,
+    isLoading: projectLoading,
+    isError: projectIsError,
+    error: projectError,
+  } = useQuery({
+    queryKey: ['project', licencePlate],
+    queryFn: () => getPriviateCloudProject(licencePlate),
+    enabled: !!licencePlate,
+  });
 
-  useEffect(() => {
-    fetchComments(); // Refactored to call directly without anonymous function
-  }, [fetchComments]);
+  // Query for comments
+  const {
+    data: comments,
+    isLoading: commentsLoading,
+    isError: commentsIsError,
+    error: commentsError,
+    refetch: refetchComments,
+  } = useQuery({
+    queryKey: ['comments', licencePlate],
+    queryFn: () => getAllPrivateCloudComments(licencePlate),
+    enabled: !!licencePlate,
+  });
 
   const handleCommentAdded = () => {
-    fetchComments(); // Refresh the comments after adding a new one
+    refetchComments(); // Refresh the comments after adding a new one
   };
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
-
-  if (!project) {
-    return <p>Loading project details...</p>; // Ensure project data is loaded
-  }
+  if (projectLoading || commentsLoading) return <p>Loading...</p>;
+  if (projectIsError || commentsIsError) return <p>Error: {projectError?.message || commentsError?.message}</p>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -67,9 +67,9 @@ function CommentsPage() {
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
       />
-      {comments.length > 0 ? (
+      {comments?.length > 0 ? (
         <ul>
-          {comments.map((comment) => (
+          {comments.map((comment: Comment) => (
             <li key={comment.id}>
               <p>
                 <strong>Comment:</strong> {comment.text}

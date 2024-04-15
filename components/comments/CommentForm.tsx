@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { createPrivateCloudComment } from '@/services/backend/private-cloud';
 
 interface CommentFormProps {
@@ -10,27 +11,32 @@ interface CommentFormProps {
 
 function CommentForm({ licencePlate, userId, projectId, onCommentAdded }: CommentFormProps) {
   const [text, setText] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
-  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    try {
-      await createPrivateCloudComment(licencePlate, text, projectId, userId);
-      onCommentAdded(); // Callback to refetch comments
-      setText(''); // Clear the input after submission
-    } catch (error) {
+  const mutation = useMutation({
+    mutationFn: () => createPrivateCloudComment(licencePlate, text, projectId, userId),
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: () => {
+      onCommentAdded();
+      setText('');
+      setLoading(false);
+    },
+    onError: (error: Error) => {
       console.error('Failed to add comment:', error);
-    }
+      setLoading(false);
+    },
+  });
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    mutation.mutate();
   };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit(e as unknown as React.MouseEvent<HTMLButtonElement>);
-        }}
-        style={{ width: '50%' }}
-      >
+      <form onSubmit={handleSubmit} style={{ width: '50%' }}>
         <textarea
           id="comment"
           name="comment box"
@@ -61,8 +67,9 @@ function CommentForm({ licencePlate, userId, projectId, onCommentAdded }: Commen
             borderRadius: '4px',
             cursor: 'pointer',
           }}
+          disabled={isLoading}
         >
-          Submit comment
+          Post comment
         </button>
       </form>
     </div>
