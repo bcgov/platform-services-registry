@@ -57,6 +57,7 @@ declare module 'next-auth' {
     previews: {
       history: boolean;
       security: boolean;
+      comments: boolean;
       // expenseAuthority: boolean;
       // awsRoles: boolean;
     };
