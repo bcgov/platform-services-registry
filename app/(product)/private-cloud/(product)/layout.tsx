@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     tabs.push({
       label: 'COMMENTS',
       name: 'comments',
-      href: `/private-cloud/${licencePlate}/comments`,
+      href: `/private-cloud/comments/${licencePlate}`,
     });
   }
 
