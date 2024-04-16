@@ -54,7 +54,7 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
       bodyType: 'html',
       body: adminEmail,
       to: adminPrivateEmails,
-      subject: 'Edit request submitted',
+      subject: 'New edit request awaiting review',
     });
 
     const contacts = sendEmail({
