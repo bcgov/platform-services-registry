@@ -1,7 +1,7 @@
 import { instance } from './axios';
 import { PrivateCloudActiveRequestGetPayload } from '@/app/api/private-cloud/active-request/[licencePlate]/route';
 import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
-import { PrivateCloudComment } from '@prisma/client';
+import { PrivateCloudRequest, PrivateCloudComment } from '@prisma/client';
 
 export async function getPrivateCloudComment(licencePlate: string, commentId: string): Promise<PrivateCloudComment> {
   const response = await instance.get(`private-cloud/products/${licencePlate}/comments/${commentId}`);
@@ -81,6 +81,11 @@ export async function getPriviateCloudRequest(licencePlate: string) {
     return res.data;
   });
 
+  return result;
+}
+
+export async function getPriviateCloudRequestsHistory(licencePlate: string): Promise<PrivateCloudRequest[]> {
+  const result = await instance.get(`private-cloud/products/${licencePlate}/history`).then((res) => res.data);
   return result;
 }
 

@@ -1,71 +1,51 @@
-import Table from '@/components/table/Table';
-import TableBody from '@/components/table/TableBodyRequests';
-import { privateCloudRequestDataToRow } from '@/components/table/helpers/row-mapper';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
-import { redirect } from 'next/navigation';
-import { parsePaginationParams } from '@/helpers/pagination';
-import { searchActivePrivateCloudRequests } from '@/queries/private-cloud-requests';
+'use client';
+import { getPriviateCloudRequestsHistory } from '@/services/backend/private-cloud';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
+import HistoryItem from '@/components/history/HistoryItem';
 
-export const revalidate = 0;
+function ProductHistory() {
+  const params = useParams();
+  const licencePlate = params.licencePlate as string;
 
-const headers = [
-  { field: 'created', headerName: 'Date' },
-  { field: 'name', headerName: 'Name' },
-  { field: 'type', headerName: 'Type' },
-  { field: 'status', headerName: 'Status' },
-  { field: 'ministry', headerName: 'Ministry' },
-  { field: 'cluster', headerName: 'Cluster' },
-  // { field: 'projectOwner', headerName: 'Project Owner' },
-  // { field: 'technicalLeads', headerName: 'Technical Leads' },
-  { field: 'licencePlate', headerName: 'Licence Plate' },
-];
-
-export default async function RequestsTable({
-  params,
-  searchParams,
-}: {
-  params: { licencePlate: string };
-  searchParams: {
-    search: string;
-    page: string;
-    pageSize: string;
-    ministry: string;
-    cluster: string;
-    active: boolean;
-  };
-}) {
-  // Authenticate the user
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
-  }
-
-  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster } = searchParams;
-
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
-
-  const { docs, totalCount } = await searchActivePrivateCloudRequests({
-    session,
-    skip,
-    take,
-    ministry,
-    cluster,
-    search,
+  const {
+    data: requests,
+    isLoading: requestsLoading,
+    isError: requestsIsError,
+    error: requestsError,
+  } = useQuery({
+    queryKey: ['requests', licencePlate],
+    queryFn: () => getPriviateCloudRequestsHistory(licencePlate),
+    enabled: !!licencePlate,
   });
 
-  const rows = docs.map(privateCloudRequestDataToRow);
+  if (!requests) return null;
 
   return (
-    <Table
-      title={`Request history for ${params.licencePlate}`}
-      description="These are the submitted requests for the Private Cloud OpenShift platform"
-      tableBody={<TableBody headers={headers} rows={rows} />}
-      total={totalCount}
-      currentPage={page}
-      pageSize={take}
-      removeSearch={true}
-    />
+    <>
+      {requests.map((request) => (
+        <HistoryItem
+          key={request.id}
+          id={request.id}
+          licencePlate={request.licencePlate}
+          createdByEmail={request.createdByEmail}
+          decisionMakerEmail={request.decisionMakerEmail}
+          type={request.type}
+          decisionStatus={request.decisionStatus}
+          isQuotaChanged={request.isQuotaChanged}
+          requestComment={request.requestComment}
+          decisionComment={request.decisionComment}
+          active={request.active}
+          created={request.created}
+          updatedAt={request.updatedAt}
+          decisionDate={request.decisionDate}
+          projectId={request.projectId}
+          requestedProjectId={request.requestedProjectId}
+          userRequestedProjectId={request.userRequestedProjectId}
+        />
+      ))}
+    </>
   );
 }
+
+export default ProductHistory;
