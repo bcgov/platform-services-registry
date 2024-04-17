@@ -5,7 +5,7 @@ import { PrivateCloudRequest } from '@prisma/client';
 
 export async function getPriviateCloudProject(licencePlate: string) {
   const result = await instance.get(`private-cloud/project/${licencePlate}`).then((res) => {
-    // Secondaty technical lead should only be included if it exists
+    // Secondary technical lead should only be included if it exists
     if (res.data.secondaryTechnicalLead === null) {
       delete res.data.secondaryTechnicalLead;
     }
@@ -33,7 +33,7 @@ export async function getPriviateCloudActiveRequest(licencePlate: string) {
 
 export async function getPriviateCloudRequest(licencePlate: string) {
   const result = await instance.get(`private-cloud/request/${licencePlate}`).then((res) => {
-    // Secondaty technical lead should only be included if it exists
+    // Secondary technical lead should only be included if it exists
     if (res.data.requestedProject.secondaryTechnicalLead === null) {
       delete res.data.requestedProject.secondaryTechnicalLead;
     }
