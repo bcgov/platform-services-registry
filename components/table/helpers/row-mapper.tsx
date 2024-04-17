@@ -124,17 +124,17 @@ export const privateCloudRequestDataToRow = (request: any) => {
     id: request.id,
     type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
-    name: request.requestedProject.name,
-    ministry: request.requestedProject.ministry,
-    cluster: request.requestedProject.cluster,
-    projectOwner: `${request.requestedProject.projectOwner.firstName} ${request.requestedProject.projectOwner.lastName}`,
-    technicalLeads: `${request.requestedProject.primaryTechnicalLead.firstName} ${
-      request.requestedProject.primaryTechnicalLead.lastName
-    } ${request?.requestedProject.secondaryTechnicalLead ? ',' : ''} ${
-      request?.requestedProject.secondaryTechnicalLead?.firstName || ''
-    } ${request?.requestedProject.secondaryTechnicalLead?.lastName || ''}`,
+    name: request.userRequestedProject.name,
+    ministry: request.userRequestedProject.ministry,
+    cluster: request.userRequestedProject.cluster,
+    projectOwner: `${request.userRequestedProject.projectOwner.firstName} ${request.userRequestedProject.projectOwner.lastName}`,
+    technicalLeads: `${request.userRequestedProject.primaryTechnicalLead.firstName} ${
+      request.userRequestedProject.primaryTechnicalLead.lastName
+    } ${request?.userRequestedProject.secondaryTechnicalLead ? ',' : ''} ${
+      request?.userRequestedProject.secondaryTechnicalLead?.firstName || ''
+    } ${request?.userRequestedProject.secondaryTechnicalLead?.lastName || ''}`,
     created: <p className="w-28">{formatDate(request.created.$date)}</p>,
-    licencePlate: <p className="w-28">{request.requestedProject.licencePlate}</p>,
+    licencePlate: <p className="w-28">{request.userRequestedProject.licencePlate}</p>,
   };
 };
 
