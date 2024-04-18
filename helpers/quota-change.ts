@@ -1,23 +1,16 @@
 import { PrivateCloudEditRequestBody } from '@/schema';
-
-const extractQuotaFirstNumber = (str: string): number => {
-  const num = str
-    .split(',')[0]
-    .trim()
-    .match(/\d+(\.\d+)?/g);
-  return num ? Number(num) : 0;
-};
+import { extractNumbers } from '@/utils/string';
 
 export const isResourseDowngrade = (req: string, prod: string) => {
-  return extractQuotaFirstNumber(req) < extractQuotaFirstNumber(prod);
+  return extractNumbers(req)[0] < extractNumbers(prod)[0];
 };
 
 export const isResourseUpgrade = (req: string, prod: string) => {
-  return extractQuotaFirstNumber(req) > extractQuotaFirstNumber(prod);
+  return extractNumbers(req)[0] > extractNumbers(prod)[0];
 };
 
-export const isQuotaDowngrade = (request: PrivateCloudEditRequestBody, product: PrivateCloudEditRequestBody) => {
-  return !(
+export const isQuotaUpgrade = (request: PrivateCloudEditRequestBody, product: PrivateCloudEditRequestBody) => {
+  return (
     isResourseUpgrade(request.productionQuota.cpu, product.productionQuota.cpu) ||
     isResourseUpgrade(request.productionQuota.memory, product.productionQuota.memory) ||
     isResourseUpgrade(request.productionQuota.storage, product.productionQuota.storage) ||
