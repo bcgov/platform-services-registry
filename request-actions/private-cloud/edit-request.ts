@@ -2,7 +2,7 @@ import { DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
-import { isQuotaDowngrade } from '@/utils/number';
+import { isQuotaDowngrade } from '@/helpers/quota-change';
 
 export default async function editRequest(
   licencePlate: string,
