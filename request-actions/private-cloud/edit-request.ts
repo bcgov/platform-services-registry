@@ -2,6 +2,7 @@ import { DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
+import { isQuotaDowngrade } from '@/utils/number';
 
 export default async function editRequest(
   licencePlate: string,
@@ -77,9 +78,14 @@ export default async function editRequest(
 
   let decisionStatus: DecisionStatus;
 
-  // If there is no quota change, the request is automatically approved
+  // If there is no quota change or no quota upgrade, the request is automatically approved
   if (isQuotaChanged) {
-    decisionStatus = DecisionStatus.PENDING;
+    // If there is no quota upgrade, the request is automatically approved
+    if (isQuotaDowngrade(formData, project as PrivateCloudEditRequestBody)) {
+      decisionStatus = DecisionStatus.APPROVED;
+    } else {
+      decisionStatus = DecisionStatus.PENDING;
+    }
   } else {
     decisionStatus = DecisionStatus.APPROVED;
   }
