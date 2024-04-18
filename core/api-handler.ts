@@ -14,6 +14,7 @@ import {
   OkResponse,
 } from './responses';
 import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
+import { arrayIntersection } from '@/utils/collection';
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];
@@ -36,19 +37,6 @@ interface RouteProps<TPathParams, TQueryParams, TBody> {
   queryParams: TQueryParams;
   body: TBody;
   headers: Headers;
-}
-
-function arrayIntersection(arr1: string[], arr2: string[]) {
-  if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
-    return [];
-  }
-  const set2 = new Set(arr2);
-  if (set2 instanceof Set) {
-    const intersection = arr1.filter((value) => set2.has(value));
-    return intersection;
-  }
-
-  return [];
 }
 
 function createApiHandler<
