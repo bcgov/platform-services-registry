@@ -72,7 +72,7 @@ export default function AccountCoding({
           length={5}
           placeholder={'Enter the responsibility centre here (e.g. 22222)'}
           alphanumericRegex={/^[a-z0-9]+$/i}
-          infoText={'7 Characters,  Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)'}
+          infoText={'5 Characters,  Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)'}
         />
         <AccountCodingInput
           disabled={disabled}
