@@ -69,32 +69,26 @@ export default async function editRequest(
   };
 
   // The edit request will require manual admin approval if any of the quotas are being changed.
-  const isQuotaChanged = !(
+  const isNoQuotaChanged =
     JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
     JSON.stringify(formData.testQuota) === JSON.stringify(project.testQuota) &&
     JSON.stringify(formData.developmentQuota) === JSON.stringify(project.developmentQuota) &&
-    JSON.stringify(formData.toolsQuota) === JSON.stringify(project.toolsQuota)
-  );
+    JSON.stringify(formData.toolsQuota) === JSON.stringify(project.toolsQuota);
 
   let decisionStatus: DecisionStatus;
 
   // If there is no quota change or no quota upgrade, the request is automatically approved
-  if (isQuotaChanged) {
-    // If there is no quota upgrade, the request is automatically approved
-    if (isQuotaDowngrade(formData, project as PrivateCloudEditRequestBody)) {
-      decisionStatus = DecisionStatus.APPROVED;
-    } else {
-      decisionStatus = DecisionStatus.PENDING;
-    }
-  } else {
+  if (isNoQuotaChanged || isQuotaDowngrade(formData, project as PrivateCloudEditRequestBody)) {
     decisionStatus = DecisionStatus.APPROVED;
+  } else {
+    decisionStatus = DecisionStatus.PENDING;
   }
 
   return prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
       decisionStatus: decisionStatus,
-      isQuotaChanged,
+      isQuotaChanged: !isNoQuotaChanged,
       active: true,
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
