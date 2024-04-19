@@ -1,4 +1,4 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';
@@ -6,13 +6,18 @@ import { Body, Button, Heading, Html, Text, Link } from '@react-email/components
 import NamespaceDetails from '../../_components/NamespaceDetails';
 import Closing from '../../_components/Closing';
 import TailwindWrapper from '../../_components/TailwindWrapper';
+import QuotaChanges from '../../_components/Edit/QuotaChanges';
+import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
+  request: PrivateCloudRequestWithProjectAndRequestedProject;
 }
 
 const RequestApprovalTemplate = ({ request }: EmailProp) => {
-  if (!request) return <></>;
+  if (!request || !request.project || !request.requestedProject) return <></>;
+  const current = request.project;
+  const requested = request.requestedProject;
+  const changed = comparePrivateCloudProjects(current, requested);
 
   return (
     <Html>
@@ -60,14 +65,57 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={request.requestedProject.cluster} licencePlate={request.licencePlate} />
-              </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <div>
-                  <Heading className="text-lg">Comment</Heading>
-                  <div> {request.decisionComment}</div>
+                {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) && (
+                  <h3 className="mb-0 text-black">Resource quota changes</h3>
+                )}
+                <div className="flex flex-row flex-wrap">
+                  {changed.productionQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-prod`}
+                      quotaCurrent={current.productionQuota}
+                      quotaRequested={requested.productionQuota}
+                      type="Production"
+                      cluster={current.cluster}
+                      currentLabel="Previous"
+                      requestedLabel="Updated"
+                    />
+                  )}
+                  {changed.testQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-test`}
+                      quotaCurrent={current.testQuota}
+                      quotaRequested={requested.testQuota}
+                      type="Test"
+                      cluster={current.cluster}
+                      currentLabel="Previous"
+                      requestedLabel="Updated"
+                    />
+                  )}
+                  {changed.developmentQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-dev`}
+                      quotaCurrent={current.testQuota}
+                      quotaRequested={requested.testQuota}
+                      type="Development"
+                      cluster={current.cluster}
+                      currentLabel="Previous"
+                      requestedLabel="Updated"
+                    />
+                  )}
+                  {changed.toolsQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-tools`}
+                      quotaCurrent={current.testQuota}
+                      quotaRequested={requested.testQuota}
+                      type="Tools"
+                      cluster={current.cluster}
+                      currentLabel="Previous"
+                      requestedLabel="Updated"
+                    />
+                  )}
                 </div>
               </div>
+
               <div>
                 <Closing />
               </div>

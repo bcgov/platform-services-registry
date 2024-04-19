@@ -3,12 +3,12 @@ import { PermissionsEnum } from '@/types/permissions';
 import { z } from 'zod';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import makeDecisionRequest, {
-  PrivateCloudRequestWithRequestedProject,
+  PrivateCloudRequestWithProjectAndRequestedProject,
 } from '@/request-actions/private-cloud/decision-request';
 import createApiHandler from '@/core/api-handler';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
-import { sendRequestRejectionEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 
@@ -26,7 +26,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
   const { decision, decisionComment, ...requestedProjectFormData } = body;
 
-  const request: PrivateCloudRequestWithRequestedProject = await makeDecisionRequest(
+  const request: PrivateCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
     licencePlate,
     decision,
     decisionComment,
@@ -71,8 +71,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   // Subscribe users to Mautic
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  // TODO: revisit to delete for good
-  // sendRequestApprovalEmails(request);
+  if (request.type == 'EDIT') {
+    sendRequestApprovalEmails(request);
+  }
 
   return OkResponse(`Decision request for ${request.licencePlate} successfully created.`);
 });

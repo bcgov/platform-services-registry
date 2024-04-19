@@ -77,8 +77,7 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
   }
 };
 
-export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
-  console.log(request);
+export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
   try {
     const email = render(RequestApprovalTemplate({ request }), { pretty: true });
 

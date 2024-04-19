@@ -15,7 +15,7 @@ const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
-export const PUT = apiHandler(async ({ pathParams, session }) => {
+export const PUT = apiHandler(async ({ pathParams }) => {
   const { licencePlate } = pathParams;
 
   const request = await prisma.privateCloudRequest.findFirst({
@@ -30,7 +30,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!request) {
-    return NotFoundResponse('No requetst found for this licece plate.');
+    return NotFoundResponse('No request found for this license plate.');
   }
 
   const updateRequest = prisma.privateCloudRequest.update({
@@ -75,6 +75,8 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     },
   });
 
-  wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
+  if (request.type == 'CREATE') {
+    await wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
+  }
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });
