@@ -7,6 +7,7 @@ import { Session, PermissionsKey } from 'next-auth';
 import _isUndefined from 'lodash-es/isUndefined';
 import { parseQueryString } from '@/utils/query-string';
 import { arrayIntersection } from '@/utils/collection';
+import React from 'react';
 
 interface HandlerProps<TPathParams, TQueryParams> {
   roles?: string[];
@@ -18,15 +19,17 @@ interface HandlerProps<TPathParams, TQueryParams> {
   };
 }
 
-interface RouteProps<TPathParams, TQueryParams> {
+interface ComponentProps<TPathParams, TQueryParams> {
   session: Session | null;
   pathParams: TPathParams;
   queryParams: TQueryParams;
+  children: React.ReactNode;
 }
 
 interface PageProp {
   params: Record<string, any>;
   searchParams: URLSearchParams;
+  children: React.ReactNode;
 }
 
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
@@ -39,9 +42,11 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   let pathParams: TypeOf<typeof pathParamVal> | null = null;
   let queryParams: TypeOf<typeof queryParamVal> | null = null;
 
-  return function clientPage(fn: (props: RouteProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>) => React.ReactNode) {
-    return function ({ params, searchParams }: PageProp) {
+  return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
+    return function wrapper({ params, searchParams, children }: PageProp) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { data: session } = useSession();
 
       // Wait until the session is fetched by the backend
@@ -87,7 +92,11 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         queryParams = parsed.data;
       }
 
-      return fn({ session, pathParams, queryParams });
+      return (
+        <Component session={session} pathParams={pathParams} queryParams={queryParams}>
+          {children}
+        </Component>
+      );
     };
   };
 }
