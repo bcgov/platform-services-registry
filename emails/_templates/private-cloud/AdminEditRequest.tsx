@@ -1,4 +1,4 @@
-import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';
@@ -6,13 +6,20 @@ import { Body, Button, Heading, Html, Img, Text } from '@react-email/components'
 import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../_components/NamespaceDetails';
 import { TailwindConfig } from '../../_components/TailwindConfig';
+import { comparePrivateCloudProjects } from '../../_components/Edit/utils/compare-projects';
+import Comment from '@/emails/_components/Comment';
+import QuotaChanges from '../../_components/Edit/QuotaChanges';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithRequestedProject;
+  request: PrivateCloudRequestWithProjectAndRequestedProject;
 }
 
 const NewRequestTemplate = ({ request }: EmailProp) => {
-  if (!request) return <></>;
+  if (!request || !request.project || !request.requestedProject) return <></>;
+  const current = request.project;
+  const requested = request.requestedProject;
+  const changed = comparePrivateCloudProjects(current, requested);
+  const requestComment = request.requestComment ?? undefined;
 
   return (
     <Html>
@@ -27,7 +34,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                 <Text className="">
                   There is a new request that requires your review. Log in to the Registry to review the details. If you
                   have any questions about the request, the PO and TL contact details are included below and in the
-                  Registry
+                  Registry.
                 </Text>
                 <Button
                   href="https://registry.developer.gov.bc.ca/"
@@ -35,6 +42,9 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                 >
                   Review Request
                 </Button>
+              </div>
+              <div className="pb-6 mt-2 mb-2 border-solid border-0 border-b-1 border-slate-300">
+                <Comment requestComment={requestComment} />
               </div>
               <div>
                 <ProductDetails
@@ -48,6 +58,49 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
               </div>
               <div>
                 <NamespaceDetails cluster={request.requestedProject.cluster} showNamespaceDetailsTitle={false} />
+              </div>
+              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+                {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) && (
+                  <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>
+                )}
+                <div className="flex flex-row flex-wrap">
+                  {changed.productionQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-prod`}
+                      quotaCurrent={current.productionQuota}
+                      quotaRequested={requested.productionQuota}
+                      type="Production"
+                      cluster={current.cluster}
+                    />
+                  )}
+                  {changed.testQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-test`}
+                      quotaCurrent={current.testQuota}
+                      quotaRequested={requested.testQuota}
+                      type="Test"
+                      cluster={current.cluster}
+                    />
+                  )}
+                  {changed.developmentQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-dev`}
+                      quotaCurrent={current.testQuota}
+                      quotaRequested={requested.testQuota}
+                      type="Development"
+                      cluster={current.cluster}
+                    />
+                  )}
+                  {changed.toolsQuota && (
+                    <QuotaChanges
+                      licencePlate={`${request.licencePlate}-tools`}
+                      quotaCurrent={current.testQuota}
+                      quotaRequested={requested.testQuota}
+                      type="Tools"
+                      cluster={current.cluster}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </Body>

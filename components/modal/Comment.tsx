@@ -24,6 +24,14 @@ export default function Modal({
     setComment(comm);
   };
 
+  const showCommentsBox = () => {
+    if (action === 'APPROVE' && (type?.toLowerCase() === 'create' || type?.toLowerCase() === 'edit')) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -68,7 +76,7 @@ export default function Modal({
                       : `Are you sure you want to reject this ${type?.toLocaleLowerCase()} product request?`}
                   </Dialog.Title>
                 </div>
-                {!(action === 'APPROVE' && type?.toLowerCase() === 'create') && (
+                {showCommentsBox() && (
                   <>
                     <p className="pt-2 font-bcsans text-sm text-gray-900">
                       Please provide your final comments to be shared.

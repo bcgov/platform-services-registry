@@ -65,18 +65,14 @@ flowchart LR
 - **3a. Approval sent to PO/TLs** containing:
    <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
-      <li>Namespace Details (Cluster, Link to all four namespaces, Default values of namespaces)</li>
-      <li>Security Tools Info</li>
-      <li>Artifactory Info</li>
-      <li>Vault Info</li>
-      <li>ACS Info</li>
-      <li>Sysdig Info</li>
+      <li>Namespace Details with Previous and Approved values (Cluster, Link to all four namespaces)</li>
       </ol>
 
 - **3b. Rejection Sub-Scenario** containing:
    <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
       <li>Admin review comments</li>
+      <li>Namespace Details with Previous and Rejected values (Cluster, Link to all four namespaces)</li>
    </ol>
 
 ```mermaid
