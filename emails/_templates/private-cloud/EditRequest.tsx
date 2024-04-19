@@ -11,7 +11,8 @@ import QuotaChanges from '../../_components/Edit/QuotaChanges';
 import DescriptionChanges from '../../_components/Edit/DescriptionChanges';
 import { BASE_URL } from '@/config';
 import Comment from '@/emails/_components/Comment';
-
+import { isQuotaUpgrade } from '@/helpers/quota-change';
+import { PrivateCloudEditRequestBody } from '@/schema';
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
 }
@@ -21,6 +22,10 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
   const current = request.project;
   const requested = request.requestedProject;
   const changed = comparePrivateCloudProjects(current, requested);
+  const isQuotaUpgraded = isQuotaUpgrade(
+    requested as PrivateCloudEditRequestBody,
+    current as PrivateCloudEditRequestBody,
+  );
   const requestComment = request.requestComment ?? undefined;
 
   return (
@@ -34,8 +39,11 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
                 <Heading className="text-lg text-black">New edit product request!</Heading>
                 <Text>Hi Product Team, </Text>
                 <Text className="">
-                  You have submitted an edit request for your product with the license plate {request.licencePlate}. Our
-                  administrators have been notified and will review your request.
+                  You have submitted an edit request for your product with the license plate {request.licencePlate}.
+                  {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) &&
+                  isQuotaUpgraded
+                    ? ' Our administrators have been notified and will review your request.'
+                    : ' Your request will be reviewed authomatically. Once the provisioning is complete, you will receive a notification email with all the relevant details and updates regarding your request.'}
                 </Text>
                 <Button href={BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
                   View request

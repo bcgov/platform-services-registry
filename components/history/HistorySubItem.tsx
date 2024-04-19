@@ -25,7 +25,9 @@ export default function HistorySubItem({
 
   if (isDecision) {
     if (type === $Enums.RequestType.EDIT) {
-      message += `Edit request ${isQuotaChanged ? 'with' : 'without'} quota change was ${status.toLocaleLowerCase()}`;
+      message += `Edit request ${
+        isQuotaChanged ? 'with upgrade' : 'without'
+      } quota change was ${status.toLocaleLowerCase()}`;
     } else {
       message += `${type.toLocaleLowerCase()} request was ${status.toLocaleLowerCase()}`;
     }
