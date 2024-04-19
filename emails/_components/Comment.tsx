@@ -10,6 +10,7 @@ export default function Comment({ requestComment, decisionComment }: CommentProp
     <div>
       {requestComment && (
         <div>
+          <Text className="font-semibold">User Comment:</Text>
           <Text>{requestComment}</Text>
         </div>
       )}
