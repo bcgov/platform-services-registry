@@ -91,7 +91,7 @@ flowchart LR
 
 **Description**: When a PO/TLs of a product edit their product where there is no increase in resources requested, the following emails will trigger.
 
-1. **Summary of changes submitted sent to PO/TLs** containing:
+1. **Summary of changes submitted sent to PO/TLs** mentionioning that a follow up email will be sent once the provisioning is complete authomatically and containing:
    <ol type="a">
      <li>Comments by user</li>
      <li>Description Changes (Product Name, Description, Ministry)</li>
@@ -100,7 +100,6 @@ flowchart LR
    </ol>
 2. **Summary of the changes provisioned sent to PO/TLs** containing:
    <ol type="a">
-     <li>Comments by user</li>
      <li>Updated Description Changes (Product Name, Description, Ministry)</li>
      <li>Updated Contact Changes</li>
      <li>Updated Resource Quota Downgrades</li>
