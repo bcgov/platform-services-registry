@@ -43,7 +43,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   let queryParams: TypeOf<typeof queryParamVal> | null = null;
 
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
-    return function wrapper({ params, searchParams, children }: PageProp) {
+    return function wrapper({ params, searchParams, children }: any) {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks

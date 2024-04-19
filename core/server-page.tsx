@@ -41,7 +41,7 @@ function createServerPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   let queryParams: TypeOf<typeof queryParamVal> | null = null;
 
   return function serverPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
-    return async function ({ params, searchParams, children }: PageProp) {
+    return async function wrapper({ params, searchParams, children }: any) {
       const session = await getServerSession(authOptions);
 
       // Wait until the session is fetched by the backend
