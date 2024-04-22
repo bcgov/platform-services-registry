@@ -37,13 +37,16 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     productState.currentProduct = currentProduct;
   }, [currentProduct]);
 
+  let mode = 'decision';
+  if (currentProduct) {
+    mode = currentProduct.requests.length > 0 ? 'decision' : 'edit';
+  }
+
   const tabs: ITab[] = [
     {
       label: 'PRODUCT',
       name: 'product',
-      href: `/private-cloud/products/${licencePlate}/${
-        currentProduct?.requests && currentProduct.requests.length > 0 ? 'decision' : 'edit'
-      }`,
+      href: `/private-cloud/products/${licencePlate}/${mode}`,
     },
   ];
 

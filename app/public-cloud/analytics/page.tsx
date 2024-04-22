@@ -23,7 +23,7 @@ function mapProviderDistributions(items: { _id: string; value: number }[]) {
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
+    redirect('/login?callbackUrl=/public-cloud/products/all');
   } else if (!session.permissions.viewAnalytics) {
     redirect('/public-cloud/products/all');
   }
@@ -36,7 +36,7 @@ export default async function AnalyticsDashboard() {
   const awsData = mapProviderDistributions(ministryDistributionData[0]);
 
   return (
-    <div className="m-12">
+    <div className="">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
         Public Cloud Data Analytics
       </h1>

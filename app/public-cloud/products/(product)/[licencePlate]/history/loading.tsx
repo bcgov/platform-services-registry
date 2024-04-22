@@ -5,7 +5,7 @@ export default async function RequestsTableSkeleton() {
   return (
     <Table
       title="Request history for"
-      description="These are the submitted requests for the Private Cloud OpenShift platform"
+      description="These are the submitted requests for the Public Cloud OpenShift platform"
       tableBody={[...new Array(14)].map((_, i) => (
         <TableRowSkeleton key={i} />
       ))}
