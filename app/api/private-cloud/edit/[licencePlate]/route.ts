@@ -48,7 +48,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const request = await editRequest(licencePlate, body, userEmail as string);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    wrapAsync(() => sendEditRequestEmails(request));
+    wrapAsync(() => sendEditRequestEmails(request, true));
     return OkResponse(
       'Successfully edited project, admin approval will be required for this request to be provisioned ',
     );
@@ -82,7 +82,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  wrapAsync(() => sendEditRequestEmails(request));
+  wrapAsync(() => sendEditRequestEmails(request, false));
 
   return OkResponse(true);
 });

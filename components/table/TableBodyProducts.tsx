@@ -154,7 +154,7 @@ export default function TableBody({ rows }: TableProps) {
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(path.join(`/${cloud}/product/${row.licencePlate}`));
+    router.push(path.join(`/${cloud}/products/${row.licencePlate}/${row.requests.length > 0 ? 'decision' : 'edit'}`));
   };
 
   return (

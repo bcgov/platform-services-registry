@@ -46,17 +46,22 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
   }
 };
 
-export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+export const sendEditRequestEmails = async (
+  request: PrivateCloudRequestWithProjectAndRequestedProject,
+  isAdminEmailSent: boolean,
+) => {
   try {
-    const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
     const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
-
-    const admins = sendEmail({
-      bodyType: 'html',
-      body: adminEmail,
-      to: adminPrivateEmails,
-      subject: 'New edit request awaiting review',
-    });
+    let admins;
+    if (isAdminEmailSent) {
+      const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
+      admins = sendEmail({
+        bodyType: 'html',
+        body: adminEmail,
+        to: adminPrivateEmails,
+        subject: 'New edit request awaiting review',
+      });
+    }
 
     const contacts = sendEmail({
       body: userEmail,

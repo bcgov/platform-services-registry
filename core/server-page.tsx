@@ -17,15 +17,17 @@ interface HandlerProps<TPathParams, TQueryParams> {
   };
 }
 
-interface RouteProps<TPathParams, TQueryParams> {
+interface ComponentProps<TPathParams, TQueryParams> {
   session: Session | null;
   pathParams: TPathParams;
   queryParams: TQueryParams;
+  children: React.ReactNode;
 }
 
 interface PageProp {
   params: Record<string, any>;
   searchParams: URLSearchParams;
+  children: React.ReactNode;
 }
 
 function createServerPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
@@ -38,8 +40,8 @@ function createServerPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   let pathParams: TypeOf<typeof pathParamVal> | null = null;
   let queryParams: TypeOf<typeof queryParamVal> | null = null;
 
-  return function serverPage(fn: (props: RouteProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>) => React.ReactNode) {
-    return async function ({ params, searchParams }: PageProp) {
+  return function serverPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
+    return async function wrapper({ params, searchParams, children }: any) {
       const session = await getServerSession(authOptions);
 
       // Wait until the session is fetched by the backend
@@ -85,7 +87,11 @@ function createServerPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         queryParams = parsed.data;
       }
 
-      return fn({ session, pathParams, queryParams });
+      return (
+        <Component session={session} pathParams={pathParams} queryParams={queryParams}>
+          {children}
+        </Component>
+      );
     };
   };
 }
