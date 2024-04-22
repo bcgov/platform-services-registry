@@ -119,16 +119,17 @@ flowchart LR
 2. **A summary sent to PO/TLs** containing:
    <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Namespace Details (Cluster and Link to the 4 namespaces)<li>
    </ol>
 3. **Decision: Product Deletion Approval/Rejecton by admins**
 
 - **3a. Approval confirmation sent to PO/TLs** containing:
     <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Namespace Details (Cluster and Link to the 4 namespaces)</li>
    </ol>
 - **3a. Rejection sent to PO/TLs** containing:
     <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
       <li>Review comments</li>
    </ol>
 
