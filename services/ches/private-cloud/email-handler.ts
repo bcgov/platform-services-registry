@@ -127,7 +127,7 @@ export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRe
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
-      to: ['amritpal.nijjar@gov.bc.ca'],
+      to: adminPrivateEmails,
       subject: 'New delete request awaiting review',
     });
 
