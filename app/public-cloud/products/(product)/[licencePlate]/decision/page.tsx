@@ -147,7 +147,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
         type={activeRequest.type}
         action={currentAction}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests/active" />
     </div>
   );
 });

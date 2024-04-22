@@ -1,37 +1,34 @@
+import { z } from 'zod';
 import Table from '@/components/table/Table';
 import NewTableBody from '@/components/table/TableBodyProducts';
 import { privateCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
-import { redirect } from 'next/navigation';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { searchActivePrivateCloudRequests } from '@/queries/private-cloud-requests';
+import createServerPage from '@/core/server-page';
+import { Session } from 'next-auth';
 
-export default async function ProductsTable({
-  searchParams,
-}: {
-  searchParams: {
-    search: string;
-    page: string;
-    pageSize: string;
-    ministry: string;
-    cluster: string;
-    sortKey: string;
-    sortOrder: 'asc' | 'desc';
-  };
-}) {
-  const session = await getServerSession(authOptions);
+const queryParamSchema = z.object({
+  search: z.string().optional(),
+  page: z.string().optional(),
+  pageSize: z.string().optional(),
+  ministry: z.string().optional(),
+  cluster: z.string().optional(),
+  sortKey: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
+});
 
-  if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
-  }
+const privateCloudActiveRequests = createServerPage({
+  roles: ['user'],
+  fallbackUrl: '/login?callbackUrl=/private-cloud/products',
+  validations: { queryParams: queryParamSchema },
+});
+export default privateCloudActiveRequests(async ({ pathParams, queryParams, session }) => {
+  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster, sortKey, sortOrder } = queryParams;
 
-  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster, sortKey, sortOrder } = searchParams;
-
-  const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
+  const { page, skip, take } = parsePaginationParams(pageStr ?? '', pageSizeStr ?? '', 10);
 
   const { docs, totalCount } = await searchActivePrivateCloudRequests({
-    session,
+    session: session as Session,
     skip,
     take,
     ministry,
@@ -62,4 +59,4 @@ export default async function ProductsTable({
       apiContext="private-cloud"
     />
   );
-}
+});

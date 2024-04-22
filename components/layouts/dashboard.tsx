@@ -1,25 +1,8 @@
 'use client';
 
-import CloudTabs from '@/components/tabs/CloudTabs';
-import CreateButton from '@/components/buttons/CreateButton';
 import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 import CreateProduct from '@/components/buttons/CreateProduct';
-
-const urlFn = (path: string, name: string) => {
-  const option = path.split('/')[3];
-  return `/${name}-cloud/products/${option}`;
-};
-
-const tabsData = [
-  {
-    label: 'PRIVATE CLOUD OPENSHIFT',
-    name: 'private',
-  },
-  {
-    label: 'PUBLIC CLOUD LANDING ZONES',
-    name: 'public',
-  },
-];
+import Tabs, { ITab } from '@/components/generic/Tabs';
 
 export default function DashboardLayout({
   children,
@@ -28,11 +11,28 @@ export default function DashboardLayout({
   children: React.ReactNode;
   context: 'private' | 'public';
 }) {
+  const tabs: ITab[] = [
+    {
+      label: 'PRIVATE CLOUD OPENSHIFT',
+      name: 'private',
+      href: '/private-cloud/products/all',
+      ignoreSegments: 2,
+    },
+    {
+      label: 'PUBLIC CLOUD LANDING ZONES',
+      name: 'public',
+      href: '/public-cloud/products/all',
+      ignoreSegments: 2,
+    },
+  ];
+
   return (
     <div>
-      <CloudTabs tabs={tabsData} urlFn={urlFn} navItem={<CreateProduct context={context} />} />
+      <Tabs tabs={tabs}>
+        <CreateProduct context={context} />
+      </Tabs>
       <div className="mt-8">
-        <ProductsRequestsTabs />
+        <ProductsRequestsTabs context={context} />
         {children}
       </div>
     </div>
