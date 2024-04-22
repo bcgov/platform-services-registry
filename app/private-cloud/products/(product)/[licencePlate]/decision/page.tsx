@@ -1,5 +1,6 @@
 'use client';
 
+import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -14,17 +15,27 @@ import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { makePriviateCloudRequestedDecision, getPriviateCloudActiveRequest } from '@/services/backend/private-cloud';
+import createClientPage from '@/core/client-page';
 
-export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
+});
+
+const privateCloudProductDecision = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export default privateCloudProductDecision(({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
   const { data: activeRequest, isLoading: isActiveRequestLoading } = useQuery({
-    queryKey: ['activeRequest', params.licencePlate],
-    queryFn: () => getPriviateCloudActiveRequest(params.licencePlate),
-    enabled: !!params.licencePlate,
+    queryKey: ['activeRequest', licencePlate],
+    queryFn: () => getPriviateCloudActiveRequest(licencePlate),
+    enabled: !!licencePlate,
   });
 
   const {
@@ -33,7 +44,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     isError: isDecisionError,
     error: decisionError,
   } = useMutation({
-    mutationFn: (data: any) => makePriviateCloudRequestedDecision(params.licencePlate, data),
+    mutationFn: (data: any) => makePriviateCloudRequestedDecision(licencePlate, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -144,4 +155,4 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/products/active-requests" />
     </div>
   );
-}
+});

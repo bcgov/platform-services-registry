@@ -14,8 +14,12 @@ import TeamContacts from '@/components/form/TeamContacts';
 import { createPriviateCloudProject } from '@/services/backend/private-cloud';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
+import createClientPage from '@/core/client-page';
 
-export default function Page() {
+const privateCloudProductNew = createClientPage({
+  roles: ['user'],
+});
+export default privateCloudProductNew(({ pathParams, queryParams, session }) => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -97,4 +101,4 @@ export default function Page() {
       />
     </div>
   );
-}
+});

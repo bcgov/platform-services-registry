@@ -21,19 +21,27 @@ import {
   getPriviateCloudActiveRequest,
   editPriviateCloudProject,
 } from '@/services/backend/private-cloud';
+import { useSnapshot } from 'valtio';
+import createClientPage from '@/core/client-page';
+import { productState } from '../layout';
 
-export default function EditProject({ params }: { params: { licencePlate: string } }) {
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
+});
+
+const privateCloudProductEdit = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
+  const snap = useSnapshot(productState);
+
   const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
-
-  const { data: currentProject, isSuccess } = useQuery({
-    queryKey: ['currentProject', params.licencePlate],
-    queryFn: () => getPriviateCloudProject(params.licencePlate),
-    enabled: !!params.licencePlate,
-  });
 
   const {
     mutateAsync: editProject,
@@ -41,7 +49,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
     isError: isEditError,
     error: editError,
   } = useMutation({
-    mutationFn: (data: any) => editPriviateCloudProject(params.licencePlate, data),
+    mutationFn: (data: any) => editPriviateCloudProject(licencePlate, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -67,7 +75,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
       ),
     ),
     defaultValues: async () => {
-      const response = await getPriviateCloudProject(params.licencePlate);
+      const response = await getPriviateCloudProject(licencePlate);
       return { ...response, isAgMinistryChecked: true };
     },
   });
@@ -75,14 +83,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { formState } = methods;
 
   useEffect(() => {
-    if (!currentProject) return;
+    if (!snap.currentProduct) return;
 
-    if (currentProject.secondaryTechnicalLead) {
+    if (snap.currentProduct.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
 
-    setDisabled(!currentProject?._permissions.edit);
-  }, [currentProject]);
+    setDisabled(!snap.currentProduct?._permissions.edit);
+  }, [snap.currentProduct]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -115,9 +123,9 @@ export default function EditProject({ params }: { params: { licencePlate: string
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Quotas
-              licensePlate={currentProject?.licencePlate as string}
+              licensePlate={snap.currentProduct?.licencePlate as string}
               disabled={isDisabled}
-              currentProject={currentProject as PrivateCloudProject}
+              currentProject={snap.currentProduct as PrivateCloudProject}
             />
             <CommonComponents disabled={isDisabled} />
           </div>
@@ -146,4 +154,4 @@ export default function EditProject({ params }: { params: { licencePlate: string
       />
     </div>
   );
-}
+});

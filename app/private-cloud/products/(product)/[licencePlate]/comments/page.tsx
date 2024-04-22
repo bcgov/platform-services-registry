@@ -1,10 +1,13 @@
 'use client';
+
+import { z } from 'zod';
+import { useSnapshot } from 'valtio';
 import React from 'react';
-import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { getAllPrivateCloudComments, getPriviateCloudProject } from '@/services/backend/private-cloud';
+import { getAllPrivateCloudComments } from '@/services/backend/private-cloud';
 import CommentForm from '@/components/comments/CommentForm';
-import { useSession } from 'next-auth/react';
+import createClientPage from '@/core/client-page';
+import { productState } from '../layout';
 
 interface User {
   firstName: string;
@@ -20,23 +23,19 @@ interface Comment {
   user: User;
 }
 
-function CommentsPage() {
-  const { data: session } = useSession();
-  const userId = session?.userId;
-  const params = useParams();
-  const licencePlate = params.licencePlate as string;
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
+});
 
-  // Query for project details
-  const {
-    data: project,
-    isLoading: projectLoading,
-    isError: projectIsError,
-    error: projectError,
-  } = useQuery({
-    queryKey: ['project', licencePlate],
-    queryFn: () => getPriviateCloudProject(licencePlate),
-    enabled: !!licencePlate,
-  });
+const privateCloudProductComments = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export default privateCloudProductComments(({ pathParams, queryParams, session }) => {
+  const snap = useSnapshot(productState);
+  const { licencePlate } = pathParams;
+
+  const userId = session?.userId;
 
   // Query for comments
   const {
@@ -55,14 +54,11 @@ function CommentsPage() {
     refetchComments(); // Refresh the comments after adding a new one
   };
 
-  if (projectLoading || commentsLoading) return <p>Loading...</p>;
-  if (projectIsError || commentsIsError) return <p>Error: {projectError?.message || commentsError?.message}</p>;
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <CommentForm
         licencePlate={licencePlate}
-        projectId={project?.id ?? ''}
+        projectId={snap.currentProduct?.id ?? ''}
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
       />
@@ -87,6 +83,4 @@ function CommentsPage() {
       )}
     </div>
   );
-}
-
-export default CommentsPage;
+});
