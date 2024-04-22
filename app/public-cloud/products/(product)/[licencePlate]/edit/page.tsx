@@ -138,7 +138,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/products/active-requests"
+        redirectUrl="/public-cloud/requests/active"
         modalTitle="Thank you! We have received your edit."
         modalMessage="We have received your edit for this product. The Product Owner and Technical Lead(s) will receive a summary via email."
       />

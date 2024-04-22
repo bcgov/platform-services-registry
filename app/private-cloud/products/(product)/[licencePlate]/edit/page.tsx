@@ -148,7 +148,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/products/active-requests"
+        redirectUrl="/private-cloud/requests/active"
         modalTitle="Thank you! We have received your edit request."
         modalMessage="We have received your edit request for your product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />

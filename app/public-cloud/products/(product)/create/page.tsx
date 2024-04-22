@@ -101,7 +101,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         isPublicCreate
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/products/active-requests"
+        redirectUrl="/public-cloud/requests/active"
         modalTitle="Thank you! We have received your create request."
         modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />
