@@ -15,6 +15,7 @@ import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
 import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
+import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   try {
@@ -117,15 +118,29 @@ export const sendRequestRejectionEmails = async (
   }
 };
 
-export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+  console.log('starte of the request', request, 'end of the request');
   try {
-    const email = render(DeleteRequestTemplate({ product }), { pretty: true });
+    const adminEmail = render(AdminDeleteRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(DeleteRequestTemplate({ request }), { pretty: true });
 
-    await sendEmail({
-      body: email,
-      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
+    const admins = sendEmail({
+      bodyType: 'html',
+      body: adminEmail,
+      to: ['amritpal.nijjar@gov.bc.ca'],
+      subject: 'New delete request awaiting review',
+    });
+
+    const contacts = sendEmail({
+      body: userEmail,
+      to: [
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
       subject: 'Request to delete product received',
     });
+    await Promise.all([contacts, admins]);
   } catch (error) {
     console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
   }

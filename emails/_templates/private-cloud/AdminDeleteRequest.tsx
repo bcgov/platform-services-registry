@@ -1,18 +1,17 @@
+import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import * as React from 'react';
 import Header from '../../_components/Header';
-import { Body, Heading, Html, Text } from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
-import Closing from '../../_components/Closing';
-import { TailwindConfig } from '../../_components/TailwindConfig';
 import ProductDetails from '../../_components/ProductDetails';
+import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
+import { Tailwind } from '@react-email/tailwind';
 import NamespaceDetails from '../../_components/NamespaceDetails';
-import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { TailwindConfig } from '../../_components/TailwindConfig';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
 }
 
-const DeleteRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request }: EmailProp) => {
   if (!request) return <></>;
 
   return (
@@ -23,13 +22,21 @@ const DeleteRequestTemplate = ({ request }: EmailProp) => {
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
             <div className="m-12">
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <Heading className="text-lg text-black">Your deletion request has been received!</Heading>
-                <Text>Hi Product Team,</Text>
+                <Heading className="text-lg">New Delete Request!</Heading>
+                <Text>Hi Registry Team, </Text>
                 <Text className="">
-                  {`We have received your deletion request for ${request.requestedProject.name}. You will receive an email once your request has been processed and completed.`}
+                  There is a new delete request that requires your review. Log in to the Registry to review the details.
+                  If you have any questions about the request, the PO and TL(s) contact details are included below and
+                  in the Registry.
                 </Text>
+                <Button
+                  href="https://registry.developer.gov.bc.ca/"
+                  className="bg-bcorange rounded-md px-4 py-2 text-white"
+                >
+                  Review Request
+                </Button>
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+              <div>
                 <ProductDetails
                   name={request.requestedProject.name}
                   description={request.requestedProject.description}
@@ -39,14 +46,8 @@ const DeleteRequestTemplate = ({ request }: EmailProp) => {
                   tl2={request.requestedProject.secondaryTechnicalLead}
                 />
               </div>
-              <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails
-                  cluster={request.requestedProject.cluster}
-                  licencePlate={request.requestedProject.licencePlate}
-                />
-              </div>
               <div>
-                <Closing />
+                <NamespaceDetails cluster={request.requestedProject.cluster} showNamespaceDetailsTitle={false} />
               </div>
             </div>
           </Body>
@@ -56,4 +57,4 @@ const DeleteRequestTemplate = ({ request }: EmailProp) => {
   );
 };
 
-export default DeleteRequestTemplate;
+export default NewRequestTemplate;

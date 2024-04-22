@@ -95,7 +95,7 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
     },
   });
 
-  wrapAsync(() => sendDeleteRequestEmails(createRequest.requestedProject));
+  wrapAsync(() => sendDeleteRequestEmails(createRequest));
 
   return OkResponse(true);
 });
