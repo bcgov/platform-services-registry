@@ -36,7 +36,7 @@ export default async function AnalyticsDashboard() {
   const awsData = mapProviderDistributions(ministryDistributionData[0]);
 
   return (
-    <div className="p-8">
+    <div className="">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
         Public Cloud Data Analytics
       </h1>
