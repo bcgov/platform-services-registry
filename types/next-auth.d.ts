@@ -14,10 +14,13 @@ declare module 'next-auth' {
     isAdmin: boolean;
     isEditor: boolean;
     isReader: boolean;
+    isAnalyzer: boolean;
     isPrivateAdmin: boolean;
+    isPrivateAnalyzer: boolean;
     isPrivateEditor: boolean;
     isPrivateReader: boolean;
     isPublicAdmin: boolean;
+    isPublicAnalyzer: boolean;
     isPublicEditor: boolean;
     isPublicReader: boolean;
     isApprover: boolean;
@@ -51,8 +54,9 @@ declare module 'next-auth' {
       deleteAllPublicProductComments: boolean;
 
       viewZapscanResults: boolean;
-      viewSonarscanReulsts: boolean;
-      viewAnalytics: boolean;
+      viewSonarscanResults: boolean;
+      viewPrivateAnalytics: boolean;
+      viewPublicAnalytics: boolean;
     };
     previews: {
       history: boolean;

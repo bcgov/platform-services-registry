@@ -24,7 +24,7 @@ export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
   if (!session) {
     redirect('/login?callbackUrl=/public-cloud/products/all');
-  } else if (!session.permissions.viewAnalytics) {
+  } else if (!session.permissions.viewPublicAnalytics) {
     redirect('/public-cloud/products/all');
   }
 

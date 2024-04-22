@@ -24,7 +24,7 @@ function mapMinistryDistributions(items: { _id: string; value: number }[]) {
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.permissions.viewAnalytics) {
+  if (!session || !session.permissions.viewPrivateAnalytics) {
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
