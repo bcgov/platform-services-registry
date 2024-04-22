@@ -3,7 +3,7 @@ import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
-import { sendProvisionedEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 
@@ -77,6 +77,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   if (request.type == 'CREATE') {
     await wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
+  } else if (request.type == 'DELETE') {
+    await wrapAsync(() => sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts));
   }
+
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

@@ -25,7 +25,10 @@ export default function Modal({
   };
 
   const showCommentsBox = () => {
-    if (action === 'APPROVE' && (type?.toLowerCase() === 'create' || type?.toLowerCase() === 'edit')) {
+    if (
+      action === 'APPROVE' &&
+      (type?.toLowerCase() === 'create' || type?.toLowerCase() === 'edit' || type?.toLowerCase() === 'delete')
+    ) {
       return false;
     }
 
