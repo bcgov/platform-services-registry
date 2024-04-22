@@ -17,12 +17,12 @@ import AccountCoding from '@/components/form/AccountCoding';
 import { createPublicCloudProject } from '@/services/backend/public-cloud';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
+import createClientPage from '@/core/client-page';
 
-export default function Page() {
-  const { data: session, status } = useSession({
-    required: true,
-  });
-
+const publicCloudProductNew = createClientPage({
+  roles: ['user'],
+});
+export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -107,4 +107,4 @@ export default function Page() {
       />
     </div>
   );
-}
+});

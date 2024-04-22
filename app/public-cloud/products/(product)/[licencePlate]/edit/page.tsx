@@ -17,19 +17,27 @@ import { AGMinistries } from '@/constants';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
 import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud';
+import { useSnapshot } from 'valtio';
+import createClientPage from '@/core/client-page';
+import { productState } from '../layout';
 
-export default function EditProject({ params }: { params: { licencePlate: string } }) {
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
+});
+
+const publicCloudProductEdit = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export default publicCloudProductEdit(({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
+  const snap = useSnapshot(productState);
+
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
   const [openComment, setOpenComment] = useState(false);
-
-  const { data: currentProject } = useQuery({
-    queryKey: ['currentProject', params.licencePlate],
-    queryFn: () => getPublicCloudProject(params.licencePlate),
-    enabled: !!params.licencePlate,
-  });
 
   const {
     mutateAsync: editProject,
@@ -37,7 +45,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
     isError: isEditError,
     error: editError,
   } = useMutation({
-    mutationFn: (data: any) => editPublicCloudProject(params.licencePlate, data),
+    mutationFn: (data: any) => editPublicCloudProject(licencePlate, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -61,7 +69,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
       ),
     ),
     defaultValues: async () => {
-      const response = await getPublicCloudProject(params.licencePlate);
+      const response = await getPublicCloudProject(licencePlate);
       return { ...response, isAgMinistryChecked: true };
     },
   });
@@ -69,14 +77,14 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const { formState } = methods;
 
   useEffect(() => {
-    if (!currentProject) return;
+    if (!snap.currentProduct) return;
 
-    if (currentProject.secondaryTechnicalLead) {
+    if (snap.currentProduct.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
 
-    setDisabled(!currentProject?._permissions.edit);
-  }, [currentProject]);
+    setDisabled(!snap.currentProduct?._permissions.edit);
+  }, [snap.currentProduct]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -89,6 +97,10 @@ export default function EditProject({ params }: { params: { licencePlate: string
   const setComment = (requestComment: string) => {
     editProject({ ...methods.getValues(), requestComment });
   };
+
+  if (!snap.currentProduct) {
+    return null;
+  }
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
@@ -105,7 +117,7 @@ export default function EditProject({ params }: { params: { licencePlate: string
             />
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
-            <AccountCoding accountCodingInitial={currentProject?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={snap.currentProduct?.accountCoding} disabled={false} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
@@ -132,4 +144,4 @@ export default function EditProject({ params }: { params: { licencePlate: string
       />
     </div>
   );
-}
+});

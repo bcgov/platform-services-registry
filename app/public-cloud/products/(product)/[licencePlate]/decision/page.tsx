@@ -1,8 +1,8 @@
 'use client';
 
+import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSession } from 'next-auth/react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
@@ -16,21 +16,27 @@ import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { makePublicCloudRequestedDecision, getPublicCloudActiveRequest } from '@/services/backend/public-cloud';
+import createClientPage from '@/core/client-page';
 
-export default function RequestDecision({ params }: { params: { licencePlate: string } }) {
-  const { data: session, status } = useSession({
-    required: true,
-  });
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
+});
 
+const publicCloudProductDecision = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export default publicCloudProductDecision(({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
   const { data: activeRequest, isLoading: isActiveRequestLoading } = useQuery({
-    queryKey: ['activeRequest', params.licencePlate],
-    queryFn: () => getPublicCloudActiveRequest(params.licencePlate),
-    enabled: !!params.licencePlate,
+    queryKey: ['activeRequest', licencePlate],
+    queryFn: () => getPublicCloudActiveRequest(licencePlate),
+    enabled: !!licencePlate,
   });
 
   const {
@@ -39,7 +45,7 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
     isError: isDecisionError,
     error: decisionError,
   } = useMutation({
-    mutationFn: (data: any) => makePublicCloudRequestedDecision(params.licencePlate, data),
+    mutationFn: (data: any) => makePublicCloudRequestedDecision(licencePlate, data),
     onSuccess: () => {
       setOpenReturn(true);
       setOpenComment(false);
@@ -144,4 +150,4 @@ export default function RequestDecision({ params }: { params: { licencePlate: st
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/products/active-requests" />
     </div>
   );
-}
+});
