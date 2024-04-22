@@ -77,10 +77,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   if (request.type == 'CREATE') {
     await wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
-  }
-
-  if (request.type == 'DELETE') {
+  } else if (request.type == 'DELETE') {
     await wrapAsync(() => sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts));
   }
+
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });
