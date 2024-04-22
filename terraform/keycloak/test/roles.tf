@@ -14,6 +14,14 @@ resource "keycloak_role" "pltsvc_editor" {
   description = "Registry Editor"
 }
 
+resource "keycloak_role" "pltsvc_analyzer" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "analyzer"
+  description = "Registry Analyzer"
+}
+
 resource "keycloak_role" "pltsvc_reader" {
   realm_id  = data.keycloak_realm.pltsvc.id
   client_id = keycloak_openid_client.pltsvc.id
@@ -28,6 +36,14 @@ resource "keycloak_role" "pltsvc_private_admin" {
 
   name        = "private-admin"
   description = "Registry Private Cloud Administrator"
+}
+
+resource "keycloak_role" "pltsvc_private_analyzer" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "private-analyzer"
+  description = "Registry Private Cloud Analyzer"
 }
 
 resource "keycloak_role" "pltsvc_private_editor" {
@@ -52,6 +68,14 @@ resource "keycloak_role" "pltsvc_public_admin" {
 
   name        = "public-admin"
   description = "Registry Public Cloud Administrator"
+}
+
+resource "keycloak_role" "pltsvc_public_analyzer" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "public-analyzer"
+  description = "Registry Public Cloud Analyzer"
 }
 
 resource "keycloak_role" "pltsvc_public_editor" {

@@ -33,10 +33,13 @@ export async function generateSession({ session, token }: { session: Session; to
   session.isAdmin = false;
   session.isEditor = false;
   session.isReader = false;
+  session.isAnalyzer = false;
   session.isPrivateAdmin = false;
+  session.isPrivateAnalyzer = false;
   session.isPrivateEditor = false;
   session.isPrivateReader = false;
   session.isPublicAdmin = false;
+  session.isPublicAnalyzer = false;
   session.isPublicEditor = false;
   session.isPublicReader = false;
   session.isApprover = false;
@@ -82,8 +85,18 @@ export async function generateSession({ session, token }: { session: Session; to
         return;
       }
 
+      if (role === 'analyzer') {
+        session.isAnalyzer = true;
+        return;
+      }
+
       if (role === 'private-admin') {
         session.isPrivateAdmin = true;
+        return;
+      }
+
+      if (role === 'private-analyzer') {
+        session.isPrivateAnalyzer = true;
         return;
       }
 
@@ -99,6 +112,11 @@ export async function generateSession({ session, token }: { session: Session; to
 
       if (role === 'public-admin') {
         session.isPublicAdmin = true;
+        return;
+      }
+
+      if (role === 'public-analyzer') {
+        session.isPublicAnalyzer = true;
         return;
       }
 
@@ -180,9 +198,10 @@ export async function generateSession({ session, token }: { session: Session; to
     editAllPublicProductComments: session.isAdmin,
     deleteAllPublicProductComments: session.isAdmin,
 
-    viewZapscanResults: session.isAdmin || session.isReader,
-    viewSonarscanReulsts: session.isAdmin || session.isReader,
-    viewAnalytics: session.isAdmin || session.isReader,
+    viewZapscanResults: session.isAdmin || session.isAnalyzer,
+    viewSonarscanResults: session.isAdmin || session.isAnalyzer,
+    viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
+    viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
   };
 
   // {

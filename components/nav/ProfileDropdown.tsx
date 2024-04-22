@@ -83,7 +83,7 @@ export default function ProfileDropdown() {
               )}
             </Menu.Item>
           )}
-          {permissions?.viewSonarscanReulsts && (
+          {permissions?.viewSonarscanResults && (
             <Menu.Item>
               {({ active, close }) => (
                 <div>
@@ -98,7 +98,7 @@ export default function ProfileDropdown() {
               )}
             </Menu.Item>
           )}
-          {permissions?.viewAnalytics && (
+          {permissions?.viewPrivateAnalytics && (
             <Menu.Item>
               {({ active, close }) => (
                 <div>
@@ -113,7 +113,7 @@ export default function ProfileDropdown() {
               )}
             </Menu.Item>
           )}
-          {permissions?.viewAnalytics && (
+          {permissions?.viewPublicAnalytics && (
             <Menu.Item>
               {({ active, close }) => (
                 <div>

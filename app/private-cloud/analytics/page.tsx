@@ -24,7 +24,7 @@ function mapMinistryDistributions(items: { _id: string; value: number }[]) {
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.permissions.viewAnalytics) {
+  if (!session || !session.permissions.viewPrivateAnalytics) {
     redirect('/login?callbackUrl=/private-cloud/products/all');
   }
 
@@ -40,7 +40,7 @@ export default async function AnalyticsDashboard() {
   const emeraldData = mapMinistryDistributions(ministryDistributionData[3]);
 
   return (
-    <div className="">
+    <div className="p-8">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
         Private Cloud Data Analytics
       </h1>
