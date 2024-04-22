@@ -124,7 +124,6 @@ export const sendRequestRejectionEmails = async (
 };
 
 export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
-  console.log('starte of the request', request, 'end of the request');
   try {
     const adminEmail = render(AdminDeleteRequestTemplate({ request }), { pretty: true });
     const userEmail = render(DeleteRequestTemplate({ request }), { pretty: true });
