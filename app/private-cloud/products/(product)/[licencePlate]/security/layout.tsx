@@ -11,17 +11,25 @@ export default function Layout({ params, children }: { params: { licencePlate: s
       <div className="col-span-2">
         <SideTabs
           tabs={[
-            { value: 'repo', label: 'Repository URLs', href: `/private-cloud/security/${licencePlate}/repository` },
-            { value: 'zapscan', label: 'Zap Scan Results', href: `/private-cloud/security/${licencePlate}/zapscan` },
+            {
+              value: 'repo',
+              label: 'Repository URLs',
+              href: `/private-cloud/products/${licencePlate}/security/repository`,
+            },
+            {
+              value: 'zapscan',
+              label: 'Zap Scan Results',
+              href: `/private-cloud/products/${licencePlate}/security/zapscan`,
+            },
             {
               value: 'sonarscan',
               label: 'Sonar Scan Results',
-              href: `/private-cloud/security/${licencePlate}/sonarscan`,
+              href: `/private-cloud/products/${licencePlate}/security/sonarscan`,
             },
             {
               value: 'acs',
               label: 'ACS Results',
-              href: `/private-cloud/security/${licencePlate}/acs`,
+              href: `/private-cloud/products/${licencePlate}/security/acs`,
             },
           ]}
         />

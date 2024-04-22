@@ -1,12 +1,21 @@
 'use client';
+
+import { z } from 'zod';
 import { getPriviateCloudRequestsHistory } from '@/services/backend/private-cloud';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
 import HistoryItem from '@/components/history/HistoryItem';
+import createClientPage from '@/core/client-page';
 
-function ProductHistory() {
-  const params = useParams();
-  const licencePlate = params.licencePlate as string;
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
+});
+
+const privateCloudProductHistory = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+});
+export default privateCloudProductHistory(({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
 
   const {
     data: requests,
@@ -46,6 +55,4 @@ function ProductHistory() {
       ))}
     </>
   );
-}
-
-export default ProductHistory;
+});
