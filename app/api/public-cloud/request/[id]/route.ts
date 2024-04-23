@@ -1,6 +1,5 @@
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 import prisma from '@/core/prisma';
-import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 
@@ -13,30 +12,18 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 
-export const GET = apiHandler(async ({ pathParams, session }) => {
+export const GET = apiHandler(async ({ pathParams }) => {
   const { id } = pathParams;
 
-  const request = await prisma.publicCloudRequest.findUnique({
+  const request = await prisma.publicCloudRequestedProject.findUnique({
     where: {
       id,
     },
     include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      requestedProject: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
     },
   });
 
@@ -46,24 +33,3 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
 
   return OkResponse(request);
 });
-
-export type PublicCloudRequestWithCurrentAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-  };
-}>;

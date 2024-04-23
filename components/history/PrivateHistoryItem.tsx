@@ -1,13 +1,13 @@
 import { PrivateCloudRequest } from '@prisma/client';
-import HistorySubItem from '@/components/history/HistorySubItem';
+import PrivateHistorySubItem from '@/components/history/PrivateHistorySubItem';
 
-export default function HistoryItem(request: PrivateCloudRequest) {
+export default function PrivateHistoryItem(request: PrivateCloudRequest) {
   return [
     request.decisionDate && (
-      <HistorySubItem
+      <PrivateHistorySubItem
         key={request.userRequestedProjectId}
         id={request.userRequestedProjectId}
-        comment={request.decisionComment || 'No comments'}
+        comment={request.decisionComment || ''}
         data={request.decisionDate}
         type={request.type}
         status={request.decisionStatus}
@@ -16,10 +16,10 @@ export default function HistoryItem(request: PrivateCloudRequest) {
         email={request.decisionMakerEmail}
       />
     ),
-    <HistorySubItem
+    <PrivateHistorySubItem
       key={request.id}
       id={request.id}
-      comment={request.requestComment || 'No comments'}
+      comment={request.requestComment || ''}
       data={request.created}
       type={request.type}
       status={request.decisionStatus}

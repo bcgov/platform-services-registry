@@ -2,6 +2,7 @@ import { instance } from './axios';
 import { PublicCloudActiveRequestGetPayload } from '@/app/api/public-cloud/active-request/[licencePlate]/route';
 import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/project/[licencePlate]/route';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
+import { PublicCloudRequest } from '@prisma/client';
 
 export async function getPublicCloudProject(licencePlate: string) {
   const result = await instance.get(`public-cloud/project/${licencePlate}`).then((res) => {
@@ -30,16 +31,13 @@ export async function getPublicCloudActiveRequest(licencePlate: string) {
   return result as PublicCloudActiveRequestGetPayload & PublicCloudRequestDecorate;
 }
 
-export async function getPublicCloudRequest(licencePlate: string) {
-  const result = await instance.get(`public-cloud/request/${licencePlate}`).then((res) => {
-    // Secondaty technical lead should only be included if it exists
-    if (res.data.requestedProject.secondaryTechnicalLead === null) {
-      delete res.data.requestedProject.secondaryTechnicalLead;
-    }
+export async function getPublicCloudRequest(id: string) {
+  const result = await instance.get(`public-cloud/request/${id}`).then((res) => res.data);
+  return result;
+}
 
-    return res.data;
-  });
-
+export async function getPublicCloudRequestsHistory(licencePlate: string): Promise<PublicCloudRequest[]> {
+  const result = await instance.get(`public-cloud/history/${licencePlate}`).then((res) => res.data);
   return result;
 }
 
