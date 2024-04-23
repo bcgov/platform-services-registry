@@ -44,7 +44,7 @@ export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: s
             <div className="ml-1 text-gray-400  font-bcsans text-lg font-medium">{previousLabel}</div>
           </div>
         </li>
-        {licencePlate && (
+        {licencePlate && licencePlate !== 'create' && (
           <li>
             <div className="flex items-center">
               <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />

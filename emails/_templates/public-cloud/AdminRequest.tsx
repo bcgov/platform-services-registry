@@ -44,7 +44,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
                   Registry
                 </Text>
                 <Button
-                  href="https://registry.developer.gov.bc.ca/public-cloud/products/active-requests"
+                  href="https://registry.developer.gov.bc.ca/public-cloud/requests/active"
                   className="bg-bcorange rounded-md px-4 py-2 text-white"
                 >
                   Review Request

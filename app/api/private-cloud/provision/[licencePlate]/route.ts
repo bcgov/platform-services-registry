@@ -3,7 +3,7 @@ import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
-import { sendProvisionedEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 
@@ -15,7 +15,7 @@ const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
-export const PUT = apiHandler(async ({ pathParams, session }) => {
+export const PUT = apiHandler(async ({ pathParams }) => {
   const { licencePlate } = pathParams;
 
   const request = await prisma.privateCloudRequest.findFirst({
@@ -30,7 +30,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!request) {
-    return NotFoundResponse('No requetst found for this licece plate.');
+    return NotFoundResponse('No request found for this license plate.');
   }
 
   const updateRequest = prisma.privateCloudRequest.update({
@@ -75,6 +75,11 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     },
   });
 
-  wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
+  if (request.type == 'CREATE') {
+    await wrapAsync(() => sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts));
+  } else if (request.type == 'DELETE') {
+    await wrapAsync(() => sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts));
+  }
+
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

@@ -15,6 +15,7 @@ import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
 import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
+import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   try {
@@ -45,17 +46,22 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
   }
 };
 
-export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+export const sendEditRequestEmails = async (
+  request: PrivateCloudRequestWithProjectAndRequestedProject,
+  isAdminEmailSent: boolean,
+) => {
   try {
-    const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
     const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
-
-    const admins = sendEmail({
-      bodyType: 'html',
-      body: adminEmail,
-      to: adminPrivateEmails,
-      subject: 'Edit request submitted',
-    });
+    let admins;
+    if (isAdminEmailSent) {
+      const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
+      admins = sendEmail({
+        bodyType: 'html',
+        body: adminEmail,
+        to: adminPrivateEmails,
+        subject: 'New edit request awaiting review',
+      });
+    }
 
     const contacts = sendEmail({
       body: userEmail,
@@ -77,8 +83,7 @@ export const sendEditRequestEmails = async (request: PrivateCloudRequestWithProj
   }
 };
 
-export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
-  console.log(request);
+export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
   try {
     const email = render(RequestApprovalTemplate({ request }), { pretty: true });
 
@@ -97,32 +102,49 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
 };
 
 export const sendRequestRejectionEmails = async (
-  request: PrivateCloudRequestedProjectWithContacts,
+  request: PrivateCloudRequestWithProjectAndRequestedProject,
   decisionComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment }), {
+    const email = render(RequestRejectionTemplate({ request, productName: request.project!.name, decisionComment }), {
       pretty: true,
     });
     await sendEmail({
       body: email,
-      to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: 'Request has been rejected',
+      to: [
+        request.project!.projectOwner.email,
+        request.project!.primaryTechnicalLead.email,
+        request.project!.secondaryTechnicalLead?.email,
+      ],
+      subject: `Request for ${request.project!.name} has been rejected`,
     });
   } catch (error) {
     console.error('ERROR SENDING REQUEST REJECTION EMAIL');
   }
 };
 
-export const sendDeleteRequestEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   try {
-    const email = render(DeleteRequestTemplate({ product }), { pretty: true });
+    const adminEmail = render(AdminDeleteRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(DeleteRequestTemplate({ request }), { pretty: true });
 
-    await sendEmail({
-      body: email,
-      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
+    const admins = sendEmail({
+      bodyType: 'html',
+      body: adminEmail,
+      to: adminPrivateEmails,
+      subject: 'New delete request awaiting review',
+    });
+
+    const contacts = sendEmail({
+      body: userEmail,
+      to: [
+        request.requestedProject.projectOwner.email,
+        request.requestedProject.primaryTechnicalLead.email,
+        request.requestedProject.secondaryTechnicalLead?.email,
+      ],
       subject: 'Request to delete product received',
     });
+    await Promise.all([contacts, admins]);
   } catch (error) {
     console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
   }

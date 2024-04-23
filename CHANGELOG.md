@@ -1,3 +1,26 @@
+## [0.22.3](https://github.com/bcgov/platform-services-registry/compare/v0.22.1...v0.22.3) (2024-04-18)
+
+
+### Features
+
+* add comments by a textbox ([8afdf6e](https://github.com/bcgov/platform-services-registry/commit/8afdf6e72fa4684c48ee2545073c9b5ce743491e))
+* added comments tab, display comments in UI ([06e2b45](https://github.com/bcgov/platform-services-registry/commit/06e2b45c7a4e34fc57185b027323345225ed1840))
+* **frontend:** add buttons to copy licensePlate to clipboard ([6b5720a](https://github.com/bcgov/platform-services-registry/commit/6b5720a80bee5aae771a40f2c73772c06f455453))
+* **frontend:** add buttons to copy licensePlate to clipboard ([d87f6ad](https://github.com/bcgov/platform-services-registry/commit/d87f6ad21431fbfc613bc2f0b88e5b5ede81b9ee))
+* history tab mockup implemented ([#2498](https://github.com/bcgov/platform-services-registry/issues/2498)) ([164c68d](https://github.com/bcgov/platform-services-registry/commit/164c68d2c59dbac3aa98882a75f4d2373b1ab4e6))
+
+
+### Bug Fixes
+
+* add check for Decode JWT token header ([c197b8b](https://github.com/bcgov/platform-services-registry/commit/c197b8b3cb796aaa698601453f613d0540bd07c6))
+* change permission for private cloud admin to see LAB clusters in drop down ([#2472](https://github.com/bcgov/platform-services-registry/issues/2472)) ([080a3c5](https://github.com/bcgov/platform-services-registry/commit/080a3c5b232a8f80c1b77425770bfb64ee2556be))
+* check is Expense authority form is filled in for public cloud product before deletion ([#2454](https://github.com/bcgov/platform-services-registry/issues/2454)) ([abfddcc](https://github.com/bcgov/platform-services-registry/commit/abfddcceced0d7185a5b7eea7d5967896cc9be56))
+* **frontend:** fix tooltip shown for multiple rows ([de800c0](https://github.com/bcgov/platform-services-registry/commit/de800c07836d383309a56e40e478ad9be9638162))
+* hide comments section on prod ([53e7c10](https://github.com/bcgov/platform-services-registry/commit/53e7c10a8e32df4295127f6a43c1c3d36216ba43))
+* layout now consistent with other tabs ([d603066](https://github.com/bcgov/platform-services-registry/commit/d6030666ce65327ad11203c5db2fcfa7e9c8ced5))
+* switch permission from private to public admins ([#2462](https://github.com/bcgov/platform-services-registry/issues/2462)) ([ad57b60](https://github.com/bcgov/platform-services-registry/commit/ad57b6000b3cb6509373503af2c6141d352563a5))
+* use useQuery, and useMutation for comments logic ([f2348e7](https://github.com/bcgov/platform-services-registry/commit/f2348e7b1ce7567df3af10701e531f8d2b3b2dde))
+
 ## [0.22.1](https://github.com/bcgov/platform-services-registry/compare/v0.22.0...v0.22.1) (2024-04-04)
 
 

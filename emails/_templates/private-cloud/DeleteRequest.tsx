@@ -6,14 +6,14 @@ import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
 import ProductDetails from '../../_components/ProductDetails';
 import NamespaceDetails from '../../_components/NamespaceDetails';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
+import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
 
 interface EmailProp {
-  product: PrivateCloudRequestedProjectWithContacts;
+  request: PrivateCloudRequestWithRequestedProject;
 }
 
-const DeleteRequestTemplate = ({ product }: EmailProp) => {
-  if (!product) return <></>;
+const DeleteRequestTemplate = ({ request }: EmailProp) => {
+  if (!request) return <></>;
 
   return (
     <Html>
@@ -26,21 +26,24 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
                 <Heading className="text-lg text-black">Your deletion request has been received!</Heading>
                 <Text>Hi Product Team,</Text>
                 <Text className="">
-                  {`We have received your deletion request for ${product.name}. You will receive an email once your request has been processed and completed.`}
+                  {`We have received your deletion request for ${request.requestedProject.name}. You will receive an email once your request has been processed and completed.`}
                 </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={product.name}
-                  description={product.description}
-                  ministry={product.ministry}
-                  po={product.projectOwner}
-                  tl1={product.primaryTechnicalLead}
-                  tl2={product.secondaryTechnicalLead}
+                  name={request.requestedProject.name}
+                  description={request.requestedProject.description}
+                  ministry={request.requestedProject.ministry}
+                  po={request.requestedProject.projectOwner}
+                  tl1={request.requestedProject.primaryTechnicalLead}
+                  tl2={request.requestedProject.secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={product.cluster} licencePlate={product.licencePlate} />
+                <NamespaceDetails
+                  cluster={request.requestedProject.cluster}
+                  licencePlate={request.requestedProject.licencePlate}
+                />
               </div>
               <div>
                 <Closing />

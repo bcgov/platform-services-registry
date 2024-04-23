@@ -35,7 +35,7 @@ export default function AccountCodingInput({
             ℹ️
           </span>
           <span
-            className={`absolute min-w-56 bottom-6 left-6 bg-neutral-200 text-gray-400 bottom-100 border rounded-md border-solid border-gray-400 ${
+            className={`absolute min-w-56 p-2 bottom-6 left-6 bg-neutral-200 text-gray-400 bottom-100 border rounded-md border-solid border-gray-400 ${
               showInfo ? 'block' : 'hidden'
             }`}
           >

@@ -12,7 +12,7 @@ type QueryObject = Record<string, string | readonly string[] | number | readonly
  * @param queryString - The input query string to be parsed.
  * @returns An object representing the parsed key-value pairs.
  */
-export function parseQueryString(queryString: string) {
+export function parseQueryString(queryString: string | URLSearchParams) {
   const params = new URLSearchParams(queryString);
   const parsedParams: QueryObject = {};
 

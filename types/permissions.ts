@@ -22,6 +22,7 @@ export enum PermissionsEnum {
   DeleteAllPublicProductComments = 'deleteAllPublicProductComments',
 
   ViewZapscanResults = 'viewZapscanResults',
-  ViewSonarscanReulsts = 'viewSonarscanReulsts',
-  ViewAnalytics = 'viewAnalytics',
+  ViewSonarscanResults = 'viewSonarscanResults',
+  ViewPrivateAnalytics = 'viewPrivateAnalytics',
+  ViewPublicAnalytics = 'viewPublicAnalytics',
 }

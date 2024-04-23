@@ -5,14 +5,21 @@ import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
 import Comment from '@/emails/_components/Comment';
+import QuotaChanges from '../../_components/Edit/QuotaChanges';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 
 interface EmailProp {
   productName: string;
   decisionComment?: string;
+  request: PrivateCloudRequestWithProjectAndRequestedProject;
 }
 
-const RequestRejectionTemplate = ({ productName, decisionComment }: EmailProp) => {
-  if (!productName) return <></>;
+const RequestRejectionTemplate = ({ request, productName, decisionComment }: EmailProp) => {
+  if (!request || !request.project || !request.requestedProject) return <></>;
+  const current = request.project;
+  const requested = request.requestedProject;
+  const changed = comparePrivateCloudProjects(current, requested);
   return (
     <Html>
       <Tailwind config={TailwindConfig}>
@@ -36,6 +43,53 @@ const RequestRejectionTemplate = ({ productName, decisionComment }: EmailProp) =
                   Log in to Registry
                 </Button>
               </div>
+              <div className="flex flex-row flex-wrap">
+                {changed.productionQuota && (
+                  <QuotaChanges
+                    licencePlate={`${request.licencePlate}-prod`}
+                    quotaCurrent={current.productionQuota}
+                    quotaRequested={requested.productionQuota}
+                    type="Production"
+                    cluster={current.cluster}
+                    currentLabel="Current"
+                    requestedLabel="Rejected"
+                  />
+                )}
+                {changed.testQuota && (
+                  <QuotaChanges
+                    licencePlate={`${request.licencePlate}-test`}
+                    quotaCurrent={current.testQuota}
+                    quotaRequested={requested.testQuota}
+                    type="Test"
+                    cluster={current.cluster}
+                    currentLabel="Current"
+                    requestedLabel="Rejected"
+                  />
+                )}
+                {changed.developmentQuota && (
+                  <QuotaChanges
+                    licencePlate={`${request.licencePlate}-dev`}
+                    quotaCurrent={current.testQuota}
+                    quotaRequested={requested.testQuota}
+                    type="Development"
+                    cluster={current.cluster}
+                    currentLabel="Current"
+                    requestedLabel="Rejected"
+                  />
+                )}
+                {changed.toolsQuota && (
+                  <QuotaChanges
+                    licencePlate={`${request.licencePlate}-tools`}
+                    quotaCurrent={current.testQuota}
+                    quotaRequested={requested.testQuota}
+                    type="Tools"
+                    cluster={current.cluster}
+                    currentLabel="Current"
+                    requestedLabel="Rejected"
+                  />
+                )}
+              </div>
+
               <div>
                 <Closing />
               </div>

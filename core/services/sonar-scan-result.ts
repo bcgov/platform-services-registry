@@ -5,7 +5,7 @@ import { ModelService } from '@/core/model-service';
 export class SonarScanResultService extends ModelService<Prisma.SonarScanResultWhereInput> {
   async readFilter() {
     if (!this.session) return false;
-    if (this.session.permissions.viewSonarscanReulsts) return true;
+    if (this.session.permissions.viewSonarscanResults) return true;
 
     const [privateRes, publicRes] = await Promise.all([
       prisma.privateCloudProject.findMany({

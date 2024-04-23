@@ -209,13 +209,17 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
                   <li>
                     <Text className="">
                       Read more about the
-                      <Link href="https://digital.gov.bc.ca/cloud/services/"> benefits </Link> of using ACS
+                      <Link href="https://www.redhat.com/en/technologies/cloud-computing/openshift/advanced-cluster-security-kubernetes">
+                        {' '}
+                        benefits{' '}
+                      </Link>{' '}
+                      of using ACS
                     </Text>
                   </li>
                   <li>
                     <Text className="">
                       Get more
-                      <Link href="https://www.redhat.com/en/technologies/cloud-computing/openshift/advanced-cluster-security-kubernetes">
+                      <Link href="https://developer.gov.bc.ca/docs/default/component/chefs-techdocs/About/SoAR-and-Compliance/#advanced-cluster-security-acs">
                         {' '}
                         general information
                       </Link>{' '}
