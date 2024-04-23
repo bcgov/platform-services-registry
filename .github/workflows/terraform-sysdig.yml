@@ -23,7 +23,7 @@ jobs:
       name: tf-sysdig
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
+    - uses: actions/checkout@9b4c13b0bfa31b4514c14f74b5a166c2708f43c6
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@a75f1a3ccea3c602b976c7c8c15b0c200cf101d0
