@@ -41,6 +41,8 @@ declare global {
   module Cypress {
     interface Chainable<Subject = any> {
       loginToRegistry(user: string, pass: string): void;
+      loginToRegistryThroughApi(user: string, pass: string): void;
+      logoutFromRegistry(): void;
     }
   }
 }
@@ -48,9 +50,14 @@ declare global {
 export function loginToRegistry(username: string, password: string): void {
   cy.visit('/login', { failOnStatusCode: false });
   cy.contains('button', 'LOGIN').click();
-  cy.contains('span', 'Sign in with Keycloak').click();
+  cy.wait(2000); // wait until the page loads, otherwise no chances to find clause below
+  cy.url().then((val) => {
+    if (val.includes('/api/auth/signin?csrf=true')) {
+      cy.contains('span', 'Sign in with Keycloak').click();
+    }
+  });
   cy.origin(
-    'http://localhost:8080',
+    Cypress.env('keycloak_url'),
     { args: { usernameOrig: username, passwordOrig: password } },
     ({ usernameOrig, passwordOrig }) => {
       cy.get('input[id="username"]').type(usernameOrig);
@@ -62,7 +69,25 @@ export function loginToRegistry(username: string, password: string): void {
   cy.contains('a', 'REQUEST A NEW PRODUCT');
 }
 
-Cypress.Commands.add('loginToRegistry' as any, (username: any, password: any) => {
+export function loginToRegistryThroughApi(username: string, password: string): void {
+  cy.login({
+    root: Cypress.env('keycloak_url'),
+    realm: 'platform-services',
+    username: username,
+    password: password,
+    client_id: 'dummy',
+    redirect_uri: '/',
+  });
+  cy.contains('a', 'REQUEST A NEW PRODUCT');
+}
+
+export function logoutFromRegistry(): void {
+  cy.get('span[class="sr-only"]').click();
+  cy.contains('a', 'Sign out');
+  cy.contains('button', 'LOGIN');
+}
+
+Cypress.Commands.add('loginToRegistry', (username: string, password: string) => {
   const log = Cypress.log({
     displayName: 'Login to Registry',
     message: [`🔐 Authenticating | ${username}`],
@@ -75,3 +100,19 @@ Cypress.Commands.add('loginToRegistry' as any, (username: any, password: any) =>
   log.snapshot('after');
   log.end();
 });
+
+Cypress.Commands.add('loginToRegistryThroughApi', (username: string, password: string) => {
+  const log = Cypress.log({
+    displayName: 'Login to Registry through API',
+    message: [`🔐 Authenticating | ${username}`],
+    autoEnd: false,
+  });
+  log.snapshot('before');
+
+  loginToRegistryThroughApi(username, password);
+
+  log.snapshot('after');
+  log.end();
+});
+
+Cypress.Commands.add('logoutFromRegistry', () => {});

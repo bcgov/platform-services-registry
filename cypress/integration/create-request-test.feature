@@ -4,6 +4,6 @@ Feature: Registry App Create Request
 
   Scenario: Creating a Request and check visibility
     Given I am logged in to the Registry
-    When I Create a request with random values
+    When I Create a request
     Then I should be redirected to the In Progress tab
     And I should see the corresponding request
