@@ -72,7 +72,7 @@ export async function downloadPriviateCloudProducts(data: PrivateCloudProductAll
   const result = await instance.post(`private-cloud/products/download`, data, { responseType: 'blob' }).then((res) => {
     if (res.status === 204) return false;
 
-    downloadFile(res.data, 'product-data.csv');
+    downloadFile(res.data, 'private-cloud-products.csv');
     return true;
   });
 
