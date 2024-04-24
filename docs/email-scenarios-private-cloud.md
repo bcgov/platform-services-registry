@@ -117,12 +117,12 @@ flowchart LR
      <li>Name, Description, Ministry, Cluster, Contacts (all can be with Current and Requested sections if they are changed)</li>
      <li>Quota Changes with Current and Requested sections</li>
    </ol>
-   
+
 2. **Summary of changes submitted sent to PO/TLs** containing:
    <ol type="a">
       <li>Product Details that were changed, Current and Requested (Name, Description, Ministry, Contacts of PO/TL(s), Quota)</li>
    </ol>
-   
+
 3. **Decision: Mixed Quota Increase and Contact Change Request Approval/Rejection by admins**
 
    - **3a. Approval sent to PO/TLs** containing:
