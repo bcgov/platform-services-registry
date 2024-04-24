@@ -1,4 +1,4 @@
-import Tabs, { ITab } from '@/components/generic/Tabs2';
+import Tabs, { ITab } from '@/components/generic/tabs/SecondaryTabs';
 
 export default function ProductsRequestsTabs({ context }: { context: 'private' | 'public' }) {
   const tabs: ITab[] = [
