@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { getPriviateCloudRequestsHistory } from '@/services/backend/private-cloud';
 import { useQuery } from '@tanstack/react-query';
-import HistoryItem from '@/components/history/HistoryItem';
+import HistoryItem from '@/components/history/PrivateHistoryItem';
 import createClientPage from '@/core/client-page';
 
 const pathParamSchema = z.object({

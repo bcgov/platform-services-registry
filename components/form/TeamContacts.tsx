@@ -89,7 +89,7 @@ export default function TeamContacts({
         />
 
         <div className="mt-6 flex flex-col justify-between sm:col-start-2">
-          <SecondTechLeadButton clicked={secondTechLead} onClick={handleSecondTechLeadClick} />
+          {!disabled && <SecondTechLeadButton clicked={secondTechLead} onClick={handleSecondTechLeadClick} />}
 
           {secondTechLead ? (
             <div className="mt-6">
