@@ -2,18 +2,13 @@
 
 import { useEffect } from 'react';
 import { z } from 'zod';
-import { proxy, useSnapshot } from 'valtio';
 import { ToastContainer } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/Tabs';
 import { getPriviateCloudProject } from '@/services/backend/private-cloud';
-import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
-
-export const productState = proxy<{ currentProduct: PrivateCloudProjectGetPayload | undefined }>({
-  currentProduct: undefined,
-});
+import { productState } from './state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

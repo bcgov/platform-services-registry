@@ -18,6 +18,7 @@ import Avatars from './Avatars';
 
 interface TableProps {
   rows: Record<string, any>[];
+  isLoading: boolean;
 }
 
 function EmptyBody() {
@@ -39,7 +40,7 @@ function EmptyBody() {
       <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no products to be displayed</span>
       <Link
         className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
-        href={`/${pathname.split('/')[1]}/create`}
+        href={`/${pathname.split('/')[1]}/products/create`}
       >
         REQUEST A NEW PRODUCT
       </Link>
@@ -132,7 +133,7 @@ function getStatus(requestDecisionStatus: string) {
   return '';
 }
 
-export default function TableBody({ rows }: TableProps) {
+export default function TableBody({ rows, isLoading = false }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
@@ -148,6 +149,10 @@ export default function TableBody({ rows }: TableProps) {
     showTooltip(setTooltipVisible);
     setTooltipIndex(index);
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   if (rows.length === 0) {
     return <EmptyBody />;

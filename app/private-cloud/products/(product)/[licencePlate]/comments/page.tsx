@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud';
 import CommentForm from '@/components/comments/CommentForm';
 import createClientPage from '@/core/client-page';
-import { productState } from '../layout';
+import { productState } from '../state';
 
 interface User {
   firstName: string;

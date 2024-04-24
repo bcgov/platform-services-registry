@@ -30,10 +30,9 @@ export async function searchPrivateCloudProducts({
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
 }) {
   const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+  const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
-
-  const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);

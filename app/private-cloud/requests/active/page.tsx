@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import Table from '@/components/table/Table';
 import NewTableBody from '@/components/table/TableBodyProducts';
-import { privateCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
+import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { searchActivePrivateCloudRequests } from '@/queries/private-cloud-requests';
 import createServerPage from '@/core/server-page';
@@ -52,7 +52,7 @@ export default privateCloudActiveRequests(async ({ pathParams, queryParams, sess
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="Products with pending requests currently under admin review."
-      tableBody={<NewTableBody rows={activeRequests} />}
+      tableBody={<NewTableBody rows={activeRequests} isLoading={false} />}
       total={totalCount}
       currentPage={page}
       pageSize={take}
