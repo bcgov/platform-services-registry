@@ -151,7 +151,7 @@ export const ministriesNames = [
 
 export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
 
-export const privateSortNames = [
+export const productSorts = [
   {
     sortKey: 'updatedAt',
     humanFriendlyName: 'Product last update (new to old)',

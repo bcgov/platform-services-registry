@@ -19,7 +19,7 @@ import { z } from 'zod';
 import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud';
 import { useSnapshot } from 'valtio';
 import createClientPage from '@/core/client-page';
-import { productState } from '../layout';
+import { productState } from '../state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
