@@ -122,9 +122,9 @@ flowchart LR
    <ol type="a">
       <li>Product Details that were changed, Current and Requested (Name, Description, Ministry, Contacts of PO/TL(s), Quota)</li>
    </ol>
-
-3. **Decision: Mixed Quota Increase and Contact Change Request Approval/Rejection by admins**
    
+3. **Decision: Mixed Quota Increase and Contact Change Request Approval/Rejection by admins**
+
    - **3a. Approval sent to PO/TLs** containing:
    <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
