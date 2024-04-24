@@ -23,8 +23,8 @@ export default function Table({
   page,
   pageSize,
   totalCount,
-  search,
-  onPagination,
+  search = '',
+  onPagination = () => {},
   onSearch,
   onExport,
   filters,
@@ -35,8 +35,8 @@ export default function Table({
   page: number;
   pageSize: number;
   totalCount: number;
-  search: string;
-  onPagination: (page: number, pageSize: number) => void;
+  search?: string;
+  onPagination?: (page: number, pageSize: number) => void;
   onSearch?: (search: string) => void;
   onExport?: () => void;
   filters?: React.ReactNode;
