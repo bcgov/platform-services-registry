@@ -2,6 +2,7 @@ import { instance } from './axios';
 import { PrivateCloudActiveRequestGetPayload } from '@/app/api/private-cloud/active-request/[licencePlate]/route';
 import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
 import { PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
+import { PrivateCloudRequestSearchPayload } from '@/queries/private-cloud-requests';
 import { PrivateCloudRequest, PrivateCloudComment } from '@prisma/client';
 import { downloadFile } from '@/utils/file-download';
 
@@ -143,4 +144,12 @@ export async function reprovisionPriviateCloudRequest(licencePlate: string) {
 export async function resendPriviateCloudRequest(licencePlate: string) {
   const result = await instance.get(`private-cloud/products/${licencePlate}/resend`).then((res) => res.data);
   return result;
+}
+
+export async function searchPriviateCloudRequests(data: PrivateCloudProductSearchCriteria) {
+  const result = await instance.post(`private-cloud/requests/search`, data).then((res) => {
+    return res.data;
+  });
+
+  return result as PrivateCloudRequestSearchPayload;
 }
