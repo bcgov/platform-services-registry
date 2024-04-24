@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import Table from '@/components/generic/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
-import { privateCloudProjectDataToRow } from '@/components/table/helpers/row-mapper';
+import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
 import { searchPriviateCloudProducts, downloadPriviateCloudProducts } from '@/services/backend/private-cloud';
 import AlertBox from '@/components/modal/AlertBox';
 import FilterPanel from './FilterPanel';
@@ -23,18 +23,20 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
     queryFn: () => searchPriviateCloudProducts(snap),
   });
 
-  if (isLoading || !data) {
-    return null;
-  }
+  let products = [];
+  let totalCount = 0;
 
-  const products = data.docs.map(privateCloudProjectDataToRow);
+  if (!isLoading && data) {
+    products = data.docs.map(privateCloudProjectDataToRow);
+    totalCount = data.totalCount;
+  }
 
   return (
     <>
       <Table
         title="Products in Private Cloud OpenShift Platform"
         description="These are your products hosted on Private Cloud OpenShift platform"
-        totalCount={data.totalCount}
+        totalCount={totalCount}
         page={snap.page}
         pageSize={snap.pageSize}
         search={snap.search}
@@ -52,7 +54,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
         }}
         filters={<FilterPanel />}
       >
-        <TableBody rows={products} />
+        <TableBody rows={products} isLoading={isLoading} />
       </Table>
       <AlertBox
         isOpen={snap.showDownloadAlert}

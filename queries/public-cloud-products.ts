@@ -1,7 +1,10 @@
 import { $Enums, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
+import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
+
+const defaultSortKey = 'updatedAt';
 
 export async function searchPublicCloudProducts({
   session,
@@ -11,8 +14,8 @@ export async function searchPublicCloudProducts({
   provider,
   active,
   search,
-  sortKey = 'updatedAt',
-  sortOrder = 'desc',
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
   extraFilter,
 }: {
   session: Session;
@@ -27,7 +30,7 @@ export async function searchPublicCloudProducts({
   extraFilter?: Prisma.PublicCloudProjectWhereInput;
 }) {
   const where: Prisma.PublicCloudProjectWhereInput = extraFilter ?? {};
-  const orderBy = { [sortKey]: Prisma.SortOrder[sortOrder] };
+  const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
 
@@ -88,3 +91,20 @@ export async function searchPublicCloudProducts({
 
   return { docs, totalCount };
 }
+
+export type PublicCloudProductSearchPayload = {
+  docs: (Prisma.PublicCloudProjectGetPayload<{
+    include: {
+      projectOwner: true;
+      primaryTechnicalLead: true;
+      secondaryTechnicalLead: true;
+      requests: {
+        where: {
+          active: true;
+        };
+      };
+    };
+  }> &
+    PublicCloudProjectDecorate)[];
+  totalCount: number;
+};

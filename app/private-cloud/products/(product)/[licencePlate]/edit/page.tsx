@@ -23,7 +23,7 @@ import {
 } from '@/services/backend/private-cloud';
 import { useSnapshot } from 'valtio';
 import createClientPage from '@/core/client-page';
-import { productState } from '../layout';
+import { productState } from '../state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
