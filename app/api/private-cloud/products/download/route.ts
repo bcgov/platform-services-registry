@@ -7,7 +7,7 @@ import createApiHandler from '@/core/api-handler';
 import searchOp from '../_operations/search';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { extractNumbers } from '@/utils/string';
-import { processEnumString } from '@/utils/zod';
+import { processEnumString, processUpperEnumString } from '@/utils/zod';
 
 function getTotalQuota(...quotaValues: string[]) {
   let total = 0;
@@ -19,13 +19,13 @@ function getTotalQuota(...quotaValues: string[]) {
   return total;
 }
 
-export const bodySchema = z.object({
+const bodySchema = z.object({
   search: z.string().optional(),
-  ministry: z.preprocess(processEnumString, z.nativeEnum($Enums.Ministry).optional()),
-  cluster: z.preprocess(processEnumString, z.nativeEnum($Enums.Cluster).optional()),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
+  cluster: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Cluster).optional()),
   includeInactive: z.boolean().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.nativeEnum(Prisma.SortOrder).optional(),
+  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
 });
 
 export const POST = createApiHandler({
