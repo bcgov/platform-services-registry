@@ -14,7 +14,7 @@ const publicCloudProductHistory = createClientPage({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductHistory(({ pathParams, queryParams, session }) => {
+export default publicCloudProductHistory(({ pathParams }) => {
   const { licencePlate } = pathParams;
 
   const {

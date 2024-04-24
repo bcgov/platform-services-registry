@@ -1,7 +1,7 @@
 import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { NoContent, OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -25,8 +25,8 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     session: session as never,
   });
 
-  if (!requests) {
-    return NotFoundResponse('No requests found for this licence plate.');
+  if (requests.length < 1) {
+    return NoContent();
   }
 
   return OkResponse(requests);
