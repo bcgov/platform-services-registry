@@ -78,7 +78,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     A((User submits a <br>Edit Resource <br> Quota Request)) --> B(PrivateCloudResourceRequestAdmin<br>PrivateCloudResourceRequest)
-    B --> C{Admin decision on create request}
+    B --> C{Admin decision on Edit Resource Quota request}
     C -->|Request approved| D(PrivateCloudResourceRequestApproval)
     C -->|Request rejected| E(PrivateCloudResourceRequestRejection)
 ```
@@ -107,7 +107,45 @@ flowchart LR
     B -->|Request Provisioned| C(PrivateCloudEditProvisioned)
 ```
 
-#### Scenario 4. Delete request is submitted
+#### Scenario 4. Mixed Edit Request: Quota Increase and Contact Change
+
+**Description**: When a PO/TLs of a product edit their product with both Quota Increase and Contact Change.
+
+1. **A notification sent to admins** containing:
+    <ol type="a">
+     <li>Comments by user</li>
+     <li>Name, Description, Ministry, Cluster, Contacts (all can be with Current and Requested sections if they are changed)</li>
+     <li>Quota Changes with Current and Requested sections</li>
+   </ol>
+   
+2. **Summary of changes submitted sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details that were changed, Current and Requested (Name, Description, Ministry, Contacts of PO/TL(s), Quota)</li>
+   </ol>
+
+3. **Decision: Mixed Quota Increase and Contact Change Request Approval/Rejection by admins**
+   
+   - **3a. Approval sent to PO/TLs** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Namespace Details with Previous and Approved values (with link to the namespace that changes were made on)</li>
+      </ol>
+
+   - **3b. Rejection Sub-Scenario** containing:
+   <ol type="a">
+      <li>Product Details that were changed with Current and Rejected Quota</li>
+      <li>Admin review comments</li>
+   </ol>
+
+```mermaid
+flowchart LR
+    A((User submits a<br> Mixed Edit Request <br>Quota and Contacts)) --> B(PrivateCloudResourceRequestAdmin<br>PrivateCloudResourceRequest)
+    B --> C{Admin decision on Mixed Edit Request}
+    C -->|Request approved| D(PrivateCloudResourceRequestApproval)
+    C -->|Request rejected| E(PrivateCloudResourceRequestRejection)
+```
+
+#### Scenario 5. Delete request is submitted
 
 **Description**: When a PO/TLs of a product have removed all PVC's and resources deployed on their namespaces of a given product, then a user is eligible to submit a delete request. Upon a successful deletion check the user can submit the delete request and thus the following emails may trigger.
 
