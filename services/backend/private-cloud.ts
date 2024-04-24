@@ -1,7 +1,9 @@
 import { instance } from './axios';
 import { PrivateCloudActiveRequestGetPayload } from '@/app/api/private-cloud/active-request/[licencePlate]/route';
 import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
+import { PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
 import { PrivateCloudRequest, PrivateCloudComment } from '@prisma/client';
+import { downloadFile } from '@/utils/file-download';
 
 export async function getPrivateCloudComment(licencePlate: string, commentId: string): Promise<PrivateCloudComment> {
   const response = await instance.get(`private-cloud/products/${licencePlate}/comments/${commentId}`);
@@ -10,7 +12,6 @@ export async function getPrivateCloudComment(licencePlate: string, commentId: st
 
 export async function getAllPrivateCloudComments(licencePlate: string) {
   const response = await instance.get(`private-cloud/products/${licencePlate}/comments`);
-  console.log(response.data, 'response data for list all comments');
   return response.data;
 }
 
@@ -41,6 +42,41 @@ export async function deletePrivateCloudComment(
 ): Promise<{ success: boolean }> {
   const response = await instance.delete(`private-cloud/products/${licencePlate}/comments/${commentId}`);
   return response.data;
+}
+
+export interface PrivateCloudProductAllCriteria {
+  search: string;
+  page: number;
+  pageSize: number;
+  ministry: string;
+  cluster: string;
+  includeInactive: boolean;
+  sortKey: string;
+  sortOrder: string;
+}
+
+export interface PrivateCloudProductSearchCriteria extends PrivateCloudProductAllCriteria {
+  page: number;
+  pageSize: number;
+}
+
+export async function searchPriviateCloudProducts(data: PrivateCloudProductSearchCriteria) {
+  const result = await instance.post(`private-cloud/products/search`, data).then((res) => {
+    return res.data;
+  });
+
+  return result as PrivateCloudProductSearchPayload;
+}
+
+export async function downloadPriviateCloudProducts(data: PrivateCloudProductAllCriteria) {
+  const result = await instance.post(`private-cloud/products/download`, data, { responseType: 'blob' }).then((res) => {
+    if (res.status === 204) return false;
+
+    downloadFile(res.data, 'private-cloud-products.csv');
+    return true;
+  });
+
+  return result;
 }
 
 export async function getPriviateCloudProject(licencePlate: string) {
