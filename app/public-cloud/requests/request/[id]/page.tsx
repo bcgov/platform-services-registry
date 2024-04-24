@@ -9,7 +9,7 @@ import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
-import { getPublicCloudRequest } from '@/services/backend/public-cloud';
+import { getPublicCloudRequestedProject } from '@/services/backend/public-cloud';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import createClientPage from '@/core/client-page';
 
@@ -26,7 +26,7 @@ export default publicCloudRequest(({ pathParams }) => {
 
   const { data: request, isLoading: isRequestLoading } = useQuery({
     queryKey: ['request', id],
-    queryFn: () => getPublicCloudRequest(id),
+    queryFn: () => getPublicCloudRequestedProject(id),
     enabled: !!id,
   });
 

@@ -45,12 +45,7 @@ export default function PrivateHistorySubItem({
         {comment ? (isDecision ? 'Decision Comment' : 'Request Comment') : ''}
       </div>
       <div className="mx-auto my-0 w-[0.02rem] min-h-[3rem] flex p-0 items-center justify-center border-[0.1rem]  border-bcblue"></div>
-      <div className="content-center w-auto font-bcsans">
-        {comment}
-        <Link className="text-blue-500 block hover:text-blue-700" href={`/private-cloud/requests/request/${id}`}>
-          See request page
-        </Link>
-      </div>
+      <div className="content-center w-auto font-bcsans">{comment}</div>
       <div className="max-w-fit ml-auto mr-0 my-auto font-bcsans font-bold">{formatDate(data)}</div>
       <div className="mx-auto my-0 w-[2rem] h-[2rem]  flex p-[0.2rem] items-center justify-center border-[0.7rem] rounded-full  border-bcblue"></div>
       <div className="content-center w-auto font-bcsans">

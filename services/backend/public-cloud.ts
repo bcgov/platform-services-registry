@@ -31,8 +31,8 @@ export async function getPublicCloudActiveRequest(licencePlate: string) {
   return result as PublicCloudActiveRequestGetPayload & PublicCloudRequestDecorate;
 }
 
-export async function getPublicCloudRequest(id: string) {
-  const result = await instance.get(`public-cloud/request/${id}`).then((res) => res.data);
+export async function getPublicCloudRequestedProject(id: string) {
+  const result = await instance.get(`public-cloud/requested-project/${id}`).then((res) => res.data);
   return result;
 }
 
