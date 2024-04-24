@@ -3,6 +3,8 @@ import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
 import { getMatchingUserIds } from './users';
 
+const defaultSortKey = 'updatedAt';
+
 export async function searchActivePublicCloudRequests({
   session,
   skip,
@@ -10,8 +12,8 @@ export async function searchActivePublicCloudRequests({
   ministry,
   provider,
   search,
-  sortKey = 'updatedAt',
-  sortOrder = 'desc',
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
 }: {
   session: Session;
   skip: number;
@@ -28,6 +30,8 @@ export async function searchActivePublicCloudRequests({
     sortKey === 'updatedAt'
       ? { updatedAt: Prisma.SortOrder[sortOrder] }
       : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
+
+  if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
