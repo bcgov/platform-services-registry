@@ -51,6 +51,7 @@
     "csv-parse": "^5.5.3",
     "csv-stringify": "^6.4.4",
     "d3-array": "^3.2.4",
+    "date-fns": "^3.6.0",
     "https-proxy-agent": "^7.0.2",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.5",

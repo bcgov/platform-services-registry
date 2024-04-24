@@ -6,6 +6,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud';
 import CommentForm from '@/components/comments/CommentForm';
+import CommentBubble from '@/components/comments/CommentBubble';
 import createClientPage from '@/core/client-page';
 import { productState } from '../layout';
 
@@ -65,17 +66,14 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
       {comments?.length > 0 ? (
         <ul>
           {comments.map((comment: Comment) => (
-            <li key={comment.id}>
-              <p>
-                <strong>Comment:</strong> {comment.text}
-              </p>
-              <p>
-                <strong>By:</strong> {comment.user.firstName} {comment.user.lastName} ({comment.user.email})
-              </p>
-              <p>
-                <strong>Posted on:</strong> {new Date(comment.created).toLocaleString()}
-              </p>
-            </li>
+            <CommentBubble
+              key={comment.id}
+              text={comment.text}
+              timestamp={new Date(comment.created)}
+              firstName={comment.user.firstName}
+              lastName={comment.user.lastName}
+              isUser={userId === comment.userId}
+            />
           ))}
         </ul>
       ) : (
