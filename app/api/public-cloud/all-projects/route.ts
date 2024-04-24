@@ -31,7 +31,7 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
   });
 
   if (totalCount === 0) {
-    return NoContent(true);
+    return NoContent();
   }
 
   // Map the data to the correct format for CSV conversion
