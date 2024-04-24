@@ -83,14 +83,16 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
               </form>
             )}
           </div>
-          <Disclosure.Button
-            type="button"
-            className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            onClick={handleDiscloserToggle}
-          >
-            <Image alt="Filter" src={Filter} width={16} height={10} />
-            <span className="md:inline hidden">Filters</span>
-          </Disclosure.Button>
+          {children && (
+            <Disclosure.Button
+              type="button"
+              className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              onClick={handleDiscloserToggle}
+            >
+              <Image alt="Filter" src={Filter} width={16} height={10} />
+              <span className="md:inline hidden">Filters</span>
+            </Disclosure.Button>
+          )}
           {onExport && (
             <>
               <button

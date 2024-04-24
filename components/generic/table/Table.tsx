@@ -57,13 +57,7 @@ export default function Table({
       <div className="border-2 rounded-xl overflow-hidden">
         <TableHeader title={title} description={description}>
           {(onSearch || onExport || filters) && (
-            <SearchFilterExport
-              initialSearch={search}
-              onSearch={(newSearch: string) => {
-                if (onSearch) onSearch(newSearch);
-              }}
-              onExport={onExport}
-            >
+            <SearchFilterExport initialSearch={search} onSearch={onSearch} onExport={onExport}>
               {filters}
             </SearchFilterExport>
           )}
