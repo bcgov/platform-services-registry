@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
-import Tabs, { ITab } from '@/components/generic/Tabs';
+import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import { getPublicCloudProject } from '@/services/backend/public-cloud';
 import { productState } from './state';
 

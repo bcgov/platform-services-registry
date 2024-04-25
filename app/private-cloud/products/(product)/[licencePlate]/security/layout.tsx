@@ -1,7 +1,7 @@
 'use client';
 
 import { ToastContainer } from 'react-toastify';
-import SideTabs from '@/components/generic/SideTabs';
+import SideTabs from '@/components/generic/tabs/SideTabs';
 
 export default function Layout({ params, children }: { params: { licencePlate: string }; children: React.ReactNode }) {
   const { licencePlate } = params;

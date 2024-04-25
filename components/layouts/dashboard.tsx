@@ -2,7 +2,7 @@
 
 import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 import CreateProduct from '@/components/buttons/CreateProduct';
-import Tabs, { ITab } from '@/components/generic/Tabs';
+import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 
 export default function DashboardLayout({
   children,
