@@ -1,6 +1,6 @@
 import { instance } from './axios';
-import { PrivateCloudActiveRequestGetPayload } from '@/app/api/private-cloud/active-request/[licencePlate]/route';
-import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/project/[licencePlate]/route';
+import { PrivateCloudRequestGetPayload } from '@/app/api/private-cloud/requests/[licencePlate]/route';
+import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/route';
 import { PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
 import { PrivateCloudRequestSearchPayload } from '@/queries/private-cloud-requests';
 import { PrivateCloudRequest, PrivateCloudComment } from '@prisma/client';
@@ -81,7 +81,7 @@ export async function downloadPriviateCloudProducts(data: PrivateCloudProductAll
 }
 
 export async function getPriviateCloudProject(licencePlate: string) {
-  const result = await instance.get(`private-cloud/project/${licencePlate}`).then((res) => {
+  const result = await instance.get(`private-cloud/products/${licencePlate}`).then((res) => {
     // Secondary technical lead should only be included if it exists
     if (res.data.secondaryTechnicalLead === null) {
       delete res.data.secondaryTechnicalLead;
@@ -103,13 +103,8 @@ export async function createPriviateCloudProject(data: any) {
   return result;
 }
 
-export async function getPriviateCloudActiveRequest(licencePlate: string) {
-  const result = await instance.get(`private-cloud/active-request/${licencePlate}`).then((res) => res.data);
-  return result as PrivateCloudActiveRequestGetPayload;
-}
-
-export async function getPriviateCloudRequest(licencePlate: string) {
-  const result = await instance.get(`private-cloud/request/${licencePlate}`).then((res) => {
+export async function getPriviateCloudRequest(licencePlate: string, active = false) {
+  const result = await instance.get(`private-cloud/requests/${licencePlate}?active=${active}`).then((res) => {
     // Secondary technical lead should only be included if it exists
     if (res.data.requestedProject.secondaryTechnicalLead === null) {
       delete res.data.requestedProject.secondaryTechnicalLead;
@@ -118,7 +113,7 @@ export async function getPriviateCloudRequest(licencePlate: string) {
     return res.data;
   });
 
-  return result;
+  return result as PrivateCloudRequestGetPayload;
 }
 
 export async function getPriviateCloudRequestsHistory(licencePlate: string): Promise<PrivateCloudRequest[]> {

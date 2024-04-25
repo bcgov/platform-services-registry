@@ -1,26 +1,32 @@
-import prisma from '@/core/prisma';
 import { Prisma } from '@prisma/client';
+import prisma from '@/core/prisma';
 import { z } from 'zod';
-import { NotFoundResponse, OkResponse } from '@/core/responses';
 import createApiHandler from '@/core/api-handler';
+import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import { OkResponse } from '@/core/responses';
+import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
-  id: z.string(),
+  licencePlate: z.string(),
+});
+
+const queryParamSchema = z.object({
+  active: z.preprocess(processBoolean, z.boolean()),
 });
 
 const apiHandler = createApiHandler({
   roles: ['user'],
-  validations: { pathParams: pathParamSchema },
+  validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
+export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
+  const { active } = queryParams;
 
-export const GET = apiHandler(async ({ pathParams, session }) => {
-  // it gets LP instead Id
-  const { id } = pathParams;
+  const where: Prisma.PrivateCloudRequestWhereInput = active ? { active: true } : {};
+  where.licencePlate = licencePlate;
 
-  const request = await prisma.privateCloudRequest.findUnique({
-    where: {
-      id,
-    },
+  const request = await prisma.privateCloudRequest.findFirst({
+    where,
     include: {
       project: {
         include: {
@@ -39,23 +45,11 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     },
     session: session as never,
   });
-
-  if (!request) {
-    return NotFoundResponse('No project found with this id.');
-  }
-
   return OkResponse(request);
 });
 
-export type PrivateCloudRequestWithCurrentAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+export type PrivateCloudRequestGetPayload = Prisma.PrivateCloudRequestGetPayload<{
   include: {
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
     project: {
       include: {
         projectOwner: true;
@@ -63,5 +57,13 @@ export type PrivateCloudRequestWithCurrentAndRequestedProject = Prisma.PrivateCl
         secondaryTechnicalLead: true;
       };
     };
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
   };
-}>;
+}> &
+  PrivateCloudRequestDecorate;

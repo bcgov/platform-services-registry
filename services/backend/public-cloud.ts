@@ -1,6 +1,6 @@
 import { instance } from './axios';
-import { PublicCloudActiveRequestGetPayload } from '@/app/api/public-cloud/active-request/[licencePlate]/route';
-import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/project/[licencePlate]/route';
+import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[licencePlate]/route';
+import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/route';
 import { PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
 import { PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
 import { downloadFile } from '@/utils/file-download';
@@ -43,7 +43,7 @@ export async function downloadPublicCloudProducts(data: PublicCloudProductSearch
 }
 
 export async function getPublicCloudProject(licencePlate: string) {
-  const result = await instance.get(`public-cloud/project/${licencePlate}`).then((res) => {
+  const result = await instance.get(`public-cloud/products/${licencePlate}`).then((res) => {
     // Secondaty technical lead should only be included if it exists
     if (res.data.secondaryTechnicalLead === null) {
       delete res.data.secondaryTechnicalLead;
@@ -64,9 +64,9 @@ export async function createPublicCloudProject(data: any) {
   return result;
 }
 
-export async function getPublicCloudActiveRequest(licencePlate: string) {
-  const result = await instance.get(`public-cloud/active-request/${licencePlate}`).then((res) => res.data);
-  return result as PublicCloudActiveRequestGetPayload & PublicCloudRequestDecorate;
+export async function getPublicCloudRequest(licencePlate: string, active = false) {
+  const result = await instance.get(`public-cloud/requests/${licencePlate}?active=${active}`).then((res) => res.data);
+  return result as PublicCloudRequestGetPayload;
 }
 
 export async function getPublicCloudRequestedProject(id: string) {
