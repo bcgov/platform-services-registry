@@ -1,6 +1,7 @@
 import { instance } from './axios';
-import { PrivateCloudRequestGetPayload } from '@/app/api/private-cloud/requests/[licencePlate]/route';
+import { PrivateCloudRequestGetPayload } from '@/app/api/private-cloud/requests/[id]/route';
 import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/route';
+import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import { PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
 import { PrivateCloudRequestSearchPayload } from '@/queries/private-cloud-requests';
 import { PrivateCloudRequest, PrivateCloudComment } from '@prisma/client';
@@ -103,8 +104,8 @@ export async function createPriviateCloudProject(data: any) {
   return result;
 }
 
-export async function getPriviateCloudRequest(licencePlate: string, active = false) {
-  const result = await instance.get(`private-cloud/requests/${licencePlate}?active=${active}`).then((res) => {
+export async function getPriviateCloudRequest(id: string) {
+  const result = await instance.get(`private-cloud/requests/${id}`).then((res) => {
     // Secondary technical lead should only be included if it exists
     if (res.data.requestedProject.secondaryTechnicalLead === null) {
       delete res.data.requestedProject.secondaryTechnicalLead;
@@ -116,9 +117,11 @@ export async function getPriviateCloudRequest(licencePlate: string, active = fal
   return result as PrivateCloudRequestGetPayload;
 }
 
-export async function getPriviateCloudRequestsHistory(licencePlate: string): Promise<PrivateCloudRequest[]> {
-  const result = await instance.get(`private-cloud/products/${licencePlate}/history`).then((res) => res.data);
-  return result;
+export async function getPriviateCloudProductRequests(licencePlate: string, active = false) {
+  const result = await instance
+    .get(`private-cloud/products/${licencePlate}/requests?active=${active}`)
+    .then((res) => res.data);
+  return result as PrivateCloudProductRequestsGetPayload[];
 }
 
 export async function deletePrivateCloudProject(licencePlate: string) {
