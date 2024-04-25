@@ -10,3 +10,8 @@ export function processEnumString(str?: unknown) {
   if (!str) return undefined;
   return str;
 }
+
+export function processBoolean(str?: unknown) {
+  if (!str) return false;
+  return str === 'true';
+}

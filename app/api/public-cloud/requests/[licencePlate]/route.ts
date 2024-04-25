@@ -1,25 +1,32 @@
+import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
+import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
 import { OkResponse } from '@/core/responses';
+import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
+const queryParamSchema = z.object({
+  active: z.preprocess(processBoolean, z.boolean()),
+});
+
 const apiHandler = createApiHandler({
   roles: ['user'],
-  validations: { pathParams: pathParamSchema },
+  validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
-export const GET = apiHandler(async ({ pathParams, session }) => {
+export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
+  const { active } = queryParams;
+
+  const where: Prisma.PublicCloudRequestWhereInput = active ? { active: true } : {};
+  where.licencePlate = licencePlate;
 
   const request = await prisma.publicCloudRequest.findFirst({
-    where: {
-      licencePlate,
-      active: true,
-    },
+    where,
     include: {
       project: {
         include: {
@@ -41,16 +48,10 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     session: session as never,
   });
 
-  // if (!request) {
-  //   return new NextResponse("No project found for this licence plate.", {
-  //     status: 404,
-  //   });
-  // }
-
   return OkResponse(request);
 });
 
-export type PublicCloudActiveRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
+export type PublicCloudRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
   include: {
     project: {
       include: {
@@ -67,4 +68,5 @@ export type PublicCloudActiveRequestGetPayload = Prisma.PublicCloudRequestGetPay
       };
     };
   };
-}>;
+}> &
+  PublicCloudRequestDecorate;

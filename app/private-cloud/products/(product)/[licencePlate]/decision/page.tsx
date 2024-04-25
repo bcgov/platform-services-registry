@@ -14,7 +14,7 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import { makePriviateCloudRequestedDecision, getPriviateCloudActiveRequest } from '@/services/backend/private-cloud';
+import { makePriviateCloudRequestedDecision, getPriviateCloudRequest } from '@/services/backend/private-cloud';
 import createClientPage from '@/core/client-page';
 
 const pathParamSchema = z.object({
@@ -34,7 +34,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
 
   const { data: activeRequest, isLoading: isActiveRequestLoading } = useQuery({
     queryKey: ['activeRequest', licencePlate],
-    queryFn: () => getPriviateCloudActiveRequest(licencePlate),
+    queryFn: () => getPriviateCloudRequest(licencePlate, true),
     enabled: !!licencePlate,
   });
 

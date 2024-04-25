@@ -18,7 +18,7 @@ import { AGMinistries } from '@/constants';
 import { z } from 'zod';
 import {
   getPriviateCloudProject,
-  getPriviateCloudActiveRequest,
+  getPriviateCloudRequest,
   editPriviateCloudProject,
 } from '@/services/backend/private-cloud';
 import { useSnapshot } from 'valtio';

@@ -15,7 +15,7 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import { makePublicCloudRequestedDecision, getPublicCloudActiveRequest } from '@/services/backend/public-cloud';
+import { makePublicCloudRequestedDecision, getPublicCloudRequest } from '@/services/backend/public-cloud';
 import createClientPage from '@/core/client-page';
 
 const pathParamSchema = z.object({
@@ -35,7 +35,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
 
   const { data: activeRequest, isLoading: isActiveRequestLoading } = useQuery({
     queryKey: ['activeRequest', licencePlate],
-    queryFn: () => getPublicCloudActiveRequest(licencePlate),
+    queryFn: () => getPublicCloudRequest(licencePlate, true),
     enabled: !!licencePlate,
   });
 
