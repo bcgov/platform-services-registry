@@ -100,7 +100,7 @@ export async function editPriviateCloudProject(licencePlate: string, data: any) 
 }
 
 export async function createPriviateCloudProject(data: any) {
-  const result = await instance.post(`private-cloud/create/`, data).then((res) => res.data);
+  const result = await instance.post(`private-cloud/products`, data).then((res) => res.data);
   return result;
 }
 

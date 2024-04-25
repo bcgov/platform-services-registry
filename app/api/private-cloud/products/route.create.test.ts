@@ -1,7 +1,7 @@
 import prisma from '@/core/prisma';
 import { PrivateCloudRequest } from '@prisma/client';
 import { getServerSession } from 'next-auth/next';
-import { POST } from '@/app/api/private-cloud/create/route';
+import { POST } from '@/app/api/private-cloud/products/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivateCloudCreateRequestBody } from '@/schema';

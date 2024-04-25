@@ -1,7 +1,7 @@
 import prisma from '@/core/prisma';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import { getServerSession } from 'next-auth/next';
-import { POST as createRequest } from '@/app/api/private-cloud/create/route';
+import { POST as createRequest } from '@/app/api/private-cloud/products/route';
 import { POST as decisionRequest } from '@/app/api/private-cloud/decision/[licencePlate]/route';
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
@@ -115,7 +115,7 @@ describe('Create Private Cloud Request Route', () => {
     mockedGetServerSession.mockResolvedValue(mockSession);
 
     // Make a create request
-    const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
+    const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/products`, {
       method: 'POST',
       body: JSON.stringify(createRequestBody),
     });

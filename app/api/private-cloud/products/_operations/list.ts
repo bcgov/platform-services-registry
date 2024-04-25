@@ -1,7 +1,7 @@
 import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
 
-export default async function listOp({ session }: { session: Session | null }) {
+export default async function listOp({ session }: { session: Session }) {
   const products = await prisma.privateCloudProject.findMany({
     where: {},
     skip: 0,
