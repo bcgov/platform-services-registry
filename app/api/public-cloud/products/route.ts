@@ -1,18 +1,23 @@
+import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
+import { PermissionsEnum } from '@/types/permissions';
 import createOp from './_operations/create';
 import listOp from './_operations/list';
 
-export async function POST() {
-  const data = await createOp();
-  return OkResponse(data);
-}
+export const POST = createApiHandler({
+  roles: ['user'],
+  permissions: [PermissionsEnum.CreatePublicCloudProducts],
+  validations: { body: PublicCloudCreateRequestBodySchema },
+})(async ({ session, body }) => {
+  const res = await createOp({ session, body });
+  return res;
+});
 
-const apiHandler = createApiHandler({
+export const GET = createApiHandler({
   roles: ['user'],
   validations: {},
-});
-export const GET = apiHandler(async ({ session }) => {
+})(async ({ session }) => {
   const data = await listOp({ session });
   return OkResponse(data);
 });

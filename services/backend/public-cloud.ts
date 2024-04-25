@@ -61,7 +61,7 @@ export async function editPublicCloudProject(licencePlate: string, data: any) {
 }
 
 export async function createPublicCloudProject(data: any) {
-  const result = await instance.post(`public-cloud/create/`, data).then((res) => res.data);
+  const result = await instance.post(`public-cloud/products`, data).then((res) => res.data);
   return result;
 }
 

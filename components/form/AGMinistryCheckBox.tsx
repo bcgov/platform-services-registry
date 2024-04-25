@@ -12,12 +12,12 @@ export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean })
   return (
     <div className="flex items-center">
       <label
-        htmlFor="none"
+        htmlFor="ag-security"
         className={`${formState.errors.isAgMinistryChecked && 'text-red-400'} mt-3 text-sm leading-6 flex select-none`}
       >
         <input
           disabled={disabled}
-          id="none"
+          id="ag-security"
           type="checkbox"
           className="mr-3 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
           {...register('isAgMinistryChecked')}
