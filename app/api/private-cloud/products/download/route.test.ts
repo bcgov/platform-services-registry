@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GET as downloadCsv } from '@/app/api/private-cloud/all-projects/route';
 import { getServerSession } from 'next-auth/next';
 import { MockedFunction } from 'jest-mock';
 import { expect } from '@jest/globals';
@@ -18,12 +17,16 @@ import {
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { createProxyUsers } from '@/queries/users';
+import { POST as downloadCsv } from './route';
 
 const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/private-cloud/all-projects`;
+const API_URL = `${BASE_URL}/api/private-cloud/products/download`;
 
-// Mocking getServerSession
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
+
+const generatePostRequest = (data = {}) => {
+  return new NextRequest(API_URL, { method: 'POST', body: JSON.stringify(data) });
+};
 
 jest.mock('next-auth/next', () => ({
   getServerSession: jest.fn(),
@@ -221,9 +224,7 @@ describe('CSV Download Route', () => {
   test('should return 401 if user is not authenticated', async () => {
     mockedGetServerSession.mockResolvedValue(null);
 
-    const req = new NextRequest(API_URL, {
-      method: 'GET',
-    });
+    const req = generatePostRequest();
     const response = await downloadCsv(req);
     expect(response.status).toBe(401);
   });
@@ -232,8 +233,7 @@ describe('CSV Download Route', () => {
     const mockSession = await generateTestSession('admin.system@gov.bc.ca');
     mockedGetServerSession.mockResolvedValue(mockSession);
 
-    const req = new NextRequest(API_URL, { method: 'GET' });
-
+    const req = generatePostRequest();
     const response = await downloadCsv(req);
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toBe('text/csv');
@@ -243,13 +243,11 @@ describe('CSV Download Route', () => {
     const mockSession = await generateTestSession('admin.system@gov.bc.ca');
     mockedGetServerSession.mockResolvedValue(mockSession);
 
-    // Simulate a request that would result in an empty dataset
-    const req = new NextRequest(
-      `${API_URL}?search=NonExistentSearchTerm&ministry=NonExistentMinsitry&cluster=NonExistentCluster`,
-      {
-        method: 'GET',
-      },
-    );
+    const req = generatePostRequest({
+      search: 'NonExistentSearchTerm',
+      ministry: 'NonExistentMinsitry',
+      cluster: 'NonExistentCluster',
+    });
 
     const response = await downloadCsv(req);
     expect(response.status).toBe(400);
@@ -259,8 +257,11 @@ describe('CSV Download Route', () => {
     const mockSession = await generateTestSession('admin.system@gov.bc.ca');
     mockedGetServerSession.mockResolvedValue(mockSession);
 
-    const req = new NextRequest(`${API_URL}?search=TestProject&ministry=AG&cluster=SILVER&active=true`, {
-      method: 'GET',
+    const req = generatePostRequest({
+      search: 'TestProject',
+      ministry: 'AG',
+      cluster: 'SILVER',
+      includeInactive: false,
     });
 
     const response = await downloadCsv(req);
@@ -283,8 +284,11 @@ describe('CSV Download Route', () => {
     mockedGetServerSession.mockResolvedValue(mockSession);
 
     // Create a request with invalid query parameters
-    const req = new NextRequest(`${API_URL}?search=*&ministry=InvalidMinistry&cluster=InvalidCluster&active=maybe`, {
-      method: 'GET',
+    const req = generatePostRequest({
+      search: '*',
+      ministry: 'InvalidMinistry',
+      cluster: 'InvalidCluster',
+      includeInactive: false,
     });
 
     // Call the downloadCsv function with the request
@@ -297,19 +301,13 @@ describe('CSV Download Route', () => {
     mockedGetServerSession.mockResolvedValue(mockSession);
 
     // Define different combinations of search and filter parameters
-    const testCombinations = [
+    const testData = [
       { search: 'Sample Project', ministry: 'AG', cluster: 'CLAB' },
       { search: 'TestProject', ministry: 'AG', cluster: 'SILVER' },
     ];
 
-    for (const combo of testCombinations) {
-      // Create a new object with only defined properties
-      const definedParams = Object.fromEntries(Object.entries(combo).filter(([_, v]) => v !== undefined));
-
-      // Create query string from the defined parameters
-      const queryParams = new URLSearchParams(definedParams).toString();
-      const req = new NextRequest(`${API_URL}?${queryParams}`, { method: 'GET' });
-
+    for (const tdata of testData) {
+      const req = generatePostRequest(tdata);
       const response = await downloadCsv(req);
       expect(response.status).toBe(200);
 
@@ -318,14 +316,14 @@ describe('CSV Download Route', () => {
 
       // Check if data matches the combination criteria
       records.forEach((record: { name: any; ministry: any; cluster: any }) => {
-        if (combo.search) {
-          expect(record.name).toContain(combo.search);
+        if (tdata.search) {
+          expect(record.name).toContain(tdata.search);
         }
-        if (combo.ministry) {
-          expect(record.ministry).toBe(combo.ministry);
+        if (tdata.ministry) {
+          expect(record.ministry).toBe(tdata.ministry);
         }
-        if (combo.cluster) {
-          expect(record.cluster).toBe(combo.cluster);
+        if (tdata.cluster) {
+          expect(record.cluster).toBe(tdata.cluster);
         }
       });
     }
