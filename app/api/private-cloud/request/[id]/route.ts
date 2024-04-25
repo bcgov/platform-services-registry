@@ -14,7 +14,6 @@ const apiHandler = createApiHandler({
 });
 
 export const GET = apiHandler(async ({ pathParams, session }) => {
-  // it gets LP instead Id
   const { id } = pathParams;
 
   const request = await prisma.privateCloudRequest.findUnique({

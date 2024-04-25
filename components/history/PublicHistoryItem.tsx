@@ -16,8 +16,8 @@ export default function PublicHistoryItem(request: PublicCloudRequest) {
       />
     ),
     <PublicHistorySubItem
-      key={request.requestedProjectId}
-      id={request.requestedProjectId}
+      key={request.id}
+      id={request.id}
       comment={request.requestComment || ''}
       data={request.created}
       type={request.type}

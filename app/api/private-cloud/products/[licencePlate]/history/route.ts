@@ -25,9 +25,5 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     session: session as never,
   });
 
-  if (requests.length < 1) {
-    return NoContent();
-  }
-
   return OkResponse(requests);
 });

@@ -73,8 +73,8 @@ export async function getPublicCloudRequestedProject(id: string) {
   return result;
 }
 
-export async function getPublicCloudRequestsHistory(licencePlate: string): Promise<PublicCloudRequest[]> {
-  const result = await instance.get(`public-cloud/history/${licencePlate}`).then((res) => res.data);
+export async function getPublicCloudProductRequests(licencePlate: string): Promise<PublicCloudRequest[]> {
+  const result = await instance.get(`public-cloud/products/${licencePlate}/requests`).then((res) => res.data);
   return result;
 }
 
