@@ -1,6 +1,7 @@
 import { instance } from './axios';
-import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[licencePlate]/route';
+import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[id]/route';
 import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/route';
+import { PublicCloudProductRequestsGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 import { PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
 import { PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
 import { downloadFile } from '@/utils/file-download';
@@ -64,19 +65,17 @@ export async function createPublicCloudProject(data: any) {
   return result;
 }
 
-export async function getPublicCloudRequest(licencePlate: string, active = false) {
-  const result = await instance.get(`public-cloud/requests/${licencePlate}?active=${active}`).then((res) => res.data);
+export async function getPublicCloudRequest(id: string) {
+  const result = await instance.get(`public-cloud/requests/${id}`).then((res) => res.data);
   return result as PublicCloudRequestGetPayload;
 }
 
-export async function getPublicCloudRequestedProject(id: string) {
-  const result = await instance.get(`public-cloud/requested-project/${id}`).then((res) => res.data);
-  return result;
-}
+export async function getPublicCloudProductRequests(licencePlate: string, active = false) {
+  const result = await instance
+    .get(`public-cloud/products/${licencePlate}/requests?active=${active}`)
+    .then((res) => res.data);
 
-export async function getPublicCloudRequestsHistory(licencePlate: string): Promise<PublicCloudRequest[]> {
-  const result = await instance.get(`public-cloud/history/${licencePlate}`).then((res) => res.data);
-  return result;
+  return result as PublicCloudProductRequestsGetPayload[];
 }
 
 export async function deletePublicCloudProject(licencePlate: string) {

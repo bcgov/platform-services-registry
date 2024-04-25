@@ -42,7 +42,7 @@ export default function PublicHistorySubItem({
         {!isDecision && (
           <Link
             className="text-blue-500 text-right text-sm font-extralight block hover:text-blue-700"
-            href={`/public-cloud/requests/request/${id}`}
+            href={`/public-cloud/requests/${id}`}
           >
             See request page
           </Link>

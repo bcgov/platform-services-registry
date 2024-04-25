@@ -15,8 +15,9 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import { makePublicCloudRequestedDecision, getPublicCloudRequest } from '@/services/backend/public-cloud';
+import { makePublicCloudRequestedDecision, getPublicCloudProductRequests } from '@/services/backend/public-cloud';
 import createClientPage from '@/core/client-page';
+import { PublicCloudProductRequestsGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -28,14 +29,15 @@ const publicCloudProductDecision = createClientPage({
 });
 export default publicCloudProductDecision(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
+  const [activeRequest, setActiveRequest] = useState<PublicCloudProductRequestsGetPayload>();
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
-  const { data: activeRequest, isLoading: isActiveRequestLoading } = useQuery({
-    queryKey: ['activeRequest', licencePlate],
-    queryFn: () => getPublicCloudRequest(licencePlate, true),
+  const { data: activeRequests, isLoading: isActiveRequestsLoading } = useQuery({
+    queryKey: ['activeRequests', licencePlate],
+    queryFn: () => getPublicCloudProductRequests(licencePlate, true),
     enabled: !!licencePlate,
   });
 
@@ -51,6 +53,10 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
       setOpenComment(false);
     },
   });
+
+  useEffect(() => {
+    if (activeRequests && activeRequests.length > 0) setActiveRequest(activeRequests[0]);
+  }, [activeRequests]);
 
   const methods = useForm({
     resolver: zodResolver(PublicCloudDecisionRequestBodySchema),
@@ -74,7 +80,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
     }
   }, [activeRequest]);
 
-  if (isActiveRequestLoading || !activeRequest) {
+  if (isActiveRequestsLoading || !activeRequest) {
     return null;
   }
 

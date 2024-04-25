@@ -1,7 +1,7 @@
 'use client';
 
 import { z } from 'zod';
-import { getPublicCloudRequestsHistory } from '@/services/backend/public-cloud';
+import { getPublicCloudProductRequests } from '@/services/backend/public-cloud';
 import { useQuery } from '@tanstack/react-query';
 import PublicHistoryItem from '@/components/history/PublicHistoryItem';
 import createClientPage from '@/core/client-page';
@@ -24,7 +24,7 @@ export default publicCloudProductHistory(({ pathParams }) => {
     error: requestsError,
   } = useQuery({
     queryKey: ['requests', licencePlate],
-    queryFn: () => getPublicCloudRequestsHistory(licencePlate),
+    queryFn: () => getPublicCloudProductRequests(licencePlate),
     enabled: !!licencePlate,
   });
 

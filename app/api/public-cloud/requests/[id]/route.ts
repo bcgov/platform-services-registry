@@ -7,26 +7,18 @@ import { OkResponse } from '@/core/responses';
 import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
-  licencePlate: z.string(),
-});
-
-const queryParamSchema = z.object({
-  active: z.preprocess(processBoolean, z.boolean()),
+  id: z.string(),
 });
 
 const apiHandler = createApiHandler({
   roles: ['user'],
-  validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
+  validations: { pathParams: pathParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
-  const { licencePlate } = pathParams;
-  const { active } = queryParams;
-
-  const where: Prisma.PublicCloudRequestWhereInput = active ? { active: true } : {};
-  where.licencePlate = licencePlate;
+  const { id } = pathParams;
 
   const request = await prisma.publicCloudRequest.findFirst({
-    where,
+    where: { id },
     include: {
       project: {
         include: {

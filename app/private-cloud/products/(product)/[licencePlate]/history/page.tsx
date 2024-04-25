@@ -1,7 +1,7 @@
 'use client';
 
 import { z } from 'zod';
-import { getPriviateCloudRequestsHistory } from '@/services/backend/private-cloud';
+import { getPriviateCloudProductRequests } from '@/services/backend/private-cloud';
 import { useQuery } from '@tanstack/react-query';
 import HistoryItem from '@/components/history/PrivateHistoryItem';
 import createClientPage from '@/core/client-page';
@@ -24,7 +24,7 @@ export default privateCloudProductHistory(({ pathParams, queryParams, session })
     error: requestsError,
   } = useQuery({
     queryKey: ['requests', licencePlate],
-    queryFn: () => getPriviateCloudRequestsHistory(licencePlate),
+    queryFn: () => getPriviateCloudProductRequests(licencePlate),
     enabled: !!licencePlate,
   });
 

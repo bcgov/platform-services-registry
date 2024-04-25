@@ -14,8 +14,9 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import { makePriviateCloudRequestedDecision, getPriviateCloudRequest } from '@/services/backend/private-cloud';
+import { makePriviateCloudRequestedDecision, getPriviateCloudProductRequests } from '@/services/backend/private-cloud';
 import createClientPage from '@/core/client-page';
+import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -27,14 +28,15 @@ const privateCloudProductDecision = createClientPage({
 });
 export default privateCloudProductDecision(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
+  const [activeRequest, setActiveRequest] = useState<PrivateCloudProductRequestsGetPayload>();
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
-  const { data: activeRequest, isLoading: isActiveRequestLoading } = useQuery({
-    queryKey: ['activeRequest', licencePlate],
-    queryFn: () => getPriviateCloudRequest(licencePlate, true),
+  const { data: activeRequests, isLoading: isActiveRequestsLoading } = useQuery({
+    queryKey: ['activeRequests', licencePlate],
+    queryFn: () => getPriviateCloudProductRequests(licencePlate, true),
     enabled: !!licencePlate,
   });
 
@@ -50,6 +52,10 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
       setOpenReturn(true);
     },
   });
+
+  useEffect(() => {
+    if (activeRequests && activeRequests.length > 0) setActiveRequest(activeRequests[0]);
+  }, [activeRequests]);
 
   const methods = useForm({
     resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
@@ -73,7 +79,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
     }
   }, [activeRequest]);
 
-  if (isActiveRequestLoading || !activeRequest) {
+  if (isActiveRequestsLoading || !activeRequest) {
     return null;
   }
 

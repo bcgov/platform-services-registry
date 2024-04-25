@@ -2,9 +2,9 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
-import { OkResponse } from '@/core/responses';
+import { NoContent, OkResponse } from '@/core/responses';
 import { processBoolean } from '@/utils/zod';
+import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -18,6 +18,7 @@ const apiHandler = createApiHandler({
   roles: ['user'],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
+
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
   const { active } = queryParams;
@@ -25,7 +26,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const where: Prisma.PrivateCloudRequestWhereInput = active ? { active: true } : {};
   where.licencePlate = licencePlate;
 
-  const request = await prisma.privateCloudRequest.findFirst({
+  const requests = await prisma.privateCloudRequest.findMany({
     where,
     include: {
       project: {
@@ -43,12 +44,16 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
         },
       },
     },
+    orderBy: {
+      created: 'desc',
+    },
     session: session as never,
   });
-  return OkResponse(request);
+
+  return OkResponse(requests);
 });
 
-export type PrivateCloudRequestGetPayload = Prisma.PrivateCloudRequestGetPayload<{
+export type PrivateCloudProductRequestsGetPayload = Prisma.PrivateCloudRequestGetPayload<{
   include: {
     project: {
       include: {
