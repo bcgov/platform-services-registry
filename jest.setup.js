@@ -44,6 +44,7 @@ export async function cleanUp() {
   // Delete related documents from referencing models first
   await prisma.privateCloudRequest.deleteMany();
   await prisma.publicCloudRequest.deleteMany();
+  await prisma.privateCloudComment.deleteMany();
 
   // Delete projects
   await prisma.privateCloudProject.deleteMany();
