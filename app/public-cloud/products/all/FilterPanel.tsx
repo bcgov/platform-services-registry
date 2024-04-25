@@ -23,18 +23,23 @@ export default function FilterPanel() {
       pageState.sortKey = '';
       pageState.sortOrder = Prisma.SortOrder.desc;
     }
+
+    pageState.page = 1;
   };
 
   const handleToggleChange = () => {
     pageState.includeInactive = !pageSnapshot.includeInactive;
+    pageState.page = 1;
   };
 
   const handleProviderChange = (value: string) => {
     pageState.provider = value;
+    pageState.page = 1;
   };
 
   const handleMinistryChange = (value: string) => {
     pageState.ministry = value;
+    pageState.page = 1;
   };
 
   const clearFilters = () => {
