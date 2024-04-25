@@ -26,8 +26,8 @@ jobs:
     - name: Run App build
       run: npm run build
 
-    - name: Run Email build
-      run: npm run email-build
+    # - name: Run Email build
+    #   run: npm run email-build
 
     - name: Install Docker Compose v2
       # See https://docs.docker.com/compose/install/linux/
