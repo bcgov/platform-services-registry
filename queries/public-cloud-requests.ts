@@ -1,17 +1,21 @@
 import { $Enums, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
+import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
 
-export async function searchActivePublicCloudRequests({
+const defaultSortKey = 'updatedAt';
+
+export async function searchPublicCloudRequests({
   session,
   skip,
   take,
   ministry,
   provider,
   search,
-  sortKey = 'updatedAt',
-  sortOrder = 'desc',
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
+  extraFilter,
 }: {
   session: Session;
   skip: number;
@@ -21,6 +25,7 @@ export async function searchActivePublicCloudRequests({
   search?: string;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
+  extraFilter?: Prisma.PublicCloudRequestWhereInput;
 }) {
   const requestedProjectwhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
 
@@ -28,6 +33,8 @@ export async function searchActivePublicCloudRequests({
     sortKey === 'updatedAt'
       ? { updatedAt: Prisma.SortOrder[sortOrder] }
       : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
+
+  if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
@@ -59,13 +66,8 @@ export async function searchActivePublicCloudRequests({
     select: { id: true },
   });
 
-  const where: Prisma.PublicCloudRequestWhereInput = {
-    active: true,
-  };
-
-  if (matchingRequestedPublicProjects.length > 0) {
-    where.userRequestedProjectId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
-  }
+  const where: Prisma.PublicCloudRequestWhereInput = extraFilter ?? {};
+  where.userRequestedProjectId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
 
   const [docs, totalCount] = await Promise.all([
     prisma.publicCloudRequest.findMany({
@@ -91,3 +93,19 @@ export async function searchActivePublicCloudRequests({
   ]);
   return { docs, totalCount };
 }
+
+export type PublicCloudRequestSearchPayload = {
+  docs: (Prisma.PublicCloudRequestGetPayload<{
+    include: {
+      userRequestedProject: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+    };
+  }> &
+    PublicCloudRequestDecorate)[];
+  totalCount: number;
+};

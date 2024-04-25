@@ -10,7 +10,7 @@ export interface ITab {
   ignoreSegments?: number;
 }
 
-export default function Tabs({ tabs, children }: { tabs: ITab[]; children?: React.ReactNode }) {
+export default function BasicTabs({ tabs, children }: { tabs: ITab[]; children?: React.ReactNode }) {
   const pathname = usePathname();
 
   return (

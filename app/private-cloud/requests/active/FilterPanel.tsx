@@ -1,56 +1,43 @@
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSnapshot, subscribe } from 'valtio';
+import { $Enums, Prisma } from '@prisma/client';
 import { clusters, ministriesNames, providers, productSorts } from '@/constants';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { capitalizeFirstLetter } from '@/utils/string';
+import { pageState } from './state';
 
 export default function FilterPanel() {
-  const [showInactive, setShowInactive] = useState(false);
-  const { replace } = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams()!;
+  const pageSnapshot = useSnapshot(pageState);
   const clusterProviderRef = useRef<HTMLSelectElement>(null);
   const ministryRef = useRef<HTMLSelectElement>(null);
   const sortRef = useRef<HTMLSelectElement>(null);
-  const currentClusterProvider = pathname.includes('private') ? 'cluster' : 'provider';
-  const currentClusterProviderList = pathname.includes('private') ? clusters : providers;
-  const isRequests = pathname.includes('/requests');
-  const toggleText = isRequests ? 'Only Show Pending Requests' : 'Show Deleted Products';
-  const urlSearchParams = new URLSearchParams(searchParams?.toString());
-
-  const handleFilterChange = (name: string, value: string | null) => {
-    if (value) {
-      urlSearchParams.set(name, value);
-    } else {
-      urlSearchParams.delete(name);
-    }
-    urlSearchParams.delete('page');
-
-    replace(`${pathname}?${urlSearchParams.toString()}`);
-  };
+  const toggleText = 'Show Resolved Requests';
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = productSorts.find(
       (privateSortName) => privateSortName.humanFriendlyName === event.target.value,
     );
     if (selectedOption) {
-      urlSearchParams.set('sortKey', selectedOption.sortKey);
-      urlSearchParams.set('sortOrder', selectedOption.sortOrder);
+      pageState.sortKey = selectedOption.sortKey;
+      pageState.sortOrder = selectedOption.sortOrder;
     } else {
-      urlSearchParams.delete('sortKey');
-      urlSearchParams.delete('sortOrder');
+      pageState.sortKey = '';
+      pageState.sortOrder = Prisma.SortOrder.desc;
     }
-    replace(`${pathname}?${urlSearchParams.toString()}`);
   };
 
   const handleToggleChange = () => {
-    setShowInactive(!showInactive);
-    handleFilterChange('active', String(showInactive));
+    pageState.includeInactive = !pageSnapshot.includeInactive;
+  };
+
+  const handleClusterChange = (value: string) => {
+    pageState.cluster = value;
+  };
+
+  const handleMinistryChange = (value: string) => {
+    pageState.ministry = value;
   };
 
   const clearFilters = () => {
-    urlSearchParams.delete(currentClusterProvider);
-    urlSearchParams.delete('ministry');
-    urlSearchParams.delete('sortKey');
     if (clusterProviderRef.current) {
       clusterProviderRef.current.value = '';
     }
@@ -60,9 +47,12 @@ export default function FilterPanel() {
     if (sortRef.current) {
       sortRef.current.value = '';
     }
-    replace(`${pathname}?${urlSearchParams.toString()}`);
 
-    setShowInactive(false);
+    pageState.cluster = '';
+    pageState.ministry = '';
+    pageState.sortKey = '';
+    pageState.sortOrder = '';
+    pageState.includeInactive = false;
   };
 
   return (
@@ -78,11 +68,14 @@ export default function FilterPanel() {
               id="sort"
               name="sort"
               autoComplete="sort-name"
-              defaultValue={productSorts[0].humanFriendlyName}
+              defaultValue={
+                productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
+                  ?.humanFriendlyName
+              }
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               onChange={handleSortChange}
             >
-              <option selected={true} disabled value="">
+              <option disabled value="">
                 Sort By
               </option>
               {productSorts.map((privateSortName) => (
@@ -95,22 +88,20 @@ export default function FilterPanel() {
         </fieldset>
         <fieldset className="w-full md:w-48 2xl:w-96">
           <div className="mt-2 md:mt-0 md:ml-4">
-            <label htmlFor={currentClusterProvider} className="block text-sm font-medium leading-6 text-gray-900">
-              {capitalizeFirstLetter(currentClusterProvider)}
+            <label htmlFor="cluster" className="block text-sm font-medium leading-6 text-gray-900">
+              {capitalizeFirstLetter('cluster')}
             </label>
             <select
               ref={clusterProviderRef}
-              defaultValue=""
-              id={currentClusterProvider}
-              name={currentClusterProvider}
+              defaultValue={pageSnapshot.cluster}
+              id="cluster"
+              name="cluster"
               autoComplete="cluster-name"
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={(e) => handleFilterChange(currentClusterProvider, e.target.value)}
+              onChange={(e) => handleClusterChange(e.target.value)}
             >
-              <option selected={true} value="">
-                All {capitalizeFirstLetter(currentClusterProvider)}s
-              </option>
-              {currentClusterProviderList.map((item) => (
+              <option value="">All {capitalizeFirstLetter('cluster')}s</option>
+              {clusters.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
@@ -128,13 +119,11 @@ export default function FilterPanel() {
               id="ministry"
               name="ministry"
               autoComplete="ministry-name"
-              defaultValue=""
+              defaultValue={pageSnapshot.ministry}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={(e) => handleFilterChange('ministry', e.target.value)}
+              onChange={(e) => handleMinistryChange(e.target.value)}
             >
-              <option selected={true} value="">
-                All Ministries
-              </option>
+              <option value="">All Ministries</option>
               {ministriesNames.map((ministry) => (
                 <option key={ministry.id} value={ministry.name}>
                   {ministry.humanFriendlyName}
@@ -149,18 +138,18 @@ export default function FilterPanel() {
             type="checkbox"
             name="autoSaver"
             className="sr-only"
-            checked={showInactive}
+            checked={pageSnapshot.includeInactive}
             onChange={handleToggleChange}
             defaultValue={'true'}
           />
           <span
             className={`slider mr-3 flex h-[26px] w-[50px] items-center rounded-full p-1 duration-200 ${
-              showInactive ? 'bg-bcblue' : 'bg-[#CCCCCE]'
+              pageSnapshot.includeInactive ? 'bg-bcblue' : 'bg-[#CCCCCE]'
             }`}
           >
             <span
               className={`dot h-[18px] w-[18px] rounded-full bg-white duration-200 ${
-                showInactive ? 'translate-x-6' : ''
+                pageSnapshot.includeInactive ? 'translate-x-6' : ''
               }`}
             />
           </span>
@@ -168,7 +157,7 @@ export default function FilterPanel() {
         </label>
         <div className="mt-8 md:mt-7 md:ml-4">
           <button
-            className="min-w-max w-1/2 h-9 inline-flex items-center justify-center gap-x-2 rounded-md bg-bcblue text-white px-3 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset transition-all duration-500 ring-gray-300 hover:bg-[#CCCCCE]"
+            className="min-w-max w-1/2 h-9 inline-flex items-center justify-center gap-x-2 rounded-md bg-bcblue text-white px-3 text-sm font-semibold shadow-sm ring-1 ring-inset transition-all duration-500 ring-gray-300 hover:bg-[#CCCCCE]"
             onClick={clearFilters}
           >
             Clear Filters

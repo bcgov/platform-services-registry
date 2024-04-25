@@ -1,6 +1,6 @@
 import { useSnapshot, subscribe } from 'valtio';
 import { $Enums, Prisma } from '@prisma/client';
-import { ministriesNames, providers, privateSortNames } from '@/constants';
+import { ministriesNames, providers, productSorts } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
 import { capitalizeFirstLetter } from '@/utils/string';
 import { pageState } from './state';
@@ -13,7 +13,7 @@ export default function FilterPanel() {
   const toggleText = 'Show Deleted Products';
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = privateSortNames.find(
+    const selectedOption = productSorts.find(
       (privateSortName) => privateSortName.humanFriendlyName === event.target.value,
     );
     if (selectedOption) {
@@ -69,9 +69,8 @@ export default function FilterPanel() {
               name="sort"
               autoComplete="sort-name"
               defaultValue={
-                privateSortNames.find(
-                  (v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder,
-                )?.humanFriendlyName
+                productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
+                  ?.humanFriendlyName
               }
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               onChange={handleSortChange}
@@ -79,7 +78,7 @@ export default function FilterPanel() {
               <option disabled value="">
                 Sort By
               </option>
-              {privateSortNames.map((privateSortName) => (
+              {productSorts.map((privateSortName) => (
                 <option key={privateSortName.sortKey} value={privateSortName.humanFriendlyName}>
                   {privateSortName.humanFriendlyName}
                 </option>

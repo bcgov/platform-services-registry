@@ -2,6 +2,7 @@ import { instance } from './axios';
 import { PublicCloudActiveRequestGetPayload } from '@/app/api/public-cloud/active-request/[licencePlate]/route';
 import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/project/[licencePlate]/route';
 import { PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
+import { PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
 import { downloadFile } from '@/utils/file-download';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
 import { PublicCloudRequest } from '@prisma/client';
@@ -86,4 +87,12 @@ export async function deletePublicCloudProject(licencePlate: string) {
 export async function makePublicCloudRequestedDecision(licencePlate: string, data: any) {
   const result = await instance.post(`public-cloud/decision/${licencePlate}`, data).then((res) => res.data);
   return result;
+}
+
+export async function searchPublicCloudRequests(data: PublicCloudProductSearchCriteria) {
+  const result = await instance.post(`public-cloud/requests/search`, data).then((res) => {
+    return res.data;
+  });
+
+  return result as PublicCloudRequestSearchPayload;
 }

@@ -2,18 +2,13 @@
 
 import { useEffect } from 'react';
 import { z } from 'zod';
-import { proxy, useSnapshot } from 'valtio';
 import { ToastContainer } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
-import Tabs, { ITab } from '@/components/generic/Tabs';
+import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import { getPublicCloudProject } from '@/services/backend/public-cloud';
-import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/project/[licencePlate]/route';
-
-export const productState = proxy<{ currentProduct: PublicCloudProjectGetPayload | undefined }>({
-  currentProduct: undefined,
-});
+import { productState } from './state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

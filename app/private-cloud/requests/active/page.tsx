@@ -1,62 +1,62 @@
-import { z } from 'zod';
-import Table from '@/components/table/Table';
-import NewTableBody from '@/components/table/TableBodyProducts';
+'use client';
+
+import { proxy, useSnapshot } from 'valtio';
+import { useQuery } from '@tanstack/react-query';
+import createClientPage from '@/core/client-page';
+import Table from '@/components/generic/table/Table';
+import TableBody from '@/components/table/TableBodyProducts';
 import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
-import { parsePaginationParams } from '@/helpers/pagination';
-import { searchActivePrivateCloudRequests } from '@/queries/private-cloud-requests';
-import createServerPage from '@/core/server-page';
-import { Session } from 'next-auth';
+import { searchPriviateCloudRequests } from '@/services/backend/private-cloud';
+import FilterPanel from './FilterPanel';
+import { pageState } from './state';
 
-const queryParamSchema = z.object({
-  search: z.string().optional(),
-  page: z.string().optional(),
-  pageSize: z.string().optional(),
-  ministry: z.string().optional(),
-  cluster: z.string().optional(),
-  sortKey: z.string().optional(),
-  sortOrder: z.enum(['asc', 'desc']).optional(),
-});
-
-const privateCloudActiveRequests = createServerPage({
+const privateCloudRequests = createClientPage({
   roles: ['user'],
-  fallbackUrl: '/login?callbackUrl=/private-cloud/products',
-  validations: { queryParams: queryParamSchema },
+  fallbackUrl: '/login?callbackUrl=/private-cloud/products/all',
 });
-export default privateCloudActiveRequests(async ({ pathParams, queryParams, session }) => {
-  const { search, page: pageStr, pageSize: pageSizeStr, ministry, cluster, sortKey, sortOrder } = queryParams;
+export default privateCloudRequests(({ pathParams, queryParams, session }) => {
+  const snap = useSnapshot(pageState);
 
-  const { page, skip, take } = parsePaginationParams(pageStr ?? '', pageSizeStr ?? '', 10);
-
-  const { docs, totalCount } = await searchActivePrivateCloudRequests({
-    session: session as Session,
-    skip,
-    take,
-    ministry,
-    cluster,
-    search,
-    sortKey,
-    sortOrder,
+  const { data, isLoading } = useQuery({
+    queryKey: ['requests', snap],
+    queryFn: () => searchPriviateCloudRequests(snap),
   });
 
-  const transformActiveRequests = docs.map((request) => ({
-    ...request.userRequestedProject,
-    created: request.created,
-    updatedAt: request.updatedAt,
-    requests: [request],
-    id: request.id,
-  }));
+  let requests = [];
+  let totalCount = 0;
 
-  const activeRequests = transformActiveRequests.map(privateCloudProjectDataToRow);
+  if (!isLoading && data) {
+    const transformActiveRequests = data.docs.map((request) => ({
+      ...request.userRequestedProject,
+      created: request.created,
+      updatedAt: request.updatedAt,
+      requests: [request],
+      id: request.id,
+    }));
+
+    requests = transformActiveRequests.map(privateCloudProjectDataToRow);
+    totalCount = data.totalCount;
+  }
 
   return (
     <Table
       title="Products in Private Cloud OpenShift Platform"
       description="Products with pending requests currently under admin review."
-      tableBody={<NewTableBody rows={activeRequests} isLoading={false} />}
-      total={totalCount}
-      currentPage={page}
-      pageSize={take}
-      apiContext="private-cloud"
-    />
+      totalCount={totalCount}
+      page={snap.page}
+      pageSize={snap.pageSize}
+      search={snap.search}
+      onPagination={(page: number, pageSize: number) => {
+        pageState.page = page;
+        pageState.pageSize = pageSize;
+      }}
+      onSearch={(searchTerm: string) => {
+        pageState.page = 1;
+        pageState.search = searchTerm;
+      }}
+      filters={<FilterPanel />}
+    >
+      <TableBody rows={requests} isLoading={isLoading} />
+    </Table>
   );
 });

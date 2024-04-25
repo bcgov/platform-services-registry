@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
-import Tabs, { ITab } from '@/components/generic/Tabs';
+import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import { getPriviateCloudProject } from '@/services/backend/private-cloud';
 import { productState } from './state';
 

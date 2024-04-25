@@ -1,17 +1,21 @@
 import { $Enums, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
+import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
 
-export async function searchActivePrivateCloudRequests({
+const defaultSortKey = 'updatedAt';
+
+export async function searchPrivateCloudRequests({
   session,
   skip,
   take,
   ministry,
   cluster,
   search,
-  sortKey = 'updatedAt',
-  sortOrder = 'desc',
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
+  extraFilter,
 }: {
   session: Session;
   skip: number;
@@ -21,6 +25,7 @@ export async function searchActivePrivateCloudRequests({
   search?: string;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
+  extraFilter?: Prisma.PrivateCloudRequestWhereInput;
 }) {
   const requestedProjectwhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
 
@@ -28,6 +33,8 @@ export async function searchActivePrivateCloudRequests({
     sortKey === 'updatedAt'
       ? { updatedAt: Prisma.SortOrder[sortOrder] }
       : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
+
+  if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
@@ -59,13 +66,8 @@ export async function searchActivePrivateCloudRequests({
     select: { id: true },
   });
 
-  const where: Prisma.PrivateCloudRequestWhereInput = {
-    active: true,
-  };
-
-  if (matchingRequestedPrivateProjects.length > 0) {
-    where.userRequestedProjectId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
-  }
+  const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
+  where.userRequestedProjectId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
 
   const [docs, totalCount] = await Promise.all([
     prisma.privateCloudRequest.findMany({
@@ -92,3 +94,19 @@ export async function searchActivePrivateCloudRequests({
 
   return { docs, totalCount };
 }
+
+export type PrivateCloudRequestSearchPayload = {
+  docs: (Prisma.PrivateCloudRequestGetPayload<{
+    include: {
+      userRequestedProject: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+    };
+  }> &
+    PrivateCloudRequestDecorate)[];
+  totalCount: number;
+};
