@@ -12,7 +12,7 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 
-export const GET = apiHandler(async ({ pathParams }) => {
+export const GET = apiHandler(async ({ pathParams, session }) => {
   const { id } = pathParams;
 
   const request = await prisma.publicCloudRequestedProject.findUnique({
@@ -25,10 +25,11 @@ export const GET = apiHandler(async ({ pathParams }) => {
       secondaryTechnicalLead: true,
       expenseAuthority: true,
     },
+    session: session as never,
   });
 
   if (!request) {
-    return NotFoundResponse('No project found with this id.');
+    return NotFoundResponse('No requested project found with this id.');
   }
 
   return OkResponse(request);
