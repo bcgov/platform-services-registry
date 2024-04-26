@@ -1,6 +1,6 @@
 import { instance } from './axios';
 import { PrivateCloudRequestGetPayload } from '@/app/api/private-cloud/requests/[id]/route';
-import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/route';
+import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/products/_operations/read';
 import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import { PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
 import { PrivateCloudRequestSearchPayload } from '@/queries/private-cloud-requests';
@@ -95,7 +95,7 @@ export async function getPriviateCloudProject(licencePlate: string) {
 }
 
 export async function editPriviateCloudProject(licencePlate: string, data: any) {
-  const result = await instance.post(`private-cloud/edit/${licencePlate}`, data).then((res) => res.data);
+  const result = await instance.put(`private-cloud/products/${licencePlate}`, data).then((res) => res.data);
   return result;
 }
 

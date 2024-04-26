@@ -1,56 +1,29 @@
-import { NotFoundResponse, OkResponse } from '@/core/responses';
-import { Prisma } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
+import { PublicCloudEditRequestBodySchema } from '@/schema';
+import readOp from '../_operations/read';
+import updateOp from '../_operations/update';
 
-const pathParamSchema = z.object({
+export const getPathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const apiHandler = createApiHandler({
+export const GET = createApiHandler({
   roles: ['user'],
-  validations: { pathParams: pathParamSchema },
-});
-export const GET = apiHandler(async ({ pathParams, session }) => {
-  const { licencePlate } = pathParams;
-
-  const project = await prisma.publicCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      requests: {
-        where: {
-          active: true,
-        },
-      },
-    },
-    session: session as never,
-  });
-
-  if (!project) {
-    return NotFoundResponse('No project found for this licence plate.');
-  }
-
-  return OkResponse(project);
+  validations: { pathParams: getPathParamSchema },
+})(async ({ pathParams, session }) => {
+  const response = await readOp({ session, pathParams });
+  return response;
 });
 
-export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    requests: {
-      where: {
-        active: true;
-      };
-    };
-  };
-}> &
-  PublicCloudProjectDecorate;
+export const putPathParamSchema = z.object({
+  licencePlate: z.string(),
+});
+
+export const PUT = createApiHandler({
+  roles: ['user'],
+  validations: { pathParams: putPathParamSchema, body: PublicCloudEditRequestBodySchema },
+})(async ({ pathParams, body, session }) => {
+  const response = await updateOp({ session, body, pathParams });
+  return response;
+});
