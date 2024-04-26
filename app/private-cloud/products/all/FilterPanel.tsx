@@ -3,6 +3,7 @@ import { $Enums, Prisma } from '@prisma/client';
 import { clusters, ministriesNames, providers, productSorts } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
 import FormSelect from '@/components/generic/select/FormSelect';
+import FormToggle from '@/components/generic/checkbox/FormToggle';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -102,28 +103,12 @@ export default function FilterPanel() {
           </div>
         </fieldset>
         <div></div>
-        <label className="cursor-pointer select-none flex flex-row items-center mt-8 md:mt-7 md:ml-4">
-          <input
-            type="checkbox"
-            name="autoSaver"
-            className="sr-only"
-            checked={pageSnapshot.includeInactive}
-            onChange={handleToggleChange}
-            defaultValue={'true'}
-          />
-          <span
-            className={`slider mr-3 flex h-[26px] w-[50px] items-center rounded-full p-1 duration-200 ${
-              pageSnapshot.includeInactive ? 'bg-bcblue' : 'bg-[#CCCCCE]'
-            }`}
-          >
-            <span
-              className={`dot h-[18px] w-[18px] rounded-full bg-white duration-200 ${
-                pageSnapshot.includeInactive ? 'translate-x-6' : ''
-              }`}
-            />
-          </span>
-          <span className="block text-sm font-medium leading-6 text-gray-900">{toggleText}</span>
-        </label>
+        <FormToggle
+          id="includeInactive"
+          label={toggleText}
+          checked={pageSnapshot.includeInactive}
+          onChange={handleToggleChange}
+        />
         <div className="mt-8 md:mt-7 md:ml-4">
           <button
             className="min-w-max w-1/2 h-9 inline-flex items-center justify-center gap-x-2 rounded-md bg-bcblue text-white px-3 text-sm font-semibold shadow-sm ring-1 ring-inset transition-all duration-500 ring-gray-300 hover:bg-[#CCCCCE]"
