@@ -13,6 +13,7 @@ const defaultValue = {
   totalCount: 0,
   search: '',
   onPagination: (page: number, pageSize: number) => {},
+  isLoading: false,
 };
 
 const TableContext = createContext(defaultValue);
@@ -28,6 +29,7 @@ export default function Table({
   onSearch,
   onExport,
   filters,
+  isLoading = false,
   children,
 }: {
   title: string;
@@ -40,6 +42,7 @@ export default function Table({
   onSearch?: (search: string) => void;
   onExport?: () => void;
   filters?: React.ReactNode;
+  isLoading?: boolean;
   children: React.ReactNode;
 }) {
   const state = useRef(proxy({ ...defaultValue })).current;
@@ -50,7 +53,8 @@ export default function Table({
     state.totalCount = totalCount;
     state.search = search;
     state.onPagination = onPagination;
-  }, [state, page, pageSize, totalCount, search, onPagination]);
+    state.isLoading = isLoading;
+  }, [state, page, pageSize, totalCount, search, onPagination, isLoading]);
 
   return (
     <TableContext.Provider value={state}>

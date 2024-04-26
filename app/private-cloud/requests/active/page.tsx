@@ -55,6 +55,7 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
         pageState.search = searchTerm;
       }}
       filters={<FilterPanel />}
+      isLoading={isLoading}
     >
       <TableBody rows={requests} isLoading={isLoading} />
     </Table>
