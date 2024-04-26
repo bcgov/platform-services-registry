@@ -53,6 +53,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
           if (!result) pageState.showDownloadAlert = true;
         }}
         filters={<FilterPanel />}
+        isLoading={isLoading}
       >
         <TableBody rows={products} isLoading={isLoading} />
       </Table>

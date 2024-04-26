@@ -17,21 +17,25 @@ export default function Pagination() {
 
   return (
     <div className="flex items-center justify-between">
-      <div className="">
-        {snap.totalCount == 0 ? (
-          <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
-        ) : snap.totalCount < snap.pageSize * snap.page ? (
-          <p className="text-sm text-gray-700">
-            Showing <span>{snap.pageSize * (snap.page - 1) + 1}</span> to <span>{snap.totalCount}</span> of{' '}
-            <span>{snap.totalCount}</span> results
-          </p>
-        ) : (
-          <p className="text-sm text-gray-700">
-            Showing <span>{snap.pageSize * (snap.page - 1) + 1}</span> to <span>{snap.pageSize * snap.page}</span> of{' '}
-            <span>{snap.totalCount}</span> results
-          </p>
-        )}
-      </div>
+      {snap.isLoading ? (
+        <div></div>
+      ) : (
+        <div className="">
+          {snap.totalCount == 0 ? (
+            <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
+          ) : snap.totalCount < snap.pageSize * snap.page ? (
+            <p className="text-sm text-gray-700">
+              Showing <span>{snap.pageSize * (snap.page - 1) + 1}</span> to <span>{snap.totalCount}</span> of{' '}
+              <span>{snap.totalCount}</span> results
+            </p>
+          ) : (
+            <p className="text-sm text-gray-700">
+              Showing <span>{snap.pageSize * (snap.page - 1) + 1}</span> to <span>{snap.pageSize * snap.page}</span> of{' '}
+              <span>{snap.totalCount}</span> results
+            </p>
+          )}
+        </div>
+      )}
       <div className="flex flex-1 justify-between sm:justify-end">
         <span>Rows per page: </span>
         <select
