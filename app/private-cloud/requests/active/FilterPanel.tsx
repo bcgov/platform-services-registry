@@ -2,7 +2,7 @@ import { useSnapshot, subscribe } from 'valtio';
 import { $Enums, Prisma } from '@prisma/client';
 import { clusters, ministriesNames, providers, productSorts } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
-import { capitalizeFirstLetter } from '@/utils/string';
+import FormSelect from '@/components/generic/select/FormSelect';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -12,10 +12,8 @@ export default function FilterPanel() {
   const sortRef = useRef<HTMLSelectElement>(null);
   const toggleText = 'Show Resolved Requests';
 
-  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = productSorts.find(
-      (privateSortName) => privateSortName.humanFriendlyName === event.target.value,
-    );
+  const handleSortChange = (value: string) => {
+    const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);
     if (selectedOption) {
       pageState.sortKey = selectedOption.sortKey;
       pageState.sortOrder = selectedOption.sortOrder;
@@ -59,77 +57,43 @@ export default function FilterPanel() {
     <div className="flex gap-8 mr-10">
       <div className="grid auto-rows-min grid-cols-1 gap-y-8 md:grid-cols-3 md:gap-x-6">
         <fieldset className="w-full md:w-48 2xl:w-96">
-          <div className="">
-            <label htmlFor="sort" className="block text-sm font-medium leading-6 text-gray-900">
-              Sort By
-            </label>
-            <select
-              ref={sortRef}
-              id="sort"
-              name="sort"
-              autoComplete="sort-name"
-              defaultValue={
-                productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
-                  ?.humanFriendlyName
-              }
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={handleSortChange}
-            >
-              <option disabled value="">
-                Sort By
-              </option>
-              {productSorts.map((privateSortName) => (
-                <option key={privateSortName.sortKey} value={privateSortName.humanFriendlyName}>
-                  {privateSortName.humanFriendlyName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <FormSelect
+            ref={sortRef}
+            id="id"
+            label="Sort By"
+            options={productSorts.map((v) => ({ label: v.humanFriendlyName, value: v.humanFriendlyName }))}
+            defaultValue={
+              productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
+                ?.humanFriendlyName
+            }
+            onChange={handleSortChange}
+          />
         </fieldset>
         <fieldset className="w-full md:w-48 2xl:w-96">
           <div className="mt-2 md:mt-0 md:ml-4">
-            <label htmlFor="cluster" className="block text-sm font-medium leading-6 text-gray-900">
-              {capitalizeFirstLetter('cluster')}
-            </label>
-            <select
+            <FormSelect
               ref={clusterProviderRef}
-              defaultValue={pageSnapshot.cluster}
               id="cluster"
-              name="cluster"
-              autoComplete="cluster-name"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={(e) => handleClusterChange(e.target.value)}
-            >
-              <option value="">All {capitalizeFirstLetter('cluster')}s</option>
-              {clusters.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
+              label="Cluster"
+              options={[{ label: 'All Clusters', value: '' }, ...clusters.map((v) => ({ label: v, value: v }))]}
+              defaultValue={pageSnapshot.cluster}
+              onChange={handleClusterChange}
+            />
           </div>
         </fieldset>
         <fieldset className="w-full md:w-48 2xl:w-96">
           <div className="mt-2 md:mt-0 md:ml-4">
-            <label htmlFor="ministry" className="block text-sm font-medium leading-6 text-gray-900">
-              Ministry
-            </label>
-            <select
+            <FormSelect
               ref={ministryRef}
               id="ministry"
-              name="ministry"
-              autoComplete="ministry-name"
+              label="Ministry"
+              options={[
+                { label: `All Ministries`, value: '' },
+                ...ministriesNames.map((v) => ({ label: v.humanFriendlyName, value: v.name })),
+              ]}
               defaultValue={pageSnapshot.ministry}
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={(e) => handleMinistryChange(e.target.value)}
-            >
-              <option value="">All Ministries</option>
-              {ministriesNames.map((ministry) => (
-                <option key={ministry.id} value={ministry.name}>
-                  {ministry.humanFriendlyName}
-                </option>
-              ))}
-            </select>
+              onChange={handleMinistryChange}
+            />
           </div>
         </fieldset>
         <div></div>
