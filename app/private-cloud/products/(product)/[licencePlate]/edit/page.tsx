@@ -16,11 +16,7 @@ import CommonComponents from '@/components/form/CommonComponents';
 import { PrivateCloudProject } from '@prisma/client';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
-import {
-  getPriviateCloudProject,
-  getPriviateCloudRequest,
-  editPriviateCloudProject,
-} from '@/services/backend/private-cloud';
+import { getPriviateCloudProject, editPriviateCloudProject } from '@/services/backend/private-cloud/products';
 import { useSnapshot } from 'valtio';
 import createClientPage from '@/core/client-page';
 import { productState } from '../state';

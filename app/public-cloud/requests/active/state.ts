@@ -1,6 +1,6 @@
 import { $Enums, Prisma } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
-import { PublicCloudProductSearchCriteria } from '@/services/backend/public-cloud';
+import { PublicCloudProductSearchCriteria } from '@/services/backend/public-cloud/products';
 
 export const pageState = proxy<PublicCloudProductSearchCriteria>({
   search: '',

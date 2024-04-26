@@ -6,7 +6,7 @@ import createClientPage from '@/core/client-page';
 import Table from '@/components/generic/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
 import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
-import { searchPriviateCloudProducts, downloadPriviateCloudProducts } from '@/services/backend/private-cloud';
+import { searchPriviateCloudProducts, downloadPriviateCloudProducts } from '@/services/backend/private-cloud/products';
 import AlertBox from '@/components/modal/AlertBox';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';

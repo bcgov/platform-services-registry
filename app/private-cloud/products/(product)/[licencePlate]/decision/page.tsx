@@ -14,7 +14,10 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import { makePriviateCloudRequestedDecision, getPriviateCloudProductRequests } from '@/services/backend/private-cloud';
+import {
+  makePriviateCloudRequestDecision,
+  getPriviateCloudProductRequests,
+} from '@/services/backend/private-cloud/products';
 import createClientPage from '@/core/client-page';
 import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 
@@ -46,7 +49,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
     isError: isDecisionError,
     error: decisionError,
   } = useMutation({
-    mutationFn: (data: any) => makePriviateCloudRequestedDecision(licencePlate, data),
+    mutationFn: (data: any) => makePriviateCloudRequestDecision(licencePlate, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);

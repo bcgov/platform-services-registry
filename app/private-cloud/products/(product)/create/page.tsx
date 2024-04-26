@@ -11,7 +11,7 @@ import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
-import { createPriviateCloudProject } from '@/services/backend/private-cloud';
+import { createPriviateCloudProject } from '@/services/backend/private-cloud/products';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
 import createClientPage from '@/core/client-page';

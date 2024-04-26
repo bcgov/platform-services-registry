@@ -9,7 +9,7 @@ import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
-import { getPublicCloudRequest } from '@/services/backend/public-cloud';
+import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { PublicCloudDecisionRequestBodySchema } from '@/schema';
 import createClientPage from '@/core/client-page';
 

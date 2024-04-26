@@ -16,7 +16,7 @@ import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import { AGMinistries } from '@/constants';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
-import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud';
+import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { useSnapshot } from 'valtio';
 import createClientPage from '@/core/client-page';
 import { productState } from '../state';

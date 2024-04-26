@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import classNames from '@/utils/classnames';
-import { getPublicCloudProject } from '@/services/backend/public-cloud';
+import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
 
 export default function PublicCloudDeleteModal({
   open,

@@ -2,7 +2,7 @@ import prisma from '@/core/prisma';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
-import { POST as decisionRequest } from '@/app/api/private-cloud/decision/[licencePlate]/route';
+import { POST as decisionRequest } from '@/app/api/private-cloud/products/[licencePlate]/decision/route';
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';

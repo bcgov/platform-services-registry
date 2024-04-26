@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { createPrivateCloudComment } from '@/services/backend/private-cloud';
+import { createPrivateCloudComment } from '@/services/backend/private-cloud/products';
 
 interface CommentFormProps {
   licencePlate: string;

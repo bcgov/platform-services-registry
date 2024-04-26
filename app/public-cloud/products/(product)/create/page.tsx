@@ -14,7 +14,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
-import { createPublicCloudProject } from '@/services/backend/public-cloud';
+import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { AGMinistries } from '@/constants';
 import { z } from 'zod';
 import createClientPage from '@/core/client-page';

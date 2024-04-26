@@ -4,21 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import classNames from '@/utils/classnames';
-import { getPriviateCloudProject } from '@/services/backend/private-cloud';
-
-async function fetchDeleteCheckResult(licencePlate: string) {
-  const res = await fetch(`/api/private-cloud/deletion-check/${licencePlate}`, {
-    cache: 'no-store',
-  });
-
-  if (!res.ok) {
-    throw new Error('Network response was not ok for deletion check');
-  }
-
-  const data = await res.json();
-
-  return data;
-}
+import {
+  getPriviateCloudProject,
+  checkPriviateCloudProductDeletionAvailability,
+} from '@/services/backend/private-cloud/products';
 
 export default function PrivateCloudDeleteModal({
   open,
@@ -44,7 +33,7 @@ export default function PrivateCloudDeleteModal({
       const fetchDeletionCheck = async () => {
         try {
           setIsLoading(true);
-          const data = await fetchDeleteCheckResult(params.licencePlate as string);
+          const data = await checkPriviateCloudProductDeletionAvailability(params.licencePlate as string);
           setDeletionCheckData(data);
         } catch (error) {
           console.error('Error fetching deletion check:', error);

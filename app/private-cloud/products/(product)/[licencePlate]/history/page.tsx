@@ -1,7 +1,7 @@
 'use client';
 
 import { z } from 'zod';
-import { getPriviateCloudProductRequests } from '@/services/backend/private-cloud';
+import { getPriviateCloudProductRequests } from '@/services/backend/private-cloud/products';
 import { useQuery } from '@tanstack/react-query';
 import HistoryItem from '@/components/history/PrivateHistoryItem';
 import createClientPage from '@/core/client-page';

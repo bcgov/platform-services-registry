@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
-import { getPublicCloudProject } from '@/services/backend/public-cloud';
+import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { productState } from './state';
 
 const pathParamSchema = z.object({

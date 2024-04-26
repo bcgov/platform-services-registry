@@ -15,7 +15,10 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import Budget from '@/components/form/Budget';
 import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import { makePublicCloudRequestedDecision, getPublicCloudProductRequests } from '@/services/backend/public-cloud';
+import {
+  makePublicCloudRequestDecision,
+  getPublicCloudProductRequests,
+} from '@/services/backend/public-cloud/products';
 import createClientPage from '@/core/client-page';
 import { PublicCloudProductRequestsGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 
@@ -47,7 +50,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
     isError: isDecisionError,
     error: decisionError,
   } = useMutation({
-    mutationFn: (data: any) => makePublicCloudRequestedDecision(licencePlate, data),
+    mutationFn: (data: any) => makePublicCloudRequestDecision(licencePlate, data),
     onSuccess: () => {
       setOpenReturn(true);
       setOpenComment(false);

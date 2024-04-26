@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import createClientPage from '@/core/client-page';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
-import { getPriviateCloudProject } from '@/services/backend/private-cloud';
+import { getPriviateCloudProject } from '@/services/backend/private-cloud/products';
 import { productState } from './state';
 
 const pathParamSchema = z.object({
