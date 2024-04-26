@@ -1,55 +1,21 @@
-import { Prisma } from '@prisma/client';
-import prisma from '@/core/prisma';
-import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
-import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { PrivateCloudEditRequestBodySchema } from '@/schema';
+import readOp from '../_operations/read';
+import updateOp from '../_operations/update';
+import { getPathParamSchema, putPathParamSchema } from './schema';
 
-const pathParamSchema = z.object({
-  licencePlate: z.string(),
-});
-
-const apiHandler = createApiHandler({
+export const GET = createApiHandler({
   roles: ['user'],
-  validations: { pathParams: pathParamSchema },
-});
-export const GET = apiHandler(async ({ pathParams, session }) => {
-  const { licencePlate } = pathParams;
-
-  const project = await prisma.privateCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      requests: {
-        where: {
-          active: true,
-        },
-      },
-    },
-    session: session as never,
-  });
-
-  if (!project) {
-    return NotFoundResponse('No project found for this licence plate.');
-  }
-
-  return OkResponse(project);
+  validations: { pathParams: getPathParamSchema },
+})(async ({ pathParams, session }) => {
+  const response = await readOp({ session, pathParams });
+  return response;
 });
 
-export type PrivateCloudProjectGetPayload = Prisma.PrivateCloudProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    requests: {
-      where: {
-        active: true;
-      };
-    };
-  };
-}> &
-  PrivateCloudProjectDecorate;
+export const PUT = createApiHandler({
+  roles: ['user'],
+  validations: { pathParams: putPathParamSchema, body: PrivateCloudEditRequestBodySchema },
+})(async ({ pathParams, body, session }) => {
+  const response = await updateOp({ session, body, pathParams });
+  return response;
+});

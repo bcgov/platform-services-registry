@@ -1,6 +1,6 @@
 import { instance } from './axios';
 import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[id]/route';
-import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/route';
+import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/products/_operations/read';
 import { PublicCloudProductRequestsGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 import { PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
 import { PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
@@ -56,7 +56,7 @@ export async function getPublicCloudProject(licencePlate: string) {
   return result as PublicCloudProjectGetPayload & PublicCloudProjectDecorate;
 }
 export async function editPublicCloudProject(licencePlate: string, data: any) {
-  const result = await instance.post(`public-cloud/edit/${licencePlate}`, data).then((res) => res.data);
+  const result = await instance.put(`public-cloud/products/${licencePlate}`, data).then((res) => res.data);
   return result;
 }
 
