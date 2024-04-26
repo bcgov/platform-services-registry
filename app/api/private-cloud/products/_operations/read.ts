@@ -4,7 +4,7 @@ import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
 import { OkResponse, NotFoundResponse } from '@/core/responses';
-import { getPathParamSchema } from '../[licencePlate]/route';
+import { getPathParamSchema } from '../[licencePlate]/schema';
 
 export default async function readOp({
   session,

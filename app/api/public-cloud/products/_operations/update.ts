@@ -2,7 +2,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBodySchema } from '@/schema';
 import { Session } from 'next-auth';
-import { putPathParamSchema } from '../[licencePlate]/route';
+import { putPathParamSchema } from '../[licencePlate]/schema';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { PublicCloudRequest, User } from '@prisma/client';

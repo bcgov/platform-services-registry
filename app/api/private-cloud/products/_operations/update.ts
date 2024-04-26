@@ -2,7 +2,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { Session } from 'next-auth';
-import { putPathParamSchema } from '../[licencePlate]/route';
+import { putPathParamSchema } from '../[licencePlate]/schema';
 import { Cluster, PrivateCloudRequest, DecisionStatus, User } from '@prisma/client';
 import editRequest from '@/request-actions/private-cloud/edit-request';
 import { subscribeUsersToMautic } from '@/services/mautic';

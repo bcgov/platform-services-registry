@@ -1,12 +1,8 @@
-import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PublicCloudEditRequestBodySchema } from '@/schema';
 import readOp from '../_operations/read';
 import updateOp from '../_operations/update';
-
-export const getPathParamSchema = z.object({
-  licencePlate: z.string(),
-});
+import { getPathParamSchema, putPathParamSchema } from './schema';
 
 export const GET = createApiHandler({
   roles: ['user'],
@@ -14,10 +10,6 @@ export const GET = createApiHandler({
 })(async ({ pathParams, session }) => {
   const response = await readOp({ session, pathParams });
   return response;
-});
-
-export const putPathParamSchema = z.object({
-  licencePlate: z.string(),
 });
 
 export const PUT = createApiHandler({
