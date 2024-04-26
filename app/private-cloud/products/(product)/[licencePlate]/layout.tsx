@@ -8,7 +8,7 @@ import createClientPage from '@/core/client-page';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import { getPriviateCloudProject } from '@/services/backend/private-cloud/products';
-import { productState } from './state';
+import { privateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -29,7 +29,8 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   });
 
   useEffect(() => {
-    productState.currentProduct = currentProduct;
+    privateProductState.currentProduct = currentProduct;
+    privateProductState.licencePlate = licencePlate;
   }, [currentProduct]);
 
   let mode = 'decision';
