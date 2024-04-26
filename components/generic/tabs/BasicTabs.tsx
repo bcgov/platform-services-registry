@@ -1,6 +1,9 @@
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import classNames from 'classnames';
+import _lowerCase from 'lodash-es/lowerCase';
+import _startCase from 'lodash-es/startCase';
+import FormSelect from '@/components/generic/select/FormSelect';
 import { compareUrlsIgnoreLastSegments } from '@/helpers/path-segments';
 
 export interface ITab {
@@ -12,23 +15,24 @@ export interface ITab {
 
 export default function BasicTabs({ tabs, children }: { tabs: ITab[]; children?: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const currentTab = tabs.find((tab) => compareUrlsIgnoreLastSegments(tab.href, pathname));
 
   return (
     <div className="w-full">
       <div className="md:hidden">
-        <label htmlFor="tabs" className="sr-only">
-          Select a tab
-        </label>
-        <select
+        <FormSelect
           id="tabs"
-          name="tabs"
-          className="font-bcsans text-xl block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-          defaultValue={tabs[0]?.name}
-        >
-          {tabs.map((tab) => (
-            <option key={tab.name}>{tab.name}</option>
-          ))}
-        </select>
+          label="Select a tab"
+          options={tabs.map((v) => ({ label: _startCase(_lowerCase(v.label)), value: v.name }))}
+          defaultValue={currentTab?.name}
+          className={{ label: 'sr-only', input: '' }}
+          onChange={(value) => {
+            const t = tabs.find((tab) => tab.name === value);
+            if (t) router.push(t.href);
+          }}
+        />
       </div>
       <div className="hidden md:block justify-start">
         <div className="border-b border-gray-200">

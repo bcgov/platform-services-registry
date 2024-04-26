@@ -1,8 +1,8 @@
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
-import classNames from '@/utils/classnames';
 import { PrivateCloudProject, Quota } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import FormSelect from '@/components/generic/select/FormSelect';
 
 type CpuOptionKeys = z.infer<typeof DefaultCpuOptionsSchema>;
 type MemoryOptionKeys = z.infer<typeof DefaultMemoryOptionsSchema>;
@@ -87,50 +87,31 @@ function QuotaInput({
 
   return (
     <div className="mb-4">
-      <label htmlFor={quotaName} className="block text-sm leading-6 font-bold text-gray-900 mt-8">
-        {quotaName.toUpperCase()}
-      </label>
-      <div className="mt-2">
-        <select
-          defaultValue={''}
-          id={quotaName + nameSpace}
-          {...register(nameSpace + 'Quota.' + quotaName)}
-          disabled={disabled}
-          className={classNames(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-        >
-          <option value="" disabled>
-            Select {quotaNameStartUpperCase}
-          </option>
-          {Object.entries(selectOptions).map(([key, label]) => (
-            <option key={key} value={key}>
-              {label}
-            </option>
-          ))}
-          {!Object.keys(selectOptions).includes(currentQuota) && (
-            <option key={currentQuota} value={currentQuota}>
-              {currentQuota}
-            </option>
-          )}
-        </select>
-        {(errors?.[nameSpace + 'Quota'] as { [key: string]: any })?.[quotaName] && (
-          <p className="text-red-400 mt-3 text-sm leading-6">
-            Select the {quotaName} for the {nameSpace} namespace
+      <FormSelect
+        id={quotaName + nameSpace}
+        label={quotaName.toUpperCase()}
+        disabled={disabled}
+        options={[
+          { label: `Select ${quotaNameStartUpperCase}`, value: '', disabled: true },
+          ...Object.entries(selectOptions).map(([value, label]) => ({ label, value })),
+          ...(Object.keys(selectOptions).includes(currentQuota) ? [] : [{ label: currentQuota, value: currentQuota }]),
+        ]}
+        defaultValue=""
+        selectProps={register(nameSpace + 'Quota.' + quotaName)}
+      />
+      {(errors?.[nameSpace + 'Quota'] as { [key: string]: any })?.[quotaName] && (
+        <p className="text-red-400 mt-3 text-sm leading-6">
+          Select the {quotaName} for the {nameSpace} namespace
+        </p>
+      )}
+      {quota ? (
+        <div>
+          <p className="mt-3 text-sm leading-6 text-gray-700">
+            <b>Current {quotaName}: </b>
+            {selectOptions[quota] || currentQuota}
           </p>
-        )}
-        {quota ? (
-          <div>
-            <p className="mt-3 text-sm leading-6 text-gray-700">
-              <b>Current {quotaName}: </b>
-              {selectOptions[quota] || currentQuota}
-            </p>
-          </div>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }

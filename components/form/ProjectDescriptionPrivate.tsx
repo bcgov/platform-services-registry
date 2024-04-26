@@ -1,10 +1,11 @@
+import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import { clusters, ministriesNames } from '@/constants';
-import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import { $Enums } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+import FormSelect from '@/components/generic/select/FormSelect';
 
 export default function ProjectDescription({
   mode,
@@ -116,81 +117,57 @@ export default function ProjectDescription({
           </p>
         </div>
         <div className="sm:col-span-3 sm:mr-10">
-          <label htmlFor="ministry" className="block text-sm font-medium leading-6 text-gray-900">
-            Ministry
-          </label>
-          <div className="mt-2">
-            <select
-              disabled={disabled}
-              id="ministry"
-              {...register('ministry')}
-              className={classNames(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
-            >
-              <option value="">Select Ministry</option>
-              {ministriesNames.map((ministry) => (
-                <option key={ministry.id} value={ministry.name}>
-                  {ministry.humanFriendlyName}
-                </option>
-              ))}
-            </select>
-            <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the government ministry that this product belongs to
-            </p>
-            {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
-          </div>
+          <FormSelect
+            id="ministry"
+            label="Ministry"
+            disabled={disabled}
+            options={[
+              { label: 'Select Ministry', value: '' },
+              ...ministriesNames.map((v) => ({ label: v.humanFriendlyName, value: v.name })),
+            ]}
+            selectProps={register('ministry')}
+          />
+
+          <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+            Select the government ministry that this product belongs to
+          </p>
+          {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
         </div>
         <div className="sm:col-span-3 sm:ml-10">
-          <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-            Hosting Tier
-          </label>
-          <div className="mt-2">
-            <select
-              disabled={disabled || clusterDisabled}
-              {...register('cluster')}
-              className={classNames(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled || clusterDisabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
-            >
-              <option value="">Select Hosting Tier</option>
-              {clustersList.map((cluster) => (
-                <option key={cluster} value={cluster}>
-                  {cluster}
-                </option>
-              ))}
-            </select>
-            {!session?.isAdmin && (
-              <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-                Select your hosting tier. Read more about hosting tiers{' '}
-                <a
-                  href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  here
-                </a>
-                .
-              </p>
-            )}
-            {session?.isAdmin && (
-              <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-                Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers{' '}
-                <a
-                  href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  here
-                </a>
-                .
-              </p>
-            )}
-          </div>
+          <FormSelect
+            id="cluster"
+            label="Hosting Tier"
+            disabled={disabled || clusterDisabled}
+            options={[
+              { label: 'Select Hosting Tier', value: '' },
+              ...clustersList.map((v) => ({ label: v, value: v })),
+            ]}
+            selectProps={register('cluster')}
+          />
+          {!session?.isAdmin && (
+            <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+              Select your hosting tier. Read more about hosting tiers{' '}
+              <a
+                href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
+                className="text-blue-500 hover:text-blue-700"
+              >
+                here
+              </a>
+              .
+            </p>
+          )}
+          {session?.isAdmin && (
+            <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+              Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers{' '}
+              <a
+                href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
+                className="text-blue-500 hover:text-blue-700"
+              >
+                here
+              </a>
+              .
+            </p>
+          )}
         </div>
       </div>
     </div>

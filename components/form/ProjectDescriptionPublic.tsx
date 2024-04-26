@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { providers, ministriesNames } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import { $Enums } from '@prisma/client';
+import FormSelect from '@/components/generic/select/FormSelect';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -108,69 +109,41 @@ export default function ProjectDescriptionPublic({
           </p>
         </div>
         <div className="sm:col-span-3 sm:mr-10">
-          <label htmlFor="ministry" className="block text-sm font-medium leading-6 text-gray-900">
-            Ministry
-          </label>
-          <div className="mt-2">
-            <select
-              disabled={disabled}
-              id="ministry"
-              {...register('ministry')}
-              className={classNames(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
-            >
-              <option value="">Select Ministry</option>
-              {ministriesNames.map((ministry) => (
-                <option key={ministry.id} value={ministry.name}>
-                  {ministry.humanFriendlyName}
-                </option>
-              ))}
-            </select>
+          <FormSelect
+            id="ministry"
+            label="Ministry"
+            disabled={disabled}
+            options={[
+              { label: 'Select Ministry', value: '' },
+              ...ministriesNames.map((v) => ({ label: v.humanFriendlyName, value: v.name })),
+            ]}
+            selectProps={register('ministry')}
+          />
 
-            <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the government ministry that this product belongs to.
-            </p>
-            {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
-          </div>
+          <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+            Select the government ministry that this product belongs to.
+          </p>
+          {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
         </div>
 
         <div className="sm:col-span-3 sm:ml-10">
-          <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-            Cloud Service Provider
-          </label>
-          <div className="mt-2">
-            <select
-              disabled={disabled || providerDisabled}
-              {...register('provider')}
-              className={classNames(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled || providerDisabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
+          <FormSelect
+            id="provider"
+            label="Cloud Service Provider"
+            disabled={disabled || providerDisabled}
+            options={[{ label: 'Select Provider', value: '' }, ...providers.map((v) => ({ label: v, value: v }))]}
+            selectProps={register('provider')}
+          />
+          <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+            Select the Cloud Service Provider. Read more about Public Cloud Service Providers{' '}
+            <a
+              href="https://digital.gov.bc.ca/cloud/services/public/providers/"
+              className="text-blue-500 hover:text-blue-700"
             >
-              <option value="">Select Provider</option>
-              {providers.map((provider) => (
-                <option key={provider} value={provider}>
-                  {provider}
-                </option>
-              ))}
-            </select>
-            <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select the Cloud Service Provider. Read more about Public Cloud Service Providers{' '}
-              <a
-                href="https://digital.gov.bc.ca/cloud/services/public/providers/"
-                className="text-blue-500 hover:text-blue-700"
-              >
-                here
-              </a>
-              .
-            </p>
-          </div>
+              here
+            </a>
+            .
+          </p>
         </div>
       </div>
     </div>
