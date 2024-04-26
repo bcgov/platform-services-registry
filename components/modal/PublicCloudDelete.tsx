@@ -29,7 +29,7 @@ export default function PublicCloudDeleteModal({
     } else {
       setDisabled(true);
     }
-  }, [publicProductSnapshot.currentProduct, publicProductSnapshot.licencePlate, email]);
+  }, [publicProductSnapshot.currentProduct, licencePlate, email]);
 
   return (
     <Modal isOpen={open} onClose={() => setOpen(false)} className="sm:max-w-2xl">

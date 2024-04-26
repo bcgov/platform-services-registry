@@ -30,8 +30,11 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
 
   useEffect(() => {
     publicProductState.currentProduct = currentProduct;
-    publicProductState.licencePlate = licencePlate;
   }, [currentProduct]);
+
+  useEffect(() => {
+    publicProductState.licencePlate = licencePlate;
+  }, [licencePlate]);
 
   let mode = 'decision';
   if (currentProduct) {
