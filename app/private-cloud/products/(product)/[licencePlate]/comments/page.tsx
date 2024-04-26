@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useSnapshot } from 'valtio';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAllPrivateCloudComments } from '@/services/backend/private-cloud';
+import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
 import CommentForm from '@/components/comments/CommentForm';
 import createClientPage from '@/core/client-page';
 import { productState } from '../state';

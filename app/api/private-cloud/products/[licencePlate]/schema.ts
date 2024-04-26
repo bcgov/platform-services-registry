@@ -7,3 +7,7 @@ export const getPathParamSchema = z.object({
 export const putPathParamSchema = z.object({
   licencePlate: z.string(),
 });
+
+export const deletePathParamSchema = z.object({
+  licencePlate: z.string(),
+});

@@ -3,7 +3,7 @@ import PublicCloudDeleteModal from '@/components/modal/PublicCloudDelete';
 import ReturnModal from '@/components/modal/Return';
 import { useParams } from 'next/navigation';
 import ErrorModal from '@/components/modal/Error';
-import { deletePublicCloudProject } from '@/services/backend/public-cloud';
+import { deletePublicCloudProject } from '@/services/backend/public-cloud/products';
 import DeleteButton from '@/components/buttons/DeleteButton';
 
 export default function Dropdown({ disabled = false }: { disabled?: boolean }) {

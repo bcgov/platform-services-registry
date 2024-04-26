@@ -1,6 +1,6 @@
 import { $Enums, Prisma } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
-import { PrivateCloudProductSearchCriteria } from '@/services/backend/private-cloud';
+import { PrivateCloudProductSearchCriteria } from '@/services/backend/private-cloud/products';
 
 export const pageState = proxy<PrivateCloudProductSearchCriteria & { showDownloadAlert: boolean }>({
   search: '',

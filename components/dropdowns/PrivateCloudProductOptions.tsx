@@ -12,7 +12,7 @@ import {
   deletePrivateCloudProject,
   reprovisionPriviateCloudRequest,
   resendPriviateCloudRequest,
-} from '@/services/backend/private-cloud';
+} from '@/services/backend/private-cloud/products';
 import DeleteButton from '@/components/buttons/DeleteButton';
 
 export default function Dropdown({
