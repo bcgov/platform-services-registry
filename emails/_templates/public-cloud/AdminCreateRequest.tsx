@@ -4,7 +4,7 @@ import Header from '../../_components/Header';
 import ProductDetails from '../../_components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
-import NamespaceDetails from '../../_components/NamespaceDetails';
+import ProviderDetails from '../../_components/ProviderDetails';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
 
@@ -12,7 +12,7 @@ interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
 }
 
-export default function NewRequestTemplate({ request }: EmailProp) {
+export default function AdminCreateRequest({ request }: EmailProp) {
   if (!request) return <></>;
 
   return (
@@ -50,7 +50,11 @@ export default function NewRequestTemplate({ request }: EmailProp) {
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-                <NamespaceDetails cluster={request.requestedProject.provider} />
+                <ProviderDetails
+                  provider={request.requestedProject.provider}
+                  accountCoding={request.requestedProject.accountCoding}
+                  budget={request.requestedProject.budget}
+                />
               </div>
               <div>
                 <Closing />

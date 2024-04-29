@@ -20,7 +20,7 @@ export default function ProviderDetails({
 
   return (
     <div>
-      <Heading className="text-lg">Landing Zone Details</Heading>
+      <Text className="text-lg font-bold">Landing Zone Details</Text>
       <div>
         <div>
           <Text className="mb-0 font-semibold">Provider </Text>

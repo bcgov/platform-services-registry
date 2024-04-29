@@ -6,8 +6,6 @@ import { Body, Button, Heading, Html, Img, Text } from '@react-email/components'
 import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../_components/ProviderDetails';
 import { TailwindConfig } from '../../_components/TailwindConfig';
-const defaultTheme = require('tailwindcss/defaultTheme');
-
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
 }
