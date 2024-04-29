@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 ubuntu:22.04
+FROM --platform=linux/arm64 ubuntu:24.04
 
 WORKDIR /opt/m365
 
