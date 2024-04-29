@@ -34,7 +34,6 @@
    </ol>
 
 ```mermaid
-flowchart LR
  flowchart LR
     A((User Submits a <br> Create Request)) --> B(PublicCloudAdminCreateRequest<br>PublicCloudCreateRequest)
     B --> C{Admin decides on the create request}
@@ -60,7 +59,6 @@ flowchart LR
  </ol>
 
 ```mermaid
-flowchart LR
    flowchart LR
      A((User Submits an <br> Edit Request)) --> |Request Provisioned|B(Edit Request Received sent to PO/TLs)
    B(PublicCloudEditSummary) --> C{EX changed}
