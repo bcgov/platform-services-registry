@@ -26,7 +26,7 @@ function MainBody({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    appState.info = info;
+    if (info) appState.info = info;
   }, [appState, info]);
 
   return (

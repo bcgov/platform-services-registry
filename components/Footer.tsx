@@ -26,7 +26,7 @@ export default function Footer() {
               </a>
             </div>
           ))}
-          {appSnapshot.info?.DEPLOYMENT_TAG && (
+          {appSnapshot.info.DEPLOYMENT_TAG && (
             <div className="pb-6">
               <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
                 App Version: {appSnapshot.info.DEPLOYMENT_TAG}
