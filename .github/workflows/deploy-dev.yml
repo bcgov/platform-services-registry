@@ -132,7 +132,7 @@ jobs:
           type=sha,format=long,prefix=,suffix=
 
   deploy:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email]
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
