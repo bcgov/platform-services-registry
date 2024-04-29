@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 
 const commonComponents = [
   { name: 'addressAndGeolocation', label: 'Address and Geolocation' },
@@ -111,26 +112,20 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
       <div className="mt-12 space-y-10 ">
         <fieldset>
           <div className="space-y-9">
-            <div className="flex flex-col">
-              <div className="flex items-center">
-                <input
-                  disabled={disabled}
-                  id="none"
-                  type="checkbox"
-                  {...register('commonComponents.noServices')}
-                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                />
-                <label htmlFor="none" className="ml-4 font-bcsans font-semibold text-base text-gray-900">
-                  The app does not use any of these services
-                </label>
-              </div>
-              {errors.commonComponents ? (
-                <label htmlFor="none" className="ml-8 block text-sm font-medium leading-6 text-red-400 mt-2">
+            <FormCheckbox
+              id="no-service"
+              label="The app does not use any of these services"
+              inputProps={register('commonComponents.noServices')}
+              disabled={disabled}
+              hasError={!!errors.commonComponents}
+              error={
+                <label htmlFor="none" className="block text-sm font-medium leading-6 text-red-400 mt-2">
                   Please select &quot;The app does not use any of these services&quot; if you are not using any of
                   common components below
                 </label>
-              ) : null}
-            </div>
+              }
+              className={{ label: 'font-semibold ' }}
+            />
             {commonComponents.map(({ name, label }) => (
               <div className="relative flex flex-col" key={name}>
                 <div className="text-sm leading-6">
@@ -138,56 +133,37 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
                     {label}
                   </label>
                 </div>
+
                 <div className="flex items-center w-full sm:w-4/12 justify-between flex-wrap mt-3">
-                  <div className="flex items-center">
-                    <Controller
-                      name={`commonComponents.${name}.implemented`}
-                      control={control}
-                      defaultValue={false}
-                      render={({ field }) => (
-                        <input
-                          disabled={disabled}
-                          type="checkbox"
-                          checked={field.value}
-                          onChange={(e) => handleCheckboxChange(name, 'implemented', e.target.checked)}
-                        />
-                      )}
-                    />
-                    {/* <input
-                      id={name}
-                      type="checkbox"
-                      {...register(`commonComponents.${name}.implemented`)}
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    /> */}
-                    <label
-                      htmlFor={`${name}-implemented`}
-                      className="font-bcsans text-base ml-3 block font-medium leading-6 text-gray-900"
-                    >
-                      Implemented
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <Controller
-                      name={`commonComponents.${name}.planningToUse`}
-                      control={control}
-                      defaultValue={false}
-                      disabled={disabled}
-                      render={({ field }) => (
-                        <input
-                          disabled={disabled}
-                          type="checkbox"
-                          checked={field.value}
-                          onChange={(e) => handleCheckboxChange(name, 'planningToUse', e.target.checked)}
-                        />
-                      )}
-                    />
-                    <label
-                      htmlFor={`${name}-planning`}
-                      className="font-bcsans text-base ml-3 block font-medium leading-6 text-gray-900"
-                    >
-                      Planning to use
-                    </label>
-                  </div>
+                  <Controller
+                    name={`commonComponents.${name}.implemented`}
+                    control={control}
+                    defaultValue={false}
+                    render={({ field }) => (
+                      <FormCheckbox
+                        id={`${name}-implemented`}
+                        label="Implemented"
+                        disabled={disabled}
+                        checked={field.value}
+                        onChange={(checked) => handleCheckboxChange(name, 'implemented', checked)}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name={`commonComponents.${name}.planningToUse`}
+                    control={control}
+                    defaultValue={false}
+                    disabled={disabled}
+                    render={({ field }) => (
+                      <FormCheckbox
+                        id={`${name}-planningToUse`}
+                        label="Planning to use"
+                        disabled={disabled}
+                        checked={field.value}
+                        onChange={(checked) => handleCheckboxChange(name, 'planningToUse', checked)}
+                      />
+                    )}
+                  />
                 </div>
               </div>
             ))}
