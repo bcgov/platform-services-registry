@@ -1,32 +1,10 @@
 import { Account, AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import KeycloakProvider from 'next-auth/providers/keycloak';
+import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/core/prisma';
 import { getUserByEmail } from '@/services/msgraph';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
-
-interface KeycloakToken {
-  exp: number;
-  iat: number;
-  auth_time: number;
-  jti: string;
-  iss: string;
-  aud: string;
-  sub: string;
-  typ: string;
-  azp: string;
-  session_state: string;
-  at_hash: string;
-  acr: string;
-  sid: string;
-  email_verified: boolean;
-  name: string;
-  preferred_username: string;
-  given_name: string;
-  family_name: string;
-  email: string;
-}
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
   session.isUser = false;
@@ -215,12 +193,6 @@ export async function generateSession({ session, token }: { session: Session; to
 
 export const authOptions: AuthOptions = {
   providers: [
-    // AzureADProvider({
-    //   clientId: process.env.AZURE_AD_CLIENT_ID!,
-    //   clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-    //   tenantId: process.env.AZURE_AD_TENANT_ID!,
-    // }),
-
     KeycloakProvider({
       clientId: AUTH_RESOURCE!,
       clientSecret: AUTH_SECRET!,
@@ -237,40 +209,22 @@ export const authOptions: AuthOptions = {
   ],
   session: {
     strategy: 'jwt',
+    /**
+     * Relative time from now in seconds when to expire the session
+     * @default 2592000 // 30 days
+     */
+    maxAge: 86400, // 1 day
+    /**
+     * How often the session should be updated in seconds.
+     * If set to `0`, session is updated every time.
+     * @default 86400 // 1 day
+     */
+    updateAge: 3600, // 1 hour
   },
-
-  // callbacks: {
-  // async jwt({ token, account }) {
-  //   // IMPORTANT: Persist the access_token to the token right after sign in
-  //   if (account) {
-  //     token.idToken = account.id_token;
-  //   }
-  //   return token;
-  // },
-  // async session({ session, token }) {
-  //   session.idToken = token.idToken;
-  //   return session;
-  // },
-  // redirect({ baseUrl }) {
-  //   return baseUrl;
-  // },
-  // },
   secret: AUTH_SECRET,
-
-  // pages: {
-  //   signIn: "/auth/signin",
-  //   signOut: "/auth/signout",
-  //   error: "/auth/error", // Error code passed in query string as ?error=
-  //   verifyRequest: "/auth/verify-request", // (used for check email message)
-  //   newUser: "/auth/new-user" // New users will be directed here on first sign in (leave the property out if not of interest)
-  // },
-  // pages: {
-  //   signIn: '/api/auth/signin',
-  //   error: '/api/auth/error',
-  // },
   callbacks: {
     async signIn({ user, account, profile }) {
-      const { given_name, family_name, email } = profile as KeycloakToken;
+      const { given_name, family_name, email } = profile as KeycloakProfile;
       const loweremail = email.toLowerCase();
 
       const data = {
@@ -305,7 +259,6 @@ export const authOptions: AuthOptions = {
       }
 
       const decodedToken = jwt.decode(token.accessToken || '') as any;
-
       token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
 
       return token;

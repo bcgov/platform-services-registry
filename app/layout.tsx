@@ -5,6 +5,9 @@ import Provider from '@/components/Provider';
 import Nav from '@/components/nav/Nav';
 import classNames from '@/utils/classnames';
 import Footer from '@/components/Footer';
+import { DEPLOYMENT_TAG } from '@/config';
+
+console.log('DEPLOYMENT_TAG:', DEPLOYMENT_TAG);
 
 const inter = Inter({
   subsets: ['latin'],
