@@ -51,7 +51,7 @@ export default async function AnalyticsDashboard() {
           chartData={requestsChartData}
           categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
           colors={['indigo', 'yellow', 'green', 'red']}
-          exportApiEndpoint="/api/private-cloud/analytics/csv/requests"
+          exportApiEndpoint="/private-cloud/analytics/csv/requests"
         />
         <CombinedAreaGraph
           title={'Quota requests over time'}
@@ -59,7 +59,7 @@ export default async function AnalyticsDashboard() {
           chartData={quotaChangedChartData}
           categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
           colors={['indigo', 'green', 'red']}
-          exportApiEndpoint="/api/private-cloud/analytics/csv/quota-requests"
+          exportApiEndpoint="/private-cloud/analytics/csv/quota-requests"
         />
         <LineGraph
           index="date"
@@ -67,7 +67,7 @@ export default async function AnalyticsDashboard() {
           subtitle={'This graph shows the cumulitive total of products provisioned through the registry'}
           chartData={projectsChartData}
           categories={['All Clusters', 'Silver', 'Gold', 'Emerald']}
-          exportApiEndpoint="/api/private-cloud/analytics/csv/products"
+          exportApiEndpoint="/private-cloud/analytics/csv/products"
         />
         <Histogram
           index="time"
@@ -75,7 +75,7 @@ export default async function AnalyticsDashboard() {
           chartData={requestDecisionTimeChartData}
           categories={['Percentage']}
           colors={['indigo']}
-          exportApiEndpoint="/api/private-cloud/analytics/csv/decision-time"
+          exportApiEndpoint="/private-cloud/analytics/csv/decision-time"
         />
         <PieGraph
           title="Ministry per Cluster"

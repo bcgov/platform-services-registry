@@ -8,7 +8,7 @@ export default function ExportCard({ title, apiEnpoint }: { title: string; apiEn
     <div className="flex flex-col items-end border rounded-lg w-fit p-4">
       <div>
         <Title>{title}</Title>
-        <ExportButton className="mt-3" apiEnpoint={apiEnpoint} />
+        <ExportButton className="mt-3" downloadUrl={apiEnpoint} />
       </div>
     </div>
   );

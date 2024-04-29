@@ -22,7 +22,7 @@ export default function Histogram({
 }) {
   return (
     <div className="flex flex-col items-end">
-      <ExportButton className="mb-4" apiEnpoint={exportApiEndpoint} />
+      <ExportButton className="mb-4" downloadUrl={exportApiEndpoint} />
       <Card>
         <Title>{title}</Title>
         <BarChart

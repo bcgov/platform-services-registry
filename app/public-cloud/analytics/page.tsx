@@ -47,7 +47,7 @@ export default async function AnalyticsDashboard() {
           chartData={requestsChartData}
           categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
           colors={['indigo', 'yellow', 'green', 'red']}
-          exportApiEndpoint="/api/public-cloud/analytics/csv/requests"
+          exportApiEndpoint="/public-cloud/analytics/csv/requests"
         />
         <LineGraph
           index="date"
@@ -55,7 +55,7 @@ export default async function AnalyticsDashboard() {
           subtitle={'This graph shows the cumulitive total of products provisioned through the registry'}
           chartData={projectsChartData}
           categories={['AWS']}
-          exportApiEndpoint="/api/public-cloud/analytics/csv/products"
+          exportApiEndpoint="/public-cloud/analytics/csv/products"
         />
         <Histogram
           index="time"
@@ -63,7 +63,7 @@ export default async function AnalyticsDashboard() {
           chartData={requestDecisionTimeChartData}
           categories={['Percentage']}
           colors={['indigo']}
-          exportApiEndpoint="/api/public-cloud/analytics/csv/decision-time"
+          exportApiEndpoint="/public-cloud/analytics/csv/decision-time"
         />
         <PieGraph
           title="Ministry per Provider"

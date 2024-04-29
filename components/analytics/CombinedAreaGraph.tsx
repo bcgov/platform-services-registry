@@ -11,7 +11,7 @@ export type ChartDate = {
   date: string;
 };
 
-export default function EditRequestsGraph({
+export default function CombinedAreaGraph({
   title,
   subtitle,
   exportApiEndpoint,
@@ -28,7 +28,7 @@ export default function EditRequestsGraph({
 }) {
   return (
     <div className="flex flex-col items-end">
-      <ExportButton className="mb-4" apiEnpoint={exportApiEndpoint} />
+      <ExportButton className="mb-4" downloadUrl={exportApiEndpoint} />
       <Card>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
