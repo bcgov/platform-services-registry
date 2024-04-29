@@ -1,10 +1,21 @@
-import Image from 'next/image';
-import Export from '@/components/assets/export.svg';
 import { useState } from 'react';
-
+import Image from 'next/image';
+import classNames from 'classnames';
+import Export from '@/components/assets/export.svg';
 import AlertBox from '@/components/modal/AlertBox';
+import LightButton from '../generic/button/LightButton';
+import { downloadFile } from '@/utils/file-download';
+import { instance } from '@/services/backend/axios';
 
-export default function ExportButton({ apiEnpoint, className }: { apiEnpoint: string; className?: string }) {
+export default function ExportButton({
+  onExport,
+  className = '',
+  downloadUrl,
+}: {
+  onExport?: () => boolean;
+  className?: string;
+  downloadUrl?: string;
+}) {
   const [isAlertBoxOpen, setIsAlertBoxOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -12,51 +23,33 @@ export default function ExportButton({ apiEnpoint, className }: { apiEnpoint: st
     setIsAlertBoxOpen(false);
   };
 
-  const handleDownload = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(apiEnpoint);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      if (response.status === 204) {
-        setIsAlertBoxOpen(true);
-        return;
-      }
-
-      const blob = await response.blob();
-      const contentDisposition = response.headers.get('Content-Disposition');
-      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/['"]/g, '') : 'data.csv';
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = filename;
-
-      // Append the link, trigger the download, then clean up
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Download failed:', error);
-    }
-    setIsLoading(false);
-  };
-
   return (
-    <div className={className}>
-      <button
-        onClick={handleDownload}
-        type="button"
-        className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+    <>
+      <LightButton
+        className={classNames('pr-6', className)}
+        onClick={async () => {
+          if (onExport) {
+            setIsLoading(true);
+            const success = await onExport();
+            setIsAlertBoxOpen(!success);
+            setIsLoading(false);
+          } else if (downloadUrl) {
+            setIsLoading(true);
+            const success = await instance.get(downloadUrl, { responseType: 'blob' }).then((res) => {
+              if (res.status === 204) return false;
+              downloadFile(res.data, 'data.csv', res.headers);
+              return true;
+            });
+
+            setIsAlertBoxOpen(!success);
+            setIsLoading(false);
+          }
+        }}
       >
         {isLoading ? (
           <svg
             aria-hidden="true"
-            className=" h-4 w-4 text-gray-200 animate-spin dark:text-gray-200 fill-gray-600"
+            className="h-4 w-4 text-gray-200 animate-spin dark:text-gray-200 fill-gray-600"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -71,10 +64,10 @@ export default function ExportButton({ apiEnpoint, className }: { apiEnpoint: st
             />
           </svg>
         ) : (
-          <Image alt="Export" src={Export} width={16} height={12.5} />
+          <Image alt="Export" src={Export} width={16} height={16} />
         )}
         <span className="md:inline hidden">Export</span>
-      </button>
+      </LightButton>
       <AlertBox
         isOpen={isAlertBoxOpen}
         title="Nothing to export"
@@ -83,6 +76,6 @@ export default function ExportButton({ apiEnpoint, className }: { apiEnpoint: st
         cancelButtonText="DISMISS"
         singleButton={true}
       />
-    </div>
+    </>
   );
 }

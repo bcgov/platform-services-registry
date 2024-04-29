@@ -1,6 +1,7 @@
 'use client';
 
 import { useTableState } from './Table';
+import LightButton from '../button/LightButton';
 
 export default function Pagination() {
   const { state, snapshot: snap } = useTableState();
@@ -53,22 +54,12 @@ export default function Pagination() {
           <option value="100">100</option>
           <option value="200">200</option>
         </select>
-        <button
-          className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
-        ${isPrevDisabled ? 'text-gray-500 border-gray-500' : 'text-black border-black'}`}
-          onClick={() => handlePaginationUpdate(snap.page - 1)}
-          disabled={isPrevDisabled}
-        >
+        <LightButton disabled={isPrevDisabled} onClick={() => handlePaginationUpdate(snap.page - 1)} className="mx-2">
           Previous
-        </button>
-        <button
-          className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
-        ${isNextDisabled ? 'text-gray-500 border-gray-500' : 'text-black border-black'}`}
-          onClick={() => handlePaginationUpdate(snap.page + 1)}
-          disabled={isNextDisabled}
-        >
+        </LightButton>
+        <LightButton disabled={isNextDisabled} onClick={() => handlePaginationUpdate(snap.page + 1)}>
           Next
-        </button>
+        </LightButton>
       </div>
     </div>
   );

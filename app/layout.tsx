@@ -25,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <Provider>
         <body className={classNames('flex flex-col min-h-screen', inter.className)}>
           <Nav />
-          <main className="flex-grow h-100">{children}</main>
+          <main className="flex-grow h-100">
+            <div className="mt-8 mb-8 h-full mx-4 lg:mx-20">{children}</div>
+          </main>
           <Footer />
         </body>
       </Provider>

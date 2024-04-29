@@ -2,16 +2,17 @@ import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Search from '@/components/assets/search.svg';
 import Filter from '@/components/assets/filter.svg';
-import Export from '@/components/assets/export.svg';
 import { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from '@/utils/hooks';
 import { Disclosure } from '@headlessui/react';
 import { useTableState } from './Table';
+import LightButton from '../button/LightButton';
+import ExportButton from '@/components/buttons/ExportButton';
 
 type Props = {
   initialSearch?: string;
   onSearch?: (search: string) => void;
-  onExport?: () => void;
+  onExport?: () => boolean;
   children?: React.ReactNode;
 };
 
@@ -84,29 +85,12 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
             )}
           </div>
           {children && (
-            <Disclosure.Button
-              type="button"
-              className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              onClick={handleDiscloserToggle}
-            >
-              <Image alt="Filter" src={Filter} width={16} height={10} />
-              <span className="md:inline hidden">Filters</span>
+            <Disclosure.Button as={LightButton} type="button" onClick={handleDiscloserToggle} className="pr-6">
+              <Image alt="Filter" src={Filter} width={16} height={16} />
+              Filter
             </Disclosure.Button>
           )}
-          {onExport && (
-            <>
-              <button
-                onClick={() => {
-                  onExport();
-                }}
-                type="button"
-                className="h-9 inline-flex items-center gap-x-2 rounded-md bg-white px-3 pr-6 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                <Image alt="Export" src={Export} width={16} height={12.5} />
-                <span className="md:inline hidden">Export</span>
-              </button>
-            </>
-          )}
+          {onExport && <ExportButton onExport={onExport} />}
         </div>
         <Disclosure.Panel className="py-10 w-full flex justify-end ">{children}</Disclosure.Panel>
       </Disclosure>

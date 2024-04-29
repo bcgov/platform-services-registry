@@ -7,7 +7,6 @@ import Table from '@/components/generic/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
 import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
 import { searchPriviateCloudProducts, downloadPriviateCloudProducts } from '@/services/backend/private-cloud/products';
-import AlertBox from '@/components/modal/AlertBox';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -50,21 +49,13 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
         }}
         onExport={async () => {
           const result = await downloadPriviateCloudProducts(snap);
-          if (!result) pageState.showDownloadAlert = true;
+          return result;
         }}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
         <TableBody rows={products} isLoading={isLoading} />
       </Table>
-      <AlertBox
-        isOpen={snap.showDownloadAlert}
-        title="Nothing to export"
-        message="There is no data available for download."
-        onCancel={() => (pageState.showDownloadAlert = false)}
-        cancelButtonText="DISMISS"
-        singleButton
-      />
     </>
   );
 });
