@@ -8,33 +8,36 @@
 
 1. **Notification sent to admins** containing:
    <ol type="a">
-     <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+     <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
    </ol>
 2. **Notification sent to Product PO/TL(s)** containing:
     <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
       <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
    </ol>
 3. **Decision: Create request Approval/Rejection by Admin**
 
-- **3a. Approval sent to PO/TLs** containing:
+- **3a.I. Approval sent to PO/TLs** containing:
    <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
       <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
    </ol>
-
+- **3a.II. Notification sent to Expense Authority** containing:
+   <ol type="a">
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA, Licence Plate)</li>
+   </ol>
 - **3b. Rejection sent to PO/TLs** containing:
    <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
       <li>Admin review comments</li>
    </ol>
 
 ```mermaid
-flowchart LR
+ flowchart LR
     A((User Submits a <br> Create Request)) --> B(PublicCloudAdminCreateRequest<br>PublicCloudCreateRequest)
     B --> C{Admin decides on the create request}
-    C -->|Create Request Approved and Provisioned| D(PublicCloudRequestProvisioned)
+    C -->|Create Request Approved and Provisioned| D(PublicCloudRequestProvisioned<br>ExpenseAuthorityNotification)
     C -->|Create Request Rejected| E(PublicCloudCreateRejected)
 ```
 
@@ -50,11 +53,16 @@ flowchart LR
      <li>Budget Changes</li>
      <li>Account Coding Changes</li>
    </ol>
+2. **If EX changed summary sent to EA** containing:
+<ol type="a">
+    <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA, Licence Plate)</li>
+ </ol>
 
 ```mermaid
-flowchart LR
-    A((User Submits an <br> Edit Request)) --> |Request Provisioned|B(Edit Request Received sent to PO/TLs)
-   B(PublicCloudEditSummary)
+   flowchart LR
+     A((User Submits an <br> Edit Request)) --> |Request Provisioned|B(Edit Request Received sent to PO/TLs)
+   B(PublicCloudEditSummary) --> C{EX changed}
+    C -->|EX was changed| D(ExpenseAuthorityNotification)
 ```
 
 #### Scenario 3. Delete request is submitted
@@ -75,12 +83,12 @@ flowchart LR
 
 - **3a. Approval confirmation sent to PO/TLs** containing:
     <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
       <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
    </ol>
 - **3a. Rejection sent to PO/TLs** containing:
     <ol type="a">
-      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
       <li>Review comments</li>
    </ol>
 
