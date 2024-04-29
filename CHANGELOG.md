@@ -1,3 +1,51 @@
+## [0.23.0](https://github.com/bcgov/platform-services-registry/compare/v0.22.3...v0.23.0) (2024-04-29)
+
+
+### Features
+
+* **1954:** add client base page component ([b30a10f](https://github.com/bcgov/platform-services-registry/commit/b30a10f336fe64521323268880fd1a6c89a39c7f))
+* **1954:** add server base page component ([361e705](https://github.com/bcgov/platform-services-registry/commit/361e705a1beec13524c4c6b851b03345bbea03e2))
+* add generic modal component ([60102c4](https://github.com/bcgov/platform-services-registry/commit/60102c4ff758400776c8917d5996efe374420595))
+* add generic select component ([ba2c722](https://github.com/bcgov/platform-services-registry/commit/ba2c7225940c3da8cc7555b027f3ac3378a043da))
+* add generic table components ([4700591](https://github.com/bcgov/platform-services-registry/commit/47005911368ee035deb62ec8d7b36f4d06eee2df))
+* add generic toggle component ([723400a](https://github.com/bcgov/platform-services-registry/commit/723400ab3350979b0140b4c92098a97b5729c9fc))
+* add light & export buttons ([ba0d845](https://github.com/bcgov/platform-services-registry/commit/ba0d845237b32f6d8d4f0b8d0ac7f8e2669c06a9))
+* add private products search/download api endpoints ([b6b4959](https://github.com/bcgov/platform-services-registry/commit/b6b4959f2f1723df2258dcfe720e5236e06314e0))
+* **comments:** created stylized comment bubbles ([2b5e445](https://github.com/bcgov/platform-services-registry/commit/2b5e44533950475aef61ce205acad063fadac457))
+* convert private list page to client rendering ([e190c98](https://github.com/bcgov/platform-services-registry/commit/e190c98de057bb8feec961b72c762a9ee5836fcb))
+* convert private request list page to client rendering ([c612098](https://github.com/bcgov/platform-services-registry/commit/c61209815b4d988801568eaa4937dc6859d2dca3))
+* convert public list page to client rendering ([d3f9ac7](https://github.com/bcgov/platform-services-registry/commit/d3f9ac787b3ba33cdf239af2303d4e3347e5ae0d))
+* convert public request list page to client rendering ([8096eb7](https://github.com/bcgov/platform-services-registry/commit/8096eb70c8784f6fce38644849ffbb81013bd418))
+* created stylized comments bubbles ([33bd1de](https://github.com/bcgov/platform-services-registry/commit/33bd1de439fc47ffe5c55ea8121efea55822dbfb))
+* history tab and request page for public cloud ([#2544](https://github.com/bcgov/platform-services-registry/issues/2544)) ([402d470](https://github.com/bcgov/platform-services-registry/commit/402d4700f6451384adeaf6adcdb0e08337e0dc57))
+* set user session timeout configuration ([e94b3a8](https://github.com/bcgov/platform-services-registry/commit/e94b3a86de75df289c83ae6eba1902a25c768a35))
+
+
+### Bug Fixes
+
+* comments box for rejection decision only ([2674a26](https://github.com/bcgov/platform-services-registry/commit/2674a26dd957ebfb5dbb040a324d142cb6ecff84))
+* correct subject for admin edit request email ([051be5b](https://github.com/bcgov/platform-services-registry/commit/051be5b2dafdd666e80360be05789abd407011f0))
+* **private-email:** admins now notified of a delete request ([51e2c27](https://github.com/bcgov/platform-services-registry/commit/51e2c2785ce65825ecdad184185582c16e4dcb6a))
+* **private-email:** send delete approval email after provisioning has been complete ([258414f](https://github.com/bcgov/platform-services-registry/commit/258414fe35e331df8b5a1e72be2267c2c16ed5be))
+* rejection email now has correct content according to docs ([5aea799](https://github.com/bcgov/platform-services-registry/commit/5aea79905161ce80a226f4910377022e2d1bde28))
+* send correct emails given scenario, refactored approval email content ([907fcb2](https://github.com/bcgov/platform-services-registry/commit/907fcb2f87d95b1b41eeb26d6fd438526d561f2e))
+
+
+### Docs
+
+* **private-email:** update scenario 4 consistency ([3fd4d5e](https://github.com/bcgov/platform-services-registry/commit/3fd4d5e9f6bfa49b43fffee56d2bbd247cc05696))
+* updated private cloud email scenarios documentation Scenario 2 ([bf81426](https://github.com/bcgov/platform-services-registry/commit/bf81426815a03636ef5197b1485ff31fb787c946))
+
+
+### Refactors
+
+* organize create routes based on restful spec ([6869424](https://github.com/bcgov/platform-services-registry/commit/6869424c964998198e74baf75d5d2ede73af46d2))
+* organize frontend/backend routes ([083baea](https://github.com/bcgov/platform-services-registry/commit/083baeae3117ded63cb063b3dce63f9993b8b925))
+* organize read/update routes based on restful spec ([13e2b55](https://github.com/bcgov/platform-services-registry/commit/13e2b551a31c587be626711c32b7fd5e68ac4917))
+* re-organize other cloud routes ([915f3ef](https://github.com/bcgov/platform-services-registry/commit/915f3efe57ba3a8c8030be58b3db8741ae01858c))
+* re-organize private cloud routes ([2cd3204](https://github.com/bcgov/platform-services-registry/commit/2cd3204af7df1b1cbe972fd4f02592bb249b922f))
+* re-organize public cloud routes ([f7181c9](https://github.com/bcgov/platform-services-registry/commit/f7181c9ca2dbae08b3ce2ac09709d1f3c9a7a67b))
+
 ## [0.22.3](https://github.com/bcgov/platform-services-registry/compare/v0.22.1...v0.22.3) (2024-04-18)
 
 
