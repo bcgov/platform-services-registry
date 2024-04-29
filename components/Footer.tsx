@@ -1,4 +1,4 @@
-import { DEPLOYMENT_TAG } from '@/config';
+import { useAppState } from '@/states/global';
 
 const navigation = {
   main: [
@@ -13,6 +13,8 @@ const navigation = {
 };
 
 export default function Footer() {
+  const [appState, appSnapshot] = useAppState();
+
   return (
     <footer className="bg-bcblue mt-auto inset-x-0 bottom-0">
       <div className="mx-auto max-w-8xl overflow-hidden px-6 py-5 lg:px-8">
@@ -24,10 +26,10 @@ export default function Footer() {
               </a>
             </div>
           ))}
-          {DEPLOYMENT_TAG && (
+          {appSnapshot.info?.DEPLOYMENT_TAG && (
             <div className="pb-6">
               <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
-                App Version: {DEPLOYMENT_TAG}
+                App Version: {appSnapshot.info.DEPLOYMENT_TAG}
               </span>
             </div>
           )}

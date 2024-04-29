@@ -41,7 +41,6 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
   }
 
   async decorate<T>(doc: T & PublicCloudRequest & PublicCloudRequestDecorate) {
-    console.log('decorate doc:', doc);
     const canReview =
       doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPublicCloudRequests;
 
