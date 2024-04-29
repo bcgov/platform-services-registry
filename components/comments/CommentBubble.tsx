@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
-import { formatDistanceToNow } from 'date-fns';
-
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 interface ChatBubbleProps {
   firstName: string;
   lastName: string;
   timestamp: Date;
   text: string;
-  isUser: boolean;
+  isAuthor: boolean;
 }
 
-const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timestamp, text, isUser }) => {
+const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timestamp, text, isAuthor }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const bubbleStyles =
     'relative max-w-xl mx-auto my-2 bg-white rounded-lg border border-blue-200 justify-between items-center';
@@ -39,7 +38,7 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timesta
           <span className="commented-text">commented </span>
           <span>{timeAgo}</span>
         </div>
-        {isUser && (
+        {isAuthor && (
           <button onClick={toggleMenu} className="p-1 rounded-full hover:bg-gray-200">
             <EllipsisHorizontalIcon className="w-5 h-5" />
           </button>
@@ -62,7 +61,7 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timesta
       <div className={bodyStyles}>
         <p>{text}</p>
       </div>
-      <div className={isUser ? userTailStyles : otherUserTailStyles}></div>
+      <div className={isAuthor ? userTailStyles : otherUserTailStyles}></div>
     </div>
   );
 };

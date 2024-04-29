@@ -72,7 +72,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               timestamp={new Date(comment.created)}
               firstName={comment.user.firstName}
               lastName={comment.user.lastName}
-              isUser={userId === comment.userId}
+              isAuthor={userId === comment.userId}
             />
           ))}
         </ul>
