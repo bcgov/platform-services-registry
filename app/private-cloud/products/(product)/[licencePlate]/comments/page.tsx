@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
 import CommentForm from '@/components/comments/CommentForm';
 import createClientPage from '@/core/client-page';
-import { productState } from '../state';
+import { privateProductState } from '@/states/global';
 
 interface User {
   firstName: string;
@@ -32,7 +32,7 @@ const privateCloudProductComments = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductComments(({ pathParams, queryParams, session }) => {
-  const snap = useSnapshot(productState);
+  const snap = useSnapshot(privateProductState);
   const { licencePlate } = pathParams;
 
   const userId = session?.userId;

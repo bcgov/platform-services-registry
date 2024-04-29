@@ -19,7 +19,7 @@ import { z } from 'zod';
 import { getPriviateCloudProject, editPriviateCloudProject } from '@/services/backend/private-cloud/products';
 import { useSnapshot } from 'valtio';
 import createClientPage from '@/core/client-page';
-import { productState } from '../state';
+import { privateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -31,7 +31,7 @@ const privateCloudProductEdit = createClientPage({
 });
 export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
-  const snap = useSnapshot(productState);
+  const snap = useSnapshot(privateProductState);
 
   const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
