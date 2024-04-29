@@ -64,12 +64,22 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
 
     const docWithPermissions = res as typeof res & PrivateCloudProjectDecorate;
 
-    doc._permissions = {
-      view: docWithPermissions._permissions.view,
-      edit: canEdit,
-      review: canReview,
-      delete: false,
-    };
+    if (docWithPermissions) {
+      doc._permissions = {
+        view: docWithPermissions._permissions.view,
+        edit: canEdit,
+        review: canReview,
+        delete: false,
+      };
+    } else {
+      // If a product isn't found, it indicates manual removal of the product.
+      doc._permissions = {
+        view: false,
+        edit: false,
+        review: false,
+        delete: false,
+      };
+    }
 
     return doc;
   }
