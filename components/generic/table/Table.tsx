@@ -40,7 +40,7 @@ export default function Table({
   search?: string;
   onPagination?: (page: number, pageSize: number) => void;
   onSearch?: (search: string) => void;
-  onExport?: () => void;
+  onExport?: () => Promise<boolean>;
   filters?: React.ReactNode;
   isLoading?: boolean;
   children: React.ReactNode;

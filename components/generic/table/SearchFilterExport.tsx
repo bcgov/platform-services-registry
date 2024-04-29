@@ -12,7 +12,7 @@ import ExportButton from '@/components/buttons/ExportButton';
 type Props = {
   initialSearch?: string;
   onSearch?: (search: string) => void;
-  onExport?: () => boolean;
+  onExport?: () => Promise<boolean>;
   children?: React.ReactNode;
 };
 

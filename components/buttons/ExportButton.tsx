@@ -12,7 +12,7 @@ export default function ExportButton({
   className = '',
   downloadUrl,
 }: {
-  onExport?: () => boolean;
+  onExport?: () => Promise<boolean>;
   className?: string;
   downloadUrl?: string;
 }) {
