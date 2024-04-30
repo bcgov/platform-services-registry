@@ -24,6 +24,9 @@
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable",
     "knip": "knip"
   },
+  "engines": {
+    "node": ">=20.12.0"
+  },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
