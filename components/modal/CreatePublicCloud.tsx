@@ -1,5 +1,7 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 export default function CreatePublicCloud({
   open,
@@ -92,43 +94,37 @@ export default function CreatePublicCloud({
                     </div>
                   </div>
                   <div className="flex mt-8 pt-4">
-                    <input
-                      id="none"
-                      name="none"
-                      type="checkbox"
+                    <FormCheckbox
+                      id="consent1"
                       checked={confirmSigned}
                       onChange={() => setConfirmSigned(!confirmSigned)}
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 mt-4 mr-4"
-                    />
-                    <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      By checking this box, I confirm that the ministry product team has signed a Memorandum of
-                      Understanding (MoU) and have attended an onboarding session with the Public Cloud Accelerator
-                      Service Team. I also confirm that I have read and understood the roles and responsibilities as
-                      described in the
-                      <a
-                        href="https://digital.gov.bc.ca/cloud/services/public/onboard/#understand"
-                        target="_blank"
-                        className="ml-1 underline text-blue-700"
-                        rel="noreferrer"
-                      >
-                        Public Cloud Services Shared Responsibility Model
-                      </a>
-                      .
-                    </p>
+                    >
+                      <p className="font-bcsans text-sm text-gray-900">
+                        By checking this box, I confirm that the ministry product team has signed a Memorandum of
+                        Understanding (MoU) and have attended an onboarding session with the Public Cloud Accelerator
+                        Service Team. I also confirm that I have read and understood the roles and responsibilities as
+                        described in the
+                        <ExternalLink
+                          href="https://digital.gov.bc.ca/cloud/services/public/onboard/#understand"
+                          className="ml-1"
+                        >
+                          Public Cloud Services Shared Responsibility Model
+                        </ExternalLink>
+                        .
+                      </p>
+                    </FormCheckbox>
                   </div>
                   <div className="flex pt-2 pb-5">
-                    <input
-                      id="none"
-                      name="none"
-                      type="checkbox"
+                    <FormCheckbox
+                      id="consent2"
                       checked={confirmLiable}
                       onChange={() => setConfirmLiable(!confirmLiable)}
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 mt-4 mr-4"
-                    />
-                    <p className="font-bcsans text-sm text-gray-900 mt-4">
-                      By checking this box, I confirm that the ministry product team is liable to pay the base charge of
-                      USD 400 to 600 per month for each project set created.
-                    </p>
+                    >
+                      <p className="font-bcsans text-sm text-gray-900">
+                        By checking this box, I confirm that the ministry product team is liable to pay the base charge
+                        of USD 400 to 600 per month for each project set created.
+                      </p>
+                    </FormCheckbox>
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">

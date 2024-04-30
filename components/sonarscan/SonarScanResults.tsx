@@ -6,6 +6,7 @@ import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import formatDate from '@/utils/date';
 import SearchPanel from './SearchPanel';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 type SonarScanResultRows = Prisma.SonarScanResultGetPayload<{
   select: {
@@ -38,9 +39,7 @@ const processCell = (value: any, field: string, headerName: string, row: SonarSc
   if (field === 'url') {
     return (
       <div>
-        <a className="underline text-blue-500" href={value} target="_blank" rel="noreferrer">
-          {value}
-        </a>
+        <ExternalLink href={value}>{value}</ExternalLink>
         {row.source === 'ACS' && (
           <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
             ACS

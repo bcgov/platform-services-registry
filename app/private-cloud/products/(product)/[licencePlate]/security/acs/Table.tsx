@@ -2,6 +2,7 @@ import _get from 'lodash-es/get';
 import _isArray from 'lodash-es/isArray';
 import _isFunction from 'lodash-es/isFunction';
 import formatDate from '@/utils/date';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 type Process<T> = ({
   value,
@@ -65,9 +66,9 @@ export default async function Table<T extends { id: string }>({
       <h4 className="flex justify-between mt-3 mb-1 mx-8">
         <span className="font-semibold text-xl">{title}</span>
         {linkHref && (
-          <a href={linkHref} target="_blank" className="font-bcsans underline text-sm leading-6" rel="noreferrer">
+          <ExternalLink href={linkHref} className="text-sm leading-6">
             {linkTitle ?? linkHref}
-          </a>
+          </ExternalLink>
         )}
       </h4>
       <div className="flow-root overflow-y-auto">
