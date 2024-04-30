@@ -5,7 +5,10 @@ import { clusters, ministriesNames } from '@/constants';
 import { $Enums } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+import GolddrCheckbox from '@/components/form/GolddrCheckbox';
 import FormSelect from '@/components/generic/select/FormSelect';
+import ExternalLink from '@/components/generic/button/ExternalLink';
+import MailLink from '@/components/generic/button/MailLink';
 
 export default function ProjectDescription({
   mode,
@@ -56,16 +59,8 @@ export default function ProjectDescription({
         <p className="font-bcsans text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
-          {
-            <a
-              className="text-blue-600 dark:text-blue-500 hover:underline"
-              href="mailto:platformservicesteam@gov.bc.ca"
-            >
-              PlatformServicesTeam@gov.bc.ca
-            </a>
-          }{' '}
-          to get started. Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not
-          be approved.
+          <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
+          Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
         </p>
       )}
 
@@ -144,30 +139,16 @@ export default function ProjectDescription({
             ]}
             selectProps={register('cluster')}
           />
-          {!session?.isAdmin && (
-            <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select your hosting tier. Read more about hosting tiers{' '}
-              <a
-                href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
-                className="text-blue-500 hover:text-blue-700"
-              >
-                here
-              </a>
-              .
-            </p>
-          )}
-          {session?.isAdmin && (
-            <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-              Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers{' '}
-              <a
-                href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/"
-                className="text-blue-500 hover:text-blue-700"
-              >
-                here
-              </a>
-              .
-            </p>
-          )}
+          <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+            {session?.isAdmin
+              ? 'Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers '
+              : 'Select your hosting tier. Read more about hosting tiers '}
+            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/">
+              here
+            </ExternalLink>
+            .
+          </p>
+          <GolddrCheckbox disabled={disabled} />
         </div>
       </div>
     </div>

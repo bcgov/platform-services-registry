@@ -103,8 +103,8 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
                   {changed.developmentQuota && (
                     <QuotaChanges
                       licencePlate={`${request.licencePlate}-dev`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
+                      quotaCurrent={current.developmentQuota}
+                      quotaRequested={requested.developmentQuota}
                       type="Development"
                       cluster={current.cluster}
                     />
@@ -112,8 +112,8 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
                   {changed.toolsQuota && (
                     <QuotaChanges
                       licencePlate={`${request.licencePlate}-tools`}
-                      quotaCurrent={current.testQuota}
-                      quotaRequested={requested.testQuota}
+                      quotaCurrent={current.toolsQuota}
+                      quotaRequested={requested.toolsQuota}
                       type="Tools"
                       cluster={current.cluster}
                     />

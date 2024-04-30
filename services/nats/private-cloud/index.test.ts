@@ -58,6 +58,7 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
     other: 'Some other services',
     noServices: false,
   },
+  golddrEnabled: true,
 };
 
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { PrivateCloudProject, Quota } from '@prisma/client';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import FormSelect from '@/components/generic/select/FormSelect';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 type CpuOptionKeys = z.infer<typeof DefaultCpuOptionsSchema>;
 type MemoryOptionKeys = z.infer<typeof DefaultMemoryOptionsSchema>;
@@ -139,14 +140,9 @@ export default function Quotas({
       <p className="font-bcsans text-base leading-6 mt-5">
         All quota increase requests require <b> Platform Services Team’s </b>
         approval, and must have supporting information as per the{' '}
-        <a
-          href="https://docs.developer.gov.bc.ca/request-quota-increase-for-openshift-project-set/"
-          className="text-blue-500 hover:text-blue-400"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <ExternalLink href="https://docs.developer.gov.bc.ca/request-quota-increase-for-openshift-project-set/">
           Quota Increase Request Process
-        </a>
+        </ExternalLink>
         . Any Quota Requests without supporting information
         <b> will not </b> be processed.
       </p>
@@ -157,17 +153,12 @@ export default function Quotas({
               {nameSpace.charAt(0).toUpperCase() + nameSpace.slice(1)} Namespace
             </h3>
 
-            <span>
-              <a
-                className="text-blue-500 hover:text-blue-400"
-                href={`https://console.apps.${currentProject?.cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licensePlate}${namespaceSuffixes[nameSpace]}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {licensePlate}
-                {namespaceSuffixes[nameSpace] || ''}
-              </a>
-            </span>
+            <ExternalLink
+              href={`https://console.apps.${currentProject?.cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licensePlate}${namespaceSuffixes[nameSpace]}`}
+            >
+              {licensePlate}
+              {namespaceSuffixes[nameSpace] || ''}
+            </ExternalLink>
 
             {(['cpu', 'memory', 'storage'] as const).map((quotaName) => (
               <QuotaInput

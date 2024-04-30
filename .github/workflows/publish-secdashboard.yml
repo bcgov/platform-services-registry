@@ -26,7 +26,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8459bc0c7e3759cdf591f513d9f141a95fef0a8f
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
@@ -49,7 +49,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8459bc0c7e3759cdf591f513d9f141a95fef0a8f
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
@@ -72,7 +72,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8459bc0c7e3759cdf591f513d9f141a95fef0a8f
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@fc10f2556d8e479a692a1560eea078dacf12f68a
