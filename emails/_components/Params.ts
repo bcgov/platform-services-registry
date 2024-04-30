@@ -358,6 +358,7 @@ export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
       other: '',
       noServices: false,
     },
+    golddrEnabled: true,
     id: 'f',
     name: '31.1',
     description: '1',
@@ -489,6 +490,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
       idir: 'SWILLIAMS',
     },
     secondaryTechnicalLead: null,
+    golddrEnabled: true,
   },
   requestedProject: {
     productionQuota: {
@@ -574,6 +576,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
       upn: 'John.Doe@gov.bc.ca',
       idir: 'JDOE',
     },
+    golddrEnabled: true,
   },
 };
 
@@ -661,4 +664,5 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
     upn: 'Sarah.Williams@gov.bc.ca',
     idir: 'SWILLIAMS',
   },
+  golddrEnabled: true,
 };

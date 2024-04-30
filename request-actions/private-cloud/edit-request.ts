@@ -87,7 +87,7 @@ export default async function editRequest(
   return prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
-      decisionStatus: decisionStatus,
+      decisionStatus,
       isQuotaChanged: !isNoQuotaChanged,
       active: true,
       createdByEmail: authEmail,

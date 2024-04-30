@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+
 interface ChatBubbleProps {
   firstName: string;
   lastName: string;
