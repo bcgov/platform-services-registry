@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { deletePrivateCloudComment } from '@/services/backend/private-cloud/products';
+import { toast } from 'react-toastify';
+import AlertBox from '../modal/AlertBox';
 
 interface ChatBubbleProps {
   firstName: string;
@@ -25,19 +27,26 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({
   onDelete,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleDelete = async () => {
+    setMenuOpen(false);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = async () => {
     try {
       const result = await deletePrivateCloudComment(licencePlate, commentId);
       if (result.success) {
         onDelete(); // Callback to refresh the comments list
-        console.log('Comment deleted successfully');
+        toast.success('Comment deleted successfully');
       } else {
-        console.error('Failed to delete the comment');
+        toast.error('Failed to delete the comment');
       }
     } catch (error) {
-      console.error('Failed to delete the comment', error);
+      toast.error('Failed to delete the comment');
     }
+    setShowConfirm(false);
   };
 
   const bubbleStyles =
@@ -45,7 +54,7 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({
 
   const headerStyles = 'flex justify-between items-center px-4 py-1 bg-blue-100 text-gray-700 text-xs';
 
-  const bodyStyles = 'p-4 text-gray-700';
+  const bodyStyles = 'p-4 text-gray-700 break-words';
 
   const userTailStyles =
     'absolute top-3 right-0 w-0 h-0 border-l-[26px] border-l-transparent border-b-[10px] border-b-transparent border-t-[26px] border-t-blue-100 transform translate-x-1/4 -translate-y-1/4 rotate-45';
@@ -96,6 +105,17 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({
         <p>{text}</p>
       </div>
       <div className={isAuthor ? userTailStyles : otherUserTailStyles}></div>
+      {showConfirm && (
+        <AlertBox
+          isOpen={showConfirm}
+          title="Confirm Deletion"
+          message="Are you sure you want to delete this comment ?"
+          onCancel={() => setShowConfirm(false)}
+          onConfirm={confirmDelete}
+          cancelButtonText="Cancel"
+          confirmButtonText="Delete"
+        />
+      )}
     </div>
   );
 };
