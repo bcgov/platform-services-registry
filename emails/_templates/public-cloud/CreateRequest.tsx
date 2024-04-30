@@ -7,8 +7,6 @@ import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../_components/ProviderDetails';
 import Closing from '../../_components/Closing';
 import { TailwindConfig } from '../../_components/TailwindConfig';
-const defaultTheme = require('tailwindcss/defaultTheme');
-
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
 }
@@ -68,7 +66,6 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
-                <Text className="">The Cloud Pathfinder team </Text>
               </div>
             </div>
           </Body>
