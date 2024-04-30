@@ -1,30 +1,25 @@
 import { useFormContext } from 'react-hook-form';
-import { AGMinistries } from '@/constants';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { $Enums } from '@prisma/client';
 
 export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();
-  const watchMinistry = watch('ministry');
+  const watchCluster = watch('cluster');
 
-  if (!AGMinistries.includes(watchMinistry)) {
+  if (watchCluster !== $Enums.Cluster.GOLD) {
     return null;
   }
 
   return (
     <FormCheckbox
-      id="ag-security"
-      inputProps={register('isAgMinistryChecked')}
+      id="golddrEnabled"
+      inputProps={register('golddrEnabled')}
       disabled={disabled}
-      className={{ label: 'text-sm ' }}
+      className={{ label: 'text-sm' }}
     >
-      <span className={`${formState.errors.isAgMinistryChecked && 'text-red-400'}`}>
-        * All product teams from the Ministries of Attorney General, Public Safety and Solicitor General and Emergency
-        Management BC and BC Housing must engage with
-        <a href="mailto: JAGMISO@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
-          {' '}
-          AG Security{' '}
-        </a>
-        to prior to submitting a request for a product.
+      <span>
+        Please choose whether you&#39;d like to include the{' '}
+        <span className="font-bold text-blue-600">Golddr cluster</span> alongside the Gold cluster.
       </span>
     </FormCheckbox>
   );
