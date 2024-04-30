@@ -3,7 +3,7 @@ export interface PrivateCloudProjectDecorate {
 }
 
 export interface PrivateCloudRequestDecorate {
-  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean };
+  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean; viewHistory: boolean };
 }
 
 export interface PublicCloudProjectDecorate {
@@ -11,5 +11,5 @@ export interface PublicCloudProjectDecorate {
 }
 
 export interface PublicCloudRequestDecorate {
-  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean };
+  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean; viewHistory: boolean };
 }

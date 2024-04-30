@@ -2,7 +2,8 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { NoContent, OkResponse } from '@/core/responses';
+import { OkResponse } from '@/core/responses';
+import { PermissionsEnum } from '@/types/permissions';
 import { processBoolean } from '@/utils/zod';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 
@@ -16,6 +17,7 @@ const queryParamSchema = z.object({
 
 const apiHandler = createApiHandler({
   roles: ['user'],
+  permissions: [PermissionsEnum.ViewPrivateProductHistory],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 

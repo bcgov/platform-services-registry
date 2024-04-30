@@ -71,6 +71,8 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       canEdit ||
       this.session.ministries.reader.includes(doc.ministry);
 
+    const canViewHistroy = this.session.permissions.viewPrivateProductHistory;
+
     doc._permissions = {
       view: canView,
       edit: canEdit && !hasActiveRequest,

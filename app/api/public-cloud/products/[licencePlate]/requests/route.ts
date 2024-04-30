@@ -2,9 +2,10 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { NoContent, OkResponse } from '@/core/responses';
+import { OkResponse } from '@/core/responses';
 import { processBoolean } from '@/utils/zod';
 import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
+import { PermissionsEnum } from '@/types/permissions';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -16,6 +17,7 @@ const queryParamSchema = z.object({
 
 const apiHandler = createApiHandler({
   roles: ['user'],
+  permissions: [PermissionsEnum.ViewPublicProductHistory],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 

@@ -142,9 +142,10 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPrivateAdmin ||
       session.isPrivateEditor ||
       session.isPrivateReader,
+    viewPrivateProductHistory:
+      session.isAdmin || session.isPrivateAdmin || session.isPublicAdmin || session.ministries.editor.length > 0,
 
-    editAllPrivateCloudProducts:
-      session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
+    editAllPrivateCloudProducts: session.isAdmin || session.isEditor || session.isPrivateEditor,
     deleteAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
@@ -158,6 +159,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPublicAdmin ||
       session.isPublicEditor ||
       session.isPublicReader,
+    viewPublicProductHistory: session.isAdmin || session.isPublicAdmin || session.ministries.editor.length > 0,
 
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:

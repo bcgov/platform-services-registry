@@ -44,11 +44,12 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
       doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPrivateCloudRequests;
 
     const canEdit = canReview && doc.type !== $Enums.RequestType.DELETE;
-
+    const canViewHistory = this.session.permissions.viewPrivateProductHistory;
     if (doc.type === $Enums.RequestType.CREATE) {
       doc._permissions = {
         view: this.session.permissions.viewAllPrivateCloudProducts || doc.createdByEmail === this.session.user.email,
         edit: canEdit,
+        viewHistory: canViewHistory,
         review: canReview,
         delete: false,
       };
@@ -68,6 +69,7 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
       doc._permissions = {
         view: docWithPermissions._permissions.view,
         edit: canEdit,
+        viewHistory: canViewHistory,
         review: canReview,
         delete: false,
       };
@@ -76,6 +78,7 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
       doc._permissions = {
         view: false,
         edit: false,
+        viewHistory: false,
         review: false,
         delete: false,
       };
