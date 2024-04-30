@@ -1,5 +1,6 @@
-import { Cluster, Ministry, Provider, $Enums } from '@prisma/client';
 import { string, z } from 'zod';
+import { Cluster, Ministry, Provider, $Enums } from '@prisma/client';
+import { processBoolean } from './utils/zod';
 
 export const DefaultCpuOptionsSchema = z.enum([
   'CPU_REQUEST_0_5_LIMIT_1_5',
@@ -107,7 +108,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLead: UserInputSchema,
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   commonComponents: CommonComponentsInputSchema,
-  golddrEnabled: z.boolean(),
+  golddrEnabled: z.preprocess(processBoolean, z.boolean()),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({
@@ -150,7 +151,7 @@ export const PrivateCloudDecisionRequestBodySchema = PrivateCloudEditRequestBody
   }),
 );
 
-export const PublicCloudDecisionRequestBodySchema = PublicCloudEditRequestBodySchema.merge(
+export const PublicCloudRequestDecisionBodySchema = PublicCloudEditRequestBodySchema.merge(
   z.object({
     decision: DecisionOptionsSchema,
     decisionComment: string().optional(),
@@ -183,9 +184,7 @@ export type CommonComponentsInput = z.infer<typeof CommonComponentsInputSchema>;
 export type QuotaInput = z.infer<typeof QuotaInputSchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof PrivateCloudEditRequestBodySchema>;
 export type PublicCloudEditRequestBody = z.infer<typeof PublicCloudEditRequestBodySchema>;
-export type PrivateCloudDecisionRequestBody = z.infer<typeof PrivateCloudDecisionRequestBodySchema>;
-export type PublicCloudDecisionRequestBody = z.infer<typeof PublicCloudDecisionRequestBodySchema>;
+export type PublicCloudRequestDecisionBody = z.infer<typeof PublicCloudRequestDecisionBodySchema>;
 export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
 export type DefaultCpuOptions = z.infer<typeof DefaultCpuOptionsSchema>;
 export type DefaultMemoryOptions = z.infer<typeof DefaultMemoryOptionsSchema>;
-export type DefaultStorageOptions = z.infer<typeof DefaultStorageOptionsSchema>;

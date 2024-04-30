@@ -1,15 +1,15 @@
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
-import { PrivateCloudEditRequestBodySchema } from '@/schema';
+import { PrivateCloudEditRequestBody } from '@/schema';
 import { Session } from 'next-auth';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 import { Cluster, PrivateCloudRequest, DecisionStatus, User } from '@prisma/client';
 import editRequest from '@/request-actions/private-cloud/edit-request';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { subscribeUsersToMautic } from '@/services/mautic';
-import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { sendEditRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { sendRequestNatsMessage } from '@/helpers/nats-message';
 
 export default async function updateOp({
   session,
@@ -17,7 +17,7 @@ export default async function updateOp({
   pathParams,
 }: {
   session: Session;
-  body: TypeOf<typeof PrivateCloudEditRequestBodySchema>;
+  body: PrivateCloudEditRequestBody;
   pathParams: TypeOf<typeof putPathParamSchema>;
 }) {
   const { userEmail } = session;
@@ -54,24 +54,11 @@ export default async function updateOp({
     );
   }
 
-  const contactChanged =
-    body.projectOwner.email !== request.requestedProject.projectOwner.email ||
-    body.primaryTechnicalLead.email !== request.requestedProject.primaryTechnicalLead.email ||
-    body.secondaryTechnicalLead?.email !== request.requestedProject?.secondaryTechnicalLead?.email;
-
-  await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
-
-  if (request.requestedProject.cluster === Cluster.GOLD) {
-    const goldDrRequest = { ...request };
-    goldDrRequest.requestedProject.cluster = Cluster.GOLDDR;
-    await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactChanged);
-    await sendPrivateCloudNatsMessage(
-      goldDrRequest.id,
-      goldDrRequest.type,
-      goldDrRequest.requestedProject,
-      contactChanged,
-    );
-  }
+  await sendRequestNatsMessage(request, {
+    projectOwner: { email: body.projectOwner.email },
+    primaryTechnicalLead: { email: body.primaryTechnicalLead.email },
+    secondaryTechnicalLead: { email: body.secondaryTechnicalLead?.email },
+  });
 
   // Subscribe users to Mautic
   const users: User[] = [
