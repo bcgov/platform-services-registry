@@ -5,6 +5,7 @@ import { clusters, ministriesNames } from '@/constants';
 import { $Enums } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+import GolddrCheckbox from '@/components/form/GolddrCheckbox';
 import FormSelect from '@/components/generic/select/FormSelect';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
@@ -147,6 +148,7 @@ export default function ProjectDescription({
             </ExternalLink>
             .
           </p>
+          <GolddrCheckbox disabled={disabled} />
         </div>
       </div>
     </div>

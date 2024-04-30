@@ -14,7 +14,12 @@ import {
   RequestType,
   User,
 } from '@prisma/client';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+  PrivateCloudCreateRequestBody,
+} from '@/schema';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { createProxyUsers } from '@/queries/users';
 import { POST as downloadCsv } from './route';
@@ -91,6 +96,7 @@ const projectData = [
       other: 'Some other services',
       noServices: false,
     },
+    golddrEnabled: true,
   },
   {
     name: 'TestProject',
@@ -144,6 +150,7 @@ const projectData = [
       other: 'Some other services',
       noServices: false,
     },
+    golddrEnabled: true,
   },
 ];
 
@@ -185,6 +192,7 @@ function createProjectObject(data: any, index: number) {
       },
     },
     commonComponents: data.commonComponents,
+    golddrEnabled: data.golddrEnabled,
   };
 }
 

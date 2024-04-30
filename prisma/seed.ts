@@ -133,6 +133,7 @@ async function main() {
             storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
           },
           commonComponents,
+          golddrEnabled: true,
         },
       });
     }

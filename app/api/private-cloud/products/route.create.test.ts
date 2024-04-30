@@ -58,6 +58,7 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
     other: 'Some other services',
     noServices: false,
   },
+  golddrEnabled: true,
 };
 
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
@@ -93,7 +94,7 @@ describe('Create Private Cloud Request Route', () => {
     const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
     mockedGetServerSession.mockResolvedValue(mockSession);
 
-    const requestsBefore: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
+    const requestsBefore = await prisma.privateCloudRequest.findMany();
 
     const req = new NextRequest(API_URL, {
       method: 'POST',
@@ -103,7 +104,7 @@ describe('Create Private Cloud Request Route', () => {
     const response = await POST(req);
     expect(response.status).toBe(200);
 
-    const requestsAfter: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
+    const requestsAfter = await prisma.privateCloudRequest.findMany();
 
     expect(requestsAfter.length).toBe(requestsBefore.length + 1);
   });

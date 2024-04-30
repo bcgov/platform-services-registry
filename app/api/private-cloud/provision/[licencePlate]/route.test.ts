@@ -57,6 +57,7 @@ const createRequestBody = {
     other: 'Some other services',
     noServices: false,
   },
+  golddrEnabled: true,
 };
 
 const quota = {

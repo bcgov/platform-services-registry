@@ -1,17 +1,21 @@
 import prisma from '@/core/prisma';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import {
+  DefaultCpuOptionsSchema,
+  DefaultMemoryOptionsSchema,
+  DefaultStorageOptionsSchema,
+  PrivateCloudCreateRequestBody,
+} from '@/schema';
 import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
 import { POST } from '@/app/api/private-cloud/products/[licencePlate]/decision/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-// import { cleanUp } from "@/jest.setup";
 import { expect } from '@jest/globals';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 
 const BASE_URL = 'http://localhost:3000';
 
-const createRequestBody = {
+const createRequestBody: PrivateCloudCreateRequestBody = {
   name: 'Sample Project',
   description: 'This is a sample project description.',
   cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
@@ -58,6 +62,7 @@ const createRequestBody = {
     other: 'Some other services',
     noServices: false,
   },
+  golddrEnabled: true,
 };
 
 const quota = {

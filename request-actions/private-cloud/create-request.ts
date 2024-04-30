@@ -44,6 +44,7 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
         create: formData.projectOwner,
       },
     },
+    golddrEnabled: formData.golddrEnabled,
     primaryTechnicalLead: {
       connectOrCreate: {
         where: {
