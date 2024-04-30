@@ -31,20 +31,21 @@
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/no-var-requires": "off",
     "import/no-extraneous-dependencies": "off",
+    "import/named": "off",
+    "import/no-named-as-default": "off",
     "no-else-return": "error",
     "no-nested-ternary": "off",
     "no-unneeded-ternary": "error",
     "no-process-env": "error",
-    "react/react-in-jsx-scope": "off",
-    "prefer-destructuring": "off",
-    "sort-imports": "off",
     "no-warning-comments": "off",
-    "import/named": "off",
     "n/no-missing-import": "off",
     "n/no-extraneous-import": "off",
     "n/no-process-exit": "off",
-    "spaced-comment": ["error", "always", { "markers": ["/"] }],
-    "n/no-unsupported-features/node-builtins": "off"
+    "n/no-unsupported-features/node-builtins": "off",
+    "react/react-in-jsx-scope": "off",
+    "prefer-destructuring": "off",
+    "sort-imports": "off",
+    "spaced-comment": ["error", "always", { "markers": ["/"] }]
   },
   "overrides": [
     {
