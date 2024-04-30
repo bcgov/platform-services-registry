@@ -54,7 +54,6 @@ const ExpenseAuthorityTemplate = ({ product }: EmailProp) => {
               </div>
               <div>
                 <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
-                <Text className="">The Cloud Pathfinder team </Text>
               </div>
             </div>
           </Body>
