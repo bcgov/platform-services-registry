@@ -55,7 +55,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     },
   ];
 
-  if (session?.previews.history) {
+  if (session?.permissions.viewPublicProductHistory) {
     tabs.push({
       label: 'HISTORY',
       name: 'history',

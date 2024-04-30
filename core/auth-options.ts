@@ -127,7 +127,6 @@ export async function generateSession({ session, token }: { session: Session; to
   }
 
   session.previews = {
-    history: session.isAdmin || session.isPrivateAdmin || session.isPublicAdmin || session.ministries.editor.length > 0,
     security: !IS_PROD,
     comments: !IS_PROD,
   };

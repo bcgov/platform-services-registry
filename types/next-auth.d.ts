@@ -59,7 +59,6 @@ declare module 'next-auth' {
       viewPublicAnalytics: boolean;
     };
     previews: {
-      history: boolean;
       security: boolean;
       comments: boolean;
     };
