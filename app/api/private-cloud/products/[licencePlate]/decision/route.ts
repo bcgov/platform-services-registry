@@ -2,9 +2,7 @@ import { Cluster, DecisionStatus, User } from '@prisma/client';
 import { PermissionsEnum } from '@/types/permissions';
 import { z } from 'zod';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
-import makeDecisionRequest, {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-} from '@/request-actions/private-cloud/decision-request';
+import makeDecisionRequest from '@/request-actions/private-cloud/decision-request';
 import createApiHandler from '@/core/api-handler';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
@@ -26,7 +24,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
   const { decision, decisionComment, ...requestedProjectFormData } = body;
 
-  const request: PrivateCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
+  const request = await makeDecisionRequest(
     licencePlate,
     decision,
     decisionComment,

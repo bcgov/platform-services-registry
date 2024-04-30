@@ -3,6 +3,7 @@ import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import formatDate from '@/utils/date';
 import SearchPanel from './SearchPanel';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
   select: { id: true; licencePlate: true; cluster: true; host: true; json: true; scannedAt: true; available: true };
@@ -91,19 +92,11 @@ const processCell = (value: any, field: string, headerName: string, row: ZapResu
   if (field === 'id') {
     if (!row.available) return 'Not Available';
 
-    return (
-      <a className="underline text-blue-500" href={`/zapscan/reports/${value}`} target="_blank" rel="noreferrer">
-        Report
-      </a>
-    );
+    return <ExternalLink href={`/zapscan/reports/${value}`}>Report</ExternalLink>;
   }
 
   if (field === 'host') {
-    return (
-      <a className="underline text-blue-500" href={`https://${value}`} target="_blank" rel="noreferrer">
-        {value}
-      </a>
-    );
+    return <ExternalLink href={`https://${value}`}>Report</ExternalLink>;
   }
 
   return value;

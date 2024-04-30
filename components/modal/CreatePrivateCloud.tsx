@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import Modal from '@/components/generic/modal/Modal';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 export default function CreatePrivateCloud({
   open,
@@ -43,14 +44,9 @@ export default function CreatePrivateCloud({
             <p className="text-sm text-gray-900">
               By checking this box, I confirm that I have read and understood the roles and responsibilities as
               described in the
-              <a
-                href="https://digital.gov.bc.ca/cloud/services/private/onboard/"
-                target="_blank"
-                className="ml-1 underline text-blue-700"
-                rel="noreferrer"
-              >
+              <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/onboard/" className="ml-1">
                 Onboarding Guide.
-              </a>
+              </ExternalLink>
             </p>
           </FormCheckbox>
         </div>

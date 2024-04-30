@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import classNames from '@/utils/classnames';
 import BudgetInput from '@/components/form/BudgetInput';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 
 export default function Budget({ disabled }: { disabled?: boolean }) {
   const {
@@ -23,17 +24,10 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
       </h2>
       <p className="font-bcsans text-base leading-6 mt-5">
         Please indicate your estimated monthly budget &#40;Try the{' '}
-        <a
-          className="text-blue-500 hover:text-blue-400"
-          href={'https://calculator.aws/#/'}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          AWS Cost Calculator
-        </a>{' '}
-        to get an estimate&#41;. Provide an estimated average monthly spend allocated to your cloud service usage for
-        this project. As a part of this request, you will be provisioned with four accounts - Dev, Test, Prod and Tools.
-        Please specify the estimate for each of these accounts.{' '}
+        <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink> to get an estimate&#41;.
+        Provide an estimated average monthly spend allocated to your cloud service usage for this project. As a part of
+        this request, you will be provisioned with four accounts - Dev, Test, Prod and Tools. Please specify the
+        estimate for each of these accounts.{' '}
         <b>
           Please note that this estimate are projected numbers that will only be used to send your team a warning when
           the monthly spend reaches 80% of your estimated budget.
