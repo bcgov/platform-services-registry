@@ -67,8 +67,13 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
       canEdit ||
       this.session.ministries.reader.includes(doc.ministry);
 
+    const canViewHistroy =
+      this.session.permissions.viewAllPublicCloudProductsHistory ||
+      this.session.ministries.editor.includes(doc.ministry);
+
     doc._permissions = {
       view: canView,
+      viewHistory: canViewHistroy,
       edit: canEdit && !hasActiveRequest,
       delete: canEdit && !hasActiveRequest,
     };

@@ -127,11 +127,8 @@ export async function generateSession({ session, token }: { session: Session; to
   }
 
   session.previews = {
-    history: !IS_PROD,
     security: !IS_PROD,
     comments: !IS_PROD,
-    // expenseAuthority: !IS_PROD,
-    // awsRoles: !IS_PROD,
   };
 
   session.permissions = {
@@ -144,6 +141,8 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPrivateAdmin ||
       session.isPrivateEditor ||
       session.isPrivateReader,
+
+    viewAllPrivateCloudProductsHistory: session.isAdmin || session.isPrivateAdmin,
 
     editAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
@@ -160,6 +159,8 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPublicAdmin ||
       session.isPublicEditor ||
       session.isPublicReader,
+
+    viewAllPublicCloudProductsHistory: session.isAdmin || session.isPublicAdmin,
 
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:
@@ -182,12 +183,6 @@ export async function generateSession({ session, token }: { session: Session; to
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
   };
 
-  // {
-  //   ...
-  //   roles: ['admin', 'ministry-citz-admin'],
-  //   isAdmin: true,
-  //   ministries: { editor: ['citz'], reader: [] },
-  // }
   return session;
 }
 
