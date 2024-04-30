@@ -1,16 +1,45 @@
 import React, { useState } from 'react';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { deletePrivateCloudComment } from '@/services/backend/private-cloud/products';
+
 interface ChatBubbleProps {
   firstName: string;
   lastName: string;
   timestamp: Date;
   text: string;
   isAuthor: boolean;
+  commentId: string;
+  licencePlate: string;
+  onDelete: () => void;
 }
 
-const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timestamp, text, isAuthor }) => {
+const CommentBubble: React.FC<ChatBubbleProps> = ({
+  firstName,
+  lastName,
+  timestamp,
+  text,
+  isAuthor,
+  commentId,
+  licencePlate,
+  onDelete,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      const result = await deletePrivateCloudComment(licencePlate, commentId);
+      if (result.success) {
+        onDelete(); // Callback to refresh the comments list
+        console.log('Comment deleted successfully');
+      } else {
+        console.error('Failed to delete the comment');
+      }
+    } catch (error) {
+      console.error('Failed to delete the comment', error);
+    }
+  };
+
   const bubbleStyles =
     'relative max-w-xl mx-auto my-2 bg-white rounded-lg border border-blue-200 justify-between items-center';
 
@@ -46,16 +75,21 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timesta
       </div>
       {menuOpen && (
         <div className="absolute right-0 mt-2 py-1 w-48 bg-white rounded-md shadow-lg z-50">
-          <ul>
-            <li className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <PencilSquareIcon className="w-5 h-5 mr-2" />
-              Edit
-            </li>
-            <li className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Delete
-            </li>
-          </ul>
+          <button
+            onClick={() => {} /* handleEdit */}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+          >
+            <PencilSquareIcon className="w-5 h-5 mr-2" />
+            Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+            aria-label="Delete comment"
+          >
+            <TrashIcon className="w-5 h-5 mr-2" />
+            Delete
+          </button>
         </div>
       )}
       <div className={bodyStyles}>

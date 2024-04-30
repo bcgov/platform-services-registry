@@ -73,6 +73,9 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               firstName={comment.user.firstName}
               lastName={comment.user.lastName}
               isAuthor={userId === comment.userId}
+              commentId={comment.id}
+              licencePlate={licencePlate}
+              onDelete={refetchComments}
             />
           ))}
         </ul>
