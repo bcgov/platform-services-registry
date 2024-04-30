@@ -1,12 +1,14 @@
 export enum PermissionsEnum {
   CreatePrivateCloudProducts = 'createPrivateCloudProducts',
   ViewAllPrivateCloudProducts = 'viewAllPrivateCloudProducts',
+  ViewAllPrivateCloudProductsHistory = 'viewAllPrivateCloudProductsHistory',
   EditAllPrivateCloudProducts = 'editAllPrivateCloudProducts',
   DeleteAllPrivateCloudProducts = 'deleteAllPrivateCloudProducts',
   ReviewAllPrivateCloudRequests = 'reviewAllPrivateCloudRequests',
 
   CreatePublicCloudProducts = 'createPublicCloudProducts',
   ViewAllPublicCloudProducts = 'viewAllPublicCloudProducts',
+  ViewAllPublicCloudProductsHistory = 'viewAllPublicCloudProductsHistory',
   EditAllPublicCloudProducts = 'editAllPublicCloudProducts',
   DeleteAllPublicCloudProducts = 'deleteAllPublicCloudProducts',
   ReviewAllPublicCloudRequests = 'reviewAllPublicCloudRequests',
