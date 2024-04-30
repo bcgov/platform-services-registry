@@ -36,7 +36,7 @@ export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGe
   };
 }>;
 
-export default async function makeDecisionRequest(
+export default async function makeRequestDecision(
   licencePlate: string,
   decision: DecisionStatus,
   decisionComment: string | undefined,

@@ -2,6 +2,18 @@ import { Cluster, DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
 
+export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    requestedProject: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}>;
+
 export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {
     project: {
@@ -21,59 +33,26 @@ export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCl
   };
 }>;
 
-export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    requestedProject: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}>;
-
-export default async function makeDecisionRequest(
+export default async function makeRequestDecision(
   licencePlate: string,
   decision: DecisionStatus,
   comment: string | undefined,
   formData: PrivateCloudEditRequestBody,
   authEmail: string,
-): Promise<PrivateCloudRequestWithProjectAndRequestedProject> {
-  // Get the request
-  const request: PrivateCloudRequestWithRequestedProject | null = await prisma.privateCloudRequest.findFirst({
+) {
+  const request = await prisma.privateCloudRequest.findFirst({
     where: {
       licencePlate,
       active: true,
     },
-    include: {
-      project: true,
-      requestedProject: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-    },
+    select: { id: true, licencePlate: true },
   });
 
   if (!request) {
     throw new Error('Request not found.');
   }
 
-  const {
-    id: _,
-    projectOwnerId,
-    primaryTechnicalLeadId,
-    secondaryTechnicalLeadId,
-    ...userRequestedProject
-  } = request.requestedProject;
-  // Update the request with the data passed in from the form.
-  // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject model
-  // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
-  // project if the admin did not change anything.
-  return prisma.privateCloudRequest.update({
+  const updatedProduct = await prisma.privateCloudRequest.update({
     where: {
       id: request.id,
     },
@@ -94,9 +73,9 @@ export default async function makeDecisionRequest(
       },
     },
     data: {
+      active: decision === DecisionStatus.APPROVED,
       decisionStatus: decision,
       decisionComment: comment,
-      active: decision === DecisionStatus.APPROVED,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,
       requestedProject: {
@@ -134,4 +113,6 @@ export default async function makeDecisionRequest(
       },
     },
   });
+
+  return updatedProduct as PrivateCloudRequestWithProjectAndRequestedProject;
 }

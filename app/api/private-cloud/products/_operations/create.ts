@@ -1,18 +1,11 @@
-import { z, TypeOf, ZodType } from 'zod';
 import { Session } from 'next-auth';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { PrivateCloudCreateRequestBodySchema } from '@/schema';
+import { PrivateCloudCreateRequestBody } from '@/schema';
 import createRequest from '@/request-actions/private-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 
-export default async function createOp({
-  session,
-  body,
-}: {
-  session: Session;
-  body: TypeOf<typeof PrivateCloudCreateRequestBodySchema>;
-}) {
+export default async function createOp({ session, body }: { session: Session; body: PrivateCloudCreateRequestBody }) {
   const { user } = session ?? {};
   const { email: authEmail } = user ?? {};
 

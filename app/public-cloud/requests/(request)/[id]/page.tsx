@@ -10,7 +10,7 @@ import AccountCoding from '@/components/form/AccountCoding';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import { z } from 'zod';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
-import { PublicCloudDecisionRequestBodySchema } from '@/schema';
+import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import createClientPage from '@/core/client-page';
 
 const pathParamSchema = z.object({
@@ -31,7 +31,7 @@ export default publicCloudRequest(({ pathParams }) => {
   });
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudDecisionRequestBodySchema),
+    resolver: zodResolver(PublicCloudRequestDecisionBodySchema),
     values: { comment: '', decision: '', ...request },
   });
 

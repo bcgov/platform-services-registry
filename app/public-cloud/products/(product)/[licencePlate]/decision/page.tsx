@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PublicCloudDecisionRequestBodySchema } from '@/schema';
+import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import PreviousButton from '@/components/buttons/Previous';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import Comment from '@/components/modal/Comment';
@@ -62,7 +62,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
   }, [activeRequests]);
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudDecisionRequestBodySchema),
+    resolver: zodResolver(PublicCloudRequestDecisionBodySchema),
     values: { comment: '', decision: '', ...activeRequest?.requestedProject },
   });
 

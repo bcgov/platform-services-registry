@@ -2,8 +2,8 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import { PermissionsEnum } from '@/types/permissions';
 import { DecisionStatus, User } from '@prisma/client';
 import { z } from 'zod';
-import { PublicCloudDecisionRequestBodySchema } from '@/schema';
-import makeDecisionRequest, {
+import { PublicCloudRequestDecisionBodySchema } from '@/schema';
+import makeRequestDecision, {
   PublicCloudRequestWithProjectAndRequestedProject,
 } from '@/request-actions/public-cloud/decision-request';
 import createApiHandler from '@/core/api-handler';
@@ -19,7 +19,7 @@ const pathParamSchema = z.object({
 const apiHandler = createApiHandler({
   roles: ['user'],
   permissions: [PermissionsEnum.ReviewAllPublicCloudRequests],
-  validations: { pathParams: pathParamSchema, body: PublicCloudDecisionRequestBodySchema },
+  validations: { pathParams: pathParamSchema, body: PublicCloudRequestDecisionBodySchema },
 });
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
@@ -27,7 +27,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
   const { decision, decisionComment, ...requestedProjectFormData } = body;
 
-  const request: PublicCloudRequestWithProjectAndRequestedProject = await makeDecisionRequest(
+  const request: PublicCloudRequestWithProjectAndRequestedProject = await makeRequestDecision(
     licencePlate,
     decision,
     decisionComment,

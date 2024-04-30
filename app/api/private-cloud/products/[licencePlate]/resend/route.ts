@@ -62,7 +62,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   await sendPrivateCloudNatsMessage(request.id, request.type, request.requestedProject, contactsChanged);
 
   // For GOLD requests, we create an identical request for GOLDDR
-  if (request.requestedProject.cluster === Cluster.GOLD) {
+  if (request.requestedProject.cluster === Cluster.GOLD && request.requestedProject.golddrEnabled) {
     await sendPrivateCloudNatsMessage(
       request.id,
       request.type,

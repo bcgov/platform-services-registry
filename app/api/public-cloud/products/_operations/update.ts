@@ -1,6 +1,6 @@
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
-import { PublicCloudEditRequestBodySchema } from '@/schema';
+import { PublicCloudEditRequestBody } from '@/schema';
 import { Session } from 'next-auth';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 import { subscribeUsersToMautic } from '@/services/mautic';
@@ -17,7 +17,7 @@ export default async function updateOp({
   pathParams,
 }: {
   session: Session;
-  body: TypeOf<typeof PublicCloudEditRequestBodySchema>;
+  body: PublicCloudEditRequestBody;
   pathParams: TypeOf<typeof putPathParamSchema>;
 }) {
   if (!session) {

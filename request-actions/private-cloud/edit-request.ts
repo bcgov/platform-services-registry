@@ -1,4 +1,4 @@
-import { DecisionStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
@@ -77,8 +77,14 @@ export default async function editRequest(
 
   let decisionStatus: DecisionStatus;
 
-  // If there is no quota change or no quota upgrade, the request is automatically approved
-  if (isNoQuotaChanged || !isQuotaUpgrade(formData, project as PrivateCloudEditRequestBody)) {
+  const hasGolddrEnabledChanged =
+    project.cluster === $Enums.Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
+
+  // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
+  if (
+    (isNoQuotaChanged || !isQuotaUpgrade(formData, project as PrivateCloudEditRequestBody)) &&
+    !hasGolddrEnabledChanged
+  ) {
     decisionStatus = DecisionStatus.APPROVED;
   } else {
     decisionStatus = DecisionStatus.PENDING;

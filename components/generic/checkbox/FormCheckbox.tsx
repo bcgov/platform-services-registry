@@ -49,7 +49,7 @@ export default function FormCheckbox({
         )}
       />
       <div className="ml-3">
-        <label htmlFor={id} className={classnames('text-gray-900 select-none', className?.label ?? '')}>
+        <label htmlFor={id} className={classnames('text-gray-900 select-none cursor-pointer', className?.label ?? '')}>
           {children ?? label}
         </label>
         {hasError && <div>{error}</div>}
