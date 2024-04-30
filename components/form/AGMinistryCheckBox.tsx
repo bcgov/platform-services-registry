@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { AGMinistries } from '@/constants';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import MailLink from '@/components/generic/button/MailLink';
 
 export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();
@@ -19,12 +20,8 @@ export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean })
     >
       <span className={`${formState.errors.isAgMinistryChecked && 'text-red-400'}`}>
         * All product teams from the Ministries of Attorney General, Public Safety and Solicitor General and Emergency
-        Management BC and BC Housing must engage with
-        <a href="mailto: JAGMISO@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
-          {' '}
-          AG Security{' '}
-        </a>
-        to prior to submitting a request for a product.
+        Management BC and BC Housing must engage with <MailLink to="JAGMISO@gov.bc.ca">AG Security</MailLink> to prior
+        to submitting a request for a product.
       </span>
     </FormCheckbox>
   );

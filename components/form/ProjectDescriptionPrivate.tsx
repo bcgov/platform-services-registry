@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import MailLink from '@/components/generic/button/MailLink';
 
 export default function ProjectDescription({
   mode,
@@ -57,16 +58,8 @@ export default function ProjectDescription({
         <p className="font-bcsans text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
-          {
-            <a
-              className="text-blue-600 dark:text-blue-500 hover:underline"
-              href="mailto:platformservicesteam@gov.bc.ca"
-            >
-              PlatformServicesTeam@gov.bc.ca
-            </a>
-          }{' '}
-          to get started. Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not
-          be approved.
+          <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
+          Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
         </p>
       )}
 
