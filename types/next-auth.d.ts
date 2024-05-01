@@ -37,7 +37,7 @@ declare module 'next-auth' {
       editAllPrivateCloudProducts: boolean;
       deleteAllPrivateCloudProducts: boolean;
       reviewAllPrivateCloudRequests: boolean;
-      viewPrivateProductHistory: boolean;
+
       createPublicCloudProducts: boolean;
       viewAllPublicCloudProducts: boolean;
       viewAllPublicCloudProductsHistory: boolean;
@@ -49,7 +49,7 @@ declare module 'next-auth' {
       viewAllPrivateProductComments: boolean;
       editAllPrivateProductComments: boolean;
       deleteAllPrivateProductComments: boolean;
-      viewPublicProductHistory: boolean;
+
       createPublicProductComments: boolean;
       viewAllPublicProductComments: boolean;
       editAllPublicProductComments: boolean;

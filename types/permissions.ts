@@ -18,14 +18,10 @@ export enum PermissionsEnum {
   EditAllPrivateProductComments = 'editAllPrivateProductComments',
   DeleteAllPrivateProductComments = 'deleteAllPrivateProductComments',
 
-  ViewPrivateProductHistory = 'viewPrivateProductHistory',
-
   CreatePublicProductComments = 'createPublicProductComments',
   ViewAllPublicProductComments = 'viewAllPublicProductComments',
   EditAllPublicProductComments = 'editAllPublicProductComments',
   DeleteAllPublicProductComments = 'deleteAllPublicProductComments',
-
-  ViewPublicProductHistory = 'viewPublicProductHistory',
 
   ViewZapscanResults = 'viewZapscanResults',
   ViewSonarscanResults = 'viewSonarscanResults',
