@@ -56,7 +56,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="flex flex-col items-center">
       <CommentForm
         licencePlate={licencePlate}
         projectId={snap.currentProduct?.id ?? ''}
@@ -73,6 +73,9 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               firstName={comment.user.firstName}
               lastName={comment.user.lastName}
               isAuthor={userId === comment.userId}
+              commentId={comment.id}
+              licencePlate={licencePlate}
+              onDelete={refetchComments}
             />
           ))}
         </ul>

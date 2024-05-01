@@ -1,23 +1,62 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { deletePrivateCloudComment } from '@/services/backend/private-cloud/products';
+import { toast } from 'react-toastify';
+import AlertBox from '../modal/AlertBox';
 
-interface ChatBubbleProps {
+interface CommentBubbleProps {
   firstName: string;
   lastName: string;
   timestamp: Date;
   text: string;
   isAuthor: boolean;
+  commentId: string;
+  licencePlate: string;
+  onDelete: () => void;
 }
 
-const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timestamp, text, isAuthor }) => {
+const CommentBubble = ({
+  firstName,
+  lastName,
+  timestamp,
+  text,
+  isAuthor,
+  commentId,
+  licencePlate,
+  onDelete,
+}: CommentBubbleProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deletePrivateCloudComment(licencePlate, commentId),
+    onSuccess: () => {
+      onDelete();
+      toast.success('Comment deleted successfully');
+      setShowConfirm(false); // Close the confirmation modal
+    },
+    onError: (error: Error) => {
+      toast.error(`Error: ${error.message}`);
+    },
+  });
+
+  const handleDelete = () => {
+    setMenuOpen(false);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate();
+  };
+
   const bubbleStyles =
     'relative max-w-xl mx-auto my-2 bg-white rounded-lg border border-blue-200 justify-between items-center';
 
   const headerStyles = 'flex justify-between items-center px-4 py-1 bg-blue-100 text-gray-700 text-xs';
 
-  const bodyStyles = 'p-4 text-gray-700';
+  const bodyStyles = 'p-4 text-gray-700 break-words';
 
   const userTailStyles =
     'absolute top-3 right-0 w-0 h-0 border-l-[26px] border-l-transparent border-b-[10px] border-b-transparent border-t-[26px] border-t-blue-100 transform translate-x-1/4 -translate-y-1/4 rotate-45';
@@ -47,22 +86,37 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({ firstName, lastName, timesta
       </div>
       {menuOpen && (
         <div className="absolute right-0 mt-2 py-1 w-48 bg-white rounded-md shadow-lg z-50">
-          <ul>
-            <li className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <PencilSquareIcon className="w-5 h-5 mr-2" />
-              Edit
-            </li>
-            <li className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Delete
-            </li>
-          </ul>
+          <button
+            onClick={() => {} /* handleEdit */}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+          >
+            <PencilSquareIcon className="w-5 h-5 mr-2" />
+            Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+            aria-label="Delete comment"
+          >
+            <TrashIcon className="w-5 h-5 mr-2" />
+            Delete
+          </button>
         </div>
       )}
       <div className={bodyStyles}>
         <p>{text}</p>
       </div>
       <div className={isAuthor ? userTailStyles : otherUserTailStyles}></div>
+
+      <AlertBox
+        isOpen={showConfirm}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this comment ?"
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={confirmDelete}
+        cancelButtonText="Cancel"
+        confirmButtonText="Delete"
+      />
     </div>
   );
 };
