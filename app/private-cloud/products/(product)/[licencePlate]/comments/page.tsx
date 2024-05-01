@@ -56,7 +56,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="flex flex-col items-center">
       <CommentForm
         licencePlate={licencePlate}
         projectId={snap.currentProduct?.id ?? ''}
