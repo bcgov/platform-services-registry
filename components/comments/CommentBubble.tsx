@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { deletePrivateCloudComment } from '@/services/backend/private-cloud/products';
 import { toast } from 'react-toastify';
 import AlertBox from '../modal/AlertBox';
 
-interface ChatBubbleProps {
+interface CommentBubbleProps {
   firstName: string;
   lastName: string;
   timestamp: Date;
@@ -16,7 +17,7 @@ interface ChatBubbleProps {
   onDelete: () => void;
 }
 
-const CommentBubble: React.FC<ChatBubbleProps> = ({
+const CommentBubble = ({
   firstName,
   lastName,
   timestamp,
@@ -25,28 +26,29 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({
   commentId,
   licencePlate,
   onDelete,
-}) => {
+}: CommentBubbleProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleDelete = async () => {
+  const deleteMutation = useMutation({
+    mutationFn: () => deletePrivateCloudComment(licencePlate, commentId),
+    onSuccess: () => {
+      onDelete();
+      toast.success('Comment deleted successfully');
+      setShowConfirm(false); // Close the confirmation modal
+    },
+    onError: (error: Error) => {
+      toast.error(`Error: ${error.message}`);
+    },
+  });
+
+  const handleDelete = () => {
     setMenuOpen(false);
     setShowConfirm(true);
   };
 
-  const confirmDelete = async () => {
-    try {
-      const result = await deletePrivateCloudComment(licencePlate, commentId);
-      if (result.success) {
-        onDelete(); // Callback to refresh the comments list
-        toast.success('Comment deleted successfully');
-      } else {
-        toast.error('Failed to delete the comment');
-      }
-    } catch (error) {
-      toast.error('Failed to delete the comment');
-    }
-    setShowConfirm(false);
+  const confirmDelete = () => {
+    deleteMutation.mutate();
   };
 
   const bubbleStyles =
@@ -105,17 +107,16 @@ const CommentBubble: React.FC<ChatBubbleProps> = ({
         <p>{text}</p>
       </div>
       <div className={isAuthor ? userTailStyles : otherUserTailStyles}></div>
-      {showConfirm && (
-        <AlertBox
-          isOpen={showConfirm}
-          title="Confirm Deletion"
-          message="Are you sure you want to delete this comment ?"
-          onCancel={() => setShowConfirm(false)}
-          onConfirm={confirmDelete}
-          cancelButtonText="Cancel"
-          confirmButtonText="Delete"
-        />
-      )}
+
+      <AlertBox
+        isOpen={showConfirm}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this comment ?"
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={confirmDelete}
+        cancelButtonText="Cancel"
+        confirmButtonText="Delete"
+      />
     </div>
   );
 };
