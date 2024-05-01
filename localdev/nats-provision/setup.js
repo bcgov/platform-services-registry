@@ -41,9 +41,9 @@ async function main() {
             },
             body: JSON.stringify({}),
           });
-          console.log(res);
+          console.log('Response sent:', res.status);
         } catch (error) {
-          console.error(error);
+          console.error('Error:', error);
         }
       }
     })();
