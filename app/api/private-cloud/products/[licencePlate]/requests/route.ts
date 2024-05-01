@@ -17,7 +17,7 @@ const queryParamSchema = z.object({
 
 const apiHandler = createApiHandler({
   roles: ['user'],
-  permissions: [PermissionsEnum.ViewPrivateProductHistory],
+  permissions: [PermissionsEnum.ViewAllPrivateCloudProductsHistory],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 
