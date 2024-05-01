@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PrivateCloudProject } from '@prisma/client';
+import { $Enums, PrivateCloudProject } from '@prisma/client';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import PreviousButton from '@/components/buttons/Previous';
 import ReturnModal from '@/components/modal/ReturnDecision';
@@ -61,8 +61,20 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
   }, [activeRequests]);
 
   const methods = useForm({
-    resolver: zodResolver(PrivateCloudDecisionRequestBodySchema),
-    values: { decisionComment: '', decision: '', ...activeRequest?.requestedProject },
+    resolver: (...args) => {
+      const isDeleteRequest = activeRequest?.type === $Enums.RequestType.DELETE;
+
+      // Ignore form validation if a DELETE request
+      if (isDeleteRequest) {
+        return {
+          values: {},
+          errors: {},
+        };
+      }
+
+      return zodResolver(PrivateCloudDecisionRequestBodySchema)(...args);
+    },
+    values: { decisionComment: '', decision: '', type: activeRequest?.type, ...activeRequest?.requestedProject },
   });
 
   const secondTechLeadOnClick = () => {

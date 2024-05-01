@@ -4,6 +4,7 @@ import { providers, ministriesNames } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import { $Enums } from '@prisma/client';
 import FormSelect from '@/components/generic/select/FormSelect';
+import ProductBadge from './ProductBadge';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -32,14 +33,7 @@ export default function ProjectDescriptionPublic({
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
         BC Gov’s Landing Zone in AWS
-        <span
-          className={classNames(
-            'text-sm font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1 float-right',
-            values.status === $Enums.ProjectStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
-          )}
-        >
-          {values.status}
-        </span>
+        <ProductBadge values={values} />
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
         1. Product Description
