@@ -79,7 +79,7 @@ model PrivateCloudProject {
   secondaryTechnicalLead   User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                 Ministry
   cluster                  Cluster
-  golddrEnabled            Boolean
+  golddrEnabled            Boolean               @default(false)
   productionQuota          Quota
   testQuota                Quota
   developmentQuota         Quota
@@ -104,7 +104,7 @@ model PrivateCloudRequestedProject {
   secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                 Ministry
   cluster                  Cluster
-  golddrEnabled            Boolean
+  golddrEnabled            Boolean              @default(false)
   productionQuota          Quota
   testQuota                Quota
   developmentQuota         Quota

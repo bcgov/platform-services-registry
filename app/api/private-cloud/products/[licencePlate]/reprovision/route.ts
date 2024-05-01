@@ -32,7 +32,7 @@ export const GET = apiHandler(async ({ pathParams }) => {
   await sendPrivateCloudNatsMessage('reprovision', $Enums.RequestType.EDIT, product, false);
 
   // For GOLD requests, we create an identical request for GOLDDR
-  if (product.cluster === $Enums.Cluster.GOLD) {
+  if (product.cluster === $Enums.Cluster.GOLD && product.golddrEnabled) {
     await sendPrivateCloudNatsMessage(
       'reprovision',
       $Enums.RequestType.EDIT,

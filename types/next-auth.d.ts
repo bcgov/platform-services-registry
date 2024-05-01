@@ -33,12 +33,14 @@ declare module 'next-auth' {
     permissions: {
       createPrivateCloudProducts: boolean;
       viewAllPrivateCloudProducts: boolean;
+      viewAllPrivateCloudProductsHistory: boolean;
       editAllPrivateCloudProducts: boolean;
       deleteAllPrivateCloudProducts: boolean;
       reviewAllPrivateCloudRequests: boolean;
       viewPrivateProductHistory: boolean;
       createPublicCloudProducts: boolean;
       viewAllPublicCloudProducts: boolean;
+      viewAllPublicCloudProductsHistory: boolean;
       editAllPublicCloudProducts: boolean;
       deleteAllPublicCloudProducts: boolean;
       reviewAllPublicCloudRequests: boolean;

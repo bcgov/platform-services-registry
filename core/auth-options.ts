@@ -142,7 +142,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPrivateEditor ||
       session.isPrivateReader,
 
-    viewPrivateProductHistory: session.isAdmin || session.isPrivateAdmin || session.ministries.editor.length > 0,
+    viewAllPrivateCloudProductsHistory: session.isAdmin || session.isPrivateAdmin,
 
     editAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
@@ -160,7 +160,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPublicEditor ||
       session.isPublicReader,
 
-    viewPublicProductHistory: session.isAdmin || session.isPublicAdmin || session.ministries.editor.length > 0,
+    viewAllPublicCloudProductsHistory: session.isAdmin || session.isPublicAdmin,
 
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:
