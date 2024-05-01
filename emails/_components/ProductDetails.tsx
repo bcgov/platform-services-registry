@@ -31,7 +31,7 @@ export default function ProductDetails({
       <Heading className="text-lg">Product Details</Heading>
       <div>
         <Text className="mb-2 font-semibold h-4">Product Name: </Text>
-        <Text className="mt-1 h-4">{name}</Text>
+        <Text className="mt-1 h-fit">{name}</Text>
         <Text className="mb-2 font-semibold h-4">Product Description: </Text>
         <Text className="py-1 h-fit">{description}</Text>
         {licencePlate && (
