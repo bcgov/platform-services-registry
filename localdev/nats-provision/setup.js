@@ -26,7 +26,7 @@ async function main() {
   const jc = JSONCodec();
 
   // Subscribe to NATS topics for private cloud provisioning
-  const proms = ['clab', 'klab', 'silver', 'gold', 'klab2', 'emerald'].map((cluster) => {
+  const proms = ['clab', 'klab', 'silver', 'gold', 'golddr', 'klab2', 'emerald'].map((cluster) => {
     const privateCloudSub = nc.subscribe(`registry_project_provisioning_${cluster}`);
     return (async () => {
       for await (const m of privateCloudSub) {

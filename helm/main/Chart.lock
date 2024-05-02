@@ -14,5 +14,5 @@ dependencies:
 - name: nats-provision
   repository: file://../_nats_provision
   version: 0.1.0
-digest: sha256:62e68b55a132d9a85df45d2656e0e206864f9ae62c307954e73b815f276c8408
-generated: "2024-03-07T16:44:03.841438456-08:00"
+digest: sha256:c6b5edb1f9cb08787dbf96964718744c15b02cce0b233fa9abd797989c8a0588
+generated: "2024-05-02T09:39:46.893564228-07:00"

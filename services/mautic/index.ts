@@ -107,6 +107,6 @@ export const subscribeUsersToMautic = async (users: User[], cluster: string, pla
 
     await Promise.all(promises);
   } catch (error) {
-    logger.log('subscribeUsersToMautic:', error);
+    logger.error('subscribeUsersToMautic:', error);
   }
 };
