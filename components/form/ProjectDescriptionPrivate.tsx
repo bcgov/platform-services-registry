@@ -10,7 +10,7 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import ProductBadge from './ProductBadge';
 
-export default function ProjectDescription({
+export default function ProjectDescriptionPrivate({
   mode,
   disabled,
   clusterDisabled,

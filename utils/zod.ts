@@ -1,4 +1,5 @@
 import _isString from 'lodash-es/isString';
+import _isBoolean from 'lodash-es/isBoolean';
 
 export function processUpperEnumString(str?: unknown) {
   if (!str) return undefined;
@@ -11,7 +12,8 @@ export function processEnumString(str?: unknown) {
   return str;
 }
 
-export function processBoolean(str?: unknown) {
-  if (!str) return false;
-  return str === 'true';
+export function processBoolean(val?: unknown) {
+  if (_isBoolean(val)) return val;
+  if (_isString(val)) return val === 'true';
+  return false;
 }
