@@ -3,6 +3,7 @@ import _compact from 'lodash-es/compact';
 import _castArray from 'lodash-es/castArray';
 import _forEach from 'lodash-es/forEach';
 import { getUserByEmail } from '@/services/msgraph';
+import { logger } from '@/core/logging';
 
 export async function upsertUser(email: string) {
   try {
@@ -25,7 +26,7 @@ export async function upsertUser(email: string) {
       create: data,
     });
   } catch (error) {
-    console.error(error);
+    logger.error('upsertUser:', error);
     return null;
   }
 }

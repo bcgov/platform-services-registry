@@ -2,6 +2,7 @@ import _compact from 'lodash-es/compact';
 import _uniq from 'lodash-es/uniq';
 import _castArray from 'lodash-es/castArray';
 import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
+import { logger } from '@/core/logging';
 
 type NullOrString = string | null | undefined;
 type EmailAddress = string | undefined;
@@ -63,21 +64,21 @@ const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promis
     });
 
     if (!response.ok) {
-      console.error('Error retrieving token:', response.statusText);
+      logger.error('Error retrieving token:', response.statusText);
       return null;
     }
 
     const data = (await response.json()) as { access_token: string };
     return data.access_token;
   } catch (error) {
-    console.error('Exception retrieving token:', error);
+    logger.error('getToken:', error);
     return null;
   }
 };
 
 const sendEmail = async (email: Email): Promise<void> => {
   if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
-    console.error('Missing environment variables for email service');
+    logger.error('Missing environment variables for email service');
     return;
   }
 
@@ -90,7 +91,7 @@ const sendEmail = async (email: Email): Promise<void> => {
   const token = await getToken(tokenData);
 
   if (!token) {
-    console.error('Unable to retrieve token for email service');
+    logger.error('Unable to retrieve token for email service');
     return;
   }
 
@@ -121,13 +122,13 @@ const sendEmail = async (email: Email): Promise<void> => {
     });
 
     if (!response.ok) {
-      console.error('Error sending email:', response.statusText);
+      logger.error('Error sending email:', response.statusText);
       return;
     }
 
     const data = await response.json();
   } catch (error) {
-    console.error('Exception sending email:', error);
+    logger.error('sendEmail:', error);
   }
 };
 

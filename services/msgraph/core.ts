@@ -3,6 +3,7 @@ import fetch, { Headers, RequestInit } from 'node-fetch';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import msalConfig from './config';
 import { IS_LOCAL, M365_PROXY_URL } from '@/config';
+import { logger } from '@/core/logging';
 
 let msalInstance!: ConfidentialClientApplication;
 const graphAPIProxy = IS_LOCAL ? new HttpsProxyAgent(M365_PROXY_URL) : null;
@@ -20,7 +21,7 @@ export async function getAccessToken() {
     const response = await msalInstance.acquireTokenByClientCredential(request);
     return response?.accessToken;
   } catch (error) {
-    console.error(error);
+    logger.error('getAccessToken:', error);
     throw new Error('Error acquiring access token');
   }
 }

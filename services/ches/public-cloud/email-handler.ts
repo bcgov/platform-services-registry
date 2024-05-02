@@ -16,6 +16,7 @@ import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
 import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
+import { logger } from '@/core/logging';
 
 export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject) => {
   try {
@@ -42,7 +43,7 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
 
     await Promise.all([contacts, admins]);
   } catch (error) {
-    console.log('ERROR SENDING NEW REQUEST EMAIL');
+    logger.log('sendCreateRequestEmails:', error);
   }
 };
 
@@ -56,7 +57,7 @@ export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequested
       subject: `${product.name} is marked for deletion`,
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
+    logger.log('sendAdminDeleteRequestEmails:', error);
   }
 };
 
@@ -77,7 +78,7 @@ export const sendEditRequestEmails = async (request: PublicCloudRequestWithProje
       subject: 'Edit summary',
     });
   } catch (error) {
-    console.error('ERROR SENDING EDIT REQUEST EMAIL');
+    logger.log('sendEditRequestEmails:', error);
   }
 };
 
@@ -95,7 +96,7 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
       subject: 'Request has been approved',
     });
   } catch (error) {
-    console.error('ERROR SENDING REQUEST APPROVAL EMAIL');
+    logger.log('sendRequestApprovalEmails:', error);
   }
 };
 
@@ -103,7 +104,6 @@ export const sendRequestRejectionEmails = async (
   request: PublicCloudRequestedProjectWithContacts,
   decisionComment?: string,
 ) => {
-  console.log(request);
   try {
     const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment }), {
       pretty: false,
@@ -114,7 +114,7 @@ export const sendRequestRejectionEmails = async (
       subject: 'Request has been rejected',
     });
   } catch (error) {
-    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
+    logger.log('sendRequestRejectionEmails:', error);
   }
 };
 
@@ -128,7 +128,7 @@ export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProje
       subject: 'Request to delete product received',
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
+    logger.log('sendDeleteRequestEmails:', error);
   }
 };
 
@@ -142,7 +142,7 @@ export const sendDeleteRequestApprovalEmails = async (product: PublicCloudReques
       subject: 'Delete request has been approved',
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW DELETE REQUEST APPROVAL EMAIL');
+    logger.log('sendDeleteRequestApprovalEmails:', error);
   }
 };
 
@@ -155,7 +155,7 @@ export const sendProvisionedEmails = async (product: PublicCloudRequestedProject
       subject: `Product has been provisioned`,
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW PROVISIONED EMAIL', error);
+    logger.log('sendProvisionedEmails:', error);
   }
 };
 
@@ -168,6 +168,6 @@ export const sendExpenseAuthorityEmail = async (product: PublicCloudRequestedPro
       subject: `You have been added as the Expense Authority for ${product.name}`,
     });
   } catch (error) {
-    console.error('ERROR SENDING EXPENSE AUTHORITY EMAIL', error);
+    logger.log('sendExpenseAuthorityEmail:', error);
   }
 };

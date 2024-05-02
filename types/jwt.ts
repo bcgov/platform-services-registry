@@ -2,6 +2,7 @@ import axios from 'axios';
 import jwt, { VerifyOptions } from 'jsonwebtoken';
 import jws from 'jws';
 import jwkToPem, { JWK } from 'jwk-to-pem';
+import { logger } from '@/core/logging';
 
 const authHeaderPrefix = 'Bearer';
 const jwksCache: {
@@ -112,8 +113,8 @@ export async function verifyKeycloakJwtTokenSafe({
     const jwksUri = `${issuer}/protocol/openid-connect/certs`;
     const result = await verifyJwtToken({ jwtToken, issuer, jwksUri, audience, authorizedPresenter });
     return result;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    logger.error('verifyKeycloakJwtTokenSafe:', error);
     return null;
   }
 }
