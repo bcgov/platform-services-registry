@@ -6,6 +6,7 @@ import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privat
 import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { logger } from '@/core/logging';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -61,7 +62,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   await prisma.$transaction([updateRequest, upsertProject]);
 
-  console.log(`Successfully marked ${licencePlate} as provisioned.`);
+  logger.info(`Successfully marked ${licencePlate} as provisioned.`);
 
   // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
   const project = await prisma.privateCloudProject.findUnique({

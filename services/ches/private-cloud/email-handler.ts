@@ -16,6 +16,7 @@ import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
+import { logger } from '@/core/logging';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   try {
@@ -42,7 +43,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
 
     await Promise.all([contacts, admins]);
   } catch (error) {
-    console.log('ERROR SENDING NEW REQUEST EMAIL');
+    logger.error('sendCreateRequestEmails:', error);
   }
 };
 
@@ -78,8 +79,7 @@ export const sendEditRequestEmails = async (
 
     await Promise.all([contacts, admins]);
   } catch (error) {
-    console.error('ERROR SENDING EDIT REQUEST EMAIL');
-    console.log(error);
+    logger.error('sendEditRequestEmails:', error);
   }
 };
 
@@ -97,7 +97,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
       subject: 'Request has been approved',
     });
   } catch (error) {
-    console.error('ERROR SENDING REQUEST APPROVAL EMAIL');
+    logger.error('sendRequestApprovalEmails:', error);
   }
 };
 
@@ -119,7 +119,7 @@ export const sendRequestRejectionEmails = async (
       subject: `Request for ${request.project!.name} has been rejected`,
     });
   } catch (error) {
-    console.error('ERROR SENDING REQUEST REJECTION EMAIL');
+    logger.error('sendRequestRejectionEmails:', error);
   }
 };
 
@@ -146,7 +146,7 @@ export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRe
     });
     await Promise.all([contacts, admins]);
   } catch (error) {
-    console.error('ERROR SENDING NEW DELETE REQUEST EMAIL');
+    logger.error('sendDeleteRequestEmails:', error);
   }
 };
 
@@ -160,7 +160,7 @@ export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudReque
       subject: 'Delete request has been approved',
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW DELETE REQUEST APPROVAL EMAIL');
+    logger.error('sendDeleteRequestApprovalEmails:', error);
   }
 };
 
@@ -174,6 +174,6 @@ export const sendProvisionedEmails = async (product: PrivateCloudRequestedProjec
       subject: 'Product has been provisioned',
     });
   } catch (error) {
-    console.error('ERROR SENDING NEW PROVISIONED EMAIL', error);
+    logger.error('sendProvisionedEmails:', error);
   }
 };

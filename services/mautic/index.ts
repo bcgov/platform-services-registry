@@ -6,6 +6,7 @@ import {
   MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET,
   MAUTIC_SUBSSCRIPTION_API_URL,
 } from '@/config';
+import { logger } from '@/core/logging';
 
 const getToken = async (): Promise<string> => {
   const url = MAUTIC_TOKEN_URL || '';
@@ -33,7 +34,7 @@ const getToken = async (): Promise<string> => {
     const data = await response.json();
     return data.access_token;
   } catch (error) {
-    console.error(error);
+    logger.error('getToken:', error);
     throw error;
   }
 };
@@ -55,7 +56,7 @@ export const getContactId = async (email: string, token: string): Promise<string
     const segments = await response.json();
     return segments.contactId;
   } catch (error) {
-    console.error(error);
+    logger.error('getContactId:', error);
     throw error;
   }
 };
@@ -85,7 +86,7 @@ export const subscribe = async (user: User, token: string, cluster: string, plat
 
     return response;
   } catch (error) {
-    console.error(error);
+    logger.error('subscribe:', error);
     throw error;
   }
 };
@@ -106,6 +107,6 @@ export const subscribeUsersToMautic = async (users: User[], cluster: string, pla
 
     await Promise.all(promises);
   } catch (error) {
-    console.log('MAUTIC ERROR', error);
+    logger.log('subscribeUsersToMautic:', error);
   }
 };

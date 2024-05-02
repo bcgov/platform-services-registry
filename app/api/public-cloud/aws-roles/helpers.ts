@@ -10,6 +10,7 @@ import {
   AWS_ROLES_CLIENT_SECRET,
   AWS_ROLES_IDENTITY_PROVIDER,
 } from '@/config';
+import { logger } from '@/core/logging';
 
 export interface Group {
   id: string;
@@ -139,7 +140,7 @@ export const createKeyCloakUser = async (userPrincipalName: string) => {
   try {
     const appUser = await getUser(userPrincipalName);
     if (!appUser) {
-      console.error('createKeyCloakUser: user not found');
+      logger.error(`createKeyCloakUser: user not found with ${userPrincipalName}`);
       return;
     }
     const userIdirGuid = appUser.idirGuid.toLowerCase();
@@ -161,8 +162,8 @@ export const createKeyCloakUser = async (userPrincipalName: string) => {
         userName: `${userIdirGuid}@${AWS_ROLES_IDENTITY_PROVIDER}`,
       },
     });
-  } catch (err) {
-    console.error('createKeyCloakUser:', err);
+  } catch (error) {
+    logger.error('createKeyCloakUser:', error);
   }
 };
 

@@ -1,4 +1,5 @@
 export const SECURE_HEADERS = process.env.SECURE_HEADERS || '';
+export const LOG_LEVEL = process.env.LOG_LEVEL || 'debug';
 export const NODE_ENV = process.env.NODE_ENV || '';
 export const APP_ENV = process.env.APP_ENV || 'localdev';
 export const IS_LOCAL = APP_ENV === 'localdev';

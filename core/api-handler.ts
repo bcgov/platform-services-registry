@@ -15,6 +15,7 @@ import {
 } from './responses';
 import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 import { arrayIntersection } from '@/utils/collection';
+import { logger } from './logging';
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];
@@ -149,7 +150,7 @@ function createApiHandler<
 
         return await fn({ session, pathParams, queryParams, body, headers: req.headers });
       } catch (error) {
-        console.error(error);
+        logger.error('apiHandler:', error);
         return InternalServerErrorResponse(String(error));
       }
     };

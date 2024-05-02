@@ -17,8 +17,6 @@ const apiHandler = createApiHandler({
 });
 
 export const GET = apiHandler(async ({ pathParams }) => {
-  console.log('GET API ROUTE FOR DELETION CHECK');
-
   const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
     where: {
       licencePlate: pathParams.licencePlate,
