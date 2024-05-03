@@ -1,10 +1,10 @@
-import { Account, AuthOptions, Session } from 'next-auth';
+import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import jwt from 'jsonwebtoken';
 import prisma from '@/core/prisma';
-import { getUserByEmail } from '@/services/msgraph';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
+import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
   session.isUser = false;
@@ -29,17 +29,24 @@ export async function generateSession({ session, token }: { session: Session; to
 
   // Send properties to the client, like an access_token from a provider.
   if (token) {
-    const user = await prisma.user.findFirst({
-      where: { email: session.user.email },
-      select: { id: true, email: true },
-    });
+    if (token.email) {
+      const user = await prisma.user.findFirst({
+        where: { email: token.email },
+        select: { id: true, email: true, image: true },
+      });
 
-    session.userId = user?.id ?? null;
-    session.userEmail = user?.email ?? null;
-    session.accessToken = token.accessToken;
+      if (user) {
+        session.user.id = user.id;
+        session.user.email = user.email;
+        session.user.image = user.image;
+
+        session.userId = user.id;
+        session.userEmail = user.email;
+      }
+    }
+
     session.roles = token.roles || [];
 
-    // Assign the 'user' role to users who log in to the system.
     session.roles.push('user');
 
     session.roles.forEach((role) => {
@@ -122,8 +129,6 @@ export async function generateSession({ session, token }: { session: Session; to
         session.ministries[ministryRole].push(ministryCode.toUpperCase());
       }
     });
-
-    session.user.roles = session.roles;
   }
 
   session.previews = {
@@ -188,18 +193,11 @@ export async function generateSession({ session, token }: { session: Session; to
 
 export const authOptions: AuthOptions = {
   providers: [
+    // See https://github.com/nextauthjs/next-auth/blob/93e108763f434a4fd33c74ed79d17d7368dfd27b/packages/next-auth/src/providers/keycloak.ts#L27
     KeycloakProvider({
       clientId: AUTH_RESOURCE!,
       clientSecret: AUTH_SECRET!,
       issuer: `${AUTH_SERVER_URL}/realms/${AUTH_RELM}`,
-      profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email.toLowerCase(),
-          image: null,
-        };
-      },
     }),
   ],
   session: {
@@ -222,40 +220,35 @@ export const authOptions: AuthOptions = {
       const { given_name, family_name, email } = profile as KeycloakProfile;
       const loweremail = email.toLowerCase();
 
-      const data = {
-        firstName: given_name,
-        lastName: family_name,
-        email: loweremail,
-        ministry: '',
-        idir: '',
-        upn: '',
-      };
-
-      const adUser = await getUserByEmail(loweremail);
-      if (adUser) {
-        data.ministry = adUser.ministry;
-        data.idir = adUser.idir;
-        data.upn = adUser.upn;
-      }
-
-      await prisma.user.upsert({
-        where: {
+      const upsertedUser = await upsertUser(loweremail);
+      if (!upsertedUser) {
+        const data = {
+          firstName: given_name,
+          lastName: family_name,
           email: loweremail,
-        },
-        update: data,
-        create: data,
-      });
+          ministry: '',
+          idir: '',
+          upn: '',
+          image: '',
+        };
+
+        await prisma.user.upsert({
+          where: { email: loweremail },
+          update: data,
+          create: data,
+        });
+      }
 
       return true;
     },
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
-      if (account) {
-        token.accessToken = account?.access_token;
+      if (account?.access_token) {
+        const decodedToken: any = jwt.decode(account.access_token);
+
+        token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
       }
 
-      const decodedToken = jwt.decode(token.accessToken || '') as any;
-      token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
-
+      if (!token.roles) token.roles = [];
       return token;
     },
     session: generateSession.bind(this),
