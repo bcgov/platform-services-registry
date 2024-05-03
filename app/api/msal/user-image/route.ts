@@ -15,7 +15,6 @@ export const GET = apiHandler(async ({ queryParams }) => {
   const { email } = queryParams;
 
   const data = await getUserPhoto(email);
-
   if (data) {
     return new NextResponse(data, {
       headers: { 'Content-Type': 'image/jpeg' },
