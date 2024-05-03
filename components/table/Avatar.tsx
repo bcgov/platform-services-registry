@@ -1,6 +1,3 @@
-import fetchUserImage from '@/components/nav/generateAvatar';
-import { useQuery } from '@tanstack/react-query';
-
 export default function Avatar({
   name,
   email,
@@ -12,25 +9,6 @@ export default function Avatar({
   userRole: string;
   className?: string;
 }) {
-  // Compute the full and shortened names
-  function formatFullName(fullName: string) {
-    const names = fullName.split(' ');
-    if (names.length > 1) {
-      const firstName = names[0];
-      const lastName = names[names.length - 1];
-      return `${firstName.charAt(0)}. ${lastName}`;
-    }
-    return fullName;
-  }
-
-  const shortenedName = formatFullName(name);
-
-  const { data, isLoading, error } = useQuery<string, Error>({
-    queryKey: [email],
-    queryFn: () => fetchUserImage(email),
-    enabled: !!email,
-  });
-
   return (
     <div className={'group block flex-shrink-0 px-2 w-50 overflow-hidden ' + className}>
       <div className="flex items-center">
