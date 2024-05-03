@@ -27,6 +27,13 @@ export async function generateSession({ session, token }: { session: Session; to
     reader: [],
   };
 
+  session.user = {
+    id: '',
+    name: '',
+    email: '',
+    image: '',
+  };
+
   // Send properties to the client, like an access_token from a provider.
   if (token) {
     session.user.name = token.name ?? '';
