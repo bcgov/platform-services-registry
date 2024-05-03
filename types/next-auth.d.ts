@@ -1,13 +1,10 @@
 import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
+import { User } from 'next-auth';
 import { Permissions, PermissionKey } from './permissions';
 
 declare module 'next-auth' {
-  interface Session {
-    accessToken?: string;
-    user: {
-      /** The user's postal address. */
-      roles: string[];
-    } & DefaultSession['user'];
+  interface Session extends DefaultSession {
+    user: User;
     userId: string | null;
     userEmail: string | null;
     isUser: boolean;
