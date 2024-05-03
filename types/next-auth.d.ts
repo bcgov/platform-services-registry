@@ -4,7 +4,12 @@ import { Permissions, PermissionKey } from './permissions';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
-    user: User;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      image: string | null;
+    };
     userId: string | null;
     userEmail: string | null;
     isUser: boolean;
