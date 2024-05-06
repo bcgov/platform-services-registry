@@ -3,7 +3,7 @@ import Header from '../../_components/Header';
 import { Body, Button, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
-import { TailwindConfig } from '../../_components/TailwindConfig';
+import { tailwindConfig } from '../../_components/tailwind';
 import Comment from '@/emails/_components/Comment';
 import QuotaChanges from '../../_components/Edit/QuotaChanges';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
@@ -22,7 +22,7 @@ const RequestRejectionTemplate = ({ request, productName, decisionComment }: Ema
   const changed = comparePrivateCloudProjects(current, requested);
   return (
     <Html>
-      <Tailwind config={TailwindConfig}>
+      <Tailwind config={tailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">

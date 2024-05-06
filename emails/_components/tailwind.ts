@@ -1,6 +1,7 @@
+import { tailwindToCSS } from 'tw-to-css';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
-export const TailwindConfig = {
+export const tailwindConfig = {
   theme: {
     extend: {
       height: {
@@ -38,3 +39,7 @@ export const TailwindConfig = {
     },
   },
 };
+
+export const { twi, twj } = tailwindToCSS({
+  config: tailwindConfig,
+});
