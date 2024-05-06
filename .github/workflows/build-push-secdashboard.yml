@@ -1,11 +1,11 @@
-name: 22.Build and Publish Security Dashboard Images
+name: 22.Build and Push Security Dashboard Images
 
 on:
   push:
     branches:
     - main
     paths:
-    - .github/workflows/publish-secdashboard.yml
+    - .github/workflows/build-push-secdashboard.yml
     - security-dashboard/**
   workflow_dispatch:
 
