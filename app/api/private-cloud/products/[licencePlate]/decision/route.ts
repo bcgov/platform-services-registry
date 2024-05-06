@@ -32,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     userEmail as string,
   );
 
-  if (!request.requestedProject) {
+  if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
   }
 
@@ -50,13 +50,13 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
   // Subscribe users to Mautic
-  await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
+  await subscribeUsersToMautic(users, request.decisionData.cluster, 'Private');
 
   if (request.type == $Enums.RequestType.EDIT) {
     sendRequestApprovalEmails(request);

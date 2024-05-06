@@ -27,9 +27,10 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
   updatedAt: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
   projectId: 'project-id',
-  requestedProjectId: 'requested-project-id',
-  userRequestedProjectId: 'user-requested-project-id',
-  requestedProject: {
+  decisionDataId: 'requested-project-id',
+  requestDataId: 'user-requested-project-id',
+  originalDataId: 'original-product-id',
+  decisionData: {
     id: 'requested-project-id',
     licencePlate: 'XYZ789',
     name: 'Sample Project',
@@ -106,8 +107,9 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
   updatedAt: new Date('2023-11-30T00:00:00Z'),
   decisionDate: new Date('2023-12-01T00:00:00Z'),
   projectId: 'existing-project-id',
-  requestedProjectId: 'new-project-id',
-  userRequestedProjectId: 'user-request-project-id',
+  decisionDataId: 'new-project-id',
+  requestDataId: 'user-request-project-id',
+  originalDataId: 'original-product-id',
   project: {
     id: 'existing-project-id',
     licencePlate: 'LIC456',
@@ -170,7 +172,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
     },
     secondaryTechnicalLead: null,
   },
-  requestedProject: {
+  decisionData: {
     id: 'new-project-id',
     licencePlate: 'LIC789',
     name: 'Requested Project',
@@ -322,9 +324,10 @@ export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
   isQuotaChanged: false,
   projectId: null,
   requestComment: 'Some comment regarding a request by the user',
-  requestedProjectId: 'f',
-  userRequestedProjectId: 'e',
-  requestedProject: {
+  decisionDataId: 'f',
+  requestDataId: 'e',
+  originalDataId: 'c',
+  decisionData: {
     productionQuota: {
       cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
       memory: 'MEMORY_REQUEST_2_LIMIT_4',
@@ -415,8 +418,9 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
   decisionDate: sampleDate,
   requestComment: 'Some comment made by the user',
   projectId: null,
-  requestedProjectId: 'f',
-  userRequestedProjectId: 'e',
+  decisionDataId: 'f',
+  requestDataId: 'e',
+  originalDataId: 'c',
   project: {
     productionQuota: {
       cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
@@ -492,7 +496,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
     secondaryTechnicalLead: null,
     golddrEnabled: true,
   },
-  requestedProject: {
+  decisionData: {
     productionQuota: {
       cpu: 'CPU_REQUEST_1_LIMIT_2',
       memory: 'MEMORY_REQUEST_4_LIMIT_8',

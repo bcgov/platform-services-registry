@@ -48,8 +48,9 @@ export default publicCloudProductHistory(({ pathParams }) => {
           updatedAt={request.updatedAt}
           decisionDate={request.decisionDate}
           projectId={request.projectId}
-          requestedProjectId={request.requestedProjectId}
-          userRequestedProjectId={request.userRequestedProjectId}
+          decisionDataId={request.decisionDataId}
+          requestDataId={request.requestDataId}
+          originalDataId={request.originalDataId}
         />
       ))}
     </>

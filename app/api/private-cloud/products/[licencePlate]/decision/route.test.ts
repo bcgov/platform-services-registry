@@ -196,7 +196,7 @@ describe('Create Private Cloud Request Route', () => {
 
     const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
       where: {
-        id: request.userRequestedProjectId || undefined,
+        id: request.requestDataId || undefined,
       },
       include: {
         projectOwner: true,
@@ -287,7 +287,7 @@ describe('Create Private Cloud Request Route', () => {
 
     const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
       where: {
-        id: request.requestedProjectId || undefined,
+        id: request.decisionDataId || undefined,
       },
       include: {
         projectOwner: true,

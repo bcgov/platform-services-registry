@@ -67,7 +67,7 @@ export async function searchPrivateCloudRequests({
   });
 
   const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
-  where.userRequestedProjectId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
+  where.requestDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
 
   const [docs, totalCount] = await Promise.all([
     prisma.privateCloudRequest.findMany({
@@ -75,7 +75,7 @@ export async function searchPrivateCloudRequests({
       skip,
       take,
       include: {
-        userRequestedProject: {
+        requestData: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
@@ -98,7 +98,7 @@ export async function searchPrivateCloudRequests({
 export type PrivateCloudRequestSearchPayload = {
   docs: (Prisma.PrivateCloudRequestGetPayload<{
     include: {
-      userRequestedProject: {
+      requestData: {
         include: {
           projectOwner: true;
           primaryTechnicalLead: true;

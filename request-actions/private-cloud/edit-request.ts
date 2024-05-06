@@ -99,10 +99,10 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestComment,
-      requestedProject: {
+      decisionData: {
         create: requestedProject,
       },
-      userRequestedProject: {
+      requestData: {
         create: requestedProject,
       },
       project: {
@@ -119,7 +119,7 @@ export default async function editRequest(
           secondaryTechnicalLead: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,

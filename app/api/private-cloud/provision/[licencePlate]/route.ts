@@ -26,7 +26,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       active: true,
     },
     include: {
-      requestedProject: true,
+      decisionData: true,
     },
   });
 
@@ -44,7 +44,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
   });
 
-  const { id, ...requestedProject } = request.requestedProject;
+  const { id, ...requestedProject } = request.decisionData;
 
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };

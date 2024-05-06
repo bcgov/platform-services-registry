@@ -1,46 +1,29 @@
 export const up = async (db, client) => {
-  const pipeline = [
-    {
-      $lookup: {
-        from: 'PrivateCloudRequestedProject',
-        localField: 'licencePlate',
-        foreignField: 'licencePlate',
-        as: 'relatedData',
-      },
-    },
-    {
-      $unwind: {
-        path: '$relatedData',
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $sort: {
-        'relatedData.updatedAt': 1,
-      },
-    },
-    {
-      $group: {
-        _id: '$_id',
-        firstRelatedData: { $first: '$relatedData' },
-        doc: { $first: '$$ROOT' },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ['$doc', { originalDataId: '$firstRelatedData._id' }], // Add new field to the original document
-        },
-      },
-    },
-    // {
-    //     $out: "PrivateCloudRequest",
-    // },
-  ];
+  const PrivateCloudRequest = db.collection('PrivateCloudRequest');
+  const PrivateCloudRequestedProject = db.collection('PrivateCloudRequestedProject');
 
-  const result = await db.collection('PrivateCloudRequest').aggregate(pipeline).toArray();
+  const privateCloudRequests = await PrivateCloudRequest.find({ originalDataId: { $exists: false } }).toArray();
 
-  console.log('add_original_data_id_fields_private:', result.length);
+  for (const privateCloudRequest of privateCloudRequests) {
+    const licencePlateVal = privateCloudRequest.licencePlate;
+    const privateCloudRequestCreated = new Date(privateCloudRequest.created.toISOString());
+
+    const matchingPrivateCloudRequestedProjects = await PrivateCloudRequestedProject.find({
+      licencePlate: licencePlateVal,
+      created: { $lte: privateCloudRequestCreated },
+    })
+      .sort({ created: -1 })
+      .toArray();
+
+    if (matchingPrivateCloudRequestedProjects) {
+      await PrivateCloudRequest.findOneAndUpdate(
+        { _id: privateCloudRequest._id },
+        { $set: { originalDataId: matchingPrivateCloudRequestedProjects[0]._id } },
+      );
+    }
+  }
+
+  console.log('add_original_data_id_fields_private: Original data IDs have been updated successfully.');
 };
 
 export const down = async (db, client) => {};

@@ -42,25 +42,27 @@ model User {
 }
 
 model PrivateCloudRequest {
-  id                     String                        @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate           String
-  createdByEmail         String
-  decisionMakerEmail     String?
-  type                   RequestType
-  decisionStatus         DecisionStatus
-  isQuotaChanged         Boolean?                      @default(false)
-  requestComment         String?
-  decisionComment        String?
-  active                 Boolean                       @default(true)
-  created                DateTime                      @default(now())
-  updatedAt              DateTime                      @updatedAt
-  decisionDate           DateTime?
-  projectId              String?                       @db.ObjectId
-  project                PrivateCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
-  requestedProjectId     String                        @unique @db.ObjectId
-  requestedProject       PrivateCloudRequestedProject  @relation("requestedProject", fields: [requestedProjectId], references: [id])
-  userRequestedProjectId String                        @unique @db.ObjectId
-  userRequestedProject   PrivateCloudRequestedProject? @relation("userRequestedProject", fields: [userRequestedProjectId], references: [id])
+  id                 String                        @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate       String
+  createdByEmail     String
+  decisionMakerEmail String?
+  type               RequestType
+  decisionStatus     DecisionStatus
+  isQuotaChanged     Boolean?                      @default(false)
+  requestComment     String?
+  decisionComment    String?
+  active             Boolean                       @default(true)
+  created            DateTime                      @default(now())
+  updatedAt          DateTime                      @updatedAt
+  decisionDate       DateTime?
+  projectId          String?                       @db.ObjectId
+  project            PrivateCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
+  decisionDataId     String                        @unique @db.ObjectId
+  decisionData       PrivateCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
+  requestDataId      String                        @unique @db.ObjectId
+  requestData        PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
+  originalDataId     String                        @unique @db.ObjectId
+  originalData       PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
 }
 
 model PrivateCloudProject {
@@ -110,8 +112,9 @@ model PrivateCloudRequestedProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
-  requestedProject         PrivateCloudRequest? @relation("requestedProject")
-  userRequestedProject     PrivateCloudRequest? @relation("userRequestedProject")
+  decisionData             PrivateCloudRequest? @relation("decisionData")
+  requestData              PrivateCloudRequest? @relation("requestData")
+  originalData             PrivateCloudRequest? @relation("originalData")
 }
 
 model PrivateCloudComment {
@@ -140,24 +143,26 @@ model Reaction {
 }
 
 model PublicCloudRequest {
-  id                     String                       @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate           String
-  createdByEmail         String
-  decisionMakerEmail     String?
-  type                   PublicCloudRequestType
-  decisionStatus         DecisionStatus
-  requestComment         String?
-  decisionComment        String?
-  active                 Boolean                      @default(true)
-  created                DateTime                     @default(now())
-  updatedAt              DateTime                     @updatedAt
-  decisionDate           DateTime?
-  projectId              String?                      @db.ObjectId
-  project                PublicCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
-  requestedProjectId     String                       @unique @db.ObjectId
-  requestedProject       PublicCloudRequestedProject  @relation("requestedProject", fields: [requestedProjectId], references: [id])
-  userRequestedProjectId String                       @unique @db.ObjectId
-  userRequestedProject   PublicCloudRequestedProject? @relation("userRequestedProject", fields: [userRequestedProjectId], references: [id])
+  id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate       String
+  createdByEmail     String
+  decisionMakerEmail String?
+  type               PublicCloudRequestType
+  decisionStatus     DecisionStatus
+  requestComment     String?
+  decisionComment    String?
+  active             Boolean                      @default(true)
+  created            DateTime                     @default(now())
+  updatedAt          DateTime                     @updatedAt
+  decisionDate       DateTime?
+  projectId          String?                      @db.ObjectId
+  project            PublicCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
+  decisionDataId     String                       @unique @db.ObjectId
+  decisionData       PublicCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
+  requestDataId      String                       @unique @db.ObjectId
+  requestData        PublicCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
+  originalDataId     String                       @unique @db.ObjectId
+  originalData       PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
 }
 
 model PublicCloudProject {
@@ -202,8 +207,9 @@ model PublicCloudRequestedProject {
   expenseAuthority         User?               @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                 Ministry
   provider                 Provider
-  requestedProject         PublicCloudRequest? @relation("requestedProject")
-  userRequestedProject     PublicCloudRequest? @relation("userRequestedProject")
+  decisionData             PublicCloudRequest? @relation("decisionData")
+  requestData              PublicCloudRequest? @relation("requestData")
+  originalData             PublicCloudRequest? @relation("originalData")
 }
 
 model PrivateCloudProjectZapResult {
