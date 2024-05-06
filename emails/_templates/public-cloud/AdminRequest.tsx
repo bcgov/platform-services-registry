@@ -5,7 +5,7 @@ import ProductDetails from '../../_components/ProductDetails';
 import { Body, Button, Heading, Html, Img, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import ProviderDetails from '../../_components/ProviderDetails';
-import { TailwindConfig } from '../../_components/TailwindConfig';
+import { tailwindConfig } from '../../_components/tailwind';
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
 }
@@ -28,7 +28,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
 
   return (
     <Html>
-      <Tailwind config={TailwindConfig}>
+      <Tailwind config={tailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">
