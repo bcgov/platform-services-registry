@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { z, TypeOf, ZodType } from 'zod';
 import { parseQueryString } from '@/utils/query-string';
-import { verifyKeycloakJwtTokenSafe } from '@/types/jwt';
+import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
 import {
   BadRequestResponse,
   UnauthorizedResponse,
