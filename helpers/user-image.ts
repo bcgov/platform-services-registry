@@ -59,7 +59,7 @@ export async function generateUserImage(email: string): Promise<string> {
 }
 
 export async function getUserImage(email?: string, image?: string) {
-  if (image) return image;
+  if (image) return `data:image/png;base64, ${image}`;
   if (!email) return '';
 
   try {
