@@ -1,11 +1,14 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from '@/utils/classnames';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import ProfileImage from '../ProfileImage';
+import { useAppState } from '@/states/global';
+import { signOut } from '@/helpers/auth';
 
 export default function ProfileDropdown() {
+  const [appState, appSnapshot] = useAppState();
   const { data: session, status } = useSession();
   const { permissions } = session ?? {};
 
@@ -131,7 +134,9 @@ export default function ProfileDropdown() {
                 ) : (
                   <Link
                     href="#"
-                    onClick={() => signOut({ callbackUrl: '/login' })}
+                    onClick={async () => {
+                      await signOut(appSnapshot.info.LOGOUT_URL, session.idToken);
+                    }}
                     className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                   >
                     Sign out
