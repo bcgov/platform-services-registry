@@ -1,11 +1,11 @@
-name: 21.Build and Publish Localdev Images
+name: 21.Build and Push Localdev Images
 
 on:
   push:
     branches:
     - main
     paths:
-    - .github/workflows/publish-localdev.yml
+    - .github/workflows/build-push-localdev.yml
     - localdev/**
 
 env:
