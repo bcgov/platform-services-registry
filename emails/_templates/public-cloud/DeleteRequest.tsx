@@ -3,7 +3,7 @@ import Header from '../../_components/Header';
 import { Body, Heading, Html, Text } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import Closing from '../../_components/Closing';
-import { TailwindConfig } from '../../_components/TailwindConfig';
+import { tailwindConfig } from '../../_components/tailwind';
 import ProductDetails from '../../_components/ProductDetails';
 import ProviderDetails from '../../_components/ProviderDetails';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
@@ -31,7 +31,7 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
 
   return (
     <Html>
-      <Tailwind config={TailwindConfig}>
+      <Tailwind config={tailwindConfig}>
         <div className="border border-solid border-[#eaeaea] rounded my-4 mx-auto p-4 max-w-xl">
           <Header />
           <Body className="bg-white my-auto mx-auto font-sans text-xs text-darkergrey">

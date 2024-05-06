@@ -23,6 +23,8 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: true });
     const userEmail = render(CreateRequestTemplate({ request }), { pretty: true });
 
+    console.log('adminEmail', adminEmail);
+
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
