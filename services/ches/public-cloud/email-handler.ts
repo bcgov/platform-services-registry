@@ -105,13 +105,13 @@ export const sendRequestRejectionEmails = async (
   decisionComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment }), {
+    const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment, product: request }), {
       pretty: false,
     });
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: 'Request has been rejected',
+      subject: `'Request has been rejected for' ${request.name}`,
     });
   } catch (error) {
     logger.log('sendRequestRejectionEmails:', error);

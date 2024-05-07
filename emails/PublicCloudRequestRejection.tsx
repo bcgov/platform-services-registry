@@ -7,5 +7,11 @@ export default function RequestRejection() {
   const productName = samplePublicRequest.requestedProject.name;
   const decisionComment = samplePublicRequest.decisionComment || undefined;
 
-  return <RequestRejectionTemplate productName={productName} decisionComment={decisionComment} />;
+  return (
+    <RequestRejectionTemplate
+      product={samplePublicRequest.requestedProject}
+      productName={productName}
+      decisionComment={decisionComment}
+    />
+  );
 }
