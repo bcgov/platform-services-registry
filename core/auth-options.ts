@@ -36,6 +36,7 @@ export async function generateSession({ session, token }: { session: Session; to
 
   // Send properties to the client, like an access_token from a provider.
   if (token) {
+    session.idToken = token.idToken ?? '';
     session.user.name = token.name ?? '';
 
     if (token.email) {
@@ -254,6 +255,8 @@ export const authOptions: AuthOptions = {
       if (account?.access_token) {
         const decodedToken: any = jwt.decode(account.access_token);
 
+        token.accessToken = account.access_token;
+        token.idToken = account.id_token;
         token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
       }
 
