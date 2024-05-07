@@ -130,12 +130,12 @@ describe('Create Private Cloud Request Route', () => {
 
     expect(decisionData.name).toBe(createRequestBody.name);
     expect(decisionData.description).toBe(createRequestBody.description);
-    expect(decisionDataster).toBe(createRequestBody.cluster);
+    expect(decisionData.cluster).toBe(createRequestBody.cluster);
     expect(decisionData.ministry).toBe(createRequestBody.ministry);
-    expect(decisionDatarstName).toBe(createRequestBody.projectOwner.firstName);
+    expect(decisionData.projectOwner.firstName).toBe(createRequestBody.projectOwner.firstName);
     expect(decisionData.projectOwner.lastName).toBe(createRequestBody.projectOwner.lastName);
     expect(decisionData.projectOwner.email).toBe(createRequestBody.projectOwner.email);
-    expect(decisionDatajectOwner.ministry).toBe(createRequestBody.projectOwner.ministry);
+    expect(decisionData.projectOwner.ministry).toBe(createRequestBody.projectOwner.ministry);
     expect(decisionData.primaryTechnicalLead.firstName).toBe(createRequestBody.primaryTechnicalLead.firstName);
     expect(decisionData.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
     expect(decisionData.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
@@ -153,10 +153,10 @@ describe('Create Private Cloud Request Route', () => {
     expect(decisionData.commonComponents.workflowManagement.implemented).toBe(
       createRequestBody.commonComponents.workflowManagement.implemented,
     );
-    expect(decisionDatanents.formDesignAndSubmission.planningToUse).toBe(
+    expect(decisionData.commonComponents.formDesignAndSubmission.planningToUse).toBe(
       createRequestBody.commonComponents.formDesignAndSubmission.planningToUse,
     );
-    expect(decisionDataubmission.implemented).toBe(
+    expect(decisionData.commonComponents.publishing.implemented).toBe(
       createRequestBody.commonComponents.formDesignAndSubmission.implemented,
     );
     expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
@@ -192,7 +192,7 @@ describe('Create Private Cloud Request Route', () => {
     expect(decisionData.commonComponents.businessIntelligence.planningToUse).toBe(
       createRequestBody.commonComponents.businessIntelligence.planningToUse,
     );
-    expect(decisionDatamonComponents.businessIntelligence.implemented).toBe(
+    expect(decisionData.commonComponents.businessIntelligence.implemented).toBe(
       createRequestBody.commonComponents.businessIntelligence.implemented,
     );
     expect(decisionData.commonComponents.other).toBe(createRequestBody.commonComponents.other);

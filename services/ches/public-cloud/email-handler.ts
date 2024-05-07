@@ -91,7 +91,7 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
       to: [
         request.decisionData.projectOwner.email,
         request.decisionData.primaryTechnicalLead.email,
-        request.decisionDataondaryTechnicalLead?.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request has been approved',
     });
