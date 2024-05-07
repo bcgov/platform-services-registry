@@ -21,17 +21,17 @@ const apiHandler = createApiHandler({
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
   const { licencePlate } = pathParams;
-  const { decision, decisionComment, ...requestedProjectFormData } = body;
+  const { decision, decisionComment, ...decisionDataFormData } = body;
 
   const request = await makeRequestDecision(
     licencePlate,
     decision,
     decisionComment,
-    requestedProjectFormData,
+    decisionDataFormData,
     userEmail as string,
   );
 
-  if (!request.requestedProject) {
+  if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
   }
 
@@ -45,20 +45,20 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   proms.push(
     sendRequestNatsMessage(request, {
-      projectOwner: { email: requestedProjectFormData.projectOwner.email },
-      primaryTechnicalLead: { email: requestedProjectFormData.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: requestedProjectFormData.secondaryTechnicalLead?.email },
+      projectOwner: { email: decisionDataFormData.projectOwner.email },
+      primaryTechnicalLead: { email: decisionDataFormData.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: decisionDataFormData.secondaryTechnicalLead?.email },
     }),
   );
 
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
   // Subscribe users to Mautic
-  proms.push(subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private'));
+  proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
   if (request.type == $Enums.RequestType.EDIT) {
     proms.push(sendRequestApprovalEmails(request));

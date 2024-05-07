@@ -34,9 +34,9 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
       body: userEmail,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Provisioning request received',
     });
@@ -67,9 +67,9 @@ export const sendEditRequestEmails = async (
     const contacts = sendEmail({
       body: userEmail,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
         request.project?.projectOwner.email,
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
@@ -90,9 +90,9 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
     await sendEmail({
       body: email,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request has been approved',
     });
@@ -138,9 +138,9 @@ export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRe
     const contacts = sendEmail({
       body: userEmail,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request to delete product received',
     });

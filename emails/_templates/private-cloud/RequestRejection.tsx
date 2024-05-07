@@ -14,9 +14,9 @@ interface EmailProp {
 }
 
 const RequestRejectionTemplate = ({ request, productName, decisionComment }: EmailProp) => {
-  if (!request || !request.project || !request.requestedProject) return <></>;
+  if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
-  const requested = request.requestedProject;
+  const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
 
   return (

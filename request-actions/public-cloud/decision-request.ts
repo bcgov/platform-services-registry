@@ -12,7 +12,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         expenseAuthority: true;
       };
     };
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
@@ -25,7 +25,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
 
 export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
@@ -58,7 +58,7 @@ export default async function makeRequestDecision(
           expenseAuthority: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -79,8 +79,8 @@ export default async function makeRequestDecision(
     primaryTechnicalLeadId,
     secondaryTechnicalLeadId,
     expenseAuthorityId,
-    ...userRequestedProject
-  } = request.requestedProject;
+    ...requestData
+  } = request.decisionData;
   // Update the request with the data passed in from the form.
   // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject field
   // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
@@ -98,7 +98,7 @@ export default async function makeRequestDecision(
           expenseAuthority: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -113,7 +113,7 @@ export default async function makeRequestDecision(
       active: decision === DecisionStatus.APPROVED,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,
-      requestedProject: {
+      decisionData: {
         update: {
           ...formData,
           status: ProjectStatus.ACTIVE,

@@ -48,19 +48,19 @@ export default async function updateOp({
 
   const proms = [];
 
-  proms.push(sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project));
+  proms.push(sendPublicCloudNatsMessage(request.type, request.decisionData, request.project));
 
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
-  proms.push(subscribeUsersToMautic(users, request.requestedProject.provider, 'Private'));
+  proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Private'));
   proms.push(sendEditRequestEmails(request));
 
-  if (request.requestedProject.expenseAuthorityId !== request.project?.expenseAuthorityId) {
-    proms.push(sendExpenseAuthorityEmail(request.requestedProject));
+  if (request.decisionData.expenseAuthorityId !== request.project?.expenseAuthorityId) {
+    proms.push(sendExpenseAuthorityEmail(request.decisionData));
   }
 
   await Promise.all(proms);

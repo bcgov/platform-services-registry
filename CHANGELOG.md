@@ -1,7 +1,27 @@
+## [0.23.3](https://github.com/bcgov/platform-services-registry/compare/v0.23.2...v0.23.3) (2024-05-07)
+
+### Refactors
+
+* organize email templates in layout ([4c25af0](https://github.com/bcgov/platform-services-registry/commit/4c25af0fea3af3ab367f856c1f2365287ef0b4ac))
+## [0.23.2](https://github.com/bcgov/platform-services-registry/compare/v0.23.1...v0.23.2) (2024-05-07)
+
+### Features
+
+* **2229:** separate provisioning of golddr cluster ([4665edd](https://github.com/bcgov/platform-services-registry/commit/4665edd53b2371a16dc32a7b1bf5938af5c75e5c))
+* **2249:** add logger for backend ([013d3f3](https://github.com/bcgov/platform-services-registry/commit/013d3f3c029ba8ee9187dfc139a248d7771bd88f))
+* **2556:** store user image in db ([9e47fe2](https://github.com/bcgov/platform-services-registry/commit/9e47fe2214c2357805b99a709edb20ad9f3b5289))
+* **2645:** ignore Form validations on Delete Requests ([7d47d60](https://github.com/bcgov/platform-services-registry/commit/7d47d60964580b5d63e9c6c2a93356b91b332d3f))
+* add externalLink generic component ([84259b3](https://github.com/bcgov/platform-services-registry/commit/84259b326e81e4a8ea024b36f112c2b0dd80c741))
+* add generic checkbox component ([568c1c7](https://github.com/bcgov/platform-services-registry/commit/568c1c7f65b075cbcb28508b6de6b5ae9857be6d))
+* add golddrEnabled field ([74c0c81](https://github.com/bcgov/platform-services-registry/commit/74c0c815ae610df07b109f6646af9a1d00e750cf))
+* add mailLink generic component ([dbdd293](https://github.com/bcgov/platform-services-registry/commit/dbdd293ec551a1b442c8bbba12f93c8c7e02661b))
+* add view history document permission ([c9de09e](https://github.com/bcgov/platform-services-registry/commit/c9de09e9159e9300bb46cb173c7176f69f4e0794))
+* **comments:** added confirmation box for deleting a comment, and success toast ([5b263b7](https://github.com/bcgov/platform-services-registry/commit/5b263b7a45d4db2e958984152063e0e76342ba9f))
+* **comments:** delete a comment through UI ([54b3dc3](https://github.com/bcgov/platform-services-registry/commit/54b3dc3093b48036c3010579c30b17bd2f83c201))
+* **comments:** edit a comment through the UI ([d3705b4](https://github.com/bcgov/platform-services-registry/commit/d3705b4bf3715b69f6f372bad4f7a12646089fad))
+* signout from keycloak along with app backend ([0efde47](https://github.com/bcgov/platform-services-registry/commit/0efde47710ac596cf868442a7589a8c556e8ba5d))
 ## [0.23.1](https://github.com/bcgov/platform-services-registry/compare/v0.23.0...v0.23.1) (2024-04-29)
-
 ## [0.23.0](https://github.com/bcgov/platform-services-registry/compare/v0.22.3...v0.23.0) (2024-04-29)
-
 
 ### Features
 
@@ -22,7 +42,6 @@
 * history tab and request page for public cloud ([#2544](https://github.com/bcgov/platform-services-registry/issues/2544)) ([402d470](https://github.com/bcgov/platform-services-registry/commit/402d4700f6451384adeaf6adcdb0e08337e0dc57))
 * set user session timeout configuration ([e94b3a8](https://github.com/bcgov/platform-services-registry/commit/e94b3a86de75df289c83ae6eba1902a25c768a35))
 
-
 ### Bug Fixes
 
 * comments box for rejection decision only ([2674a26](https://github.com/bcgov/platform-services-registry/commit/2674a26dd957ebfb5dbb040a324d142cb6ecff84))
@@ -32,12 +51,10 @@
 * rejection email now has correct content according to docs ([5aea799](https://github.com/bcgov/platform-services-registry/commit/5aea79905161ce80a226f4910377022e2d1bde28))
 * send correct emails given scenario, refactored approval email content ([907fcb2](https://github.com/bcgov/platform-services-registry/commit/907fcb2f87d95b1b41eeb26d6fd438526d561f2e))
 
-
 ### Docs
 
 * **private-email:** update scenario 4 consistency ([3fd4d5e](https://github.com/bcgov/platform-services-registry/commit/3fd4d5e9f6bfa49b43fffee56d2bbd247cc05696))
 * updated private cloud email scenarios documentation Scenario 2 ([bf81426](https://github.com/bcgov/platform-services-registry/commit/bf81426815a03636ef5197b1485ff31fb787c946))
-
 
 ### Refactors
 
@@ -47,9 +64,7 @@
 * re-organize other cloud routes ([915f3ef](https://github.com/bcgov/platform-services-registry/commit/915f3efe57ba3a8c8030be58b3db8741ae01858c))
 * re-organize private cloud routes ([2cd3204](https://github.com/bcgov/platform-services-registry/commit/2cd3204af7df1b1cbe972fd4f02592bb249b922f))
 * re-organize public cloud routes ([f7181c9](https://github.com/bcgov/platform-services-registry/commit/f7181c9ca2dbae08b3ce2ac09709d1f3c9a7a67b))
-
 ## [0.22.3](https://github.com/bcgov/platform-services-registry/compare/v0.22.1...v0.22.3) (2024-04-18)
-
 
 ### Features
 
@@ -58,7 +73,6 @@
 * **frontend:** add buttons to copy licensePlate to clipboard ([6b5720a](https://github.com/bcgov/platform-services-registry/commit/6b5720a80bee5aae771a40f2c73772c06f455453))
 * **frontend:** add buttons to copy licensePlate to clipboard ([d87f6ad](https://github.com/bcgov/platform-services-registry/commit/d87f6ad21431fbfc613bc2f0b88e5b5ede81b9ee))
 * history tab mockup implemented ([#2498](https://github.com/bcgov/platform-services-registry/issues/2498)) ([164c68d](https://github.com/bcgov/platform-services-registry/commit/164c68d2c59dbac3aa98882a75f4d2373b1ab4e6))
-
 
 ### Bug Fixes
 
@@ -70,28 +84,21 @@
 * layout now consistent with other tabs ([d603066](https://github.com/bcgov/platform-services-registry/commit/d6030666ce65327ad11203c5db2fcfa7e9c8ced5))
 * switch permission from private to public admins ([#2462](https://github.com/bcgov/platform-services-registry/issues/2462)) ([ad57b60](https://github.com/bcgov/platform-services-registry/commit/ad57b6000b3cb6509373503af2c6141d352563a5))
 * use useQuery, and useMutation for comments logic ([f2348e7](https://github.com/bcgov/platform-services-registry/commit/f2348e7b1ce7567df3af10701e531f8d2b3b2dde))
-
 ## [0.22.1](https://github.com/bcgov/platform-services-registry/compare/v0.22.0...v0.22.1) (2024-04-04)
-
 
 ### Features
 
 * add updatedAt field to comments ([ed971c3](https://github.com/bcgov/platform-services-registry/commit/ed971c30118f052c1ef95cbd490ff284cc40c129))
 
-
 ### Refactors
 
 * api handler, next response, param validation ([#2421](https://github.com/bcgov/platform-services-registry/issues/2421)) ([bf02663](https://github.com/bcgov/platform-services-registry/commit/bf026633042e50c2e3eab1bb287be10d7136d6af))
-
 ## [0.22.0](https://github.com/bcgov/platform-services-registry/compare/v0.21.0...v0.22.0) (2024-03-22)
-
 
 ### Features
 
 * add reprovision endpoint along with resend ([08cbb54](https://github.com/bcgov/platform-services-registry/commit/08cbb540ce20e18ef8ce061339befd9958db1adb))
-
 ## [0.21.0](https://github.com/bcgov/platform-services-registry/compare/v0.20.2...v0.21.0) (2024-03-22)
-
 
 ### Features
 
@@ -101,28 +108,21 @@
 * logic for list all comments api ([d3fb8ee](https://github.com/bcgov/platform-services-registry/commit/d3fb8ee7277436c3b55569e4d5411e0af2b01933))
 * logic for read comment by id api logic ([4167255](https://github.com/bcgov/platform-services-registry/commit/4167255c9a11e966085028090ad6c08ca2319090))
 * logic for update comment by id api ([94e939b](https://github.com/bcgov/platform-services-registry/commit/94e939b3083affbdea6fdb4c795fc4c721a6c3ed))
-
 ## [0.20.2](https://github.com/bcgov/platform-services-registry/compare/v0.20.1...v0.20.2) (2024-03-22)
-
 
 ### Bug Fixes
 
 * use auth server instead of auth base url ([44627e8](https://github.com/bcgov/platform-services-registry/commit/44627e8b114fc521610d9a6564c265cb452b413b))
-
 ## [0.20.1](https://github.com/bcgov/platform-services-registry/compare/v0.20.0...v0.20.1) (2024-03-21)
-
 
 ### Features
 
 * **2320:** migreate gitops apis ([e4f60d1](https://github.com/bcgov/platform-services-registry/commit/e4f60d12b0226a581a89abf46015d5cf0e0563f8))
 
-
 ### Bug Fixes
 
 * add get user by email ([#2353](https://github.com/bcgov/platform-services-registry/issues/2353)) ([8f2576c](https://github.com/bcgov/platform-services-registry/commit/8f2576c2aa6d184290db7b631d961659fe52778e))
-
 ## [0.20.0](https://github.com/bcgov/platform-services-registry/compare/v0.19.1...v0.20.0) (2024-03-21)
-
 
 ### Features
 
@@ -130,16 +130,12 @@
 * add total quotas in csv exports ([82de485](https://github.com/bcgov/platform-services-registry/commit/82de4855edb031d2aca7d40b6dd4d9908b39acb1))
 * create comment api ([be32408](https://github.com/bcgov/platform-services-registry/commit/be32408fe69d37370e2429ab96a912552300e9fd))
 * sort functionality to public and private products and requests ([#2344](https://github.com/bcgov/platform-services-registry/issues/2344)) ([b514f85](https://github.com/bcgov/platform-services-registry/commit/b514f8544d9b309426adddcdc50da9cfadef67c4))
-
 ## [0.19.1](https://github.com/bcgov/platform-services-registry/compare/v0.19.0...v0.19.1) (2024-03-20)
-
 
 ### Bug Fixes
 
 * fix data migration scripts ([6142afa](https://github.com/bcgov/platform-services-registry/commit/6142afa8b25beb1a1f96cecdc0f8ebac45824f45))
-
 ## [0.19.0](https://github.com/bcgov/platform-services-registry/compare/v0.18.1...v0.19.0) (2024-03-19)
-
 
 ### Features
 
@@ -150,11 +146,9 @@
 * apply security layers on product list page ([cc46be9](https://github.com/bcgov/platform-services-registry/commit/cc46be9d6f980b5aabbbffc595ab77d777642620))
 * lowercase user emails ([babd957](https://github.com/bcgov/platform-services-registry/commit/babd9573459d2fe57e1eedd3617c122f8087cfb6))
 
-
 ### Bug Fixes
 
 * update missing updated_at ([f07f32d](https://github.com/bcgov/platform-services-registry/commit/f07f32dea3b88630e7cfa40a43cbc5287243c3bf))
-
 
 ### Refactors
 
@@ -165,26 +159,20 @@
 * migrate data to update old data ([05c2932](https://github.com/bcgov/platform-services-registry/commit/05c29327d81007bcec2dab061f33328a0d053f95))
 * optimize codebase according to roles & permissions ([4feacbd](https://github.com/bcgov/platform-services-registry/commit/4feacbd867fce3cfc03055275af8daf11ff88109))
 * optimize delete api endpoints ([970ac90](https://github.com/bcgov/platform-services-registry/commit/970ac9015db6189cfb7dbd60dbb60b374b2f708e))
-
 ## [0.18.1](https://github.com/bcgov/platform-services-registry/compare/v0.18.0...v0.18.1) (2024-03-14)
-
 
 ### Features
 
 * **analytics:** filter private cloud requests by prod productions ([1158948](https://github.com/bcgov/platform-services-registry/commit/11589481f1293b9c225bbc1d39e671380835be99))
 
-
 ### Bug Fixes
 
 * add user aws roles issue, hide histroy tab from prod ([#2279](https://github.com/bcgov/platform-services-registry/issues/2279)) ([35c1caf](https://github.com/bcgov/platform-services-registry/commit/35c1cafa54752623b42baf9600697a1b4875c415))
 
-
 ### Docs
 
 * update db backup steps ([c2ffe13](https://github.com/bcgov/platform-services-registry/commit/c2ffe1333cc203975e8cec90b30b9428c50ee784))
-
 ## [0.18.0](https://github.com/bcgov/platform-services-registry/compare/v0.17.0...v0.18.0) (2024-03-13)
-
 
 ### Features
 
@@ -192,14 +180,11 @@
 * restrict certain special characters from entering in public project name ([d938ca9](https://github.com/bcgov/platform-services-registry/commit/d938ca976aa8e2754462660af008c0ae5c7b440c))
 * setup restful api for comments ([c373319](https://github.com/bcgov/platform-services-registry/commit/c373319d2465e48ba34fd2b157865f63487c2ea6))
 
-
 ### Bug Fixes
 
 * fix issue with deletion provisioned email for public cloud ([#2267](https://github.com/bcgov/platform-services-registry/issues/2267)) ([ae056b1](https://github.com/bcgov/platform-services-registry/commit/ae056b14ed9457d79a146d0145372b2eff2a2eb1))
 * resolve issues when deleting projects ([c57986c](https://github.com/bcgov/platform-services-registry/commit/c57986cf2feced45e02912883380ea45f773bb7e))
-
 ## [0.17.0](https://github.com/bcgov/platform-services-registry/compare/v0.16.0...v0.17.0) (2024-03-07)
-
 
 ### Features
 
@@ -226,7 +211,6 @@
 * sort products by updated dates ([1d0ef14](https://github.com/bcgov/platform-services-registry/commit/1d0ef1444357bfd8f30dc4d8f99cebaf54d0f212))
 * upsert users when users assinged for products ([873d05f](https://github.com/bcgov/platform-services-registry/commit/873d05fb3814d9475995a9199d528585aff5fb38))
 
-
 ### Bug Fixes
 
 * **1733:** fixed build error in seed ([14f9f0c](https://github.com/bcgov/platform-services-registry/commit/14f9f0c5bfc157165028a17678aa82fd2d38f5c6))
@@ -236,56 +220,43 @@
 * resolve issue on showing deleted products ([9da0da7](https://github.com/bcgov/platform-services-registry/commit/9da0da77bb2574651f45ad1da828558a8acc0d24))
 * return modal + hosting tier info for users ([f552a8d](https://github.com/bcgov/platform-services-registry/commit/f552a8d36493dbbac0dced1fcf367b7037faa405))
 
-
 ### Docs
 
 * add email scenarios for private cloud ([2d78021](https://github.com/bcgov/platform-services-registry/commit/2d78021c4d39e70d6d9087f278064eabcc23ceba))
 * add email scenarios for public and private cloud ([15908ee](https://github.com/bcgov/platform-services-registry/commit/15908ee393d744a5dd5f657d783a1110b4eb7e1f))
 * add tab in the first paragraphs ([52c9656](https://github.com/bcgov/platform-services-registry/commit/52c9656f666013a3e878512744a00ac2f7e2e006))
 * update README.md ([8a5b0f6](https://github.com/bcgov/platform-services-registry/commit/8a5b0f6849b1939fd3bbaf8e56373733f421fa85))
-
 ## [0.16.0](https://github.com/bcgov/platform-services-registry/compare/v0.15.0...v0.16.0) (2024-02-13)
-
 
 ### Features
 
 * add ACS tasks in upper environments ([5ad6063](https://github.com/bcgov/platform-services-registry/commit/5ad606375fce5151a00c08b47c1acbf95637e99a))
 * add bash linter & formatter ([1d31993](https://github.com/bcgov/platform-services-registry/commit/1d319930e40f4ab79ab1fe3bee09b68f6ffeef15))
-
 ## [0.15.0](https://github.com/bcgov/platform-services-registry/compare/v0.13.0...v0.15.0) (2024-02-09)
-
 
 ### Features
 
 * display URL sources in sonar scan results ([19dbe22](https://github.com/bcgov/platform-services-registry/commit/19dbe2218775fcb1c3cd830bce6a16a55b597dfa))
 
-
 ### Bug Fixes
 
 * wording, and admin delete email ([4e89814](https://github.com/bcgov/platform-services-registry/commit/4e89814dc1c37f6f654b06cdf851f0b5caf28585))
-
 ## [0.13.0](https://github.com/bcgov/platform-services-registry/compare/v0.12.0...v0.13.0) (2024-02-07)
-
 
 ### Features
 
 * search github urls from acs image build metadata ([07edb45](https://github.com/bcgov/platform-services-registry/commit/07edb4525be95de01dcfb82220c7f03b28a88646))
 
-
 ### Bug Fixes
 
 * **1680:** fix comments in emails ([99c0eb7](https://github.com/bcgov/platform-services-registry/commit/99c0eb7a72c3078a62727b139eddd474fb0cced1))
-
 ## [0.12.0](https://github.com/bcgov/platform-services-registry/compare/v0.9.1...v0.12.0) (2024-02-06)
-
 
 ### Features
 
 * **1915:** add acs airflow dag ([e4f9053](https://github.com/bcgov/platform-services-registry/commit/e4f9053be25c42954c4f357b041c38f7bce9f50e))
 * **1916:** add security dashboard acs views ([97a6c90](https://github.com/bcgov/platform-services-registry/commit/97a6c90e7ea40e03aaa977401d30a6c5b48752bd))
-
 ## [0.9.1](https://github.com/bcgov/platform-services-registry/compare/v0.9.0...v0.9.1) (2024-01-30)
-
 
 ### Features
 
@@ -300,27 +271,22 @@
 * **sysdig:** add sysdig alerts for upper environments ([7cb61cb](https://github.com/bcgov/platform-services-registry/commit/7cb61cb89a7c1273f2e0aa01feaaeba3b97f2222))
 * updated wording of edit summary ([0d24dc7](https://github.com/bcgov/platform-services-registry/commit/0d24dc719e7c8924cb316cf891916d2ef59ebf99))
 
-
 ### Bug Fixes
 
 * resolve version upgrade issue ([15da9ac](https://github.com/bcgov/platform-services-registry/commit/15da9ac73d554eb8cb785402b7596a56fbde844b))
 * use session.roles instead of session.user.roles ([9a79b0a](https://github.com/bcgov/platform-services-registry/commit/9a79b0a0f2f8ab314bd8628fca3ffc8e9af53e60))
 
-
 ### Docs
 
 * update sysdig terraform docs ([f597ae6](https://github.com/bcgov/platform-services-registry/commit/f597ae6f316f5d3c847916b49321e0e64bfe843e))
 * update team conventions ([d629672](https://github.com/bcgov/platform-services-registry/commit/d6296723bd7917f197ec8cb291d0a8bb6c9b1dcd))
-
 ## [0.9.0](https://github.com/bcgov/platform-services-registry/compare/v0.7.0...v0.9.0) (2024-01-17)
-
 
 ### Features
 
 * add security scan results tabs ([99d5151](https://github.com/bcgov/platform-services-registry/commit/99d5151a73a900a5589aeffd6540d41b7f4c03c5))
 * add sonarscan result page ([ab52b3a](https://github.com/bcgov/platform-services-registry/commit/ab52b3acbe05b9cd489f2d7b22d70939b10eeb2e))
 * add version # in footer ([2eff74f](https://github.com/bcgov/platform-services-registry/commit/2eff74f7ad2b32d3fc72036f9796449a56f2cad7))
-
 
 ### Bug Fixes
 
@@ -329,9 +295,7 @@
 * provider details component now completed ([c8789c1](https://github.com/bcgov/platform-services-registry/commit/c8789c112f0163ae4a0c4889f09f9fa8f42f4ea7))
 * wording ([e9dc830](https://github.com/bcgov/platform-services-registry/commit/e9dc830e2255cf7ff2a2354f4dc1dfb29fabb8f3))
 * wording, formatting, links ([3a72d78](https://github.com/bcgov/platform-services-registry/commit/3a72d786193b309ef44e656d602c1dc819e18988))
-
 ## [0.7.0](https://github.com/bcgov/platform-services-registry/compare/v0.5.0...v0.7.0) (2024-01-16)
-
 
 ### Features
 
@@ -347,7 +311,6 @@
 * update security layer ([a5cd797](https://github.com/bcgov/platform-services-registry/commit/a5cd797371fde64e8ae5905bd258125f42878514))
 * updated favicon ([2795294](https://github.com/bcgov/platform-services-registry/commit/27952947c5f07888bb6117757c3b36ad3162d260))
 
-
 ### Bug Fixes
 
 * add decimal values in budget field ([9677b39](https://github.com/bcgov/platform-services-registry/commit/9677b39da91544a35f17a55462a911fe751b0f9e))
@@ -358,9 +321,7 @@
 * redundant curly brackets ([21c9171](https://github.com/bcgov/platform-services-registry/commit/21c91713e75630f8912cf3eb7e0251759a75b149))
 * removed unused import ([e7b7760](https://github.com/bcgov/platform-services-registry/commit/e7b7760938e285053d15013d2ad8dd520a94a328))
 * use idir as the single IDP ([49bd5f3](https://github.com/bcgov/platform-services-registry/commit/49bd5f36fac1928454f3334e9fbf209a6d8faf3a))
-
 ## [0.5.0](https://github.com/bcgov/platform-services-registry/compare/v0.4.0...v0.5.0) (2023-12-27)
-
 
 ### Features
 
@@ -383,7 +344,6 @@
 * toggle for public cloud ([39e59e2](https://github.com/bcgov/platform-services-registry/commit/39e59e2c939c622e6a44e6962a059fda377bc005))
 * update react-email doc ([68a8baa](https://github.com/bcgov/platform-services-registry/commit/68a8baa4b2d072161a66fd600c7fc3d636ff0755))
 * updated favicon ([524b214](https://github.com/bcgov/platform-services-registry/commit/524b214d1a95d13a89b088982eba543ab1a025a8))
-
 
 ### Bug Fixes
 
@@ -408,13 +368,10 @@
 * wording on privatecloud modal and links in modals ([a741c7c](https://github.com/bcgov/platform-services-registry/commit/a741c7cfdc39a48b65d30d89e050b9a446cbce0d))
 * wording on privatecloud modal and links in modals ([584d176](https://github.com/bcgov/platform-services-registry/commit/584d1764a1e093cca76416847349fa1fe02b1d20))
 
-
 ### Docs
 
 * add database documents ([91e367c](https://github.com/bcgov/platform-services-registry/commit/91e367c6333e55a3b2fbc943b0ad051de6fe3c36))
-
 ## [0.4.0](https://github.com/bcgov/platform-services-registry/compare/v0.3.0...v0.4.0) (2023-11-28)
-
 
 ### Features
 
@@ -428,7 +385,6 @@
 * set timeout for ches email requests ([a2a0e3d](https://github.com/bcgov/platform-services-registry/commit/a2a0e3d587fd29b19b1910ae2823c8f1afb34e10))
 * update edit request emails to lookup quota ([8dfd2f2](https://github.com/bcgov/platform-services-registry/commit/8dfd2f24709bd9431f846c23cf27edbd1ff6af67))
 
-
 ### Bug Fixes
 
 * made comment modal less confusing ([33b9ddf](https://github.com/bcgov/platform-services-registry/commit/33b9ddfa713695cc1734e342c461d3b800a463ed))
@@ -439,15 +395,12 @@
 * update style for editRequest ([40c3dc9](https://github.com/bcgov/platform-services-registry/commit/40c3dc95247bf6d981e9a06074f44c8d951abc73))
 * used lodash for comparePorjects, removed EditRequest modal to different pr ([9a30489](https://github.com/bcgov/platform-services-registry/commit/9a304892e80fd0710cea8a2f3bfb5eefb7cd57e1))
 
-
 ### Docs
 
 * add git tips ([c27f70c](https://github.com/bcgov/platform-services-registry/commit/c27f70c44f077a01958f049028f7ab97bf0c1c82))
 * add security dashboard POC result ([bd691d6](https://github.com/bcgov/platform-services-registry/commit/bd691d686ff6a7b66ee977a0fabac57047b1a69a))
 * **clean-codes:** add return-early-pattern ([e9c51be](https://github.com/bcgov/platform-services-registry/commit/e9c51be20377ed7dbfbf791bb095a7194a074fb2))
-
 ## [0.3.0](https://github.com/bcgov/platform-services-registry/compare/v0.2.0...v0.3.0) (2023-11-16)
-
 
 ### Features
 
@@ -457,7 +410,6 @@
 * Added nats messeges ([#1250](https://github.com/bcgov/platform-services-registry/issues/1250)) ([f5abcc2](https://github.com/bcgov/platform-services-registry/commit/f5abcc2d02fbb6d69c64af8e16b6c457fa705cb9))
 * send emails for create/approve/reject and more tests ([eac1dbf](https://github.com/bcgov/platform-services-registry/commit/eac1dbf4b28264dbee0bb8b8ba9bdfea15b71b10))
 
-
 ### Bug Fixes
 
 * better type definitions for ches and emails ([79de07c](https://github.com/bcgov/platform-services-registry/commit/79de07cd21769b86bd8d1dbab3ac471e72554dfd))
@@ -465,9 +417,7 @@
 * deny request properly calls email function and pr fixes ([e12d5e4](https://github.com/bcgov/platform-services-registry/commit/e12d5e4e6f186adb546597dc0e8370e7914e2f15))
 * organize auth options ([0233ee2](https://github.com/bcgov/platform-services-registry/commit/0233ee20d977eaab792a89b15c5760a86e3c3368))
 * remove snapshot testing ([ed5e3a7](https://github.com/bcgov/platform-services-registry/commit/ed5e3a75f75680e303545ac0aba1bd3956e4c66c))
-
 ## [0.2.0](https://github.com/bcgov/platform-services-registry/compare/8c6642cd17de15ced6c2c2268b9e1c02e0034be2...v0.2.0) (2023-11-03)
-
 
 ### Features
 
@@ -480,12 +430,10 @@
 * product details ([5ebad12](https://github.com/bcgov/platform-services-registry/commit/5ebad1215c7666151e0f7d600f3d91148e27385a))
 * provide default userImage ([bc49ca2](https://github.com/bcgov/platform-services-registry/commit/bc49ca2d965668c33d6bce17d3d3e7c8d747347a))
 
-
 ### Bug Fixes
 
 * **1235:** resolvenode-fetch Headers importing issue ([489a731](https://github.com/bcgov/platform-services-registry/commit/489a731c29a601678967ccd417926ae9c7014ec8))
 * pagination number and avatar ([a00af1b](https://github.com/bcgov/platform-services-registry/commit/a00af1bb70db15c4b6c24b518131c198b30e0d7c))
-
 
 ### Docs
 
@@ -495,8 +443,6 @@
 * update team conventions ([60499b4](https://github.com/bcgov/platform-services-registry/commit/60499b429828500f65de6a5321f25a4af2bbb2a5))
 * update team conventions ([9160ac4](https://github.com/bcgov/platform-services-registry/commit/9160ac40ab9e284c38470e213c924a25935df89d))
 
-
 ### Refactors
 
 * **1235:** update useQuery syntax accordingly to the new version ([f7a48cd](https://github.com/bcgov/platform-services-registry/commit/f7a48cd7ce3e3c8ff10c92baf11f957aba3d9538))
-

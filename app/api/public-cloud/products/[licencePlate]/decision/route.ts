@@ -24,22 +24,22 @@ const apiHandler = createApiHandler({
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
   const { licencePlate } = pathParams;
-  const { decision, decisionComment, ...requestedProjectFormData } = body;
+  const { decision, decisionComment, ...decisionDataFormData } = body;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeRequestDecision(
     licencePlate,
     decision,
     decisionComment,
-    requestedProjectFormData,
+    decisionDataFormData,
     userEmail as string,
   );
 
-  if (!request.requestedProject) {
+  if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    await sendRequestRejectionEmails(request.requestedProject, decisionComment);
+    await sendRequestRejectionEmails(request.decisionData, decisionComment);
     return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
   }
 
@@ -47,21 +47,21 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (
     request.decisionStatus === DecisionStatus.APPROVED &&
-    request.project?.expenseAuthorityId !== request.requestedProject.expenseAuthorityId
+    request.project?.expenseAuthorityId !== request.decisionData.expenseAuthorityId
   ) {
-    proms.push(sendExpenseAuthorityEmail(request.requestedProject));
+    proms.push(sendExpenseAuthorityEmail(request.decisionData));
   }
 
-  proms.push(sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project));
+  proms.push(sendPublicCloudNatsMessage(request.type, request.decisionData, request.project));
 
   // Subscribe users to Mautic
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
-  proms.push(subscribeUsersToMautic(users, request.requestedProject.provider, 'Public'));
+  proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
 
   await Promise.all(proms);
 
