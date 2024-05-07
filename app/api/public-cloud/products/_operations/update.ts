@@ -47,19 +47,19 @@ export default async function updateOp({
 
   const request = await editRequest(licencePlate, body, userEmail as string);
 
-  await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
+  await sendPublicCloudNatsMessage(request.type, request.decisionData, request.project);
 
   wrapAsync(() => {
     const users: User[] = [
-      request.requestedProject.projectOwner,
-      request.requestedProject.primaryTechnicalLead,
-      request.requestedProject?.secondaryTechnicalLead,
+      request.decisionData.projectOwner,
+      request.decisionData.primaryTechnicalLead,
+      request.decisionData?.secondaryTechnicalLead,
     ].filter((usr): usr is User => Boolean(usr));
 
-    subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
+    subscribeUsersToMautic(users, request.decisionData.provider, 'Private');
     sendEditRequestEmails(request);
-    if (request.requestedProject.expenseAuthorityId !== request.project?.expenseAuthorityId) {
-      sendExpenseAuthorityEmail(request.requestedProject);
+    if (request.decisionData.expenseAuthorityId !== request.project?.expenseAuthorityId) {
+      sendExpenseAuthorityEmail(request.decisionData);
     }
   });
 

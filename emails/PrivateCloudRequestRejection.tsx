@@ -3,7 +3,7 @@ import { samplePrivateEditRequest } from './_components/Params';
 import RequestRejectionTemplate from './_templates/private-cloud/RequestRejection';
 
 export default function RequestRejection() {
-  const productName = samplePrivateEditRequest.requestedProject.name;
+  const productName = samplePrivateEditRequest.decisionData.name;
   const decisionComment = samplePrivateEditRequest.decisionComment || undefined;
 
   return (

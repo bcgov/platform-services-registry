@@ -27,7 +27,7 @@ export async function searchPrivateCloudRequests({
   sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PrivateCloudRequestWhereInput;
 }) {
-  const requestedProjectwhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
+  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
 
   const orderBy =
     sortKey === 'updatedAt'
@@ -43,7 +43,7 @@ export async function searchPrivateCloudRequests({
       mode: 'insensitive',
     };
 
-    requestedProjectwhere.OR = [
+    decisionDatawhere.OR = [
       { projectOwnerId: { in: matchingUserIds } },
       { primaryTechnicalLeadId: { in: matchingUserIds } },
       { secondaryTechnicalLeadId: { in: matchingUserIds } },
@@ -54,15 +54,15 @@ export async function searchPrivateCloudRequests({
   }
 
   if (ministry) {
-    requestedProjectwhere.ministry = ministry as $Enums.Ministry;
+    decisionDatawhere.ministry = ministry as $Enums.Ministry;
   }
 
   if (cluster) {
-    requestedProjectwhere.cluster = cluster as $Enums.Cluster;
+    decisionDatawhere.cluster = cluster as $Enums.Cluster;
   }
 
   const matchingRequestedPrivateProjects = await prisma.privateCloudRequestedProject.findMany({
-    where: requestedProjectwhere,
+    where: decisionDatawhere,
     select: { id: true },
   });
 

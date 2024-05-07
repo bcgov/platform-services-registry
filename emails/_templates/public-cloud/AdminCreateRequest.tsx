@@ -39,21 +39,21 @@ export default function AdminCreateRequest({ request }: EmailProp) {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={request.requestedProject.name}
-                  description={request.requestedProject.description}
-                  ministry={request.requestedProject.ministry}
-                  po={request.requestedProject.projectOwner}
-                  tl1={request.requestedProject.primaryTechnicalLead}
-                  tl2={request.requestedProject.secondaryTechnicalLead}
-                  expenseAuthority={request.requestedProject.expenseAuthority}
-                  licencePlate={request.requestedProject.licencePlate}
+                  name={request.decisionData.name}
+                  description={request.decisionData.description}
+                  ministry={request.decisionData.ministry}
+                  po={request.decisionData.projectOwner}
+                  tl1={request.decisionData.primaryTechnicalLead}
+                  tl2={request.decisionData.secondaryTechnicalLead}
+                  expenseAuthority={request.decisionData.expenseAuthority}
+                  licencePlate={request.decisionData.licencePlate}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProviderDetails
-                  provider={request.requestedProject.provider}
-                  accountCoding={request.requestedProject.accountCoding}
-                  budget={request.requestedProject.budget}
+                  provider={request.decisionData.provider}
+                  accountCoding={request.decisionData.accountCoding}
+                  budget={request.decisionData.budget}
                 />
               </div>
               <div>

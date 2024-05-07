@@ -14,9 +14,9 @@ interface EmailProp {
 }
 
 const RequestApprovalTemplate = ({ request }: EmailProp) => {
-  if (!request || !request.project || !request.requestedProject) return <></>;
+  if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
-  const requested = request.requestedProject;
+  const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
 
   return (
@@ -30,11 +30,11 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
                 <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
                 <Text>Hi Product Team, </Text>
                 <Text className="">
-                  Your request for a resource quota has been completed for {request.requestedProject.name} on the
-                  Private Cloud OpenShift platform. You can now login to{' '}
+                  Your request for a resource quota has been completed for {request.decisionData.name} on the Private
+                  Cloud OpenShift platform. You can now login to{' '}
                   <Link
                     className="mt-0 h-4"
-                    href={`https://console.apps.${request.requestedProject.cluster}.devops.gov.bc.ca/`}
+                    href={`https://console.apps.${request.decisionData.cluster}.devops.gov.bc.ca/`}
                   >
                     OpenShift cluster console{' '}
                   </Link>{' '}
@@ -56,12 +56,12 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={request.requestedProject.name}
-                  description={request.requestedProject.description}
-                  ministry={request.requestedProject.ministry}
-                  po={request.requestedProject.projectOwner}
-                  tl1={request.requestedProject.primaryTechnicalLead}
-                  tl2={request.requestedProject.secondaryTechnicalLead}
+                  name={request.decisionData.name}
+                  description={request.decisionData.description}
+                  ministry={request.decisionData.ministry}
+                  po={request.decisionData.projectOwner}
+                  tl1={request.decisionData.primaryTechnicalLead}
+                  tl2={request.decisionData.secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">

@@ -22,13 +22,13 @@ const apiHandler = createApiHandler({
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
   const { licencePlate } = pathParams;
-  const { decision, decisionComment, ...requestedProjectFormData } = body;
+  const { decision, decisionComment, ...decisionDataFormData } = body;
 
   const request = await makeRequestDecision(
     licencePlate,
     decision,
     decisionComment,
-    requestedProjectFormData,
+    decisionDataFormData,
     userEmail as string,
   );
 
@@ -44,9 +44,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   await sendRequestNatsMessage(request, {
-    projectOwner: { email: requestedProjectFormData.projectOwner.email },
-    primaryTechnicalLead: { email: requestedProjectFormData.primaryTechnicalLead.email },
-    secondaryTechnicalLead: { email: requestedProjectFormData.secondaryTechnicalLead?.email },
+    projectOwner: { email: decisionDataFormData.projectOwner.email },
+    primaryTechnicalLead: { email: decisionDataFormData.primaryTechnicalLead.email },
+    secondaryTechnicalLead: { email: decisionDataFormData.secondaryTechnicalLead?.email },
   });
 
   const users: User[] = [

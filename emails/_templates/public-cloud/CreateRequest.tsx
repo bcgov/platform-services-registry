@@ -28,7 +28,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
     accountCoding,
     budget,
     licencePlate,
-  } = request.requestedProject;
+  } = request.decisionData;
 
   return (
     <Html>

@@ -143,16 +143,16 @@ export const publicCloudRequestDataToRow = (request: any) => {
     id: request.id,
     type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
-    name: request.requestedProject.name,
-    cluster: request.requestedProject.provider,
-    ministry: request.requestedProject.ministry,
-    projectOwner: `${request.requestedProject.projectOwner.firstName} ${request.requestedProject.projectOwner.lastName}`,
-    technicalLeads: `${request.requestedProject.primaryTechnicalLead.firstName} ${
-      request.requestedProject.primaryTechnicalLead.lastName
-    } ${request?.requestedProject.secondaryTechnicalLead ? ',' : ''} ${
-      request?.requestedProject?.secondaryTechnicalLead?.firstName || ''
-    } ${request?.requestedProject?.secondaryTechnicalLead?.lastName || ''}`,
-    created: <p className="w-28">{formatDate(request?.requestedProject.created.$date)}</p>,
-    licencePlate: <p className="w-28">{request?.requestedProject?.licencePlate}</p>,
+    name: request.decisionData.name,
+    cluster: request.decisionData.provider,
+    ministry: request.decisionData.ministry,
+    projectOwner: `${request.decisionData.projectOwner.firstName} ${request.decisionData.projectOwner.lastName}`,
+    technicalLeads: `${request.decisionData.primaryTechnicalLead.firstName} ${
+      request.decisionData.primaryTechnicalLead.lastName
+    } ${request?.decisionData.secondaryTechnicalLead ? ',' : ''} ${
+      request?.decisionData?.secondaryTechnicalLead?.firstName || ''
+    } ${request?.decisionData?.secondaryTechnicalLead?.lastName || ''}`,
+    created: <p className="w-28">{formatDate(request?.decisionData.created.$date)}</p>,
+    licencePlate: <p className="w-28">{request?.decisionData?.licencePlate}</p>,
   };
 };

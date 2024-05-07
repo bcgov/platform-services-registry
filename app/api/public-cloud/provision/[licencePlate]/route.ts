@@ -44,7 +44,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
   });
 
-  const { id, ...requestedProject } = request.decisionData;
+  const { id, ...decisionData } = request.decisionData;
 
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };
@@ -56,8 +56,8 @@ export const PUT = apiHandler(async ({ pathParams }) => {
         })
       : prisma.publicCloudProject.upsert({
           where: filter,
-          update: requestedProject,
-          create: requestedProject,
+          update: decisionData,
+          create: decisionData,
         });
 
   await prisma.$transaction([updateRequest, upsertProject]);

@@ -27,7 +27,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
     accountCoding,
     budget,
     licencePlate,
-  } = request.requestedProject;
+  } = request.decisionData;
 
   return (
     <Html>

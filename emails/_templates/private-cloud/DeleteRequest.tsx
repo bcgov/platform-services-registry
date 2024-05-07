@@ -26,23 +26,23 @@ const DeleteRequestTemplate = ({ request }: EmailProp) => {
                 <Heading className="text-lg text-black">Your deletion request has been received!</Heading>
                 <Text>Hi Product Team,</Text>
                 <Text className="">
-                  {`We have received your deletion request for ${request.requestedProject.name}. You will receive an email once your request has been processed and completed.`}
+                  {`We have received your deletion request for ${request.decisionData.name}. You will receive an email once your request has been processed and completed.`}
                 </Text>
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <ProductDetails
-                  name={request.requestedProject.name}
-                  description={request.requestedProject.description}
-                  ministry={request.requestedProject.ministry}
-                  po={request.requestedProject.projectOwner}
-                  tl1={request.requestedProject.primaryTechnicalLead}
-                  tl2={request.requestedProject.secondaryTechnicalLead}
+                  name={request.decisionData.name}
+                  description={request.decisionData.description}
+                  ministry={request.decisionData.ministry}
+                  po={request.decisionData.projectOwner}
+                  tl1={request.decisionData.primaryTechnicalLead}
+                  tl2={request.decisionData.secondaryTechnicalLead}
                 />
               </div>
               <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
                 <NamespaceDetails
-                  cluster={request.requestedProject.cluster}
-                  licencePlate={request.requestedProject.licencePlate}
+                  cluster={request.decisionData.cluster}
+                  licencePlate={request.decisionData.licencePlate}
                 />
               </div>
               <div>

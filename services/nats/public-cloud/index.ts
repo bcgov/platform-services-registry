@@ -21,17 +21,17 @@ export type PublicCloudProjectWithContacts = Prisma.PublicCloudRequestedProjectG
 // Create a test env variable that prefix the namespace name with "t"
 export default function createPublicCloudNatsMessage(
   requestType: RequestType,
-  requestedProject: PublicCloudRequestedProjectWithContacts,
+  decisionData: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,
 ) {
   return {
     project_set_info: {
-      licence_plate: requestedProject.licencePlate,
-      ministry_name: requestedProject.ministry,
+      licence_plate: decisionData.licencePlate,
+      ministry_name: decisionData.ministry,
       request_type: requestType,
-      project_name: requestedProject.name,
-      account_coding: requestedProject.accountCoding,
-      budgets: requestedProject.budget,
+      project_name: decisionData.name,
+      account_coding: decisionData.accountCoding,
+      budgets: decisionData.budget,
       enterprise_support: {
         prod: true,
         test: false,
@@ -39,8 +39,8 @@ export default function createPublicCloudNatsMessage(
         tools: false,
       },
       requested_product_owner: {
-        name: `${requestedProject.projectOwner.firstName} ${requestedProject.projectOwner.lastName}`,
-        email: requestedProject.projectOwner.email,
+        name: `${decisionData.projectOwner.firstName} ${decisionData.projectOwner.lastName}`,
+        email: decisionData.projectOwner.email,
       },
       current_product_owner: !currentProject
         ? null
@@ -49,8 +49,8 @@ export default function createPublicCloudNatsMessage(
             email: currentProject.projectOwner.email,
           },
       requested_expense_authority: {
-        name: `${requestedProject.expenseAuthority?.firstName} ${requestedProject.expenseAuthority?.lastName}`,
-        email: requestedProject.expenseAuthority?.email,
+        name: `${decisionData.expenseAuthority?.firstName} ${decisionData.expenseAuthority?.lastName}`,
+        email: decisionData.expenseAuthority?.email,
       },
       current_expense_authority: !currentProject
         ? null
@@ -60,12 +60,12 @@ export default function createPublicCloudNatsMessage(
           },
       requested_tech_leads: [
         {
-          name: `${requestedProject.primaryTechnicalLead.firstName} ${requestedProject.primaryTechnicalLead.lastName}`,
-          email: requestedProject.primaryTechnicalLead.email,
+          name: `${decisionData.primaryTechnicalLead.firstName} ${decisionData.primaryTechnicalLead.lastName}`,
+          email: decisionData.primaryTechnicalLead.email,
         },
         {
-          name: `${requestedProject?.secondaryTechnicalLead?.firstName} ${requestedProject?.secondaryTechnicalLead?.lastName}`,
-          email: requestedProject?.secondaryTechnicalLead?.email,
+          name: `${decisionData?.secondaryTechnicalLead?.firstName} ${decisionData?.secondaryTechnicalLead?.lastName}`,
+          email: decisionData?.secondaryTechnicalLead?.email,
         },
       ].filter((techLead) => Boolean(techLead.email)),
       current_tech_leads: !currentProject
