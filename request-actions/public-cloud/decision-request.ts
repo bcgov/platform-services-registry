@@ -79,7 +79,7 @@ export default async function makeRequestDecision(
     primaryTechnicalLeadId,
     secondaryTechnicalLeadId,
     expenseAuthorityId,
-    ...userRequestedProject
+    ...requestData
   } = request.decisionData;
   // Update the request with the data passed in from the form.
   // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject field

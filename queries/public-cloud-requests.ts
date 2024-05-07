@@ -32,7 +32,7 @@ export async function searchPublicCloudRequests({
   const orderBy =
     sortKey === 'updatedAt'
       ? { updatedAt: Prisma.SortOrder[sortOrder] }
-      : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
+      : { requestData: { [sortKey]: Prisma.SortOrder[sortOrder] } };
 
   if (search === '*') search = '';
 

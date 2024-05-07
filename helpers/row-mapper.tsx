@@ -124,17 +124,17 @@ export const privateCloudRequestDataToRow = (request: any) => {
     id: request.id,
     type: <span className=" capitalize">{request.type.toLowerCase()}</span>,
     status: <TypeBadge status={request.decisionStatus} />,
-    name: request.userRequestedProject.name,
-    ministry: request.userRequestedProject.ministry,
-    cluster: request.userRequestedProject.cluster,
-    projectOwner: `${request.userRequestedProject.projectOwner.firstName} ${request.userRequestedProject.projectOwner.lastName}`,
-    technicalLeads: `${request.userRequestedProject.primaryTechnicalLead.firstName} ${
-      request.userRequestedProject.primaryTechnicalLead.lastName
-    } ${request?.userRequestedProject.secondaryTechnicalLead ? ',' : ''} ${
-      request?.userRequestedProject.secondaryTechnicalLead?.firstName || ''
-    } ${request?.userRequestedProject.secondaryTechnicalLead?.lastName || ''}`,
+    name: request.requestData.name,
+    ministry: request.requestData.ministry,
+    cluster: request.requestData.cluster,
+    projectOwner: `${request.requestData.projectOwner.firstName} ${request.requestData.projectOwner.lastName}`,
+    technicalLeads: `${request.requestData.primaryTechnicalLead.firstName} ${
+      request.requestData.primaryTechnicalLead.lastName
+    } ${request?.requestData.secondaryTechnicalLead ? ',' : ''} ${
+      request?.requestData.secondaryTechnicalLead?.firstName || ''
+    } ${request?.requestData.secondaryTechnicalLead?.lastName || ''}`,
     created: <p className="w-28">{formatDate(request.created.$date)}</p>,
-    licencePlate: <p className="w-28">{request.userRequestedProject.licencePlate}</p>,
+    licencePlate: <p className="w-28">{request.requestData.licencePlate}</p>,
   };
 };
 

@@ -189,7 +189,7 @@ describe('Create Private Cloud Request Route', () => {
     expect(response.status).toBe(200);
   });
 
-  test('should create a request with the correct data in userRequestedProject', async () => {
+  test('should create a request with the correct data in requestData', async () => {
     const requests = await prisma.privateCloudRequest.findMany();
 
     const request = requests[0];
