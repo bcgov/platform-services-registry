@@ -1,4 +1,3 @@
-import { tailwindToCSS } from 'tw-to-css';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
 export const tailwindConfig = {
@@ -39,7 +38,3 @@ export const tailwindConfig = {
     },
   },
 };
-
-export const { twi, twj } = tailwindToCSS({
-  config: tailwindConfig,
-});
