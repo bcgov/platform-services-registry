@@ -62,12 +62,12 @@ export default async function updateOp({
 
   // Subscribe users to Mautic
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
-  await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
+  await subscribeUsersToMautic(users, request.decisionData.cluster, 'Private');
 
   wrapAsync(() => sendEditRequestEmails(request, false));
 
