@@ -1,5 +1,4 @@
 export function createRequest(productName: string, POEmail: string, TLEmail: string) {
-  cy.contains('a', 'REQUEST A NEW PRODUCT').should('be.not.disabled').click({ force: true });
   cy.wait(2000);
   cy.contains('a', 'REQUEST A NEW PRODUCT').should('be.not.disabled').click({ force: true });
   cy.get('input[name="name"]').type(productName);
@@ -12,7 +11,7 @@ export function createRequest(productName: string, POEmail: string, TLEmail: str
   cy.get('li[role="option"]').click();
   cy.get('input[name="commonComponents.other"]').type('Other common component field');
   cy.get('button[type="submit"]').click();
-  cy.contains('p', 'By checking this box, I confirm ').parent().find('input[type="checkbox"]').click();
+  cy.get('input[id="consent"]').click();
   cy.contains('h3', 'All Set?').parents().eq(2).find('button').contains('SUBMIT REQUEST').click();
   cy.contains('button', 'Return to Dashboard').click();
 }
