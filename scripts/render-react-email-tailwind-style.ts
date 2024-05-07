@@ -7,16 +7,28 @@ const { twi, twj } = tailwindToCSS({
   config: tailwindConfig,
 });
 
+function replaceString(input: string, searchString: string, replacementString: string) {
+  const escapedSearchString = searchString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(escapedSearchString, 'g');
+  return input.replace(regex, replacementString);
+}
+
+function replaceClassName(input: string, styleCallback: (className: string) => object) {
+  const regex = /className\s*=\s*"([^"]*)"/g;
+
+  return input.replace(regex, (match, className) => {
+    const styleObject = styleCallback(className);
+    return `style={${JSON.stringify(styleObject)}}`;
+  });
+}
+
 async function replaceClassMatches(filePath: string, styleCallback: (className: string) => object) {
   try {
     let fileContent = await readFile(filePath, 'utf-8');
 
-    const regex = /className\s*=\s*"([^"]*)"/g;
-
-    fileContent = fileContent.replace(regex, (match, className) => {
-      const styleObject = styleCallback(className);
-      return `style={${JSON.stringify(styleObject)}}`;
-    });
+    fileContent = replaceClassName(fileContent, styleCallback);
+    fileContent = replaceString(fileContent, '<Tailwind config={tailwindConfig}>', '');
+    fileContent = replaceString(fileContent, '</Tailwind>', '');
 
     await writeFile(filePath, fileContent, 'utf-8');
   } catch (err) {
@@ -47,6 +59,8 @@ async function iterateDirectories(directoryPath: string) {
   }
 }
 
-export async function replaceTailwindClassToStyle(targetDirectory: string) {
+async function replaceTailwindClassToStyle(targetDirectory: string) {
   await iterateDirectories(targetDirectory);
 }
+
+replaceTailwindClassToStyle(join(__dirname, '../emails'));
