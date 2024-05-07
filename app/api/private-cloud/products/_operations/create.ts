@@ -3,8 +3,6 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { PrivateCloudCreateRequestBody } from '@/schema';
 import createRequest from '@/request-actions/private-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
-import { logger } from '@/core/logging';
 
 export default async function createOp({ session, body }: { session: Session; body: PrivateCloudCreateRequestBody }) {
   const { user } = session;
@@ -21,13 +19,9 @@ export default async function createOp({ session, body }: { session: Session; bo
     return UnauthorizedResponse('You need to assign yourself to this project in order to create it.');
   }
 
-  logger.info('before createRequest');
   const request = await createRequest(body, user.email);
-  logger.info('after createRequest');
 
-  logger.info('before sendCreateRequestEmails');
-  wrapAsync(() => sendCreateRequestEmails(request));
-  logger.info('after sendCreateRequestEmails');
+  await sendCreateRequestEmails(request);
 
   return OkResponse('Success creating request');
 }

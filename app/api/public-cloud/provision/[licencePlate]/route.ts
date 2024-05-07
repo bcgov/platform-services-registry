@@ -4,7 +4,6 @@ import prisma from '@/core/prisma';
 import { z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 import createApiHandler from '@/core/api-handler';
 
 const pathParamSchema = z.object({
@@ -75,11 +74,11 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
   });
 
-  wrapAsync(() => {
-    if (request.type === $Enums.RequestType.DELETE) {
-      sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
-    } else sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
-  });
+  if (request.type === $Enums.RequestType.DELETE) {
+    await sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
+  } else {
+    await sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
+  }
 
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

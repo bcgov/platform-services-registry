@@ -1,10 +1,8 @@
-import { z, TypeOf, ZodType } from 'zod';
 import { Session } from 'next-auth';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { PublicCloudCreateRequestBody } from '@/schema';
 import createRequest from '@/request-actions/public-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 
 export default async function createOp({ session, body }: { session: Session; body: PublicCloudCreateRequestBody }) {
   const { user } = session ?? {};
@@ -24,7 +22,7 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   const request = await createRequest(body, authEmail);
 
-  wrapAsync(() => sendCreateRequestEmails(request));
+  await sendCreateRequestEmails(request);
 
   return OkResponse('Success creating request');
 }

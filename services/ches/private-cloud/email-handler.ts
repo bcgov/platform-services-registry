@@ -20,12 +20,8 @@ import { logger } from '@/core/logging';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
   try {
-    logger.info('before AdminCreateTemplate');
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: true });
-    logger.info('after AdminCreateTemplate');
-    logger.info('before CreateRequestTemplate');
     const userEmail = render(CreateRequestTemplate({ request }), { pretty: true });
-    logger.info('after CreateRequestTemplate');
 
     const admins = sendEmail({
       bodyType: 'html',
@@ -45,9 +41,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
       subject: 'Provisioning request received',
     });
 
-    logger.info('before sendEmail');
     await Promise.all([contacts, admins]);
-    logger.info('after sendEmail');
   } catch (error) {
     logger.error('sendCreateRequestEmails:', error);
   }
