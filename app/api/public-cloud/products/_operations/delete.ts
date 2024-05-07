@@ -55,10 +55,10 @@ export default async function deleteOp({
       active: true,
       createdByEmail: userEmail as string,
       licencePlate: project.licencePlate,
-      requestedProject: {
+      decisionData: {
         create: rest,
       },
-      userRequestedProject: {
+      requestData: {
         create: rest,
       },
       project: {
@@ -68,7 +68,7 @@ export default async function deleteOp({
       },
     },
     include: {
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -88,8 +88,8 @@ export default async function deleteOp({
   });
 
   wrapAsync(() => {
-    sendDeleteRequestEmails(createRequest.requestedProject);
-    sendAdminDeleteRequestEmails(createRequest.requestedProject);
+    sendDeleteRequestEmails(createRequest.decisionData);
+    sendAdminDeleteRequestEmails(createRequest.decisionData);
   });
 
   return OkResponse(true);

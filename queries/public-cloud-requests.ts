@@ -27,12 +27,12 @@ export async function searchPublicCloudRequests({
   sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PublicCloudRequestWhereInput;
 }) {
-  const requestedProjectwhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
+  const decisionDatawhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
 
   const orderBy =
     sortKey === 'updatedAt'
       ? { updatedAt: Prisma.SortOrder[sortOrder] }
-      : { userRequestedProject: { [sortKey]: Prisma.SortOrder[sortOrder] } };
+      : { requestData: { [sortKey]: Prisma.SortOrder[sortOrder] } };
 
   if (search === '*') search = '';
 
@@ -43,7 +43,7 @@ export async function searchPublicCloudRequests({
       mode: 'insensitive',
     };
 
-    requestedProjectwhere.OR = [
+    decisionDatawhere.OR = [
       { projectOwnerId: { in: matchingUserIds } },
       { primaryTechnicalLeadId: { in: matchingUserIds } },
       { secondaryTechnicalLeadId: { in: matchingUserIds } },
@@ -54,20 +54,20 @@ export async function searchPublicCloudRequests({
   }
 
   if (ministry) {
-    requestedProjectwhere.ministry = ministry as $Enums.Ministry;
+    decisionDatawhere.ministry = ministry as $Enums.Ministry;
   }
 
   if (provider) {
-    requestedProjectwhere.provider = provider as $Enums.Provider;
+    decisionDatawhere.provider = provider as $Enums.Provider;
   }
 
   const matchingRequestedPublicProjects = await prisma.publicCloudRequestedProject.findMany({
-    where: requestedProjectwhere,
+    where: decisionDatawhere,
     select: { id: true },
   });
 
   const where: Prisma.PublicCloudRequestWhereInput = extraFilter ?? {};
-  where.userRequestedProjectId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
+  where.requestDataId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
 
   const [docs, totalCount] = await Promise.all([
     prisma.publicCloudRequest.findMany({
@@ -75,7 +75,7 @@ export async function searchPublicCloudRequests({
       skip,
       take,
       include: {
-        userRequestedProject: {
+        requestData: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
@@ -97,7 +97,7 @@ export async function searchPublicCloudRequests({
 export type PublicCloudRequestSearchPayload = {
   docs: (Prisma.PublicCloudRequestGetPayload<{
     include: {
-      userRequestedProject: {
+      requestData: {
         include: {
           projectOwner: true;
           primaryTechnicalLead: true;

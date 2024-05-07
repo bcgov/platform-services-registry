@@ -17,9 +17,9 @@ interface EmailProp {
 }
 
 const EditRequestTemplate = ({ request }: EmailProp) => {
-  if (!request || !request.project || !request.requestedProject) return <></>;
+  if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
-  const requested = request.requestedProject;
+  const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
   const isQuotaUpgraded = isQuotaUpgrade(
     requested as PrivateCloudEditRequestBody,

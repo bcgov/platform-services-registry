@@ -76,7 +76,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
 
       return zodResolver(PublicCloudRequestDecisionBodySchema)(...args);
     },
-    values: { decisionComment: '', decision: '', type: activeRequest?.type, ...activeRequest?.requestedProject },
+    values: { decisionComment: '', decision: '', type: activeRequest?.type, ...activeRequest?.decisionData },
   });
 
   const secondTechLeadOnClick = () => {
@@ -91,7 +91,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
   };
 
   useEffect(() => {
-    if (activeRequest?.requestedProject.secondaryTechnicalLead) {
+    if (activeRequest?.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
   }, [activeRequest]);
@@ -126,7 +126,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session })
             />
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={isDisabled} />
-            <AccountCoding accountCodingInitial={activeRequest.requestedProject?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={activeRequest.decisionData?.accountCoding} disabled={false} />
           </div>
 
           {activeRequest.requestComment && (

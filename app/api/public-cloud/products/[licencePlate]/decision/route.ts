@@ -25,41 +25,41 @@ const apiHandler = createApiHandler({
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
   const { licencePlate } = pathParams;
-  const { decision, decisionComment, ...requestedProjectFormData } = body;
+  const { decision, decisionComment, ...decisionDataFormData } = body;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeRequestDecision(
     licencePlate,
     decision,
     decisionComment,
-    requestedProjectFormData,
+    decisionDataFormData,
     userEmail as string,
   );
 
-  if (!request.requestedProject) {
+  if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    wrapAsync(() => sendRequestRejectionEmails(request.requestedProject, decisionComment));
+    wrapAsync(() => sendRequestRejectionEmails(request.decisionData, decisionComment));
     return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
   }
   if (
     request.decisionStatus === DecisionStatus.APPROVED &&
-    request.project?.expenseAuthorityId !== request.requestedProject.expenseAuthorityId
+    request.project?.expenseAuthorityId !== request.decisionData.expenseAuthorityId
   ) {
-    wrapAsync(() => sendExpenseAuthorityEmail(request.requestedProject));
+    wrapAsync(() => sendExpenseAuthorityEmail(request.decisionData));
   }
 
-  await sendPublicCloudNatsMessage(request.type, request.requestedProject, request.project);
+  await sendPublicCloudNatsMessage(request.type, request.decisionData, request.project);
 
   // Subscribe users to Mautic
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
-  await subscribeUsersToMautic(users, request.requestedProject.provider, 'Public');
+  await subscribeUsersToMautic(users, request.decisionData.provider, 'Public');
 
   // TODO: revisit to delete for good
   // sendRequestApprovalEmails(request);

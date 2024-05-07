@@ -45,12 +45,12 @@ export default publicCloudRequest(({ pathParams }) => {
             <ProjectDescription disabled={true} mode="decision" />
             <TeamContacts
               disabled={true}
-              secondTechLead={!!request.requestedProject.secondaryTechnicalLeadId}
+              secondTechLead={!!request.decisionData.secondaryTechnicalLeadId}
               secondTechLeadOnClick={() => {}}
             />
             <ExpenseAuthority disabled={true} />
             <Budget disabled={true} />
-            <AccountCoding accountCodingInitial={request.requestedProject.accountCoding} disabled={true} />
+            <AccountCoding accountCodingInitial={request.decisionData.accountCoding} disabled={true} />
           </div>
         </form>
       </FormProvider>

@@ -27,7 +27,7 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
 
   if (!isLoading && data) {
     const transformActiveRequests = data.docs.map((request) => ({
-      ...request.userRequestedProject,
+      ...request.requestData,
       created: request.created,
       updatedAt: request.updatedAt,
       requests: [request],

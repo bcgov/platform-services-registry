@@ -74,7 +74,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
 
       return zodResolver(PrivateCloudDecisionRequestBodySchema)(...args);
     },
-    values: { decisionComment: '', decision: '', type: activeRequest?.type, ...activeRequest?.requestedProject },
+    values: { decisionComment: '', decision: '', type: activeRequest?.type, ...activeRequest?.decisionData },
   });
 
   const secondTechLeadOnClick = () => {
@@ -89,7 +89,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
   };
 
   useEffect(() => {
-    if (activeRequest?.requestedProject.secondaryTechnicalLead) {
+    if (activeRequest?.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
   }, [activeRequest]);

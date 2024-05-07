@@ -4,7 +4,6 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 import { OkResponse } from '@/core/responses';
-import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -27,7 +26,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
           secondaryTechnicalLead: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -49,7 +48,7 @@ export type PrivateCloudRequestGetPayload = Prisma.PrivateCloudRequestGetPayload
         secondaryTechnicalLead: true;
       };
     };
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;

@@ -37,7 +37,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
           expenseAuthority: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -65,7 +65,7 @@ export type PublicCloudProductRequestsGetPayload = Prisma.PublicCloudRequestGetP
         expenseAuthority: true;
       };
     };
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
