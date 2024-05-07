@@ -1,35 +1,23 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import classNames from '@/utils/classnames';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
-import fetchUserImage from '@/components/nav/generateAvatar';
+import ProfileImage from '../ProfileImage';
+import { useAppState } from '@/states/global';
+import { signOut } from '@/helpers/auth';
 
 export default function ProfileDropdown() {
+  const [appState, appSnapshot] = useAppState();
   const { data: session, status } = useSession();
-  const { user, permissions } = session ?? {};
-  const { email } = user ?? {};
-
-  const { data, isLoading, error } = useQuery<string, Error>({
-    queryKey: ['userImage', email],
-    queryFn: () => fetchUserImage(email),
-    enabled: !!email,
-  });
+  const { permissions } = session ?? {};
 
   return (
     <Menu as="div" className="relative ml-3">
       <div>
         <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           <span className="sr-only">Open user menu</span>
-          <Image
-            className="h-10 w-10 rounded-full"
-            width={120}
-            height={120}
-            src={data || 'https://www.gravatar.com/avatar/?d=identicon'}
-            alt=""
-          />
+          <ProfileImage email={session?.user.email ?? ''} image={session?.user.image ?? ''} />
         </Menu.Button>
       </div>
       <Transition
@@ -146,7 +134,9 @@ export default function ProfileDropdown() {
                 ) : (
                   <Link
                     href="#"
-                    onClick={() => signOut({ callbackUrl: '/login' })}
+                    onClick={async () => {
+                      await signOut(appSnapshot.info.LOGOUT_URL, session.idToken);
+                    }}
                     className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                   >
                     Sign out

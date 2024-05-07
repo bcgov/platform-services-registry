@@ -82,7 +82,7 @@ export function loginToRegistryThroughApi(username: string, password: string): v
 }
 
 export function logoutFromRegistry(): void {
-  cy.get('span[class="sr-only"]').click();
+  cy.get('button[aria-haspopup="menu"]').click();
   cy.contains('a', 'Sign out');
   cy.contains('button', 'LOGIN');
 }

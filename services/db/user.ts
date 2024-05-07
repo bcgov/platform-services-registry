@@ -2,15 +2,18 @@ import prisma from '@/core/prisma';
 import _compact from 'lodash-es/compact';
 import _castArray from 'lodash-es/castArray';
 import _forEach from 'lodash-es/forEach';
-import { getUserByEmail } from '@/services/msgraph';
+import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { logger } from '@/core/logging';
+import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
 
 export async function upsertUser(email: string) {
   try {
     email = email.toLowerCase();
+
     const adUser = await getUserByEmail(email);
     if (!adUser) return null;
 
+    const adUserPhoto = await getUserPhoto(email);
     const data = {
       email,
       firstName: adUser.firstName,
@@ -18,6 +21,7 @@ export async function upsertUser(email: string) {
       ministry: adUser.ministry,
       idir: adUser.idir,
       upn: adUser.upn,
+      image: adUserPhoto ? arrayBufferToBase64(adUserPhoto) : '',
     };
 
     return await prisma.user.upsert({

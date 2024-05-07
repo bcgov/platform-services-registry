@@ -1,4 +1,4 @@
-const stringToColor = (string: string): string => {
+function stringToColor(string: string) {
   let hash = 0;
   let i;
 
@@ -12,10 +12,11 @@ const stringToColor = (string: string): string => {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
-  return color;
-};
 
-export async function generateAvatar(email: string): Promise<string> {
+  return color;
+}
+
+export async function generateUserImage(email: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // size: number, backgroundColor: string, textColor: string
     const size = 240;
@@ -51,29 +52,20 @@ export async function generateAvatar(email: string): Promise<string> {
         const imageUrl = URL.createObjectURL(blob);
         resolve(imageUrl);
       } else {
-        reject('Avatar generation failed');
+        reject('User image generation failed');
       }
     }, 'image/jpeg');
   });
 }
 
-export default async function fetchUserImage(email: string): Promise<string> {
-  const res = await fetch(`/api/msal/user-image?email=${email}`);
-  if (!res.ok) {
-    throw new Error('Network response was not ok for fetch user image');
-  }
+export async function getUserImage(email?: string, image?: string) {
+  if (image) return `data:image/png;base64, ${image}`;
+  if (!email) return '';
 
-  if (res.headers.get('Content-Type')) {
-    // Assuming server returns a blob of image data
-    const blob = await res.blob();
-
-    // Create a URL from the blob
-    const imageUrl = URL.createObjectURL(blob);
-
+  try {
+    const imageUrl = await generateUserImage(email);
     return imageUrl;
+  } catch {
+    return '';
   }
-
-  const imageUrl = await generateAvatar(email);
-
-  return imageUrl;
 }

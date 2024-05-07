@@ -19,6 +19,7 @@ interface User {
 interface Comment {
   id: string;
   created: Date;
+  updatedAt: Date;
   text: string;
   userId: string;
   user: User;
@@ -69,7 +70,8 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
             <CommentBubble
               key={comment.id}
               text={comment.text}
-              timestamp={new Date(comment.created)}
+              timeStamp={new Date(comment.created)}
+              updatedAt={new Date(comment.updatedAt)}
               firstName={comment.user.firstName}
               lastName={comment.user.lastName}
               isAuthor={userId === comment.userId}

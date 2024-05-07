@@ -6,7 +6,7 @@ export function processMsUser(user: MsUser): AppUser {
   return {
     id: user.id,
     upn: user.userPrincipalName,
-    email: user.mail,
+    email: user.mail.toLowerCase(),
     idir: user.onPremisesSamAccountName,
     idirGuid: user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,
     displayName: user.displayName,

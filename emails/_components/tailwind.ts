@@ -1,6 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 
-export const TailwindConfig = {
+export const tailwindConfig = {
   theme: {
     extend: {
       height: {

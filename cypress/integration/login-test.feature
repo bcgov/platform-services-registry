@@ -4,5 +4,5 @@ Feature: Registry App Login
 
   Scenario: Logging in with valid credentials
     Given I am on the Registry App login page
-    When I type and submit in login and password
+    When I type in and submit login and password
     Then I should see 'Create' button

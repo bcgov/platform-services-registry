@@ -4,15 +4,15 @@ import { PrivateCloudCreateRequestBody } from '@/schema';
 import createRequest from '@/request-actions/private-cloud/create-request';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { wrapAsync } from '@/helpers/runtime';
+import { logger } from '@/core/logging';
 
 export default async function createOp({ session, body }: { session: Session; body: PrivateCloudCreateRequestBody }) {
-  const { user } = session ?? {};
-  const { email: authEmail } = user ?? {};
+  const { user } = session;
 
   if (
     !(
       [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-        authEmail,
+        user.email,
       ) || session.permissions.reviewAllPrivateCloudRequests
     )
     // if we want to let minitry editor to create home ministry products no being involved in this product as PO/TL
@@ -21,9 +21,13 @@ export default async function createOp({ session, body }: { session: Session; bo
     return UnauthorizedResponse('You need to assign yourself to this project in order to create it.');
   }
 
-  const request = await createRequest(body, authEmail);
+  logger.info('before createRequest');
+  const request = await createRequest(body, user.email);
+  logger.info('after createRequest');
 
+  logger.info('before sendCreateRequestEmails');
   wrapAsync(() => sendCreateRequestEmails(request));
+  logger.info('after sendCreateRequestEmails');
 
   return OkResponse('Success creating request');
 }

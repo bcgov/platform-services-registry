@@ -1,12 +1,22 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useAppState } from '@/states/global';
+import { signOut } from '@/helpers/auth';
 
 export default function LoginButton() {
+  const [appState, appSnapshot] = useAppState();
   const { data: session } = useSession();
+
   if (session) {
     return (
       <>
         Signed in as {session.user?.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        <button
+          onClick={async () => {
+            await signOut(appSnapshot.info.LOGOUT_URL, session.idToken);
+          }}
+        >
+          Sign out
+        </button>
       </>
     );
   }
