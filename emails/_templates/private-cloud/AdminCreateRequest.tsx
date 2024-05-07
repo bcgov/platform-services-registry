@@ -27,16 +27,16 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
       </div>
       <div>
         <ProductDetails
-          name={request.requestedProject.name}
-          description={request.requestedProject.description}
-          ministry={request.requestedProject.ministry}
-          po={request.requestedProject.projectOwner}
-          tl1={request.requestedProject.primaryTechnicalLead}
-          tl2={request.requestedProject.secondaryTechnicalLead}
+          name={request.decisionData.name}
+          description={request.decisionData.description}
+          ministry={request.decisionData.ministry}
+          po={request.decisionData.projectOwner}
+          tl1={request.decisionData.primaryTechnicalLead}
+          tl2={request.decisionData.secondaryTechnicalLead}
         />
       </div>
       <div>
-        <NamespaceDetails cluster={request.requestedProject.cluster} showNamespaceDetailsTitle={false} />
+        <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
       </div>
     </Layout>
   );

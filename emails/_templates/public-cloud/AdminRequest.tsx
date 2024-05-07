@@ -49,7 +49,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
           po={projectOwner}
           tl1={primaryTechnicalLead}
           tl2={secondaryTechnicalLead}
-          expenseAuthority={request.requestedProject.expenseAuthority}
+          expenseAuthority={request.decisionData.expenseAuthority}
           licencePlate={licencePlate}
         />
       </div>

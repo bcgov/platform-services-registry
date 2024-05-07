@@ -61,7 +61,7 @@ model PrivateCloudRequest {
   decisionData       PrivateCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
   requestDataId      String                        @unique @db.ObjectId
   requestData        PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
-  originalDataId     String                        @unique @db.ObjectId
+  originalDataId     String?                       @unique @db.ObjectId
   originalData       PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
 }
 
@@ -161,7 +161,7 @@ model PublicCloudRequest {
   decisionData       PublicCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
   requestDataId      String                       @unique @db.ObjectId
   requestData        PublicCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
-  originalDataId     String                       @unique @db.ObjectId
+  originalDataId     String?                      @unique @db.ObjectId
   originalData       PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
 }
 
