@@ -11,6 +11,7 @@ ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
 
 RUN npm install
+RUN npx ts-node scripts/render-react-email-tailwind-style.ts
 RUN npm run build
 
 # 2nd stage to copy image and create a smaller final image
