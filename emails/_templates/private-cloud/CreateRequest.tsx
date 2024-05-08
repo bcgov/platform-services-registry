@@ -18,12 +18,12 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <Heading className="text-lg">
-          Provisioning request received for {request.requestedProject.name} on OpenShift
+          Provisioning request received for {request.decisionData.name} on OpenShift
         </Heading>
         <Text>Hi Product Team,</Text>
         <Text className="">
-          You have requested a new project set for {request.requestedProject.name} on the Private Cloud OpenShift
-          platform. Our administrators have been notified and will review your request.
+          You have requested a new project set for {request.decisionData.name} on the Private Cloud OpenShift platform.
+          Our administrators have been notified and will review your request.
         </Text>
         <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
           View request
@@ -31,16 +31,16 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
       </div>
       <div>
         <ProductDetails
-          name={request.requestedProject.name}
-          description={request.requestedProject.description}
-          ministry={request.requestedProject.ministry}
-          po={request.requestedProject.projectOwner}
-          tl1={request.requestedProject.primaryTechnicalLead}
-          tl2={request.requestedProject.secondaryTechnicalLead}
+          name={request.decisionData.name}
+          description={request.decisionData.description}
+          ministry={request.decisionData.ministry}
+          po={request.decisionData.projectOwner}
+          tl1={request.decisionData.primaryTechnicalLead}
+          tl2={request.decisionData.secondaryTechnicalLead}
         />
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <NamespaceDetails cluster={request.requestedProject.cluster} showNamespaceDetailsTitle={false} />
+        <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
         <br></br>
         <Text>This create request was actioned by {userName}.</Text>
       </div>

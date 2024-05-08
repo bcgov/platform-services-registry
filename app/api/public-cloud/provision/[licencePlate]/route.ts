@@ -4,7 +4,6 @@ import prisma from '@/core/prisma';
 import { z } from 'zod';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 import createApiHandler from '@/core/api-handler';
 
 const pathParamSchema = z.object({
@@ -26,7 +25,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       active: true,
     },
     include: {
-      requestedProject: true,
+      decisionData: true,
     },
   });
 
@@ -44,7 +43,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
   });
 
-  const { id, ...requestedProject } = request.requestedProject;
+  const { id, ...decisionData } = request.decisionData;
 
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };
@@ -56,8 +55,8 @@ export const PUT = apiHandler(async ({ pathParams }) => {
         })
       : prisma.publicCloudProject.upsert({
           where: filter,
-          update: requestedProject,
-          create: requestedProject,
+          update: decisionData,
+          create: decisionData,
         });
 
   await prisma.$transaction([updateRequest, upsertProject]);
@@ -76,9 +75,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   });
 
   if (request.type == 'CREATE') {
-    await wrapAsync(() => sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts));
+    await sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
   } else if (request.type == 'DELETE') {
-    await wrapAsync(() => sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts));
+    await sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
   }
 
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);

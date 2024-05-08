@@ -4,7 +4,7 @@ import { PrivateCloudEditRequestBody } from '@/schema';
 
 export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
@@ -23,7 +23,7 @@ export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCl
         secondaryTechnicalLead: true;
       };
     };
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
@@ -64,7 +64,7 @@ export default async function makeRequestDecision(
           secondaryTechnicalLead: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -78,7 +78,7 @@ export default async function makeRequestDecision(
       decisionComment: comment,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,
-      requestedProject: {
+      decisionData: {
         update: {
           ...formData,
           status: ProjectStatus.ACTIVE,

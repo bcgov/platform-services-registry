@@ -68,10 +68,10 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       active: true,
       createdByEmail: authEmail,
       licencePlate,
-      requestedProject: {
+      decisionData: {
         create: createRequestedProject,
       },
-      userRequestedProject: {
+      requestData: {
         create: createRequestedProject,
       },
     },
@@ -84,7 +84,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           expenseAuthority: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,

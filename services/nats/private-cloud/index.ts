@@ -20,7 +20,7 @@ export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudReques
 export default function createPrivateCloudNatsMessage(
   requestId: string,
   requestType: RequestType,
-  requestedProject: PrivateCloudRequestedProjectWithContacts,
+  decisionData: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,
 ) {
   const {
@@ -37,7 +37,7 @@ export default function createPrivateCloudNatsMessage(
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
-  } = requestedProject;
+  } = decisionData;
 
   let allianceLabel = '';
   switch (ministry) {

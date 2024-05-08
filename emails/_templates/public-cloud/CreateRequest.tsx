@@ -26,7 +26,7 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
     accountCoding,
     budget,
     licencePlate,
-  } = request.requestedProject;
+  } = request.decisionData;
 
   return (
     <Layout>

@@ -34,9 +34,9 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
       body: userEmail,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Provisioning request received',
     });
@@ -71,9 +71,9 @@ export const sendEditRequestEmails = async (
     await sendEmail({
       body: userEmail,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
         request.project?.projectOwner.email,
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
@@ -92,9 +92,9 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
     await sendEmail({
       body: email,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request has been approved',
     });

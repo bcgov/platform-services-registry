@@ -26,7 +26,7 @@ export async function usersWithQuotaEditRequests(): Promise<User[]> {
       isQuotaChanged: true,
     },
     include: {
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -38,7 +38,7 @@ export async function usersWithQuotaEditRequests(): Promise<User[]> {
 
   let users = quotaChangedRequests
     .map((request) => {
-      const { primaryTechnicalLead, secondaryTechnicalLead, projectOwner } = request.requestedProject;
+      const { primaryTechnicalLead, secondaryTechnicalLead, projectOwner } = request.decisionData;
       return [primaryTechnicalLead, secondaryTechnicalLead, projectOwner];
     })
     .flat()
