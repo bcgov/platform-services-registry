@@ -48,3 +48,10 @@ nats:
 
 nats-provision:
   enabled: true
+
+m365proxy:
+  enabled: true
+
+  route:
+    enabled: true
+    host: dev-pltsvc-m365proxy.apps.silver.devops.gov.bc.ca
