@@ -251,7 +251,6 @@ export const authOptions: AuthOptions = {
       return true;
     },
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
-      console.log('tokentokentoken', token);
       if (account?.access_token) {
         const decodedToken: any = jwt.decode(account.access_token);
 

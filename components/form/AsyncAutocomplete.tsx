@@ -21,7 +21,7 @@ export default function AsyncAutocomplete({
   className?: string;
   disabled?: boolean;
 }) {
-  const [selected, setSelected] = useState<AppUser | ''>('');
+  const [selected, setSelected] = useState<AppUser | undefined>(undefined);
   const [query, setQuery] = useState<string>('');
 
   const {
