@@ -112,9 +112,9 @@ model PrivateCloudRequestedProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
-  decisionData             PrivateCloudRequest[] @relation("decisionData")
-  requestData              PrivateCloudRequest[] @relation("requestData")
-  originalData             PrivateCloudRequest[] @relation("originalData")
+  decisionRequests         PrivateCloudRequest[] @relation("decisionData")
+  requestRequests          PrivateCloudRequest[] @relation("requestData")
+  originalRequests         PrivateCloudRequest[] @relation("originalData")
 }
 
 model PrivateCloudComment {
@@ -207,9 +207,9 @@ model PublicCloudRequestedProject {
   expenseAuthority         User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                 Ministry
   provider                 Provider
-  decisionData             PublicCloudRequest[] @relation("decisionData")
-  requestData              PublicCloudRequest[] @relation("requestData")
-  originalData             PublicCloudRequest[] @relation("originalData")
+  decisionRequests         PublicCloudRequest[] @relation("decisionData")
+  requestRequests          PublicCloudRequest[] @relation("requestData")
+  originalRequests         PublicCloudRequest[] @relation("originalData")
 }
 
 model PrivateCloudProjectZapResult {
