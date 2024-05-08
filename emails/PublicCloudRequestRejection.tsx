@@ -9,7 +9,7 @@ export default function RequestRejection() {
 
   return (
     <RequestRejectionTemplate
-      product={samplePublicRequest.requestedProject}
+      product={samplePublicRequest.decisionData}
       productName={productName}
       decisionComment={decisionComment}
     />
