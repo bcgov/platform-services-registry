@@ -7,7 +7,6 @@ import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 
 const pathParamSchema = z.object({
@@ -38,16 +37,19 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    wrapAsync(() => sendRequestRejectionEmails(request, decisionComment));
-
+    await sendRequestRejectionEmails(request, decisionComment);
     return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
   }
 
-  await sendRequestNatsMessage(request, {
-    projectOwner: { email: decisionDataFormData.projectOwner.email },
-    primaryTechnicalLead: { email: decisionDataFormData.primaryTechnicalLead.email },
-    secondaryTechnicalLead: { email: decisionDataFormData.secondaryTechnicalLead?.email },
-  });
+  const proms = [];
+
+  proms.push(
+    sendRequestNatsMessage(request, {
+      projectOwner: { email: decisionDataFormData.projectOwner.email },
+      primaryTechnicalLead: { email: decisionDataFormData.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: decisionDataFormData.secondaryTechnicalLead?.email },
+    }),
+  );
 
   const users: User[] = [
     request.decisionData.projectOwner,
@@ -56,11 +58,13 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   ].filter((usr): usr is User => Boolean(usr));
 
   // Subscribe users to Mautic
-  await subscribeUsersToMautic(users, request.decisionData.cluster, 'Private');
+  proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
   if (request.type == $Enums.RequestType.EDIT) {
-    sendRequestApprovalEmails(request);
+    proms.push(sendRequestApprovalEmails(request));
   }
+
+  await Promise.all(proms);
 
   return OkResponse(`Decision request for ${request.licencePlate} successfully created.`);
 });

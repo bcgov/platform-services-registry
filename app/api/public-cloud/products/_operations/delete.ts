@@ -3,7 +3,6 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
-import { wrapAsync } from '@/helpers/runtime';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
@@ -87,10 +86,10 @@ export default async function deleteOp({
     },
   });
 
-  wrapAsync(() => {
-    sendDeleteRequestEmails(createRequest.decisionData);
-    sendAdminDeleteRequestEmails(createRequest.decisionData);
-  });
+  await Promise.all([
+    sendDeleteRequestEmails(createRequest.decisionData),
+    sendAdminDeleteRequestEmails(createRequest.decisionData),
+  ]);
 
   return OkResponse(true);
 }

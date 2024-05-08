@@ -10,7 +10,6 @@ import createApiHandler from '@/core/api-handler';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -40,17 +39,20 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    wrapAsync(() => sendRequestRejectionEmails(request.decisionData, decisionComment));
+    await sendRequestRejectionEmails(request.decisionData, decisionComment);
     return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
   }
+
+  const proms = [];
+
   if (
     request.decisionStatus === DecisionStatus.APPROVED &&
     request.project?.expenseAuthorityId !== request.decisionData.expenseAuthorityId
   ) {
-    wrapAsync(() => sendExpenseAuthorityEmail(request.decisionData));
+    proms.push(sendExpenseAuthorityEmail(request.decisionData));
   }
 
-  await sendPublicCloudNatsMessage(request.type, request.decisionData, request.project);
+  proms.push(sendPublicCloudNatsMessage(request.type, request.decisionData, request.project));
 
   // Subscribe users to Mautic
   const users: User[] = [
@@ -59,7 +61,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
-  await subscribeUsersToMautic(users, request.decisionData.provider, 'Public');
+  proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
+
+  await Promise.all(proms);
 
   // TODO: revisit to delete for good
   // sendRequestApprovalEmails(request);

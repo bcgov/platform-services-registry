@@ -5,7 +5,6 @@ import { Session } from 'next-auth';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { isEligibleForDeletion } from '@/helpers/openshift';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
-import { wrapAsync } from '@/helpers/runtime';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -93,7 +92,7 @@ export default async function deleteOp({
     },
   });
 
-  wrapAsync(() => sendDeleteRequestEmails(createRequest));
+  await sendDeleteRequestEmails(createRequest);
 
   return OkResponse(true);
 }
