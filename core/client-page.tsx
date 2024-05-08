@@ -2,6 +2,7 @@
 
 import { z, TypeOf, ZodType } from 'zod';
 import { useRouter } from 'next/navigation';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useSession } from 'next-auth/react';
 import { Session, PermissionsKey } from 'next-auth';
 import _isUndefined from 'lodash-es/isUndefined';
@@ -23,6 +24,7 @@ interface ComponentProps<TPathParams, TQueryParams> {
   session: Session | null;
   pathParams: TPathParams;
   queryParams: TQueryParams;
+  router: AppRouterInstance;
   children: React.ReactNode;
 }
 
@@ -93,7 +95,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       }
 
       return (
-        <Component session={session} pathParams={pathParams} queryParams={queryParams}>
+        <Component session={session} pathParams={pathParams} queryParams={queryParams} router={router}>
           {children}
         </Component>
       );

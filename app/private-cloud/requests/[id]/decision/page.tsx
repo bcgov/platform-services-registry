@@ -14,33 +14,28 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import Quotas from '@/components/form/Quotas';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import {
-  makePriviateCloudRequestDecision,
-  getPriviateCloudProductRequests,
-} from '@/services/backend/private-cloud/products';
+import { getPriviateCloudRequest, makePriviateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
 import createClientPage from '@/core/client-page';
-import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 
 const pathParamSchema = z.object({
-  licencePlate: z.string(),
+  id: z.string(),
 });
 
 const privateCloudProductDecision = createClientPage({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudProductDecision(({ pathParams, queryParams, session }) => {
-  const { licencePlate } = pathParams;
-  const [activeRequest, setActiveRequest] = useState<PrivateCloudProductRequestsGetPayload>();
+export default privateCloudProductDecision(({ pathParams, queryParams, session, router }) => {
+  const { id } = pathParams;
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
 
-  const { data: activeRequests, isLoading: isActiveRequestsLoading } = useQuery({
-    queryKey: ['activeRequests', licencePlate],
-    queryFn: () => getPriviateCloudProductRequests(licencePlate, true),
-    enabled: !!licencePlate,
+  const { data: request, isLoading: isRequestLoading } = useQuery({
+    queryKey: ['request', id],
+    queryFn: () => getPriviateCloudRequest(id),
+    enabled: !!id,
   });
 
   const {
@@ -49,7 +44,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
     isError: isDecisionError,
     error: decisionError,
   } = useMutation({
-    mutationFn: (data: any) => makePriviateCloudRequestDecision(licencePlate, data),
+    mutationFn: (data: any) => makePriviateCloudRequestDecision(id, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -57,12 +52,21 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
   });
 
   useEffect(() => {
-    if (activeRequests && activeRequests.length > 0) setActiveRequest(activeRequests[0]);
-  }, [activeRequests]);
+    if (!request) return;
+
+    if (!request.active) {
+      router.push('/');
+      return;
+    }
+
+    if (request.decisionData.secondaryTechnicalLead) {
+      setSecondTechLead(true);
+    }
+  }, [request, router]);
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = activeRequest?.type === $Enums.RequestType.DELETE;
+      const isDeleteRequest = request?.type === $Enums.RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {
@@ -74,7 +78,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
 
       return zodResolver(PrivateCloudDecisionRequestBodySchema)(...args);
     },
-    values: { decisionComment: '', decision: '', type: activeRequest?.type, ...activeRequest?.decisionData },
+    values: { decisionComment: '', decision: '', type: request?.type, ...request?.decisionData },
   });
 
   const secondTechLeadOnClick = () => {
@@ -88,17 +92,11 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
     makeDecision({ ...methods.getValues(), decisionComment });
   };
 
-  useEffect(() => {
-    if (activeRequest?.decisionData.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
-  }, [activeRequest]);
-
-  if (isActiveRequestsLoading || !activeRequest) {
+  if (isRequestLoading || !request) {
     return null;
   }
 
-  const isDisabled = !activeRequest._permissions.edit;
+  const isDisabled = !request._permissions.edit;
 
   return (
     <div>
@@ -111,40 +109,36 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
           })}
         >
           <div className="mb-12 mt-8">
-            {activeRequest.decisionStatus !== 'PENDING' && (
+            {request.decisionStatus !== 'PENDING' && (
               <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
                 A decision has already been made for this product
               </h3>
             )}
-            <ProjectDescription
-              disabled={isDisabled}
-              clusterDisabled={activeRequest.type !== 'CREATE'}
-              mode="decision"
-            />
+            <ProjectDescription disabled={isDisabled} clusterDisabled={request.type !== 'CREATE'} mode="decision" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Quotas
-              licensePlate={activeRequest.licencePlate as string}
+              licensePlate={request.licencePlate as string}
               disabled={isDisabled}
-              currentProject={activeRequest.project as PrivateCloudProject}
+              currentProject={request.project as PrivateCloudProject}
             />
           </div>
 
-          {activeRequest.requestComment && (
+          {request.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
               <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
-              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{activeRequest.requestComment}</p>
+              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">{request.requestComment}</p>
             </div>
           )}
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {activeRequest._permissions.review && (
+            {request._permissions.review && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -170,7 +164,7 @@ export default privateCloudProductDecision(({ pathParams, queryParams, session }
         setOpen={setOpenComment}
         onSubmit={setComment}
         isLoading={isMakingDecision}
-        type={activeRequest.type}
+        type={request.type}
         action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests/active" />

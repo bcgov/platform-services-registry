@@ -29,3 +29,8 @@ export async function searchPriviateCloudRequests(data: PrivateCloudProductSearc
 
   return result as PrivateCloudRequestSearchPayload;
 }
+
+export async function makePriviateCloudRequestDecision(id: string, data: any) {
+  const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
+  return result;
+}
