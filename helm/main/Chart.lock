@@ -14,5 +14,8 @@ dependencies:
 - name: nats-provision
   repository: file://../_nats_provision
   version: 0.1.0
-digest: sha256:c6b5edb1f9cb08787dbf96964718744c15b02cce0b233fa9abd797989c8a0588
-generated: "2024-05-02T09:39:46.893564228-07:00"
+- name: m365proxy
+  repository: file://../_m365proxy
+  version: 0.1.0
+digest: sha256:a2b72a2a38c3102b2a1fdfda712593f09f2ff6bd6dc64d77ee41c6221f909e6f
+generated: "2024-05-08T12:53:00.589335284-07:00"

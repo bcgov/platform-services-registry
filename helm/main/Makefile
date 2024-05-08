@@ -14,7 +14,9 @@ define arguments
 	--set app.image.tag="${IMAGE_TAG}" \
 	--set app.prePrismaImage.tag="${IMAGE_TAG}" \
 	--set app.preDataMigrationsImage.tag="${IMAGE_TAG}" \
-	--set email.image.tag="${IMAGE_TAG}"
+	--set email.image.tag="${IMAGE_TAG}" \
+	--set nats-provision.image.tag="${IMAGE_TAG}" \
+	--set m365proxy.image.tag="${IMAGE_TAG}"
 endef
 
 define curr-image-tag
