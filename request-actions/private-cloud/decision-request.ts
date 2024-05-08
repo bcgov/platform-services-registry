@@ -34,15 +34,15 @@ export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCl
 }>;
 
 export default async function makeRequestDecision(
-  licencePlate: string,
+  id: string,
   decision: DecisionStatus,
   comment: string | undefined,
   formData: PrivateCloudEditRequestBody,
   authEmail: string,
 ) {
-  const request = await prisma.privateCloudRequest.findFirst({
+  const request = await prisma.privateCloudRequest.findUnique({
     where: {
-      licencePlate,
+      id: id,
       active: true,
     },
     select: { id: true, licencePlate: true },
@@ -55,6 +55,7 @@ export default async function makeRequestDecision(
   const updatedProduct = await prisma.privateCloudRequest.update({
     where: {
       id: request.id,
+      active: true,
     },
     include: {
       project: {

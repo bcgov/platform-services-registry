@@ -74,11 +74,6 @@ export async function deletePrivateCloudProject(licencePlate: string) {
   return result;
 }
 
-export async function makePriviateCloudRequestDecision(licencePlate: string, data: any) {
-  const result = await instance.post(`/${licencePlate}/decision`, data).then((res) => res.data);
-  return result;
-}
-
 export async function checkPriviateCloudProductDeletionAvailability(licencePlate: string) {
   const result = await instance.get(`/${licencePlate}/deletion-check`).then((res) => res.data);
   return result;

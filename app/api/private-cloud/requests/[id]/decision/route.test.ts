@@ -7,7 +7,7 @@ import {
 } from '@/schema';
 import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
-import { POST } from '@/app/api/private-cloud/products/[licencePlate]/decision/route';
+import { POST } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { expect } from '@jest/globals';
@@ -111,7 +111,7 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
 }));
 
 describe('Create Private Cloud Request Route', () => {
-  let createRequestLicencePlate: string;
+  let createRequestId: string;
   let API_URL: string;
 
   beforeAll(async () => {
@@ -131,8 +131,8 @@ describe('Create Private Cloud Request Route', () => {
       throw new Error('Request not created. Issue in beforeAll');
     }
 
-    createRequestLicencePlate = request?.licencePlate;
-    API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestLicencePlate}`;
+    createRequestId = request?.id;
+    API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestId}`;
   });
 
   afterAll(async () => {
@@ -152,7 +152,7 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     const response = await POST(req, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
     expect(response.status).toBe(401);
   });
@@ -167,7 +167,7 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     const response = await POST(req, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
 
     expect(response.status).toBe(401);
@@ -183,7 +183,7 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     const response = await POST(req, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
 
     expect(response.status).toBe(200);

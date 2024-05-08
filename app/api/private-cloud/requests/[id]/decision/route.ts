@@ -10,7 +10,7 @@ import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/service
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 
 const pathParamSchema = z.object({
-  licencePlate: z.string(),
+  id: z.string(),
 });
 
 const apiHandler = createApiHandler({
@@ -20,16 +20,10 @@ const apiHandler = createApiHandler({
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
-  const { licencePlate } = pathParams;
+  const { id } = pathParams;
   const { decision, decisionComment, ...decisionDataFormData } = body;
 
-  const request = await makeRequestDecision(
-    licencePlate,
-    decision,
-    decisionComment,
-    decisionDataFormData,
-    userEmail as string,
-  );
+  const request = await makeRequestDecision(id, decision, decisionComment, decisionDataFormData, userEmail as string);
 
   if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
