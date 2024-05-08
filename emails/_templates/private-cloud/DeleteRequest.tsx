@@ -8,9 +8,10 @@ import Layout from '@/emails/_components/layout/Layout';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
+  userName: string;
 }
 
-const DeleteRequestTemplate = ({ request }: EmailProp) => {
+const DeleteRequestTemplate = ({ request, userName }: EmailProp) => {
   if (!request) return <></>;
 
   return (
@@ -34,6 +35,8 @@ const DeleteRequestTemplate = ({ request }: EmailProp) => {
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <NamespaceDetails cluster={request.decisionData.cluster} licencePlate={request.decisionData.licencePlate} />
+        <br></br>
+        <Text>This delete request was actioned by {userName}.</Text>
       </div>
       <div>
         <Closing />

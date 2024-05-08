@@ -74,10 +74,10 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
   });
 
-  if (request.type === $Enums.RequestType.DELETE) {
-    await sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
-  } else {
+  if (request.type == 'CREATE') {
     await sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
+  } else if (request.type == 'DELETE') {
+    await sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
   }
 
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);

@@ -21,7 +21,7 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   const request = await createRequest(body, user.email);
 
-  await sendCreateRequestEmails(request);
+  await sendCreateRequestEmails(request, session.user.name);
 
   return OkResponse('Success creating request');
 }
