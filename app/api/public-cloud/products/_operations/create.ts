@@ -24,7 +24,7 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   const request = await createRequest(body, authEmail);
 
-  wrapAsync(() => sendCreateRequestEmails(request));
+  wrapAsync(() => sendCreateRequestEmails(request, session.user.name));
 
   return OkResponse('Success creating request');
 }

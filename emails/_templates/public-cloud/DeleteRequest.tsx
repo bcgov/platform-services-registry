@@ -8,9 +8,10 @@ import Layout from '@/emails/_components/layout/Layout';
 
 interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;
+  userName: string;
 }
 
-const DeleteRequestTemplate = ({ product }: EmailProp) => {
+const DeleteRequestTemplate = ({ product, userName }: EmailProp) => {
   if (!product) return <></>;
 
   const {
@@ -50,6 +51,8 @@ const DeleteRequestTemplate = ({ product }: EmailProp) => {
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
+        <br></br>
+        <Text>This delete request was actioned by {userName}.</Text>
       </div>
       <div>
         <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />

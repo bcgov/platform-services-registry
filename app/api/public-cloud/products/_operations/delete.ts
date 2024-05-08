@@ -88,7 +88,7 @@ export default async function deleteOp({
   });
 
   wrapAsync(() => {
-    sendDeleteRequestEmails(createRequest.requestedProject);
+    sendDeleteRequestEmails(createRequest.requestedProject, session.user.name);
     sendAdminDeleteRequestEmails(createRequest.requestedProject);
   });
 

@@ -14,9 +14,10 @@ import Layout from '@/emails/_components/layout/Layout';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
+  userName: string;
 }
 
-const EditRequestTemplate = ({ request }: EmailProp) => {
+const EditRequestTemplate = ({ request, userName }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
@@ -112,6 +113,8 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
               cluster={current.cluster}
             />
           )}
+          <br></br>
+          <Text>This edit request was actioned by {userName}.</Text>
         </div>
       </div>
       <div>

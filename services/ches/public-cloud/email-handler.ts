@@ -18,10 +18,10 @@ import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRe
 import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
 import { logger } from '@/core/logging';
 
-export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject) => {
+export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
   try {
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: false });
-    const userEmail = render(CreateRequestTemplate({ request }), { pretty: false });
+    const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: false });
 
     const admins = sendEmail({
       bodyType: 'html',
@@ -61,9 +61,12 @@ export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequested
   }
 };
 
-export const sendEditRequestEmails = async (request: PublicCloudRequestWithProjectAndRequestedProject) => {
+export const sendEditRequestEmails = async (
+  request: PublicCloudRequestWithProjectAndRequestedProject,
+  userName: string,
+) => {
   try {
-    const userEmail = render(EditSummaryTemplate({ request }), { pretty: false });
+    const userEmail = render(EditSummaryTemplate({ request, userName }), { pretty: false });
 
     await sendEmail({
       body: userEmail,
@@ -118,9 +121,9 @@ export const sendRequestRejectionEmails = async (
   }
 };
 
-export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts, userName: string) => {
   try {
-    const email = render(DeleteRequestTemplate({ product }), { pretty: false });
+    const email = render(DeleteRequestTemplate({ product, userName }), { pretty: false });
 
     await sendEmail({
       body: email,

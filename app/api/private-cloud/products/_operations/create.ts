@@ -26,7 +26,7 @@ export default async function createOp({ session, body }: { session: Session; bo
   logger.info('after createRequest');
 
   logger.info('before sendCreateRequestEmails');
-  wrapAsync(() => sendCreateRequestEmails(request));
+  wrapAsync(() => sendCreateRequestEmails(request, session.user.name));
   logger.info('after sendCreateRequestEmails');
 
   return OkResponse('Success creating request');

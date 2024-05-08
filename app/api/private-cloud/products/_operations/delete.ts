@@ -93,7 +93,7 @@ export default async function deleteOp({
     },
   });
 
-  wrapAsync(() => sendDeleteRequestEmails(createRequest));
+  wrapAsync(() => sendDeleteRequestEmails(createRequest, session.user.name));
 
   return OkResponse(true);
 }

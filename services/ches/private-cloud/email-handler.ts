@@ -18,13 +18,13 @@ import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestR
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import { logger } from '@/core/logging';
 
-export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {
     logger.info('before AdminCreateTemplate');
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: true });
     logger.info('after AdminCreateTemplate');
     logger.info('before CreateRequestTemplate');
-    const userEmail = render(CreateRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: true });
     logger.info('after CreateRequestTemplate');
 
     const admins = sendEmail({
@@ -56,9 +56,10 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
 export const sendEditRequestEmails = async (
   request: PrivateCloudRequestWithProjectAndRequestedProject,
   isAdminEmailSent: boolean,
+  userName: string,
 ) => {
   try {
-    const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(EditRequestTemplate({ request, userName }), { pretty: true });
     let admins;
     if (isAdminEmailSent) {
       const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
@@ -129,10 +130,10 @@ export const sendRequestRejectionEmails = async (
   }
 };
 
-export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {
     const adminEmail = render(AdminDeleteRequestTemplate({ request }), { pretty: true });
-    const userEmail = render(DeleteRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(DeleteRequestTemplate({ request, userName }), { pretty: true });
 
     const admins = sendEmail({
       bodyType: 'html',

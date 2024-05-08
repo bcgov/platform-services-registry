@@ -48,7 +48,7 @@ export default async function updateOp({
   const request = await editRequest(licencePlate, body, userEmail as string);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    wrapAsync(() => sendEditRequestEmails(request, true));
+    wrapAsync(() => sendEditRequestEmails(request, true, session.user.name));
     return OkResponse(
       'Successfully edited project, admin approval will be required for this request to be provisioned ',
     );
@@ -69,7 +69,7 @@ export default async function updateOp({
 
   await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
 
-  wrapAsync(() => sendEditRequestEmails(request, false));
+  wrapAsync(() => sendEditRequestEmails(request, false, session.user.name));
 
   return OkResponse(true);
 }

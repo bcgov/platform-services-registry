@@ -11,9 +11,10 @@ import Layout from '@/emails/_components/layout/Layout';
 interface EmailProp {
   request: PublicCloudRequestWithProjectAndRequestedProject;
   comment?: string;
+  userName: string;
 }
 
-const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
+const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
   if (!request || !request.project || !request.requestedProject) return <></>;
   const current = request.project;
   const requested = request.requestedProject;
@@ -80,6 +81,8 @@ const EditSummaryTemplate = ({ request, comment }: EmailProp) => {
             accountCodingCurrent={current.accountCoding}
             accountCodingRequested={requested.accountCoding}
           />
+          <br></br>
+          <Text>This edit was actioned by {userName}.</Text>
         </div>
       )}
       <div>

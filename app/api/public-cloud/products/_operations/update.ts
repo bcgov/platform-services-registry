@@ -57,7 +57,7 @@ export default async function updateOp({
     ].filter((usr): usr is User => Boolean(usr));
 
     subscribeUsersToMautic(users, request.requestedProject.provider, 'Private');
-    sendEditRequestEmails(request);
+    sendEditRequestEmails(request, session.user.name);
     if (request.requestedProject.expenseAuthorityId !== request.project?.expenseAuthorityId) {
       sendExpenseAuthorityEmail(request.requestedProject);
     }
