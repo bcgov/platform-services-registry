@@ -69,19 +69,21 @@ export default function ProfileDropdown() {
               </Link>
             )}
           </Menu.Item> */}
-          <Menu.Item>
-            {({ active }) => (
-              <button
-                onClick={handleOpenProfile}
-                className={classNames(
-                  active ? 'bg-gray-100' : '',
-                  'block w-full text-left px-4 py-2 text-sm text-gray-700',
-                )}
-              >
-                Profile
-              </button>
-            )}
-          </Menu.Item>
+          {status === 'authenticated' && (
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={handleOpenProfile}
+                  className={classNames(
+                    active ? 'bg-gray-100' : '',
+                    'block w-full text-left px-4 py-2 text-sm text-gray-700',
+                  )}
+                >
+                  Profile
+                </button>
+              )}
+            </Menu.Item>
+          )}
           {permissions?.viewZapscanResults && (
             <Menu.Item>
               {({ active, close }) => (
