@@ -94,7 +94,7 @@
     "cypress": "^12.17.4",
     "cypress-keycloak": "^2.0.1",
     "dotenv-cli": "^7.3.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-next": "14.2.3",
