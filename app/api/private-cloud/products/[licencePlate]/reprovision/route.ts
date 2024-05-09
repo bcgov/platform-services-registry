@@ -29,12 +29,14 @@ export const GET = apiHandler(async ({ pathParams }) => {
     return BadRequestResponse(`there is no products associated with licencePlate '${licencePlate}'`);
   }
 
-  await sendPrivateCloudNatsMessage('reprovision', $Enums.RequestType.EDIT, product, false);
+  const msgId = `reprovision-${new Date().getTime()}`;
+
+  await sendPrivateCloudNatsMessage(msgId, $Enums.RequestType.EDIT, product, false);
 
   // For GOLD requests, we create an identical request for GOLDDR
   if (product.cluster === $Enums.Cluster.GOLD && product.golddrEnabled) {
     await sendPrivateCloudNatsMessage(
-      'reprovision',
+      msgId,
       $Enums.RequestType.EDIT,
       { ...product, cluster: $Enums.Cluster.GOLDDR },
       false,
