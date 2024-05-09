@@ -1,4 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
+import { permission } from 'process';
 import { Fragment, FunctionComponent } from 'react';
 
 interface UserProfilePopupProps {
@@ -8,6 +9,8 @@ interface UserProfilePopupProps {
     name: string;
     email: string;
     roles: string[];
+    permissions: string[];
+    image?: string | null;
   };
 }
 
@@ -40,16 +43,36 @@ export const UserProfilePopUp: FunctionComponent<UserProfilePopupProps> = ({ isO
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-center shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                {user.image && (
+                  <img
+                    src={user.image}
+                    alt="User Profile"
+                    className="mx-auto h-24 w-24 rounded-full object-cover mb-4"
+                  />
+                )}
                 <Dialog.Title as="h3" className="text-xl leading-6 font-medium text-gray-900 mb-4">
-                  User Profile
+                  {user.name}
                 </Dialog.Title>
-                <div className="text-md text-gray-500 mb-6">
-                  Name: {user.name}
+                <div className="text-md text-gray-500 mb-6 style={{ maxWidth: '80%', margin: 'auto' }}">
+                  <>
+                    <strong>{user.email}</strong>
+                  </>{' '}
                   <br />
-                  Email: {user.email}
                   <br />
-                  Role: {uniqueRoles.join(', ')}
+                  <>
+                    <strong>Role: </strong>
+                  </>
+                  {uniqueRoles.map((role) => (
+                    <li key={role}>{role}</li>
+                  ))}
+                  <br />
+                  <>
+                    <strong>Permissions: </strong>
+                  </>
+                  {user.permissions.map((perm) => (
+                    <li key={perm}>{perm}</li>
+                  ))}
                 </div>
                 <button
                   type="button"

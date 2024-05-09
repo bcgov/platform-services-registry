@@ -22,6 +22,10 @@ export default function ProfileDropdown() {
           name: session.user.name,
           email: session.user.email,
           roles: session.roles || ['user'],
+          permissions: Object.keys(permissions || {}).filter((key) =>
+            permissions ? permissions[key as keyof typeof permissions] : false,
+          ),
+          image: session.user.image ? `data:image/jpeg;base64,${session.user.image}` : undefined,
         }
       : undefined;
 
