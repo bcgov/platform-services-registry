@@ -86,6 +86,10 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestComment,
+      originalData: {
+        // need to change to original data, not decisionData
+        create: decisionData,
+      },
       decisionData: {
         create: decisionData,
       },
@@ -105,6 +109,13 @@ export default async function editRequest(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+        },
+      },
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
         },
       },
       decisionData: {

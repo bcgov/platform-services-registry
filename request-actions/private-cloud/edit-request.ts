@@ -100,7 +100,8 @@ export default async function editRequest(
       licencePlate: project.licencePlate,
       requestComment,
       originalData: {
-        create: project as any,
+        // need to change to original data, not decisionData
+        create: decisionData,
       },
       decisionData: {
         create: decisionData,
@@ -116,6 +117,13 @@ export default async function editRequest(
     },
     include: {
       project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      originalData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
