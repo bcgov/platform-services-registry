@@ -37,16 +37,27 @@ export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGe
 }>;
 
 export default async function makeRequestDecision(
-  licencePlate: string,
+  id: string,
   decision: DecisionStatus,
   decisionComment: string | undefined,
   formData: PublicCloudEditRequestBody,
   authEmail: string,
 ): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
-  // Get the request
-  const request: PublicCloudRequestWithRequestedProject | null = await prisma.publicCloudRequest.findFirst({
+  const request = await prisma.publicCloudRequest.findUnique({
     where: {
-      licencePlate,
+      id,
+      active: true,
+    },
+    select: { id: true, licencePlate: true },
+  });
+
+  if (!request) {
+    throw new Error('Request not found.');
+  }
+
+  const updatedRequest = prisma.publicCloudRequest.update({
+    where: {
+      id: request.id,
       active: true,
     },
     include: {
@@ -67,50 +78,10 @@ export default async function makeRequestDecision(
         },
       },
     },
-  });
-
-  if (!request) {
-    throw new Error('Request not found.');
-  }
-
-  const {
-    id: _,
-    projectOwnerId,
-    primaryTechnicalLeadId,
-    secondaryTechnicalLeadId,
-    expenseAuthorityId,
-    ...requestData
-  } = request.decisionData;
-  // Update the request with the data passed in from the form.
-  // Since the admin has the ablilty to modify the request, we put these changes into the adminRequestedProject field
-  // that is the new requested project from the admin form. The adminRequestedProject may be the same as the requested
-  // project if the admin did not change anything.
-  return prisma.publicCloudRequest.update({
-    where: {
-      id: request.id,
-    },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-    },
     data: {
-      decisionStatus: decision,
-      decisionComment: decisionComment,
       active: decision === DecisionStatus.APPROVED,
+      decisionStatus: decision,
+      decisionComment,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,
       decisionData: {
@@ -159,4 +130,6 @@ export default async function makeRequestDecision(
       },
     },
   });
+
+  return updatedRequest;
 }

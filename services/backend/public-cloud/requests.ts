@@ -29,3 +29,8 @@ export async function searchPublicCloudRequests(data: PublicCloudProductSearchCr
 
   return result as PublicCloudRequestSearchPayload;
 }
+
+export async function makePublicCloudRequestDecision(id: string, data: any) {
+  const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
+  return result;
+}
