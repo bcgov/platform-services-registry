@@ -12,7 +12,7 @@ import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
 
 const pathParamSchema = z.object({
-  licencePlate: z.string(),
+  id: z.string(),
 });
 
 const apiHandler = createApiHandler({
@@ -23,11 +23,11 @@ const apiHandler = createApiHandler({
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
-  const { licencePlate } = pathParams;
+  const { id } = pathParams;
   const { decision, decisionComment, ...decisionDataFormData } = body;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeRequestDecision(
-    licencePlate,
+    id,
     decision,
     decisionComment,
     decisionDataFormData,
