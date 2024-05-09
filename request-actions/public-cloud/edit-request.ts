@@ -78,6 +78,56 @@ export default async function editRequest(
       : undefined,
   };
 
+  const originalData = {
+    name: project.name,
+    description: project.description,
+    provider: project.provider,
+    ministry: project.ministry,
+    status: project.status,
+    licencePlate: project.licencePlate,
+    created: project.created,
+    accountCoding: project.accountCoding,
+    budget: project.budget,
+    projectOwner: {
+      connectOrCreate: {
+        where: {
+          email: project.projectOwner.email,
+        },
+        create: project.projectOwner,
+      },
+    },
+    primaryTechnicalLead: {
+      connectOrCreate: {
+        where: {
+          email: project.primaryTechnicalLead.email,
+        },
+        create: project.primaryTechnicalLead,
+      },
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLead
+      ? {
+          connectOrCreate: {
+            where: {
+              email: project.secondaryTechnicalLead.email,
+            },
+            create: project.secondaryTechnicalLead,
+          },
+        }
+      : undefined,
+    expenseAuthority: project.expenseAuthority
+      ? // this check until expenseAuthority field will be populated for every public cloud product
+        {
+          connectOrCreate: {
+            where: {
+              email: project.expenseAuthority.email,
+            },
+            create: project.expenseAuthority,
+          },
+        }
+      : undefined,
+  };
+
+  console.log('decisionData', decisionData);
   return prisma.publicCloudRequest.create({
     data: {
       type: RequestType.EDIT,
@@ -87,8 +137,7 @@ export default async function editRequest(
       licencePlate: project.licencePlate,
       requestComment,
       originalData: {
-        // need to change to original data, not decisionData
-        create: decisionData,
+        create: originalData,
       },
       decisionData: {
         create: decisionData,
