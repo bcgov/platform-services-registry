@@ -6,11 +6,24 @@ import Link from 'next/link';
 import ProfileImage from '../ProfileImage';
 import { useAppState } from '@/states/global';
 import { signOut } from '@/helpers/auth';
+import { UserProfilePopUp } from '@/components/dropdowns/UserProfile';
 
 export default function ProfileDropdown() {
   const [appState, appSnapshot] = useAppState();
   const { data: session, status } = useSession();
   const { permissions } = session ?? {};
+  const [isProfileOpen, setProfileOpen] = useState(false);
+  const handleOpenProfile = () => setProfileOpen(true);
+  const handleCloseProfile = () => setProfileOpen(false);
+
+  const userProfile =
+    session && session.user
+      ? {
+          name: session.user.name,
+          email: session.user.email,
+          roles: session.roles || ['user'],
+        }
+      : undefined;
 
   return (
     <Menu as="div" className="relative ml-3">
@@ -56,6 +69,19 @@ export default function ProfileDropdown() {
               </Link>
             )}
           </Menu.Item> */}
+          <Menu.Item>
+            {({ active }) => (
+              <button
+                onClick={handleOpenProfile}
+                className={classNames(
+                  active ? 'bg-gray-100' : '',
+                  'block w-full text-left px-4 py-2 text-sm text-gray-700',
+                )}
+              >
+                Profile
+              </button>
+            )}
+          </Menu.Item>
           {permissions?.viewZapscanResults && (
             <Menu.Item>
               {({ active, close }) => (
@@ -147,6 +173,9 @@ export default function ProfileDropdown() {
           </Menu.Item>
         </Menu.Items>
       </Transition>
+      {userProfile && isProfileOpen && (
+        <UserProfilePopUp isOpen={isProfileOpen} onClose={handleCloseProfile} user={userProfile} />
+      )}
     </Menu>
   );
 }
