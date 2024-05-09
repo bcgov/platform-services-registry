@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { permission } from 'process';
 import { Fragment, FunctionComponent } from 'react';
+import { camelCaseToWords } from '../generic/text/CamelCaseToWords';
 
 interface UserProfilePopupProps {
   isOpen: boolean;
@@ -15,7 +15,15 @@ interface UserProfilePopupProps {
 }
 
 export const UserProfilePopUp: FunctionComponent<UserProfilePopupProps> = ({ isOpen, onClose, user }) => {
-  const uniqueRoles = Array.from(new Set(user.roles));
+  const uniqueRoles = Array.from(new Set(user.roles.map((role) => camelCaseToWords(role))));
+  const formattedPermissions = user.permissions.map((permission) => camelCaseToWords(permission));
+
+  const getImageSrc = (image: string | null | undefined) => {
+    if (!image) {
+      return undefined;
+    }
+    return image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
+  };
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -43,10 +51,10 @@ export const UserProfilePopUp: FunctionComponent<UserProfilePopupProps> = ({ isO
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-center shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-center shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
                 {user.image && (
                   <img
-                    src={user.image}
+                    src={getImageSrc(user.image)}
                     alt="User Profile"
                     className="mx-auto h-24 w-24 rounded-full object-cover mb-4"
                   />
@@ -54,25 +62,27 @@ export const UserProfilePopUp: FunctionComponent<UserProfilePopupProps> = ({ isO
                 <Dialog.Title as="h3" className="text-xl leading-6 font-medium text-gray-900 mb-4">
                   {user.name}
                 </Dialog.Title>
-                <div className="text-md text-gray-500 mb-6 style={{ maxWidth: '80%', margin: 'auto' }}">
-                  <>
-                    <strong>{user.email}</strong>
-                  </>{' '}
-                  <br />
-                  <br />
-                  <>
-                    <strong>Role: </strong>
-                  </>
-                  {uniqueRoles.map((role) => (
-                    <li key={role}>{role}</li>
-                  ))}
-                  <br />
-                  <>
-                    <strong>Permissions: </strong>
-                  </>
-                  {user.permissions.map((perm) => (
-                    <li key={perm}>{perm}</li>
-                  ))}
+                <div className="text-md text-gray-500 mb-6">
+                  <strong>{user.email}</strong>
+                  <div style={{ marginBottom: '20px' }}></div>
+                  <div style={{ display: 'flex', justifyContent: 'center', maxWidth: '100%', margin: 'auto' }}>
+                    <div style={{ textAlign: 'left', marginRight: '2rem' }}>
+                      <div style={{ textAlign: 'center' }}>
+                        <strong>Roles:</strong>
+                      </div>
+                      {uniqueRoles.map((role) => (
+                        <li key={role}>{role}</li>
+                      ))}
+                    </div>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ textAlign: 'center' }}>
+                        <strong>Permissions:</strong>
+                      </div>
+                      {formattedPermissions.map((perm) => (
+                        <li key={perm}>{perm}</li>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="button"
