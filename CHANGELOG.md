@@ -1,3 +1,8 @@
+## [0.23.4](https://github.com/bcgov/platform-services-registry/compare/v0.23.3...v0.23.4) (2024-05-09)
+
+### Bug Fixes
+
+* add timestamp on resend/reprovision nats msg ([f924e1c](https://github.com/bcgov/platform-services-registry/commit/f924e1c8208003123d493b1cd1af498d1e024abf))
 ## [0.23.3](https://github.com/bcgov/platform-services-registry/compare/v0.23.2...v0.23.3) (2024-05-07)
 
 ### Refactors
