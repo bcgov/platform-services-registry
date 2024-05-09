@@ -53,7 +53,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
     if (!publicCloudStateSnap.currentRequest) return;
 
     if (!publicCloudStateSnap.currentRequest.active || !publicCloudStateSnap.currentRequest._permissions.review) {
-      router.push(`/public-cloud/requests/${id}/view`);
+      router.push(`/public-cloud/requests/${publicCloudStateSnap.currentRequest.id}/view`);
       return;
     }
 
