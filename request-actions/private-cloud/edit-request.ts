@@ -99,6 +99,9 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestComment,
+      originalData: {
+        create: project as any,
+      },
       decisionData: {
         create: decisionData,
       },
