@@ -38,16 +38,16 @@ async function sendNatsMessage(natsUrl: string, natsSubject: string, messageBody
 export async function sendPrivateCloudNatsMessage(
   requestId: PrivateCloudRequest['id'],
   requestType: RequestType,
-  requestedProject: PrivateCloudRequestedProjectWithContacts,
+  decisionData: PrivateCloudRequestedProjectWithContacts,
   contactChanged: boolean,
 ) {
-  const natsSubject = `registry_project_provisioning_${requestedProject.cluster}`.toLocaleLowerCase();
+  const natsSubject = `registry_project_provisioning_${decisionData.cluster}`.toLocaleLowerCase();
 
   // Perform deletion check if request is a delete request
   if (requestType === RequestType.DELETE || requestType.toLowerCase() === 'delete') {
     const deleteCheckList: DeletableField = await openshiftDeletionCheck(
-      requestedProject.licencePlate,
-      requestedProject.cluster,
+      decisionData.licencePlate,
+      decisionData.cluster,
     );
 
     if (!Object.values(deleteCheckList).every((field) => field)) {
@@ -57,19 +57,19 @@ export async function sendPrivateCloudNatsMessage(
     }
   }
 
-  const messageBody = createPrivateCloudNatsMessage(requestId, requestType, requestedProject, contactChanged);
+  const messageBody = createPrivateCloudNatsMessage(requestId, requestType, decisionData, contactChanged);
 
   await sendNatsMessage(privateNatsUrl, natsSubject, messageBody);
 }
 
 export async function sendPublicCloudNatsMessage(
   requestType: RequestType,
-  requestedProject: PublicCloudRequestedProjectWithContacts,
+  decisionData: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,
 ) {
   const natsSubject = 'registry_project_provisioning_aws';
 
-  const messageBody = createPublicCloudNatsMessage(requestType, requestedProject, currentProject);
+  const messageBody = createPublicCloudNatsMessage(requestType, decisionData, currentProject);
 
   await sendNatsMessage(publicNatsUrl, natsSubject, messageBody);
 }

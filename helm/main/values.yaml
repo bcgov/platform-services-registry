@@ -149,7 +149,6 @@ nats:
 nats-provision:
   enabled: false
   image:
-    tag: 71035169b3000afd86b0d04863d54b32c578ea69 # pragma: allowlist secret
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-mock-nats-provision
@@ -159,6 +158,24 @@ nats-provision:
     "NATS_HOST": "pltsvc-mock-nats-client"
     "NATS_PORT": "4222"
     "APP_URL": "http://pltsvc-app:3000"
+
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 256Mi
+  #   requests:
+  #     cpu: 10m
+  #     memory: 128Mi
+
+m365proxy:
+  enabled: false
+  image:
+    pullPolicy: IfNotPresent
+
+  nameOverride: pltsvc-mock-m365proxy
+  fullnameOverride: pltsvc-mock-m365proxy
+
+  env: {}
 
   # resources:
   #   limits:

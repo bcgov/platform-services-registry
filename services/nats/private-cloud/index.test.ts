@@ -102,9 +102,9 @@ describe('Create Private Cloud Request Route', () => {
     const requests: PrivateCloudRequest[] = await prisma.privateCloudRequest.findMany();
     const request: PrivateCloudRequest = requests[0];
 
-    const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
+    const decisionData = await prisma.privateCloudRequestedProject.findUnique({
       where: {
-        id: request.requestedProjectId,
+        id: request.decisionDataId,
       },
       include: {
         projectOwner: true,
@@ -113,11 +113,11 @@ describe('Create Private Cloud Request Route', () => {
       },
     });
 
-    if (!requestedProject) {
+    if (!decisionData) {
       throw new Error('Requested project not found.');
     }
 
-    const natsMessage = await createPrivateCloudNatsMessage(request.id, request.type, requestedProject, false);
+    const natsMessage = await createPrivateCloudNatsMessage(request.id, request.type, decisionData, false);
 
     // TODO: Add more assertions
     expect(natsMessage).toBeDefined();

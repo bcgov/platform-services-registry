@@ -6,11 +6,11 @@ import {
   PublicCloudRequestedProject,
 } from '@prisma/client';
 
-function compareProjects(project: any, requestedProject: any, fieldsToCompare: string[]): { [field: string]: boolean } {
+function compareProjects(project: any, decisionData: any, fieldsToCompare: string[]): { [field: string]: boolean } {
   const differences: { [field: string]: boolean } = {};
 
   fieldsToCompare.forEach((field) => {
-    differences[field] = !_isEqual(project[field], requestedProject[field]);
+    differences[field] = !_isEqual(project[field], decisionData[field]);
   });
 
   return differences;
@@ -45,14 +45,14 @@ const publicCloudFieldsToCompare: Array<keyof PublicCloudProject> = [
 
 export function comparePrivateCloudProjects(
   project: PrivateCloudProject,
-  requestedProject: PrivateCloudRequestedProject,
+  decisionData: PrivateCloudRequestedProject,
 ): { [field: string]: boolean } {
-  return compareProjects(project, requestedProject, privateCloudFieldsToCompare);
+  return compareProjects(project, decisionData, privateCloudFieldsToCompare);
 }
 
 export function comparePublicCloudProjects(
   project: PublicCloudProject,
-  requestedProject: PublicCloudRequestedProject,
+  decisionData: PublicCloudRequestedProject,
 ): { [field: string]: boolean } {
-  return compareProjects(project, requestedProject, publicCloudFieldsToCompare);
+  return compareProjects(project, decisionData, publicCloudFieldsToCompare);
 }

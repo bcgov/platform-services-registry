@@ -34,7 +34,7 @@ export default async function editRequest(
   ]);
 
   // Merge the form data with the existing project data
-  const requestedProject = {
+  const decisionData = {
     ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
@@ -86,11 +86,11 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestComment,
-      requestedProject: {
-        create: requestedProject,
+      decisionData: {
+        create: decisionData,
       },
-      userRequestedProject: {
-        create: requestedProject,
+      requestData: {
+        create: decisionData,
       },
       project: {
         connect: {
@@ -107,7 +107,7 @@ export default async function editRequest(
           expenseAuthority: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,

@@ -7,11 +7,10 @@ import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 
 const pathParamSchema = z.object({
-  licencePlate: z.string(),
+  id: z.string(),
 });
 
 const apiHandler = createApiHandler({
@@ -21,46 +20,45 @@ const apiHandler = createApiHandler({
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { userEmail } = session;
-  const { licencePlate } = pathParams;
-  const { decision, decisionComment, ...requestedProjectFormData } = body;
+  const { id } = pathParams;
+  const { decision, decisionComment, ...decisionDataFormData } = body;
 
-  const request = await makeRequestDecision(
-    licencePlate,
-    decision,
-    decisionComment,
-    requestedProjectFormData,
-    userEmail as string,
-  );
+  const request = await makeRequestDecision(id, decision, decisionComment, decisionDataFormData, userEmail as string);
 
-  if (!request.requestedProject) {
+  if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     // Send rejection email, message will need to be passed
-    wrapAsync(() => sendRequestRejectionEmails(request, decisionComment));
-
+    await sendRequestRejectionEmails(request, decisionComment);
     return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
   }
 
-  await sendRequestNatsMessage(request, {
-    projectOwner: { email: requestedProjectFormData.projectOwner.email },
-    primaryTechnicalLead: { email: requestedProjectFormData.primaryTechnicalLead.email },
-    secondaryTechnicalLead: { email: requestedProjectFormData.secondaryTechnicalLead?.email },
-  });
+  const proms = [];
+
+  proms.push(
+    sendRequestNatsMessage(request, {
+      projectOwner: { email: decisionDataFormData.projectOwner.email },
+      primaryTechnicalLead: { email: decisionDataFormData.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: decisionDataFormData.secondaryTechnicalLead?.email },
+    }),
+  );
 
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
   // Subscribe users to Mautic
-  await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
+  proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
   if (request.type == $Enums.RequestType.EDIT) {
-    sendRequestApprovalEmails(request);
+    proms.push(sendRequestApprovalEmails(request));
   }
+
+  await Promise.all(proms);
 
   return OkResponse(`Decision request for ${request.licencePlate} successfully created.`);
 });

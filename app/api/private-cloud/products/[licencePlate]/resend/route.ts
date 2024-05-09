@@ -29,7 +29,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
           decisionStatus: $Enums.DecisionStatus.APPROVED,
         },
         include: {
-          requestedProject: {
+          decisionData: {
             include: {
               projectOwner: true,
               primaryTechnicalLead: true,
@@ -53,22 +53,22 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   const request = product.requests[0];
 
   const contactsChanged =
-    product.projectOwner.email.toLowerCase() !== request.requestedProject.projectOwner.email.toLowerCase() ||
+    product.projectOwner.email.toLowerCase() !== request.decisionData.projectOwner.email.toLowerCase() ||
     product.primaryTechnicalLead.email.toLowerCase() !==
-      request.requestedProject.primaryTechnicalLead.email.toLowerCase() ||
+      request.decisionData.primaryTechnicalLead.email.toLowerCase() ||
     product.secondaryTechnicalLead?.email.toLowerCase() !==
-      request.requestedProject?.secondaryTechnicalLead?.email.toLowerCase();
+      request.decisionData?.secondaryTechnicalLead?.email.toLowerCase();
 
   const msgId = `resend-${new Date().getTime()}`;
 
   await sendPrivateCloudNatsMessage(msgId, request.type, request.requestedProject, contactsChanged);
 
   // For GOLD requests, we create an identical request for GOLDDR
-  if (request.requestedProject.cluster === Cluster.GOLD && request.requestedProject.golddrEnabled) {
+  if (request.decisionData.cluster === Cluster.GOLD && request.decisionData.golddrEnabled) {
     await sendPrivateCloudNatsMessage(
       msgId,
       request.type,
-      { ...request.requestedProject, cluster: Cluster.GOLDDR },
+      { ...request.decisionData, cluster: Cluster.GOLDDR },
       contactsChanged,
     );
   }

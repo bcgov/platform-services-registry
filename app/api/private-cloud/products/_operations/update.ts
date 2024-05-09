@@ -8,7 +8,6 @@ import editRequest from '@/request-actions/private-cloud/edit-request';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendEditRequestEmails } from '@/services/ches/private-cloud/email-handler';
-import { wrapAsync } from '@/helpers/runtime';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 
 export default async function updateOp({
@@ -48,28 +47,33 @@ export default async function updateOp({
   const request = await editRequest(licencePlate, body, userEmail as string);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    wrapAsync(() => sendEditRequestEmails(request, true));
+    await sendEditRequestEmails(request, true, session.user.name);
     return OkResponse(
       'Successfully edited project, admin approval will be required for this request to be provisioned ',
     );
   }
 
-  await sendRequestNatsMessage(request, {
-    projectOwner: { email: body.projectOwner.email },
-    primaryTechnicalLead: { email: body.primaryTechnicalLead.email },
-    secondaryTechnicalLead: { email: body.secondaryTechnicalLead?.email },
-  });
+  const proms = [];
+
+  proms.push(
+    sendRequestNatsMessage(request, {
+      projectOwner: { email: body.projectOwner.email },
+      primaryTechnicalLead: { email: body.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: body.secondaryTechnicalLead?.email },
+    }),
+  );
 
   // Subscribe users to Mautic
   const users: User[] = [
-    request.requestedProject.projectOwner,
-    request.requestedProject.primaryTechnicalLead,
-    request.requestedProject?.secondaryTechnicalLead,
+    request.decisionData.projectOwner,
+    request.decisionData.primaryTechnicalLead,
+    request.decisionData?.secondaryTechnicalLead,
   ].filter((usr): usr is User => Boolean(usr));
 
-  await subscribeUsersToMautic(users, request.requestedProject.cluster, 'Private');
+  proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
+  proms.push(sendEditRequestEmails(request, false, session.user.name));
 
-  wrapAsync(() => sendEditRequestEmails(request, false));
+  await Promise.all(proms);
 
   return OkResponse(true);
 }

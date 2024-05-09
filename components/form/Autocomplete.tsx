@@ -16,7 +16,7 @@ const people = [
 ];
 
 export default function Example() {
-  const [selected, setSelected] = useState(people[0]);
+  const [selected, setSelected] = useState<{ id: number; name: string } | null>(people[0]);
   const [query, setQuery] = useState('');
 
   const filteredPeople =

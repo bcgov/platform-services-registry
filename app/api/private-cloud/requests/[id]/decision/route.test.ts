@@ -7,7 +7,7 @@ import {
 } from '@/schema';
 import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
-import { POST } from '@/app/api/private-cloud/products/[licencePlate]/decision/route';
+import { POST } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { expect } from '@jest/globals';
@@ -111,7 +111,7 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
 }));
 
 describe('Create Private Cloud Request Route', () => {
-  let createRequestLicencePlate: string;
+  let createRequestId: string;
   let API_URL: string;
 
   beforeAll(async () => {
@@ -131,8 +131,8 @@ describe('Create Private Cloud Request Route', () => {
       throw new Error('Request not created. Issue in beforeAll');
     }
 
-    createRequestLicencePlate = request?.licencePlate;
-    API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestLicencePlate}`;
+    createRequestId = request?.id;
+    API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestId}`;
   });
 
   afterAll(async () => {
@@ -152,7 +152,7 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     const response = await POST(req, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
     expect(response.status).toBe(401);
   });
@@ -167,7 +167,7 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     const response = await POST(req, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
 
     expect(response.status).toBe(401);
@@ -183,20 +183,20 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     const response = await POST(req, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
 
     expect(response.status).toBe(200);
   });
 
-  test('should create a request with the correct data in userRequestedProject', async () => {
+  test('should create a request with the correct data in requestData', async () => {
     const requests = await prisma.privateCloudRequest.findMany();
 
     const request = requests[0];
 
-    const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
+    const decisionData = await prisma.privateCloudRequestedProject.findUnique({
       where: {
-        id: request.userRequestedProjectId || undefined,
+        id: request.requestDataId || undefined,
       },
       include: {
         projectOwner: true,
@@ -205,89 +205,89 @@ describe('Create Private Cloud Request Route', () => {
       },
     });
 
-    if (!requestedProject) {
+    if (!decisionData) {
       throw new Error('Requested project not found.');
     }
 
-    expect(requestedProject.name).toBe(createRequestBody.name);
-    expect(requestedProject.description).toBe(createRequestBody.description);
-    expect(requestedProject.cluster).toBe(createRequestBody.cluster);
-    expect(requestedProject.ministry).toBe(createRequestBody.ministry);
-    expect(requestedProject.projectOwner.firstName).toBe(createRequestBody.projectOwner.firstName);
-    expect(requestedProject.projectOwner.lastName).toBe(createRequestBody.projectOwner.lastName);
-    expect(requestedProject.projectOwner.email).toBe(createRequestBody.projectOwner.email);
-    expect(requestedProject.projectOwner.ministry).toBe(createRequestBody.projectOwner.ministry);
-    expect(requestedProject.primaryTechnicalLead.firstName).toBe(createRequestBody.primaryTechnicalLead.firstName);
-    expect(requestedProject.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
-    expect(requestedProject.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
-    expect(requestedProject.primaryTechnicalLead.ministry).toBe(createRequestBody.primaryTechnicalLead.ministry);
-    expect(requestedProject.secondaryTechnicalLead).toBeNull();
-    expect(requestedProject.commonComponents.addressAndGeolocation.planningToUse).toBe(
+    expect(decisionData.name).toBe(createRequestBody.name);
+    expect(decisionData.description).toBe(createRequestBody.description);
+    expect(decisionData.cluster).toBe(createRequestBody.cluster);
+    expect(decisionData.ministry).toBe(createRequestBody.ministry);
+    expect(decisionData.projectOwner.firstName).toBe(createRequestBody.projectOwner.firstName);
+    expect(decisionData.projectOwner.lastName).toBe(createRequestBody.projectOwner.lastName);
+    expect(decisionData.projectOwner.email).toBe(createRequestBody.projectOwner.email);
+    expect(decisionData.projectOwner.ministry).toBe(createRequestBody.projectOwner.ministry);
+    expect(decisionData.primaryTechnicalLead.firstName).toBe(createRequestBody.primaryTechnicalLead.firstName);
+    expect(decisionData.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
+    expect(decisionData.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
+    expect(decisionData.primaryTechnicalLead.ministry).toBe(createRequestBody.primaryTechnicalLead.ministry);
+    expect(decisionData.secondaryTechnicalLead).toBeNull();
+    expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
       createRequestBody.commonComponents.addressAndGeolocation.planningToUse,
     );
-    expect(requestedProject.commonComponents.addressAndGeolocation.implemented).toBe(
+    expect(decisionData.commonComponents.addressAndGeolocation.implemented).toBe(
       createRequestBody.commonComponents.addressAndGeolocation.implemented,
     );
-    expect(requestedProject.commonComponents.workflowManagement.planningToUse).toBe(
+    expect(decisionData.commonComponents.workflowManagement.planningToUse).toBe(
       createRequestBody.commonComponents.workflowManagement.planningToUse,
     );
-    expect(requestedProject.commonComponents.workflowManagement.implemented).toBe(
+    expect(decisionData.commonComponents.workflowManagement.implemented).toBe(
       createRequestBody.commonComponents.workflowManagement.implemented,
     );
-    expect(requestedProject.commonComponents.formDesignAndSubmission.planningToUse).toBe(
+    expect(decisionData.commonComponents.formDesignAndSubmission.planningToUse).toBe(
       createRequestBody.commonComponents.formDesignAndSubmission.planningToUse,
     );
-    expect(requestedProject.commonComponents.formDesignAndSubmission.implemented).toBe(
+    expect(decisionData.commonComponents.formDesignAndSubmission.implemented).toBe(
       createRequestBody.commonComponents.formDesignAndSubmission.implemented,
     );
-    expect(requestedProject.commonComponents.identityManagement.planningToUse).toBe(
+    expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
       createRequestBody.commonComponents.identityManagement.planningToUse,
     );
-    expect(requestedProject.commonComponents.identityManagement.implemented).toBe(
+    expect(decisionData.commonComponents.identityManagement.implemented).toBe(
       createRequestBody.commonComponents.identityManagement.implemented,
     );
-    expect(requestedProject.commonComponents.paymentServices.planningToUse).toBe(
+    expect(decisionData.commonComponents.paymentServices.planningToUse).toBe(
       createRequestBody.commonComponents.paymentServices.planningToUse,
     );
-    expect(requestedProject.commonComponents.paymentServices.implemented).toBe(
+    expect(decisionData.commonComponents.paymentServices.implemented).toBe(
       createRequestBody.commonComponents.paymentServices.implemented,
     );
-    expect(requestedProject.commonComponents.documentManagement.planningToUse).toBe(
+    expect(decisionData.commonComponents.documentManagement.planningToUse).toBe(
       createRequestBody.commonComponents.documentManagement.planningToUse,
     );
-    expect(requestedProject.commonComponents.documentManagement.implemented).toBe(
+    expect(decisionData.commonComponents.documentManagement.implemented).toBe(
       createRequestBody.commonComponents.documentManagement.implemented,
     );
-    expect(requestedProject.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
+    expect(decisionData.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
       createRequestBody.commonComponents.endUserNotificationAndSubscription.planningToUse,
     );
-    expect(requestedProject.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
+    expect(decisionData.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
       createRequestBody.commonComponents.endUserNotificationAndSubscription.implemented,
     );
-    expect(requestedProject.commonComponents.publishing.planningToUse).toBe(
+    expect(decisionData.commonComponents.publishing.planningToUse).toBe(
       createRequestBody.commonComponents.publishing.planningToUse,
     );
-    expect(requestedProject.commonComponents.publishing.implemented).toBe(
+    expect(decisionData.commonComponents.publishing.implemented).toBe(
       createRequestBody.commonComponents.publishing.implemented,
     );
-    expect(requestedProject.commonComponents.businessIntelligence.planningToUse).toBe(
+    expect(decisionData.commonComponents.businessIntelligence.planningToUse).toBe(
       createRequestBody.commonComponents.businessIntelligence.planningToUse,
     );
-    expect(requestedProject.commonComponents.businessIntelligence.implemented).toBe(
+    expect(decisionData.commonComponents.businessIntelligence.implemented).toBe(
       createRequestBody.commonComponents.businessIntelligence.implemented,
     );
-    expect(requestedProject.commonComponents.other).toBe(createRequestBody.commonComponents.other);
-    expect(requestedProject.commonComponents.noServices).toBe(createRequestBody.commonComponents.noServices);
+    expect(decisionData.commonComponents.other).toBe(createRequestBody.commonComponents.other);
+    expect(decisionData.commonComponents.noServices).toBe(createRequestBody.commonComponents.noServices);
   });
 
-  test('should create a request with the correct data requestedProject', async () => {
+  test('should create a request with the correct data decisionData', async () => {
     const requests = await prisma.privateCloudRequest.findMany();
 
     const request = requests[0];
 
-    const requestedProject = await prisma.privateCloudRequestedProject.findUnique({
+    const decisionData = await prisma.privateCloudRequestedProject.findUnique({
       where: {
-        id: request.requestedProjectId || undefined,
+        id: request.decisionDataId || undefined,
       },
       include: {
         projectOwner: true,
@@ -296,78 +296,78 @@ describe('Create Private Cloud Request Route', () => {
       },
     });
 
-    if (!requestedProject) {
+    if (!decisionData) {
       throw new Error('Requested project not found.');
     }
 
-    expect(requestedProject.name).toBe(decisionBody.name);
-    expect(requestedProject.description).toBe(decisionBody.description);
-    expect(requestedProject.cluster).toBe(decisionBody.cluster);
-    expect(requestedProject.ministry).toBe(decisionBody.ministry);
-    expect(requestedProject.projectOwner.firstName).toBe(decisionBody.projectOwner.firstName);
-    expect(requestedProject.projectOwner.lastName).toBe(decisionBody.projectOwner.lastName);
-    expect(requestedProject.projectOwner.email).toBe(decisionBody.projectOwner.email);
-    expect(requestedProject.projectOwner.ministry).toBe(decisionBody.projectOwner.ministry);
-    expect(requestedProject.primaryTechnicalLead.firstName).toBe(decisionBody.primaryTechnicalLead.firstName);
-    expect(requestedProject.primaryTechnicalLead.lastName).toBe(decisionBody.primaryTechnicalLead.lastName);
-    expect(requestedProject.primaryTechnicalLead.email).toBe(decisionBody.primaryTechnicalLead.email);
-    expect(requestedProject.primaryTechnicalLead.ministry).toBe(decisionBody.primaryTechnicalLead.ministry);
-    expect(requestedProject.secondaryTechnicalLead).toBeNull();
-    expect(requestedProject.commonComponents.addressAndGeolocation.planningToUse).toBe(
+    expect(decisionData.name).toBe(decisionBody.name);
+    expect(decisionData.description).toBe(decisionBody.description);
+    expect(decisionData.cluster).toBe(decisionBody.cluster);
+    expect(decisionData.ministry).toBe(decisionBody.ministry);
+    expect(decisionData.projectOwner.firstName).toBe(decisionBody.projectOwner.firstName);
+    expect(decisionData.projectOwner.lastName).toBe(decisionBody.projectOwner.lastName);
+    expect(decisionData.projectOwner.email).toBe(decisionBody.projectOwner.email);
+    expect(decisionData.projectOwner.ministry).toBe(decisionBody.projectOwner.ministry);
+    expect(decisionData.primaryTechnicalLead.firstName).toBe(decisionBody.primaryTechnicalLead.firstName);
+    expect(decisionData.primaryTechnicalLead.lastName).toBe(decisionBody.primaryTechnicalLead.lastName);
+    expect(decisionData.primaryTechnicalLead.email).toBe(decisionBody.primaryTechnicalLead.email);
+    expect(decisionData.primaryTechnicalLead.ministry).toBe(decisionBody.primaryTechnicalLead.ministry);
+    expect(decisionData.secondaryTechnicalLead).toBeNull();
+    expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
       decisionBody.commonComponents.addressAndGeolocation.planningToUse,
     );
-    expect(requestedProject.commonComponents.addressAndGeolocation.implemented).toBe(
+    expect(decisionData.commonComponents.addressAndGeolocation.implemented).toBe(
       decisionBody.commonComponents.addressAndGeolocation.implemented,
     );
-    expect(requestedProject.commonComponents.workflowManagement.planningToUse).toBe(
+    expect(decisionData.commonComponents.workflowManagement.planningToUse).toBe(
       decisionBody.commonComponents.workflowManagement.planningToUse,
     );
-    expect(requestedProject.commonComponents.workflowManagement.implemented).toBe(
+    expect(decisionData.commonComponents.workflowManagement.implemented).toBe(
       decisionBody.commonComponents.workflowManagement.implemented,
     );
-    expect(requestedProject.commonComponents.formDesignAndSubmission.planningToUse).toBe(
+    expect(decisionData.commonComponents.formDesignAndSubmission.planningToUse).toBe(
       decisionBody.commonComponents.formDesignAndSubmission.planningToUse,
     );
-    expect(requestedProject.commonComponents.formDesignAndSubmission.implemented).toBe(
+    expect(decisionData.commonComponents.formDesignAndSubmission.implemented).toBe(
       decisionBody.commonComponents.formDesignAndSubmission.implemented,
     );
-    expect(requestedProject.commonComponents.identityManagement.planningToUse).toBe(
+    expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
       decisionBody.commonComponents.identityManagement.planningToUse,
     );
-    expect(requestedProject.commonComponents.identityManagement.implemented).toBe(
+    expect(decisionData.commonComponents.identityManagement.implemented).toBe(
       decisionBody.commonComponents.identityManagement.implemented,
     );
-    expect(requestedProject.commonComponents.paymentServices.planningToUse).toBe(
+    expect(decisionData.commonComponents.paymentServices.planningToUse).toBe(
       decisionBody.commonComponents.paymentServices.planningToUse,
     );
-    expect(requestedProject.commonComponents.paymentServices.implemented).toBe(
+    expect(decisionData.commonComponents.paymentServices.implemented).toBe(
       decisionBody.commonComponents.paymentServices.implemented,
     );
-    expect(requestedProject.commonComponents.documentManagement.planningToUse).toBe(
+    expect(decisionData.commonComponents.documentManagement.planningToUse).toBe(
       decisionBody.commonComponents.documentManagement.planningToUse,
     );
-    expect(requestedProject.commonComponents.documentManagement.implemented).toBe(
+    expect(decisionData.commonComponents.documentManagement.implemented).toBe(
       decisionBody.commonComponents.documentManagement.implemented,
     );
-    expect(requestedProject.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
+    expect(decisionData.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
       decisionBody.commonComponents.endUserNotificationAndSubscription.planningToUse,
     );
-    expect(requestedProject.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
+    expect(decisionData.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
       decisionBody.commonComponents.endUserNotificationAndSubscription.implemented,
     );
-    expect(requestedProject.commonComponents.publishing.planningToUse).toBe(
+    expect(decisionData.commonComponents.publishing.planningToUse).toBe(
       decisionBody.commonComponents.publishing.planningToUse,
     );
-    expect(requestedProject.commonComponents.publishing.implemented).toBe(
+    expect(decisionData.commonComponents.publishing.implemented).toBe(
       decisionBody.commonComponents.publishing.implemented,
     );
-    expect(requestedProject.commonComponents.businessIntelligence.planningToUse).toBe(
+    expect(decisionData.commonComponents.businessIntelligence.planningToUse).toBe(
       decisionBody.commonComponents.businessIntelligence.planningToUse,
     );
-    expect(requestedProject.commonComponents.businessIntelligence.implemented).toBe(
+    expect(decisionData.commonComponents.businessIntelligence.implemented).toBe(
       decisionBody.commonComponents.businessIntelligence.implemented,
     );
-    expect(requestedProject.commonComponents.other).toBe(decisionBody.commonComponents.other);
-    expect(requestedProject.commonComponents.noServices).toBe(decisionBody.commonComponents.noServices);
+    expect(decisionData.commonComponents.other).toBe(decisionBody.commonComponents.other);
+    expect(decisionData.commonComponents.noServices).toBe(decisionBody.commonComponents.noServices);
   });
 });

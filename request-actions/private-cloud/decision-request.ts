@@ -4,7 +4,7 @@ import { PrivateCloudEditRequestBody } from '@/schema';
 
 export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
@@ -23,7 +23,7 @@ export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCl
         secondaryTechnicalLead: true;
       };
     };
-    requestedProject: {
+    decisionData: {
       include: {
         projectOwner: true;
         primaryTechnicalLead: true;
@@ -34,15 +34,15 @@ export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCl
 }>;
 
 export default async function makeRequestDecision(
-  licencePlate: string,
+  id: string,
   decision: DecisionStatus,
-  comment: string | undefined,
+  decisionComment: string | undefined,
   formData: PrivateCloudEditRequestBody,
   authEmail: string,
 ) {
-  const request = await prisma.privateCloudRequest.findFirst({
+  const request = await prisma.privateCloudRequest.findUnique({
     where: {
-      licencePlate,
+      id,
       active: true,
     },
     select: { id: true, licencePlate: true },
@@ -52,9 +52,10 @@ export default async function makeRequestDecision(
     throw new Error('Request not found.');
   }
 
-  const updatedProduct = await prisma.privateCloudRequest.update({
+  const updatedRequest = await prisma.privateCloudRequest.update({
     where: {
       id: request.id,
+      active: true,
     },
     include: {
       project: {
@@ -64,7 +65,7 @@ export default async function makeRequestDecision(
           secondaryTechnicalLead: true,
         },
       },
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -75,10 +76,10 @@ export default async function makeRequestDecision(
     data: {
       active: decision === DecisionStatus.APPROVED,
       decisionStatus: decision,
-      decisionComment: comment,
+      decisionComment,
       decisionDate: new Date(),
       decisionMakerEmail: authEmail,
-      requestedProject: {
+      decisionData: {
         update: {
           ...formData,
           status: ProjectStatus.ACTIVE,
@@ -114,5 +115,5 @@ export default async function makeRequestDecision(
     },
   });
 
-  return updatedProduct as PrivateCloudRequestWithProjectAndRequestedProject;
+  return updatedRequest;
 }

@@ -12,8 +12,8 @@ export const instance = axios.create({
 export async function getPriviateCloudRequest(id: string) {
   const result = await instance.get(`/${id}`).then((res) => {
     // Secondary technical lead should only be included if it exists
-    if (res.data.requestedProject.secondaryTechnicalLead === null) {
-      delete res.data.requestedProject.secondaryTechnicalLead;
+    if (res.data.decisionData.secondaryTechnicalLead === null) {
+      delete res.data.decisionData.secondaryTechnicalLead;
     }
 
     return res.data;
@@ -28,4 +28,9 @@ export async function searchPriviateCloudRequests(data: PrivateCloudProductSearc
   });
 
   return result as PrivateCloudRequestSearchPayload;
+}
+
+export async function makePriviateCloudRequestDecision(id: string, data: any) {
+  const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
+  return result;
 }

@@ -158,7 +158,11 @@ export default function TableBody({ rows, isLoading = false }: TableProps) {
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(path.join(`/${cloud}/products/${row.licencePlate}/${row.requests.length > 0 ? 'decision' : 'edit'}`));
+    if (row.requests.length > 0) {
+      router.push(path.join(`/${cloud}/requests/${row.requests[0].id}/decision`));
+    } else {
+      router.push(path.join(`/${cloud}/products/${row.licencePlate}/edit`));
+    }
   };
 
   return (

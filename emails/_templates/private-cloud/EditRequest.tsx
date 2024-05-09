@@ -14,12 +14,13 @@ import Layout from '@/emails/_components/layout/Layout';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
+  userName: string;
 }
 
-const EditRequestTemplate = ({ request }: EmailProp) => {
-  if (!request || !request.project || !request.requestedProject) return <></>;
+const EditRequestTemplate = ({ request, userName }: EmailProp) => {
+  if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
-  const requested = request.requestedProject;
+  const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
   const isQuotaUpgraded = isQuotaUpgrade(
     requested as PrivateCloudEditRequestBody,
@@ -112,6 +113,8 @@ const EditRequestTemplate = ({ request }: EmailProp) => {
               cluster={current.cluster}
             />
           )}
+          <br></br>
+          <Text>This edit request was actioned by {userName}.</Text>
         </div>
       </div>
       <div>

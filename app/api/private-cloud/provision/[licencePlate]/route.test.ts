@@ -2,7 +2,7 @@ import prisma from '@/core/prisma';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
 import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
-import { POST as decisionRequest } from '@/app/api/private-cloud/products/[licencePlate]/decision/route';
+import { POST as decisionRequest } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
@@ -106,8 +106,9 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
 }));
 
 describe('Create Private Cloud Request Route', () => {
-  let createRequestLicenceplate: string;
-  let API_URL: string;
+  let createRequestId: string;
+  let createRequestLicencePlate: string;
+  let PROVISION_API_URL: string;
 
   beforeAll(async () => {
     // await cleanUp();
@@ -130,11 +131,11 @@ describe('Create Private Cloud Request Route', () => {
       throw new Error('Request not found for provision test.');
     }
 
-    const createRequestLicencePlate: string = request.licencePlate;
-    createRequestLicenceplate = request.licencePlate;
+    createRequestId = request.id;
+    createRequestLicencePlate = request.licencePlate;
 
     // Make a decision request
-    const DECISION_API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestLicencePlate}`;
+    const DECISION_API_URL = `${BASE_URL}/api/private-cloud/requests/${createRequestId}/decision`;
 
     const decisionRequestObject = new NextRequest(DECISION_API_URL, {
       method: 'POST',
@@ -142,11 +143,11 @@ describe('Create Private Cloud Request Route', () => {
     });
 
     await decisionRequest(decisionRequestObject, {
-      params: { licencePlate: createRequestLicencePlate },
+      params: { id: createRequestId },
     });
 
     // Create the proviiion request url
-    API_URL = `${BASE_URL}/api/provision/private-cloud/${createRequestLicenceplate}`;
+    PROVISION_API_URL = `${BASE_URL}/api/provision/private-cloud/${createRequestLicencePlate}`;
   });
 
   afterAll(async () => {
@@ -161,7 +162,7 @@ describe('Create Private Cloud Request Route', () => {
   //   });
 
   //   const response = await PUT(req, {
-  //     params: { licencePlate: createRequestLicenceplate },
+  //     params: { licencePlate: createRequestLicencePlate },
   //   });
 
   //   expect(response.status).toBe(401);
@@ -181,26 +182,26 @@ describe('Create Private Cloud Request Route', () => {
   //   });
 
   //   const response = await PUT(req, {
-  //     params: { licencePlate: createRequestLicenceplate },
+  //     params: { licencePlate: createRequestLicencePlate },
   //   });
 
   //   expect(response.status).toBe(403);
   // });
 
   test('should return 200 if provision is successful', async () => {
-    const req = new NextRequest(API_URL, {
+    const req = new NextRequest(PROVISION_API_URL, {
       method: 'PUT',
     });
 
     const response = await PUT(req, {
-      params: { licencePlate: createRequestLicenceplate },
+      params: { licencePlate: createRequestLicencePlate },
     });
     expect(response.status).toBe(200);
   });
 
   test('should be a project in the db', async () => {
     const project = await prisma.privateCloudProject.findFirst({
-      where: { licencePlate: createRequestLicenceplate },
+      where: { licencePlate: createRequestLicencePlate },
       include: {
         projectOwner: true,
         primaryTechnicalLead: true,
@@ -213,7 +214,7 @@ describe('Create Private Cloud Request Route', () => {
     }
 
     expect(project).toBeTruthy();
-    expect(project.licencePlate).toBe(createRequestLicenceplate);
+    expect(project.licencePlate).toBe(createRequestLicencePlate);
     expect(project.name).toBe(decisionBody.name);
     expect(project.description).toBe(decisionBody.description);
     expect(project.cluster).toBe(decisionBody.cluster);
@@ -230,7 +231,7 @@ describe('Create Private Cloud Request Route', () => {
 
   test('the request should be marked as provisioned and not be active', async () => {
     const request = await prisma.privateCloudRequest.findFirst({
-      where: { licencePlate: createRequestLicenceplate },
+      where: { licencePlate: createRequestLicencePlate },
     });
 
     if (!request) {

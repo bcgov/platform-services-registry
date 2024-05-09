@@ -5,7 +5,6 @@ import { Session } from 'next-auth';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { isEligibleForDeletion } from '@/helpers/openshift';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
-import { wrapAsync } from '@/helpers/runtime';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -63,10 +62,10 @@ export default async function deleteOp({
       active: true,
       createdByEmail: userEmail as string,
       licencePlate: project.licencePlate,
-      requestedProject: {
+      decisionData: {
         create: rest,
       },
-      userRequestedProject: {
+      requestData: {
         create: rest,
       },
       project: {
@@ -76,7 +75,7 @@ export default async function deleteOp({
       },
     },
     include: {
-      requestedProject: {
+      decisionData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -93,7 +92,7 @@ export default async function deleteOp({
     },
   });
 
-  wrapAsync(() => sendDeleteRequestEmails(createRequest));
+  await sendDeleteRequestEmails(createRequest, session.user.name);
 
   return OkResponse(true);
 }

@@ -5,8 +5,8 @@ export default function PrivateHistoryItem(request: PrivateCloudRequest) {
   return [
     request.decisionDate && (
       <PrivateHistorySubItem
-        key={request.userRequestedProjectId}
-        id={request.userRequestedProjectId}
+        key={request.requestDataId}
+        id={request.requestDataId}
         comment={request.decisionComment || ''}
         data={request.decisionDate}
         type={request.type}

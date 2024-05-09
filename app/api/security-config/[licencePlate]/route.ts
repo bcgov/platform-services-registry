@@ -34,12 +34,12 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
       ? prisma.privateCloudProject.findFirst(privateQuery)
       : prisma.publicCloudProject.findFirst(publicQuery);
 
-  const requestedProjectProm =
+  const decisionDataProm =
     queryParams.context === $Enums.ProjectContext.PRIVATE
       ? prisma.privateCloudProject.findFirst(privateQuery)
       : prisma.publicCloudProject.findFirst(publicQuery);
 
-  const [config, project, requestedProject] = await Promise.all([configProm, projectProm, requestedProjectProm]);
+  const [config, project, decisionData] = await Promise.all([configProm, projectProm, decisionDataProm]);
 
-  return OkResponse({ config, project: project || requestedProject });
+  return OkResponse({ config, project: project || decisionData });
 });

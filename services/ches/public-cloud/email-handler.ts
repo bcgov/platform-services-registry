@@ -18,10 +18,10 @@ import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRe
 import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
 import { logger } from '@/core/logging';
 
-export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject) => {
+export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
   try {
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: false });
-    const userEmail = render(CreateRequestTemplate({ request }), { pretty: false });
+    const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: false });
 
     const admins = sendEmail({
       bodyType: 'html',
@@ -34,9 +34,9 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
       body: userEmail,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Provisioning request received',
     });
@@ -61,16 +61,19 @@ export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequested
   }
 };
 
-export const sendEditRequestEmails = async (request: PublicCloudRequestWithProjectAndRequestedProject) => {
+export const sendEditRequestEmails = async (
+  request: PublicCloudRequestWithProjectAndRequestedProject,
+  userName: string,
+) => {
   try {
-    const userEmail = render(EditSummaryTemplate({ request }), { pretty: false });
+    const userEmail = render(EditSummaryTemplate({ request, userName }), { pretty: false });
 
     await sendEmail({
       body: userEmail,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
         request.project?.projectOwner.email,
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
@@ -89,9 +92,9 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
     await sendEmail({
       body: email,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request has been approved',
     });
@@ -105,22 +108,22 @@ export const sendRequestRejectionEmails = async (
   decisionComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment }), {
+    const email = render(RequestRejectionTemplate({ productName: request.name, decisionComment, product: request }), {
       pretty: false,
     });
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: 'Request has been rejected',
+      subject: `'Request has been rejected for' ${request.name}`,
     });
   } catch (error) {
     logger.log('sendRequestRejectionEmails:', error);
   }
 };
 
-export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts, userName: string) => {
   try {
-    const email = render(DeleteRequestTemplate({ product }), { pretty: false });
+    const email = render(DeleteRequestTemplate({ product, userName }), { pretty: false });
 
     await sendEmail({
       body: email,

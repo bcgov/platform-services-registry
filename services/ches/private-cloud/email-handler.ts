@@ -18,14 +18,10 @@ import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestR
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import { logger } from '@/core/logging';
 
-export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {
-    logger.info('before AdminCreateTemplate');
     const adminEmail = render(AdminCreateTemplate({ request }), { pretty: true });
-    logger.info('after AdminCreateTemplate');
-    logger.info('before CreateRequestTemplate');
-    const userEmail = render(CreateRequestTemplate({ request }), { pretty: true });
-    logger.info('after CreateRequestTemplate');
+    const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: true });
 
     const admins = sendEmail({
       bodyType: 'html',
@@ -38,16 +34,14 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
       body: userEmail,
       // For all project contacts. Sent when the project set deletion request is successfully submitted
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Provisioning request received',
     });
 
-    logger.info('before sendEmail');
     await Promise.all([contacts, admins]);
-    logger.info('after sendEmail');
   } catch (error) {
     logger.error('sendCreateRequestEmails:', error);
   }
@@ -56,9 +50,10 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
 export const sendEditRequestEmails = async (
   request: PrivateCloudRequestWithProjectAndRequestedProject,
   isAdminEmailSent: boolean,
+  userName: string,
 ) => {
   try {
-    const userEmail = render(EditRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(EditRequestTemplate({ request, userName }), { pretty: true });
     let admins;
     if (isAdminEmailSent) {
       const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
@@ -73,9 +68,9 @@ export const sendEditRequestEmails = async (
     const contacts = sendEmail({
       body: userEmail,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
         request.project?.projectOwner.email,
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
@@ -96,9 +91,9 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
     await sendEmail({
       body: email,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request has been approved',
     });
@@ -129,10 +124,10 @@ export const sendRequestRejectionEmails = async (
   }
 };
 
-export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject) => {
+export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {
     const adminEmail = render(AdminDeleteRequestTemplate({ request }), { pretty: true });
-    const userEmail = render(DeleteRequestTemplate({ request }), { pretty: true });
+    const userEmail = render(DeleteRequestTemplate({ request, userName }), { pretty: true });
 
     const admins = sendEmail({
       bodyType: 'html',
@@ -144,9 +139,9 @@ export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRe
     const contacts = sendEmail({
       body: userEmail,
       to: [
-        request.requestedProject.projectOwner.email,
-        request.requestedProject.primaryTechnicalLead.email,
-        request.requestedProject.secondaryTechnicalLead?.email,
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
       ],
       subject: 'Request to delete product received',
     });

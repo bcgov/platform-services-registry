@@ -1,5 +1,7 @@
 import { PrivateCloudProjectGetPayload } from '@/app/api/private-cloud/products/_operations/read';
 import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/products/_operations/read';
+import { PrivateCloudRequestGetPayload } from '@/app/api/private-cloud/requests/[id]/route';
+import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[id]/route';
 import { createGlobalValtio } from '@/helpers/valtio';
 
 export const { state: appState, useValtioState: useAppState } = createGlobalValtio({
@@ -17,15 +19,19 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
 export const { state: privateProductState, useValtioState: usePrivateProductState } = createGlobalValtio<{
   licencePlate: string;
   currentProduct: PrivateCloudProjectGetPayload | undefined;
+  currentRequest: PrivateCloudRequestGetPayload | undefined;
 }>({
   licencePlate: '',
   currentProduct: undefined,
+  currentRequest: undefined,
 });
 
 export const { state: publicProductState, useValtioState: usePublicProductState } = createGlobalValtio<{
   licencePlate: string;
   currentProduct: PublicCloudProjectGetPayload | undefined;
+  currentRequest: PublicCloudRequestGetPayload | undefined;
 }>({
   licencePlate: '',
   currentProduct: undefined,
+  currentRequest: undefined,
 });
