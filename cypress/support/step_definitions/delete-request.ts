@@ -15,7 +15,7 @@ Given('I am logged in to the Registry as a User', () => {
 });
 
 When('I Create a request with random values', () => {
-  createRequest(productName, adminEmail, userEmail);
+  createRequest(productName, userEmail, adminEmail);
   cy.contains('p', 'Products with pending requests').should('be.visible');
 });
 
@@ -46,27 +46,28 @@ When('I log in as a User', () => {
 
 When('I create a Delete Request', () => {
   cy.contains('span', productName).click();
-  cy.contains('button', 'Options').click();
   cy.contains('button', 'Delete').click();
   cy.contains('p', 'License Plate')
     .siblings('p')
-    .eq(1)
     .invoke('text')
     .then((text) => {
       // Store the text content into a variable
       licensePlate = text.trim();
+      cy.get('input[id="license-plate"]').should('be.visible').type(licensePlate);
     });
-  cy.get('input[id="license-plate"]').type(licensePlate);
   cy.get('input[id="owner-email"]').type(userEmail);
-  cy.contains('button', 'Delete').click();
+  cy.contains('p', 'This operation').next().click();
   cy.contains('button', 'Return to Dashboard').click();
 });
 
 When('I approve the Delete Request', () => {
   cy.contains('span', productName).click();
-  cy.contains('button', 'APPROVE REQUEST');
+  cy.contains('button', 'APPROVE REQUEST').click();
+  cy.contains('button', 'CONFIRM APPROVAL').click();
+  cy.contains('button', 'Return to Dashboard').click();
 });
 
 Then('I cannot see the Product on the Products tab', () => {
+  cy.contains('a', 'Products').click();
   cy.contains('span', 'productName').should('not.exist');
 });

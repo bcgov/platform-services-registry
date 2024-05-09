@@ -5,7 +5,7 @@ export function createRequest(productName: string, POEmail: string, TLEmail: str
   cy.get('textarea[id="about"]').type('The description of Test Product Cypress');
   cy.get('select[id="ministry"]').select('Citizens Services');
   cy.get('select[name="cluster"]').select('SILVER');
-  cy.contains('label', 'Product Owner Email').parent().find('input').first().type(POEmail.slice(0, 8));
+  cy.contains('label', 'Product Owner Email').parent().find('input').first().type(POEmail.slice(0, 11));
   cy.get('li[role="option"]').click();
   cy.contains('label', 'Technical Lead Email').parent().find('input').first().type(TLEmail.slice(0, 11));
   cy.get('li[role="option"]').click();

@@ -50,7 +50,7 @@ declare global {
 export function loginToRegistry(username: string, password: string): void {
   cy.visit('/login', { failOnStatusCode: false });
   cy.contains('button', 'LOGIN').click();
-  cy.wait(2000); // wait until the page loads, otherwise no chances to find clause below
+  cy.wait(5000); // wait until the page loads, otherwise no chances to find clause below
   cy.url().then((val) => {
     if (val.includes('/api/auth/signin?csrf=true')) {
       cy.contains('span', 'Sign in with Keycloak').click();
