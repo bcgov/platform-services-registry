@@ -1,6 +1,6 @@
 import { DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { PublicCloudEditRequestBody } from '@/schema';
+import { PublicCloudEditRequestBody, UserInput } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function editRequest(
@@ -89,39 +89,27 @@ export default async function editRequest(
     accountCoding: project.accountCoding,
     budget: project.budget,
     projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: project.projectOwner.email,
-        },
-        create: project.projectOwner,
+      connect: {
+        email: project.projectOwner.email,
       },
     },
     primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: project.primaryTechnicalLead.email,
-        },
-        create: project.primaryTechnicalLead,
+      connect: {
+        email: project.primaryTechnicalLead.email,
       },
     },
     secondaryTechnicalLead: project.secondaryTechnicalLead
       ? {
-          connectOrCreate: {
-            where: {
-              email: project.secondaryTechnicalLead.email,
-            },
-            create: project.secondaryTechnicalLead,
+          connect: {
+            email: project.secondaryTechnicalLead.email,
           },
         }
       : undefined,
     expenseAuthority: project.expenseAuthority
       ? // this check until expenseAuthority field will be populated for every public cloud product
         {
-          connectOrCreate: {
-            where: {
-              email: project.expenseAuthority.email,
-            },
-            create: project.expenseAuthority,
+          connect: {
+            email: project.expenseAuthority.email,
           },
         }
       : undefined,

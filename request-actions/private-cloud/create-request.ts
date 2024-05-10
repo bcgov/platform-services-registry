@@ -72,9 +72,7 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       active: true,
       createdByEmail: authEmail,
       licencePlate,
-      originalData: {
-        create: createRequestedProject,
-      },
+      originalData: undefined,
       decisionData: {
         create: createRequestedProject,
       },

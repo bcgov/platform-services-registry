@@ -77,28 +77,19 @@ export default async function editRequest(
     licencePlate: project.licencePlate,
     created: project.created,
     projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: project.projectOwner.email,
-        },
-        create: project.projectOwner,
+      connect: {
+        email: project.projectOwner.email,
       },
     },
     primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: project.primaryTechnicalLead.email,
-        },
-        create: project.primaryTechnicalLead,
+      connect: {
+        email: project.primaryTechnicalLead.email,
       },
     },
     secondaryTechnicalLead: project.secondaryTechnicalLead
       ? {
-          connectOrCreate: {
-            where: {
-              email: project.secondaryTechnicalLead.email,
-            },
-            create: project.secondaryTechnicalLead,
+          connect: {
+            email: project.secondaryTechnicalLead.email,
           },
         }
       : undefined,

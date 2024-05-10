@@ -68,9 +68,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       active: true,
       createdByEmail: authEmail,
       licencePlate,
-      originalData: {
-        create: createRequestedProject,
-      },
+      originalData: undefined,
       decisionData: {
         create: createRequestedProject,
       },
