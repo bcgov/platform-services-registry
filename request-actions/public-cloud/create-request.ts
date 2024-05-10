@@ -85,13 +85,6 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           expenseAuthority: true,
         },
       },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
       decisionData: {
         include: {
           projectOwner: true,
