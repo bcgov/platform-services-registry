@@ -16,6 +16,7 @@ export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
       inputProps={register('golddrEnabled')}
       disabled={disabled}
       className={{ label: 'text-sm' }}
+      showConfirm
     >
       <span>
         Please choose whether you&#39;d like to include the{' '}
