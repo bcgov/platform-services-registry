@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import { providers, ministriesNames } from '@/constants';
+import { providers, ministryOptions } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
-import { $Enums } from '@prisma/client';
 import FormSelect from '@/components/generic/select/FormSelect';
 import ProductBadge from './ProductBadge';
 
@@ -107,10 +106,7 @@ export default function ProjectDescriptionPublic({
             id="ministry"
             label="Ministry"
             disabled={disabled}
-            options={[
-              { label: 'Select Ministry', value: '' },
-              ...ministriesNames.map((v) => ({ label: v.humanFriendlyName, value: v.name })),
-            ]}
+            options={[{ label: 'Select Ministry', value: '' }, ...ministryOptions]}
             selectProps={register('ministry')}
           />
 

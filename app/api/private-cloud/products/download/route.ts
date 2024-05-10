@@ -8,6 +8,7 @@ import searchOp from '../_operations/search';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { extractNumbers } from '@/utils/string';
 import { processEnumString, processUpperEnumString } from '@/utils/zod';
+import { ministryKeyToName } from '@/helpers/product';
 
 function getTotalQuota(...quotaValues: string[]) {
   let total = 0;
@@ -50,21 +51,20 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
-  // Map the data to the correct format for CSV conversion
   const formattedData = docs.map((project) => ({
-    name: project.name,
-    description: project.description,
-    ministry: project.ministry,
-    cluster: project.cluster,
-    projectOwnerEmail: project.projectOwner.email,
-    projectOwnerName: formatFullName(project.projectOwner),
-    primaryTechnicalLeadEmail: project.primaryTechnicalLead.email,
-    primaryTechnicalLeadName: formatFullName(project.primaryTechnicalLead),
-    secondaryTechnicalLeadEmail: project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
-    secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
-    created: formatDate(project.created),
-    updatedAt: formatDate(project.updatedAt),
-    licencePlate: project.licencePlate,
+    Name: project.name,
+    Description: project.description,
+    Ministry: ministryKeyToName(project.ministry),
+    Cluster: project.cluster,
+    'Project Owner Email': project.projectOwner.email,
+    'Project Owner Name': formatFullName(project.projectOwner),
+    'Primary Technical Lead Email': project.primaryTechnicalLead.email,
+    'Primary Technical Lead Name': formatFullName(project.primaryTechnicalLead),
+    'Secondary Technical Lead Email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
+    SecondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
+    'Create Date': formatDate(project.created),
+    'Updated Date': formatDate(project.updatedAt),
+    'Licence Plate': project.licencePlate,
     'Total Compute Quota (Cores)': getTotalQuota(
       project.developmentQuota.cpu,
       project.testQuota.cpu,
@@ -83,7 +83,7 @@ export const POST = createApiHandler({
       project.productionQuota.storage,
       project.toolsQuota.storage,
     ),
-    status: project.status,
+    Status: project.status,
   }));
 
   return CsvResponse(formattedData, 'private-cloud-products.csv');
