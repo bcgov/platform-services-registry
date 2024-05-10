@@ -25,7 +25,6 @@ export default function QuotaInput({
     getValues,
   } = useFormContext();
   const pathname = usePathname();
-  console.log(pathname);
   // Get the current quota value
   const initialValues = getValues();
   const initialQuota = initialValues[nameSpace + 'Quota'];
