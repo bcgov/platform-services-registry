@@ -106,6 +106,11 @@ export const DefaultMemoryOptions: Record<DefaultMemoryOptionsKey, MemoryOption>
     memoryRequests: '64Gi',
     memoryLimits: '128Gi',
   },
+  MEMORY_REQUEST_128_LIMIT_256: {
+    name: 'memory-request-128-limit-256',
+    memoryRequests: '128Gi',
+    memoryLimits: '256Gi',
+  },
 };
 
 export interface StorageOption {

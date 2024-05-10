@@ -1,6 +1,6 @@
 import { Heading, Link, Text } from '@react-email/components';
 import { QuotaInput } from '@/schema';
-import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from './quotaLookup';
+import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '@/constants';
 
 interface QuotaChangesProps {
   licencePlate: string;
