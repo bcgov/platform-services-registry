@@ -2,28 +2,16 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/dev-proxy/main/schemas/v0.16.2/rc.schema.json",
   "plugins": [
     {
-      "name": "RetryAfterPlugin",
-      "enabled": true,
-      "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll"
-    },
-    {
-      "name": "GenericRandomErrorPlugin",
-      "enabled": true,
-      "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
-      "configSection": "genericRandomErrorPlugin"
-    },
-    {
       "name": "MockResponsePlugin",
       "enabled": true,
       "pluginPath": "~appFolder/plugins/dev-proxy-plugins.dll",
       "configSection": "mocksPlugin"
     }
   ],
+  "ipAddress": "0.0.0.0",
+  "port": 8000,
   "urlsToWatch": ["https://graph.microsoft.com/*"],
-  "genericRandomErrorPlugin": {
-    "errorsFile": "devproxy-errors.json"
-  },
-  "rate": 50,
+  "rate": 0,
   "labelMode": "text",
   "logLevel": "debug",
   "newVersionNotification": "stable"
