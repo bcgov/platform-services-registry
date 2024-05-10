@@ -80,8 +80,8 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       viewHistory: canViewHistroy,
       edit: canEdit && !hasActiveRequest,
       delete: canEdit && !hasActiveRequest,
-      resend: hasProvisioningRequest && this.session.isAdmin,
-      reprovision: this.session.isAdmin,
+      resend: hasProvisioningRequest && (this.session.isAdmin || this.session.isPrivateAdmin),
+      reprovision: this.session.isAdmin || this.session.isPrivateAdmin,
     };
 
     return doc;

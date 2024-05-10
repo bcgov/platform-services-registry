@@ -92,7 +92,7 @@ export default async function deleteOp({
     },
   });
 
-  await sendDeleteRequestEmails(createRequest);
+  await sendDeleteRequestEmails(createRequest, session.user.name);
 
   return OkResponse(true);
 }

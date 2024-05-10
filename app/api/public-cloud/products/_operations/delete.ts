@@ -87,7 +87,7 @@ export default async function deleteOp({
   });
 
   await Promise.all([
-    sendDeleteRequestEmails(createRequest.decisionData),
+    sendDeleteRequestEmails(createRequest.decisionData, session.user.name),
     sendAdminDeleteRequestEmails(createRequest.decisionData),
   ]);
 

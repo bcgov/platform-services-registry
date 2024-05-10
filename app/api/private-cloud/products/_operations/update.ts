@@ -47,7 +47,7 @@ export default async function updateOp({
   const request = await editRequest(licencePlate, body, userEmail as string);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    await sendEditRequestEmails(request, true);
+    await sendEditRequestEmails(request, true, session.user.name);
     return OkResponse(
       'Successfully edited project, admin approval will be required for this request to be provisioned ',
     );
@@ -71,7 +71,7 @@ export default async function updateOp({
   ].filter((usr): usr is User => Boolean(usr));
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
-  proms.push(sendEditRequestEmails(request, false));
+  proms.push(sendEditRequestEmails(request, false, session.user.name));
 
   await Promise.all(proms);
 

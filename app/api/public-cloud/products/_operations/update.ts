@@ -57,7 +57,7 @@ export default async function updateOp({
   ].filter((usr): usr is User => Boolean(usr));
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Private'));
-  proms.push(sendEditRequestEmails(request));
+  proms.push(sendEditRequestEmails(request, session.user.name));
 
   if (request.decisionData.expenseAuthorityId !== request.project?.expenseAuthorityId) {
     proms.push(sendExpenseAuthorityEmail(request.decisionData));
