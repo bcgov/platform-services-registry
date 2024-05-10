@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-WORKDIR /opt/m365
+WORKDIR /opt/app
 
 RUN apt-get update -q && \
     apt-get install -y --no-install-recommends apt-utils && \
@@ -12,11 +12,18 @@ RUN apt-get update -q && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN wget --max-redirect=1 https://github.com/microsoft/dev-proxy/releases/download/v0.12.1/m365-developer-proxy-linux-x64-v0.12.1.zip && \
-    unzip m365-developer-proxy-linux-x64-v0.12.1.zip && \
-    chmod +x ./m365proxy
+RUN wget --max-redirect=1 https://github.com/microsoft/dev-proxy/releases/download/v0.17.1/dev-proxy-linux-x64-v0.17.1.zip && \
+    unzip dev-proxy-linux-x64-v0.17.1.zip && \
+    chmod +x ./devproxy
 
-COPY responses.json .
+COPY mocks.json .
+COPY devproxyrc.json .
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["./m365proxy",  "--failure-rate", "0"]
+WORKDIR /opt/devserver
+
+ENTRYPOINT ["/entrypoint.sh"]

@@ -16,7 +16,7 @@ RUN wget --max-redirect=1 https://github.com/microsoft/dev-proxy/releases/downlo
     unzip dev-proxy-osx-arm64-v0.15.0.zip && \
     chmod +x ./devproxy
 
-COPY responses.json .
+COPY mocks.json .
 EXPOSE 8000
 
 CMD ["./devproxy"]

@@ -2,7 +2,7 @@ import waitOn from 'wait-on';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const m365ProxyResponse = require('./responses.json');
+const mockFile = require('./mocks.json');
 
 const keycloakUrl = process.env.KEYCLOAK_URL;
 const realmName = process.env.REALM_NAME;
@@ -12,9 +12,8 @@ const gitOpsclientId = process.env.GITOPS_CLIENT_ID;
 const gitOpsclientSecret = process.env.GITOPS_CLIENT_SECRET;
 const clientScope = 'https://graph.microsoft.com/.default';
 
-const proxyUsers = m365ProxyResponse.responses.find(
-  (res) => res.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
-).responseBody.value;
+const proxyUsers = mockFile.mocks.find((mock) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*')
+  .response.body.value;
 
 async function main() {
   console.log('Starting Keycloak Provision...');

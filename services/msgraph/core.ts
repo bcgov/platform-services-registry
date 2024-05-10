@@ -6,6 +6,8 @@ import { IS_LOCAL, M365_PROXY_URL } from '@/config';
 import { logger } from '@/core/logging';
 
 let msalInstance!: ConfidentialClientApplication;
+
+// See https://learn.microsoft.com/en-us/microsoft-cloud/dev/dev-proxy/how-to/use-dev-proxy-with-nodejs
 const graphAPIProxy = IS_LOCAL ? new HttpsProxyAgent(M365_PROXY_URL) : null;
 
 export async function getAccessToken() {

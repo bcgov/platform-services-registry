@@ -3,10 +3,27 @@ import { processMsUser } from '@/services/msgraph';
 import { MsUser, AppUser } from '@/types/user';
 import { generateSession } from '@/core/auth-options';
 import { Session } from 'next-auth';
-const m365ProxyResponse = require('../localdev/m365proxy/responses.json');
-const proxyUsers = m365ProxyResponse.responses.find(
-  (res: { url: string }) => res.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
-).responseBody.value;
+
+interface MockResponse {
+  request: {
+    url: string;
+    method?: string;
+  };
+  response: {
+    body?: any;
+    statusCode?: string;
+  };
+}
+
+interface MockFile {
+  $schema: string;
+  mocks: MockResponse[];
+}
+
+const mockFile: MockFile = require('../localdev/m365proxy/mocks.json');
+export const proxyUsers = mockFile.mocks.find(
+  (mock: MockResponse) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
+)?.response.body.value;
 
 export function findMockUserByIDIR(useridir: string) {
   let user = proxyUsers.find(
