@@ -6,6 +6,7 @@ import createApiHandler from '@/core/api-handler';
 import searchOp from '../_operations/search';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { processEnumString, processUpperEnumString } from '@/utils/zod';
+import { ministryKeyToName } from '@/helpers/product';
 
 const bodySchema = z.object({
   search: z.string().optional(),
@@ -38,22 +39,21 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
-  // Map the data to the correct format for CSV conversion
   const formattedData = docs.map((project) => ({
-    name: project.name,
-    description: project.description,
-    ministry: project.ministry,
-    provider: project.provider,
-    projectOwnerEmail: project.projectOwner.email,
-    projectOwnerName: formatFullName(project.projectOwner),
-    primaryTechnicalLeadEmail: project.primaryTechnicalLead.email,
-    primaryTechnicalLeadName: formatFullName(project.primaryTechnicalLead),
-    secondaryTechnicalLeadEmail: project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
-    secondaryTechnicalLeadName: formatFullName(project.secondaryTechnicalLead),
-    created: formatDate(project.created),
-    updatedAt: formatDate(project.updatedAt),
-    licencePlate: project.licencePlate,
-    status: project.status,
+    Name: project.name,
+    Description: project.description,
+    Ministry: ministryKeyToName(project.ministry),
+    Provider: project.provider,
+    'Project Owner Email': project.projectOwner.email,
+    'Project Owner Name': formatFullName(project.projectOwner),
+    'Primary Technical Lead Email': project.primaryTechnicalLead.email,
+    'Primary Technical Lead Name': formatFullName(project.primaryTechnicalLead),
+    'Secondary Technical Lead Email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
+    'Secondary Technical Lead Name': formatFullName(project.secondaryTechnicalLead),
+    'Create Date': formatDate(project.created),
+    'Update Date': formatDate(project.updatedAt),
+    'Licence Plate': project.licencePlate,
+    Status: project.status,
   }));
 
   return CsvResponse(formattedData, 'public-cloud-products.csv');

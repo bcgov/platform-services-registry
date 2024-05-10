@@ -11,14 +11,10 @@ import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
 import { ministryDistributions } from '@/analytics/private-cloud/ministry-distributions';
 import PieGraph from '@/components/analytics/PieGraph';
-import { ministriesNames } from '@/constants';
-
-function ministryNameToDisplayName(name: string) {
-  return ministriesNames.find((item) => item.name === name)?.humanFriendlyName ?? '';
-}
+import { ministryKeyToName } from '@/helpers/product';
 
 function mapMinistryDistributions(items: { _id: string; value: number }[]) {
-  return items.map(({ _id, value }) => ({ label: ministryNameToDisplayName(_id), value }));
+  return items.map(({ _id, value }) => ({ label: ministryKeyToName(_id), value }));
 }
 
 export default async function AnalyticsDashboard() {

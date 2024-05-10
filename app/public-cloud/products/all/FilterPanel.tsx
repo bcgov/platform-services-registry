@@ -1,6 +1,6 @@
 import { useSnapshot, subscribe } from 'valtio';
 import { $Enums, Prisma } from '@prisma/client';
-import { ministriesNames, providers, productSorts } from '@/constants';
+import { providers, productSorts, ministryOptions } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
 import FormSelect from '@/components/generic/select/FormSelect';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
@@ -93,10 +93,7 @@ export default function FilterPanel() {
               ref={ministryRef}
               id="ministry"
               label="Ministry"
-              options={[
-                { label: `All Ministries`, value: '' },
-                ...ministriesNames.map((v) => ({ label: v.humanFriendlyName, value: v.name })),
-              ]}
+              options={[{ label: `All Ministries`, value: '' }, ...ministryOptions]}
               defaultValue={pageSnapshot.ministry}
               onChange={handleMinistryChange}
             />

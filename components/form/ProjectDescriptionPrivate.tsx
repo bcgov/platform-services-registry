@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { useFormContext, FieldValues } from 'react-hook-form';
-import { clusters, ministriesNames } from '@/constants';
+import { clusters, ministryOptions } from '@/constants';
 import { useSession } from 'next-auth/react';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
@@ -109,10 +109,7 @@ export default function ProjectDescriptionPrivate({
             id="ministry"
             label="Ministry"
             disabled={disabled}
-            options={[
-              { label: 'Select Ministry', value: '' },
-              ...ministriesNames.map((v) => ({ label: v.humanFriendlyName, value: v.name })),
-            ]}
+            options={[{ label: 'Select Ministry', value: '' }, ...ministryOptions]}
             selectProps={register('ministry')}
           />
 

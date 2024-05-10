@@ -9,15 +9,11 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/core/auth-options';
 import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';
 import PieGraph from '@/components/analytics/PieGraph';
-import { ministriesNames } from '@/constants';
 import { redirect, RedirectType } from 'next/navigation';
-
-function ministryNameToDisplayName(name: string) {
-  return ministriesNames.find((item) => item.name === name)?.humanFriendlyName ?? '';
-}
+import { ministryKeyToName } from '@/helpers/product';
 
 function mapProviderDistributions(items: { _id: string; value: number }[]) {
-  return items.map(({ _id, value }) => ({ label: ministryNameToDisplayName(_id), value }));
+  return items.map(({ _id, value }) => ({ label: ministryKeyToName(_id), value }));
 }
 
 export default async function AnalyticsDashboard() {
