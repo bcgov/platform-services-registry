@@ -48,16 +48,25 @@ spec:
             - secretRef:
                 name: {{ .Values.envSecretName }}
           {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.volumes }}
+          - mountPath: /opt/devserver
+            name: working-dir
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      - name: working-dir
+        persistentVolumeClaim:
+          claimName: {{ include "app.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

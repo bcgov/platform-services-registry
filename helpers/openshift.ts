@@ -9,6 +9,7 @@ import {
   SILVER_SERVICE_ACCOUNT_TOKEN,
   EMERALD_SERVICE_ACCOUNT_TOKEN,
 } from '@/config';
+import { logger } from '@/core/logging';
 
 export interface DeletableField {
   namespaceDeletability: boolean;
@@ -86,9 +87,9 @@ export default async function openshiftDeletionCheck(
     pvcDeletability: false,
     provisionerDeletionChecked: true,
   };
-  console.log(`Deleting namespace: ${namespacePrefix}`);
+
   if (namespacePrefix === '261403') {
-    console.log(` Special case for Ian's test, for deleting gold project 261403`);
+    logger.info(` Special case for Ian's test, for deleting gold project 261403`);
     return {
       namespaceDeletability: true,
       podsDeletability: true,
@@ -104,7 +105,6 @@ export default async function openshiftDeletionCheck(
 
   try {
     const namespaceCheckUrl = `${url}/api/v1/namespaces`;
-    console.log(`namespaceCheckUrl = ${namespaceCheckUrl}`);
     const { data } = await axios.get(`${namespaceCheckUrl}`, {
       headers: OC_HEADER,
       withCredentials: true,
@@ -114,10 +114,9 @@ export default async function openshiftDeletionCheck(
     const checker = (arr: string[], target: string[]) => target.every((v) => arr.includes(v));
 
     checkResult.namespaceDeletability = checker(allAvailableNamespacesOnCluster, allNamespacesUnderProject);
-    console.log(`namespace in  ${clusterName} existence is ${checkResult.namespaceDeletability}`);
-  } catch (err) {
-    const message = `Namespace check failed, can not fetch all namespaces in cluster`;
-    console.log(`${message}, err = ${err}`);
+    logger.info(`namespace in  ${clusterName} existence is ${checkResult.namespaceDeletability}`);
+  } catch (error) {
+    logger.error('openshiftDeletionCheck: Namespace check failed, can not fetch all namespaces in cluster', error);
     checkResult.namespaceDeletability = false;
 
     return checkResult;
@@ -135,13 +134,13 @@ export default async function openshiftDeletionCheck(
           }),
         ),
       );
-      console.log(` pod response: ${podResponse}}`);
+
       podResponse.forEach((namespace) => namespace.data.items.forEach((pod: any) => allPodInProject.push(pod.status)));
 
       checkResult.podsDeletability = allPodInProject.every(
         (pod: any) => pod.phase !== 'Running' && pod.phase !== 'Pending',
       );
-      console.log(`There's no running pod in  ${clusterName} is ${checkResult.podsDeletability}`);
+
       const pvcResponse = await Promise.all(
         allNamespacesUnderProject.map(async (namespace) =>
           axios.get(`${`${url}/api/v1/namespaces/${namespace}/persistentvolumeclaims`}`, {
@@ -153,11 +152,8 @@ export default async function openshiftDeletionCheck(
       const allPVCInProject = pvcResponse.map((namespace) => namespace.data.items);
 
       checkResult.pvcDeletability = allPVCInProject.every((namespacePVC) => namespacePVC.length === 0);
-      console.log(` PVC response: ${pvcResponse}}`);
-      console.log(`There's no PVC in  ${clusterName} is ${checkResult.podsDeletability}`);
-    } catch (err) {
-      const message = `pod and pvc check failed, can not fetch info from namespaces`;
-      console.log(`${message}, err = ${err}`);
+    } catch (error) {
+      logger.error('openshiftDeletionCheck: Pod and pvc check failed, can not fetch info from namespaces', error);
       checkResult.pvcDeletability = false;
       checkResult.podsDeletability = false;
 
