@@ -1,5 +1,7 @@
-
 FROM node:22.1.0-alpine3.19
+
+RUN apk update && \
+    apk add --no-cache curl
 
 WORKDIR /app
 
