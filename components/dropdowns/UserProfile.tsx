@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, FunctionComponent } from 'react';
-import { camelCaseToWords } from '../generic/text/CamelCaseToWords';
+import { camelCaseToWords } from '@/utils/string';
 
 interface UserProfilePopupProps {
   isOpen: boolean;
