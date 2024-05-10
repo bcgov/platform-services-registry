@@ -1,6 +1,6 @@
 import { DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { PublicCloudEditRequestBody } from '@/schema';
+import { PublicCloudEditRequestBody, UserInput } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function editRequest(
@@ -78,6 +78,44 @@ export default async function editRequest(
       : undefined,
   };
 
+  const originalData = {
+    name: project.name,
+    description: project.description,
+    provider: project.provider,
+    ministry: project.ministry,
+    status: project.status,
+    licencePlate: project.licencePlate,
+    created: project.created,
+    accountCoding: project.accountCoding,
+    budget: project.budget,
+    projectOwner: {
+      connect: {
+        email: project.projectOwner.email,
+      },
+    },
+    primaryTechnicalLead: {
+      connect: {
+        email: project.primaryTechnicalLead.email,
+      },
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLead
+      ? {
+          connect: {
+            email: project.secondaryTechnicalLead.email,
+          },
+        }
+      : undefined,
+    expenseAuthority: project.expenseAuthority
+      ? // this check until expenseAuthority field will be populated for every public cloud product
+        {
+          connect: {
+            email: project.expenseAuthority.email,
+          },
+        }
+      : undefined,
+  };
+
+  console.log('decisionData', decisionData);
   return prisma.publicCloudRequest.create({
     data: {
       type: RequestType.EDIT,
@@ -86,6 +124,9 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestComment,
+      originalData: {
+        create: originalData,
+      },
       decisionData: {
         create: decisionData,
       },
@@ -105,6 +146,13 @@ export default async function editRequest(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+        },
+      },
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
         },
       },
       decisionData: {

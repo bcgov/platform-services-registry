@@ -68,6 +68,39 @@ export default async function editRequest(
       : undefined,
   };
 
+  const originalData = {
+    name: project.name,
+    description: project.description,
+    cluster: project.cluster,
+    ministry: project.ministry,
+    status: project.status,
+    licencePlate: project.licencePlate,
+    created: project.created,
+    projectOwner: {
+      connect: {
+        email: project.projectOwner.email,
+      },
+    },
+    primaryTechnicalLead: {
+      connect: {
+        email: project.primaryTechnicalLead.email,
+      },
+    },
+    secondaryTechnicalLead: project.secondaryTechnicalLead
+      ? {
+          connect: {
+            email: project.secondaryTechnicalLead.email,
+          },
+        }
+      : undefined,
+    commonComponents: project.commonComponents,
+    golddrEnabled: project.golddrEnabled,
+    productionQuota: project.productionQuota,
+    testQuota: project.testQuota,
+    toolsQuota: project.toolsQuota,
+    developmentQuota: project.developmentQuota,
+  };
+
   // The edit request will require manual admin approval if any of the quotas are being changed.
   const isNoQuotaChanged =
     JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
@@ -99,6 +132,9 @@ export default async function editRequest(
       createdByEmail: authEmail,
       licencePlate: project.licencePlate,
       requestComment,
+      originalData: {
+        create: originalData,
+      },
       decisionData: {
         create: decisionData,
       },
@@ -113,6 +149,13 @@ export default async function editRequest(
     },
     include: {
       project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      originalData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,

@@ -62,6 +62,9 @@ export default async function deleteOp({
       active: true,
       createdByEmail: userEmail as string,
       licencePlate: project.licencePlate,
+      originalData: {
+        create: rest,
+      },
       decisionData: {
         create: rest,
       },
@@ -75,6 +78,13 @@ export default async function deleteOp({
       },
     },
     include: {
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
       decisionData: {
         include: {
           projectOwner: true,
