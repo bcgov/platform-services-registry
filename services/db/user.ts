@@ -7,6 +7,8 @@ import { logger } from '@/core/logging';
 import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
 
 export async function upsertUser(email: string) {
+  if (!email) return null;
+
   try {
     email = email.toLowerCase();
 

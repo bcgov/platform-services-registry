@@ -23,6 +23,7 @@ import {
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { createProxyUsers } from '@/queries/users';
 import { POST as downloadCsv } from './route';
+import { ministryKeyToName } from '@/helpers/product';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/products/download`;
@@ -197,23 +198,27 @@ function createProjectObject(data: any, index: number) {
 }
 
 interface CsvRecord {
-  name: string;
-  description: string;
-  ministry: string;
-  cluster: string;
-  projectOwnerEmail: string;
-  projectOwnerName: string;
-  primaryTechnicalLeadEmail: string;
-  primaryTechnicalLeadName: string;
-  secondaryTechnicalLeadEmail: string;
-  secondaryTechnicalLeadName: string;
-  created: string;
-  licencePlate: string;
+  Name: string;
+  Description: string;
+  Ministry: string;
+  Cluster: string;
+  'Project Owner Email': string;
+  'Project Owner Name': string;
+  'Primary Technical Lead Email': string;
+  'Primary Technical Lead Name': string;
+  'Secondary Technical Lead Email': string;
+  SecondaryTechnicalLeadName: string;
+  'Create Date': string;
+  'Updated Date': string;
+  'Licence Plate': string;
+  'Total Compute Quota (Cores)': string;
+  'Total Memory Quota (Gb)': string;
+  'Total Storage Quota (Gb)': string;
+  Status: string;
 }
 
 describe('CSV Download Route', () => {
   beforeAll(async () => {
-    console.log('Seeding database with projects');
     await createProxyUsers();
 
     for (let i = 0; i < projectData.length; i++) {
@@ -281,9 +286,12 @@ describe('CSV Download Route', () => {
 
     // Check if CSV contains data related to 'TestProject', 'AG', 'SILVER', and is active.
     const relevantRecord = records.find(
-      (record: CsvRecord) =>
-        record.name.includes('TestProject') && record.ministry === 'AG' && record.cluster === 'SILVER',
+      (record) =>
+        record.Name.includes('TestProject') &&
+        record.Ministry === ministryKeyToName('AG') &&
+        record.Cluster === 'SILVER',
     );
+
     expect(relevantRecord).toBeDefined();
   });
 
@@ -320,18 +328,18 @@ describe('CSV Download Route', () => {
       expect(response.status).toBe(200);
 
       const csvContent = await response.text();
-      const records = parse(csvContent, { columns: true, skip_empty_lines: true });
+      const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
       // Check if data matches the combination criteria
-      records.forEach((record: { name: any; ministry: any; cluster: any }) => {
+      records.forEach((record) => {
         if (tdata.search) {
-          expect(record.name).toContain(tdata.search);
+          expect(record.Name).toContain(tdata.search);
         }
         if (tdata.ministry) {
-          expect(record.ministry).toBe(tdata.ministry);
+          expect(record.Ministry).toBe(ministryKeyToName(tdata.ministry));
         }
         if (tdata.cluster) {
-          expect(record.cluster).toBe(tdata.cluster);
+          expect(record.Cluster).toBe(tdata.cluster);
         }
       });
     }

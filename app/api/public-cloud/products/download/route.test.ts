@@ -18,6 +18,7 @@ import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOpti
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { createProxyUsers } from '@/queries/users';
 import { POST as downloadCsv } from './route';
+import { ministryKeyToName } from '@/helpers/product';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/public-cloud/products/download`;
@@ -116,18 +117,20 @@ function createProjectObject(data: any, index: number) {
 }
 
 interface CsvRecord {
-  name: string;
-  description: string;
-  ministry: string;
-  provider: string;
-  projectOwnerEmail: string;
-  projectOwnerName: string;
-  primaryTechnicalLeadEmail: string;
-  primaryTechnicalLeadName: string;
-  secondaryTechnicalLeadEmail: string;
-  secondaryTechnicalLeadName: string;
-  created: string;
-  licencePlate: string;
+  Name: string;
+  Description: string;
+  Ministry: string;
+  Provider: string;
+  'Project Owner Email': string;
+  'Project Owner Name': string;
+  'Primary Technical Lead Email': string;
+  'Primary Technical Lead Name': string;
+  'Secondary Technical Lead Email': string;
+  'Secondary Technical Lead Name': string;
+  'Create Date': string;
+  'Update Date': string;
+  'Licence Plate': string;
+  Status: string;
 }
 
 describe('CSV Download Route', () => {
@@ -205,7 +208,7 @@ describe('CSV Download Route', () => {
     // Check if CSV contains data related to 'TestProject', 'AG', 'AWS', and is active.
     const relevantRecord = records.find(
       (record: CsvRecord) =>
-        record.name.includes('TestProject') && record.ministry === 'AG' && record.provider === 'AWS',
+        record.Name.includes('TestProject') && record.Ministry === ministryKeyToName('AG') && record.Provider === 'AWS',
     );
     expect(relevantRecord).toBeDefined();
   });
@@ -244,12 +247,16 @@ describe('CSV Download Route', () => {
       expect(response.status).toBe(200);
 
       const csvContent = await response.text();
-      const records = parse(csvContent, { columns: true, skip_empty_lines: true });
+      const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
 
       // Check if data matches the combination criteria
       let found = false;
       for (const record of records) {
-        if (record.name === tdata.search && record.ministry === tdata.ministry && record.provider === tdata.provider) {
+        if (
+          record.Name === tdata.search &&
+          record.Ministry === ministryKeyToName(tdata.ministry) &&
+          record.Provider === tdata.provider
+        ) {
           found = true;
           break;
         }
