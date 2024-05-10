@@ -1,5 +1,5 @@
 import { Heading, Text, Link } from '@react-email/components';
-import { defaultProvisionedResourceValues } from '@/constants';
+import { defaultProvisionedResourceValues } from '../_components/Edit/quotaLookup';
 
 export default function NamespaceDetails({
   cluster,
