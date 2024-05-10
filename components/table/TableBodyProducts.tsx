@@ -8,7 +8,6 @@ import Image from 'next/image';
 import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
 import classNames from '@/utils/classnames';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import Avatar from '@/components/table/Avatar';
 import { copyToClipboard } from '@/utils/copy-to-clipboard';
@@ -166,126 +165,109 @@ export default function TableBody({ rows, isLoading = false }: TableProps) {
   };
 
   return (
-    <main className="">
-      <ul className="divide-y divide-grey-200/5 ">
-        {rows.map((deployment, index) => (
-          <li key={deployment.id}>
-            <div
-              tabIndex={0} // Make it focusable
-              onKeyDown={(e) => e.key === 'Enter' && onRowClickHandler(deployment)}
-              role="button" // Assign an appropriate role
-              onClick={() => onRowClickHandler(deployment)}
-              className="hover:bg-gray-100 transition-colors duration-200 relative flex justify-between items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 "
-            >
-              <div className="flex justify-between w-full">
-                <div className="min-w-[300px] lg:w-[365px]">
-                  <div className="flex items-center gap-x-3">
-                    {/* <div className={classNames(circleColor(deployment.requestType), 'flex-none rounded-full p-1')}>
-                      <div className="h-2 w-2 rounded-full bg-current" />
-                    </div> */}
-                    <h2 className="min-w-0 text-base text-gray-700">
-                      <div className="flex gap-x-2">
-                        <span className="">
-                          <span className="font-semibold leading-6"> {deployment.cluster}</span>{' '}
-                          <span className="text-gray-400">/</span>{' '}
-                          <span className="">{truncateText(deployment.name, 100)}</span>
-                          {deployment.status !== 'ACTIVE' && (
-                            <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
-                              Inactive
-                            </span>
-                          )}
+    <div className="divide-y divide-grey-200/5">
+      {rows.map((row, index) => (
+        <div key={row.id}>
+          <div
+            tabIndex={0} // Make it focusable
+            onKeyDown={(e) => e.key === 'Enter' && onRowClickHandler(row)}
+            role="button" // Assign an appropriate role
+            onClick={() => onRowClickHandler(row)}
+            className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-4 sm:px-6 lg:px-8"
+          >
+            <div className="md:col-span-3 lg:col-span-4">
+              <div className="flex items-center gap-x-3">
+                <h2 className="min-w-0 text-base text-gray-700">
+                  <div className="flex gap-x-2">
+                    <span className="">
+                      <span className="font-semibold leading-6"> {row.cluster}</span>{' '}
+                      <span className="text-gray-400">/</span> <span className="">{truncateText(row.name, 100)}</span>
+                      {row.status !== 'ACTIVE' && (
+                        <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
+                          Inactive
                         </span>
-                      </div>
-                    </h2>
-                  </div>
-                  <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
-                    <div className="whitespace-nowrap">Ministry {deployment.ministry}</div>
-                    <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
-                      <circle cx={1} cy={1} r={1} />
-                    </svg>
-                    <p className="whitespace-nowrap">
-                      {createdText(deployment.requestType, deployment.requestDecisionStatus)} {deployment.updatedAt}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-1 w-full min-w-20 ml-10 mr-3">
-                  <div>
-                    <span
-                      className={classNames(
-                        requestTypes[deployment.requestType as keyof typeof requestTypes],
-                        'inline-flex items-center rounded-md  px-2 py-1 text-sm font-medium capitalize text-gray-700',
                       )}
-                    >
-                      {typeof deployment?.requestType === 'string'
-                        ? deployment?.requestType.toLocaleLowerCase() + ' request'
-                        : null}
                     </span>
-                    <div>
-                      <span
-                        className={classNames(
-                          'pt-2 inline-flex items-center rounded-md  px-2 py-1 text-sm  capitalize text-gray-700',
-                        )}
-                      >
-                        {typeof deployment?.requestType === 'string'
-                          ? getStatus(deployment?.requestDecisionStatus)
-                          : null}
-                      </span>
-                    </div>
                   </div>
-                </div>
-                <div className="flex mt-1.5 space-x-2 w-3/5 justify-start min-w-0 xl:min-w-[450px] mr-10">
-                  {/* <div className="flex w-fit justify-start border"> */}
-                  <div className="hidden md:flex flex-col gap-2 xl:flex-row">
-                    <Avatar
-                      className="min-w-52"
-                      name={deployment.projectOwner.name}
-                      email={deployment.projectOwner.email}
-                      userRole={'Product Owner'}
-                    />
-                    <div className="flex flex-col space-y-4">
-                      <Avatar
-                        name={deployment.primaryTechnicalLead.name}
-                        email={deployment.primaryTechnicalLead.email}
-                        userRole="Technical Lead"
-                      />
-                      {deployment?.secondaryTechnicalLead ? (
-                        <Avatar
-                          name={deployment.secondaryTechnicalLead?.name}
-                          email={deployment.primaryTechnicalLead?.email}
-                          userRole="Technical Lead"
-                        />
-                      ) : null}
-                    </div>
-                    {/* </div> */}
-                  </div>
-                  {/* <div className="md:hidden flex">
-                    <Avatars
-                      productOwnerEmail={deployment.projectOwner.email}
-                      primaryTechnicalLeadEmail={deployment.primaryTechnicalLead.email}
-                      secondaryTechnicalLeadEmail={deployment?.secondaryTechnicalLead?.email}
-                    />
-                  </div> */}
-                </div>
+                </h2>
               </div>
+              <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
+                <div className="whitespace-nowrap">Ministry {row.ministry}</div>
+                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
+                  <circle cx={1} cy={1} r={1} />
+                </svg>
+                <p className="whitespace-nowrap">
+                  {createdText(row.requestType, row.requestDecisionStatus)} {row.updatedAt}
+                </p>
+              </div>
+            </div>
 
-              <div className="flex">
-                <div className="text-gray-700 w-15">{deployment.licencePlate}</div>
+            <div className="md:col-span-1 lg:col-span-2">
+              <span
+                className={classNames(
+                  requestTypes[row.requestType as keyof typeof requestTypes],
+                  'inline-flex items-center rounded-md  px-2 py-1 text-sm font-medium capitalize text-gray-700',
+                )}
+              >
+                {typeof row?.requestType === 'string' ? row?.requestType.toLocaleLowerCase() + ' request' : null}
+              </span>
+              <div>
+                <span
+                  className={classNames(
+                    'inline-flex items-center rounded-md pr-2 py-1 text-sm capitalize text-gray-700',
+                  )}
+                >
+                  {typeof row?.requestType === 'string' ? getStatus(row?.requestDecisionStatus) : null}
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-1 hidden lg:block"></div>
+
+            <div className="md:col-span-1 lg:col-span-2">
+              <Avatar
+                className=""
+                name={row.projectOwner.name}
+                email={row.projectOwner.email}
+                userRole="Product Owner"
+              />
+            </div>
+
+            <div className="md:col-span-1 lg:col-span-2">
+              <div className="flex flex-col space-y-4">
+                <Avatar
+                  name={row.primaryTechnicalLead.name}
+                  email={row.primaryTechnicalLead.email}
+                  userRole="Technical Lead"
+                />
+                {row?.secondaryTechnicalLead ? (
+                  <Avatar
+                    name={row.secondaryTechnicalLead?.name}
+                    email={row.primaryTechnicalLead?.email}
+                    userRole="Technical Lead"
+                  />
+                ) : null}
+              </div>
+            </div>
+
+            <div className="md:col-span-1">
+              <div className="flex relative lg:justify-end">
+                <div className="text-gray-700 w-15">{row.licencePlate}</div>
                 <DocumentDuplicateIcon
                   className="h-5 w-5 flex-none text-gray-400 cursor-pointer"
                   aria-hidden="true"
-                  onClick={(event) => handleCopyToClipboard(event, deployment.licencePlate, index)}
+                  onClick={(event) => handleCopyToClipboard(event, row.licencePlate, index)}
                 />
                 {tooltipVisible && tooltipIndex === index && (
                   <div className="absolute opacity-70 top-0 right-0 z-50 bg-white text-gray-600 py-1 px-2 rounded-lg text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none">
                     Copied
                   </div>
                 )}
-                <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
               </div>
             </div>
-          </li>
-        ))}
-      </ul>
-    </main>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
