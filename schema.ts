@@ -20,6 +20,7 @@ export const DefaultMemoryOptionsSchema = z.enum([
   'MEMORY_REQUEST_16_LIMIT_32',
   'MEMORY_REQUEST_32_LIMIT_64',
   'MEMORY_REQUEST_64_LIMIT_128',
+  'MEMORY_REQUEST_128_LIMIT_256',
 ]);
 
 export const DefaultStorageOptionsSchema = z.enum([

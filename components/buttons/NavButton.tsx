@@ -16,14 +16,6 @@ export default function NavButton({ page, pageSize, label }: { page: number; pag
     push(`${pathname}?${params.toString()}`);
   };
 
-  // const onClickHandler = () => {
-  //   pathname: "/dashboard/private-cloud/products",
-  //                   query: {
-  //                     page: currentPage + 1,
-  //                     pageSize: pageSize || defaultPageSize,
-  //                     search,
-  //                   },
-
   return (
     <button
       // disabled={disabled}

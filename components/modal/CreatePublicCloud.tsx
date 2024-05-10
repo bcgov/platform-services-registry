@@ -122,7 +122,7 @@ export default function CreatePublicCloud({
                     >
                       <p className="font-bcsans text-sm text-gray-900">
                         By checking this box, I confirm that the ministry product team is liable to pay the base charge
-                        of USD 400 to 600 per month for each project set created.
+                        of USD 200 to 300 per month for each project set created.
                       </p>
                     </FormCheckbox>
                   </div>

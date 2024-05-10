@@ -34,7 +34,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
         </b>
       </p>
       <p className="bg-blue-50 mt-8 py-2 px-5 rounded-3xl flex font-bcsans text-sm text-blue-700">
-        There will be a base charge of USD 400 to 600 per month for each project set created
+        There will be a base charge of USD 200 to 300 per month for each project set created
       </p>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <BudgetInput
