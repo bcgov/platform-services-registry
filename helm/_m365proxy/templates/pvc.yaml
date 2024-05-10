@@ -8,5 +8,5 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 100Mi
+      storage: 200Mi
   storageClassName: netapp-file-standard

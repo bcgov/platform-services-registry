@@ -12,8 +12,8 @@ RUN apt-get update -q && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN wget --max-redirect=1 https://github.com/microsoft/dev-proxy/releases/download/v0.17.1/dev-proxy-linux-x64-v0.17.1.zip && \
-    unzip dev-proxy-linux-x64-v0.17.1.zip && \
+RUN wget --max-redirect=1 -O dev-proxy.zip https://github.com/microsoft/dev-proxy/releases/download/v0.17.1/dev-proxy-linux-x64-v0.17.1.zip && \
+    unzip dev-proxy.zip && \
     chmod +x ./devproxy
 
 COPY mocks.json .
