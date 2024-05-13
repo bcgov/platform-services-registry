@@ -9,21 +9,15 @@ import DeleteButton from '@/components/buttons/DeleteButton';
 import ErrorModal from '@/components/modal/Error';
 import PrivateCloudDeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import {
-  deletePrivateCloudProject,
-  reprovisionPriviateCloudRequest,
-  resendPriviateCloudRequest,
-} from '@/services/backend/private-cloud/products';
+import { deletePrivateCloudProject, reprovisionPriviateCloudProduct } from '@/services/backend/private-cloud/products';
 
 export default function Dropdown({
   licensePlace = '',
   canReprovision = false,
-  canResend = false,
   canDelete = false,
 }: {
   licensePlace?: string;
   canReprovision?: boolean;
-  canResend?: boolean;
   canDelete?: boolean;
 }) {
   const [showModal, setShowModal] = useState(false);
@@ -35,24 +29,12 @@ export default function Dropdown({
   const params = useParams();
 
   const {
-    mutateAsync: resend,
-    isPending: isResending,
-    isError: isResendError,
-    error: resendError,
-  } = useMutation({
-    mutationFn: () => resendPriviateCloudRequest(licensePlace),
-    onSuccess: () => {
-      toast.success('Successfully resent!');
-    },
-  });
-
-  const {
     mutateAsync: reprovision,
     isPending: isReprovisioning,
     isError: isReprovisionError,
     error: reprovisionError,
   } = useMutation({
-    mutationFn: () => reprovisionPriviateCloudRequest(licensePlace),
+    mutationFn: () => reprovisionPriviateCloudProduct(licensePlace),
     onSuccess: () => {
       toast.success('Successfully reprovisioned!');
     },
@@ -72,7 +54,7 @@ export default function Dropdown({
     }
   };
 
-  if (!canDelete && !canReprovision && !canResend) return null;
+  if (!canDelete && !canReprovision) return null;
 
   return (
     <>
@@ -117,29 +99,6 @@ export default function Dropdown({
           >
             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
-                {canResend && (
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        disabled={!canResend}
-                        type="button"
-                        onClick={async () => {
-                          await resend();
-                        }}
-                        className={classNames(
-                          'group flex items-center px-4 py-2 text-sm w-full',
-                          active && canResend ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        )}
-                      >
-                        <PlayCircleIcon
-                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                          aria-hidden="true"
-                        />
-                        Resend
-                      </button>
-                    )}
-                  </Menu.Item>
-                )}
                 {canReprovision && (
                   <Menu.Item>
                     {({ active }) => (

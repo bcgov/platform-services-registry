@@ -78,13 +78,8 @@ export async function checkPriviateCloudProductDeletionAvailability(licencePlate
   return result;
 }
 
-export async function reprovisionPriviateCloudRequest(licencePlate: string) {
+export async function reprovisionPriviateCloudProduct(licencePlate: string) {
   const result = await instance.get(`/${licencePlate}/reprovision`).then((res) => res.data);
-  return result;
-}
-
-export async function resendPriviateCloudRequest(licencePlate: string) {
-  const result = await instance.get(`/${licencePlate}/resend`).then((res) => res.data);
   return result;
 }
 
