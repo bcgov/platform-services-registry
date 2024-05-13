@@ -7,7 +7,7 @@ export default function CopyableButton({ children, value }: { children: React.Re
   const clipboard = useClipboard({ timeout: 500 });
 
   return (
-    <Tooltip label={clipboard.copied ? 'Copied' : 'Copy code'} position="top" offset={10}>
+    <Tooltip label={clipboard.copied ? 'Copied' : 'Copy'} position="top" offset={10}>
       <UnstyledButton
         className="inline-block"
         onClick={(e) => {
