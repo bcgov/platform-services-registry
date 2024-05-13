@@ -2,9 +2,9 @@ import { $Enums, Cluster } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
-import { BadRequestResponse, OkResponse } from '@/core/responses';
-import prisma from '@/core/prisma';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
+import { getPrivateCloudRequest } from '@/queries/private-cloud-requests';
 
 const pathParamSchema = z.object({
   licencePlate: z.string().min(1),
@@ -17,40 +17,18 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
 
-  const product = await prisma.privateCloudProject.findFirst({
-    where: { licencePlate, status: $Enums.ProjectStatus.ACTIVE },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      requests: {
-        where: {
-          active: true,
-          decisionStatus: $Enums.DecisionStatus.APPROVED,
-        },
-        include: {
-          decisionData: {
-            include: {
-              projectOwner: true,
-              primaryTechnicalLead: true,
-              secondaryTechnicalLead: true,
-            },
-          },
-        },
-      },
-    },
-    session: session as never,
-  });
+  const product = await getPrivateCloudProduct(session, licencePlate);
 
-  const projectWithPermissions = product as typeof product & PrivateCloudProjectDecorate;
-
-  if (!projectWithPermissions._permissions.resend || !product?.requests || product.requests.length === 0) {
-    return BadRequestResponse(
-      `there is no provisioning request for the product with the license plate '${licencePlate}'.`,
-    );
+  if (!product?._permissions.resend) {
+    return UnauthorizedResponse();
   }
 
-  const request = product.requests[0];
+  const _request = product.requests.find((req) => req.decisionStatus === $Enums.DecisionStatus.APPROVED);
+  const request = await getPrivateCloudRequest(session, _request?.id);
+
+  if (!request) {
+    return BadRequestResponse('target request not found');
+  }
 
   const contactsChanged =
     product.projectOwner.email.toLowerCase() !== request.decisionData.projectOwner.email.toLowerCase() ||

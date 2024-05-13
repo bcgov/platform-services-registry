@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { instance as parentInstance } from './instance';
-import { PublicCloudProjectGetPayload } from '@/app/api/public-cloud/products/_operations/read';
+import { PublicCloudProjectGetPayload, PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
 import { PublicCloudProductRequestsGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
-import { PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
 import { downloadFile } from '@/utils/file-download';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 

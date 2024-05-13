@@ -148,7 +148,7 @@ export async function generateSession({ session, token }: { session: Session; to
 
   session.permissions = {
     // Private Products
-    createPrivateCloudProducts: session.isUser,
+    createPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateCloudProducts:
       session.isAdmin ||
       session.isEditor ||
@@ -166,7 +166,7 @@ export async function generateSession({ session, token }: { session: Session; to
     reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
 
     // Public Products
-    createPublicCloudProducts: session.isUser,
+    createPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
     viewAllPublicCloudProducts:
       session.isAdmin ||
       session.isEditor ||

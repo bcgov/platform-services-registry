@@ -4,6 +4,26 @@ import { Session } from 'next-auth';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
 
+export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
+  include: {
+    projectOwner: true;
+    primaryTechnicalLead: true;
+    secondaryTechnicalLead: true;
+    expenseAuthority: true;
+    requests: {
+      where: {
+        active: true;
+      };
+    };
+  };
+}> &
+  PublicCloudProjectDecorate;
+
+export type PublicCloudProductSearchPayload = {
+  docs: PublicCloudProjectGetPayload[];
+  totalCount: number;
+};
+
 const defaultSortKey = 'updatedAt';
 
 export async function searchPublicCloudProducts({
@@ -92,19 +112,38 @@ export async function searchPublicCloudProducts({
   return { docs, totalCount };
 }
 
-export type PublicCloudProductSearchPayload = {
-  docs: (Prisma.PublicCloudProjectGetPayload<{
+export async function getPublicCloudProduct(session: Session, licencePlate?: string) {
+  if (!licencePlate) return null;
+
+  const product = await prisma.publicCloudProject.findUnique({
+    where: {
+      licencePlate,
+    },
     include: {
-      projectOwner: true;
-      primaryTechnicalLead: true;
-      secondaryTechnicalLead: true;
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
       requests: {
         where: {
-          active: true;
-        };
-      };
-    };
-  }> &
-    PublicCloudProjectDecorate)[];
-  totalCount: number;
-};
+          active: true,
+        },
+      },
+    },
+    session: session as never,
+  });
+
+  if (!product) {
+    return null;
+  }
+
+  return product as PublicCloudProjectGetPayload;
+}
+
+export function excludeProductUsers(product: PublicCloudProjectGetPayload | null) {
+  if (!product) return null;
+
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, ...rest } = product;
+
+  return rest;
+}

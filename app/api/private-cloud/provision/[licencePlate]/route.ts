@@ -59,7 +59,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await prisma.$transaction([updateRequest, upsertProject]);
+  await Promise.all([updateRequest, upsertProject]);
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);
 

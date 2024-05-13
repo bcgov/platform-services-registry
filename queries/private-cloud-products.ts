@@ -1,8 +1,27 @@
 import { $Enums, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
-import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
+import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
+
+export type PrivateCloudProjectGetPayload = Prisma.PrivateCloudProjectGetPayload<{
+  include: {
+    projectOwner: true;
+    primaryTechnicalLead: true;
+    secondaryTechnicalLead: true;
+    requests: {
+      where: {
+        active: true;
+      };
+    };
+  };
+}> &
+  PrivateCloudProjectDecorate;
+
+export type PrivateCloudProductSearchPayload = {
+  docs: PrivateCloudProjectGetPayload[];
+  totalCount: number;
+};
 
 const defaultSortKey = 'updatedAt';
 
@@ -92,19 +111,37 @@ export async function searchPrivateCloudProducts({
   return { docs, totalCount };
 }
 
-export type PrivateCloudProductSearchPayload = {
-  docs: (Prisma.PrivateCloudProjectGetPayload<{
+export async function getPrivateCloudProduct(session: Session, licencePlate?: string) {
+  if (!licencePlate) return null;
+
+  const product = await prisma.privateCloudProject.findUnique({
+    where: {
+      licencePlate,
+    },
     include: {
-      projectOwner: true;
-      primaryTechnicalLead: true;
-      secondaryTechnicalLead: true;
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
       requests: {
         where: {
-          active: true;
-        };
-      };
-    };
-  }> &
-    PrivateCloudProjectDecorate)[];
-  totalCount: number;
-};
+          active: true,
+        },
+      },
+    },
+    session: session as never,
+  });
+
+  if (!product) {
+    return null;
+  }
+
+  return product as PrivateCloudProjectGetPayload;
+}
+
+export function excludeProductUsers(product: PrivateCloudProjectGetPayload | null) {
+  if (!product) return null;
+
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, ...rest } = product;
+
+  return rest;
+}

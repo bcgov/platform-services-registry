@@ -4,9 +4,9 @@ import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { isEligibleForDeletion } from '@/helpers/openshift';
-import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
+import { getPrivateCloudProduct, excludeProductUsers } from '@/queries/private-cloud-products';
 
 export default async function deleteOp({
   session,
@@ -15,61 +15,39 @@ export default async function deleteOp({
   session: Session;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
-  const { userEmail } = session;
+  const { user } = session;
   const { licencePlate } = pathParams;
 
-  const project = await prisma.privateCloudProject.findFirst({
-    where: { licencePlate, status: $Enums.ProjectStatus.ACTIVE },
-    include: {
-      requests: {
-        where: {
-          active: true,
-        },
-      },
-    },
-    session: session as never,
-  });
+  const product = excludeProductUsers(await getPrivateCloudProduct(session, licencePlate));
 
-  if (!project) {
-    return BadRequestResponse('there is no matching project not found');
+  if (!product?._permissions.delete) {
+    return UnauthorizedResponse();
   }
 
-  if (project.requests.length > 0) {
-    return BadRequestResponse('there is an active request for this project');
-  }
-
-  const projectWithPermissions = project as typeof project & PrivateCloudProjectDecorate;
-
-  if (!projectWithPermissions._permissions.delete) {
-    return UnauthorizedResponse('not allowed to perform the task');
-  }
-
-  const canDelete = await isEligibleForDeletion(projectWithPermissions.licencePlate, projectWithPermissions.cluster);
+  const canDelete = await isEligibleForDeletion(product.licencePlate, product.cluster);
   if (!canDelete) {
     return BadRequestResponse(
       'this project is not deletable as it is not empty. Please delete all resources before deleting the project.',
     );
   }
 
-  project.status = $Enums.ProjectStatus.INACTIVE;
-
-  const { id, requests, updatedAt, _permissions, ...rest } = projectWithPermissions;
+  const { id, requests, updatedAt, _permissions, ...rest } = product;
 
   const createRequest = await prisma.privateCloudRequest.create({
     data: {
       type: $Enums.RequestType.DELETE,
       decisionStatus: $Enums.DecisionStatus.PENDING,
       active: true,
-      createdByEmail: userEmail as string,
-      licencePlate: project.licencePlate,
+      createdByEmail: user.email,
+      licencePlate: product.licencePlate,
       originalData: {
         create: rest,
       },
       decisionData: {
-        create: rest,
+        create: { ...rest, status: $Enums.ProjectStatus.INACTIVE },
       },
       requestData: {
-        create: rest,
+        create: { ...rest, status: $Enums.ProjectStatus.INACTIVE },
       },
       project: {
         connect: {
