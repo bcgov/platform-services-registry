@@ -2,31 +2,24 @@ import { $Enums } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { BadRequestResponse, OkResponse } from '@/core/responses';
-import prisma from '@/core/prisma';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 
 const pathParamSchema = z.object({
   licencePlate: z.string().min(1),
 });
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: ['admin', 'private-admin'],
   validations: { pathParams: pathParamSchema },
 });
-export const GET = apiHandler(async ({ pathParams }) => {
+export const GET = apiHandler(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
 
-  const product = await prisma.privateCloudProject.findFirst({
-    where: { licencePlate, status: $Enums.ProjectStatus.ACTIVE },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  });
+  const product = await getPrivateCloudProduct(session, licencePlate);
 
-  if (!product) {
-    return BadRequestResponse(`there is no products associated with licencePlate '${licencePlate}'`);
+  if (!product?._permissions.reprovision) {
+    return UnauthorizedResponse();
   }
 
   const msgId = `reprovision-${new Date().getTime()}`;

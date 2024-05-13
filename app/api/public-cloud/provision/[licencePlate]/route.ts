@@ -59,7 +59,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await prisma.$transaction([updateRequest, upsertProject]);
+  await Promise.all([updateRequest, upsertProject]);
 
   // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
   const project = await prisma.publicCloudProject.findUnique({

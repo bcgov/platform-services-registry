@@ -4,6 +4,40 @@ import { Session } from 'next-auth';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
 
+export type PrivateCloudRequestGetPayload = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    originalData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    decisionData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}> &
+  PrivateCloudRequestDecorate;
+
 const defaultSortKey = 'updatedAt';
 
 export async function searchPrivateCloudRequests({
@@ -75,7 +109,21 @@ export async function searchPrivateCloudRequests({
       skip,
       take,
       include: {
+        originalData: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
         requestData: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
+        decisionData: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
@@ -98,7 +146,21 @@ export async function searchPrivateCloudRequests({
 export type PrivateCloudRequestSearchPayload = {
   docs: (Prisma.PrivateCloudRequestGetPayload<{
     include: {
+      originalData: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
       requestData: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+      decisionData: {
         include: {
           projectOwner: true;
           primaryTechnicalLead: true;
@@ -110,3 +172,50 @@ export type PrivateCloudRequestSearchPayload = {
     PrivateCloudRequestDecorate)[];
   totalCount: number;
 };
+
+export async function getPrivateCloudRequest(session: Session, id?: string) {
+  if (!id) return null;
+
+  const request = await prisma.privateCloudRequest.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      requestData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      decisionData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+    },
+    session: session as never,
+  });
+
+  if (!request) {
+    return null;
+  }
+
+  return request as PrivateCloudRequestGetPayload;
+}
