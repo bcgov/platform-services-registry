@@ -3,16 +3,14 @@
 'use client';
 
 import path from 'path';
-import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Empty from '@/components/assets/empty.svg';
+import CopyableButton from '@/components/generic/button/CopyableButton';
 import Avatar from '@/components/table/Avatar';
 import classNames from '@/utils/classnames';
-import { copyToClipboard } from '@/utils/copy-to-clipboard';
-import { showTooltip } from '@/utils/show-tooltip';
 
 interface TableProps {
   rows: Record<string, any>[];
@@ -131,22 +129,10 @@ function getStatus(requestDecisionStatus: string) {
   return '';
 }
 
-export default function TableBody({ rows, isLoading = false }: TableProps) {
+export default function TableBodyProducts({ rows, isLoading = false }: TableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
-  const handleCopyToClipboard = (
-    event: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    licencePlateToCopy: string,
-    index: number,
-  ) => {
-    event.stopPropagation(); // Stop event propagation to prevent onRowClickHandler from firing
-    copyToClipboard(licencePlateToCopy);
-    showTooltip(setTooltipVisible);
-    setTooltipIndex(index);
-  };
 
   if (isLoading) {
     return null;
@@ -251,19 +237,7 @@ export default function TableBody({ rows, isLoading = false }: TableProps) {
             </div>
 
             <div className="md:col-span-1">
-              <div className="flex relative lg:justify-end">
-                <div className="text-gray-700 w-15">{row.licencePlate}</div>
-                <DocumentDuplicateIcon
-                  className="h-5 w-5 flex-none text-gray-400 cursor-pointer"
-                  aria-hidden="true"
-                  onClick={(event) => handleCopyToClipboard(event, row.licencePlate, index)}
-                />
-                {tooltipVisible && tooltipIndex === index && (
-                  <div className="absolute opacity-70 top-0 right-0 z-50 bg-white text-gray-600 py-1 px-2 rounded-lg text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none">
-                    Copied
-                  </div>
-                )}
-              </div>
+              <CopyableButton>{row.licencePlate}</CopyableButton>
             </div>
           </div>
         </div>
