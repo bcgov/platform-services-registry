@@ -1,7 +1,7 @@
 import { PrivateCloudRequest, Prisma, User, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import _isEqual from 'lodash-es/isEqual';
 import _uniqWith from 'lodash-es/uniqWith';
+import prisma from '@/core/prisma';
 import { getProdClusterLicensePlates } from './common';
 
 interface QuotaChanges {

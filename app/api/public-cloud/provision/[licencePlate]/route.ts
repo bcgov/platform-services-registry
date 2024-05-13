@@ -1,10 +1,10 @@
-import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { $Enums, DecisionStatus } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
-import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

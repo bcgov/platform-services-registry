@@ -1,3 +1,4 @@
+import { $Enums, Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 import {
   DefaultCpuOptions,
   DefaultMemoryOptions,
@@ -7,7 +8,6 @@ import {
   DefaultMemoryOptionsKey,
   DefaultStorageOptionsKey,
 } from '@/services/nats/private-cloud/constants';
-import { $Enums, Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
 
 export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
   include: {

@@ -1,8 +1,8 @@
-import { z, TypeOf, ZodType } from 'zod';
 import { Session } from 'next-auth';
+import { z, TypeOf, ZodType } from 'zod';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { getPathParamSchema } from '../[licencePlate]/schema';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
+import { getPathParamSchema } from '../[licencePlate]/schema';
 
 export default async function readOp({
   session,

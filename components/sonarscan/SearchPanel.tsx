@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState, useTransition, useRef } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-import Select, { MultiValue } from 'react-select';
-import _throttle from 'lodash-es/throttle';
-import _isEqual from 'lodash-es/isEqual';
 import _castArray from 'lodash-es/castArray';
-import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/query-string';
+import _isEqual from 'lodash-es/isEqual';
+import _throttle from 'lodash-es/throttle';
+import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, useTransition, useRef } from 'react';
+import Select, { MultiValue } from 'react-select';
 import Search from '@/components/assets/search.svg';
+import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/query-string';
 
 export default function SearchPanel({ contexts, endPaths }: { contexts: string[]; endPaths: string }) {
   const { replace } = useRouter();

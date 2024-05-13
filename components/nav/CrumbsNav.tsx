@@ -1,12 +1,12 @@
-import Image from 'next/image';
-import Arrow from '@/components/assets/arrow.svg';
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import Arrow from '@/components/assets/arrow.svg';
 import { copyToClipboard } from '@/utils/copy-to-clipboard';
 import { showTooltip } from '@/utils/show-tooltip';
-import Link from 'next/link';
 
 export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: string; previousLabel?: string }) {
   const pathname = usePathname();

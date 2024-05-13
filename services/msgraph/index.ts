@@ -1,6 +1,6 @@
-import { callMsGraph, getAccessToken } from './core';
-import { MsUser, AppUser } from '@/types/user';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
+import { MsUser, AppUser } from '@/types/user';
+import { callMsGraph, getAccessToken } from './core';
 
 export function processMsUser(user: MsUser): AppUser {
   return {

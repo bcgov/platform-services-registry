@@ -1,5 +1,5 @@
-import { string, z } from 'zod';
 import { Cluster, Ministry, Provider, $Enums } from '@prisma/client';
+import { string, z } from 'zod';
 import { processBoolean } from './utils/zod';
 
 export const DefaultCpuOptionsSchema = z.enum([

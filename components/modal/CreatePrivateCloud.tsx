@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
 import { Dialog } from '@headlessui/react';
-import Modal from '@/components/generic/modal/Modal';
-import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { useRef, useState } from 'react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import Modal from '@/components/generic/modal/Modal';
 
 export default function CreatePrivateCloud({
   open,

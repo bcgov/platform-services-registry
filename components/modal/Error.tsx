@@ -1,6 +1,6 @@
-import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
+import { Fragment, useRef } from 'react';
 
 export default function Modal({
   open,

@@ -2,17 +2,17 @@
 
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import path from 'path';
-import Image from 'next/image';
-import Empty from '@/components/assets/empty.svg';
-import Link from 'next/link';
-import classNames from '@/utils/classnames';
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import Empty from '@/components/assets/empty.svg';
 import Avatar from '@/components/table/Avatar';
+import classNames from '@/utils/classnames';
 import { copyToClipboard } from '@/utils/copy-to-clipboard';
 import { showTooltip } from '@/utils/show-tooltip';
-import React, { useState } from 'react';
 
 interface TableProps {
   rows: Record<string, any>[];

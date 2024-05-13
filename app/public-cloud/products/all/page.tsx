@@ -1,10 +1,10 @@
 'use client';
 
-import { proxy, useSnapshot } from 'valtio';
 import { useQuery } from '@tanstack/react-query';
-import createClientPage from '@/core/client-page';
+import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
+import createClientPage from '@/core/client-page';
 import { publicCloudProjectDataToRow } from '@/helpers/row-mapper';
 import { searchPublicCloudProducts, downloadPublicCloudProducts } from '@/services/backend/public-cloud/products';
 import FilterPanel from './FilterPanel';

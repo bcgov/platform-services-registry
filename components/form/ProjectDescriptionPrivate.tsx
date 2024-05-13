@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { useFormContext, FieldValues } from 'react-hook-form';
-import { clusters, ministryOptions } from '@/constants';
 import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useFormContext, FieldValues } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
-import FormSelect from '@/components/generic/select/FormSelect';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
+import FormSelect from '@/components/generic/select/FormSelect';
+import { clusters, ministryOptions } from '@/constants';
 import ProductBadge from './ProductBadge';
 
 export default function ProjectDescriptionPrivate({

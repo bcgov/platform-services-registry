@@ -2,12 +2,10 @@ import {
   PrivateCloudRequestWithProjectAndRequestedProject,
   PrivateCloudRequestWithRequestedProject,
 } from '@/request-actions/private-cloud/decision-request';
-
 import {
   PublicCloudRequestWithProjectAndRequestedProject,
   PublicCloudRequestWithRequestedProject,
 } from '@/request-actions/public-cloud/decision-request';
-
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 

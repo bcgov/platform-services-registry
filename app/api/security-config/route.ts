@@ -1,7 +1,7 @@
-import { OkResponse } from '@/core/responses';
-import prisma from '@/core/prisma';
 import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
+import { OkResponse } from '@/core/responses';
 import { SecurityConfigRequestBodySchema } from '@/schema';
 
 const apiHandler = createApiHandler({

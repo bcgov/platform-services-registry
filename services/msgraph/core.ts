@@ -1,9 +1,9 @@
 import { ConfidentialClientApplication } from '@azure/msal-node';
-import fetch, { Headers, RequestInit } from 'node-fetch';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import msalConfig from './config';
+import fetch, { Headers, RequestInit } from 'node-fetch';
 import { IS_LOCAL, M365_PROXY_URL } from '@/config';
 import { logger } from '@/core/logging';
+import msalConfig from './config';
 
 let msalInstance!: ConfidentialClientApplication;
 

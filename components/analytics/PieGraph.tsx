@@ -1,9 +1,9 @@
 'use client';
 
 import { Card, DonutChart, Title, Subtitle } from '@tremor/react';
-import _sumBy from 'lodash-es/sumBy';
-import _orderBy from 'lodash-es/orderBy';
 import _map from 'lodash-es/map';
+import _orderBy from 'lodash-es/orderBy';
+import _sumBy from 'lodash-es/sumBy';
 import { formatNumber } from '@/utils/number';
 
 interface PieGraphItem {

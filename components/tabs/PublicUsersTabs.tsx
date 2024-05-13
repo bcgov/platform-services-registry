@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import classNames from '@/utils/classnames';
 import { usePathname } from 'next/navigation';
-import { extractPathSegments } from '@/helpers/path-segments';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
+import { extractPathSegments } from '@/helpers/path-segments';
+import classNames from '@/utils/classnames';
 
 export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
   const pathname = usePathname();

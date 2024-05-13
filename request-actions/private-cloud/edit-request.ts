@@ -1,8 +1,8 @@
 import { $Enums, DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
+import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
-import { isQuotaUpgrade } from '@/helpers/quota-change';
 
 export default async function editRequest(
   licencePlate: string,

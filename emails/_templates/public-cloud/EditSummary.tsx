@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PublicCloudRequestWithProjectAndRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
-import { comparePublicCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
+import BudgetChanges from '@/emails/_components/Edit/BudgetChanges';
 import ContactChanges from '@/emails/_components/Edit/ContactChanges';
 import DescriptionChanges from '@/emails/_components/Edit/DescriptionChanges';
-import BudgetChanges from '@/emails/_components/Edit/BudgetChanges';
+import { comparePublicCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/request-actions/public-cloud/decision-request';
 
 interface EmailProp {
   request: PublicCloudRequestWithProjectAndRequestedProject;

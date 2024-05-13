@@ -1,4 +1,15 @@
 import { render } from '@react-email/render';
+import { logger } from '@/core/logging';
+import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
+import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
+import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
+import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
+import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
+import EditSummaryTemplate from '@/emails/_templates/public-cloud/EditSummary';
+import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
+import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
+import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
+import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
 import {
   PublicCloudRequestWithProjectAndRequestedProject,
   PublicCloudRequestWithRequestedProject,
@@ -6,17 +17,6 @@ import {
 import { adminPublicEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
-import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
-import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
-import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
-import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
-import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
-import EditSummaryTemplate from '@/emails/_templates/public-cloud/EditSummary';
-import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
-import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
-import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
-import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
-import { logger } from '@/core/logging';
 
 export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
   try {

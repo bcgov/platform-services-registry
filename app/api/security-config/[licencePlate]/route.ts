@@ -1,8 +1,8 @@
-import { OkResponse } from '@/core/responses';
-import { z } from 'zod';
-import prisma from '@/core/prisma';
 import { $Enums } from '@prisma/client';
+import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
+import { OkResponse } from '@/core/responses';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

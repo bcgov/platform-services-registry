@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import prisma from '@/core/prisma';
 
 export class SonarScanResultService extends ModelService<Prisma.SonarScanResultWhereInput> {
   async readFilter() {

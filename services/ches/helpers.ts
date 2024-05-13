@@ -1,6 +1,6 @@
+import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _uniq from 'lodash-es/uniq';
-import _castArray from 'lodash-es/castArray';
 import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
 import { logger } from '@/core/logging';
 

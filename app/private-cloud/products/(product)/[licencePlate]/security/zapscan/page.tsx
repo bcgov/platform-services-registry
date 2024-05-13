@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth/next';
+import ZapScanResults from '@/components/zapscan/ZapScanResults';
+import { authOptions } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import ZapScanResults from '@/components/zapscan/ZapScanResults';
 
 export default async function Page({
   params,

@@ -1,13 +1,13 @@
-import prisma from '@/core/prisma';
 import { PrivateCloudRequest } from '@prisma/client';
-import { getServerSession } from 'next-auth/next';
-import { POST } from '@/app/api/private-cloud/products/route';
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { PrivateCloudCreateRequestBody } from '@/schema';
-import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
+import { getServerSession } from 'next-auth/next';
+import { POST } from '@/app/api/private-cloud/products/route';
+import prisma from '@/core/prisma';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { createProxyUsers } from '@/queries/users';
+import { PrivateCloudCreateRequestBody } from '@/schema';
+import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 
 const BASE_URL = 'http://localhost:3000';
 

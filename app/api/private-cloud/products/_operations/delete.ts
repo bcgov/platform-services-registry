@@ -1,12 +1,12 @@
 import { $Enums } from '@prisma/client';
+import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
-import { Session } from 'next-auth';
-import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
-import { isEligibleForDeletion } from '@/helpers/openshift';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { deletePathParamSchema } from '../[licencePlate]/schema';
+import { isEligibleForDeletion } from '@/helpers/openshift';
 import { getPrivateCloudProduct, excludeProductUsers } from '@/queries/private-cloud-products';
+import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
+import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
   session,

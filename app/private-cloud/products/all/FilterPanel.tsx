@@ -1,9 +1,9 @@
-import { useSnapshot, subscribe } from 'valtio';
 import { $Enums, Prisma } from '@prisma/client';
-import { clusters, providers, productSorts, ministryOptions } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
-import FormSelect from '@/components/generic/select/FormSelect';
+import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
+import FormSelect from '@/components/generic/select/FormSelect';
+import { clusters, providers, productSorts, ministryOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {

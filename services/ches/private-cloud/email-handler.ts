@@ -1,12 +1,7 @@
 import { render } from '@react-email/render';
-import {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-  PrivateCloudRequestWithRequestedProject,
-} from '@/request-actions/private-cloud/decision-request';
-import { adminPrivateEmails } from '@/services/ches/email-constant';
-import { sendEmail } from '@/services/ches/helpers';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
+import { logger } from '@/core/logging';
 import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
+import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
 import CreateRequestTemplate from '@/emails/_templates/private-cloud/CreateRequest';
 import DeleteApprovalTemplate from '@/emails/_templates/private-cloud/DeleteApproval';
@@ -15,8 +10,13 @@ import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
 import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
-import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
-import { logger } from '@/core/logging';
+import {
+  PrivateCloudRequestWithProjectAndRequestedProject,
+  PrivateCloudRequestWithRequestedProject,
+} from '@/request-actions/private-cloud/decision-request';
+import { adminPrivateEmails } from '@/services/ches/email-constant';
+import { sendEmail } from '@/services/ches/helpers';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {

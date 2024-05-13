@@ -1,5 +1,5 @@
-import { instance } from './axios';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
+import { instance } from './axios';
 
 export async function getUsersPaginatedList(
   licencePlate: string,

@@ -1,18 +1,18 @@
 'use client';
 
-import TableAWSRoles from '@/components/table/TableAWSRoles';
-import { User } from '@/app/api/public-cloud/aws-roles/helpers';
-import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
-import { capitalizeFirstLetter } from '@/utils/string';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams, useParams, usePathname } from 'next/navigation';
-import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
-import AddUserModal from '@/components/modal/AddUser';
 import { useEffect, useState } from 'react';
-import DeleteUserModal from '@/components/modal/DeleteUser';
+import { User } from '@/app/api/public-cloud/aws-roles/helpers';
 import EmptyBody from '@/components/EmptyUsersList';
-import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/backend/aws-roles';
+import AddUserModal from '@/components/modal/AddUser';
+import DeleteUserModal from '@/components/modal/DeleteUser';
 import ErrorModal from '@/components/modal/Error';
+import TableAWSRoles from '@/components/table/TableAWSRoles';
+import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
+import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
+import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/backend/aws-roles';
+import { capitalizeFirstLetter } from '@/utils/string';
 
 const pathParamRoleToRole = (pathRole: string): string => {
   const role = capitalizeFirstLetter(pathRole.replace(/-/g, ' ').slice(0, -1));

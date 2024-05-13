@@ -1,5 +1,5 @@
-import createApiHandler from '@/core/api-handler';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
+import createApiHandler from '@/core/api-handler';
 import { CsvResponse } from '@/core/responses';
 
 const apiHandler = createApiHandler({

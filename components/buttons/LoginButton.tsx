@@ -1,6 +1,6 @@
 import { signIn, useSession } from 'next-auth/react';
-import { useAppState } from '@/states/global';
 import { signOut } from '@/helpers/auth';
+import { useAppState } from '@/states/global';
 
 export default function LoginButton() {
   const [appState, appSnapshot] = useAppState();

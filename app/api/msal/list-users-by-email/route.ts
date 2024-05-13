@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { listUsersByEmail } from '@/services/msgraph';
 import { OkResponse } from '@/core/responses';
+import { listUsersByEmail } from '@/services/msgraph';
 
 const queryParamSchema = z.object({
   email: z.string(),

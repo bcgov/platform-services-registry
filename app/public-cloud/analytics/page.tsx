@@ -1,15 +1,15 @@
 import _toUpper from 'lodash-es/toUpper';
-import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
-import LineGraph from '@/components/analytics/LineGraph';
-import Histogram from '@/components/analytics/Histogram';
-import { combinedRequests } from '@/analytics/public-cloud/requests';
+import { redirect, RedirectType } from 'next/navigation';
+import { getServerSession } from 'next-auth/next';
+import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';
 import { numberOfProductsOverTime } from '@/analytics/public-cloud/products';
 import { requestDecisionTime } from '@/analytics/public-cloud/request-decision-time';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
-import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';
+import { combinedRequests } from '@/analytics/public-cloud/requests';
+import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
+import Histogram from '@/components/analytics/Histogram';
+import LineGraph from '@/components/analytics/LineGraph';
 import PieGraph from '@/components/analytics/PieGraph';
-import { redirect, RedirectType } from 'next/navigation';
+import { authOptions } from '@/core/auth-options';
 import { ministryKeyToName } from '@/helpers/product';
 
 function mapProviderDistributions(items: { _id: string; value: number }[]) {

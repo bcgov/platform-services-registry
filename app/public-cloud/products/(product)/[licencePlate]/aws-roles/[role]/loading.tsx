@@ -1,5 +1,5 @@
-import TableRowSkeleton from '@/components/table/TableRowSkeleton';
 import TableAWSRoles from '@/components/table/TableAWSRoles';
+import TableRowSkeleton from '@/components/table/TableRowSkeleton';
 
 export default async function ProductsTableSkeleton() {
   return (

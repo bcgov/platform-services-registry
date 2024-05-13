@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { instance as parentInstance } from './instance';
 import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[id]/route';
 import { PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
+import { instance as parentInstance } from './instance';
 import { PublicCloudProductSearchCriteria } from './products';
 
 export const instance = axios.create({

@@ -1,7 +1,7 @@
-import { Fragment, useState } from 'react';
 import { Dialog, Combobox, Transition } from '@headlessui/react';
-import { useQuery } from '@tanstack/react-query';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import { useQuery } from '@tanstack/react-query';
+import { Fragment, useState } from 'react';
 import UserInfoField from '@/components/modal/AddUserFields';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { listUsersByEmail } from '@/services/backend/msal';

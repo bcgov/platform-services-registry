@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
+import { useMutation } from '@tanstack/react-query';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
+import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
 import AlertBox from '../modal/AlertBox';
 
 interface CommentBubbleProps {

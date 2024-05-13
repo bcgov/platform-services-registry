@@ -1,8 +1,8 @@
 'use client';
 
-import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useState, useRef } from 'react';
 import classnames from 'classnames';
 import _isFunction from 'lodash-es/isFunction';
+import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useState, useRef } from 'react';
 import AlertBox from '@/components/modal/AlertBox';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}

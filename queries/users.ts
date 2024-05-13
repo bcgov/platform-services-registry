@@ -1,8 +1,8 @@
 import { $Enums, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { MsUser, AppUser } from '@/types/user';
-import { processMsUser } from '@/services/msgraph';
 import { proxyUsers } from '@/helpers/mock-users';
+import { processMsUser } from '@/services/msgraph';
+import { MsUser, AppUser } from '@/types/user';
 
 export async function getMatchingUserIds(search: string) {
   if (search === '*') return [];

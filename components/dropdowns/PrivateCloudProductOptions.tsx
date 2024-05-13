@@ -1,19 +1,19 @@
-import { useState, Fragment } from 'react';
-import { toast } from 'react-toastify';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon, PlayCircleIcon } from '@heroicons/react/20/solid';
-import classNames from 'classnames';
 import { useMutation } from '@tanstack/react-query';
+import classNames from 'classnames';
+import { useParams } from 'next/navigation';
+import { useState, Fragment } from 'react';
+import { toast } from 'react-toastify';
+import DeleteButton from '@/components/buttons/DeleteButton';
+import ErrorModal from '@/components/modal/Error';
 import PrivateCloudDeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import { useParams } from 'next/navigation';
-import ErrorModal from '@/components/modal/Error';
 import {
   deletePrivateCloudProject,
   reprovisionPriviateCloudRequest,
   resendPriviateCloudRequest,
 } from '@/services/backend/private-cloud/products';
-import DeleteButton from '@/components/buttons/DeleteButton';
 
 export default function Dropdown({
   licensePlace = '',

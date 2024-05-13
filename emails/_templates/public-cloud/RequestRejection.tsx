@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
 import Comment from '@/emails/_components/Comment';
 import Layout from '@/emails/_components/layout/Layout';

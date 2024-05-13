@@ -1,7 +1,7 @@
-import { Session } from 'next-auth';
 import { $Enums, Prisma } from '@prisma/client';
-import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
+import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
 
 export default async function searchOp({
   session,

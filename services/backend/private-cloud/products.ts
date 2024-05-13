@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { instance as parentInstance } from './instance';
-import { PrivateCloudProjectGetPayload, PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
-import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import { PrivateCloudComment } from '@prisma/client';
+import axios from 'axios';
+import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
+import { PrivateCloudProjectGetPayload, PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
 import { downloadFile } from '@/utils/file-download';
+import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
   ...parentInstance.defaults,

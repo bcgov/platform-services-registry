@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
 import Comment from '@/emails/_components/Comment';
 import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 
 interface EmailProp {
   productName: string;

@@ -1,6 +1,6 @@
-import formatDate from '@/utils/date';
 import { $Enums } from '@prisma/client';
 import Link from 'next/link';
+import formatDate from '@/utils/date';
 
 export default function PublicHistorySubItem({
   id,
