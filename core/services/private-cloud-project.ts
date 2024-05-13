@@ -59,9 +59,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     }
 
     const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
-    const provisioningRequests = activeRequests.filter((req) => req.decisionStatus === $Enums.DecisionStatus.APPROVED);
     const hasActiveRequest = activeRequests.length > 0;
-    const hasProvisioningRequest = provisioningRequests.length > 0;
 
     const canEdit =
       isActive &&
@@ -79,14 +77,13 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       this.session.permissions.viewAllPrivateCloudProductsHistory ||
       this.session.ministries.editor.includes(doc.ministry);
 
-    const canReprovision = (isActive && this.session.isAdmin) || this.session.isPrivateAdmin;
+    const canReprovision = isActive && (this.session.isAdmin || this.session.isPrivateAdmin);
 
     doc._permissions = {
       view: canView,
       viewHistory: canViewHistroy,
       edit: canEdit,
       delete: canEdit,
-      resend: canReprovision && hasProvisioningRequest,
       reprovision: canReprovision,
     };
 

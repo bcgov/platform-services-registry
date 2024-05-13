@@ -79,7 +79,7 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
       this.session.permissions.viewAllPublicCloudProductsHistory ||
       this.session.ministries.editor.includes(doc.ministry);
 
-    const canReprovision = (isActive && this.session.isAdmin) || this.session.isPublicAdmin;
+    const canReprovision = isActive && (this.session.isAdmin || this.session.isPublicAdmin);
 
     doc._permissions = {
       view: canView,

@@ -34,3 +34,8 @@ export async function makePriviateCloudRequestDecision(id: string, data: any) {
   const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
   return result;
 }
+
+export async function resendPriviateCloudRequest(id: string) {
+  const result = await instance.get(`/${id}/resend`).then((res) => res.data);
+  return result;
+}
