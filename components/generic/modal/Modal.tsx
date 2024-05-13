@@ -1,6 +1,6 @@
-import { Fragment, useRef, FormEventHandler, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import classnames from 'classnames';
+import { Fragment, useRef, FormEventHandler, useEffect } from 'react';
 
 export default function Modal({
   isOpen,

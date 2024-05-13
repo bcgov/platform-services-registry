@@ -1,9 +1,9 @@
 import { $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
+import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
+import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 
 const pathParamSchema = z.object({
   id: z.string().min(1),

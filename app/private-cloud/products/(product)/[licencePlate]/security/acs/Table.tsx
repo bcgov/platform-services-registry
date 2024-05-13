@@ -1,8 +1,8 @@
 import _get from 'lodash-es/get';
 import _isArray from 'lodash-es/isArray';
 import _isFunction from 'lodash-es/isFunction';
-import formatDate from '@/utils/date';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import formatDate from '@/utils/date';
 
 type Process<T> = ({
   value,

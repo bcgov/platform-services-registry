@@ -1,16 +1,16 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
-import Closing from '@/emails/_components/Closing';
-import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
-import ContactChanges from '@/emails/_components/Edit/ContactChanges';
-import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
-import DescriptionChanges from '@/emails/_components/Edit/DescriptionChanges';
+import * as React from 'react';
 import { BASE_URL } from '@/config';
+import Closing from '@/emails/_components/Closing';
 import Comment from '@/emails/_components/Comment';
-import { isQuotaUpgrade } from '@/helpers/quota-change';
-import { PrivateCloudEditRequestBody } from '@/schema';
+import ContactChanges from '@/emails/_components/Edit/ContactChanges';
+import DescriptionChanges from '@/emails/_components/Edit/DescriptionChanges';
+import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
+import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
+import { isQuotaUpgrade } from '@/helpers/quota-change';
+import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { PrivateCloudEditRequestBody } from '@/schema';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;

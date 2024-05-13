@@ -1,10 +1,10 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import path from 'path';
 import Image from 'next/image';
-import Empty from '@/components/assets/empty.svg';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import Empty from '@/components/assets/empty.svg';
 
 interface TableProps {
   headers: Record<string, string>[];

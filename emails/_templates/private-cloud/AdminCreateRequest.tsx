@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
-import ProductDetails from '@/emails/_components/ProductDetails';
-import NamespaceDetails from '@/emails/_components/NamespaceDetails';
+import * as React from 'react';
 import Layout from '@/emails/_components/layout/Layout';
+import NamespaceDetails from '@/emails/_components/NamespaceDetails';
+import ProductDetails from '@/emails/_components/ProductDetails';
+import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/private-cloud/decision-request';
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;

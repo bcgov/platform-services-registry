@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { z } from 'zod';
-import { ToastContainer } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
-import createClientPage from '@/core/client-page';
+import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import createClientPage from '@/core/client-page';
 import { getPriviateCloudProject } from '@/services/backend/private-cloud/products';
 import { privateProductState } from '@/states/global';
 

@@ -1,7 +1,7 @@
-import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { Fragment, useRef, useState } from 'react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 
 export default function CreatePublicCloud({
   open,

@@ -1,6 +1,6 @@
-import _isString from 'lodash-es/isString';
-import _isEqual from 'lodash-es/isEqual';
 import _isArray from 'lodash-es/isArray';
+import _isEqual from 'lodash-es/isEqual';
+import _isString from 'lodash-es/isString';
 import _reduce from 'lodash-es/reduce';
 
 type QueryObject = Record<string, string | readonly string[] | number | readonly number[] | boolean>;

@@ -1,6 +1,6 @@
 import { Prisma, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 
 type PublicCloudProject = Prisma.PublicCloudProjectGetPayload<{

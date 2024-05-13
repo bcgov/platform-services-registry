@@ -2,11 +2,11 @@
 
 import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
-import TableTop from '@/components/table/TableTop';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
+import ExternalLink from '@/components/generic/button/ExternalLink';
+import TableTop from '@/components/table/TableTop';
 import formatDate from '@/utils/date';
 import SearchPanel from './SearchPanel';
-import ExternalLink from '@/components/generic/button/ExternalLink';
 
 type SonarScanResultRows = Prisma.SonarScanResultGetPayload<{
   select: {

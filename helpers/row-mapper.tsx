@@ -1,5 +1,5 @@
-import formatDate from '@/utils/date';
 import classNames from '@/utils/classnames';
+import formatDate from '@/utils/date';
 
 const tailwindColors = {
   red: ['bg-red-100', 'text-red-700', 'fill-red-500'],

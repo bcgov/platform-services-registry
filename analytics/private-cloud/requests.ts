@@ -1,8 +1,8 @@
 import { $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import _forEach from 'lodash-es/forEach';
 import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
+import prisma from '@/core/prisma';
 import { getProdClusterLicensePlates } from './common';
 
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });

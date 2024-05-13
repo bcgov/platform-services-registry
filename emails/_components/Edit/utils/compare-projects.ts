@@ -1,10 +1,10 @@
-import _isEqual from 'lodash/isEqual';
 import {
   PrivateCloudProject,
   PrivateCloudRequestedProject,
   PublicCloudProject,
   PublicCloudRequestedProject,
 } from '@prisma/client';
+import _isEqual from 'lodash/isEqual';
 
 function compareProjects(project: any, decisionData: any, fieldsToCompare: string[]): { [field: string]: boolean } {
   const differences: { [field: string]: boolean } = {};

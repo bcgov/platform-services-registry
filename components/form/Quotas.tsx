@@ -1,7 +1,7 @@
 import { PrivateCloudProject } from '@prisma/client';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import QuotaInput from './QuotaInput';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '../../constants';
+import QuotaInput from './QuotaInput';
 
 const quotaOptionsLookup = {
   cpu: defaultCpuOptionsLookup,

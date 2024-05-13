@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
-import { authOptions, generateSession } from '@/core/auth-options';
 import { z, TypeOf, ZodType } from 'zod';
-import { parseQueryString } from '@/utils/query-string';
+import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
+import { authOptions, generateSession } from '@/core/auth-options';
+import { arrayIntersection } from '@/utils/collection';
 import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
+import { parseQueryString } from '@/utils/query-string';
+import { logger } from './logging';
 import {
   BadRequestResponse,
   UnauthorizedResponse,
@@ -13,9 +16,6 @@ import {
   InternalServerErrorResponse,
   OkResponse,
 } from './responses';
-import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
-import { arrayIntersection } from '@/utils/collection';
-import { logger } from './logging';
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];

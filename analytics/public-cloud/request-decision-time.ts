@@ -1,6 +1,6 @@
-import prisma from '@/core/prisma';
-import _isEqual from 'lodash-es/isEqual';
 import { bin } from 'd3-array';
+import _isEqual from 'lodash-es/isEqual';
+import prisma from '@/core/prisma';
 
 function convertMillisecondsToHours(milliseconds: number): number {
   return milliseconds / 3600000; // 1000 milliseconds in a second and 3600 seconds in an hour

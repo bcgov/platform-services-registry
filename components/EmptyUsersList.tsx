@@ -1,7 +1,7 @@
-import AddUserButton from '@/components/buttons/AddUserButton';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Empty from '@/components/assets/empty.svg';
+import AddUserButton from '@/components/buttons/AddUserButton';
 
 export default function EmptyBody({
   userRole,

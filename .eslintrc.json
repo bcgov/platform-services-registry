@@ -33,6 +33,18 @@
     "import/no-extraneous-dependencies": "off",
     "import/named": "off",
     "import/no-named-as-default": "off",
+    "import/no-unresolved": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "unknown"],
+        "newlines-between": "never",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "no-else-return": "error",
     "no-nested-ternary": "off",
     "no-unneeded-ternary": "error",

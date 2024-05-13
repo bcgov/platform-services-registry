@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwt, { VerifyOptions } from 'jsonwebtoken';
-import jws from 'jws';
 import jwkToPem, { JWK } from 'jwk-to-pem';
+import jws from 'jws';
 import { logger } from '@/core/logging';
 
 const authHeaderPrefix = 'Bearer';

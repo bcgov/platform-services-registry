@@ -1,9 +1,9 @@
 import { Prisma } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
+import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 
 const pathParamSchema = z.object({
   id: z.string(),

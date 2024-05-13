@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
-import { providers, ministryOptions } from '@/constants';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
+import { providers, ministryOptions } from '@/constants';
 import ProductBadge from './ProductBadge';
 
 function stripSpecialCharacters(text: string) {

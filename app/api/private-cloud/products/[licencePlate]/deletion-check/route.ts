@@ -1,7 +1,7 @@
 import { string, z } from 'zod';
-import openshiftDeletionCheck from '@/helpers/openshift';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import openshiftDeletionCheck from '@/helpers/openshift';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 
 export const fetchCache = 'force-no-store';

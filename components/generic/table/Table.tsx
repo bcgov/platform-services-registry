@@ -2,10 +2,10 @@
 
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { proxy, useSnapshot } from 'valtio';
-import TableHeader from './TableHeader';
-import TableFooter from './TableFooter';
 import Pagination from './Pagination';
 import SearchFilterExport from './SearchFilterExport';
+import TableFooter from './TableFooter';
+import TableHeader from './TableHeader';
 
 const defaultValue = {
   page: 0,

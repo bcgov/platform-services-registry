@@ -1,6 +1,6 @@
-import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { Fragment, useRef, useState } from 'react';
 
 export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; setOpen: any; redirectUrl: string }) {
   const cancelButtonRef = useRef(null);

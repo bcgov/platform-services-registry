@@ -1,5 +1,5 @@
-import createApiHandler from '@/core/api-handler';
 import { combinedRequests } from '@/analytics/private-cloud/requests';
+import createApiHandler from '@/core/api-handler';
 import { CsvResponse } from '@/core/responses';
 
 const apiHandler = createApiHandler({

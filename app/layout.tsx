@@ -2,15 +2,15 @@
 
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { Inter } from 'next/font/google';
 import { useQuery } from '@tanstack/react-query';
-import Provider from '@/components/Provider';
-import Nav from '@/components/nav/Nav';
-import classNames from '@/utils/classnames';
+import { Inter } from 'next/font/google';
+import { useEffect } from 'react';
 import Footer from '@/components/Footer';
+import Nav from '@/components/nav/Nav';
+import Provider from '@/components/Provider';
 import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
-import { useEffect } from 'react';
+import classNames from '@/utils/classnames';
 
 const inter = Inter({
   subsets: ['latin'],

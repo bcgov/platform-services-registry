@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
-import _get from 'lodash-es/get';
+import { SecurityConfig, $Enums } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { SecurityConfig, $Enums } from '@prisma/client';
-import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
+import _get from 'lodash-es/get';
+import { useEffect } from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { SecurityConfigRequestBodySchema } from '@/schema';
+import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 
 export default function Repository({ params }: { params: { licencePlate: string } }) {
   const {

@@ -1,8 +1,8 @@
 'use client';
 
-import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 import CreateProduct from '@/components/buttons/CreateProduct';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 
 export default function DashboardLayout({
   children,

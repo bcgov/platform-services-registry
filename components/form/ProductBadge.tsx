@@ -1,6 +1,6 @@
+import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
 import { FieldValues } from 'react-hook-form';
-import { $Enums } from '@prisma/client';
 
 export default function ProductBadge({ values }: { values: FieldValues }) {
   // Request Document

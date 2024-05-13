@@ -1,9 +1,9 @@
+import jwt from 'jsonwebtoken';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
-import jwt from 'jsonwebtoken';
-import prisma from '@/core/prisma';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
+import prisma from '@/core/prisma';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {

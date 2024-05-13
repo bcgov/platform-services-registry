@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import classNames from '@/utils/classnames';
-import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import ProfileImage from '../ProfileImage';
-import { useAppState } from '@/states/global';
-import { signOut } from '@/helpers/auth';
+import { signIn, useSession } from 'next-auth/react';
+import { Fragment, useEffect, useState } from 'react';
 import { UserProfilePopUp } from '@/components/dropdowns/UserProfile';
+import { signOut } from '@/helpers/auth';
+import { useAppState } from '@/states/global';
+import classNames from '@/utils/classnames';
+import ProfileImage from '../ProfileImage';
 
 export default function ProfileDropdown() {
   const [appState, appSnapshot] = useAppState();

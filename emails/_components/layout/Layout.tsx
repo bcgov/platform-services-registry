@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { Html, Head, Body } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
+import * as React from 'react';
 import { tailwindConfig } from '../tailwind';
 import Header from './Header';
 

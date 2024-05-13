@@ -1,9 +1,9 @@
-import * as React from 'react';
-import ProductDetails from '@/emails/_components/ProductDetails';
 import { Heading, Text } from '@react-email/components';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
 import Layout from '@/emails/_components/layout/Layout';
+import ProductDetails from '@/emails/_components/ProductDetails';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 
 interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;

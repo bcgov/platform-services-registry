@@ -1,6 +1,6 @@
-import prisma from '@/core/prisma';
-import _isEqual from 'lodash-es/isEqual';
 import { bin, extent } from 'd3-array';
+import _isEqual from 'lodash-es/isEqual';
+import prisma from '@/core/prisma';
 import { getProdClusterLicensePlates } from './common';
 
 function convertMillisecondsToHours(milliseconds: number): number {

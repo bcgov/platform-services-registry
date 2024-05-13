@@ -1,9 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import LoginButton from '@/components/buttons/LoginButton';
 import RegisterProductButton from '@/components/buttons/RegisterProductButton';
-import { useSession } from 'next-auth/react';
 
 export default function SignInPage() {
   const router = useRouter();

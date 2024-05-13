@@ -1,10 +1,10 @@
 import { $Enums, Cluster } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 import { getPrivateCloudRequest } from '@/queries/private-cloud-requests';
+import { sendPrivateCloudNatsMessage } from '@/services/nats';
 
 const pathParamSchema = z.object({
   licencePlate: z.string().min(1),

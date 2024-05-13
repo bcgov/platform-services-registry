@@ -1,6 +1,6 @@
 import { $Enums, Cluster } from '@prisma/client';
-import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { sendPrivateCloudNatsMessage } from '@/services/nats';
 
 interface User {
   email?: string;

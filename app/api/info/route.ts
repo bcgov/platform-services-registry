@@ -1,5 +1,5 @@
-import createApiHandler from '@/core/api-handler';
 import { DEPLOYMENT_TAG, APP_ENV, IS_LOCAL, IS_DEV, IS_TEST, IS_PROD, AUTH_SERVER_URL, AUTH_RELM } from '@/config';
+import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 
 const apiHandler = createApiHandler({});

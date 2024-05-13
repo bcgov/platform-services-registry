@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useQuery } from '@tanstack/react-query';
+import { Fragment, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { UserInputSchema } from '@/schema';
-import classNames from '@/utils/classnames';
 import { listUsersByEmail } from '@/services/backend/msal';
 import { AppUser } from '@/types/user';
+import classNames from '@/utils/classnames';
 
 export default function AsyncAutocomplete({
   name,

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-import classNames from '@/utils/classnames';
-import { checkPriviateCloudProductDeletionAvailability } from '@/services/backend/private-cloud/products';
+import { useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
+import { checkPriviateCloudProductDeletionAvailability } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import classNames from '@/utils/classnames';
 
 export default function PrivateCloudDeleteModal({
   open,

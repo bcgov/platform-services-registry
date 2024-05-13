@@ -1,6 +1,6 @@
+import { usePathname } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { usePathname } from 'next/navigation';
 
 interface SelectOptions {
   [key: string]: string;

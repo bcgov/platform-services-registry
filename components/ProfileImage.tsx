@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { getUserImage } from '@/helpers/user-image';
 
 export default function ProfileImage({ image, email }: { image?: string; email: string }) {

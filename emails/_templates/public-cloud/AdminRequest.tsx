@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import * as React from 'react';
+import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import Layout from '@/emails/_components/layout/Layout';
+import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;

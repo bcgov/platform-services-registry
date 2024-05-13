@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
 import classNames from 'classnames';
 import _lowerCase from 'lodash-es/lowerCase';
 import _startCase from 'lodash-es/startCase';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { compareUrlsIgnoreLastSegments } from '@/helpers/path-segments';
 

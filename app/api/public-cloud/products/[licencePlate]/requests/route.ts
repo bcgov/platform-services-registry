@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
 import { NoContent, OkResponse } from '@/core/responses';
-import { processBoolean } from '@/utils/zod';
 import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
+import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

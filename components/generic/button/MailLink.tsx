@@ -1,7 +1,7 @@
 'use client';
 
-import classnames from 'classnames';
 import { EnvelopeIcon } from '@heroicons/react/20/solid';
+import classnames from 'classnames';
 
 export default function MailLink({
   to,

@@ -1,6 +1,6 @@
+import { $Enums } from '@prisma/client';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
-import { $Enums } from '@prisma/client';
 
 export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();

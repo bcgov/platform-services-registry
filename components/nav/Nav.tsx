@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import Logo from '@/components/assets/logo.svg';
-import ProfileDropdown from '@/components/nav/ProfileDropdown';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Logo from '@/components/assets/logo.svg';
+import ProfileDropdown from '@/components/nav/ProfileDropdown';
 
 export default function NavBar() {
   let url = '/private-cloud/products/all';
