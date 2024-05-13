@@ -1,7 +1,9 @@
 'use client';
 
-import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
+import '@mantine/core/styles.css';
+import './globals.css';
+import { MantineProvider } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { Inter } from 'next/font/google';
 import { useEffect } from 'react';
@@ -44,7 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <Provider>
-        <MainBody>{children}</MainBody>
+        <MainBody>
+          <MantineProvider>{children}</MantineProvider>
+        </MainBody>
       </Provider>
     </html>
   );
