@@ -2,7 +2,7 @@ import { PrivateCloudRequest, Prisma, User, $Enums } from '@prisma/client';
 import _isEqual from 'lodash-es/isEqual';
 import _uniqWith from 'lodash-es/uniqWith';
 import prisma from '@/core/prisma';
-import { getProdClusterLicensePlates } from './common';
+import { getProdClusterLicencePlates } from './common';
 
 interface QuotaChanges {
   [key: string]: {
@@ -19,10 +19,10 @@ function parseDate(date: Date) {
 }
 
 export async function usersWithQuotaEditRequests(): Promise<User[]> {
-  const prodClusterLicensePlates = await getProdClusterLicensePlates();
+  const prodClusterLicencePlates = await getProdClusterLicencePlates();
   const quotaChangedRequests = await prisma.privateCloudRequest.findMany({
     where: {
-      licencePlate: { in: prodClusterLicensePlates },
+      licencePlate: { in: prodClusterLicencePlates },
       isQuotaChanged: true,
     },
     include: {

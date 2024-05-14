@@ -30,7 +30,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   });
 
   if (!request) {
-    return NotFoundResponse('No request found for this license plate.');
+    return NotFoundResponse('No request found for this licence plate.');
   }
 
   const updateRequest = prisma.privateCloudRequest.update({

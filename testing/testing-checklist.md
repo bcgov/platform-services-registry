@@ -38,7 +38,7 @@
 4. Progress Tab shows only the products that are in Reviewing or Provisioning state.
 5. Products Tab shows both Provisioned and In Progress products.
 6. The Button Request a New Product leads to the Create Page of the corresponding Cloud (Private for Private Cloud and Public for Public Cloud).
-7. Search is made by name, contacts name, contacts emails and license plate at the Requests Tab. The same + Description at the Products Tab.
+7. Search is made by name, contacts name, contacts emails and licence plate at the Requests Tab. The same + Description at the Products Tab.
 8. Changing number of rows is changing the number of Products / Requests to the desired number if there is enough items.
 9. Clicking next after changing rows shows the next portion of pagination. The last page shows the remaining products and correct numbers. Clicking Previous shows the previous portion of the pagination.
 10. Search made on the page of pagination that can’t be reached by the number of found entries should redirect to the first page of pagination.
@@ -71,9 +71,9 @@
 2. Clicking Delete in the Options opens the Deletion pop-up.
 3. The data on the Deletion pop-up has Product Name, Licence Plate and Project Owner data filled.
 4. If the product has PVCs or the pods running the Deletion pop-up shows an error: “Not ready to delete” with information that “The deletion check did not pass”.
-5. If the product doesn’t have PVCs and running pods the Deletion pop-up shows the text fields to enter Product Owner email and License Plate to confirm the deletion.
-6. If the Product Owner and/or License Plate are empty or have mistakes in them the Delete button is not active.
-7. If the PO and License Plate are typed in or pasted correctly, the Delete button is active.
+5. If the product doesn’t have PVCs and running pods the Deletion pop-up shows the text fields to enter Product Owner email and Licence Plate to confirm the deletion.
+6. If the Product Owner and/or Licence Plate are empty or have mistakes in them the Delete button is not active.
+7. If the PO and Licence Plate are typed in or pasted correctly, the Delete button is active.
 8. After clicking the Delete button the pop-up about the successful Deletion Request is shown.
 9. After confirming the Deletion Request pop-up the user is redirected to the Products Tab.
 10. The Product is shown in the In Progress Tab in Reviewing state.

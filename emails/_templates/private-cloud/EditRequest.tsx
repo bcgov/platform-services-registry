@@ -34,7 +34,7 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
         <Heading className="text-lg text-black">New edit product request!</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          You have submitted an edit request for your product with the license plate {request.licencePlate}.
+          You have submitted an edit request for your product with the licence plate {request.licencePlate}.
           {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) &&
           isQuotaUpgraded
             ? ' Our administrators have been notified and will review your request.'
