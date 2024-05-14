@@ -25,8 +25,8 @@ export default function Quotas({
     development: '-dev',
   };
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">3. Quotas</h2>
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">3. Quotas</h2>
       <p className="text-base leading-6 mt-5">
         All quota increase requests require <b> Platform Services Team’s </b>
         approval, and must have supporting information as per the{' '}

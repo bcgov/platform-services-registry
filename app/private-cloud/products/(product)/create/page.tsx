@@ -72,7 +72,9 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
           <div className="space-y-12">
             <ProjectDescription mode="create" />
+            <hr className="my-7" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <hr className="my-7" />
             <CommonComponents />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -95,7 +97,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/requests/active"
+        redirectUrl="/private-cloud/requests/all"
         modalTitle="Thank you! We have received your create request."
         modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />

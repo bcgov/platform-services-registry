@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
+import ProductBadge from '@/components/form/ProductBadge';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
@@ -65,6 +66,11 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
 
   return (
     <div>
+      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
+        Public Cloud Landing Zone
+        <ProductBadge data={currentProduct} />
+      </h1>
+
       <Tabs tabs={tabs}>
         <PublicCloudProductOptions disabled={!currentProduct?._permissions?.delete} />
       </Tabs>

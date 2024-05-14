@@ -9,9 +9,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div>
-      <LightButton onClick={() => router.push('/public-cloud/products/all')} className="my-2">
+      <LightButton onClick={() => router.push('/public-cloud/requests/all')} className="my-2">
         <IconArrowBack className="inline-block" />
-        Go to Products
+        Go to Requests
       </LightButton>
       <div className="my-2">{children}</div>
     </div>

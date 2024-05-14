@@ -3,9 +3,6 @@ import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { providers, ministryOptions } from '@/constants';
-import { usePublicProductState } from '@/states/global';
-import ProductBadge from './ProductBadge';
-import RequestBadge from './RequestBadge';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -21,8 +18,6 @@ export default function ProjectDescriptionPublic({
   disabled?: boolean;
   providerDisabled?: boolean;
 }) {
-  const [publicState, publicSnap] = usePublicProductState();
-
   const {
     register,
     formState: { errors },
@@ -30,21 +25,9 @@ export default function ProjectDescriptionPublic({
     setValue,
   } = useFormContext();
 
-  const values = getValues();
-
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h1 className="flex justify-between text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
-        Public Cloud Landing Zone
-        {publicSnap.currentRequest ? (
-          <RequestBadge data={publicSnap.currentRequest} className="ml-1" />
-        ) : (
-          <ProductBadge data={publicSnap.currentProduct} className="ml-1" />
-        )}
-      </h1>
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
-        1. Product Description
-      </h2>
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-4">1. Product Description</h2>
       {mode === 'create' && (
         <p className="text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public

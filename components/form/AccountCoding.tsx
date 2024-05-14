@@ -37,8 +37,8 @@ export default function AccountCoding({
   }, [setValue, accountCoding]);
 
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
         5. Billing (Account Coding)
       </h2>
       <p className="text-base leading-6 mt-5">

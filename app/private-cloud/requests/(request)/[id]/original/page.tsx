@@ -66,11 +66,13 @@ export default privateCloudRequestOriginal(({ pathParams, queryParams, session, 
               clusterDisabled={privateSnap.currentRequest.type !== 'CREATE'}
               mode="decision"
             />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <Quotas
               licencePlate={privateSnap.currentRequest.licencePlate as string}
               disabled={isDisabled}

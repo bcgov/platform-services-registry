@@ -113,20 +113,19 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
-          {publicSnap.currentRequest.decisionStatus !== 'PENDING' && (
-            <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-              A decision has already been made for this product.
-            </Alert>
-          )}
           <div className="mb-12">
             <ProjectDescription disabled={isDisabled} mode="decision" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <ExpenseAuthority disabled={isDisabled} />
+            <hr className="my-7" />
             <Budget disabled={isDisabled} />
+            <hr className="my-7" />
             <AccountCoding
               accountCodingInitial={publicSnap.currentRequest.decisionData?.accountCoding}
               disabled={isDisabled}
@@ -173,7 +172,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
         type={publicSnap.currentRequest.type}
         action={currentAction}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests/active" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests/all" />
     </div>
   );
 });

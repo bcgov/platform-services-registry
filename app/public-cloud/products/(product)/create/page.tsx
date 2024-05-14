@@ -75,9 +75,13 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription mode="create" />
+            <hr className="my-7" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <hr className="my-7" />
             <ExpenseAuthority />
+            <hr className="my-7" />
             <Budget />
+            <hr className="my-7" />
             <AccountCoding />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -101,7 +105,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         isPublicCreate
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/requests/active"
+        redirectUrl="/public-cloud/requests/all"
         modalTitle="Thank you! We have received your create request."
         modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />
