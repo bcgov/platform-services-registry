@@ -2,7 +2,7 @@ import { Menu, Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { Fragment, useEffect, useState } from 'react';
-import { UserProfilePopUp } from '@/components/dropdowns/UserProfile';
+import UserProfile from '@/components/dropdowns/UserProfile';
 import { signOut } from '@/helpers/auth';
 import { useAppState } from '@/states/global';
 import classNames from '@/utils/classnames';
@@ -180,7 +180,7 @@ export default function ProfileDropdown() {
         </Menu.Items>
       </Transition>
       {userProfile && isProfileOpen && (
-        <UserProfilePopUp isOpen={isProfileOpen} onClose={handleCloseProfile} user={userProfile} />
+        <UserProfile isOpen={isProfileOpen} onClose={handleCloseProfile} user={userProfile} />
       )}
     </Menu>
   );

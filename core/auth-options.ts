@@ -165,6 +165,11 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
 
+    createPrivateCloudProductsAsAssignee: session.isUser,
+    viewAssignedPrivateCloudProducts: session.isUser,
+    editAssignedPrivateCloudProducts: session.isUser,
+    deleteAssignedPrivateCloudProducts: session.isUser,
+
     // Public Products
     createPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
     viewAllPublicCloudProducts:
@@ -191,6 +196,11 @@ export async function generateSession({ session, token }: { session: Session; to
     viewAllPublicProductComments: session.isAdmin || session.isReader,
     editAllPublicProductComments: session.isAdmin,
     deleteAllPublicProductComments: session.isAdmin,
+
+    createPublicCloudProductsAsAssignee: session.isUser,
+    viewAssignedPublicCloudProducts: session.isUser,
+    editAssignedPublicCloudProducts: session.isUser,
+    deleteAssignedPublicCloudProducts: session.isUser,
 
     viewZapscanResults: session.isAdmin || session.isAnalyzer,
     viewSonarscanResults: session.isAdmin || session.isAnalyzer,

@@ -101,7 +101,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
     return null;
   }
 
-  const isDisabled = !publicSnap.currentRequest._permissions.edit;
+  const isDisabled = true;
 
   return (
     <div>
