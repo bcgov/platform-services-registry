@@ -1,3 +1,25 @@
+## [0.23.5](https://github.com/bcgov/platform-services-registry/compare/v0.23.4...v0.23.5) (2024-05-14)
+
+### Features
+
+* **2713:** update csv download file format ([c75084a](https://github.com/bcgov/platform-services-registry/commit/c75084a05edbf4439d6976b380d3ee44191da273))
+* deploy m365 to dev ([0a868ea](https://github.com/bcgov/platform-services-registry/commit/0a868ea3d23663fdea472dd77b1e1dcf8ed28892))
+* **QOL:** users can now view what permissions they currently have ([49d1097](https://github.com/bcgov/platform-services-registry/commit/49d109728d3c15023e060f193b1c1189cbb5cd15))
+* **QOL:** users can now view what permissions they currently have ([7a702be](https://github.com/bcgov/platform-services-registry/commit/7a702be8f8f9a15f81bed3a5e91361ac778beb0d))
+* **QOL:** users can now view what role they currently have via the drop down menu ([a723022](https://github.com/bcgov/platform-services-registry/commit/a723022462eb22e5d911073602cdf0c4712b2d89))
+* replace classname to style for better performance ([30b9ae9](https://github.com/bcgov/platform-services-registry/commit/30b9ae9d60f27eeae60740f095a57a1abbd5be7d))
+* upgrade m365 proxy server ([1beaa05](https://github.com/bcgov/platform-services-registry/commit/1beaa056b54162e6c896fee0df16c75689f3bbb3))
+
+### Bug Fixes
+
+* **emails:** create, edit, and delete request emails now mention who actioned the request ([6491147](https://github.com/bcgov/platform-services-registry/commit/6491147c6cf3d37cd24cdeca99f4ba14d0daccd8))
+* send correct public cloud emails on request type ([eb169c0](https://github.com/bcgov/platform-services-registry/commit/eb169c062281238b09fca264be93abefd6470036))
+
+### Refactors
+
+* update request decision page url ([4ed8827](https://github.com/bcgov/platform-services-registry/commit/4ed8827e0e9032a4c231b3cde4818b29dbccd194))
+* update request decision page url in public ([7176db3](https://github.com/bcgov/platform-services-registry/commit/7176db3dcd05b16b6a37c0de4d771db9c40d3d49))
+* update request decision page url in public ([ef4b263](https://github.com/bcgov/platform-services-registry/commit/ef4b263b60c80b2bf0fe2ce686f62ba81f7ca660))
 ## [0.23.4](https://github.com/bcgov/platform-services-registry/compare/v0.23.3...v0.23.4) (2024-05-09)
 
 ### Bug Fixes
