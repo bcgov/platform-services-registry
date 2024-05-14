@@ -207,7 +207,7 @@ interface CsvRecord {
   'Primary Technical Lead Email': string;
   'Primary Technical Lead Name': string;
   'Secondary Technical Lead Email': string;
-  SecondaryTechnicalLeadName: string;
+  'Secondary Technical Lead Name': string;
   'Create Date': string;
   'Updated Date': string;
   'Licence Plate': string;
