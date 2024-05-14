@@ -110,13 +110,17 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} mode="edit" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <ExpenseAuthority disabled={isDisabled} />
+            <hr className="my-7" />
             <Budget disabled={false} />
+            <hr className="my-7" />
             <AccountCoding accountCodingInitial={snap.currentProduct?.accountCoding} disabled={isDisabled} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -138,7 +142,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/requests/active"
+        redirectUrl="/public-cloud/requests/all"
         modalTitle="Thank you! We have received your edit."
         modalMessage="We have received your edit for this product. The Product Owner and Technical Lead(s) will receive a summary via email."
       />

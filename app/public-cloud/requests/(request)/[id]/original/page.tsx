@@ -61,13 +61,17 @@ export default publicCloudRequestOriginal(({ pathParams, queryParams, session, r
         <form autoComplete="off">
           <div className="mb-12">
             <ProjectDescription disabled={isDisabled} mode="decision" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <ExpenseAuthority disabled={isDisabled} />
+            <hr className="my-7" />
             <Budget disabled={isDisabled} />
+            <hr className="my-7" />
             <AccountCoding
               accountCodingInitial={publicSnap.currentRequest.originalData?.accountCoding}
               disabled={isDisabled}

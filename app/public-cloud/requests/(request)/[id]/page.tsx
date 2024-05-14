@@ -43,13 +43,17 @@ export default publicCloudRequest(({ pathParams }) => {
         <form autoComplete="off">
           <div className="mb-12">
             <ProjectDescription disabled={true} mode="decision" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={true}
               secondTechLead={!!request.decisionData.secondaryTechnicalLeadId}
               secondTechLeadOnClick={() => {}}
             />
+            <hr className="my-7" />
             <ExpenseAuthority disabled={true} />
+            <hr className="my-7" />
             <Budget disabled={true} />
+            <hr className="my-7" />
             <AccountCoding accountCodingInitial={request.decisionData.accountCoding} disabled={true} />
           </div>
         </form>

@@ -10,7 +10,7 @@ export default function ProductsRequestsTabs({ context }: { context: 'private' |
     {
       label: 'Requests',
       name: 'in-progress',
-      href: `/${context}-cloud/requests/active`,
+      href: `/${context}-cloud/requests/all`,
     },
   ];
 

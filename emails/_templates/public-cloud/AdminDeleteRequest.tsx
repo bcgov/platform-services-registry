@@ -37,7 +37,7 @@ const AdminDeleteRequestTemplate = ({ product }: EmailProp) => {
           Registry.
         </Text>
         <Button
-          href="https://registry.developer.gov.bc.ca/public-cloud/requests/active"
+          href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"
           className="bg-bcorange rounded-md px-4 py-2 text-white"
         >
           Review Request

@@ -18,10 +18,8 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
 
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
-        4. Project Budget
-      </h2>
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">4. Project Budget</h2>
       <p className="text-base leading-6 mt-5">
         Please indicate your estimated monthly budget &#40;Try the{' '}
         <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink> to get an estimate&#41;.

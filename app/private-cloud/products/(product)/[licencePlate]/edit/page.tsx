@@ -1,11 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert } from '@mantine/core';
 import { PrivateCloudProject } from '@prisma/client';
-import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSnapshot } from 'valtio';
@@ -114,29 +111,20 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="mb-12 mt-8">
-            {isDisabled && snap.currentProduct.requests.length > 0 && (
-              <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-                There is already an{' '}
-                <Link
-                  className="underline text-blue-500 text-bold text-lg"
-                  href={`/private-cloud/requests/${snap.currentProduct.requests[0].id}/decision`}
-                >
-                  active request
-                </Link>{' '}
-                for this project. You can not edit this project at this time.
-              </Alert>
-            )}
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <Quotas
               licencePlate={snap.currentProduct?.licencePlate as string}
               disabled={isDisabled}
               currentProject={snap.currentProduct as PrivateCloudProject}
             />
+            <hr className="my-7" />
             <CommonComponents disabled={isDisabled} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -158,7 +146,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/requests/active"
+        redirectUrl="/private-cloud/requests/all"
         modalTitle="Thank you! We have received your edit request."
         modalMessage="We have received your edit request for your product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />

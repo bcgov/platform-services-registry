@@ -112,21 +112,18 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
           })}
         >
           <div className="mb-12 mt-8">
-            {privateSnap.currentRequest.decisionStatus !== 'PENDING' && (
-              <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-                A decision has already been made for this product.
-              </Alert>
-            )}
             <ProjectDescription
               disabled={isDisabled}
               clusterDisabled={privateSnap.currentRequest.type !== 'CREATE'}
               mode="decision"
             />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <Quotas
               licencePlate={privateSnap.currentRequest.licencePlate as string}
               disabled={isDisabled}
@@ -174,7 +171,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
         type={privateSnap.currentRequest.type}
         action={currentAction}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests/active" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests/all" />
     </div>
   );
 });
