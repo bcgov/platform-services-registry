@@ -66,7 +66,7 @@ export default function FormCheckbox({
 
   return (
     <>
-      <div className="flex font-bcsans">
+      <div className="flex">
         <input
           type="checkbox"
           id={id}
@@ -75,7 +75,8 @@ export default function FormCheckbox({
           {...inputProps}
           onChange={handleChange}
           className={classnames(
-            'h-4 w-4 mt-1 border-black-400 text-indigo-600 focus:ring-indigo-600',
+            'h-4 w-4 mt-1 border-black-400',
+            disabled ? 'text-gray-600 focus:ring-gray-600 cursor-not-allowed' : 'text-indigo-600 focus:ring-indigo-600',
             className?.input ?? '',
           )}
           // Required to bind three potential refs:
@@ -99,7 +100,11 @@ export default function FormCheckbox({
         <div className="ml-3">
           <label
             htmlFor={id}
-            className={classnames('text-gray-900 select-none cursor-pointer', className?.label ?? '')}
+            className={classnames(
+              'text-gray-900 select-none',
+              className?.label ?? '',
+              disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+            )}
           >
             {children ?? label}
           </label>

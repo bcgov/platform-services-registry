@@ -1,8 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Alert } from '@mantine/core';
 import { PrivateCloudProject } from '@prisma/client';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSnapshot } from 'valtio';
@@ -18,7 +21,7 @@ import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
-import { getPriviateCloudProject, editPriviateCloudProject } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProject, editPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { privateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
@@ -45,7 +48,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     isError: isEditError,
     error: editError,
   } = useMutation({
-    mutationFn: (data: any) => editPriviateCloudProject(licencePlate, data),
+    mutationFn: (data: any) => editPrivateCloudProject(licencePlate, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -71,7 +74,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       ),
     ),
     defaultValues: async () => {
-      const response = await getPriviateCloudProject(licencePlate);
+      const response = await getPrivateCloudProject(licencePlate);
       return { ...response, isAgMinistryChecked: true };
     },
   });
@@ -102,15 +105,26 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
+  if (!snap.currentProduct) {
+    return null;
+  }
+
   return (
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="mb-12 mt-8">
-            {isDisabled && (
-              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
-                There is already an active request for this project. You can not edit this project at this time.
-              </h3>
+            {isDisabled && snap.currentProduct.requests.length > 0 && (
+              <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
+                There is already an{' '}
+                <Link
+                  className="underline text-blue-500 text-bold text-lg"
+                  href={`/private-cloud/requests/${snap.currentProduct.requests[0].id}/decision`}
+                >
+                  active request
+                </Link>{' '}
+                for this project. You can not edit this project at this time.
+              </Alert>
             )}
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
             <TeamContacts
@@ -119,7 +133,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <Quotas
-              licensePlate={snap.currentProduct?.licencePlate as string}
+              licencePlate={snap.currentProduct?.licencePlate as string}
               disabled={isDisabled}
               currentProject={snap.currentProduct as PrivateCloudProject}
             />

@@ -8,7 +8,9 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { clusters, ministryOptions } from '@/constants';
+import { usePrivateProductState } from '@/states/global';
 import ProductBadge from './ProductBadge';
+import RequestBadge from './RequestBadge';
 
 export default function ProjectDescriptionPrivate({
   mode,
@@ -19,6 +21,8 @@ export default function ProjectDescriptionPrivate({
   disabled?: boolean;
   clusterDisabled?: boolean;
 }) {
+  const [privateState, privateSnap] = usePrivateProductState();
+
   const {
     register,
     formState: { errors },
@@ -41,9 +45,13 @@ export default function ProjectDescriptionPrivate({
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
-      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
+      <h1 className="flex justify-between text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
         Private Cloud OpenShift Platform
-        <ProductBadge values={values} />
+        {privateSnap.currentRequest ? (
+          <RequestBadge data={privateSnap.currentRequest} className="ml-1" />
+        ) : (
+          <ProductBadge data={privateSnap.currentProduct} className="ml-1" />
+        )}
       </h1>
       <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description

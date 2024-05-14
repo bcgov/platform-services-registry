@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[id]/route';
-import { PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
+import { PublicCloudRequestGetPayload, PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
 import { instance as parentInstance } from './instance';
 import { PublicCloudProductSearchCriteria } from './products';
 
@@ -11,8 +10,15 @@ export const instance = axios.create({
 
 export async function getPublicCloudRequest(id: string) {
   const result = await instance.get(`/${id}`).then((res) => {
-    // Secondary technical lead should only be included if it exists
-    if (res.data.decisionData.secondaryTechnicalLead === null) {
+    if (res.data.originalData?.secondaryTechnicalLead === null) {
+      delete res.data.decisionData.secondaryTechnicalLead;
+    }
+
+    if (res.data.requestData?.secondaryTechnicalLead === null) {
+      delete res.data.decisionData.secondaryTechnicalLead;
+    }
+
+    if (res.data.decisionData?.secondaryTechnicalLead === null) {
       delete res.data.decisionData.secondaryTechnicalLead;
     }
 

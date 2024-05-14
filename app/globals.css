@@ -15,27 +15,3 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
-
-@font-face {
-  font-family: 'BCSans';
-  src: url('../fonts/bcsans-regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'BCSans';
-  src: url('../fonts/bcsans-bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-}
-
-/* body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */

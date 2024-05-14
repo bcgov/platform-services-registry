@@ -14,7 +14,7 @@ export default function QuotaInput({
 }: {
   quotaName: 'cpu' | 'memory' | 'storage';
   nameSpace: 'production' | 'test' | 'development' | 'tools';
-  licensePlate: string;
+  licencePlate: string;
   selectOptions: SelectOptions;
   disabled: boolean;
   quota: string | null;

@@ -1,8 +1,8 @@
-import { PrivateCloudRequestGetPayload } from '@/app/api/private-cloud/requests/[id]/route';
-import { PublicCloudRequestGetPayload } from '@/app/api/public-cloud/requests/[id]/route';
 import { createGlobalValtio } from '@/helpers/valtio';
 import { PrivateCloudProjectGetPayload } from '@/queries/private-cloud-products';
+import { PrivateCloudRequestGetPayload } from '@/queries/private-cloud-requests';
 import { PublicCloudProjectGetPayload } from '@/queries/public-cloud-products';
+import { PublicCloudRequestGetPayload } from '@/queries/public-cloud-requests';
 
 export const { state: appState, useValtioState: useAppState } = createGlobalValtio({
   info: {

@@ -1,7 +1,7 @@
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
-import { checkPriviateCloudProductDeletionAvailability } from '@/services/backend/private-cloud/products';
+import { checkPrivateCloudProductDeletionAvailability } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import classNames from '@/utils/classnames';
 
@@ -28,7 +28,7 @@ export default function PrivateCloudDeleteModal({
       const fetchDeletionCheck = async () => {
         try {
           setIsLoading(true);
-          const data = await checkPriviateCloudProductDeletionAvailability(
+          const data = await checkPrivateCloudProductDeletionAvailability(
             privateProductSnapshot.licencePlate as string,
           );
           setDeletionCheckData(data);

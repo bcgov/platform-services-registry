@@ -14,7 +14,7 @@ import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { PrivateCloudCreateRequestBodySchema } from '@/schema';
-import { createPriviateCloudProject } from '@/services/backend/private-cloud/products';
+import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
 
 const privateCloudProductNew = createClientPage({
   roles: ['user'],
@@ -30,7 +30,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
     isError: isCreateError,
     error: createError,
   } = useMutation({
-    mutationFn: (data: any) => createPriviateCloudProject(data),
+    mutationFn: (data: any) => createPrivateCloudProject(data),
     onSuccess: () => {
       setOpenCreate(false);
       setOpenReturn(true);

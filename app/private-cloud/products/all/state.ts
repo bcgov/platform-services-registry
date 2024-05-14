@@ -6,6 +6,7 @@ export const pageState = proxy<PrivateCloudProductSearchCriteria>({
   search: '',
   page: 1,
   pageSize: 10,
+  licencePlate: '',
   ministry: '',
   cluster: '',
   includeInactive: false,

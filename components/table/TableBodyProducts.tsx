@@ -3,6 +3,7 @@
 'use client';
 
 import path from 'path';
+import { Tooltip } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -143,11 +144,7 @@ export default function TableBodyProducts({ rows, isLoading = false }: TableProp
   }
 
   const onRowClickHandler = (row: any) => {
-    if (row.requests.length > 0) {
-      router.push(path.join(`/${cloud}/requests/${row.requests[0].id}/decision`));
-    } else {
-      router.push(path.join(`/${cloud}/products/${row.licencePlate}/edit`));
-    }
+    router.push(path.join(`/${cloud}/products/${row.licencePlate}/edit`));
   };
 
   return (
@@ -159,7 +156,7 @@ export default function TableBodyProducts({ rows, isLoading = false }: TableProp
             onKeyDown={(e) => e.key === 'Enter' && onRowClickHandler(row)}
             role="button" // Assign an appropriate role
             onClick={() => onRowClickHandler(row)}
-            className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-4 sm:px-6 lg:px-8"
+            className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-2 sm:px-6 lg:px-8"
           >
             <div className="md:col-span-3 lg:col-span-4">
               <div className="flex items-center gap-x-3">
@@ -189,23 +186,38 @@ export default function TableBodyProducts({ rows, isLoading = false }: TableProp
             </div>
 
             <div className="md:col-span-1 lg:col-span-2">
-              <span
-                className={classNames(
-                  requestTypes[row.requestType as keyof typeof requestTypes],
-                  'inline-flex items-center rounded-md  px-2 py-1 text-sm font-medium capitalize text-gray-700',
-                )}
-              >
-                {typeof row?.requestType === 'string' ? row?.requestType.toLocaleLowerCase() + ' request' : null}
-              </span>
-              <div>
-                <span
-                  className={classNames(
-                    'inline-flex items-center rounded-md pr-2 py-1 text-sm capitalize text-gray-700',
-                  )}
-                >
-                  {typeof row?.requestType === 'string' ? getStatus(row?.requestDecisionStatus) : null}
-                </span>
-              </div>
+              {row.requests.length > 0 && (
+                <Tooltip label="View Request" position="top" offset={10}>
+                  <button
+                    type="button"
+                    className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      router.push(path.join(`/${cloud}/requests/${row.requests[0].id}/decision`));
+                    }}
+                  >
+                    <span
+                      className={classNames(
+                        requestTypes[row.requestType as keyof typeof requestTypes],
+                        'inline-flex items-center rounded-md px-2 py-1 text-sm capitalize text-gray-700',
+                      )}
+                    >
+                      {typeof row?.requestType === 'string' ? row?.requestType.toLocaleLowerCase() + ' request' : null}
+                    </span>
+                    <div>
+                      <span
+                        className={classNames(
+                          'inline-flex items-center rounded-md pr-2 py-1 text-sm capitalize text-gray-700',
+                        )}
+                      >
+                        {typeof row?.requestType === 'string' ? getStatus(row?.requestDecisionStatus) : null}
+                      </span>
+                    </div>
+                  </button>
+                </Tooltip>
+              )}
             </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>

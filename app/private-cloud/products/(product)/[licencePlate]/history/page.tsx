@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import HistoryItem from '@/components/history/PrivateHistoryItem';
 import createClientPage from '@/core/client-page';
-import { getPriviateCloudProductRequests } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProductRequests } from '@/services/backend/private-cloud/products';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -24,7 +24,7 @@ export default privateCloudProductHistory(({ pathParams, queryParams, session })
     error: requestsError,
   } = useQuery({
     queryKey: ['requests', licencePlate],
-    queryFn: () => getPriviateCloudProductRequests(licencePlate),
+    queryFn: () => getPrivateCloudProductRequests(licencePlate),
     enabled: !!licencePlate,
   });
 

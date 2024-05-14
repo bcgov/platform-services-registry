@@ -9,9 +9,9 @@ import DeleteButton from '@/components/buttons/DeleteButton';
 import ErrorModal from '@/components/modal/Error';
 import PrivateCloudDeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import { deletePrivateCloudProject, reprovisionPriviateCloudProduct } from '@/services/backend/private-cloud/products';
+import { deletePrivateCloudProject, reprovisionPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 
-export default function Dropdown({
+export default function PrivateCloudProductOptions({
   licensePlace = '',
   canReprovision = false,
   canDelete = false,
@@ -34,7 +34,7 @@ export default function Dropdown({
     isError: isReprovisionError,
     error: reprovisionError,
   } = useMutation({
-    mutationFn: () => reprovisionPriviateCloudProduct(licensePlace),
+    mutationFn: () => reprovisionPrivateCloudProduct(licensePlace),
     onSuccess: () => {
       toast.success('Successfully reprovisioned!');
     },

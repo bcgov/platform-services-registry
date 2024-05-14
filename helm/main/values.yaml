@@ -1,8 +1,8 @@
 # See https://helm.sh/docs/chart_template_guide/subcharts_and_globals/#global-chart-values
 global:
-  licensePlate: 101ed4
+  licencePlate: 101ed4
   vault:
-    # licensePlate-nonprod or licensePlate-prod
+    # licencePlate-nonprod or licencePlate-prod
     role:
     # sub-path of the vault secret
     subPath:

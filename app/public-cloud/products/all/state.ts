@@ -6,6 +6,7 @@ export const pageState = proxy<PublicCloudProductSearchCriteria>({
   search: '',
   page: 1,
   pageSize: 10,
+  licencePlate: '',
   ministry: '',
   provider: '',
   includeInactive: false,

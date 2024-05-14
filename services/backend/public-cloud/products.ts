@@ -14,6 +14,7 @@ export interface PublicCloudProductAllCriteria {
   search: string;
   page: number;
   pageSize: number;
+  licencePlate: string;
   ministry: string;
   provider: string;
   includeInactive: boolean;

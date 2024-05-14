@@ -6,7 +6,7 @@ import Table from '@/components/generic/table/Table';
 import TableBody from '@/components/table/TableBodyRequests';
 import createClientPage from '@/core/client-page';
 import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
-import { searchPriviateCloudRequests } from '@/services/backend/private-cloud/requests';
+import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -19,7 +19,7 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],
-    queryFn: () => searchPriviateCloudRequests(snap),
+    queryFn: () => searchPrivateCloudRequests(snap),
   });
 
   let requests = [];
