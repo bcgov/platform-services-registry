@@ -78,7 +78,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     <div>
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
-          licensePlace={currentProduct?.licencePlate}
+          licencePlate={currentProduct?.licencePlate}
           canReprovision={currentProduct?._permissions?.reprovision}
           canDelete={currentProduct?._permissions?.delete}
         />

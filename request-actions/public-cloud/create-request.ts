@@ -1,11 +1,11 @@
 import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
-import generateLicensePlate from '@/helpers/license-plate';
+import generateLicencePlate from '@/helpers/licence-plate';
 import { PublicCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, authEmail: string) {
-  const licencePlate = generateLicensePlate();
+  const licencePlate = generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,

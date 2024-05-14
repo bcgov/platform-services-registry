@@ -3,7 +3,7 @@ import _forEach from 'lodash-es/forEach';
 import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
 import prisma from '@/core/prisma';
-import { getProdClusterLicensePlates } from './common';
+import { getProdClusterLicencePlates } from './common';
 
 const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
@@ -12,10 +12,10 @@ function createMonthKey(date: Date) {
 }
 
 export async function combinedRequests() {
-  const prodClusterLicensePlates = await getProdClusterLicensePlates();
+  const prodClusterLicencePlates = await getProdClusterLicencePlates();
 
   const requests = await prisma.privateCloudRequest.findMany({
-    where: { licencePlate: { in: prodClusterLicensePlates } },
+    where: { licencePlate: { in: prodClusterLicencePlates } },
     select: {
       created: true,
       type: true,

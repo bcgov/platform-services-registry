@@ -12,11 +12,11 @@ import ReturnModal from '@/components/modal/Return';
 import { deletePrivateCloudProject, reprovisionPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 
 export default function PrivateCloudProductOptions({
-  licensePlace = '',
+  licencePlate = '',
   canReprovision = false,
   canDelete = false,
 }: {
-  licensePlace?: string;
+  licencePlate?: string;
   canReprovision?: boolean;
   canDelete?: boolean;
 }) {
@@ -34,7 +34,7 @@ export default function PrivateCloudProductOptions({
     isError: isReprovisionError,
     error: reprovisionError,
   } = useMutation({
-    mutationFn: () => reprovisionPrivateCloudProduct(licensePlace),
+    mutationFn: () => reprovisionPrivateCloudProduct(licencePlate),
     onSuccess: () => {
       toast.success('Successfully reprovisioned!');
     },

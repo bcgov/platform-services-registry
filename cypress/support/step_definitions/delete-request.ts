@@ -48,7 +48,7 @@ When('I create a Delete Request', () => {
   cy.contains('span', productName).click();
   cy.contains('button', 'Options').click();
   cy.contains('button', 'Delete').click();
-  cy.contains('p', 'License Plate')
+  cy.contains('p', 'Licence Plate')
     .siblings('p')
     .eq(1)
     .invoke('text')
@@ -56,7 +56,7 @@ When('I create a Delete Request', () => {
       // Store the text content into a variable
       licencePlate = text.trim();
     });
-  cy.get('input[id="license-plate"]').type(licencePlate);
+  cy.get('input[id="licence-plate"]').type(licencePlate);
   cy.get('input[id="owner-email"]').type(userEmail);
   cy.contains('button', 'Delete').click();
   cy.contains('button', 'Return to Dashboard').click();

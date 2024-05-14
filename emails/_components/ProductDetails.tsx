@@ -36,7 +36,7 @@ export default function ProductDetails({
         <Text className="py-1 h-fit">{description}</Text>
         {licencePlate && (
           <div>
-            <Text className="mb-2 font-semibold h-4">License Plate: </Text>
+            <Text className="mb-2 font-semibold h-4">Licence Plate: </Text>
             <Text className="mt-0 mb-2 h-4">{licencePlate}</Text>
           </div>
         )}

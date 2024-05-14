@@ -26,7 +26,7 @@ const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
         <Heading className="text-lg text-black">Your Edit Summary!</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          You have edited your product in the Public Cloud Landing Zone with the license plate {request.licencePlate}.{' '}
+          You have edited your product in the Public Cloud Landing Zone with the licence plate {request.licencePlate}.{' '}
           <br />
           <br /> You can see a summary of the changes below in this email, or click the button to view them in the
           Product Registry.
