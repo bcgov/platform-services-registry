@@ -10,11 +10,11 @@ const quotaOptionsLookup = {
 };
 
 export default function Quotas({
-  licensePlate,
+  licencePlate,
   disabled,
   currentProject,
 }: {
-  licensePlate: string;
+  licencePlate: string;
   disabled: boolean;
   currentProject?: PrivateCloudProject | null | undefined;
 }) {
@@ -45,9 +45,9 @@ export default function Quotas({
               {nameSpace.charAt(0).toUpperCase() + nameSpace.slice(1)} Namespace
             </h3>
             <ExternalLink
-              href={`https://console.apps.${currentProject?.cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licensePlate}${namespaceSuffixes[nameSpace]}`}
+              href={`https://console.apps.${currentProject?.cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}${namespaceSuffixes[nameSpace]}`}
             >
-              {licensePlate}
+              {licencePlate}
               {namespaceSuffixes[nameSpace] || ''}
             </ExternalLink>
             {(['cpu', 'memory', 'storage'] as const).map((quotaName) => (
@@ -55,7 +55,7 @@ export default function Quotas({
                 key={quotaName}
                 quotaName={quotaName}
                 selectOptions={quotaOptionsLookup[quotaName]}
-                licensePlate={licensePlate}
+                licencePlate={licencePlate}
                 nameSpace={nameSpace}
                 disabled={disabled}
                 quota={(currentProject as { [key: string]: any })?.[nameSpace + 'Quota'][quotaName]}

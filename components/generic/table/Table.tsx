@@ -19,8 +19,8 @@ const defaultValue = {
 const TableContext = createContext(defaultValue);
 
 export default function Table({
-  title,
-  description,
+  title = '',
+  description = '',
   page,
   pageSize,
   totalCount,
@@ -32,8 +32,8 @@ export default function Table({
   isLoading = false,
   children,
 }: {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   page: number;
   pageSize: number;
   totalCount: number;
@@ -66,6 +66,7 @@ export default function Table({
             </SearchFilterExport>
           )}
         </TableHeader>
+
         <div className="h-[60vh] overflow-y-auto scroll-smooth">{children}</div>
         <TableFooter>
           <Pagination />

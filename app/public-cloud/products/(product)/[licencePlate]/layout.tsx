@@ -36,16 +36,16 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     publicProductState.licencePlate = licencePlate;
   }, [licencePlate]);
 
-  let mode = 'decision';
-  if (currentProduct) {
-    mode = currentProduct.requests.length > 0 ? 'decision' : 'edit';
-  }
-
   const tabs: ITab[] = [
     {
       label: 'PRODUCT',
       name: 'product',
-      href: `/public-cloud/products/${licencePlate}/${mode}`,
+      href: `/public-cloud/products/${licencePlate}/edit`,
+    },
+    {
+      label: 'REQUESTS',
+      name: 'requests',
+      href: `/public-cloud/products/${licencePlate}/requests`,
     },
     {
       label: 'ROLES',

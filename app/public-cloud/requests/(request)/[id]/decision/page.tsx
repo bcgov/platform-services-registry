@@ -1,7 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Alert } from '@mantine/core';
 import { $Enums } from '@prisma/client';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -29,7 +31,7 @@ const publicCloudProductDecision = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudProductDecision(({ pathParams, queryParams, session, router }) => {
-  const [publicCloudState, publicCloudStateSnap] = usePublicProductState();
+  const [publicState, publicSnap] = usePublicProductState();
   const { id } = pathParams;
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
@@ -50,21 +52,21 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
   });
 
   useEffect(() => {
-    if (!publicCloudStateSnap.currentRequest) return;
+    if (!publicSnap.currentRequest) return;
 
-    if (!publicCloudStateSnap.currentRequest.active || !publicCloudStateSnap.currentRequest._permissions.review) {
-      router.push(`/public-cloud/requests/${publicCloudStateSnap.currentRequest.id}/view`);
+    if (publicSnap.currentRequest.active && !publicSnap.currentRequest._permissions.review) {
+      router.push(`/public-cloud/requests/${publicSnap.currentRequest.id}/summary`);
       return;
     }
 
-    if (publicCloudStateSnap.currentRequest.decisionData.secondaryTechnicalLead) {
+    if (publicSnap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [publicCloudStateSnap.currentRequest, router]);
+  }, [publicSnap.currentRequest, router]);
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = publicCloudStateSnap.currentRequest?.type === $Enums.RequestType.DELETE;
+      const isDeleteRequest = publicSnap.currentRequest?.type === $Enums.RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {
@@ -79,8 +81,8 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
     values: {
       decisionComment: '',
       decision: '',
-      type: publicCloudStateSnap.currentRequest?.type,
-      ...publicCloudStateSnap.currentRequest?.decisionData,
+      type: publicSnap.currentRequest?.type,
+      ...publicSnap.currentRequest?.decisionData,
     },
   });
 
@@ -95,11 +97,11 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
     makeDecision({ ...methods.getValues(), decisionComment });
   };
 
-  if (!publicCloudStateSnap.currentRequest) {
+  if (!publicSnap.currentRequest) {
     return null;
   }
 
-  const isDisabled = !publicCloudStateSnap.currentRequest._permissions.edit;
+  const isDisabled = !publicSnap.currentRequest._permissions.edit;
 
   return (
     <div>
@@ -111,10 +113,10 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
             if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
           })}
         >
-          {publicCloudStateSnap.currentRequest.decisionStatus !== 'PENDING' && (
-            <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
-              A decision has already been made for this product
-            </h3>
+          {publicSnap.currentRequest.decisionStatus !== 'PENDING' && (
+            <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
+              A decision has already been made for this product.
+            </Alert>
           )}
           <div className="mb-12">
             <ProjectDescription disabled={isDisabled} mode="decision" />
@@ -126,25 +128,25 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={isDisabled} />
             <AccountCoding
-              accountCodingInitial={publicCloudStateSnap.currentRequest.decisionData?.accountCoding}
+              accountCodingInitial={publicSnap.currentRequest.decisionData?.accountCoding}
               disabled={false}
             />
           </div>
 
-          {publicCloudStateSnap.currentRequest.requestComment && (
+          {publicSnap.currentRequest.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
               <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
               <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-                {publicCloudStateSnap.currentRequest.requestComment}
+                {publicSnap.currentRequest.requestComment}
               </p>
             </div>
           )}
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {publicCloudStateSnap.currentRequest._permissions.review ? (
+            {publicSnap.currentRequest._permissions.review ? (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -170,7 +172,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
         setOpen={setOpenComment}
         onSubmit={setComment}
         isLoading={isMakingDecision}
-        type={publicCloudStateSnap.currentRequest.type}
+        type={publicSnap.currentRequest.type}
         action={currentAction}
       />
       <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests/active" />

@@ -1,9 +1,12 @@
 'use client';
 
+import { $Enums } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
+import PublicCloudRequestOptions from '@/components/dropdowns/PublicCloudRequestOptions';
+import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { publicProductState } from '@/states/global';
@@ -33,10 +36,45 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     }
   }, [request]);
 
+  const tabs: ITab[] = [
+    {
+      label: 'SUMMARY',
+      name: 'summary',
+      href: `/public-cloud/requests/${id}/summary`,
+    },
+  ];
+
+  if (request?.type !== $Enums.RequestType.CREATE) {
+    tabs.push({
+      label: 'ORIGINAL',
+      name: 'original',
+      href: `/public-cloud/requests/${id}/original`,
+    });
+  }
+
+  tabs.push({
+    label: 'USER REQUEST',
+    name: 'request',
+    href: `/public-cloud/requests/${id}/request`,
+  });
+
+  if (request?._permissions.review || !request?.active) {
+    tabs.push({
+      label: 'ADMIN DECISION',
+      name: 'decision',
+      href: `/public-cloud/requests/${id}/decision`,
+    });
+  }
+
+  if (isRequestLoading || !request) return null;
+
   return (
-    <>
-      {children}
+    <div>
+      <Tabs tabs={tabs}>
+        <PublicCloudRequestOptions id={request.id} />
+      </Tabs>
+      <div className="mt-8">{children}</div>
       <ToastContainer />
-    </>
+    </div>
   );
 });

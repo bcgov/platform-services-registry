@@ -1,10 +1,7 @@
-import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import prisma from '@/core/prisma';
-import { OkResponse } from '@/core/responses';
-import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
-import { processBoolean } from '@/utils/zod';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { getPublicCloudRequest } from '@/queries/public-cloud-requests';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -17,48 +14,11 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const { id } = pathParams;
 
-  const request = await prisma.publicCloudRequest.findFirst({
-    where: { id },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-    },
-    session: session as never,
-  });
+  const request = await getPublicCloudRequest(session, id);
+
+  if (!request?._permissions.view) {
+    return UnauthorizedResponse();
+  }
 
   return OkResponse(request);
 });
-
-export type PublicCloudRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}> &
-  PublicCloudRequestDecorate;

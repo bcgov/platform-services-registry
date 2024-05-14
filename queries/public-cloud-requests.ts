@@ -48,6 +48,7 @@ export async function searchPublicCloudRequests({
   session,
   skip,
   take,
+  licencePlate,
   ministry,
   provider,
   search,
@@ -58,6 +59,7 @@ export async function searchPublicCloudRequests({
   session: Session;
   skip: number;
   take: number;
+  licencePlate?: string;
   ministry?: string;
   provider?: string;
   search?: string;
@@ -89,6 +91,10 @@ export async function searchPublicCloudRequests({
       { description: productSearchcreteria },
       { licencePlate: productSearchcreteria },
     ];
+  }
+
+  if (licencePlate) {
+    decisionDatawhere.licencePlate = licencePlate;
   }
 
   if (ministry) {

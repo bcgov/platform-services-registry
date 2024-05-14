@@ -1,36 +1,42 @@
+import { Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
-import { FieldValues } from 'react-hook-form';
+import CopyableButton from '@/components/generic/button/CopyableButton';
 
-export default function ProductBadge({ values }: { values: FieldValues }) {
-  // Request Document
-  if (values.type) {
-    return (
-      <span
-        className={classNames('text-sm font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1 float-right', {
-          'bg-green-100 text-green-800': values.type === $Enums.RequestType.CREATE,
-          'bg-blue-100 text-blue-800': values.type === $Enums.RequestType.EDIT,
-          'bg-red-100 text-red-800': values.type === $Enums.RequestType.DELETE,
-        })}
-      >
-        {values.type}
-      </span>
-    );
+export default function ProductBadge({
+  data,
+  className,
+}: {
+  data?: { licencePlate: string; status: $Enums.ProjectStatus };
+  className?: string;
+}) {
+  if (!data || !data.licencePlate) return null;
+
+  let color = 'gray';
+
+  switch (data.status) {
+    case $Enums.ProjectStatus.ACTIVE:
+      color = 'green';
+      break;
+    case $Enums.ProjectStatus.INACTIVE:
+      color = 'red';
+      break;
   }
 
-  // Product Document
-  if (values.status) {
-    return (
-      <span
-        className={classNames(
-          'text-sm font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1 float-right',
-          values.status === $Enums.ProjectStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
-        )}
-      >
-        {values.status}
-      </span>
-    );
-  }
+  const badge = (
+    <Badge color={color} radius="sm" className="ml-1">
+      {data.status}
+    </Badge>
+  );
 
-  return null;
+  return (
+    <div className={classNames('inline-block', className)}>
+      <CopyableButton value={data.licencePlate}>
+        <Badge color="gray" radius="sm">
+          {data.licencePlate}
+        </Badge>
+      </CopyableButton>
+      {badge}
+    </div>
+  );
 }

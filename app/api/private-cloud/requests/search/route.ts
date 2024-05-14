@@ -7,6 +7,7 @@ import { processEnumString, processUpperEnumString } from '@/utils/zod';
 import searchOp from '../_operations/search';
 
 const bodySchema = z.object({
+  licencePlate: z.string().optional(),
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
@@ -22,6 +23,7 @@ export const POST = createApiHandler({
   validations: { body: bodySchema },
 })(async ({ session, body }) => {
   const {
+    licencePlate = '',
     search = '',
     page = 1,
     pageSize = 5,
@@ -33,6 +35,7 @@ export const POST = createApiHandler({
   } = body;
 
   const data = await searchOp({
+    licencePlate,
     session,
     search,
     page,

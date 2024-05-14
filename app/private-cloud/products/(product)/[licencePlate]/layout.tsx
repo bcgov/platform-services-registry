@@ -7,7 +7,7 @@ import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
-import { getPriviateCloudProject } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { privateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
@@ -24,7 +24,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
 
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],
-    queryFn: () => getPriviateCloudProject(licencePlate),
+    queryFn: () => getPrivateCloudProject(licencePlate),
     enabled: !!licencePlate,
   });
 
@@ -36,16 +36,16 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     privateProductState.licencePlate = licencePlate;
   }, [licencePlate]);
 
-  let mode = 'decision';
-  if (currentProduct) {
-    mode = currentProduct.requests.length > 0 ? 'decision' : 'edit';
-  }
-
   const tabs: ITab[] = [
     {
       label: 'PRODUCT',
       name: 'product',
-      href: `/private-cloud/products/${licencePlate}/${mode}`,
+      href: `/private-cloud/products/${licencePlate}/edit`,
+    },
+    {
+      label: 'REQUESTS',
+      name: 'requests',
+      href: `/private-cloud/products/${licencePlate}/requests`,
     },
   ];
 
@@ -83,7 +83,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           canDelete={currentProduct?._permissions?.delete}
         />
       </Tabs>
-      <div className="mt-14">{children}</div>
+      <div className="mt-8">{children}</div>
       <ToastContainer />
     </div>
   );

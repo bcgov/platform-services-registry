@@ -44,6 +44,7 @@ export async function searchPrivateCloudRequests({
   session,
   skip,
   take,
+  licencePlate,
   ministry,
   cluster,
   search,
@@ -54,6 +55,7 @@ export async function searchPrivateCloudRequests({
   session: Session;
   skip: number;
   take: number;
+  licencePlate?: string;
   ministry?: string;
   cluster?: string;
   search?: string;
@@ -85,6 +87,10 @@ export async function searchPrivateCloudRequests({
       { description: productSearchcreteria },
       { licencePlate: productSearchcreteria },
     ];
+  }
+
+  if (licencePlate) {
+    decisionDatawhere.licencePlate = licencePlate;
   }
 
   if (ministry) {

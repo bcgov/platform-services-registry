@@ -5,6 +5,7 @@ import { searchPrivateCloudRequests } from '@/queries/private-cloud-requests';
 
 export default async function searchOp({
   session,
+  licencePlate,
   search,
   page,
   pageSize,
@@ -15,6 +16,7 @@ export default async function searchOp({
   sortOrder,
 }: {
   session: Session;
+  licencePlate: string;
   search: string;
   page: number;
   pageSize: number;
@@ -30,6 +32,7 @@ export default async function searchOp({
     session: session as Session,
     skip,
     take,
+    licencePlate,
     ministry,
     cluster,
     search,
