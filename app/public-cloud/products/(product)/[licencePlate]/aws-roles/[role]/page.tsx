@@ -126,7 +126,7 @@ export default function ProductAWSRoles() {
       <TableAWSRoles
         tableTop={
           <UserAWSRolesTableTop
-            title="BC Gov’s Landing Zone in AWS - Manage Users"
+            title="Public Cloud Landing Zone - Manage Users"
             subtitle="User Access"
             description="Assign roles to grant users access below"
             setOpenAddUser={setOpenAddUser}

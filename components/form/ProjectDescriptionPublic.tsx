@@ -35,7 +35,7 @@ export default function ProjectDescriptionPublic({
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h1 className="flex justify-between text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
-        BC Gov’s Landing Zone in {values.provider}
+        Public Cloud Landing Zone
         {publicSnap.currentRequest ? (
           <RequestBadge data={publicSnap.currentRequest} className="ml-1" />
         ) : (

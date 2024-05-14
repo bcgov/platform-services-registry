@@ -58,14 +58,6 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     href: `/public-cloud/requests/${id}/request`,
   });
 
-  if (request?._permissions.review || !request?.active) {
-    tabs.push({
-      label: 'ADMIN DECISION',
-      name: 'decision',
-      href: `/public-cloud/requests/${id}/decision`,
-    });
-  }
-
   if (isRequestLoading || !request) return null;
 
   return (
