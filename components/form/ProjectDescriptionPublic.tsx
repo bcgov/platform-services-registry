@@ -42,11 +42,11 @@ export default function ProjectDescriptionPublic({
           <ProductBadge data={publicSnap.currentProduct} className="ml-1" />
         )}
       </h1>
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-4 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
       {mode === 'create' && (
-        <p className="font-bcsans text-base leading-6 mt-5">
+        <p className="text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
           Cloud Accelerator Service team. Reach out to
           {

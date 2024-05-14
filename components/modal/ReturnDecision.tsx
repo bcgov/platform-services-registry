@@ -46,12 +46,12 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                   <div className="mt-3 sm:mt-5">
                     <Dialog.Title
                       as="h3"
-                      className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
+                      className="text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
                       Your decision has been shared successfully!
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="font-bcsans text-sm text-gray-900">
+                      <p className="text-sm text-gray-900">
                         The registry has been updated to reflect your decision. The Product Owner and Technical Lead(s)
                         will receive a notification regarding the decision via email.
                       </p>
@@ -62,8 +62,8 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                           <span className="font-bold text-blue-700 font-sans text-xs">i</span>
                         </div>
                         <div>
-                          <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note:</p>
-                          <p className="font-bcsans text-sm text-blue-700 mt-1">
+                          <p className="text-sm text-blue-700 font-semibold mt-2">Note:</p>
+                          <p className="text-sm text-blue-700 mt-1">
                             The approval of a new product creation request is subject to having a signed Memorandum of
                             Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
                             email us at
@@ -81,7 +81,7 @@ export default function Modal({ open, setOpen, redirectUrl }: { open: boolean; s
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                    className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                     onClick={handleReturn}
                     ref={cancelButtonRef}
                   >

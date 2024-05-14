@@ -26,10 +26,8 @@ export default function Quotas({
   };
   return (
     <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
-        3. Quotas
-      </h2>
-      <p className="font-bcsans text-base leading-6 mt-5">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">3. Quotas</h2>
+      <p className="text-base leading-6 mt-5">
         All quota increase requests require <b> Platform Services Team’s </b>
         approval, and must have supporting information as per the{' '}
         <ExternalLink href="https://docs.developer.gov.bc.ca/request-quota-increase-for-openshift-project-set/">
@@ -41,7 +39,7 @@ export default function Quotas({
       <div className="mt-10 grid grid-cols-1 gap-x-8 xl:gap-x-16 gap-y-8 sm:grid-cols-8 ">
         {(['production', 'test', 'tools', 'development'] as const).map((nameSpace) => (
           <div className="sm:col-span-2" key={nameSpace}>
-            <h3 className="font-bcsans text-base 2xl:text-lg font-semibold leading-7 text-gray-900">
+            <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">
               {nameSpace.charAt(0).toUpperCase() + nameSpace.slice(1)} Namespace
             </h3>
             <ExternalLink

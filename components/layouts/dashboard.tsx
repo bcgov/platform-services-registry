@@ -31,7 +31,7 @@ export default function DashboardLayout({
       <Tabs tabs={tabs}>
         <CreateProduct context={context} />
       </Tabs>
-      <div className="mt-8">
+      <div className="mt-6">
         <ProductsRequestsTabs context={context} />
         {children}
       </div>

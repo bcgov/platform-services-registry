@@ -8,7 +8,7 @@ interface Props {
 export default function AddUserButton({ setOpenAddUser }: Props) {
   return (
     <button
-      className="flex justify-center pr-2 items-center rounded-md bg-bcorange px-4 py-2 h-10 font-bcsans text-bcblue text-base font-light tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm sm:px-3 sm:tracking-[.1em]"
+      className="flex justify-center pr-2 items-center rounded-md bg-bcorange px-4 py-2 h-10 text-bcblue text-base font-light tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm sm:px-3 sm:tracking-[.1em]"
       type="button"
       onClick={() => setOpenAddUser(true)}
     >

@@ -73,7 +73,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
       <Tabs tabs={tabs}>
         <PrivateCloudRequestOptions id={request.id} canResend={request._permissions.resend} />
       </Tabs>
-      <div className="mt-8">{children}</div>
+      <div className="mt-6">{children}</div>
       <ToastContainer />
     </div>
   );

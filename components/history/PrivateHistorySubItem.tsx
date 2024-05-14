@@ -41,14 +41,14 @@ export default function PrivateHistorySubItem({
 
   return (
     <div key={id} className="max-h-full mb-2 grid grid-cols-[20%_5%_70%] gap-x-3 gap-y-2 content-center">
-      <div className="max-w-fit ml-auto mr-0 my-auto font-bcsans font-bold">
+      <div className="max-w-fit ml-auto mr-0 my-auto font-bold">
         {comment ? (isDecision ? 'Decision Comment' : 'Request Comment') : ''}
       </div>
       <div className="mx-auto my-0 w-[0.02rem] min-h-[3rem] flex p-0 items-center justify-center border-[0.1rem]  border-bcblue"></div>
-      <div className="content-center w-auto font-bcsans">{comment}</div>
-      <div className="max-w-fit ml-auto mr-0 my-auto font-bcsans font-bold">{formatDate(data)}</div>
+      <div className="content-center w-auto">{comment}</div>
+      <div className="max-w-fit ml-auto mr-0 my-auto font-bold">{formatDate(data)}</div>
       <div className="mx-auto my-0 w-[2rem] h-[2rem]  flex p-[0.2rem] items-center justify-center border-[0.7rem] rounded-full  border-bcblue"></div>
-      <div className="content-center w-auto font-bcsans">
+      <div className="content-center w-auto">
         {message}{' '}
         {email && [
           'by ',

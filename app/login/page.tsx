@@ -15,17 +15,15 @@ export default function SignInPage() {
 
   return (
     <div className="flex flex-col m-12">
-      <h1 className="font-bcsans text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
+      <h1 className="text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
         Welcome to B.C. Government&apos;s Platform Product Registry
       </h1>
 
-      <h1 className="font-bcsans text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
+      <h1 className="text-3xl font-semibold text-gray-900 mb-12 tracking-wider">
         Private Cloud OpenShift Platform and Public Cloud AWS
       </h1>
 
-      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mb-4">
-        Make changes to an existing product
-      </h2>
+      <h2 className="text-xl font-semibold text-gray-900 tracking-wider mb-4">Make changes to an existing product</h2>
 
       <p className="mb-4">
         For existing applications hosted on OpenShift 4 Platform or B.C. Government landing zone in AWS.
@@ -37,9 +35,7 @@ export default function SignInPage() {
 
       <LoginButton />
 
-      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">
-        Register a new product
-      </h2>
+      <h2 className="text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">Register a new product</h2>
 
       <p className="mb-4 max-w-7xl">
         If you are a Product Owner for a new cloud-native application and are interested in hosting the application
@@ -64,7 +60,7 @@ export default function SignInPage() {
         </li>
       </ul>
 
-      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-8 mb-4">Before you start:</h2>
+      <h2 className="text-xl font-semibold text-gray-900 tracking-wider mt-8 mb-4">Before you start:</h2>
 
       <p className="mb-4 max-w-7xl">
         This self-serve online tool is for teams who have attended an onboarding session with the platform team.
@@ -100,7 +96,7 @@ export default function SignInPage() {
         </li>
       </ul>
 
-      <h2 className="font-bcsans text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">What you will need</h2>
+      <h2 className="text-xl font-semibold text-gray-900 tracking-wider mt-12 mb-4">What you will need</h2>
       <ul className="max-w-7xl space-y-1 text-gray-500 list-inside dark:text-gray-900">
         <li className="flex flex-row">
           <svg
@@ -184,8 +180,8 @@ export default function SignInPage() {
           <span className="font-bold text-blue-700 font-sans text-xs">i</span>
         </div>
         <div>
-          <p className="font-bcsans text-sm text-blue-700 font-semibold mt-2">Note for Public Cloud:</p>
-          <p className="font-bcsans text-sm text-blue-700 mt-1">
+          <p className="text-sm text-blue-700 font-semibold mt-2">Note for Public Cloud:</p>
+          <p className="text-sm text-blue-700 mt-1">
             The approval of a new project set creation request is subject to having a signed Memorandum of Understanding
             (MoU) with the Public Cloud Team. If you do not have a MoU in place, please email us at
             <span> </span>
