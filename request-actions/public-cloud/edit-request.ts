@@ -1,4 +1,4 @@
-import { DecisionStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, Prisma, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { PublicCloudEditRequestBody, UserInput } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
@@ -78,44 +78,20 @@ export default async function editRequest(
       : undefined,
   };
 
-  const originalData = {
-    name: project.name,
-    description: project.description,
-    provider: project.provider,
-    ministry: project.ministry,
-    status: project.status,
-    licencePlate: project.licencePlate,
-    created: project.created,
-    accountCoding: project.accountCoding,
-    budget: project.budget,
-    projectOwner: {
-      connect: {
-        email: project.projectOwner.email,
-      },
+  // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
+  const previousRequest = await prisma.publicCloudRequest.findFirst({
+    where: {
+      licencePlate: project.licencePlate,
+      active: false,
     },
-    primaryTechnicalLead: {
-      connect: {
-        email: project.primaryTechnicalLead.email,
-      },
+    select: {
+      decisionDataId: true,
     },
-    secondaryTechnicalLead: project.secondaryTechnicalLead
-      ? {
-          connect: {
-            email: project.secondaryTechnicalLead.email,
-          },
-        }
-      : undefined,
-    expenseAuthority: project.expenseAuthority
-      ? // this check until expenseAuthority field will be populated for every public cloud product
-        {
-          connect: {
-            email: project.expenseAuthority.email,
-          },
-        }
-      : undefined,
-  };
+    orderBy: {
+      updatedAt: Prisma.SortOrder.desc,
+    },
+  });
 
-  console.log('decisionData', decisionData);
   return prisma.publicCloudRequest.create({
     data: {
       type: RequestType.EDIT,
@@ -125,7 +101,9 @@ export default async function editRequest(
       licencePlate: project.licencePlate,
       requestComment,
       originalData: {
-        create: originalData,
+        connect: {
+          id: previousRequest?.decisionDataId,
+        },
       },
       decisionData: {
         create: decisionData,
