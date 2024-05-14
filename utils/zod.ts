@@ -17,3 +17,9 @@ export function processBoolean(val?: unknown) {
   if (_isString(val)) return val === 'true';
   return false;
 }
+
+export function processBooleanPositive(val?: unknown) {
+  if (_isBoolean(val)) return val;
+  if (_isString(val)) return val !== 'false';
+  return true;
+}
