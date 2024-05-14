@@ -21,6 +21,7 @@ export default function AccountCodingInput({
   alphanumericRegex: RegExp;
   infoText: string;
 }) {
+  console.log('title, disabled', title, disabled);
   const [showInfo, setShowInfo] = useState(false);
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>

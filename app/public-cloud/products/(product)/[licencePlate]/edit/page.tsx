@@ -117,7 +117,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
             />
             <ExpenseAuthority disabled={isDisabled} />
             <Budget disabled={false} />
-            <AccountCoding accountCodingInitial={snap.currentProduct?.accountCoding} disabled={false} />
+            <AccountCoding accountCodingInitial={snap.currentProduct?.accountCoding} disabled={isDisabled} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
